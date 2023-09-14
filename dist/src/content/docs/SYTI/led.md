@@ -1,0 +1,42 @@
+---
+title: LED - Light-Emitting Diode
+sidebar:
+    order: 200
+---
+
+Eine LED ist eine simple Diode, welche Licht emittiert. Damit diese leuchtet, müssen 5V Spannung an der Diode anliegen. Wenn sie nicht leuchten soll, legt man 0V Spannung an.
+
+## Aufbau
+
+Die LED kann an jedem beliebigen PIN angeschlossen werden. Dieses PIN muss auf [Code-Ebene](#code) als Ausgang konfiguriert werden, damit entweder 5V oder 0V anliegen. Damit kein Kurzschluss auftreten kann, muss man einen Widerstand mit 3.3K vor der Diode zwischenlegen. Anschließend kommt die Diode. Diese ist polarisiert, was bedeutet, sie hat eine Anode und eine Kathode.
+
+:::tip[Anode]
+Die Anode ist das **positive** Ende einer Diode: **+**. Hardware-technisch wird sie gekennzeichnet durch das **längere** Ende der Diode.
+:::
+:::tip[Kathode]   
+Die Kathode ist das **negative** Ende einer Diode: **-**. Hardware-technisch wird sie gekennzeichnet durch das **kürzere** Ende der Diode.
+:::
+
+Damit die LED korrekt funktioniert muss die Anode mit dem Ende des Widerstandes verbunden sein und die Kathode wird an den Ground (GND) angeschlossen.
+
+## Code
+
+```c
+int main(void)
+{
+    // LED an Port B, Pin 0
+    //  Port B, Pin 0 als Ausgang konfigurieren
+	DDRB |= (1<<DDB0);
+
+    //  Port B, Pin 0 Spannung: 0V
+	PORTB &= ~(1<<PORTB0);
+    
+    //  Port B, Pin 0 Spannung: 5V
+	PORTB |= (1<<PORTB0);
+	
+	while (1)
+	{
+        
+	}
+}
+```
