@@ -1,22 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM node:lts AS build
 WORKDIR /app
+COPY /dist .
+RUN npm i
+RUN npm run build
+
+FROM httpd:2.4 AS runtime
+COPY --from=build /app/dist /usr/local/apache2/htdocs/
 EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["View/View.csproj", "View/"]
-COPY ["Domain/Domain.csproj", "Domain/"]
-COPY ["Model/Model.csproj", "Model/"]
-RUN dotnet restore "View/View.csproj"
-COPY . .
-WORKDIR "/src/View"
-RUN dotnet build "View.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "View.csproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "View.dll"]
