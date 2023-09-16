@@ -15,6 +15,10 @@ export default defineConfig({
             social: {
                 github: "https://github.com/trueberryless-org/mutanuq",
             },
+            editLink: {
+                baseUrl: "https://github.com/trueberryless-org/mutanuq/tree/main/dist/",
+            },
+            lastUpdated: true,
         }),
     ],
 });
