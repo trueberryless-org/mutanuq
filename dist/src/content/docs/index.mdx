@@ -5,7 +5,7 @@ template: splash
 hero:
     tagline: Explore the Mutanuq universe.
     image:
-        file: ../../assets/houston.webp
+        file: ../../assets/start_logo.svg
     actions:
         - text: Explore
           link: /syti/overview/
@@ -20,19 +20,25 @@ sidebar:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Next steps
+## Getting started
 
 <CardGrid stagger>
-    <Card title="Update content" icon="pencil">
-        Edit `src/content/docs/index.mdx` to see this page change.
+    <Card title="Sniff into the knowledge" icon="random">
+        You're interested in technical colledge knowledge? Explore the Mutanuq universe!
     </Card>
-    <Card title="Add new content" icon="add-document">
-        Add Markdown or MDX files to `src/content/docs` to create new pages.
+    <Card title="Contribute to the universe" icon="add-document">
+        Check out the project on <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a>{" "}
+        and create pull requests.
     </Card>
-    <Card title="Configure your site" icon="setting">
-        Edit your `sidebar` and other config in `astro.config.mjs`.
+    <Card title="Buy me a beer" icon="rocket">
+        I would really appreciate if you bought me a beer,{" "}
+        <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">here</a>!
     </Card>
-    <Card title="Read the docs" icon="open-book">
-        Learn more in [the Starlight Docs](https://starlight.astro.build/).
+    <Card title="Star the project" icon="star">
+        Give the Mutanuq project a star on{" "}
+        <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a>!
+    </Card>
+    <Card title="Correct my mistakes" icon="pencil">
+        Click on the `Edit` Button on the bottom of each site to correct errors!
     </Card>
 </CardGrid>

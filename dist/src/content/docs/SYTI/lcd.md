@@ -1,10 +1,7 @@
 ---
 title: LCD - Liquid Crystal Display
-sidemap:
-    order: 400
-    badge:
-        text: New
-        variant: tip
+sidebar:
+    order: 5
 ---
 
 Das Liquid Crystal Display besteht aus 16 Zeichen in einer Reihe und 2 Zeilen insgesamt. Es unterstützt die gesamten lateinischen, chinesischen und weiter Zeichensätze plus einige Emojis.

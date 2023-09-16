@@ -1,7 +1,7 @@
 ---
 title: ADC - Analog Digital Converter
-sidemap:
-    order: 600
+sidebar:
+    order: 6
 ---
 
 ## Theorie
