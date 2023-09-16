@@ -1,7 +1,7 @@
 ---
 title: Interrupts
-sidemap:
-    order: 500
+sidebar:
+    order: 3
 ---
 
 ## Theorie

@@ -1,7 +1,7 @@
 ---
 title: Basic Program
 sidebar:
-    order: 100
+    order: 1
 ---
 
 Ein typisches C-Programm hat eine main-function, welche am Start des Programms aufgerufen wird. Wichtig ist, dass diese Funktion eine Endlosschleife, die sogenannte Arbeitsschleife, enthält, ansonsten würde das Program aufhören zu laufen.
