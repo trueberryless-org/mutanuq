@@ -1,6 +1,6 @@
 FROM node:lts AS build
 WORKDIR /app
-COPY /dist .
+COPY /starlight .
 RUN npm i
 RUN npm run build
 
