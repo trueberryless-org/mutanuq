@@ -4,7 +4,7 @@ sidebar:
     order: 1
 ---
 
-Ein typisches C-Programm hat eine main-function, welche am Start des Programms aufgerufen wird. Wichtig ist, dass diese Funktion eine Endlosschleife, die sogenannte Arbeitsschleife, enthält, ansonsten würde das Program aufhören zu laufen.
+A typical C program has a main function that is called at the start of the program. It is important that this function contains an infinite loop, the so-called working loop, otherwise the program would stop running.
 
 ```c
 /*
@@ -24,11 +24,11 @@ Ein typisches C-Programm hat eine main-function, welche am Start des Programms a
 
 int main(void)
 {
-	// einmalige Aktionen
+	// one-time actions
 
 	while (1)
 	{
-		// Arbeitsschleife - mehrmalige Aktionen
+		// working loop - multiple actions
 	}
 }
 ```

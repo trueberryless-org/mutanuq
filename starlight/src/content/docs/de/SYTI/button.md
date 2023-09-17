@@ -29,20 +29,20 @@ Active High Beschaltungen funktionieren genau anders herum. Hierbei liegen die 5
 
 Am korrespondierendem PIN baut man einen Spannungsteiler auf, welcher auf der einen Seite einen 10K Widerstand mit 5V Versorgungsspannung und auf der anderen Seite eine gegroundete Taste anliegen hat.
 
-![Pull-Up Widerstand](../../../assets/SYTI/button/pull_up_widerstand.png)
+![Pull-Up Widerstand](../../../../assets/SYTI/button/pull_up_widerstand.png)
 _Ein Pull-Up Widerstand Aufbau, wenn die Taste geöffnet ist_
 
-![Pull-Up Widerstand geschlossen](../../../assets/SYTI/button/pull_up_widerstand_closed.png)
+![Pull-Up Widerstand geschlossen](../../../../assets/SYTI/button/pull_up_widerstand_closed.png)
 _Ein Pull-Up Widerstand Aufbau, wenn die Taste geschlossen ist_
 
 ### Active High / Pull-Down
 
 Am korrespondierendem PIN liegt wieder ein Spannungsteiler an, welcher diesmal allerdings auf der Seite des 10K Widerstandes den Ground (GRN) hat und auf der anderen Seite befindet sich die Taste mit 5V Versorgungsspannnung.
 
-![Pull-Down Widerstand](../../../assets/SYTI/button/pull_down_widerstand.png)
+![Pull-Down Widerstand](../../../../assets/SYTI/button/pull_down_widerstand.png)
 _Ein Pull-Down Widerstand Aufbau, wenn die Taste geöffnet ist_
 
-![Pull-Down Widerstand geschlossen](../../../assets/SYTI/button/pull_down_widerstand_closed.png)
+![Pull-Down Widerstand geschlossen](../../../../assets/SYTI/button/pull_down_widerstand_closed.png)
 _Ein Pull-Down Widerstand Aufbau, wenn die Taste geschlossen ist_
 
 ## Code
@@ -154,7 +154,7 @@ void checkButton(void) {
 
 ### mit Interrupts
 
-Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts]() noch besser erklärt.
+Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](./interrupts.md) noch besser erklärt.
 
 #### direkt externe Interrupts
 
@@ -252,10 +252,10 @@ ISR (PCINT2_vect) {
 
 Ohne Widerstand darf man keine 5V Versorgungsspannung auf der Taste anlegen:
 
-![Floating Point](../../../assets/SYTI/button/floating_point.png)
+![Floating Point](../../../../assets/SYTI/button/floating_point.png)
 
 ### Kurzschluss
 
 Ebenso darf ein Spannungsteiler nicht einfach an den Ground (GND) angeschlossen werden, da diesr Ground sofort die Versorgungsspannung aufheben würde.
 
-![Kurzschluss](../../../assets/SYTI/button/kurzschluss.png)
+![Kurzschluss](../../../../assets/SYTI/button/kurzschluss.png)
