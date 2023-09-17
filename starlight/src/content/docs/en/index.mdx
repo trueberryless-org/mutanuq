@@ -1,0 +1,44 @@
+---
+title: Welcome to Mutanuq
+description: Explore knowledge.
+template: splash
+hero:
+    tagline: Explore the Mutanuq universe.
+    image:
+        file: ../../../assets/start_logo.svg
+    actions:
+        - text: Explore
+          link: /en/syti/overview/
+          icon: right-arrow
+          variant: primary
+        - text: Contribute on github
+          link: https://github.com/trueberryless-org/mutanuq
+          icon: external
+sidebar:
+    hidden: true
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+## Getting started
+
+<CardGrid stagger>
+    <Card title="Sniff into the knowledge" icon="random">
+        You're interested in technical colledge knowledge? Explore the Mutanuq universe!
+    </Card>
+    <Card title="Contribute to the universe" icon="add-document">
+        Check out the project on <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a>{" "}
+        and create pull requests.
+    </Card>
+    <Card title="Buy me a beer" icon="rocket">
+        I would really appreciate if you bought me a beer,{" "}
+        <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">here</a>!
+    </Card>
+    <Card title="Star the project" icon="star">
+        Give the Mutanuq project a star on{" "}
+        <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a>!
+    </Card>
+    <Card title="Correct my mistakes" icon="pencil">
+        Click on the `Edit` Button on the bottom of each site to correct errors!
+    </Card>
+</CardGrid>

@@ -5,9 +5,6 @@ sidebar:
     badge:
         text: New
         variant: note
-tableOfContents:
-    minHeadingLevel: 2
-    maxHeadingLevel: 4
 ---
 
 Der Timer ist ein sehr nützliches Instrument in der hardwarenahen Programmierung und eignet sich besonders gut für zeitbasierte Vorgänge, wie zum Beispiel:
@@ -36,7 +33,7 @@ Der 16-bit Timer verfügt hierbei über einen größeren Speicherplatz für das 
 
 Der Prozess des Überlaufs ist periodisch und wird hier grafisch dargestellt:
 
-![Timer Überlauf](../../../assets/SYTI/timer/timer_ueberlauf.png)
+![Timer Überlauf](../../../../assets/SYTI/timer/timer_ueberlauf.png)
 
 :::tip[Formular]
 Um sich die Zeitspanne $\Delta t$ auszurechnen, welche beschreibt, in welchen Zeitabständen der jeweilige Timer zum Überlauf kommt, gibt es folgende Formel:
@@ -108,7 +105,7 @@ Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den V
 | --- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TC0 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86)  |
 | TC1 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 0 <br/> `WGM13` == 0 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 1 <br/> `WGM13` == 0 | 3 Arten <br/>[Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) |
-| TC2 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130) |
+| TC2 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130) |
 
 ### normaler Modus
 
@@ -116,7 +113,7 @@ Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den V
 
 Für den normalen Modus beim Timer können folgende Konfigurationen getroffen werden:
 
--   `WGMn0`, `WGMn1` und `WGMn2` auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86))
+-   `WGMn0`, `WGMn1` und `WGMn2` auf 0 setzen (siehe [TC0: Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [TC1: Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) oder [TC2: Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
 
     ```c
     // Wave Form Generation Modus auf Normal setzen
@@ -127,9 +124,8 @@ Für den normalen Modus beim Timer können folgende Konfigurationen getroffen we
 -   `CSn0`, `CSn1` und `CSn2` einstellen (siehe [Table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87))
 
     ```c
-    // Prescaler einstellen
-    TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
-    TCCRnB &= ~((1<<WGMn2));
+    // Prescaler einstellen - Beispiel 1024
+    TCCRnB &= ~((1<<CSn0) | (1<<CSn1) | (1<<CSn2));
     ```
 
     Nutzen Sie [diese](#prescaler) Tabelle, um herauszufinden, welcher Prescaler Wert in Ihrem Program am meisten Sinn macht.
@@ -141,10 +137,14 @@ Für den normalen Modus beim Timer können folgende Konfigurationen getroffen we
 
 #include <avr/io.h>
 
-
 int main(void)
 {
-	// einmalige Aktionen
+	// Wave Form Generation Modus auf Normal setzen
+    TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
+    TCCR1B &= ~((1<<WGM12));
+
+    // Prescaler einstellen - Beispiel 256
+    TCCR1B &= ~((1<<CS11) | (1<<CS12));
 
 	while (1)
 	{

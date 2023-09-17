@@ -1,5 +1,5 @@
 ---
-title: LED - Light-Emitting Diode
+title: LED - Licht emittierende Diode
 sidebar:
     order: 2
 ---

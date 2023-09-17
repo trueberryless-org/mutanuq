@@ -1,5 +1,5 @@
 ---
-title: LCD - Liquid Crystal Display
+title: LCD - Flüssigkristallanzeige
 sidebar:
     order: 5
 ---
@@ -10,8 +10,8 @@ Für die Verwendung des Display empfiehlt sich [lcd.h](#appendix-a---lcdh) und [
 
 ## Aufbau
 
-![Aufbau eines LCDs am ATmega 328p](../../../assets/SYTI/lcd/lcd_composition.png)
-![Grid eines LCDs](../../../assets/SYTI/lcd/lcd_grid.png)
+![Aufbau eines LCDs am ATmega 328p](../../../../assets/SYTI/lcd/lcd_composition.png)
+![Grid eines LCDs](../../../../assets/SYTI/lcd/lcd_grid.png)
 
 ## Code
 

@@ -20,11 +20,10 @@ export default defineConfig({
             editLink: {
                 baseUrl: "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
             },
-            defaultLocale: "root",
+            defaultLocale: "de",
             locales: {
-                root: {
+                de: {
                     label: "Deutsch",
-                    lang: "de",
                 },
                 en: {
                     label: "English",
