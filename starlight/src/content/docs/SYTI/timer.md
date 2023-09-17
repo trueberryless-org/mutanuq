@@ -5,6 +5,9 @@ sidebar:
     badge:
         text: New
         variant: note
+tableOfContents:
+    minHeadingLevel: 2
+    maxHeadingLevel: 4
 ---
 
 Der Timer ist ein sehr nützliches Instrument in der hardwarenahen Programmierung und eignet sich besonders gut für zeitbasierte Vorgänge, wie zum Beispiel:
@@ -21,102 +24,91 @@ Der ATmega 328p hat 3 verschiedene Timer:
 -   TC1: 16-bit
 -   TC2: 8-bit; async
 
-Jeder Timer verfügt über ein eigenes Zählregister, welches einmal pro Systemtakt hochzählt. Der 16-bit Timer verfügt hierbei über 2 Bytes, weshalb er seltener überläuft.
+:::note
+Ersetzen Sie im gesamten Artikel das `n` immer mit der jeweiligen Nummer des Timers, welchen Sie gerade verwenden (TC0: n = 0; TC1: n = 1; ...).
+:::
+
+Jeder Timer verfügt über ein eigenes Zählregister `TCNTn`, welches einmal pro Systemtakt hochzählt. Wenn das Zählregister den `TOP`-Wert bzw. den `OCRnx`-Wert ([CTC Mode](#ctc---clear-timer-on-compare-match)) erreicht hat, passiert ein Überlauf. Das ist der Fachausdrück für den Prozess, bei welchem `TCNTn` wieder auf den `BOTTOM`-Wert gesetzt wird.
+
+:::tip[Aha!]
+Der 16-bit Timer verfügt hierbei über einen größeren Speicherplatz für das Zählregister, nämlich **zwei** Bytes im Gegensatz zu nur einem Byte, weshalb er seltener überläuft, weil `TCNT1` erst bis 65536 zählen muss, während `TCNT0` und `TCNT2` nur bis 256 laufen.
+:::
+
+Der Prozess des Überlaufs ist periodisch und wird hier grafisch dargestellt:
 
 ![Timer Überlauf](../../../assets/SYTI/timer/timer_ueberlauf.png)
 
-:::note
-Ersetzen Sie das x immer mit der jeweiligen Nummer des Timers, welchen Sie gerade verwenden (TC0: x = 0; TC1: x = 1; ...).
+:::tip[Formular]
+Um sich die Zeitspanne $\Delta t$ auszurechnen, welche beschreibt, in welchen Zeitabständen der jeweilige Timer zum Überlauf kommt, gibt es folgende Formel:
+
+$$
+\frac {2^{Bit\;des\;Timers}} {MHz\;des\;Microcontrollers} = {\Delta t\;in\;Sekunden}
+$$
 
 :::
 
-Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle verglichen werden:
+### Prescaler
 
-|     | Normal Mode                                                                                                                                                                                                                                                                                                                                          | CTC Mode                                                                                                                                                                                                                                                                                                              | PWM Mode                                                                                                                                                                                                           |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|     | Im normalen Modus zählt der Timer von `BOTTOM` bis `TOP` und wird bei `TOP` wieder auf `BOTTOM` gesetzt. Es gibt die Möglichkeit den Timer mit einem bestimmten Wert vorzuladen - also quasi den `BOTTOM`-Wert zu erhöhen -, indem man einfach `TCNTx` immer direkt nach dem Überlauf setzt, weshalb man die Zeitspanne bis zum Überlauf verringert. | Bei der Clear Timer on Compare Match setzt man anfangs einmal den `OCRxA`- bzw. den `OCRxB`-Wert. Erreicht der Timer (also `TCNTx`) diesen Wert, wird er gecleart, was bedeutet, dass `TCNTx` wieder auf 0 gesetzt wird. Die Timer unterstützen dabei zwei unabhängige Output Compare Register (`OCRxA` und `OCRxB`). | Mithilfe der Pulse Width Modulation kann man die Spannung auf einem bestimmten PIN variable verändern. Somit lässt sich z.B. ein DC-Motor steuern, welcher sich umso schneller dreht, je mehr Spannung er bekommt. |
-| TC0 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                                                                                                                                                                                                                                                                                                   | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                                                                                                                                                                                                                                                                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86)                                                                |
-| TC1 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 0 <br/> `WGM13` == 0                                                                                                                                                                                                                                                                                | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 1 <br/> `WGM13` == 0                                                                                                                                                                                                                                                 | 3 Arten <br/>[Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109)                                                               |
-| TC2 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                                                                                                                                                                                                                                                                                                   | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                                                                                                                                                                                                                                                                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130)                                                               |
+Der Prescaler verlangsamt den Zähltakt. Auf Hardware-Ebene ist der Prescaler nämlich ein Bauteil vorm Timer, welcher den Systemtakt als Input bekommt und den manipulierten neuen Takt an den Timer weitergibt. Standardmäßig ist der Prescaler nicht gesetzt, was bedeutet, dass der Timer gar keinen Takt bekommt und somit gestoppt ist.
 
-### Normal Mode
+| Prescaler | neuer Takt | neue Periodendauer $T$ | $\Delta t$ 8-bit / 256 | $\Delta t$ 16-bit / 65536 |
+| --------: | ---------: | ---------------------: | ---------------------: | ------------------------: |
+|         1 |      16MHz |            0.0000625ms |                0.016ms |                   4.096ms |
+|         8 |       2MHz |               0.0005ms |               0.1275ms |                   32.76ms |
+|        64 |     250kHz |                0.004ms |                 1.02ms |                  262.14ms |
+|       256 |    62.5kHz |                0.016ms |                 4.08ms |                  1048.5ms |
+|      1024 |  15.625kHz |                0.064ms |                16.32ms |                 4194.24ms |
 
-#### Berechnung von $\Delta t$
-
-$\Delta t$ ist die Zeitspanne, die es benötigt, bis ein Timer überläuft. Das bedeutet, dass jeder Timer alle $\Delta t$ Sekunden wieder auf den Button Wert zurückgesetzt wird.
-
-Um sich die Zeitspanne $\Delta t$ nun auszurechnen benötigen wir den Systemtakt. Dieser ist beim Atmega 328p **16MHz**. Daraus ergibt sich folgende Berechnung:
+:::tip[Erinnerung]
+Die Periodendauer $T$ ist gleich $\frac1f$, wobei $f$ die Frequenz in `Hz` ist. Sprich, je größer der Takt, desto kleiner die Periodendauer.
 
 $$
-T = \frac {1} {f} = \frac {1} {16MHz} = 0.0000625 ms
+T = \frac1f \Leftrightarrow f = \frac1T
 $$
 
-Das bedeutet bei einem 8-bit Timer:
-
-$$
-\Delta t = T * 2^8 = 0.016 ms
-$$
-
-und bei einem 16-bit Timer:
-
-$$
-\Delta t = T * 2^16 = 4.096 ms
-$$
-
-Also gelten Folgende Überlaufzeiten für die Timer beim Atmega328p:
-
--   TC0: $0.016ms$
--   TC1: $4.096ms$
--   TC2: $0.016ms$
-
-#### naive Intervalle
-
-Um einen bestimmten Programmcode jede Sekunde auszulösen, können wir also nun einen Timer verwenden, welche konstant hochzählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings kleiner als eine Sekunde ist, müssen wir eine bestimmte Anzahl an Überläufen abwarten, bis ca. eine Sekunde vergeht. Zur Berechnung dieser Anzahl kann man diese Formel verwenden:
-
-$$
-\frac {gewünschtes\;Intervall} {\Delta t\;des\;verwendeten\;Timers}
-$$
-
-Konkret bedeutet das bei einem 1-Sekunden Intervall bei TC0:
-
-$$
-\frac {1000ms} {0.016ms} = 62500\;Überläufe
-$$
-
-Zur Übersicht ein paar beliebte Werte für die Anzahl an Überläufen in tabellarischer Form (TC2 hat immer die gleichen Werte wie TC0):
-
-:::note
-Alle Werte mit einem Rundunssymbol in der Tabelle sind abgerunden, was bedeutet, dass die tatsächliche Zeitspanne leicht unter der jeweiligen gewünschten Zeitspanne liegt und der Programmcode dadurch etwas öfter als gewünscht ausgeführt wird.
 :::
 
-|            | TC0    | TC1   |
-| ---------- | ------ | ----- |
-| $\frac13$s | ~20833 | ~81   |
-| $\frac12$s | 31250  | ~122  |
-| 1s         | 62500  | ~244  |
-| 2s         | 125000 | ~488  |
-| 4s         | 250000 | ~976  |
-| 8s         | 500000 | ~1953 |
+### Modes of Operation
 
-Man kann in der Tabelle sehr gut erkennen, dass TC1 aufgrund der 16-bit wesentlich weniger Überläufe benötigt, da er seltener überläuft.
+Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle kurz erklärt werden:
 
-Um diese Methode auszuprogrammieren, sehen Sie bitte beim [Code](#zähle-überläufe) nach.
+| Normal Mode                                                                                                                                                                                                                                                                                                                                          | CTC Mode                                                                                                                                                                                                                                                                                                              | PWM Mode                                                                                                                                                                                                           |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Im normalen Modus zählt der Timer von `BOTTOM` bis `TOP` und wird bei `TOP` wieder auf `BOTTOM` gesetzt. Es gibt die Möglichkeit den Timer mit einem bestimmten Wert vorzuladen - also quasi den `BOTTOM`-Wert zu erhöhen -, indem man einfach `TCNTn` immer direkt nach dem Überlauf setzt, weshalb man die Zeitspanne bis zum Überlauf verringert. | Bei der Clear Timer on Compare Match setzt man anfangs einmal den `OCRnA`- bzw. den `OCRnB`-Wert. Erreicht der Timer (also `TCNTn`) diesen Wert, wird er gecleart, was bedeutet, dass `TCNTn` wieder auf 0 gesetzt wird. Die Timer unterstützen dabei zwei unabhängige Output Compare Register (`OCRnA` und `OCRnB`). | Mithilfe der Pulse Width Modulation kann man die Spannung auf einem bestimmten PIN variable verändern. Somit lässt sich z.B. ein DC-Motor steuern, welcher sich umso schneller dreht, je mehr Spannung er bekommt. |
 
-#### Prescaler
+#### Normal Mode
 
-| Prescaler | neuer Takt | neue Periodendauer | $\Delta t$ 8-bit / 256 | $\Delta t$ 16-bit / 65536 |
-| --------: | ---------: | -----------------: | ---------------------: | ------------------------: |
-|         1 |      16MHz |        0.0000625ms |                0.016ms |                   4.096ms |
-|         8 |       2MHz |           0.0005ms |               0.1275ms |                   32.76ms |
-|        64 |     250kHz |            0.004ms |                 1.02ms |                  262.14ms |
-|       256 |    62.5kHz |            0.016ms |                 4.08ms |                  1048.5ms |
-|      1024 |  15.625kHz |            0.064ms |                16.32ms |                 4194.24ms |
+Um einen bestimmten Programmcode in gewüschten Zeitabständen auszulösen, können wir also nun einen Timer verwenden, welcher konstant hochzählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings nicht immer exakt der gewünschten Zeitspanne entsprechen wird, müssen wir den `BOTTOM`-Wert / Vorladewert so verändern (also erhöhen), dass die zeitliche Differenz zwischen dem Vorladewert und dem `TOP`-Wert genau der gewünschten Zeitspanne entspricht. Wie man dies programmtechnisch umsetzt, wird unten beim [Code](#tcntn-vorladen) erklärt. Um Ihnen die schwierigen Berechnungen zu ersparen, gibt es hier eine einfache Formel zur Berechnung des Vorladewertes:
 
-### CTC - Clear Timer on Compare Match
+$$
+Vorladewert = 2^{Bit\;des\;Timers} - \frac {gewünschte\;Zeitspanne} {\frac {1} {MHz\;des\;Microcontrollers} * Prescaler}
+$$
 
-### PWM - Pulse Width Modulation
+:::note[Beachte!]
+Damit die obrige Formel keine irrsinnigen Erbegnisse ausspuckt, müssen folgende Bedingungen erfüllen sein:
+
+$$
+Prescaler = \{ 1, 8, 64, 256, 1024 \}
+$$
+
+$$
+0 \le gewünschte\;Zeitspanne \le \frac {1} {MHz\;des\;Microcontrollers} * 2^{Bit\;des\;Timers} * Prescaler
+$$
+
+Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den Vorladewert $\gt$ `TOP`-Wert herauskommen.
+:::
+
+#### CTC - Clear Timer on Compare Match
+
+#### PWM - Pulse Width Modulation
 
 ## Code
+
+|     | Normal Mode                                                           | CTC Mode                                                              | PWM Mode                                                                                                                                             |
+| --- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TC0 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86)  |
+| TC1 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 0 <br/> `WGM13` == 0 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 1 <br/> `WGM13` == 0 | 3 Arten <br/>[Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) |
+| TC2 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130) |
 
 ### normaler Modus
 
@@ -124,25 +116,25 @@ Um diese Methode auszuprogrammieren, sehen Sie bitte beim [Code](#zähle-überl�
 
 Für den normalen Modus beim Timer können folgende Konfigurationen getroffen werden:
 
--   `WGMx0`, `WGMx1` und `WGMx2` auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86))
+-   `WGMn0`, `WGMn1` und `WGMn2` auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86))
 
     ```c
     // Wave Form Generation Modus auf Normal setzen
-    TCCRxA &= ~((1<<WGMx0) | (1<<WGMx1));
-    TCCRxB &= ~((1<<WGMx2));
+    TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
+    TCCRnB &= ~((1<<WGMn2));
     ```
 
--   `CSx0`, `CSx1` und `CSx2` einstellen (siehe [Table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87))
+-   `CSn0`, `CSn1` und `CSn2` einstellen (siehe [Table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87))
 
     ```c
     // Prescaler einstellen
-    TCCRxA &= ~((1<<WGMx0) | (1<<WGMx1));
-    TCCRxB &= ~((1<<WGMx2));
+    TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
+    TCCRnB &= ~((1<<WGMn2));
     ```
 
     Nutzen Sie [diese](#prescaler) Tabelle, um herauszufinden, welcher Prescaler Wert in Ihrem Program am meisten Sinn macht.
 
-##### zähle Überläufe
+#### `TCNTn` vorladen
 
 ```c
 #define F_CPU 16000000
@@ -156,12 +148,7 @@ int main(void)
 
 	while (1)
 	{
-        if (TCNT0 == 255) {
-            cntOverflows++;
-            if (cntOverflows == 62500) {
-                // 1 Sekunde ist vergangen
-            }
-        }
+
 	}
 }
 ```
@@ -170,12 +157,12 @@ int main(void)
 
 Für den CTC Modus beim Timer müssen folgende Konfigurationen getroffen werden:
 
--   WGMx0, WGMx1 und WGMx2 auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86))
+-   WGMn0, WGMn1 und WGMn2 auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86))
 
     ```c
     // Wave Form Generation Modus auf Normal setzen
-    TCCRxA &= ~((1<<WGMx0) | (1<<WGMx1));
-    TCCRxB &= ~((1<<WGMx2));
+    TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
+    TCCRnB &= ~((1<<WGMn2));
     ```
 
 ### PWM - Puls Width Modulation
