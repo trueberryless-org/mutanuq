@@ -258,4 +258,4 @@ Without a resistor, you must not apply a 5V supply voltage to the button:
 
 Similarly, a voltage divider must not simply be connected to the ground (GND), as this ground would immediately cancel the supply voltage.
 
-![Short circuit](../../../../assets/SYTI/button/Kurzschluss.png)
+![Short circuit](../../../../assets/SYTI/button/kurzschluss.png)
