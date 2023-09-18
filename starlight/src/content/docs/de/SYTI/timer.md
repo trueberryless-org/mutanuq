@@ -105,7 +105,7 @@ Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den V
 | --- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TC0 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86)  |
 | TC1 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 0 <br/> `WGM13` == 0 | `WGM10` == 0 <br/> `WGM11` == 0 <br/> `WGM12` == 1 <br/> `WGM13` == 0 | 3 Arten <br/>[Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) |
-| TC2 | `WGM00` == 0 <br/> `WGM01` == 0 <br/> `WGM02` == 0                    | `WGM00` == 0 <br/> `WGM01` == 1 <br/> `WGM02` == 0                    | 2 Arten <br/>[Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130) |
+| TC2 | `WGM20` == 0 <br/> `WGM21` == 0 <br/> `WGM22` == 0                    | `WGM20` == 0 <br/> `WGM21` == 1 <br/> `WGM22` == 0                    | 2 Arten <br/>[Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130) |
 
 ### normaler Modus
 
