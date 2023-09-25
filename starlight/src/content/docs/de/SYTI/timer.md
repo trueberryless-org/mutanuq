@@ -2,9 +2,6 @@
 title: Timer
 sidebar:
     order: 7
-    badge:
-        text: New
-        variant: note
 ---
 
 Der Timer ist ein sehr nützliches Instrument in der hardwarenahen Programmierung und eignet sich besonders gut für zeitbasierte Vorgänge, wie zum Beispiel:
@@ -111,16 +108,59 @@ $$
 
 #### PWM - Pulse Width Modulation
 
-### Interrupts
+Mithilfe des PWM Modes kann man an bestimmten PINs eine bestimmte Spannung zwischen 0V und 5V anlegen. Durch ständiges, in bestimmten Intervallen auftretendes Ein- und Ausschalten der Spannung, stellt sich diese nach kurzer Zeit automatisch auf den Mittelwert der zeitlich auftretenden Spannungen ein.
 
-Jeder Timer triggert bei jedem Überlauf das Interrupt `TIMERn_OVF_vect`.
-Beim CTC Mode wird nach der Aktivierung des jeweiligen Interrupts
+Diese Vorgang passiert in Realität so schnell, dass man das ständigen Ein- und Ausschalten nicht mitbekommt. Hier ist der Prozess dargestellt:
+
+![Duty Cycle stellt sich langsam auf den Mittelwert ein](../../../../assets/SYTI/timer/timer_pwm_duty_cycle_average.png)
+
+Der PWM Mode ermöglicht uns also das exakte Einstellen der Spannung bei Laufzeit.
+
+##### Duty Cycle
+
+Eventuell ist Ihnen aufgefalls, dass im obrigen Bild $50\%$ in den Bereichen steht, wo die Spannung _high_ ist. Genau dieses Zeitintervall in Prozent ist der sogenannte **Duty Cycle** und die Berechnung für diesen ist hier zu sehen:
+
+$$
+Duty\;Cycle = \frac {T_{on}} {T_{on} + T_{off}} * 100\%
+$$
+
+:::note
+$T$ ist die Periodendauer, also das Zeitintervall, in welchem die Spannung entweder _high_ oder _low_ ist.
+:::
+
+Konfigureren kann man den Duty Cycle mittels dem `OCRnx` Register. Dieses bestimmt - genau wie beim CTC Mode - den Vergleichswert (`Output Compare Register`).
+
+![PWM Mode Compare Register](../../../../assets/SYTI/timer/timer_pwm_compare_register.png)
+
+---
+
+Der PWM Mode kann invertiert oder nicht invertiert betrieben werden:
+
+##### Invertierter Modus
+
+Beim invertierten Modus wird beim Erreichen des Vergleichswertes (`TCNTn` $=$ `OCRnx`) die Spannung auf _high_ gesetzt und beim Überlauf auf _low_.
+
+![PWM Mode Invertierter Modus](../../../../assets/SYTI/timer/timer_pwm_inverting_mode.png)
+
+##### Nicht Invertierter Modus
+
+Beim nicht invertierten Modus ist es genau umgekehrt. Beim Erreichen des Vergleichswertes (`TCNTn` $=$ `OCRnx`) wird die Spannung auf _low_ gesetzt und beim Überlauf auf _high_.
+
+![PWM Mode Nicht Invertierter Modus](../../../../assets/SYTI/timer/timer_pwm_non_inverting_mode.png)
+
+### Interrupts
 
 ## Code
 
 Übersichtliche Tabelle für alle Konfigurationen:
 
-<table>
+|     | Normal Mode                                                     | CTC Mode                                                        | Fast<br/>PWM Mode | Phase Corret<br/>PWM Mode |
+| --- | --------------------------------------------------------------- | --------------------------------------------------------------- | ----------------- | ------------------------- |
+| TC0 | `WGM00` == 0<br/>`WGM01` == 0<br/>`WGM02` == 0                  | `WGM00` == 0<br/>`WGM01` == 1<br/>`WGM02` == 0                  |                   |
+| TC1 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 |                   |
+| TC2 | `WGM20` == 0<br/>`WGM21` == 0<br/>`WGM22` == 0                  | `WGM20` == 0<br/>`WGM21` == 1<br/>`WGM22` == 0                  |                   |
+
+<!-- <table>
     <thead>
         <tr>
             <th></th>
@@ -161,7 +201,7 @@ Beim CTC Mode wird nach der Aktivierung des jeweiligen Interrupts
             <td></td>
         </tr>
     </tbody>
-</table>
+</table> -->
 
 ### Normal Mode
 
