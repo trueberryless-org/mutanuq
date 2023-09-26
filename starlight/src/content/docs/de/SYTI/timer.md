@@ -152,56 +152,13 @@ Beim nicht invertierten Modus ist es genau umgekehrt. Beim Erreichen des Verglei
 
 ## Code
 
-Übersichtliche Tabelle für alle Konfigurationen:
+Übersichtliche Tabelle für die wichtigsten Konfigurationen (alle Konfiguration finden Sie hier: [TC0: Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [TC1: Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109), [TC2: Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130)):
 
-|     | Normal Mode                                                     | CTC Mode                                                        | Fast<br/>PWM Mode | Phase Corret<br/>PWM Mode |
-| --- | --------------------------------------------------------------- | --------------------------------------------------------------- | ----------------- | ------------------------- |
-| TC0 | `WGM00` == 0<br/>`WGM01` == 0<br/>`WGM02` == 0                  | `WGM00` == 0<br/>`WGM01` == 1<br/>`WGM02` == 0                  |                   |
-| TC1 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 |                   |
-| TC2 | `WGM20` == 0<br/>`WGM21` == 0<br/>`WGM22` == 0                  | `WGM20` == 0<br/>`WGM21` == 1<br/>`WGM22` == 0                  |                   |
-
-<!-- <table>
-    <thead>
-        <tr>
-            <th></th>
-            <th>Normal Mode</th>
-            <th>CTC Mode</th>
-            <th>PWM Mode</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=2>TC0</td>
-            <td rowspan=2><code>WGM00</code> == 0 <br/> <code>WGM01</code> == 0 <br/> <code>WGM02</code> == 0</td>
-            <td rowspan=2><code>WGM00</code> == 0 <br/> <code>WGM01</code> == 1 <br/> <code>WGM02</code> == 0</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-        </tr>
-        <tr>
-            <td rowspan=3>TC1</td>
-            <td rowspan=3><code>WGM10</code> == 0 <br/> <code>WGM11</code> == 0 <br/> <code>WGM12</code> == 0 <br/> <code>WGM13</code> == 0</td>
-            <td rowspan=3><code>WGM10</code> == 0 <br/> <code>WGM11</code> == 0 <br/> <code>WGM12</code> == 1 <br/> <code>WGM13</code> == 0</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-        </tr>
-        <tr>
-            <td rowspan=2>TC2</td>
-            <td rowspan=2><code>WGM20</code> == 0 <br/> <code>WGM21</code> == 0 <br/> <code>WGM22</code> == 0</td>
-            <td rowspan=2><code>WGM20</code> == 0 <br/> <code>WGM21</code> == 1 <br/> <code>WGM22</code> == 0</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-        </tr>
-    </tbody>
-</table> -->
+|     | Normal Mode                                                     | CTC Mode                                                        | Fast<br/>PWM Mode                                               | Phase Corret<br/>PWM Mode                                       |
+| --- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| TC0 | `WGM00` == 0<br/>`WGM01` == 0<br/>`WGM02` == 0                  | `WGM00` == 0<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 0<br/>`WGM02` == 0                  |
+| TC1 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 |
+| TC2 | `WGM20` == 0<br/>`WGM21` == 0<br/>`WGM22` == 0                  | `WGM20` == 0<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 0<br/>`WGM22` == 0                  |
 
 ### Normal Mode
 
@@ -210,7 +167,7 @@ Für den normalen Modus beim Timer können folgende Konfigurationen getroffen we
 -   `WGMn0`, `WGMn1` und `WGMn2` (und `WGM13`) auf 0 setzen (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) oder [Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
 
     ```c
-    // Wave Form Generation Modus auf Normal Mode setzen
+    // Timer Modus auf Normal Mode setzen
     TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
     TCCRnB &= ~((1<<WGMn2));
     ```
@@ -228,7 +185,7 @@ Für den normalen Modus beim Timer können folgende Konfigurationen getroffen we
 #### `TCNTn` vorladen
 
 :::tip[Aufgabe]
-Erstellen Sie ein Programm, bei welchem eine ISR alle **vier Millisekunden** ausgeführt wird!
+Erstellen Sie ein Programm, bei welchem eine ISR alle **vier Millisekunden** ausgeführt wird! Nutzen Sie dafür den Timer im Normal Mode!
 :::
 
 Um diese Aufgabe zu lösen, verwenden wir die [Formel](#normal-mode), um uns den Vorladewert von $1536$ auszurechnen.
@@ -240,12 +197,14 @@ Um diese Aufgabe zu lösen, verwenden wir die [Formel](#normal-mode), um uns den
 
 int main(void)
 {
-	// Wave Form Generation Modus auf Normal setzen
+	// Timer Modus auf Normal setzen (optional)
     TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
-    TCCR1B &= ~((1<<WGM12));
+    TCCR1B &= ~((1<<WGM12) | (1<<WGM13));
 
     // Zählregister vorladen
     TCNT1 = 1536;
+
+    sei();
 
 	while (1);
 }
@@ -282,6 +241,41 @@ Für den CTC Modus beim Timer müssen/können folgende Konfigurationen getroffen
     ```
 
     Nutzen Sie [diese](#prescaler) Tabelle, um herauszufinden, welcher Prescaler Wert in Ihrem Program am meisten Sinn macht.
+
+:::tip[Aufgabe]
+Erstellen Sie ein Programm, bei welchem eine ISR alle **vier Millisekunden** ausgeführt wird! Nutzen Sie dafür den Timer im CTC Mode!
+:::
+
+Um diese Aufgabe zu lösen, verwenden wir die [Formel](#ctc---clear-timer-on-compare-match), um uns den Vorladewert von $64000$ auszurechnen.
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+
+int main(void)
+{
+	// Timer Modus auf CTC setzen
+    TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
+    TCCR1B |= (1<<WGM12);
+    TCCR1B &= ~(1<<WGM13);
+
+    // Output Compare Register richtig einstellen
+    OCR1A = 64000;
+
+    // Output Compare Register Interrupt aktivieren
+    TIMSK1 |= (1<<OCIE1A);
+
+    sei();
+
+	while (1);
+}
+
+// ISR wird bei jedem Compare Match getriggert - alle 4ms in diesem Fall
+ISR(TIMER1_COMPA_vect) {
+    // Code
+}
+```
 
 ### PWM - Puls Width Modulation
 
