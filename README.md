@@ -1,3 +1,5 @@
+[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/medium.svg)](https://starlight.astro.build)
+
 # Installation
 
 To get started, clone the repo with this command:
@@ -30,7 +32,7 @@ npm run dev
 
 to run astro with live reload locally.
 
-If you want to test the search functionality, run 
+If you want to test the search functionality, run
 
 ```
 npm run build
