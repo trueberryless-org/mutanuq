@@ -1,7 +1,7 @@
 ---
 title: EEPROM - Nicht flüchtiger Speicher
 sidebar:
-    order: 8
+    order: 10
 ---
 
 Manchmal ist es notwendig, Daten auf einen nicht flüchtigen Speicher zu speichern. Dies bedeuted, dass die Daten auch nach dem Trennen vom Strom und anschließenden Hinzufügen des Stromes immer noch gespeichert sind. Heutzutage hat jeder Computer so einen Speicher, bekannt als Festplattenspeicher, ROM bzw. SSD. Letzteres ist bereits eine spezifische Speicherart.
