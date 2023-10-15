@@ -3,6 +3,8 @@ import starlight from "@astrojs/starlight";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
 
+import expressiveCode from "astro-expressive-code";
+
 // https://astro.build/config
 export default defineConfig({
     site: "https://mutanuq.trueberryless.org",
@@ -31,7 +33,11 @@ export default defineConfig({
             },
             lastUpdated: true,
             customCss: ["./src/styles/custom.css"],
+            components: {
+                DownloadFile: "./src/components/DownloadFile.astro",
+            },
         }),
+        expressiveCode(),
     ],
     markdown: {
         remarkPlugins: [remarkMath],
