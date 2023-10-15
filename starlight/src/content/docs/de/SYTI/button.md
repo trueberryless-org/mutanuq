@@ -154,7 +154,7 @@ void checkButton(void) {
 
 ### mit Interrupts
 
-Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](./interrupts.md) noch besser erklärt.
+Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](../interrupts) noch besser erklärt.
 
 #### direkt externe Interrupts
 
@@ -206,7 +206,7 @@ Die gruppenbasierten externen Interrupts gelten immer für den gesamten Port. Au
 | PIN 4 | PCIE0, PCINT4 | PCIE1, PCINT12 | PCIE2, PCINT20 |
 | PIN 5 | PCIE0, PCINT5 | PCIE1, PCINT13 | PCIE2, PCINT21 |
 | PIN 6 | PCIE0, PCINT6 | PCIE1, PCINT14 | PCIE2, PCINT22 |
-| PIN 7 | PCIE0, PCINT7 | PCIE1, PCINT15 | PCIE2, PCINT23 |
+| PIN 7 | PCIE0, PCINT7 | -              | PCIE2, PCINT23 |
 
 ```c
 #include <avr/io.h>

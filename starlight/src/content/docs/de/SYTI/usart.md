@@ -8,9 +8,61 @@ In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, D
 
 ## Theorie
 
+### Datenübertragung
+
 Für die Datenübertragung braucht es zwei PINs, ein PIN zum Senden und ein PIN zum Empfangen von Daten. Dafür sind beim ATmega328p die PINs `PD0` und `PD1` reserviert. Wenn Sie das USART also verwenden möchten, achten Sie darauf, diese beiden PINs nicht gleichzeit für andere Zwecke zu verwenden.
 
+### Konfiguration
+
+#### Baud Rate
+
+Damit das `USART` beim ATmega328p richtig funktioniert, muss man die Baud Rate auf 9600 setzen. Die Baud Rate gibt an, wie viele Bits pro Sekunde übertragen werden sollen. Dabei ist es wichtig, dass unsere Arduino Board und der andere Kommunikationspartner die gleiche Baud Rate verwenden.
+
+```c
+UBRR0 = 103;
+```
+
+Für andere Baud Rate-Konfigurationen lesen Sie bitte [Kapitel 19-11 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163) durch.
+
+#### Senden aktivieren
+
+Wenn Sie Daten senden möchten, müssen Sie dies aktivieren.
+
+```c
+UCSR0B |= (1<<TXEN0);
+```
+
+#### Empfangen aktivieren
+
+Für das Aktivieren des Empfangens von Daten muss zusätzlich auch das Interrupt aktiviert werden, damit bei jedem hereinkommenden Zeichen diese getriggert wird.
+
+```c
+UCSR0B |= (1<<RXEN0) | (1<<RXCIE0);
+```
+
+#### Größe der Bits setzen
+
+Sender und Empfänger müssen definieren, wie viele Bits pro gesendetem Zeichen verwendet werden sollen. Je nachdem, welche Codierung (`ASCII`, `UTF-8`, `UTF-16` ...) verwendet wird, benötigen die Zeichen jeweils acht, 16 oder mehrere Bits.
+
+Die meisten Encodings verwenden 8-bit:
+
+```c
+UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
+```
+
+Für andere Konfigurationen verwenden Sie die [Tabelle 19-7 aus dem Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
+
 ## Code
+
+### Konfiguration
+
+Meistens verwenden Sie diese Konfiguration um alles bezüglich `USART` richtig zu konfigurieren:
+
+```c
+UBRR0 = 103;
+UCSR0B |= (1<<TXEN0) | (1<<RXEN0) | (1<<RXCIE0);
+UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
+```
 
 ### Daten senden
 
