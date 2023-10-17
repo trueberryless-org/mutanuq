@@ -36,7 +36,7 @@ Der Prozess des Überlaufs ist periodisch und wird hier grafisch dargestellt:
 Um sich die Zeitspanne $\Delta t$ auszurechnen, welche beschreibt, in welchen Zeitabständen der jeweilige Timer zum Überlauf kommt, gibt es folgende Formel:
 
 $$
-\frac {2^{Bit\;des\;Timers}} {MHz\;des\;Microcontrollers} = {\Delta t\;in\;Sekunden}
+\frac {2^{Bit\;des\;Timers}} {Hz\;des\;Microcontrollers} = {\Delta t\;in\;Sekunden}
 $$
 
 :::
@@ -75,7 +75,7 @@ Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle kurz erklärt w
 Um einen bestimmten Programmcode in gewüschten Zeitabständen auszulösen, können wir also nun einen Timer verwenden, welcher konstant hochzählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings nicht immer exakt der gewünschten Zeitspanne entsprechen wird, müssen wir den `BOTTOM`-Wert / Vorladewert so verändern (also erhöhen), dass die zeitliche Differenz zwischen dem Vorladewert und dem `TOP`-Wert genau der gewünschten Zeitspanne entspricht. Wie man dies programmtechnisch umsetzt, wird unten beim [Code](#tcntn-vorladen) erklärt. Um Ihnen die schwierigen Berechnungen zu ersparen, gibt es hier eine einfache Formel zur Berechnung des Vorladewertes:
 
 $$
-Vorladewert = 2^{Bit\;des\;Timers} - \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {MHz\;des\;Microcontrollers} * Prescaler}
+Vorladewert = 2^{Bit\;des\;Timers} - \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {Hz\;des\;Microcontrollers} * Prescaler}
 $$
 
 :::note[Beachte!]
@@ -86,7 +86,7 @@ Prescaler = \{ 1, 8, 64, 256, 1024 \}
 $$
 
 $$
-0 \le gewünschte\;Zeitspanne \le \frac {1} {MHz\;des\;Microcontrollers} * 2^{Bit\;des\;Timers} * Prescaler
+0 \le gewünschte\;Zeitspanne \le \frac {1} {Hz\;des\;Microcontrollers} * 2^{Bit\;des\;Timers} * Prescaler
 $$
 
 Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den Vorladewert $\gt$ `TOP`-Wert herauskommen.
@@ -103,7 +103,7 @@ Der Clear Timer on Compare Match Mode erleichtert uns die exakte regelmäßige A
 Die Formel zur Berechnung des `Output Compare Register`-Wertes ist ziemlich ähnlich. Beachten Sie dabei wieder die gleichen Definitionsmengen wie bei [obriger Formel](#normal-mode)!
 
 $$
-Output\;Compare\;Register =  \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {MHz\;des\;Microcontrollers} * Prescaler}
+Output\;Compare\;Register =  \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {Hz\;des\;Microcontrollers} * Prescaler}
 $$
 
 #### PWM - Pulse Width Modulation
