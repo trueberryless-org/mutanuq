@@ -17,11 +17,11 @@ Diese beiden Arten müssen auf [Code-Ebene](#code) unterschiedlich verarbeitet w
 
 ### Active Low / Pull-Up
 
-Bei der Active Low Beschaltung liegen 5V Spannung (active) am Eingang an, wenn die Taste gedrückt ist (low). Der [Aufbau](#active-low--pull-up-1) einer Active Low Beschaltung verwendet den Pull-Up Widerstand.
+Bei der Active Low Beschaltung liegen **0V Spannung** (low) am Eingang an, wenn die Taste gedrückt ist (active). Der [Aufbau](#active-low--pull-up-1) einer Active Low Beschaltung verwendet den Pull-Up Widerstand.
 
 ### Active High / Pull-Down
 
-Active High Beschaltungen funktionieren genau anders herum. Hierbei liegen die 5V Spannung (active) am Eingang an, wenn die Taste **nicht** gedrückt ist (high). Der [Aufbau](#active-high--pull-down-1) einer Active High Beschaltung verwendet den Pull-Down Widerstand.
+Active High Beschaltungen funktionieren genau anders herum. Hierbei liegen die **5V Spannung** (high) am Eingang an, wenn die Taste gedrückt ist (active). Der [Aufbau](#active-high--pull-down-1) einer Active High Beschaltung verwendet den Pull-Down Widerstand.
 
 ## Aufbau
 
@@ -75,7 +75,7 @@ int main(void)
 
 void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
-	if (PINB & (1<<PINB0))
+	if (!(PINB & (1<<PINB0)))
 	{
 		// Taste wurde 1x gedrückt
 	}
@@ -107,7 +107,7 @@ int main(void)
 
 void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
-	if (!(PINB & (1<<PINB0)))
+	if (PINB & (1<<PINB0))
 	{
 		// Taste wurde 1x gedrückt
 	}
