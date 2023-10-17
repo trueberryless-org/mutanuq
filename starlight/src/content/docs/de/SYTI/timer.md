@@ -175,9 +175,9 @@ Für den normalen Modus beim Timer können folgende Konfigurationen getroffen we
 -   `CSn0`, `CSn1` und `CSn2` einstellen (siehe [Table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87), [Table 15-6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=110) oder [Table 17-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=131))
 
     ```c
-    // Prescaler einstellen - Beispiel 256
-    TCCRnB |= (1<<CSn2);
-    TCCRnB &= ~((1<<CSn0) | (1<<CSn1));
+    // Prescaler einstellen - Beispiel 1024
+    TCCRnB |= (1<<CSn0) | (1<<CSn2);
+    TCCRnB &= ~(1<<CSn1);
     ```
 
     Nutzen Sie [diese](#prescaler) Tabelle, um herauszufinden, welcher Prescaler Wert in Ihrem Program am meisten Sinn macht.
@@ -278,6 +278,91 @@ ISR(TIMER1_COMPA_vect) {
 ```
 
 ### PWM - Puls Width Modulation
+
+Für den PWM Modus beim Timer müssen/können folgende Konfigurationen getroffen werden:
+
+-   `WGMnx` richtig setzen
+    (siehe [Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) oder [Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
+
+-   invertierenden / nicht-invertierenden Modus einstellen
+
+    -   `COMnA0` und `COMnA1` (siehe [Table 14-3 und 14-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=84), [Table 15-3 und 15-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=108) oder [Table 17-3 und 17-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=128))
+
+    -   `COMnB0` und `COMnB1` (siehe [Table 14-6 und 14-7](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=85), [Table 15-3 und 15-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=108) oder [Table 17-6 und 17-7](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=129))
+
+-   `CSn0`, `CSn1` und `CSn2` einstellen (siehe [Table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87), [Table 15-6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=110) oder [Table 17-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=131))
+
+    ```c
+    // Prescaler einstellen - Beispiel 64
+    TCCRnB |= (1<<CSn0) | (1<<CSn1);
+    TCCRnB &= ~(1<<CSn2);
+    ```
+
+    Nutzen Sie [diese](#prescaler) Tabelle, um herauszufinden, welcher Prescaler Wert in Ihrem Program am meisten Sinn macht.
+
+:::tip[Aufgabe]
+Erstellen Sie ein Programm, bei welchem eine ISR alle **vier Millisekunden** ausgeführt wird! Nutzen Sie dafür den Timer im CTC Mode!
+:::
+
+Um diese Aufgabe zu lösen, verwenden wir die [Formel](#ctc---clear-timer-on-compare-match), um uns den Vorladewert von $64000$ auszurechnen.
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+
+int main(void)
+{
+	// PB1 als Ausgang konfigurieren
+	DDRB |= (1<<DDB1);
+
+	// WGM10 und WGM12: Fast PWM; 8-bit aktivieren (MAX -> 255)
+	TCCR1A |= (1<<WGM10);
+	TCCR1B |= (1<<WGM12);
+
+	// CS12: 256er Prescaler setzen => PWM mit 244,1 Hz
+	TCCR1B |= (1<<CS12);
+
+	// non-inverting Mode einstellen
+	TCCR1A |= (1<<COM1A1);
+
+	// REFS0: Aufgrund der Beschaltung des ADCs.
+	// A3: Analoges Signal an PC3 => MUX0 | MUX1
+	ADMUX |= (1<<REFS0) | (1<<MUX0) | (1<<MUX1);
+
+	// ADEN => Enables ADC
+	// ADPSx => Division Factor to get between 50kHz and 200kHz with our 60MHz Elegoo.
+	ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+
+	ADCSRA |= (1<<ADIE);
+
+	// ADSC => Start Conversion
+	ADCSRA |= (1<<ADSC);
+
+	sei();
+
+    /* Replace with your application code */
+    while (1)
+    {
+		//OCR1A = 65;				// Pulsweite DC von ca. 25%
+		//_delay_ms(2000);
+		//OCR1A = 123;			// Pulsweite DC von ca. 50%
+		//_delay_ms(2000);
+		//OCR1A = 255;			// Pulsweite DC von ca. 100%
+		//_delay_ms(2000);
+    }
+}
+
+ISR(ADC_vect) {
+	OCR1A = ADCW / (1023 / 255);
+
+	// ADSC => Start Conversion
+	ADCSRA |= (1<<ADSC);
+}
+```
 
 ### Interrupts
 
