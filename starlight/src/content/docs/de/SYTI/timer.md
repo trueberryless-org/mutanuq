@@ -75,7 +75,7 @@ Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle kurz erklärt w
 Um einen bestimmten Programmcode in gewüschten Zeitabständen auszulösen, können wir also nun einen Timer verwenden, welcher konstant hochzählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings nicht immer exakt der gewünschten Zeitspanne entsprechen wird, müssen wir den `BOTTOM`-Wert / Vorladewert so verändern (also erhöhen), dass die zeitliche Differenz zwischen dem Vorladewert und dem `TOP`-Wert genau der gewünschten Zeitspanne entspricht. Wie man dies programmtechnisch umsetzt, wird unten beim [Code](#tcntn-vorladen) erklärt. Um Ihnen die schwierigen Berechnungen zu ersparen, gibt es hier eine einfache Formel zur Berechnung des Vorladewertes:
 
 $$
-Vorladewert = 2^{Bit\;des\;Timers} - \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {Hz\;des\;Microcontrollers} * Prescaler}
+Vorladewert = 2^{Bit\;des\;Timers} - {gewünschte\;Zeitspanne\;in\;Sekunden} * \frac {Hz\;des\;Microcontrollers} {Prescaler}
 $$
 
 :::note[Beachte!]
