@@ -47,7 +47,7 @@ _Ein Pull-Down Widerstand Aufbau, wenn die Taste geschlossen ist_
 
 ## Code
 
-### ohne Interrupts
+### Ohne Interrupts
 
 :::note
 Achte genau auf die Unterschiede der if-Bedingungen!
@@ -117,7 +117,7 @@ void checkButton(void) {
 }
 ```
 
-#### interner Pull-Up Widerstand
+#### Interner Pull-Up Widerstand
 
 ```c
 #include <avr/io.h>
@@ -152,11 +152,11 @@ void checkButton(void) {
 }
 ```
 
-### mit Interrupts
+### Mit Interrupts
 
 Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](../interrupts) noch besser erklärt.
 
-#### direkt externe Interrupts
+#### Direkt externe Interrupts
 
 An Port D gibt es zwei PINs (2 und 3), welche über direkte externe Interrupts - Funktionalitäten verfügen. Das bedeutet, dass dort angeschlossene Tasten spezifisch mithilfe von bereits definierten Interrupts überprüft werden können. Dies erspart ein wenig komplexen Programmcode.
 
@@ -193,7 +193,7 @@ ISR (INT0_vect) {
 }
 ```
 
-#### gruppenbasierte externe Interrupts
+#### Gruppenbasierte externe Interrupts
 
 Die gruppenbasierten externen Interrupts gelten immer für den gesamten Port. Aus diesem Grund muss man im Interrupt auch nochmals den richtigen PIN auf Tasteneingaben überprüfen, wie man unten, im Code, sehen kann.
 
