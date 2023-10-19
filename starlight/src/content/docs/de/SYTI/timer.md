@@ -103,7 +103,7 @@ Der Clear Timer on Compare Match Mode erleichtert uns die exakte regelmäßige A
 Die Formel zur Berechnung des `Output Compare Register`-Wertes ist ziemlich ähnlich. Beachten Sie dabei wieder die gleichen Definitionsmengen wie bei [obriger Formel](#normal-mode)!
 
 $$
-Output\;Compare\;Register =  \frac {gewünschte\;Zeitspanne\;in\;Sekunden} {\frac {1} {Hz\;des\;Microcontrollers} * Prescaler}
+Output\;Compare\;Register =  {gewünschte\;Zeitspanne\;in\;Sekunden} * \frac {Hz\;des\;Microcontrollers} {Prescaler}
 $$
 
 #### PWM - Pulse Width Modulation
