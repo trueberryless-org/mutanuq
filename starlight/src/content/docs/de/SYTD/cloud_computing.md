@@ -67,7 +67,7 @@ ZRS kopiert Ihre Daten über drei Azure-Verfügbarkeitszonen in der primären Re
 
 ### Geo-redundanter Speicher (GRS)
 
-Für die höchste Redundanz gibt es GRS. Wie bei LRS werden die Daten drei Mal innerhalb eines einzigen physischen Standortes in der primären Zohne gespeichert. Zusätzlich wird auch noch ein asynchrones Backup in einer sekundären Zone kopiert, welches Hunderte von Kilometern von der primären Region entfernt ist. Dies sichert die Daten am besten gegen Naturkatastrophen. Die Haltbarkeit beträgt bei den meisten Anbietern mindestens `99,99999999999999%` (16 9er).
+Für die höchste Redundanz gibt es GRS. Wie bei LRS werden die Daten drei Mal innerhalb eines einzigen physischen Standortes in der primären Zone gespeichert. Zusätzlich wird auch noch ein asynchrones Backup in einer sekundären Zone kopiert, welches Hunderte von Kilometern von der primären Region entfernt ist. Dies sichert die Daten am besten gegen Naturkatastrophen. Die Haltbarkeit beträgt bei den meisten Anbietern mindestens `99,99999999999999%` (16 9er).
 
 ## Skalierbarkeit
 
