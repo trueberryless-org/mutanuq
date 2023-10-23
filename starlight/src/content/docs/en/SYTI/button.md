@@ -47,7 +47,7 @@ _A pull-down resistor build-up when the button is closed_.
 
 ## Code
 
-### without interrupts
+### Without interrupts
 
 :::note
 Pay close attention to the differences in the if conditions!
