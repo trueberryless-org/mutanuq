@@ -95,3 +95,60 @@ public static string Run(
     log.LogInformation($"C# Queue trigger function processed a message.");
 }
 ```
+
+## Input Binding
+
+Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kann dies relativ einfach mittels Input Bindings umgesetzt werden.
+
+```csharp
+[Function("treesforever")]
+public static string Run(
+	[HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
+    [Table("TreeTable")] TableClient tableClient,
+	ILogger log)
+{
+    var tableEntity = new TreeTable()
+    {
+        PartitionKey = "tree",
+        RowKey = Guid.NewGuid().ToString(),
+        TreeType = "Fichte",
+        TreeHeight = 13.3
+    };
+
+    tableClient.AddEntity(tableEntity);
+}
+
+public class TreeTable : Azure.Data.Tables.ITableEntity
+{
+    public double TreeHeight { get; set; }
+    public string TreeType { get; set; }
+
+    public string PartitionKey { get; set; }
+    public string RowKey { get; set; }
+    public DateTimeOffset? Timestamp { get; set; }
+    public ETag ETag { get; set; }
+}
+```
+
+## Output Binding
+
+```csharp
+[Function("thumbnailssmall")]
+public static string Run(
+    [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
+    [Blob("thumbnails/{name}", FileAccess.Write)] Stream thumbnails,
+	ILogger log)
+{
+    using var image = await SixLabors.ImageSharp.Image.LoadAsync(imageStream);
+    var newWidth = 300;
+    var newHeight = 200;
+
+    image.Mutate(x => x.Resize(new ResizeOptions
+    {
+        Size = new Size(newWidth, newHeight),
+        Mode = ResizeMode.Max
+    }));
+
+    await image.SaveAsync(thumbnailStream, new JpegEncoder());
+}
+```
