@@ -84,7 +84,7 @@ public static string Run(
 
 ### Queue Trigger
 
-Bei jeder neuen Datei im Container, wird diese AF durchgeführt:
+Bei jeder neuen Message in der Queue wird die Function getriggert. Dabei muss man zwischen Topics und Queue unterscheiden, denn ein Topic kann an mehrere Empfänger gesendet werden, während eine Queue immer nur einen Empfänger hat.
 
 ```csharp
 [Function("Firstmessage")]
@@ -131,6 +131,8 @@ public class TreeTable : Azure.Data.Tables.ITableEntity
 ```
 
 ## Output Binding
+
+Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding.
 
 ```csharp
 [Function("thumbnailssmall")]
