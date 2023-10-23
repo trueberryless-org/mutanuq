@@ -1,0 +1,71 @@
+---
+title: Storage Account
+sidebar:
+    order: 1
+---
+
+## Blob Storage
+
+Ein Blob Storage ist wie ein Dateisystem aufgebaut, in welchem man Dateien hochladen, herunterladen und löschen kann. Allerdings benötigt man einen **Container** - eine Art `root`-Verzeichnis -, in welchen man alle Dateien hineinspeichern kann. Theoretisch gesehen, kann man unendlich viele Container anlegen.
+
+```bash
+dotnet add package Azure.Storage.Blobs
+```
+
+```csharp
+var blobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true");
+var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+var blobClient = blobContainerClient.GetBlobClient(fileName);
+```
+
+```csharp
+await blobClient.UploadAsync(localFilePath, true);
+```
+
+```csharp
+// List all blobs in the container
+await foreach (BlobItem blobItem in blobContainerClient.GetBlobsAsync())
+{
+    Console.WriteLine("\t" + blobItem.Name);
+}
+```
+
+## Table Storage
+
+Im Table Storage kann man prinzipiell jedes JSON Objekt hineinspeichern. Wenn die JSON Objekte gleiche Felder haben, werden die Werte in gleichen Spalten gespeichert.
+
+```bash
+dotnet add package Azure.Data.Tables
+```
+
+```csharp
+var tableServiceClient = new TableServiceClient("UseDevelopmentStorage=true");
+var tableClient = new TableClient("UseDevelopmentStorage=true", tableName);
+```
+
+```csharp
+var tableEntity = new TableEntity(partitionKey, "trueberryless")
+{
+    { "Name", "trueberryless" },
+    { "DateOfBirth", "20.04.1969" }
+};
+
+await tableClient.AddEntityAsync(tableEntity);
+```
+
+## Queue Storage
+
+Ein Queue Storage persistiert Messages bis diese ausgelesen wurden. Dadurch wird die Koppelung des Gesamtsystems reduziert, da zwei Microservices, die ständig miteinander kommunizieren, nicht gleichzeitig laufen müssen, um Nachrichten austauschen zu können. Diese Nachrichten werden einfach im Queue Storage zwischengespeichert. Man erstellt aus quasi einen dritten Service, um zwei andere Services zu entkoppeln.
+
+```bash
+dotnet add package Azure.Storage.Queues
+```
+
+```csharp
+var queueServiceClient = new QueueServiceClient("UseDevelopmentStorage=true");
+var queueClient = queueServiceClient.GetQueueClient(queueName);
+```
+
+```csharp
+var sendReceipt = await queueClient.SendMessageAsync("Hello, World!");
+```

@@ -31,6 +31,7 @@ export default defineConfig({
                     label: "English",
                 },
             },
+            tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             lastUpdated: true,
             customCss: ["./src/styles/custom.css"],
             components: {
