@@ -47,7 +47,7 @@ _A pull-down resistor build-up when the button is closed_.
 
 ## Code
 
-### without interrupts
+### Without interrupts
 
 :::note
 Pay close attention to the differences in the if conditions!
@@ -117,7 +117,7 @@ void checkButton(void) {
 }
 ```
 
-#### internal pull-up resistor
+#### Internal pull-up resistor
 
 ```c
 #include <avr/io.h>
@@ -152,11 +152,11 @@ void checkButton(void) {
 }
 ```
 
-### with interrupts
+### With interrupts
 
 With interrupts, you have the advantage of not having to constantly call a method in the while loop that queries the keys. This behaviour is explained even better in [interrupts](./interrupts.md).
 
-#### direct external interrupts
+#### Direct external interrupts
 
 There are two PINs (2 and 3) on port D that have direct external interrupts functionality. This means that keys connected there can be specifically checked with the help of already defined interrupts. This saves a little complex programme code.
 
@@ -193,7 +193,7 @@ ISR (INT0_vect) {
 }
 ```
 
-#### group-based external interrupts
+#### Group-based external interrupts
 
 The group-based external interrupts always apply to the entire port. For this reason, the correct PIN must be checked again for keystrokes in the interrupt, as can be seen in the code below.
 
