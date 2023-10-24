@@ -131,7 +131,7 @@ public static async Task Run(
 
 ## Durable Function Patterns
 
-Mithilfe des Pronzipes der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
+Mithilfe des Prinzipes der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
 
 ### Function Chaining
 
