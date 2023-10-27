@@ -31,6 +31,37 @@ export default defineConfig({
                     label: "English",
                 },
             },
+            sidebar: [
+                {
+                    label: "Dezentrale Systeme",
+                    translations: {
+                        en: "Decentralised Systems",
+                    },
+                    autogenerate: { directory: "decentralised_systems" },
+                },
+                {
+                    label: "Eingebettete Programmierung",
+                    translations: {
+                        en: "Embedded Programming",
+                    },
+                    autogenerate: { directory: "embedded_programming" },
+                },
+                {
+                    label: "Sprachen",
+                    translations: {
+                        en: "Languages",
+                    },
+                    items: [
+                        {
+                            label: "Textsorten",
+                            translations: {
+                                en: "Text Types",
+                            },
+                            autogenerate: { directory: "languages/text_types" },
+                        },
+                    ],
+                },
+            ],
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             lastUpdated: true,
             customCss: ["./src/styles/custom.css"],
