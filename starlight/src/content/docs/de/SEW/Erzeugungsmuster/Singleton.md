@@ -1,6 +1,5 @@
 ---
 title: Singleton
-description: Singleton Pattern
 sidebar:
     order: 0
 ---
