@@ -1,6 +1,5 @@
 ---
 title: Adapter
-description: Adapter Pattern
 sidebar:
     order: 0
 ---
