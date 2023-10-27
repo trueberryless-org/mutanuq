@@ -66,9 +66,15 @@ $$
 
 Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle kurz erklärt werden:
 
+import ResponsiveTable from "../../../../assets/components/ResponsiveTable.astro";
+
+<ResponsiveTable>
+
 | Normal Mode                                                                                                                                                                                                                                                                                                                                          | CTC Mode                                                                                                                                                                                                                                                                                                              | PWM Mode                                                                                                                                                                                                           |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Im normalen Modus zählt der Timer von `BOTTOM` bis `TOP` und wird bei `TOP` wieder auf `BOTTOM` gesetzt. Es gibt die Möglichkeit den Timer mit einem bestimmten Wert vorzuladen - also quasi den `BOTTOM`-Wert zu erhöhen -, indem man einfach `TCNTn` immer direkt nach dem Überlauf setzt, weshalb man die Zeitspanne bis zum Überlauf verringert. | Bei der Clear Timer on Compare Match setzt man anfangs einmal den `OCRnA`- bzw. den `OCRnB`-Wert. Erreicht der Timer (also `TCNTn`) diesen Wert, wird er gecleart, was bedeutet, dass `TCNTn` wieder auf 0 gesetzt wird. Die Timer unterstützen dabei zwei unabhängige Output Compare Register (`OCRnA` und `OCRnB`). | Mithilfe der Pulse Width Modulation kann man die Spannung auf einem bestimmten PIN variable verändern. Somit lässt sich z.B. ein DC-Motor steuern, welcher sich umso schneller dreht, je mehr Spannung er bekommt. |
+
+</ResponsiveTable>
 
 #### Normal Mode
 
@@ -154,11 +160,15 @@ Beim nicht invertierten Modus ist es genau umgekehrt. Beim Erreichen des Verglei
 
 Übersichtliche Tabelle für die wichtigsten Konfigurationen (alle Konfiguration finden Sie hier: [TC0: Table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [TC1: Table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109), [TC2: Table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130)):
 
+<ResponsiveTable>
+
 |     | Normal Mode                                                     | CTC Mode                                                        | Fast<br/>PWM Mode                                               | Phase Corret<br/>PWM Mode                                       |
 | --- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
 | TC0 | `WGM00` == 0<br/>`WGM01` == 0<br/>`WGM02` == 0                  | `WGM00` == 0<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 0<br/>`WGM02` == 0                  |
 | TC1 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 |
 | TC2 | `WGM20` == 0<br/>`WGM21` == 0<br/>`WGM22` == 0                  | `WGM20` == 0<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 0<br/>`WGM22` == 0                  |
+
+</ResponsiveTable>
 
 ### Normal Mode
 
