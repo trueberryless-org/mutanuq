@@ -2,6 +2,8 @@
 
 # Installation
 
+Please install [PnPm](https://pnpm.io/) beforehand.
+
 To get started, clone the repo with this command:
 
 ```
@@ -17,7 +19,7 @@ cd ./starlight/
 Run
 
 ```
-npm install
+pnpm install
 ```
 
 to install all packages found in package.json / all necessary packages.
@@ -27,7 +29,7 @@ to install all packages found in package.json / all necessary packages.
 Run
 
 ```
-npm run dev
+pnpm run dev
 ```
 
 to run astro with live reload locally.
@@ -35,8 +37,8 @@ to run astro with live reload locally.
 If you want to test the search functionality, run
 
 ```
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 in order to run the project in build mode not in dev mode.
