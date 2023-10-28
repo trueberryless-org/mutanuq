@@ -16,6 +16,9 @@ jobs:
     if: contains(github.event.head_commit.message, 'version')
     runs-on: ubuntu-latest
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
 
@@ -24,9 +27,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
-        
-      - name: Check out repository
-        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: pnpm install
