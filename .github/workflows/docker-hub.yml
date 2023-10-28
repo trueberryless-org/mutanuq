@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: trueberryless/mutanuq
+  NODE_VERSION: 18
 
 jobs:
 
@@ -15,6 +16,15 @@ jobs:
     if: contains(github.event.head_commit.message, 'version')
     runs-on: ubuntu-latest
     steps:
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+        
       - name: Check out repository
         uses: actions/checkout@v3
 
@@ -26,6 +36,9 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+        
+      - name: Test packages
+        run: pnpm -r test:coverage
   
   docker-push-image:
     if: contains(github.event.head_commit.message, 'version')
