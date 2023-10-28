@@ -11,27 +11,23 @@ env:
 
 jobs:
 
-  build:
+  build-test:
     if: contains(github.event.head_commit.message, 'version')
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      - name: Check out repository
         uses: actions/checkout@v3
-      
-      - name: Build the Docker image
-        run: docker-compose build --no-cache --force-rm 
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test
   
-  test:
-    if: contains(github.event.head_commit.message, 'version')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-      
-      - name: Test the Docker image
-        run: docker-compose up -d 
-  
-  push:
+  docker-push-image:
     if: contains(github.event.head_commit.message, 'version')
     runs-on: ubuntu-latest  
     permissions:
