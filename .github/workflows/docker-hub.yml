@@ -2,36 +2,107 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [main]
+  merge_group:
+  pull_request:
+    branches: [main]
+
+# Automatically cancel in-progress actions on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 env:
   REGISTRY: docker.io
   IMAGE_NAME: trueberryless/mutanuq
+  NODE_VERSION: 18
 
 jobs:
+  # unit-test:
+  #   name: Run unit tests
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
+      
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
+      
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
+          
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
+      
+  #     - name: Test packages
+  #       working-directory: ./starlight
+  #       run: pnpm -r test:coverage
 
-  build:
-    if: contains(github.event.head_commit.message, 'version')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
+  # pa11y:
+  #   name: Check for accessibility issues
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
+
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
+
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
+
+  #     - name: Build docs site
+  #       working-directory: ./starlight
+  #       run: pnpm build
+  #       env:
+  #         NO_GRADIENTS: true
+
+  #     - name: Run accessibility audit
+  #       working-directory: ./starlight
+  #       run: pnpm t
+
+  # windows-smoke:
+  #   name: Docs site builds on Windows
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
+        
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
       
-      - name: Build the Docker image
-        run: docker-compose build --no-cache --force-rm 
-  
-  test:
-    if: contains(github.event.head_commit.message, 'version')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
+        
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
       
-      - name: Test the Docker image
-        run: docker-compose up -d 
+  #     - name: Build docs site
+  #       working-directory: ./starlight
+  #       run: pnpm build
   
-  push:
+  docker-push-image:
     if: contains(github.event.head_commit.message, 'version')
     runs-on: ubuntu-latest  
     permissions:
