@@ -37,9 +37,11 @@ jobs:
           cache: 'pnpm'
           
       - name: Install Dependencies
+        working-directory: ./starlight
         run: pnpm i
       
       - name: Test packages
+        working-directory: ./starlight
         run: pnpm -r test:coverage
 
   pa11y:
@@ -61,6 +63,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
+        working-directory: ./starlight
         run: pnpm i
 
       - name: Build docs site
@@ -92,6 +95,7 @@ jobs:
           cache: 'pnpm'
         
       - name: Install Dependencies
+        working-directory: ./starlight
         run: pnpm i
       
       - name: Build docs site
