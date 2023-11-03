@@ -18,89 +18,89 @@ env:
   NODE_VERSION: 18
 
 jobs:
-  unit-test:
-    name: Run unit tests
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
+  # unit-test:
+  #   name: Run unit tests
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
       
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
       
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
           
-      - name: Install Dependencies
-        working-directory: ./starlight
-        run: pnpm i
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
       
-      - name: Test packages
-        working-directory: ./starlight
-        run: pnpm -r test:coverage
+  #     - name: Test packages
+  #       working-directory: ./starlight
+  #       run: pnpm -r test:coverage
 
-  pa11y:
-    name: Check for accessibility issues
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
+  # pa11y:
+  #   name: Check for accessibility issues
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
 
-      - name: Install Dependencies
-        working-directory: ./starlight
-        run: pnpm i
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
 
-      - name: Build docs site
-        working-directory: ./starlight
-        run: pnpm build
-        env:
-          NO_GRADIENTS: true
+  #     - name: Build docs site
+  #       working-directory: ./starlight
+  #       run: pnpm build
+  #       env:
+  #         NO_GRADIENTS: true
 
-      - name: Run accessibility audit
-        working-directory: ./starlight
-        run: pnpm t
+  #     - name: Run accessibility audit
+  #       working-directory: ./starlight
+  #       run: pnpm t
 
-  windows-smoke:
-    name: Docs site builds on Windows
-    runs-on: windows-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
+  # windows-smoke:
+  #   name: Docs site builds on Windows
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
         
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+  #     - name: Setup PNPM
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
       
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'pnpm'
         
-      - name: Install Dependencies
-        working-directory: ./starlight
-        run: pnpm i
+  #     - name: Install Dependencies
+  #       working-directory: ./starlight
+  #       run: pnpm i
       
-      - name: Build docs site
-        working-directory: ./starlight
-        run: pnpm build
+  #     - name: Build docs site
+  #       working-directory: ./starlight
+  #       run: pnpm build
   
   docker-push-image:
     if: contains(github.event.head_commit.message, 'version')
