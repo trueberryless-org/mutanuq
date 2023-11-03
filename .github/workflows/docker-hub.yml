@@ -70,7 +70,7 @@ jobs:
           NO_GRADIENTS: true
 
       - name: Run accessibility audit
-        working-directory: ./docs
+        working-directory: ./starlight
         run: pnpm t
 
   windows-smoke:
