@@ -3,7 +3,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 WORKDIR /app
-COPY . .
+COPY /starlight .
 RUN pnpm i
 RUN pnpm run build
 
