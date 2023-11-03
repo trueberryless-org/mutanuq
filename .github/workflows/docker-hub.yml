@@ -95,7 +95,7 @@ jobs:
         run: pnpm i
       
       - name: Build docs site
-        working-directory: ./docs
+        working-directory: ./starlight
         run: pnpm build
   
   docker-push-image:
