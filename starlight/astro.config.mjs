@@ -33,6 +33,13 @@ export default defineConfig({
             },
             sidebar: [
                 {
+                    label: "Projektmanagement",
+                    translations: {
+                        en: "Project Manangement",
+                    },
+                    autogenerate: { directory: "project_management" },
+                },
+                {
                     label: "Dezentrale Systeme",
                     translations: {
                         en: "Decentralised Systems",
