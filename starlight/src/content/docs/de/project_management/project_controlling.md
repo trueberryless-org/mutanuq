@@ -186,7 +186,7 @@ Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechn
 
 Die meisten Projekte beginnen damit, dass ein Kunde in einem Meeting die Idee des Produktes erklärt und nun von dem Unternehmen haben möchte, dass diese Anforderungen schnell, billig und qualitativ umgesetzt werden. Das Unternehmen beginnt zu planen, indem zuerst die Ziele definiert werden. Das Projektcontrolling kann die planenden Mitarbeiter mit reichlichen Informationen ausstatten, welche nützlich sein könnten. Nach einem häufigen Austausch zwischen Lasten- und Pflichtenheft kann das Projekt dann offiziell gestartet werden.
 
-Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig einen Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, werden muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung eingesteuert werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
+Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig einen Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung eingesteuert werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
 
 ![Ablauf](../../../../assets/project_management/project_controlling_process.png)
 
