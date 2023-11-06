@@ -66,7 +66,7 @@ export default defineConfig({
                     translations: {
                         en: "Software Development",
                     },
-                    autogenerate: { directory: "SEW" },
+                    autogenerate: { directory: "software_development" },
                 },
             ],
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
