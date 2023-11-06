@@ -76,7 +76,7 @@ Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Rep
     -   Abweichungen feststellen
     -   Konsequenzen bewerten
     -   Maßnahmen vorschlagen
-    -   Durchfürhung kontrollieren
+    -   Durchführung kontrollieren
 
 > Der Controller ist die finanzielle Führungskraft eines großen oder mittelgroßen Unternehmens der die Verantwortlichkeiten kombiniert. _- Goodman_
 
