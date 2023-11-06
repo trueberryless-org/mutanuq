@@ -6,6 +6,7 @@ import rehypeMathjax from "rehype-mathjax";
 import expressiveCode from "astro-expressive-code";
 
 // https://astro.build/config
+// https://starlight.astro.build/reference/configuration/
 export default defineConfig({
     site: "https://mutanuq.trueberryless.org",
     integrations: [
@@ -18,10 +19,12 @@ export default defineConfig({
             },
             social: {
                 github: "https://github.com/trueberryless-org/mutanuq",
+                patreon: "https://www.patreon.com/trueberryless",
             },
             editLink: {
                 baseUrl: "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
             },
+            lastUpdated: true,
             defaultLocale: "de",
             locales: {
                 de: {
@@ -32,6 +35,13 @@ export default defineConfig({
                 },
             },
             sidebar: [
+                {
+                    label: "Projektmanagement",
+                    translations: {
+                        en: "Project Manangement",
+                    },
+                    autogenerate: { directory: "project_management" },
+                },
                 {
                     label: "Dezentrale Systeme",
                     translations: {
@@ -70,8 +80,7 @@ export default defineConfig({
                 },
             ],
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
-            lastUpdated: true,
-            customCss: ["./src/styles/custom.css"],
+            customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
             components: {
                 DownloadFile: "./src/components/DownloadFile.astro",
             },
