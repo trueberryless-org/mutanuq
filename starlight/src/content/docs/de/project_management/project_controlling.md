@@ -114,7 +114,7 @@ Die regelmäßige und rechtzeitige Rückmeldung der „Ist-Termine" an den Proje
 
 #### Gründe
 
--   Änderung des Leistungsumfangs oder der Qualitätsanfoerungen
+-   Änderung des Leistungsumfangs oder der Qualitätsanforderungen
 -   unvorhersehbare Probleme
 -   unrealistische Schätzung des Aufwands
 -   Personalengpässe durch Krankheit oder Ausscheiden von Teammitgliedern
