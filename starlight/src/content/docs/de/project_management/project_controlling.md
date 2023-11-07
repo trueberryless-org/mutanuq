@@ -49,7 +49,7 @@ Ein weiterer Grund, warum Projektcontrolling bei großen Projekten empfohlen wir
 
 ![Necessity Project Controlling](../../../../assets/project_management/project_controlling_necessity.png)
 
-Außerdem sinkt der Kostenanteil eines Projekts indirekt proportional zur Budgetgröße des Projektes:
+Außerdem sinkt der Kostenanteil des Projektcontrollings indirekt proportional zur Budgetgröße des Projektes:
 
 ![Necessity Project Controlling](../../../../assets/project_management/project_controlling_necessity-2.png)
 
