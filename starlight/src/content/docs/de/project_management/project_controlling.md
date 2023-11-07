@@ -196,7 +196,7 @@ Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss n
 
 -   fehlende Erfahrung
 -   Teile des Projekts werden vergessen
--   falsche Schützung für den Ressourcenaufwand
+-   falsche Schätzung für den Ressourcenaufwand
 -   Komplexität überfordert Mitarbeiter
 -   Zeit- und Kostendruck
 
