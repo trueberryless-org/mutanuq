@@ -71,6 +71,13 @@ export default defineConfig({
                         },
                     ],
                 },
+                {
+                    label: "Softwareentwicklung",
+                    translations: {
+                        en: "Software Development",
+                    },
+                    autogenerate: { directory: "software_development" },
+                },
             ],
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
