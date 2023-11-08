@@ -1,0 +1,13 @@
+---
+title: Schema
+---
+
+-   Beim Arbeiten mit den Daten dürfen keine Dateninkonsistenzen entstehen
+-   keine Null-Werte eintragen
+-   Datenredundanzen vermeiden
+-   atomare Spaltenwerte
+-   Entitäten (Datenbanken Tabellen)
+-   Konsistenz <-> Constrains
+    -   AttributConstrain
+    -   RelationalConstrain
+    -   CHECK Constrain
