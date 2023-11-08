@@ -15,9 +15,9 @@ env:
 jobs:
   try-build:
     name: Run install and build
-    # defaults:
-    #   run:
-    #     working-directory: './starlight'
+    defaults:
+      run:
+        working-directory: './starlight'
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository
@@ -27,19 +27,11 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-      
-      # - name: Setup Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: ${{ env.NODE_VERSION }}
-      #     cache: 'pnpm'
           
       - name: Install Dependencies
-        working-directory: './starlight'
         run: pnpm i
       
       - name: Astro Build
-        working-directory: './starlight'
         run: pnpm run build
 
   # pa11y:
