@@ -34,16 +34,79 @@ export default defineConfig({
                     label: "English",
                 },
             },
+            tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
+            customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
+            components: {
+                DownloadFile: "./src/components/DownloadFile.astro",
+            },
             sidebar: [
                 {
-                    label: "Projektmanagement",
+                    label: "Softwareentwicklung",
+                    collapsed: true,
                     translations: {
-                        en: "Project Manangement",
+                        en: "Software Development",
                     },
-                    autogenerate: { directory: "project_management" },
+                    items: [
+                        {
+                            label: "Design Patterns",
+                            collapsed: false,
+                            translations: {
+                                en: "Design Patterns",
+                            },
+                            items: [
+                                {
+                                    label: "Creational Design Patterns",
+                                    translations: {
+                                        en: "Creational Design Patterns",
+                                    },
+                                    autogenerate: {
+                                        directory:
+                                            "software_development/design_patterns/creational_design_patterns",
+                                    },
+                                },
+                                {
+                                    label: "Structural Design Patterns",
+                                    translations: {
+                                        en: "Structural Design Patterns",
+                                    },
+                                    autogenerate: {
+                                        directory:
+                                            "software_development/design_patterns/structural_design_patterns",
+                                    },
+                                },
+                                {
+                                    label: "Behavioral Design Patterns",
+                                    translations: {
+                                        en: "Behavioral Design Patterns",
+                                    },
+                                    autogenerate: {
+                                        directory:
+                                            "software_development/design_patterns/behavioral_design_patterns",
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: "Informationssysteme",
+                    collapsed: true,
+                    translations: {
+                        en: "Information systems",
+                    },
+                    items: [
+                        {
+                            label: "Relationale Datenbanken",
+                            translations: {
+                                en: "Relational Databases",
+                            },
+                            autogenerate: { directory: "information_systems/relational_databases" },
+                        },
+                    ],
                 },
                 {
                     label: "Dezentrale Systeme",
+                    collapsed: true,
                     translations: {
                         en: "Decentralised Systems",
                     },
@@ -51,13 +114,23 @@ export default defineConfig({
                 },
                 {
                     label: "Eingebettete Programmierung",
+                    collapsed: true,
                     translations: {
                         en: "Embedded Programming",
                     },
                     autogenerate: { directory: "embedded_programming" },
                 },
                 {
+                    label: "Projektmanagement",
+                    collapsed: true,
+                    translations: {
+                        en: "Project Manangement",
+                    },
+                    autogenerate: { directory: "project_management" },
+                },
+                {
                     label: "Sprachen",
+                    collapsed: true,
                     translations: {
                         en: "Languages",
                     },
@@ -71,19 +144,7 @@ export default defineConfig({
                         },
                     ],
                 },
-                {
-                    label: "Softwareentwicklung",
-                    translations: {
-                        en: "Software Development",
-                    },
-                    autogenerate: { directory: "software_development" },
-                },
             ],
-            tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
-            customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
-            components: {
-                DownloadFile: "./src/components/DownloadFile.astro",
-            },
         }),
         expressiveCode(),
     ],
