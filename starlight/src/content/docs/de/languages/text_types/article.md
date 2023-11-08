@@ -15,14 +15,14 @@ Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den clickb
 5. **Schreibe einen gedankenanregenden Abschluss** Entweder man fasst alle argumente zusammen oder man kann auch seine eigene Meinung kundgeben, sollte diese gefragt sein. Der Schluss darf nur nicht langweilig sein.
 
 ## Phrasen
->**Involving the reader:**
+> # Involving the reader:
 > Have you ever...?
 > What would you do if...?
 > Can you imagine...?
 > You might think that..., but...
 > Are you one of those people that...
 >
->**Giving opinions:**
+> # Giving opinions:
 > In my opinion...
 > As I see it, ...
 > In my view, ...
