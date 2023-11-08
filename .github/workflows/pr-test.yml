@@ -15,6 +15,9 @@ env:
 jobs:
   try-build:
     name: Run install and build
+    defaults:
+      run:
+        working-directory: 'starlight'
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository
@@ -32,11 +35,9 @@ jobs:
           cache: 'pnpm'
           
       - name: Install Dependencies
-        working-directory: ./starlight
         run: pnpm i
       
       - name: Test packages
-        working-directory: ./starlight
         run: pnpm run build
 
   # pa11y:
