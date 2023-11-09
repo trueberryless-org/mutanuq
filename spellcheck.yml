@@ -1,5 +1,5 @@
 matrix:
-- name: Markdown
+- name: Check English files
   sources:
   - './starlight/src/content/docs/en/**/*.md'
   default_encoding: utf-8
@@ -10,7 +10,21 @@ matrix:
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
-  - pyspelling.filters.html:
+      comments: false
+      ignores:
+      - code
+      - pre
+- name: Check German files
+  sources:
+  - './starlight/src/content/docs/de/**/*.md'
+  default_encoding: utf-8
+  aspell:
+    lang: de
+  dictionary:
+    wordlists:
+    encoding: utf-8
+  pipeline:
+  - pyspelling.filters.markdown:
       comments: false
       ignores:
       - code
