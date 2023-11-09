@@ -8,6 +8,8 @@ matrix:
     lang: de
   dictionary:
     wordlists:
+    - spellcheck-additional-words.txt
+    - spellcheck-additional-words-de.txt
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
@@ -28,6 +30,8 @@ matrix:
     lang: en
   dictionary:
     wordlists:
+    - spellcheck-additional-words.txt
+    - spellcheck-additional-words-en.txt
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
