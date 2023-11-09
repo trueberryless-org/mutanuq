@@ -1,14 +1,4 @@
 matrix:
-- name: Check English files
-  sources:
-  - './starlight/src/content/docs/en/**/*.md'
-  default_encoding: utf-8
-  aspell:
-    lang: en
-    mode: markdown
-  dictionary:
-    wordlists:
-    encoding: utf-8
     
 - name: Check German files
   sources:
@@ -16,7 +6,32 @@ matrix:
   default_encoding: utf-8
   aspell:
     lang: de
-    mode: markdown
   dictionary:
     wordlists:
     encoding: utf-8
+  pipeline:
+  - pyspelling.filters.markdown:
+      markdown_extensions:
+      - markdown.extensions.toc:
+          slugify: !!python/name:pymdownx.slugs.uslugify
+          permalink: "\ue157"
+      - markdown.extensions.admonition
+      - markdown.extensions.smarty
+      
+- name: Check English files
+  sources:
+  - './starlight/src/content/docs/en/**/*.md'
+  default_encoding: utf-8
+  aspell:
+    lang: en
+  dictionary:
+    wordlists:
+    encoding: utf-8
+  pipeline:
+  - pyspelling.filters.markdown:
+      markdown_extensions:
+      - markdown.extensions.toc:
+          slugify: !!python/name:pymdownx.slugs.uslugify
+          permalink: "\ue157"
+      - markdown.extensions.admonition
+      - markdown.extensions.smarty
