@@ -1,4 +1,4 @@
-name: Check content and file names for spelling mistakes
+name: Spellchecker [obs]
 
 on:
 #   push:
