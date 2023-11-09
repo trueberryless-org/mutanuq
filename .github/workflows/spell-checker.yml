@@ -10,9 +10,6 @@ on:
 jobs:
   spell-checker:
     name: Spell checker
-    defaults:
-      run:
-        working-directory: './starlight/src/content/docs'
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository
@@ -22,4 +19,5 @@ jobs:
         uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
+          path: './starlight/src/content/docs'
           # builtin: clear,rare
