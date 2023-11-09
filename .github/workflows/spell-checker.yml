@@ -107,6 +107,13 @@ jobs:
         extra_dictionary_limit: 20
         extra_dictionaries:
           cspell:software-terms/dict/softwareTerms.txt
+          cspell:de_DE/src/hunspell/index.dic
+        ignore-pattern: "[^'a-zäöüßA-ZÄÖÜ]"
+        upper-pattern: '[A-ZÄÖÜ]'
+        lower-pattern: '[a-zäöüß]'
+        not-lower-pattern: '[^a-zäöüß]'
+        not-upper-or-lower-pattern: '[^A-ZÄÖÜa-zäöüß]'
+        punctuation-pattern: "'"
 
   comment-push:
     name: Report (Push)
