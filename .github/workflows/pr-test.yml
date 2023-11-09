@@ -1,4 +1,4 @@
-name: Test if PR can build
+name: Build Test
 
 on:
   push:
