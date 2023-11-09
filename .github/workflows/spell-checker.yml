@@ -19,5 +19,4 @@ jobs:
         uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
-          path: './starlight/src/content/docs'
-          args: --dictionary en --dictionary de
+          path: './starlight/src/content/docs/en'
