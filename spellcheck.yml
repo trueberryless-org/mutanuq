@@ -14,6 +14,11 @@ matrix:
       markdown_extensions:
       - markdown.extensions.admonition
       - markdown.extensions.smarty
+  - pyspelling.filters.html:
+      comments: false
+      ignores:
+      - code
+      - pre
       
 - name: Check English files
   sources:
@@ -29,3 +34,8 @@ matrix:
       markdown_extensions:
       - markdown.extensions.admonition
       - markdown.extensions.smarty
+  - pyspelling.filters.html:
+      comments: false
+      ignores:
+      - code
+      - pre
