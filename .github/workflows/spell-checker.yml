@@ -20,4 +20,4 @@ jobs:
         with:
           check_filenames: true
           path: './starlight/src/content/docs'
-          builtin: en,de
+          args: --dictionary en --dictionary de
