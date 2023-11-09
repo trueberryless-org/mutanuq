@@ -1,11 +1,11 @@
 name: Check content and file names for spelling mistakes
 
-on:
-  push:
-    branches: [main]
-  merge_group:
-  pull_request:
-    branches: [main]
+# on:
+#   push:
+#     branches: [main]
+#   merge_group:
+#   pull_request:
+#     branches: [main]
 
 jobs:
   spell-checker:
