@@ -12,9 +12,6 @@ matrix:
   pipeline:
   - pyspelling.filters.markdown:
       markdown_extensions:
-      - markdown.extensions.toc:
-          slugify: !!python/name:pymdownx.slugs.uslugify
-          permalink: "\ue157"
       - markdown.extensions.admonition
       - markdown.extensions.smarty
       
@@ -30,8 +27,5 @@ matrix:
   pipeline:
   - pyspelling.filters.markdown:
       markdown_extensions:
-      - markdown.extensions.toc:
-          slugify: !!python/name:pymdownx.slugs.uslugify
-          permalink: "\ue157"
       - markdown.extensions.admonition
       - markdown.extensions.smarty
