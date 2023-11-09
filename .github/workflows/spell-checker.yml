@@ -1,0 +1,25 @@
+name: Check content and file names for spelling mistakes
+
+on:
+  push:
+    branches: [main]
+  merge_group:
+  pull_request:
+    branches: [main]
+
+jobs:
+  spell-checker:
+    name: Spell checker
+    defaults:
+      run:
+        working-directory: './starlight/src/content/docs'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Spell checker
+        uses: codespell-project/actions-codespell@v2
+        with:
+          check_filenames: true
+          # builtin: clear,rare
