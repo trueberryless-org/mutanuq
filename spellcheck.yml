@@ -10,10 +10,12 @@ matrix:
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
-      comments: false
-      ignores:
-      - code
-      - pre
+      markdown_extensions:
+      - markdown.extensions.toc:
+          slugify: !!python/name:pymdownx.slugs.uslugify
+          permalink: "\ue157"
+      - markdown.extensions.admonition
+      - markdown.extensions.smarty
 - name: Check German files
   sources:
   - './starlight/src/content/docs/de/**/*.md'
@@ -25,7 +27,9 @@ matrix:
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
-      comments: false
-      ignores:
-      - code
-      - pre
+      markdown_extensions:
+      - markdown.extensions.toc:
+          slugify: !!python/name:pymdownx.slugs.uslugify
+          permalink: "\ue157"
+      - markdown.extensions.admonition
+      - markdown.extensions.smarty
