@@ -108,6 +108,28 @@ jobs:
         extra_dictionaries:
           cspell:software-terms/dict/softwareTerms.txt
           cspell:de_DE/src/hunspell/index.dic
+          
+          cspell:node/dict/node.txt
+          cspell:filetypes/filetypes.txt
+          cspell:php/dict/php.txt
+          cspell:python/src/python/python-lib.txt
+          cspell:fullstack/dict/fullstack.txt
+          cspell:r/src/r.txt
+          cspell:aws/aws.txt
+          cspell:css/dict/css.txt
+          cspell:cpp/src/stdlib-c.txt
+          cspell:npm/dict/npm.txt
+          cspell:html/dict/html.txt
+          cspell:csharp/csharp.txt
+          cspell:k8s/dict/k8s.txt
+          cspell:dotnet/dict/dotnet.txt
+          cspell:cpp/src/lang-keywords.txt
+          cspell:python/src/python/python.txt
+          cspell:django/dict/django.txt
+          cspell:typescript/dict/typescript.txt
+          cspell:golang/dict/go.txt
+          cspell:docker/src/docker-words.txt
+          
         ignore-pattern: "[^'a-zäöüßA-ZÄÖÜ]"
         upper-pattern: '[A-ZÄÖÜ]'
         lower-pattern: '[a-zäöüß]'
