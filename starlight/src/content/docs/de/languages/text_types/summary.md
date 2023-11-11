@@ -26,7 +26,7 @@ Die Überschrift setzt sich aus `Zusammenfassung von` und dem Titel des Ausgangs
 
 ### Einleitung
 
-In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten zumindestens Titel, Autor, Erscheinunsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten zumindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
@@ -36,4 +36,4 @@ Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstrier
 
 Im Hauptteil einer Zusammenfassung werden die wichtigsten Standpunkte, Informationen und Fakten des Ausgangstextes in eigenen Worten formuliert zusammengefasst. Die Reihenfolge der Informationen muss dabei nicht vom Ausgangstext beibehalten werden. Behandeln Sie am besten pro Absatz einen Fakt beziehungsweise ein Argument im Detail. Sie müssen allerdings nicht selbst argumentieren, viel eher sollen Sie die Argumente aus dem Ausgangstext inhaltlich übernehmen.
 
-Um die wichtigsten Informationen leicht extrahieren zu können, lesen Sie sich den Ausgangstext durch und markieren wirklich nur die Stellen im Text, wo Sie denken, dass Sie den Inhalt unbedingt in die Zusammenfassung einbauen wollen. Setzen Sie sich als Ziel, dass am Ende des Durchlesens insgesamt maximal **vier Textstellen** markiert sind. Bedenken Sie, dass die vorgegebene Wortanzahl nicht überschritten werden darf.
+Um die wichtigsten Informationen leicht extrahieren zu können, lesen Sie sich den Ausgangstext durch und markieren wirklich nur die Stellen im Text, wo Sie denken, dass Sie den Inhalt unbedingt in die Zusammenfassung einbauen wollen. Setzen Sie sich als Ziel, dass am Ende des Durchlesenes insgesamt maximal **vier Textstellen** markiert sind. Bedenken Sie, dass die vorgegebene Wortanzahl nicht überschritten werden darf.

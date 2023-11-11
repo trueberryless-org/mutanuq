@@ -33,7 +33,7 @@ Die Einleitung einer Erörterung soll möglichst kreativ sein. Als Autor will ma
 
 ### Hauptteil
 
-Im Hauptteil werden die wichtigsten Argumente bezogen auf das Thema behandelt. Je nachdem, ob Sie eine Pro- und Kontraerörterung oder eine Belegerörterung schreiben sollen, behandeln Sie Pro- und Kontraargumente oder nur sich gegenseitig stärkende Argumente. Diese Argumente müssen dabei immer sachlich bleiben und keine persönliche Wertung miteinbeziehen. Es ist außerdem wichtig, dass ein deutlicher Bezug zum Ausgangstext hergestellt wird.
+Im Hauptteil werden die wichtigsten Argumente bezogen auf das Thema behandelt. Je nachdem, ob Sie eine Pro- und Kontraerörterung oder eine Belegerörterung schreiben sollen, behandeln Sie Pro- und Kontra-Argumente oder nur sich gegenseitig stärkende Argumente. Diese Argumente müssen dabei immer sachlich bleiben und keine persönliche Wertung miteinbeziehen. Es ist außerdem wichtig, dass ein deutlicher Bezug zum Ausgangstext hergestellt wird.
 
 ### Schluss
 

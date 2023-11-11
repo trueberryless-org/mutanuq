@@ -2,14 +2,14 @@
 title: Kommentar
 ---
 
-Der Kommentar ist eine meinungsbasierte, kritische, satirische, inneinander koherente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenten Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Die Gegenargumente müssen kleinlich formuliert sein und als nicht stichhaltig angesehen werden.
+Der Kommentar ist eine meinungsbasierte, kritische, satirische, ineinander kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenten Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Die Gegenargumente müssen kleinlich formuliert sein und als nicht stichhaltig angesehen werden.
 
 ## Übersicht
 
 Ein Kommentar weist folgende Eigenschaften auf:
 
 -   kreative Einleitung, worin Titel und Autor vorkommt
--   in sich flüssig argumentierter Hauptteil
+-   Hauptteil ist in sich flüssig argumentiert
 -   meinungsorientierter Schlussteil mit Lösungsvorschlägen
 -   kein `Ich` verwenden
 -   in eigenen Worten formulieren oder richtig zitieren
@@ -28,7 +28,7 @@ Ein Kommentar hat eine kreative Einleitung, welche zumindest den Autor und den T
 
 ### Hauptteil
 
-Im Hauptteil reihen sich mehrere Paragraphen aneinander, welche sich jeweils auf ein die eigene Meinung unterstützendes Argument beziehen. Falls ein Kontraargument eingebaut werden will, muss die Sprachgewandtheit dem Leser übermitteln, dass dieser Punkt im Vergleich zu der eigenen Meinung wenig Präsenz hat.
+Im Hauptteil reihen sich mehrere Paragraphen aneinander, welche sich jeweils auf ein die eigene Meinung unterstützendes Argument beziehen. Falls ein Kontra-Argument eingebaut werden will, muss die Sprachgewandtheit dem Leser übermitteln, dass dieser Punkt im Vergleich zu der eigenen Meinung wenig Präsenz hat.
 
 Vermeiden Sie, `Ich` zu verwenden. Einige passive Konstruktionen können dabei behilflich sein:
 

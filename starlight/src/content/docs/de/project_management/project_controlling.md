@@ -82,7 +82,7 @@ Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Rep
 
 ## Instrumente / Methoden
 
-Mit der Zeit haben sich viele Hilfsmittel entwicklet, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte) bieten.
+Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte) bieten.
 
 #### Kosten- und Leistungskontrolle
 
@@ -106,7 +106,7 @@ Mit der Zeit haben sich viele Hilfsmittel entwicklet, welche im Bereich Projektc
 
 > _Durch welche Kunden erzielt unser Unternehmen den größten Umsatz?_
 
-Ein bekannter Leitsatz lautet: "20% der Kunden machen 80% des Umsatzes aus" (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Bei Kundenunzufriendenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste einspielt.
+Ein bekannter Leitsatz lautet: "20% der Kunden machen 80% des Umsatzes aus" (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Bei Kundenunzufriedenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste einspielt.
 
 ### Terminkontrolle
 
@@ -186,7 +186,7 @@ Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechn
 
 Die meisten Projekte beginnen damit, dass ein Kunde in einem Meeting die Idee des Produktes erklärt und nun von dem Unternehmen haben möchte, dass diese Anforderungen schnell, billig und qualitativ umgesetzt werden. Das Unternehmen beginnt zu planen, indem zuerst die Ziele definiert werden. Das Projektcontrolling kann die planenden Mitarbeiter mit reichlichen Informationen ausstatten, welche nützlich sein könnten. Nach einem häufigen Austausch zwischen Lasten- und Pflichtenheft kann das Projekt dann offiziell gestartet werden.
 
-Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig einen Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung eingesteuert werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
+Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig einen Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung einfließen werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
 
 ![Ablauf](../../../../assets/project_management/project_controlling_process.png)
 

@@ -4,7 +4,7 @@ sidebar:
     order: 10
 ---
 
-Manchmal ist es notwendig, Daten auf einen nicht flüchtigen Speicher zu speichern. Dies bedeuted, dass die Daten auch nach dem Trennen vom Strom und anschließenden Hinzufügen des Stromes immer noch gespeichert sind. Heutzutage hat jeder Computer so einen Speicher, bekannt als Festplattenspeicher, ROM bzw. SSD. Letzteres ist bereits eine spezifische Speicherart.
+Manchmal ist es notwendig, Daten auf einen nicht flüchtigen Speicher zu speichern. Dies bedeutet, dass die Daten auch nach dem Trennen vom Strom und anschließenden Hinzufügen des Stromes immer noch gespeichert sind. Heutzutage hat jeder Computer so einen Speicher, bekannt als Festplattenspeicher, ROM bzw. SSD. Letzteres ist bereits eine spezifische Speicherart.
 
 Das Gegenteil eines solchen Speichers ist der flüchtige Speicher, der Arbeitsspeicher, bekannt als RAM.
 

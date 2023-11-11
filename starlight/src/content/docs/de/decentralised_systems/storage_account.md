@@ -6,7 +6,7 @@ sidebar:
 
 ## Blob Storage
 
-Ein Blob Storage ist wie ein Dateisystem aufgebaut, in welchem man Dateien hochladen, herunterladen und löschen kann. Allerdings benötigt man einen **Container** - eine Art `root`-Verzeichnis -, in welchen man alle Dateien hineinspeichern kann. Theoretisch gesehen, kann man unendlich viele Container anlegen.
+Ein Blob Storage ist wie ein Dateisystem aufgebaut, in welchem man Dateien hochladen, herunterladen und löschen kann. Allerdings benötigt man einen **Container** - eine Art `root`-Verzeichnis -, in welchen man alle Dateien hinein speichern kann. Theoretisch gesehen, kann man unendlich viele Container anlegen.
 
 ```bash
 dotnet add package Azure.Storage.Blobs
@@ -32,7 +32,7 @@ await foreach (BlobItem blobItem in blobContainerClient.GetBlobsAsync())
 
 ## Table Storage
 
-Im Table Storage kann man prinzipiell jedes JSON Objekt hineinspeichern. Wenn die JSON Objekte gleiche Felder haben, werden die Werte in gleichen Spalten gespeichert.
+Im Table Storage kann man prinzipiell jedes JSON Objekt hinein speichern. Wenn die JSON Objekte gleiche Felder haben, werden die Werte in gleichen Spalten gespeichert.
 
 ```bash
 dotnet add package Azure.Data.Tables
