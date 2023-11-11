@@ -125,7 +125,7 @@ export default defineConfig({
                     label: "Projektmanagement",
                     collapsed: true,
                     translations: {
-                        en: "Project Manangement",
+                        en: "Project Management",
                     },
                     autogenerate: { directory: "project_management" },
                 },

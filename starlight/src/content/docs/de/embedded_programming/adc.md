@@ -5,7 +5,7 @@ sidebar:
     order: 6
 ---
 
-Der ADC wandelt ein analoges Signal in ein digitales Signal um. Folgedessen ist ein ADC immer ein Input. Die folgende Grafik veranschaulicht dies:
+Der ADC wandelt ein analoges Signal in ein digitales Signal um. Folge dessen ist ein ADC immer ein Input. Die folgende Grafik veranschaulicht dies:
 
 ![Analoges Signal wird zu einem digitalen Signal verarbeitet](../../../../assets/SYTI/adc/analog_to_digital.webp)
 
@@ -128,9 +128,9 @@ Falls Sie nicht den ATmega328p verwenden, empfehlen wir einen Blick in die [Tabe
 
 ### effizienter ADC (8-bit Genauigkeit)
 
-Wie vorhin bereits erwähnt hat das Data Register vom ADC beim ATmega328p 10-bit. Weil dies mehr als 8-bit sind, benötigt man zwei Bytes um die Informationen zu speichern. Diese beiden Register heißen `ADCL` und `ADCH`, was einerseits für das Low- und andererseits für das High-Byte steht. Kombiniert können die beiden Register mittels `ADCW`-Register ausgelesen werden. Dabei wird zuerst das Low Byte, anschließend das High Byte ausgelesen und schlussendlich beide gecleared.
+Wie vorhin bereits erwähnt hat das Data Register vom ADC beim ATmega328p 10-bit. Weil dies mehr als 8-bit sind, benötigt man zwei Bytes um die Informationen zu speichern. Diese beiden Register heißen `ADCL` und `ADCH`, was einerseits für das Low- und andererseits für das High-Byte steht. Kombiniert können die beiden Register mittels `ADCW`-Register ausgelesen werden. Dabei wird zuerst das Low Byte, anschließend das High Byte ausgelesen und schlussendlich beide geleert.
 
-Außerdem kann mann im ADC Multiplexer Selection Register (`ADMUX`-Register) das [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) auf 1 setzen, was dafür sorgt, dass der ADC das Ergebnis linksbündig in die beiden Register `ADCL` und `ADCH` hineinschreibt und nicht rechtsbündig, wie es standardmäßig geschieht. Für ein besseres Verständnis sehen Sie sich entweder die Bilder unten an oder lesen Sie [die Register im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219) nach.
+Außerdem kann man im ADC Multiplexer Selection Register (`ADMUX`-Register) das [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) auf 1 setzen, was dafür sorgt, dass der ADC das Ergebnis linksbündig in die beiden Register `ADCL` und `ADCH` hineinschreibt und nicht rechtsbündig, wie es standardmäßig geschieht. Für ein besseres Verständnis sehen Sie sich entweder die Bilder unten an oder lesen Sie [die Register im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219) nach.
 
 ![ADC Right Adjust Result](../../../../assets/SYTI/adc/adc_right_adjust_result.png)
 ![ADC Left Adjust Result](../../../../assets/SYTI/adc/adc_left_adjust_result.png)

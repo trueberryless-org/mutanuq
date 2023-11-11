@@ -25,7 +25,7 @@ Man kann einzelne Zeichen mit `lcd_putc('s')` aufs Display schreiben oder einen 
 lcd_puts("trueberryless");
 ```
 
-### Display clearn
+### Display leeren
 
 Um alle Zeichen auf dem Display wieder zu löschen:
 

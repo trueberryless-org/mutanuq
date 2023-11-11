@@ -27,7 +27,7 @@ Active High Beschaltungen funktionieren genau anders herum. Hierbei liegen die *
 
 ### Active Low / Pull-Up
 
-Am korrespondierendem PIN baut man einen Spannungsteiler auf, welcher auf der einen Seite einen 10K Widerstand mit 5V Versorgungsspannung und auf der anderen Seite eine gegroundete Taste anliegen hat.
+Am korrespondierendem PIN baut man einen Spannungsteiler auf, welcher auf der einen Seite einen 10K Widerstand mit 5V Versorgungsspannung und auf der anderen Seite eine an den Ground angeschlossene Taste anliegen hat.
 
 ![Pull-Up Widerstand](../../../../assets/SYTI/button/pull_up_widerstand.png)
 _Ein Pull-Up Widerstand Aufbau, wenn die Taste geöffnet ist_
@@ -256,6 +256,6 @@ Ohne Widerstand darf man keine 5V Versorgungsspannung auf der Taste anlegen:
 
 ### Kurzschluss
 
-Ebenso darf ein Spannungsteiler nicht einfach an den Ground (GND) angeschlossen werden, da diesr Ground sofort die Versorgungsspannung aufheben würde.
+Ebenso darf ein Spannungsteiler nicht einfach an den Ground (GND) angeschlossen werden, da dieser Ground sofort die Versorgungsspannung aufheben würde.
 
 ![Kurzschluss](../../../../assets/SYTI/button/kurzschluss.png)

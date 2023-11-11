@@ -59,7 +59,7 @@ public static async Task<List<string>> Run(
 }
 ```
 
-Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit returnt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig in Orchestratoren verwendet wird, gibt es für den obrigen Orchestrator einen Spezialfall:
+Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit zurückgibt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig gebraucht wird, gibt es für den obigen Orchestrator einen Spezialfall:
 
 ```csharp
 [FunctionName("HelloCities")]
@@ -135,11 +135,11 @@ Mithilfe des Prinzipes der Durable Functions können nun mehrere Funktionalität
 
 ### Function Chaining
 
-Das Funktionsverkettungsmuster ermöglicht die Ausführung von Funktionen in einer bestimmten Reihenfolge, wobei die Ausgabe einer Funktion als Eingabe für die nächste dient. Die Verwendung von Warteschlangen zwischen den Funktionen gewährleistet die Skalierbarkeit und Robustheit des Systems.
+Das Function Chaining ermöglicht die Ausführung von Funktionen in einer bestimmten Reihenfolge, wobei die Ausgabe einer Funktion als Eingabe für die nächste dient. Die Verwendung von Warteschlangen zwischen den Funktionen gewährleistet die Skalierbarkeit und Robustheit des Systems.
 
 ![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-chaining.png)
 
-Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Codierungsstrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
+Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Kodierungsstrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
 
 ```csharp
 [FunctionName("Chaining")]
@@ -202,7 +202,7 @@ Das asynchrone HTTP-API-Muster koordiniert die Statusverfolgung von lang laufend
 
 ![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-async-http-api.png)
 
-Durable Functions erleichtert und vereinfacht die Implementierung dieses Musters erheblich, indem es integrierte Unterstützung bietet. Sie können REST-Befehle verwenden, um Orchestratorfunktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
+Durable Functions erleichtert und vereinfacht die Implementierung dieses Musters erheblich, indem es integrierte Unterstützung bietet. Sie können REST-Befehle verwenden, um Orchestrator-Funktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
 
 ```bash
 > curl -X POST https://myfunc.azurewebsites.net/api/orchestrators/DoWork -H "Content-Length: 0" -i
@@ -263,11 +263,11 @@ public static async Task Run(
 
 ### Human Interaction
 
-Automatisierte Prozesse beinhalten oft Benutzerinteraktion, was herausfordernd sein kann, da Menschen nicht so verfügbar und reaktionsfähig wie Clouddienste sind. Zeitlimits und Kompensationslogik können in automatisierten Prozessen verwendet werden, um diese Interaktion zu ermöglichen.
+Automatisierte Prozesse beinhalten oft Benutzerinteraktion, was herausfordernd sein kann, da Menschen nicht so verfügbar und reaktionsfähig wie Cloud-Dienste sind. Zeitlimits und Kompensationslogik können in automatisierten Prozessen verwendet werden, um diese Interaktion zu ermöglichen.
 
 ![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-approval.png)
 
-Dieses Muster kann mithilfe einer Orchestrierungsfunktion implementiert werden, die Timer für die Genehmigung und Eskalation verwendet und auf externe Benutzerinteraktion wartet. Hier wird ein Genehmigungsprozess dargestellt.
+Dieses Muster kann mithilfe einer Orchestrator-Funktion implementiert werden, die Timer für die Genehmigung und Eskalation verwendet und auf externe Benutzerinteraktion wartet. Hier wird ein Genehmigungsprozess dargestellt.
 
 Ein Beispiel ist ein Genehmigungsprozess, bei dem Benutzerinteraktion erforderlich ist, wie bei einer Spesenabrechnung, die eine Genehmigung ab einem bestimmten Betrag erfordert. Wenn die Genehmigung nicht innerhalb von 72 Stunden erfolgt, tritt eine Eskalation in Kraft.
 
