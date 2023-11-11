@@ -2,63 +2,121 @@
 title: Marketing
 ---
 
-Marketing stellt den **Kunden in den Mittelpunkt.** Es sollen **Kundenzufriedenheit und Kundenbindung** erreicht werden.
+Das Marketing präsentiert Produkte und Dienstleistungen für den Kunden möglichst attraktiv. Doch Marketing ist nicht nur eine Werbestrategie sondern repräsentiert viel eher die **Denkweise** des Unternehmens und stellt den Kunden in den Mittelpunkt aller unternehmerischen Tätigkeiten. Mit Marketingaktivitäten wollen Unternehmen vor allem die Bedürfnisse der Kunden besser verstehen und bestmöglich erfüllen. Dadurch soll Kundenzufriedenheit und Kundenbindung erreicht werden.
 
-![Marketing](../../../../assets/economy_and_law/marketing.png)
-
-## Marketingkonzeption (Marketingkonzept)
+## Marketingkonzeption
 
 -   Festlegen der angestrebten Ziele
 -   Strategien für die Realisierung wählen
 -   Adäquate Marketinginstrumente auswählen
 
-Um Marketing besser einsetzten zu können, betreibt man **Marktforschung.**
+Um Marketing besser einsetzten zu können, betreibt man **Marktforschung**.
 
 ## Ziele des Marketings
 
-![Ziele des Marketings](../../../../assets/economy_and_law/ziele_des_marketings.png)
+Beim Marketing gibt es zwei verschiedene Arten von Zielen, marktökonomische (auch primär) und marktpsychologische.
+
+### Marktökonomische Ziele
+
+-   Umsatz
+-   Marktanteil
+    -   relativ: Marktanteil im Vergleich zum stärksten Mitbewerber
+    -   absolut: Marktanteil im Vergleich zu allen Mitbewerbern
+-   Deckungsbeitrag
+    -   Erlös - variable Kosten
+    -   langfristig auch Fixkosten decken
+-   Werberendite
+
+### Marktpsychologische Ziele
+
+-   Bekanntheitsgrad
+-   Image (des Unternehmens / der Marke)
+-   Kundenzufriedenheit
+-   Markentreue der Kunden
+-   ...
 
 ## Marketingstrategien
 
 Marketingstrategien legen die langfristig notwendigen Maßnahmen fest, um sicherzustellen, dass alle Instrumente zielführend eingesetzt werden.
 
-### Marktsegmentierungsstrategien: Zerlegung des Markts in Teilmärkte
+### Segmentierung
 
-Man kann meistens nicht alle Zielgruppen auf einmal ansprechen. Deshalb sollte man herausfinden, wer der Abnehmer für sein Produkt ist. **Das beste und kreativste Marketingkonzept verfehlt seine Absicht, wenn die Zielgruppe nicht erreicht wird!**
+Beim Analysieren des Marktes kann man nicht alle Zielgruppen auf einmal betrachten, da unterschiedliche Personengruppen oder andere Unternehmen verschiedene Produkte erwerben und unterschiedliche Interessen haben. Aus diesem Grund sollte man herausfinden, welche Zielgruppe der Abnehmer für ein bestimmtes Produkt ist. Denn selbst die besten und kreativsten Marketingkonzepte können nicht erfolgreich sein, wenn sie nicht für eine Zielgruppe personalisiert sind.
 
-Das **Zielgruppenorientierte Marketing** erfolgt folgendermaßen:
+#### Ablauf der Analyse
 
-![Zielgruppenorientierte Marketing](../../../../assets/economy_and_law/zielgruppenorientierte_marketing.png)
+Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmärkte (Segmente) unterteilt. Anschließend wird entschieden, ob mehrere oder einer dieser Segmente bearbeitet werden soll, und schlussendlich wird der Kundennutzen spezifisch für dieses Segment / diese Segmente angesprochen, damit die Kunden von der Leistung des Unternehmens überzeugt werden.
 
-![Sekmentierungskriterien](../../../../assets/economy_and_law/segmentierungskriterien.png)
+#### Mögliche Segmentierungskriterien
 
-#### Marktsegmentierung
+-   geografisch (Bundesländer, Städte, Inland, ...)
+-   demografisch (Alter, Geschlecht, Familienstand, Einkommen, ...)
+-   psychografisch (Lebensstil, Persönlichkeit, Interessen, ...)
+-   verhaltensbezogen (Kaufanlass, Verwendungshäufigkeit, ...)
 
-Aufteilen des Marktes in Käufergruppen ermöglicht es, Marketinginstrumente den Kundenwünschen und -erwartungen anzupassen.
+#### Art des Marketings
 
-#### Festlegung des Zielmarktes
+##### Konzentriertes Marketing
 
-Unternehmen müssen entscheiden, ob es Teilmärkte oder den Gesamtmarkt bedienen will:
+Hierbei wird das gleiche Marketing für mehrere Segmente wiederverwendet, da die Kriterien zwischen den Teilmärkten ähnlich sein können. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
 
--   Ein oder mehrere Segmente
-    -   **Konzentriertes Marketing**
-    -   Es wird ein oder mehrere Teilmärkte mit **maßgeschneiderten Marketing** bearbeitet
--   Gesamtmarkt (alle Segmente)
-    -   Entweder:
-        -   **Differenziertes Marketing** -\> (pro Zielgruppe)
-        -   **Undifferenziertes Marketing** -\> (ohne Unterscheidung der Zielgruppen)
+##### Differenziertes Marketing
+
+Hier bekommt jede einzelne Interessensgruppe ein eigenes Marketing.
+
+##### Undifferenziertes Marketing
+
+Das Unternehmen fährt ein Marketing für alle Kunden.
+
+#### Vorteil
+
+Durch das Aufteilen des Marktes in Käufergruppen mit ähnlichen Merkmalen, können Marketinginstrumente den spezifischen Kundenwünschen und -erwartungen angepasst werden.
 
 #### Marktpositionierung
 
-Es wird ein **bedeutsamer Kundennutzen** angesprochen, um von den Leistung zu überzeugen. Man will sich dauerhaft **positiv** von der Konkurrenz abgrenzen um eine **„Unique Selling Proposition" (USP)** zu erhalten.
+Es wird ein bedeutsamer Kundennutzen angesprochen, um von den Leistung zu überzeugen. Man will sich dauerhaft **positiv** von der Konkurrenz abgrenzen um eine Unique Selling Proposition (`USP`) zu erhalten.
 
-## Umsetzung der Marketingstrategien durch Marketinginstrumente
+## Instrumente
 
-**Marketinginstrumente** sind bestimmte Maßnahmen und Mittel, um Aktivitäten am Markt gezielt zu gestalten. Es wird hierbei in 4 verschiedene Unterschieden. Die beste Wirkung wird erzielt, wenn man sie zusammeneinsetzt und aufeinander abstimmt -\> **Marketingmix.** Um diesen Mix zu planen, greift man auf die **Marktforschung** zurück.
+Marketinginstrumente sind bestimmte Maßnahmen und Mittel, um Aktivitäten am Markt gezielt zu gestalten. Es gibt vier verschiedene Instrumente in der klassischen Marketingslehre (`4Ps`). Diese können am besten genutzt werden, wenn sie zusammen eingesetz werden. Die Kombination der einzelnen Marketinginstrumente bezeichnet man als **Marketingmix**.
 
-![Marketinginstrumente](../../../../assets/economy_and_law/marketinginstrumente.png)
+Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufgelistet.
 
-### Marktforschung
+### Produkt- und Sortimentspolitik (Product)
+
+-   Was kann das Produkt?
+-   Kann man eine Produktgruppierung (z.B.: Handy + Hülle) vermarkten?
+
+### Kontrahierungspolitik / Preis und Konditionen (Price)
+
+-   Wie viel kostet das Produkt?
+-   Welche Zahlungsbedingungen (Skonto, Rabatt, ...) können wir anbieten?
+
+### Distributionspolitik (Place)
+
+-   Wie kommt die Ware von mir zum Kunden?
+
+### Kommunikationspolitik (Promotion)
+
+-   Wie werden Informationen zwischen Unternehmen und Kunden ausgetauscht?
+
+### Personalpolitik (People)
+
+-   Dienstleistungen anhand des Personals bewerten
+
+### Prozessmanagement (Process)
+
+-   Dienstleistungen erlebbar, Prozesse kundenorientiert gestalten
+
+### Ausstattungspolitik (Physical Evidence)
+
+-   Optimierung der physischen Umgebung
+
+### **Marketingmix**
+
+> Gemeinsame Nutzung alle Marketingstrategien / Marketinginstrumente
+
+## Marktforschung
 
 Die Marktforschung soll helfen, den Markt besser kennenzulernen und Instrumente besser einzusetzen.
 
@@ -71,13 +129,22 @@ Unter Marktforschung versteht man die systematische
 
 von Informationen über Märkte mittels geeigneter **Methoden und Techniken.**
 
-![Marktforschung](../../../../assets/economy_and_law/marktforschung.png)
+### Aufgaben
 
-### Marktforschungsmethoden
+-   Marktposition des Unternehmens
+-   Allgemeine Markteigenschaften und -entwicklungen
+-   Kundensegmente
+-   Kundenverhalten und -bedürfnisse
+-   Kundenzufriedenheit und -loyalität
+-   Wettbewerber
 
-![Markforschungsmethoden](../../../../assets/economy_and_law/marktforschungsmethoden.png)
+---
 
-#### Sekundärforschung
+Die Ergebnisse der Marktforschung informieren über tatsächliche Geschehen (Marktdiagnose) und zukünftige Entwicklungen des Marktes (Marktprognose).
+
+### Methoden
+
+#### Sekundäre Marktforschung
 
 Hier werden bereits vorhandene Daten ausgewertet.
 
@@ -94,35 +161,28 @@ Hier werden bereits vorhandene Daten ausgewertet.
     -   Publikationen
     -   Veröffentlichungen anderer Unternehmen oder Institutionen
 
-Ist es nicht möglich das Problem so zu lösen, ist die primäre Marktforschung durchzuführen
+Ist es nicht möglich das Problem so zu lösen, ist die primäre Marktforschung durchzuführen.
 
-#### Primärforschung
+#### Primäre Marktforschung
 
-Wenn man auf dem Markt erstmals Daten für einen bestimmten Zweck erhebt, spricht man on **primärer Marktforschung.**
+Wenn man auf dem Markt erstmals Daten für einen bestimmten Zweck erhebt, spricht man von **primärer Marktforschung**.
 
-**Wichtigste Datenerhebungsmethoden:**
+##### Datenerhebungsmethoden
 
-![Datenerhebungsmethoden](../../../../assets/economy_and_law/datenerhebungsmethoden.png)
-![Datenerhebungsmethoden](../../../../assets/economy_and_law/datenerhebungsmethoden-2.png)
-![Datenerhebungsmethoden](../../../../assets/economy_and_law/datenerhebungsmethoden-3.png)
+-   Befragung: gezielte Fragen stellen (persönlich / telefonisch / schriftlich / computerunterstützt)
 
-## Instrumente des Marketings
+-   Beobachtung: systematisch Erfassen des Verhaltens; persönlich (Menschen); apparativ (Kameras); online (Soziale Netzwerke)
 
-![Instrumente des Marketings](../../../../assets/economy_and_law/instrumente_des_marketings.png)
+-   Experiment: festgelegte, kontrollierte Bedingungen, wobei Teilnehmer beobachtet und/oder anschließend befragt werden
 
-### Produkt- und Sortimentspolitik
+    -   Produkttest: das Produkt an die Bedürfnisse anpassen
+    -   Storetest: Verkaufszahlen von verschiednene Ausführungen eines Produktes testen
+    -   Markttest: Produkte bei zufälligen Kunden überprüfen lassen
 
-Die Produkt- und Sortimentspolitik umfasst alle planmäßig aufeinander abgestimmten unternehmerischen Entscheidungen und Maßnahmen, um die Produkte eines Unternehmens kundengerecht auf dem Markt anzubieten.
+    ***
 
-Unter einem Produkt versteht man:
-
--   Sachgüter
--   Dienstleistungen
--   Personen
--   Orte
--   Organisationen
-
-Alle Produkte eines Unternehmens gemeinsam bezeichnet man als **Produktprogramm bzw. Sortiment**.
+    -   Feldexperiment: natürliche Bedingungen
+    -   Laborexperiment: künstliche Bedingungen
 
 ### Kunden- und marktgerechte Gestaltung von Produkten
 
@@ -139,48 +199,51 @@ Produkte sollten den Bedürfnissen und Erwartungen des Kunden entsprechen oder s
 
 Mit solchen Zusatzleistungen / Zusatznutzen kann man sich gut von Wettbewerbern **abheben** :
 
-![Produktdimensionen](../../../../assets/economy_and_law/produktdimensionen.png)
+<!-- ![Produktdimensionen](../../../../assets/economy_and_law/produktdimensionen.png) -->
 
 ### Produktanalyse
 
-Analyse, ob und wie ein Produkt in Zukunft erfolgreich sein wird. Wichtige Hilfsmittel:
+Für Unternehmen ist es wichtig, nicht nur zum momentanen Zeitpunkt Gewinn zu machen, sondern auch auf langfristige Sicht in der Zukunft stetig Gewinn machen zu können. Aufgrund des [Produktlebenszyklus](#produktlebenszyklus) sind Produkte jedoch langfristig nicht immer gewinnbringend. Deswegen suchen Unternehmen stetig nach neuen innovativen Produkten, die später erfolgreich sein könnten.
 
--   Produktzyklusanalyse
--   Portfolioanalyse
+Die **Produktzyklusanalyse** und **Portfolioanalyse** sind zwei von vielen, sehr hilfreichen Methoden, die die Produktanalyse erleichtert werden kann.
 
 #### Produktlebenszyklus
 
-Das **Produktlebenszyklusmodell** geht davon aus, dass Produkte grundsätzlich wie Lebewesen einem Lebenszyklus unterworfen sind.
-
-Die Lebensdauer von Produkten ist begrenzt durch:
+Das Produktlebenszyklusmodell geht davon aus, dass Produkte grundsätzlich wie Lebewesen einem Lebenszyklus unterworfen sind. Die Lebensdauer von Produkten ist begrenzt durch:
 
 -   Technischen Fortschritt
 -   Änderungen des Verbraucherverhaltens
 -   Kurzlebige Trends
 
-Der Lebenszyklus kann auf **einzelne Produkte** , **Produktgruppen** oder auch **Produktbranchen** bezogen werden.
+Der Lebenszyklus kann auf einzelne Produkte, Produktgruppen oder auch Produktbranchen bezogen werden.
 
-![Produktlebenszyklus](../../../../assets/economy_and_law/produkt_lebenszyklus.png)
+![Produktlebenszyklus](../../../../assets/economy_and_law/product_lifecycle.png)
 
-Man unterscheidet in folgende Phasen:
+Man unterscheidet die folgenden Phasen:
 
--   Einführungsphase
-    -   Das Produkt wird am Markt eingeführt -\> bringt wenig Umsatz
--   Wachstumsphase
-    -   Der Umsatz steigt kontinuierlich, das Produkt kommt gut an -\> Werbemaßnahmen zur Unterstützung
--   Reifephase
-    -   Umsatzzuwächse lassen nach
--   Sättigungsphase
-    -   Der Markt wird gesättigt -\> Umsatzsteigung nicht mehr möglich -\> Umsatz geht zurück
--   Degenerationsphase
-    -   Der Umsatz sinkt immer mehr -\> Produkt relaunchen oder vom Markt nehmen
--   Elimination
+-   **Einführungsphase** / **Relaunch**  
+    Das Produkt wird neu auf auf dem Markt eingeführt und erwirtschaftet noch wenig Umsatz. Wenn das Unternehmen in das Produkt investiert und mittels Marketing potentielle Kunden zu Kunden machen, kann das Produkt dem Unternehmen viel Gewinn einbringen.
+
+-   **Wachstumsphase**  
+    Der Umsatz steigt kontinuierlich, das Produkt kommt bei den Käufern gut an. Werbemaßnahmen unterstützen die Wachstumsphase des Produkts.
+
+-   **Reifephase**  
+    Die Umsatzzuwächse lassen nach, die Menschen kaufen das Produkt noch immer stetig nach und bringen dem Unternehmen viel Gewinn ein. Zu diesem Zeitpunkt muss das Unternehmen nicht viel Kapital für Marketing ausgeben, da die Kunden das Produkt bereits kennen und sowieso kaufen.
+
+-   **Sättigungsphase**  
+    Der Markt ist gesättigt, sprich viele Menschen besitzen bereits ein Produkt oder die Menschen brauchen es nicht mehr so sehr. Eine Steigerung des Umsatzes ist nicht mehr möglich, der Umsatz geht zurück.
+
+-   **Degenerationsphase**  
+    Der Umsatz sinkt immer mehr, es kann ein Relaunch versucht oder das Produkt mithilfe der Elimination vom Markt genommen werden.
+
+-   **Elimination**  
+    Kein Mensch braucht mehr das Produkt. Das Produkt wird nicht mehr hergestellt.
 
 #### Portfolioanalyse
 
 Die Portfolioanalyse ordnet die Produkte in eine 4-Feld-Matrix mit den Koordinatenachsen „ **Marktwachstum**" und „relativer „ **Marktanteil**" (relativ zum größten Konkurrenten)
 
-![Portfolioanalyse](../../../../assets/economy_and_law/portfolioanalyse.png)
+<!-- ![Portfolioanalyse](../../../../assets/economy_and_law/portfolioanalyse.png) -->
 
 Unterteilung in vier Felder:
 
