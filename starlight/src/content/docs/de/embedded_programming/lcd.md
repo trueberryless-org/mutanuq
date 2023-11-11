@@ -83,5 +83,5 @@ int main(void)
 
 ## Downloads
 
-<a href="/SYTI/lcd/lcd.c">lcd.c</a>
-<a href="/SYTI/lcd/lcd.h">lcd.h</a>
+<a href="/embedded_programming/lcd/lcd.c">lcd.c</a>
+<a href="/embedded_programming/lcd/lcd.h">lcd.h</a>

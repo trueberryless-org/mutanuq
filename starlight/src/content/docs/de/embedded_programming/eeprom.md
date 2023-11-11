@@ -25,7 +25,7 @@ Hierbei gibt es viele verschiedene Funktionen, welche unterschiedliche Anzahl an
 Verwenden Sie für `int`-Werte `eeprom_read_word()`!
 :::
 
-Dabei muss man immer selbst auswählen, unter welcher Addresse die Bytes gespeichert werden. Der ATmega328p verfügt über eine Speichergröße von 1kB, also von Addresse `0x000` bis `0x3FF`.
+Dabei muss man immer selbst auswählen, unter welcher Adresse die Bytes gespeichert werden. Der ATmega328p verfügt über eine Speichergröße von 1kB, also von Adresse `0x000` bis `0x3FF`.
 
 ## Code
 
