@@ -1,3 +1,20 @@
+# Overall
+Arduino
+Elegoo
+astrojs
+Atmel
+ATmega
+avr
+clrscr
+dotnet
+gettemperaturehumidity
+getxy
+gotoxy
+GRN
+lcdc
+lcdh
+
+# Register
 ADATE
 ADCH
 ADCL
@@ -10,34 +27,15 @@ ADMUX
 ADPS
 ADPSx
 ADSC
-Arduino
-astrojs
-ATmega
-Atmel
-avr
-CGRAM
-clrscr
 COMn
 COMPA
 COMPx
 CSn
-DDRAM
 DDRB
+DDRC
 DDRD
-dotnet
 EEPROM
 EIMSK
-Elegoo
-ellapsed
-emojis
-Firstmessage
-gettemperaturehumidity
-getxy
-gotoxy
-GRN
-inttypes
-lcdc
-lcdh
 LCDs
 mathjax
 Matura
@@ -79,3 +77,6 @@ vect
 WGM
 WGMn
 withastro
+
+# German
+aggregiert

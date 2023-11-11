@@ -54,12 +54,12 @@ public static async Task<List<string>> Run(
     // irgendeine Activity
 	await context.CallActivityAsync("LogInfo", "London");
 
-    var ellapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
-    log.LogInformation($"Orchestrator hat {ellapsedTimeMs}ms mit der Durchführung gebraucht.");
+    var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+    log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
 }
 ```
 
-Stattdessen müsste man in solchen Fällen eine eigene Activty schreiben, welche die momentane UTC Zeit returnt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig in Orchestratoren verwendet wird, gibt es für den obrigen Orchestrator einen Spezialfall:
+Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit returnt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig in Orchestratoren verwendet wird, gibt es für den obrigen Orchestrator einen Spezialfall:
 
 ```csharp
 [FunctionName("HelloCities")]
@@ -72,8 +72,8 @@ public static async Task<List<string>> Run(
     // irgendeine Activity
 	await context.CallActivityAsync("LogInfo", "London");
 
-    var ellapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
-    log.LogInformation($"Orchestrator hat {ellapsedTimeMs}ms mit der Durchführung gebraucht.");
+    var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+    log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
 }
 ```
 
@@ -167,7 +167,7 @@ public static async Task<object> Run(
 
 ### Fan Out / Fan In
 
-Beim Auffächern auswärts/einwärts-Muster werden mehrere Funktionen parallel ausgeführt, und dann wird auf den Abschluss aller gewartet. Oft werden die Ergebnisse dieser Funktionen aggregiert.
+Beim Fan Out/Fan In-Muster werden mehrere Funktionen parallel ausgeführt, und dann wird auf den Abschluss aller Activities gewartet. Häufig werden die Ergebnisse, die von den Funktionen zurückgegeben werden, aggregiert.
 
 ![Durable Function Fan Out Fan In](../../../../assets/SYTD/azure-function/durable-function-fan-out-fan-in.png)
 
