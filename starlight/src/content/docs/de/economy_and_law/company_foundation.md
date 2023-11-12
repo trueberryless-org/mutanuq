@@ -2,7 +2,7 @@
 title: Unternehmensgründung 
 ---
 
-Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründerin oder den Gründer eine interessaten Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen unbedingt die Wirtschaftskammer zu Unterstützung bei der Phase der Gründung heranzuziehen.
+Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründerin oder den Gründer eine interessaten Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen unbedingt die Wirtschaftskammer zur Unterstützung bei der Phase der Gründung heranzuziehen.
 
 ## Vorteile
 
