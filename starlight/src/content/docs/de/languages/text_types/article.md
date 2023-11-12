@@ -16,6 +16,7 @@ Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den Clickb
 5. **Schreibe einen gedankenanregenden Abschluss** Entweder man fasst alle argumente zusammen oder man kann auch seine eigene Meinung kundgeben, sollte diese gefragt sein. Der Schluss darf nur nicht langweilig sein.
 
 ## Phrasen
+
 ### Involving the reader:
 
 - Have you ever...?
