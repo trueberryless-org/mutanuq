@@ -241,23 +241,22 @@ Man unterscheidet die folgenden Phasen:
 
 #### Portfolioanalyse
 
-Die Portfolioanalyse ordnet die Produkte in eine 4-Feld-Matrix mit den Koordinatenachsen „ **Marktwachstum**" und „relativer „ **Marktanteil**" (relativ zum größten Konkurrenten)
+Die Portfolioanalyse (auch `BCG-Portfolio`) ordnet die Produkte in eine 4-Feld-Matrix mit den Koordinatenachsen `Marktwachstum` und `relativer Marktanteil` (relativ zum größten Konkurrenten) ein. Ein `relativer Marktanteil` von 1 bedeutet in diesem Zusammenhang, dass das Unternehmen gleichauf mit dem stärksten Konkurrenten ist.
 
-<!-- ![Portfolioanalyse](../../../../assets/economy_and_law/portfolioanalyse.png) -->
+![Portfolioanalyse](../../../../assets/economy_and_law/portfolioanalyse.png)
 
-Unterteilung in vier Felder:
+Jedes der vier Quadranten hat verschiedene Bedeutungen für das Produkt und dementsprechend soll das Unternehmen auch handeln.
 
--   Questionmarks
-    -   Nachwuchsprodukte in der Einführungsphase
-    -   Geringer Marktanteil -\> befinden sich aber auf einem wachstumsmarkt
-    -   Hohe finanzielle Förderung
--   Stars
-    -   Hohe Wachstumsraten
-    -   Teilweise hohe gewinne
-    -   Umsatz und Marktanteil kann noch gesteigert werden
--   Cashcows
-    -   Braucht kaum mehr Investition
-    -   Viel Gewinn
-    -   Versuchen möglichst lange zu halten
--   Poor Dogs
-    -   Sollten aufgrund von schlechter Zukunftsperspektive vom Markt genommen werden
+-   **Questionmarks**  
+    Dies sind Nachwuchsprodukte in der Einführungsphase, welche momentan noch einen geringen Marktanteil haben. Wenn das Unternehmen diese Produkte fördert und das Wachstum beobachtet, kann das Produkt am Markt stark wachsen und zu einem `Star` werden. Falls das Unternehmen die Gelegenheit des Föderns verpasst oder keine Kunden am Produkt interessiert sind, könnte das Produkt direkt zum `Poor Dog` werden, und das will das Unternehmen vermeiden.
+
+-   **Stars**  
+    Wenn das Produkt in dem Sektor `Stars` angelangt ist, muss das Unternehmen mittels Marketing dafür sorgen, dass viele Kunden sich für das Unternehmen und nicht für die Konkurrenz entscheiden. Denn es gibt aufgrund des hohen Marktwachstums noch viele Kunden, die noch gar kein Produkt dieser Art besitzen, und diese Kunden sollen sich nun zwischen den Produkten der anbietenden Unternehmen entscheiden.
+
+    `Stars` bringen dem Unternehmen hohe Gewinne ein und der Umsatz und der Marktanteil können auch noch weiter gesteigert werden. Damit man diese Steigerung erreicht muss eben auch noch viel Kapital in Marketing investiert werden.
+
+-   **Cashcows**  
+    Sobald die jährliche Wachstumsrate sinkt, wird aus dem `Star` eine `Cashcow`. Eine `Cashcow` erfordert kaum mehr Investitionen, steuert dafür viel Gewinn für die Unternehmenskassa bei. Man versucht, Produkte _möglichst lange als `Cashcows` zu halten_, um möglichst hohe Gewinne abzuschöpfen.
+
+-   **Poor Dogs**  
+    Produkte in diesem Sektor sollten aufgrund schlechter Zukunftsperspektiven vom Markt genommen werden. Man muss allerdings beachten, wie sehr das Produkt ein `Poor Dog` ist. Wenn das Produkt gerade erst von einer `Cashcow` zu einem `Poor Dog` geworden ist, dann wird der relative Marktanteil noch ca. bei 1 liegen und man kann auch über einen Relaunch nachdenken.
