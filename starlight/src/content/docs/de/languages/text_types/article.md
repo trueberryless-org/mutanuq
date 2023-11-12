@@ -8,7 +8,8 @@ Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibw
 
 1. Der Artikel braucht eine **kreative Überschrift**, die den Leser anregt, den Rest zu lesen. Ein schlechtes Beispiel ist "school uniforms", ein positiveres Beispiel wäre in diesem Fall "why school uniforms are outdated". Mit einer Frage fängt man Leser sehr einfach.
 :::note
-Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den clickbait stil verfallen. :::
+Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den clickbait stil verfallen. 
+:::
 2. **Sprich den Leser an.** Am einfachsten geht das mit rhetorischen Fragen und direkter anrede, wie beispielsweise "What do you think about..."
 3. **Schreibe in einem lebhaften Stil.** Der Leser soll den Text flüssig lesen können und nicht während des Textes das Interesse verlieren. Wird meistens erreicht indem man wie in Schritt 2 rhetorische Fragen verwendet. Die Art der Sprache (formal, informal, neutral) hängt davon ab, wer den Text lesen soll, steht meistens in der Angabe.
 4. **Teile die Informationen in klare Absätze ein.** Am besten ist es für jeden Bulletpoint einen Absatz zu rechnen. Im Normalfall besteht der Text aus einer Einleitung, den Absätzen für die Bulletpoints und einem Abschluss, der teilweise auch einer der Points sein kann.
