@@ -103,14 +103,17 @@ Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufg
 ### Personalpolitik (People)
 
 -   Dienstleistungen anhand des Personals bewerten
+-   Die Personalzufriendenheit wirkt sich auf die Kundenzufriedenheit aus
 
 ### Prozessmanagement (Process)
 
 -   Dienstleistungen erlebbar, Prozesse kundenorientiert gestalten
+-   Nur zufriedene Kunden äußern sich positiv über das Angebot und empfehlen die Dienstleistung weiter.
 
 ### Ausstattungspolitik (Physical Evidence)
 
--   Optimierung der physischen Umgebung
+-   Optimierung der physischen Umgebung des Verkaufsortes
+-   Die Ausstattung, Art, Standort, Platzangebot und Wertigkeit des Verkaufsraumes haben Einfluss auf die Kundenzufriedenheit
 
 ### **Marketingmix**
 
