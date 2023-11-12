@@ -17,7 +17,7 @@ Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den Clickb
 
 ## Phrasen
 
-### Involving the reader:
+### Involving the reader
 
 - Have you ever...?
 - What would you do if...?
