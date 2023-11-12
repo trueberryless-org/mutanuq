@@ -8,7 +8,7 @@ Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründer
 
 -   Eigene Ideen verwirklichen
 -   Eigener Chef
--   Arbeitszeiten und Umfeld selbstwählbar
+-   Arbeitszeiten und Umfeld selbst wählbar
 -   Gewinn für eigene Leistungen
 -   Gesellschaftliches Ansehen bei Erfolg
 -   Selbstverwirklichung, weil man sich das Leben (begrenzt) frei einteilen kann
@@ -32,12 +32,12 @@ Ohne eine eigene Geschäftsidee kann sich das Unternehmen nicht von der Konkurre
 
 #### Bewährte Ideen verbessern
 
--   Nicht jedes Unternehmen muss unbedingt ein neues Produkt entwickeln. Oft verbessern sie nur bereits bestehende Ideen und entwickeln diese weiter
+-   Nicht jedes Unternehmen muss unbedingt ein neues Produkt entwickeln. Oft verbessern sie nur bereits bestehende Ideen und entwickeln diese weiter.
 -   Anbieten von Dienstleistungen
 
 #### Aufgreifen ausgelagerter Aufgaben
 
--   Manchmal, wenn ein Unternehmen Aufgaben auslagert, kann der Mitarbeiter, der bisher für diese Aufgabe zuständig war, nun Selbstständig arbeiten.
+-   Manchmal, wenn ein Unternehmen Aufgaben auslagert, kann der Mitarbeiter, der bisher für diese Aufgabe zuständig war, nun selbstständig arbeiten.
 
 ### Nutzung bestehender Geschäftsideen
 
@@ -45,14 +45,16 @@ Ohne eine eigene Geschäftsidee kann sich das Unternehmen nicht von der Konkurre
 
 Unternehmensübernahme bedeutet, dass man ein bereits bestehendes Unternehmen übernimmt und nun quasi den Geschäftsführer ablöst und selbst selbstständig wird.
 
-Vorteile:
+> [Nachfolgebörse](https://firmen.wko.at/suche_nachfolgeboerse/), [Franchisebörse](https://www.wko.at/gruendung/franchiseboerse?shorturl=franchiseb%F6rseat), [Komma-net](https://www.wirtschaftswissen.de/unternehmensfuehrung/marketing/unternehmenskommunikation/)
+ 
+##### Vorteile
 
 -   weniger Investitionen
 -   bestehender Kundenstock / Ruf / Name des Unternehmens
 -   Bürokratie ersparen (existierende Verwaltung)
 -   billiger als Neuanfang
 
-Nachteile:
+##### Nachteile
 
 -   möglicherweise schlechte Reputation
 -   Prozessänderung meist unerwünscht (bestehende Strukturen / Hierarchien)  
@@ -61,18 +63,16 @@ Nachteile:
 -   veraltete Ressourcen
 -   Mängel und Lasten
 
-> [Nachfolgebörse](https://firmen.wko.at/suche_nachfolgeboerse/), [Franchisebörse](https://www.wko.at/gruendung/franchiseboerse?shorturl=franchiseb%F6rseat), [Komma-net](https://www.wirtschaftswissen.de/unternehmensfuehrung/marketing/unternehmenskommunikation/)
-
 #### Franchising
 
 Als Franchising bezeichnet man das Übernehmen eines bereits erprobten Unternehmenskonzeptes
 
-Vorteile:
+##### Vorteile
 
 -   Marke ist bereits eingeführt (McDonald's)
 -   Betreuung durch Franchisegeber
 
-Nachteile:
+##### Nachteile
 
 -   Gebühren für das zur Verfügung gestellte Know-how
 -   wenig Gestaltungsspielraum
@@ -89,9 +89,9 @@ Vor dem Umsetzen einer Idee sollte überprüft werden, ob überhaupt ein Markt f
 
 ## USP
 
-Die Unique Selling Proposition (USP) ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Kundenwertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben. 
+Die Unique Selling Proposition (USP), auf Deutsch Alleinstellungsmerkmal, ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Kundenwertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben. 
 
-> UHU, Tixo, Nutella, Volvo  "Safety"
+> Volvo, sicherstes Auto; Apple, iPhone hat unvergleichliche Benutzererfahrung; FedEx, liefert über Nacht; Starbucks, handgefertigter Kaffee nach individuellen Wünschen
 
 ## UnternehmensgründerIn
 
@@ -128,7 +128,7 @@ Die Unique Selling Proposition (USP) ist ein Marketingkonzept, das die einzigart
 
 Wenn man das Unternehmen mit einem Partner gründet, hat dies gewisse Vor- und Nachteile.
 
-Vorteile:
+##### Vorteile
 
 -   Erfahrung + Fähigkeiten mehrerer Personen
 -   Arbeitsaufteilung
@@ -136,7 +136,7 @@ Vorteile:
 -   geteiltes Risiko
 -   schnelleres Wachstum
 
-Nachteile:
+##### Nachteile
 
 -   eingeschränkte Entscheidungsfreiheit
 -   Haftung für Fehlleistungen der Partner
@@ -158,7 +158,7 @@ betrieben wird.
 #### Allgemeine Voraussetzungen
 
 -   Eigenberechtigung
--   Staatsbürgerschaft (EWR)
+-   Staatsbürgerschaft (EWR oder Schweiz)
 -   Kein Ausschlussgrund (Verurteilung vor Gericht, Strafdelikte, Konkurs, Insolvenz)
 
 #### Befähigungsnachweis
@@ -218,7 +218,7 @@ Außerdem können Sie aufgrund der Planung und Steuerung im Businessplan eine be
 
 -   Branchen, Markt, Wettbewerb: Führen Sie an, ob das Marktpotenzial des Unternehmens hoch genug ist und genügend Produkte / Dienstleistungen verkauft werden können. Denn der Erfolg eines Unternehmens ist vom Absatzmarkt abhängig.
 
--   Marketing: Beschreiben Sie einen kostengünstigen Weg um den Kunden Informationen zu übermitteln.
+-   Marketing: Beschreiben Sie einen kostengünstigen Weg, um den Kunden Informationen zu übermitteln.
 
 -   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen Sie dabei in das Geschehen involviert? Vielleicht haben Sie bereits einen Businessangel angagiert, welcher die Kontakte zu anderen Unternehmen herstellen kann.
 
