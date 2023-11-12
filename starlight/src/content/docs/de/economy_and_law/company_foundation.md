@@ -91,7 +91,7 @@ Vor dem Umsetzen einer Idee sollte überprüft werden, ob überhaupt ein Markt f
 
 Die Unique Selling Proposition (USP) ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Kundenwertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben. 
 
-> Volvo  "Safety"
+> UHU, Tixo, Nutella, Volvo  "Safety"
 
 ## UnternehmensgründerIn
 
