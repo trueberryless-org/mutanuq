@@ -13,6 +13,7 @@ gotoxy
 GRN
 lcdc
 lcdh
+emoji
 
 # Register
 ADATE
@@ -80,3 +81,24 @@ withastro
 
 # German
 aggregiert
+aufklatschen
+bzw
+Controllings
+drehzahlgesteuert
+Entscheidungs
+ergebnisorientierten
+gruppenbasierte
+gruppenbasierten
+hardwarenahe
+hardwarenahen
+hosten
+HTL
+meinungsbasierte
+meinungsorientierte
+meinungsorientierter
+methoden
+persistiert
+Plankosten
+
+# English
+microcontroller
