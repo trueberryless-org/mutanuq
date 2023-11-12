@@ -200,10 +200,6 @@ Produkte sollten den Bedürfnissen und Erwartungen des Kunden entsprechen oder s
 -   Zusatzleistungen
     -   Zusätzliche Leistungen zu einem Produkt, meistens in form von Dienstleistungen
 
-Mit solchen Zusatzleistungen / Zusatznutzen kann man sich gut von Wettbewerbern **abheben** :
-
-<!-- ![Produktdimensionen](../../../../assets/economy_and_law/produktdimensionen.png) -->
-
 ### Produktanalyse
 
 Für Unternehmen ist es wichtig, nicht nur zum momentanen Zeitpunkt Gewinn zu machen, sondern auch auf langfristige Sicht in der Zukunft stetig Gewinn machen zu können. Aufgrund des [Produktlebenszyklus](#produktlebenszyklus) sind Produkte jedoch langfristig nicht immer gewinnbringend. Deswegen suchen Unternehmen stetig nach neuen innovativen Produkten, die später erfolgreich sein könnten.
