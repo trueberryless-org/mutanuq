@@ -51,7 +51,7 @@ Hierbei zahlt man für die Menge an Daten, welche man speichern möchte.
 
 ### Gemischte Ressourcen
 
-Dies ist eine Mischung aus den obrigen beiden Ressourcentypen.
+Dies ist eine Mischung aus den obigen beiden Ressourcentypen.
 
 ## Redundanz
 
