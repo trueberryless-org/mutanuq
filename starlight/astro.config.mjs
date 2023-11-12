@@ -145,6 +145,14 @@ export default defineConfig({
                         },
                     ],
                 },
+                {
+                    label: "Wirtschaft und Recht",
+                    collapsed: true,
+                    translations: {
+                        en: "Economy and Law",
+                    },
+                    autogenerate: { directory: "economy_and_law" },
+                },
             ],
         }),
         expressiveCode(),
