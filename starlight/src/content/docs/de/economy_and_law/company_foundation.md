@@ -105,7 +105,7 @@ Die Unique Selling Proposition (USP) ist ein Marketingkonzept, das die einzigart
 -   Kontaktfähigkeit
 -   Lust auf Eigenständigkeit
 -   Keine Scheu vor Druck und Stress
--   Entscheidungsfreue
+-   Entscheidungsfreude
 -   Motivationsfähigkeit
 -   Ausdauer
 -   Selbstkritikfähigkeit
