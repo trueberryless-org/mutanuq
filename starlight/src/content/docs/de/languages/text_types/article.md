@@ -10,7 +10,7 @@ Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibw
 :::note
 Auch wenn man den Leser "fangen" soll, so sollte man nicht zu sehr in den Clickbait-Stil verfallen. 
 :::
-2. **Sprich den Leser an.** Am einfachsten geht das mit rhetorischen Fragen und direkter anrede, wie beispielsweise "What do you think about..."
+2. **Sprich den Leser an.** Am einfachsten geht das mit rhetorischen Fragen und direkter Anrede, wie beispielsweise "What do you think about..."
 3. **Schreibe in einem lebhaften Stil.** Der Leser soll den Text flüssig lesen können und nicht während des Textes das Interesse verlieren. Wird meistens erreicht indem man wie in Schritt 2 rhetorische Fragen verwendet. Die Art der Sprache (formal, informal, neutral) hängt davon ab, wer den Text lesen soll, steht meistens in der Angabe.
 4. **Teile die Informationen in klare Absätze ein.** Am besten ist es für jeden Bulletpoint einen Absatz zu rechnen. Im Normalfall besteht der Text aus einer Einleitung, den Absätzen für die Bulletpoints und einem Abschluss, der teilweise auch einer der Points sein kann.
 5. **Schreibe einen gedankenanregenden Abschluss** Entweder man fasst alle argumente zusammen oder man kann auch seine eigene Meinung kundgeben, sollte diese gefragt sein. Der Schluss darf nur nicht langweilig sein.
