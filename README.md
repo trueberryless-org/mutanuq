@@ -1,5 +1,3 @@
-![logo](https://github.com/trueberryless-org/mutanuq/assets/99918022/5aadab6f-bb87-45c4-a22a-904459f92936)
-
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/medium.svg)](https://starlight.astro.build)
 
 # Installation
