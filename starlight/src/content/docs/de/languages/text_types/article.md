@@ -4,7 +4,7 @@ title: Artikel
 
 ## Zusammenfassung
 
-Der Article ist eine einfache Textsorte, bei der vor allem die kreative Schreibweise benötigt wird, da es sehr wenige Vorgaben gibt. Wichtig ist:
+Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibweise benötigt wird, da es sehr wenige Vorgaben gibt. Wichtig ist:
 
 1. Der Artikel braucht eine **kreative Überschrift**, die den Leser anregt, den Rest zu lesen. Ein schlechtes Beispiel ist "school uniforms", ein positiveres Beispiel wäre in diesem Fall "why school uniforms are outdated". Mit einer Frage fängt man Leser sehr einfach.
 :::note
