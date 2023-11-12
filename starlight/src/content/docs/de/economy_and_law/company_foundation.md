@@ -89,9 +89,9 @@ Vor dem Umsetzen einer Idee sollte überprüft werden, ob überhaupt ein Markt f
 
 ## USP
 
-Jedes Unternehmen hat das Ziel eine USP (Unique Selling Proposition) / Alleinstellungsmerkmal zu erreichen, was bedeutet, dass der Name des Unternehmens im Volksmund als Bezeichnung für die Geschäftsidee verwendet wird (auch wenn das Produkt von der Konkurrenz hergestellt wird).
+Die Unique Selling Proposition (USP) ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Kundenwertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben. 
 
-> UHU, Tixo, Nutella
+> Volvo  "Safety"
 
 ## UnternehmensgründerIn
 
