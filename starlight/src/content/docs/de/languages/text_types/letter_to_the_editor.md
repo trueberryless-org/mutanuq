@@ -37,7 +37,7 @@ Bedenken Sie bei einer Anrede, dass nach einem `,` (Beistrich) der nachfolgende 
 
 ### Einleitung
 
-In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten zumindestens Titel, Autor, Erscheinunsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
@@ -63,4 +63,4 @@ Beenden Sie Ihren Brief mit einer Grußformel.
 
 Falls Sie den Text digital verschicken, reicht Ihre Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
 
-![Signature](../../../../../assets/Deutsch/Signature_white.png)
+![Signature](../../../../../assets/languages/Signature_white.png)

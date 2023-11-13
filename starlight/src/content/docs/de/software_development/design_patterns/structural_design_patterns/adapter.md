@@ -6,7 +6,7 @@ sidebar:
 
 ### Problemstellung
 
-In ein bestehendes Softwaresystem, sollen die Klassen einer externen Klassenbilothek integriert werden. Die Schnittstellendefinitionen beider Systeme werden in der Regel nicht kompatibel sein.
+In ein bestehendes Softwaresystem, sollen die Klassen einer externen Klassenbibliothek integriert werden. Die Schnittstellendefinitionen beider Systeme werden in der Regel nicht kompatibel sein.
 
 ### Umsetzung
 

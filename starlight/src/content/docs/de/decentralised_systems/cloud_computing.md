@@ -4,18 +4,18 @@ sidebar:
     order: 0
 ---
 
-Cloud Computing bezeichnet eine `PaaS` (Platform as a Service) Architektur, welche es Programmierern ermöglicht, sich zu 100% auf die Applikationen und die Userdaten zu konzentrieren, während große Cloud Anbieter, wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) sich darum kümmern, dass sie billig Server arrangieren und diese eine hohe Verfügbarkeit garantieren. Diese Methode der Programmierung ist in den letzten Jahrzehnten immer beliebter geworden, da es sowohl für die Anbieter, als auch die Kunden (Programmierer) einige Vorteile mit sich bringt.
+Cloud Computing bezeichnet eine `PaaS` (Platform as a Service) Architektur, welche es Programmierern ermöglicht, sich zu 100% auf die Applikationen und die Benutzerdaten zu konzentrieren, während große Cloud Anbieter, wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) sich darum kümmern, dass sie billig Server arrangieren und diese eine hohe Verfügbarkeit garantieren. Diese Methode der Programmierung ist in den letzten Jahrzehnten immer beliebter geworden, da es sowohl für die Anbieter, als auch die Kunden (Programmierer) einige Vorteile mit sich bringt.
 
 ## Übersicht
 
 Es gibt allgemein verschiedene Formen von Anbietern. In diesem Kapitel beschäftigen wir uns großteils mit `PaaS` (Platform as a Service).
 
-![IaaS, PaaS, SaaS](../../../../assets/SYTD/iaas-paas-saas.png)
+![IaaS, PaaS, SaaS](../../../../assets/decentralised_systems/iaas-paas-saas.png)
 
 ### Vorteile
 
 -   flexibles zahlen (nur das zahlen, was man verwendet)
--   einfache Skalierbarkeit (rauf und runter)
+-   einfache Skalierbarkeit (hinauf und hinunter)
 -   niedriger Einstiegspreis
 -   **hohe** Ausfallsicherheit (Service Level Agreement garantiert)
 
@@ -51,11 +51,11 @@ Hierbei zahlt man für die Menge an Daten, welche man speichern möchte.
 
 ### Gemischte Ressourcen
 
-Dies ist eine Mischung aus den obrigen beiden Ressourcentypen.
+Dies ist eine Mischung aus den obigen beiden Ressourcentypen.
 
 ## Redundanz
 
-Für viele Dienste können Sie den gewünschten Redundanzgrad angeben. Dieser bestimmt, wie gut Ihre Daten gegen Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
+Für viele Dienste können Sie den gewünschten Grad der Redundanz angeben. Dieser bestimmt, wie gut Ihre Daten gegen Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
 
 ### Lokale redundante Speicherung (LRS)
 
@@ -63,7 +63,7 @@ Hierbei werden Ihre Daten drei Mal innerhalb eines einzigen physischen Standorte
 
 ### Zonen-redundanter Speicher (ZRS)
 
-ZRS kopiert Ihre Daten über drei Azure-Verfügbarkeitszonen in der primären Region. Deswegen wird dieser Redundanzgrad für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
+ZRS kopiert Ihre Daten über drei Azure-Verfügbarkeitszonen in der primären Region. Deswegen wird dieser Grad der Redundanz für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
 
 ### Geo-redundanter Speicher (GRS)
 
