@@ -6,12 +6,12 @@ sidebar:
 
 Das Liquid Crystal Display besteht aus 16 Zeichen in einer Reihe und 2 Zeilen insgesamt. Es unterstützt die gesamten lateinischen, chinesischen und weiter Zeichensätze plus einige Emoji.
 
-Für die Verwendung des Display empfiehlt sich <a href="/SYTI/lcd/lcd.c" download>lcd.c</a> und <a href="/SYTI/lcd/lcd.h" download>lcd.h</a>.
+Für die Verwendung des Display empfiehlt sich <a href="/embedded_programming/lcd/lcd.c" download>lcd.c</a> und <a href="/embedded_programming/lcd/lcd.h" download>lcd.h</a>.
 
 ## Aufbau
 
-![Aufbau eines LCDs am ATmega 328p](../../../../assets/SYTI/lcd/lcd_composition.png)
-![Grid eines LCDs](../../../../assets/SYTI/lcd/lcd_grid.png)
+![Aufbau eines LCDs am ATmega 328p](../../../../assets/embedded_programming/lcd/lcd_composition.png)
+![Grid eines LCDs](../../../../assets/embedded_programming/lcd/lcd_grid.png)
 
 ## Code
 

@@ -170,7 +170,7 @@ Dabei sieht ein Diagramm bei der Earned-Value-Analyse so aus:
 
 ![Earned-Value-Analyse](../../../../assets/project_management/earned_value_analysis.png)
 
-Beim `Status Date` findet die aktuelle Messung des Fertigstellungsgrades (Wie viele Arbeitspakete hat man prozentuell schon geschafft?) und der IST-Kosten statt. Daraus errechnet sich ein `Earned Value`, welcher durch die rote Linie dargestellt ist.
+Beim `Status Date` findet die aktuelle Messung des Fertigstellungsgrades (Wie viele Arbeitspakete hat man prozentual schon geschafft?) und der IST-Kosten statt. Daraus errechnet sich ein `Earned Value`, welcher durch die rote Linie dargestellt ist.
 
 Nun kann man den `Earned Value` mit den `Planned Cost` bzw. `Planned Value` vergleichen, um herauszufinden, ob die Arbeitspakete zeitlich laut Plan verlaufen. Außerdem kann man den `Earned Value` mit den `Actual Cost` vergleichen, um herauszufinden, ob man mehr oder weniger Kosten als im Plan bereits verbraucht hat.
 
