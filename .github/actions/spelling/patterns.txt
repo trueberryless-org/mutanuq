@@ -1,0 +1,2 @@
+# exclude Mardown Links
+(?<=\]\()\S+(?=\))
