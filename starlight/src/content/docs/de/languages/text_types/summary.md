@@ -26,7 +26,7 @@ Die Überschrift setzt sich aus `Zusammenfassung von` und dem Titel des Ausgangs
 
 ### Einleitung
 
-In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten zumindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 

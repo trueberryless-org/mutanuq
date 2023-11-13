@@ -144,7 +144,7 @@ Man kann die Kosten pro Monat auflisten (Bild links), um einen schnellen Überbl
 
 ### Sachfortschrittskontrolle
 
-Bei der Sachfortschrittskontrolle (auch Leistungskontrolle) geht es um die Bestimmung des erledigten Anteils eines Arbeitspaketes. Hierfür gibt es einige Vorangehensweisen:
+Bei der Sachfortschrittskontrolle (auch Leistungskontrolle) geht es um die Bestimmung des erledigten Anteils eines Arbeitspaketes. Hierfür gibt es einige Vorgehensweisen:
 
 -   **Statusschritt-Technik**
 -   **50-50-Technik**: 50% erledigt, sobald das Arbeitspaket gestartet; 100%, wenn fertig

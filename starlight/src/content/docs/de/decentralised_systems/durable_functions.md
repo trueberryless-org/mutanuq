@@ -59,7 +59,7 @@ public static async Task<List<string>> Run(
 }
 ```
 
-Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit zurückgibt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig gebraucht wird, gibt es für den obigen Orchestrator einen Spezialfall:
+Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit zurück gibt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig gebraucht wird, gibt es für den obigen Orchestrator einen Spezialfall:
 
 ```csharp
 [FunctionName("HelloCities")]

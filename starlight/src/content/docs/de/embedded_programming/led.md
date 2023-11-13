@@ -8,7 +8,7 @@ Eine LED ist eine simple Diode, welche Licht emittiert. Damit diese leuchtet, m�
 
 ## Aufbau
 
-Die LED kann an jedem beliebigen PIN angeschlossen werden. Dieses PIN muss auf [Code-Ebene](#code) als Ausgang konfiguriert werden, damit entweder 5V oder 0V anliegen. Damit kein Kurzschluss auftreten kann, muss man einen Widerstand mit 3.3K vor der Diode zwischenlegen. Anschließend kommt die Diode. Diese ist polarisiert, was bedeutet, sie hat eine Anode und eine Kathode.
+Die LED kann an jedem beliebigen PIN angeschlossen werden. Dieses PIN muss auf [Code-Ebene](#code) als Ausgang konfiguriert werden, damit entweder 5V oder 0V anliegen. Damit kein Kurzschluss auftreten kann, muss man einen Widerstand mit 3.3K vor der Diode einbauen. Anschließend kommt die Diode. Diese ist polarisiert, was bedeutet, sie hat eine Anode und eine Kathode.
 
 :::tip[Anode]
 Die Anode ist das **positive** Ende einer Diode: **+**. Hardware-technisch wird sie gekennzeichnet durch das **längere** Ende der Diode.

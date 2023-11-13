@@ -37,7 +37,7 @@ Bedenken Sie bei einer Anrede, dass nach einem `,` (Beistrich) der nachfolgende 
 
 ### Einleitung
 
-In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten zumindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 

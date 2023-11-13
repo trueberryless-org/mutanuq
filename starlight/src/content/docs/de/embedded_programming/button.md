@@ -37,7 +37,7 @@ _Ein Pull-Up Widerstand Aufbau, wenn die Taste geschlossen ist_
 
 ### Active High / Pull-Down
 
-Am korrespondierendem PIN liegt wieder ein Spannungsteiler an, welcher diesmal allerdings auf der Seite des 10K Widerstandes den Ground (GRN) hat und auf der anderen Seite befindet sich die Taste mit 5V Versorgungsspannnung.
+Am korrespondierendem PIN liegt wieder ein Spannungsteiler an, welcher diesmal allerdings auf der Seite des 10K Widerstandes den Ground (GRN) hat und auf der anderen Seite befindet sich die Taste mit 5V Versorgungsspannung.
 
 ![Pull-Down Widerstand](../../../../assets/SYTI/button/pull_down_widerstand.png)
 _Ein Pull-Down Widerstand Aufbau, wenn die Taste geöffnet ist_

@@ -15,7 +15,7 @@ Es gibt allgemein verschiedene Formen von Anbietern. In diesem Kapitel beschäft
 ### Vorteile
 
 -   flexibles zahlen (nur das zahlen, was man verwendet)
--   einfache Skalierbarkeit (rauf und runter)
+-   einfache Skalierbarkeit (hinauf und hinunter)
 -   niedriger Einstiegspreis
 -   **hohe** Ausfallsicherheit (Service Level Agreement garantiert)
 
