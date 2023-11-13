@@ -25,59 +25,6 @@ PWM
 vect
 withastro
 
-# Register
-ADATE
-ADCH
-ADCL
-ADCs
-ADCSRA
-ADCW
-ADIE
-ADLAR
-ADMUX
-ADPS
-ADPSx
-ADSC
-COMn
-COMPA
-COMPx
-CSn
-DDRB
-DDRC
-DDRD
-EEPROM
-EIMSK
-MCUCR
-MUXx
-OCIE
-OCIEn
-OCRn
-OVF
-PCICR
-PCINT
-PCMSK
-PINB
-PORTB
-PORTC
-PORTD
-PSTR
-RXCIE
-RXEN
-SRW
-TCCR
-TCCRn
-TCNT
-TIMERn
-TIMSK
-TIMSKn
-TXEN
-UBRR
-UCSR
-UCSZ
-UDRE
-WGM
-WGMn
-
 # German
 aggregiert
 aufklatschen
@@ -115,8 +62,6 @@ plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
 vorzuladen
-Wilderöm
--verarbeitung
 Matura
 
 # English
