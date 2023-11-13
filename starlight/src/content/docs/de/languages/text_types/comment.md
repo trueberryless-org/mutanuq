@@ -20,7 +20,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 
 ### Überschrift
 
-Wenn in der Aufgabenstellung eine spzifische Überschrift verlangt wird, soll diese verwendet werden.
+Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll diese verwendet werden.
 
 ### Einleitung
 

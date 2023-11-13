@@ -40,4 +40,4 @@ AVR ist eine Familie von 8-Bit-Mikrocontrollern die weit verbreitet sind, da sie
 
 ### Port
 
-Unter einem Port versteht man in der Elektronik einen Digitalen I/O Port mit dem man einfach einen Bit-Zustand darstellt. Der Zustand ist dann entweder 1-5V oder 0V. Sie werden hauptsächlich für das ein- und auslesen von digitalen signalen verwendet, aber auch manchmal für A/D oder D/A Wandler.
+Unter einem Port versteht man in der Elektronik einen Digitalen I/O Port mit dem man einfach einen Bit-Zustand darstellt. Der Zustand ist dann entweder 1-5V oder 0V. Sie werden hauptsächlich für das ein- und auslesen von digitalen Signalen verwendet, aber auch manchmal für A/D oder D/A Wandler.

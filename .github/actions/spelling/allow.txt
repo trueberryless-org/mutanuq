@@ -99,6 +99,10 @@ meinungsorientierter
 methoden
 persistiert
 Plankosten
+Teammitgliedern
+Redaktionsteam
+zeitbasierte
+Verfügbarkeitszonen
 
 # English
 microcontroller
