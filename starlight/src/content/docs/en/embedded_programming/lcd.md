@@ -6,7 +6,7 @@ sidebar:
 
 The Liquid Crystal Display consists of 16 characters in a row and 2 lines in total. It supports the entire latin, chinese and further character sets plus some emoji.
 
-To use the display, we recommend [lcd.h](#appendix-a---lcdh) and [lcd.c](#appendix-b---lcdc).
+To use the display, we recommend [lcd.h and lcd.c](#downloads).
 
 ## Structure
 
