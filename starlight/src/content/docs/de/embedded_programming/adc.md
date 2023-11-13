@@ -98,7 +98,7 @@ ISR(ADC_vect) {
 
 #### Free Running Mode
 
-Es gibt die Möglichtkeit den ADC so einzustellen, dass er so schnell wie er nur kann hintereinander unendlich oft automatisch getriggert wird. Dabei entsteht die Gefahr, dass bei einer länger andauernden Ausführung des ADC [Interrupts](./interrupts.md) die nächste Ausführung gestartet wird, bevor die aktuell Ausführung überhaupt fertig ist.
+Es gibt die Möglichkeit den ADC so einzustellen, dass er so schnell wie er nur kann hintereinander unendlich oft automatisch getriggert wird. Dabei entsteht die Gefahr, dass bei einer länger andauernden Ausführung des ADC [Interrupts](./interrupts.md) die nächste Ausführung gestartet wird, bevor die aktuell Ausführung überhaupt fertig ist.
 
 ```c
 ADCSRA |= (1<<ADATE);
