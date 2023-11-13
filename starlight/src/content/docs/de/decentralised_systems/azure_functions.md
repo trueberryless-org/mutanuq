@@ -101,7 +101,7 @@ public static string Run(
 Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kann dies relativ einfach mittels Input Bindings umgesetzt werden.
 
 ```csharp
-[Function("treesforever")]
+[Function("InputBinding")]
 public static string Run(
 	[HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
     [Table("TreeTable")] TableClient tableClient,
@@ -135,7 +135,7 @@ public class TreeTable : Azure.Data.Tables.ITableEntity
 Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding.
 
 ```csharp
-[Function("thumbnailssmall")]
+[Function("OutputBinding")]
 public static string Run(
     [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
     [Blob("thumbnails/{name}", FileAccess.Write)] Stream thumbnails,

@@ -55,7 +55,7 @@ Dies ist eine Mischung aus den obigen beiden Ressourcentypen.
 
 ## Redundanz
 
-Für viele Dienste können Sie den gewünschten Redundanzgrad angeben. Dieser bestimmt, wie gut Ihre Daten gegen Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
+Für viele Dienste können Sie den gewünschten Grad der Redundanz angeben. Dieser bestimmt, wie gut Ihre Daten gegen Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
 
 ### Lokale redundante Speicherung (LRS)
 
@@ -63,7 +63,7 @@ Hierbei werden Ihre Daten drei Mal innerhalb eines einzigen physischen Standorte
 
 ### Zonen-redundanter Speicher (ZRS)
 
-ZRS kopiert Ihre Daten über drei Azure-Verfügbarkeitszonen in der primären Region. Deswegen wird dieser Redundanzgrad für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
+ZRS kopiert Ihre Daten über drei Azure-Verfügbarkeitszonen in der primären Region. Deswegen wird dieser Grad der Redundanz für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
 
 ### Geo-redundanter Speicher (GRS)
 

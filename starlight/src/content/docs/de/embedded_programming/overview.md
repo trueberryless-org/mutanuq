@@ -22,7 +22,7 @@ Wie bereits um oberen Absatz angeschnitten, sind Assembler und C eher hardwarena
 
 Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") ausführlich erklärt, hat jede Programmiersprache ihre Existenzberechtigung. Allerdings kann man nicht mit jeder Programmiersprache alles erreichen, wie es dieses Zitat verdeutlichen soll (Z3-11):
 
-> Bei zeit- und prozessoroptimierten Assemblerprogrammen sind viel mehr Adaptionen zu leisten, als bei den Hochsprachen. Bei typischen Applikationen für AVR, 8051 oder PIC ist dies meist noch relativ problemlos mögich, da die Codegröße und Strukturvielfalt begrenzt sind. [...] Bei einem ARM7, mit seiner 3-stufigen Pipeline, wird dies schon schwieriger [...]. Der Konstrukteur des Compilers [...] kann dies besser, da er erstens die Architektur sehr gut kennt und sich zweitens mit nichts anderem als Codegeneration beschäftigt.
+> Bei zeit- und prozessoroptimierten Assemblerprogrammen sind viel mehr Adaptionen zu leisten, als bei den Hochsprachen. Bei typischen Applikationen für AVR, 8051 oder PIC ist dies meist noch relativ problemlos möglich, da die Codegröße und Strukturvielfalt begrenzt sind. [...] Bei einem ARM7, mit seiner dreistufigen Pipeline, wird dies schon schwieriger [...]. Der Konstrukteur des Compilers [...] kann dies besser, da er erstens die Architektur sehr gut kennt und sich zweitens mit nichts anderem als Codegeneration beschäftigt.
 
 ### Compiler
 
