@@ -10,14 +10,14 @@
   - docs/**
   
 '✒️ documentation':
-  - '**/README.md'
+  - **/README.md
   
 '🚧 astro':
-  - 'starlight/astro.config.mjs'
+  - starlight/astro.config.mjs
   
 '📀 assets':
-  - 'starlight/src/assets/**'
-  - 'starlight/public/**'
+  - starlight/src/assets/**
+  - starlight/public/**
   
 '📦 package':
-  - 'starlight/package.json'
+  - starlight/package.json
