@@ -8,7 +8,7 @@ sidebar:
 
 ### Evaluation Kit/Board
 
-Ein Evaluation Board ist eine System was man um ein Bauteil oder System herum baut, bzw. gibt es sie manchmal vorgefertigt. Dieses Board/Kit braucht man damit das Teil funktioniert. Für ein Evalutions Board für eine CPU bräuchte man zum Beispiel RAM, eine SD-Card usw...
+Ein Evaluation Board ist eine System was man um ein Bauteil oder System herum baut, bzw. gibt es sie manchmal vorgefertigt. Dieses Board/Kit braucht man damit das Teil funktioniert. Für ein Evaluation Board für eine CPU bräuchte man zum Beispiel RAM, eine SD-Card usw...
 
 ### Hardwarenahe Programmierung
 
@@ -22,11 +22,11 @@ Wie bereits um oberen Absatz angeschnitten, sind Assembler und C eher hardwarena
 
 Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") ausführlich erklärt, hat jede Programmiersprache ihre Existenzberechtigung. Allerdings kann man nicht mit jeder Programmiersprache alles erreichen, wie es dieses Zitat verdeutlichen soll (Z3-11):
 
-> Bei zeit- und prozessoroptimierten Assemblerprogrammen sind viel mehr Adaptionen zu leisten, als bei den Hochsprachen. Bei typischen Applikationen für AVR, 8051 oder PIC ist dies meist noch relativ problemlos mögich, da die Codegröße und Strukturvielfalt begrenzt sind. [...] Bei einem ARM7, mit seiner 3-stufigen Pipeline, wird dies schon schwieriger [...]. Der Konstrukteur des Compilers [...] kann dies besser, da er erstens die Architektur sehr gut kennt und sich zweitens mit nichts anderem als Codegeneration beschäftigt.
+> Bei zeit- und prozessoroptimierten Assemblerprogrammen sind viel mehr Adaptionen zu leisten, als bei den Hochsprachen. Bei typischen Applikationen für AVR, 8051 oder PIC ist dies meist noch relativ problemlos möglich, da die Codegröße und Strukturvielfalt begrenzt sind. [...] Bei einem ARM7, mit seiner dreistufigen Pipeline, wird dies schon schwieriger [...]. Der Konstrukteur des Compilers [...] kann dies besser, da er erstens die Architektur sehr gut kennt und sich zweitens mit nichts anderem als Codegeneration beschäftigt.
 
 ### Compiler
 
-Der Compiler wandelt den Programmcode, den wir entwickelt haben (zum Beispiel: .c, .h, ... - Files) in eine .hex-Datei, die der Mikrocontroller interpretieren und damit arbeiten kann. Der Vorgang, den dieser Compiler durchführt, heißt dann logischerweise `compilen`.
+Der Compiler wandelt den Programmcode, den wir entwickelt haben (zum Beispiel: .c, .h, ... - Files) in eine .hex-Datei, die der Mikrocontroller interpretieren und damit arbeiten kann. Der Vorgang, den dieser Compiler durchführt, heißt dann logischerweise kompilieren.
 
 ### Plattformabhängigkeit
 
@@ -36,8 +36,8 @@ Aus diesem Grund sollte man immer plattformabhängige und plattformunabhängige 
 
 ### AVR
 
-AVR ist eine Familie von 8-Bit-Microcontrollern die weit verbreitet sind, da sie einfach gebaut sind, aber auch leicht programmierbar sind. Wir verwenden auch einen AVR Chip (einen ATmega) und verwenden die Atmel IDE, da die AVR-Familie auch von Atmel stammt.
+AVR ist eine Familie von 8-Bit-Mikrocontrollern die weit verbreitet sind, da sie einfach gebaut sind, aber auch leicht programmierbar sind. Wir verwenden auch einen AVR Chip (einen ATmega) und verwenden die Atmel IDE, da die AVR-Familie auch von Atmel stammt.
 
 ### Port
 
-Unter einem Port versteht man in der Elektronik einen Digitalen I/O Port mit dem man einfach einen Bitzustand darstellt. Der Zustand ist dann entweder 1-5V oder 0V. Sie werden hauptsächlich für das ein- und auslesen von digitalen signalen verwendet, aber auch manchmal für A/D oder D/A Wandler.
+Unter einem Port versteht man in der Elektronik einen Digitalen I/O Port mit dem man einfach einen Bit-Zustand darstellt. Der Zustand ist dann entweder 1-5V oder 0V. Sie werden hauptsächlich für das ein- und auslesen von digitalen Signalen verwendet, aber auch manchmal für A/D oder D/A Wandler.

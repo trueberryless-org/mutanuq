@@ -10,7 +10,7 @@ In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, D
 
 ### Datenübertragung
 
-Für die Datenübertragung braucht es zwei PINs, ein PIN zum Senden und ein PIN zum Empfangen von Daten. Dafür sind beim ATmega328p die PINs `PD0` und `PD1` reserviert. Wenn Sie das USART also verwenden möchten, achten Sie darauf, diese beiden PINs nicht gleichzeit für andere Zwecke zu verwenden.
+Für die Datenübertragung braucht es zwei PINs, ein PIN zum Senden und ein PIN zum Empfangen von Daten. Dafür sind beim ATmega328p die PINs `PD0` und `PD1` reserviert. Wenn Sie das USART also verwenden möchten, achten Sie darauf, diese beiden PINs nicht gleichzeitig für andere Zwecke zu verwenden.
 
 ### Konfiguration
 
@@ -34,7 +34,7 @@ UCSR0B |= (1<<TXEN0);
 
 #### Empfangen aktivieren
 
-Für das Aktivieren des Empfangens von Daten muss zusätzlich auch das Interrupt aktiviert werden, damit bei jedem hereinkommenden Zeichen diese getriggert wird.
+Für das Aktivieren für das Empfangen von Daten muss zusätzlich auch das Interrupt aktiviert werden, damit bei jedem hereinkommenden Zeichen diese getriggert wird.
 
 ```c
 UCSR0B |= (1<<RXEN0) | (1<<RXCIE0);
@@ -66,7 +66,7 @@ UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
 
 ### Daten senden
 
-Um die Ausimplementierung zu erleichern, verwendet man [Pointer](../pointer). Dies ist die Methode für einzelen [ASCII-Zeichen](https://www.torsten-horn.de/techdocs/ascii.htm).
+Um die Implementierung zu erleichtern, verwendet man [Pointer](../pointer). Dies ist die Methode für einzelne [ASCII-Zeichen](https://www.torsten-horn.de/techdocs/ascii.htm).
 
 ```c
 void write_char(char str) {

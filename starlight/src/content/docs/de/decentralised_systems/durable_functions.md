@@ -36,7 +36,7 @@ Orchestrators haben einen ganz besonderen Ausführungsprozess. Bei jedem Aufruf 
 
 Sobald er wieder zum Aufruf der vorherigen Activity kommt (diese wurde nun bereits durchgeführt, da sie beim vorherigen Durchlauf aufgerufen wurde), schaut der Orchestrator in dem Table Storage Account nach, ob der Rückgabewert der Activity bereits gespeichert sind. Wenn ja, wird die Activity nicht noch einmal aufgerufen, sondern das Ergebnis aus der Tabelle ausgelesen und der Orchestrator setzt mit der Durchführung des weiteren Programmablaufs fort.
 
-Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass keine "einfachen" Variablen im Orchestrator deklariert und initialisiert werden dürfen, da der Orchestrator innerhalb eines Triggers mehrmals diese Programmzeile durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig mitstoppen:
+Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass keine "einfachen" Variablen im Orchestrator deklariert und initialisiert werden dürfen, da der Orchestrator innerhalb eines Triggers mehrmals diese Programmzeile durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig messen:
 
 :::danger[Achtung!]
 Unteres Programm hat einen Logikfehler!
@@ -54,12 +54,12 @@ public static async Task<List<string>> Run(
     // irgendeine Activity
 	await context.CallActivityAsync("LogInfo", "London");
 
-    var ellapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
-    log.LogInformation($"Orchestrator hat {ellapsedTimeMs}ms mit der Durchführung gebraucht.");
+    var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+    log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
 }
 ```
 
-Stattdessen müsste man in solchen Fällen eine eigene Activty schreiben, welche die momentane UTC Zeit returnt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig in Orchestratoren verwendet wird, gibt es für den obrigen Orchestrator einen Spezialfall:
+Stattdessen müsste man in solchen Fällen eine eigene Activity schreiben, welche die momentane UTC Zeit zurück gibt. Sobald die Funktionalität nämlich in einer eigenen Activity ausgelagert ist, wird das Ergebnis in einem Table Storage Account persistiert und nicht erneut durchgeführt. Da die momentane Zeit häufig gebraucht wird, gibt es für den obigen Orchestrator einen Spezialfall:
 
 ```csharp
 [FunctionName("HelloCities")]
@@ -72,8 +72,8 @@ public static async Task<List<string>> Run(
     // irgendeine Activity
 	await context.CallActivityAsync("LogInfo", "London");
 
-    var ellapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
-    log.LogInformation($"Orchestrator hat {ellapsedTimeMs}ms mit der Durchführung gebraucht.");
+    var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+    log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
 }
 ```
 
@@ -131,15 +131,15 @@ public static async Task Run(
 
 ## Durable Function Patterns
 
-Mithilfe des Prinzipes der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
+Mithilfe des Prinzips der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
 
 ### Function Chaining
 
-Das Funktionsverkettungsmuster ermöglicht die Ausführung von Funktionen in einer bestimmten Reihenfolge, wobei die Ausgabe einer Funktion als Eingabe für die nächste dient. Die Verwendung von Warteschlangen zwischen den Funktionen gewährleistet die Skalierbarkeit und Robustheit des Systems.
+Das Function Chaining ermöglicht die Ausführung von Funktionen in einer bestimmten Reihenfolge, wobei die Ausgabe einer Funktion als Eingabe für die nächste dient. Die Verwendung von Warteschlangen zwischen den Funktionen gewährleistet die Skalierbarkeit und Robustheit des Systems.
 
-![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-chaining.png)
+![Durable Function Chaining](../../../../assets/decentralised_systems/azure-function/durable-function-chaining.png)
 
-Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Codierungsstrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
+Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Codestrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
 
 ```csharp
 [FunctionName("Chaining")]
@@ -167,9 +167,9 @@ public static async Task<object> Run(
 
 ### Fan Out / Fan In
 
-Beim Auffächern auswärts/einwärts-Muster werden mehrere Funktionen parallel ausgeführt, und dann wird auf den Abschluss aller gewartet. Oft werden die Ergebnisse dieser Funktionen aggregiert.
+Beim Fan Out/Fan In-Muster werden mehrere Funktionen parallel ausgeführt, und dann wird auf den Abschluss aller Activities gewartet. Häufig werden die Ergebnisse, die von den Funktionen zurückgegeben werden, aggregiert.
 
-![Durable Function Fan Out Fan In](../../../../assets/SYTD/azure-function/durable-function-fan-out-fan-in.png)
+![Durable Function Fan Out Fan In](../../../../assets/decentralised_systems/azure-function/durable-function-fan-out-fan-in.png)
 
 In normalen Funktionen kann das Auffächern auswärts erreicht werden, indem die Funktion mehrere Nachrichten an eine Warteschlange sendet. Das Auffächern zurück nach innen ist komplexer, da Sie den Status der ausgelösten Funktionen nachverfolgen und deren Ausgaben speichern müssen.
 
@@ -200,9 +200,9 @@ public static async Task Run(
 
 Das asynchrone HTTP-API-Muster koordiniert die Statusverfolgung von lang laufenden Vorgängen mit externen Clients. Normalerweise wird die Vorgangsaktion über einen HTTP-Endpunkt gestartet, und der Client wird zu einem Statusendpunkt weitergeleitet, um den Abschluss des Vorgangs zu überwachen.
 
-![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-async-http-api.png)
+![Durable Function Chaining](../../../../assets/decentralised_systems/azure-function/durable-function-async-http-api.png)
 
-Durable Functions erleichtert und vereinfacht die Implementierung dieses Musters erheblich, indem es integrierte Unterstützung bietet. Sie können REST-Befehle verwenden, um Orchestratorfunktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
+Durable Functions erleichtert und vereinfacht die Implementierung dieses Musters erheblich, indem es integrierte Unterstützung bietet. Sie können REST-Befehle verwenden, um Orchestrator-Funktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
 
 ```bash
 > curl -X POST https://myfunc.azurewebsites.net/api/orchestrators/DoWork -H "Content-Length: 0" -i
@@ -231,7 +231,7 @@ Content-Type: application/json
 
 Das Überwachen-Muster wiederholt Vorgänge in einem Workflow, wie das Warten auf bestimmte Bedingungen. Mit Durable Functions lassen sich flexible Wiederholungsintervalle einrichten und Aufgabenlebensdauern verwalten. Ein Beispiel ist das Überwachen von Zustandsänderungen durch langlebige Monitore, anstelle von externen Client-Überwachungen. Dies ermöglicht die Verwaltung mehrerer Monitore und variable Warteintervalle basierend auf Bedingungen wie exponentiellem Backoff.
 
-![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-monitor.png)
+![Durable Function Chaining](../../../../assets/decentralised_systems/azure-function/durable-function-monitor.png)
 
 ```csharp
 [FunctionName("MonitorJobStatus")]
@@ -263,11 +263,11 @@ public static async Task Run(
 
 ### Human Interaction
 
-Automatisierte Prozesse beinhalten oft Benutzerinteraktion, was herausfordernd sein kann, da Menschen nicht so verfügbar und reaktionsfähig wie Clouddienste sind. Zeitlimits und Kompensationslogik können in automatisierten Prozessen verwendet werden, um diese Interaktion zu ermöglichen.
+Automatisierte Prozesse beinhalten oft Benutzerinteraktion, was herausfordernd sein kann, da Menschen nicht so verfügbar und reaktionsfähig wie Cloud-Dienste sind. Zeitlimits und Kompensationslogik können in automatisierten Prozessen verwendet werden, um diese Interaktion zu ermöglichen.
 
-![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-approval.png)
+![Durable Function Chaining](../../../../assets/decentralised_systems/azure-function/durable-function-approval.png)
 
-Dieses Muster kann mithilfe einer Orchestrierungsfunktion implementiert werden, die Timer für die Genehmigung und Eskalation verwendet und auf externe Benutzerinteraktion wartet. Hier wird ein Genehmigungsprozess dargestellt.
+Dieses Muster kann mithilfe einer Orchestrator-Funktion implementiert werden, die Timer für die Genehmigung und Eskalation verwendet und auf externe Benutzerinteraktion wartet. Hier wird ein Genehmigungsprozess dargestellt.
 
 Ein Beispiel ist ein Genehmigungsprozess, bei dem Benutzerinteraktion erforderlich ist, wie bei einer Spesenabrechnung, die eine Genehmigung ab einem bestimmten Betrag erfordert. Wenn die Genehmigung nicht innerhalb von 72 Stunden erfolgt, tritt eine Eskalation in Kraft.
 
@@ -300,7 +300,7 @@ public static async Task Run(
 
 Ereignisdaten werden über einen Zeitraum zusammengefasst, möglicherweise aus verschiedenen Quellen und über längere Zeiträume verteilt. Die Herausforderung bei der Implementierung mit normalen Funktionen besteht darin, die Parallelität zu steuern und sicherzustellen, dass der Aggregator auf einer einzigen VM läuft. Die Verwendung von dauerhaften Entitäten erleichtert die Implementierung.
 
-![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-aggregator.png)
+![Durable Function Chaining](../../../../assets/decentralised_systems/azure-function/durable-function-aggregator.png)
 
 ```csharp
 [FunctionName("Counter")]

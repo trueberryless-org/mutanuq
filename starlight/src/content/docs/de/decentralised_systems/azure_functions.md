@@ -4,12 +4,12 @@ sidebar:
     order: 2
 ---
 
-Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschalten werden. Wenn also momentan viele Anfragen auf Ihre Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegen zu nehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
+Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschaltet werden. Wenn also momentan viele Anfragen auf Ihre Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegen zu nehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
 
 Eine Azure Function, welche mittels [`NCRONTAB` expression](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-csharp#ncrontab-expressions) alle 10 Sekunden getriggert wird, sieht zum Beispiel so:
 
 ```csharp
-[Function("RecurringEvent")]
+[Function("MyTimerTrigger")]
 public static string Run(
 	[TimerTrigger("*/10 * * * * *")] MyInfo myTimer,
 	FunctionContext context)
@@ -44,7 +44,7 @@ Jede Azure Function ist eine einfache Funktion in C# oder [anderen Programmiersp
 Wenn eine AF zum Beispiel alle 5 Minuten ausgeführt werden soll, kann man diese Function verwenden:
 
 ```csharp
-[Function("Helloagain")]
+[Function("MyTimerTrigger")]
 public static string Run(
 	[TimerTrigger("* */5 * * * *")] MyInfo myTimer,
 	ILogger log)
@@ -59,7 +59,7 @@ public static string Run(
 Wenn eine AF zum Beispiel bei einem HTTP Request auf die Route `/trueberryless` ausgeführt werden soll, kann man diese Function verwenden:
 
 ```csharp
-[Function("Iamcool")]
+[Function("MyHTTPTrigger")]
 public static string Run(
 	[HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req,
 	ILogger log)
@@ -73,7 +73,7 @@ public static string Run(
 Bei jeder neuen Datei im Container, wird diese AF durchgeführt:
 
 ```csharp
-[Function("Didufindthissecret")]
+[Function("MyBlobTrigger")]
 public static string Run(
 	[BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
 	ILogger log)
@@ -87,7 +87,7 @@ public static string Run(
 Bei jeder neuen Message in der Queue wird die Function getriggert. Dabei muss man zwischen Topics und Queue unterscheiden, denn ein Topic kann an mehrere Empfänger gesendet werden, während eine Queue immer nur einen Empfänger hat.
 
 ```csharp
-[Function("Firstmessage")]
+[Function("MyQueueTrigger")]
 public static string Run(
 	[QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string jsonString
 	ILogger log)
@@ -101,7 +101,7 @@ public static string Run(
 Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kann dies relativ einfach mittels Input Bindings umgesetzt werden.
 
 ```csharp
-[Function("treesforever")]
+[Function("MyInputBinding")]
 public static string Run(
 	[HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
     [Table("TreeTable")] TableClient tableClient,
@@ -135,7 +135,7 @@ public class TreeTable : Azure.Data.Tables.ITableEntity
 Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding.
 
 ```csharp
-[Function("thumbnailssmall")]
+[Function("MyOutputBinding")]
 public static string Run(
     [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
     [Blob("thumbnails/{name}", FileAccess.Write)] Stream thumbnails,
