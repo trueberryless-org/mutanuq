@@ -62,6 +62,7 @@ Plattformunabhängigkeit
 Prescaler
 programmtechnisch
 Projektcontrolling
+Projektcontrollings
 prozessoroptimierten
 Pulsweite
 PWM
