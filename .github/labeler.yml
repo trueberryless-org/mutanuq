@@ -1,0 +1,13 @@
+# See https://github.com/actions/labeler
+
+'🚨 action':
+  - .github/workflows/**
+
+'🌏 i18n':
+  - docs/en/**/*
+
+'📚 docs':
+  - docs/**
+  
+'✒️ documentation':
+  - '**/README.md'
