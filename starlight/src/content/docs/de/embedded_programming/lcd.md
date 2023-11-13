@@ -4,7 +4,7 @@ sidebar:
     order: 5
 ---
 
-Das Liquid Crystal Display besteht aus 16 Zeichen in einer Reihe und 2 Zeilen insgesamt. Es unterstützt die gesamten lateinischen, chinesischen und weiter Zeichensätze plus einige Emojis.
+Das Liquid Crystal Display besteht aus 16 Zeichen in einer Reihe und 2 Zeilen insgesamt. Es unterstützt die gesamten lateinischen, chinesischen und weiter Zeichensätze plus einige Emoji.
 
 Für die Verwendung des Display empfiehlt sich <a href="/SYTI/lcd/lcd.c" download>lcd.c</a> und <a href="/SYTI/lcd/lcd.h" download>lcd.h</a>.
 

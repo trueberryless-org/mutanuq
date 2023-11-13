@@ -89,6 +89,7 @@ Entscheidungs
 ergebnisorientierten
 gruppenbasierte
 gruppenbasierten
+gruppenbasiertes
 hardwarenahe
 hardwarenahen
 hosten
@@ -103,6 +104,18 @@ Teammitgliedern
 Redaktionsteam
 zeitbasierte
 Verfügbarkeitszonen
+Bürokratisierung
+Entitäten
+funktionsübergreifendes
+plattformabhängig
+plattformabhängige
+plattformabhängigen
+Plattformabhängigkeit
+plattformunabhängige
+plattformunabhängigen
+Plattformunabhängigkeit
 
 # English
 microcontroller
+microcontrollers
+Prescaler

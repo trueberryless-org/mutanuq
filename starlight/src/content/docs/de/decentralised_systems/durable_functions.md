@@ -36,7 +36,7 @@ Orchestrators haben einen ganz besonderen Ausführungsprozess. Bei jedem Aufruf 
 
 Sobald er wieder zum Aufruf der vorherigen Activity kommt (diese wurde nun bereits durchgeführt, da sie beim vorherigen Durchlauf aufgerufen wurde), schaut der Orchestrator in dem Table Storage Account nach, ob der Rückgabewert der Activity bereits gespeichert sind. Wenn ja, wird die Activity nicht noch einmal aufgerufen, sondern das Ergebnis aus der Tabelle ausgelesen und der Orchestrator setzt mit der Durchführung des weiteren Programmablaufs fort.
 
-Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass keine "einfachen" Variablen im Orchestrator deklariert und initialisiert werden dürfen, da der Orchestrator innerhalb eines Triggers mehrmals diese Programmzeile durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig mitstoppen:
+Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass keine "einfachen" Variablen im Orchestrator deklariert und initialisiert werden dürfen, da der Orchestrator innerhalb eines Triggers mehrmals diese Programmzeile durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig messen:
 
 :::danger[Achtung!]
 Unteres Programm hat einen Logikfehler!
@@ -131,7 +131,7 @@ public static async Task Run(
 
 ## Durable Function Patterns
 
-Mithilfe des Prinzipes der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
+Mithilfe des Prinzips der Durable Functions können nun mehrere Funktionalität umgesetzt werden.
 
 ### Function Chaining
 
@@ -139,7 +139,7 @@ Das Function Chaining ermöglicht die Ausführung von Funktionen in einer bestim
 
 ![Durable Function Chaining](../../../../assets/SYTD/azure-function/durable-function-chaining.png)
 
-Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Kodierungsstrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
+Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Codestrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
 
 ```csharp
 [FunctionName("Chaining")]
