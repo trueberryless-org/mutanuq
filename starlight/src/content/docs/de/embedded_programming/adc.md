@@ -19,7 +19,7 @@ Es gibt verschiedene Arten der Stromversorgung für den ADC. Beim ATmega328p mü
 
 ### Links- oder Rechtsbündig?
 
-Der digitale Input, welcher auf Code-Ebene für unzählige Zwecke verwendet werden kann, wird in zwei Bytes gespeichert, weil sich 10-bit nicht in einem Byte ausgehen. Auf diese beiden Bytes kann man mit den Registern `ADCL` (lower Bit) und `ADCH` (higher Bit) zugreifen. Zusätzlich gibt es die Möglichkeit mittels `ADCW`-Register auf die gesamten 16 Bit zuzugreifen. Ob die digitalen Daten nun auf der linken oder rechten Seite dieser 16 Bits gespeichert werden sollen, kann man mittels [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217)-Register auswählen. Welche Vor- und Nachteile diese Auswahl hat, wird im [Kapitel "effizienter ADC"](#effizienter-adc-8-bit-genauigkeit) erklärkt.
+Der digitale Input, welcher auf Code-Ebene für unzählige Zwecke verwendet werden kann, wird in zwei Bytes gespeichert, weil sich 10-bit nicht in einem Byte ausgehen. Auf diese beiden Bytes kann man mit den Registern `ADCL` (lower Bit) und `ADCH` (higher Bit) zugreifen. Zusätzlich gibt es die Möglichkeit mittels `ADCW`-Register auf die gesamten 16 Bit zuzugreifen. Ob die digitalen Daten nun auf der linken oder rechten Seite dieser 16 Bits gespeichert werden sollen, kann man mittels [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217)-Register auswählen. Welche Vor- und Nachteile diese Auswahl hat, wird im [Kapitel "effizienter ADC"](#effizienter-adc-8-bit-genauigkeit) erklärt.
 
 ### PIN-Auswahl
 
