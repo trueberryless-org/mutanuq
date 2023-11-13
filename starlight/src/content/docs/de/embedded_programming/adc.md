@@ -7,7 +7,7 @@ sidebar:
 
 Der ADC wandelt ein analoges Signal in ein digitales Signal um. Folge dessen ist ein ADC immer ein Input. Die folgende Grafik veranschaulicht dies:
 
-![Analoges Signal wird zu einem digitalen Signal verarbeitet](../../../../assets/SYTI/adc/analog_to_digital.webp)
+![Analoges Signal wird zu einem digitalen Signal verarbeitet](../../../../assets/embedded_programming/adc/analog_to_digital.webp)
 
 ## Theorie
 
@@ -132,8 +132,8 @@ Wie vorhin bereits erwähnt hat das Data Register vom ADC beim ATmega328p 10-bit
 
 Außerdem kann man im ADC Multiplexer Selection Register (`ADMUX`-Register) das [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) auf 1 setzen, was dafür sorgt, dass der ADC das Ergebnis linksbündig in die beiden Register `ADCL` und `ADCH` hineinschreibt und nicht rechtsbündig, wie es standardmäßig geschieht. Für ein besseres Verständnis sehen Sie sich entweder die Bilder unten an oder lesen Sie [die Register im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219) nach.
 
-![ADC Right Adjust Result](../../../../assets/SYTI/adc/adc_right_adjust_result.png)
-![ADC Left Adjust Result](../../../../assets/SYTI/adc/adc_left_adjust_result.png)
+![ADC Right Adjust Result](../../../../assets/embedded_programming/adc/adc_right_adjust_result.png)
+![ADC Left Adjust Result](../../../../assets/embedded_programming/adc/adc_left_adjust_result.png)
 
 Die Kombination dieser beiden Funktionalitäten erlauben das schnellere und effizientere Auslesen des Wertes vom ADC. Setzt man nämlich den [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217)-Wert auf 1, sodass die _Most Significant Bits_ im `ADCH` stehen, kann man den `ADCH`-Wert direkt auslesen und erspart sich die Leseoperation vom `ADCL`-Wert. Allerdings muss man eine geringere Genauigkeit in Kauf nehmen, weil die beiden _Least Significant Bits_ nicht ausgelesen werden (`ADC0` und `ADC1`). Dies bedeutet, dass drei von vier `ADCW`-Werten abgerundet sind und der maximale Wert deswegen `1020` ist.
 

@@ -10,8 +10,8 @@ To use the display, we recommend [lcd.h](#appendix-a---lcdh) and [lcd.c](#append
 
 ## Structure
 
-![Grid of an LCD on the ATmega 328p](../../../../assets/SYTI/lcd/lcd_composition.png)
-![Grid of an LCD](../../../../assets/SYTI/lcd/lcd_grid.png)
+![Grid of an LCD on the ATmega 328p](../../../../assets/embedded_programming/lcd/lcd_composition.png)
+![Grid of an LCD](../../../../assets/embedded_programming/lcd/lcd_grid.png)
 
 ## Code
 

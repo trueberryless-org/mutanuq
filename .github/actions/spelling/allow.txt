@@ -14,6 +14,16 @@ GRN
 lcdc
 lcdh
 emoji
+trueberryless
+LCDs
+mathjax
+mutanuq
+ncrontab
+patreon
+paypal
+PWM
+vect
+withastro
 
 # Register
 ADATE
@@ -37,19 +47,12 @@ DDRC
 DDRD
 EEPROM
 EIMSK
-LCDs
-mathjax
-Matura
 MCUCR
-mutanuq
 MUXx
-ncrontab
 OCIE
 OCIEn
 OCRn
 OVF
-patreon
-paypal
 PCICR
 PCINT
 PCMSK
@@ -58,7 +61,6 @@ PORTB
 PORTC
 PORTD
 PSTR
-PWM
 RXCIE
 RXEN
 SRW
@@ -68,22 +70,20 @@ TCNT
 TIMERn
 TIMSK
 TIMSKn
-trueberryless
 TXEN
 UBRR
 UCSR
 UCSZ
 UDRE
-vect
 WGM
 WGMn
-withastro
 
 # German
 aggregiert
 aufklatschen
 bzw
 Controllings
+Datenverarbeitungsprogrammen
 drehzahlgesteuert
 Entscheidungs
 ergebnisorientierten
@@ -114,6 +114,10 @@ Plattformabhängigkeit
 plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
+vorzuladen
+Wilderöm
+-verarbeitung
+Matura
 
 # English
 microcontroller

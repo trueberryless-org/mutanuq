@@ -29,20 +29,20 @@ Active High circuits work the other way round. Here, the 5V voltage (active) is 
 
 A voltage divider is built on the corresponding PIN, which has a 10K resistor with 5V supply voltage on one side and a grounded button on the other side.
 
-![Pull-Up Resistor](../../../../assets/SYTI/button/pull_up_widerstand.png)
+![Pull-Up Resistor](../../../../assets/embedded_programming/button/pull_up_widerstand.png)
 _A pull-up resistor build-up when the button is open_.
 
-![Pull-up resistor closed](../../../../assets/SYTI/button/pull_up_widerstand_closed.png)
+![Pull-up resistor closed](../../../../assets/embedded_programming/button/pull_up_widerstand_closed.png)
 _A pull-up resistor build-up when the button is closed_.
 
 ### Active High / Pull-Down
 
 A voltage divider is again connected to the corresponding PIN, but this time it has the ground (GRN) on the side of the 10K resistor and the button with 5V supply voltage on the other side.
 
-![Pull-Down Resistor](../../../../assets/SYTI/button/pull_down_widerstand.png)
+![Pull-Down Resistor](../../../../assets/embedded_programming/button/pull_down_widerstand.png)
 _A pull-down resistor build-up when the button is open_.
 
-![Pull-Down resistor closed](../../../../assets/SYTI/button/pull_down_widerstand_closed.png)
+![Pull-Down resistor closed](../../../../assets/embedded_programming/button/pull_down_widerstand_closed.png)
 _A pull-down resistor build-up when the button is closed_.
 
 ## Code
@@ -252,10 +252,10 @@ ISR (PCINT2_vect) {
 
 Without a resistor, you must not apply a 5V supply voltage to the button:
 
-![Floating Point](../../../../assets/SYTI/button/floating_point.png)
+![Floating Point](../../../../assets/embedded_programming/button/floating_point.png)
 
 ### Short circuit
 
 Similarly, a voltage divider must not simply be connected to the ground (GND), as this ground would immediately cancel the supply voltage.
 
-![Short circuit](../../../../assets/SYTI/button/kurzschluss.png)
+![Short circuit](../../../../assets/embedded_programming/button/kurzschluss.png)
