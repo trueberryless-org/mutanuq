@@ -1,8 +1,8 @@
 ---
-title: Unternehmensgründung 
+title: Unternehmensgründung
 ---
 
-Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründerin oder den Gründer eine interessaten Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen unbedingt die Wirtschaftskammer zur Unterstützung bei der Phase der Gründung heranzuziehen.
+Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründerin oder den Gründer eine interessante Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen unbedingt die Wirtschaftskammer zur Unterstützung bei der Phase der Gründung heranzuziehen.
 
 ## Vorteile
 
@@ -46,7 +46,7 @@ Ohne eine eigene Geschäftsidee kann sich das Unternehmen nicht von der Konkurre
 Unternehmensübernahme bedeutet, dass man ein bereits bestehendes Unternehmen übernimmt und nun quasi den Geschäftsführer ablöst und selbst selbstständig wird.
 
 > [Nachfolgebörse](https://firmen.wko.at/suche_nachfolgeboerse/), [Franchisebörse](https://www.wko.at/gruendung/franchiseboerse?shorturl=franchiseb%F6rseat), [Komma-net](https://www.wirtschaftswissen.de/unternehmensfuehrung/marketing/unternehmenskommunikation/)
- 
+
 ##### Vorteile
 
 -   weniger Investitionen
@@ -89,7 +89,7 @@ Vor dem Umsetzen einer Idee sollte überprüft werden, ob überhaupt ein Markt f
 
 ## USP
 
-Die Unique Selling Proposition (USP), auf Deutsch Alleinstellungsmerkmal, ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Kundenwertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben. 
+Die Unique Selling Proposition (USP), auf Deutsch Alleinstellungsmerkmal, ist ein Marketingkonzept, das die einzigartigen Eigenschaften eines Produkts, einer Dienstleistung oder einer Marke hervorhebt, um es von der Konkurrenz abzuheben. Die USP sollte etwas Einzigartiges und Wertvolles betonen, klar und prägnant formuliert sein, auf die Bedürfnisse der Zielgruppe zugeschnitten sein, konsistent kommuniziert werden und idealerweise langfristig relevant bleiben.
 
 > Volvo, sicherstes Auto; Apple, iPhone hat unvergleichliche Benutzererfahrung; FedEx, liefert über Nacht; Starbucks, handgefertigter Kaffee nach individuellen Wünschen
 
@@ -171,7 +171,7 @@ Bei Unternehmen mit hoher Verantwortung ist auch eine Zuverlässigkeitsprüfung 
 
 #### Gewerbearten
 
-Es gibt verschiedene Gerwerbearten, welche jeweils wiederum verschiedene Voraussetzungen haben.
+Es gibt verschiedene Gewerbearten, welche jeweils wiederum verschiedene Voraussetzungen haben.
 
 ##### Freie Gewerbe
 
@@ -220,7 +220,7 @@ Außerdem können Sie aufgrund der Planung und Steuerung im Businessplan eine be
 
 -   Marketing: Beschreiben Sie einen kostengünstigen Weg, um den Kunden Informationen zu übermitteln.
 
--   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen Sie dabei in das Geschehen involviert? Vielleicht haben Sie bereits einen Businessangel angagiert, welcher die Kontakte zu anderen Unternehmen herstellen kann.
+-   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen Sie dabei in das Geschehen involviert? Vielleicht haben Sie bereits einen Businessangel engagiert, welcher die Kontakte zu anderen Unternehmen herstellen kann.
 
 -   **Umsetzungsfahrplan**, **Meilensteinplan**: Je detailierter Sie planen, desto einfacher wird die Durchführung. Außerdem sind Kapitalgeber umso mehr von dem Unternehmen überzeugt, wenn eine genaue effiziente und möglichst realistische Planung vorliegt.
 
