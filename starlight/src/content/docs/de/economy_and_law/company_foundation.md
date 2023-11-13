@@ -200,7 +200,7 @@ Es gibt verschiedene Gewerbearten, welche jeweils wiederum verschiedene Vorausse
 
 Unternehmerische Tätigkeiten, welche außerhalb jeglicher Gewerbeordnung fallen, unterliegen anderen Gesetzen und ihre Tätigkeit erfordert **keine** Gewerbeberechtigung.
 
-> freie Berufe (Ärzte, Notare, Physiotherapeuten), neue Selbständige (Vortragende, Physiotherapeuten)
+> freie Berufe (Ärzte, Notare), neue Selbständige (Vortragende, Physiotherapeuten)
 
 ## Businessplan
 
