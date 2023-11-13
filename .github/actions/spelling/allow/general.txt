@@ -17,7 +17,6 @@ drehzahlgesteuert
 eeprom
 Elegoo
 emoji
-programmtechnisch
 Entitäten
 Entscheidungs
 ergebnisorientierten
@@ -61,6 +60,8 @@ plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
 Prescaler
+programmtechnisch
+Projektcontrolling
 prozessoroptimierten
 Pulsweite
 PWM
