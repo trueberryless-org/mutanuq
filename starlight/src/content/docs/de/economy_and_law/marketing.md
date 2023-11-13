@@ -62,7 +62,7 @@ Hierbei wird das gleiche Marketing für mehrere Segmente wiederverwendet, da die
 
 ##### Differenziertes Marketing
 
-Hier bekommt jede einzelne Interessensgruppe ein eigenes Marketing.
+Hier bekommt jede einzelne Interessengruppe ein eigenes Marketing.
 
 ##### Undifferenziertes Marketing
 
@@ -78,7 +78,7 @@ Es wird ein bedeutsamer Kundennutzen angesprochen, um von den Leistung zu überz
 
 ## Instrumente
 
-Marketinginstrumente sind bestimmte Maßnahmen und Mittel, um Aktivitäten am Markt gezielt zu gestalten. Es gibt vier verschiedene Instrumente in der klassischen Marketingslehre (`4Ps`). Diese können am besten genutzt werden, wenn sie zusammen eingesetz werden. Die Kombination der einzelnen Marketinginstrumente bezeichnet man als **Marketingmix**.
+Marketinginstrumente sind bestimmte Maßnahmen und Mittel, um Aktivitäten am Markt gezielt zu gestalten. Es gibt vier verschiedene Instrumente in der klassischen Marketinglehre (`4Ps`). Diese können am besten genutzt werden, wenn sie zusammen eingesetzt werden. Die Kombination der einzelnen Marketinginstrumente bezeichnet man als **Marketingmix**.
 
 Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufgelistet.
 
@@ -179,7 +179,7 @@ Wenn man auf dem Markt erstmals Daten für einen bestimmten Zweck erhebt, sprich
 -   Experiment: festgelegte, kontrollierte Bedingungen, wobei Teilnehmer beobachtet und/oder anschließend befragt werden
 
     -   Produkttest: das Produkt an die Bedürfnisse anpassen
-    -   Storetest: Verkaufszahlen von verschiednene Ausführungen eines Produktes testen
+    -   Storetest: Verkaufszahlen von verschiedenen Ausführungen eines Produktes testen
     -   Markttest: Produkte bei zufälligen Kunden überprüfen lassen
 
     ***
@@ -208,7 +208,7 @@ Die **Produktzyklusanalyse** und **Portfolioanalyse** sind zwei von vielen, sehr
 
 #### Produktlebenszyklus
 
-Das Produktlebenszyklusmodell geht davon aus, dass Produkte grundsätzlich wie Lebewesen einem Lebenszyklus unterworfen sind. Die Lebensdauer von Produkten ist begrenzt durch:
+Der Produktlebenszyklus geht davon aus, dass Produkte grundsätzlich wie Lebewesen einem Lebenszyklus unterworfen sind. Die Lebensdauer von Produkten ist begrenzt durch:
 
 -   Technischen Fortschritt
 -   Änderungen des Verbraucherverhaltens
@@ -247,7 +247,7 @@ Die Portfolioanalyse (auch `BCG-Portfolio`) ordnet die Produkte in eine 4-Feld-M
 Jedes der vier Quadranten hat verschiedene Bedeutungen für das Produkt und dementsprechend soll das Unternehmen auch handeln.
 
 -   **Questionmarks**  
-    Dies sind Nachwuchsprodukte in der Einführungsphase, welche momentan noch einen geringen Marktanteil haben. Wenn das Unternehmen diese Produkte fördert und das Wachstum beobachtet, kann das Produkt am Markt stark wachsen und zu einem `Star` werden. Falls das Unternehmen die Gelegenheit des Föderns verpasst oder keine Kunden am Produkt interessiert sind, könnte das Produkt direkt zum `Poor Dog` werden, und das will das Unternehmen vermeiden.
+    Dies sind Nachwuchsprodukte in der Einführungsphase, welche momentan noch einen geringen Marktanteil haben. Wenn das Unternehmen diese Produkte fördert und das Wachstum beobachtet, kann das Produkt am Markt stark wachsen und zu einem `Star` werden. Falls das Unternehmen die Gelegenheit der Förderung verpasst oder keine Kunden am Produkt interessiert sind, könnte das Produkt direkt zum `Poor Dog` werden, und das will das Unternehmen vermeiden.
 
 -   **Stars**  
     Wenn das Produkt in dem Sektor `Stars` angelangt ist, muss das Unternehmen mittels Marketing dafür sorgen, dass viele Kunden sich für das Unternehmen und nicht für die Konkurrenz entscheiden. Denn es gibt aufgrund des hohen Marktwachstums noch viele Kunden, die noch gar kein Produkt dieser Art besitzen, und diese Kunden sollen sich nun zwischen den Produkten der anbietenden Unternehmen entscheiden.
