@@ -78,7 +78,7 @@ import ResponsiveTable from "../../../../assets/components/ResponsiveTable.astro
 
 #### Normal Mode
 
-Um einen bestimmten Programmcode in gewünschten Zeitabständen auszulösen, können wir also nun einen Timer verwenden, welcher konstant hoch zählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings nicht immer exakt der gewünschten Zeitspanne entsprechen wird, müssen wir den `BOTTOM`-Wert / Vorladewert so verändern (also erhöhen), dass die zeitliche Differenz zwischen dem Vorladewert und dem `TOP`-Wert genau der gewünschten Zeitspanne entspricht. Wie man dies programmlich umsetzt, wird unten beim [Code](#tcntn-vorladen) erklärt. Um Ihnen die schwierigen Berechnungen zu ersparen, gibt es hier eine einfache Formel zur Berechnung des Vorladewertes:
+Um einen bestimmten Programmcode in gewünschten Zeitabständen auszulösen, können wir also nun einen Timer verwenden, welcher konstant hoch zählt und überläuft. Da die Zeitspanne bis zum Überlauf allerdings nicht immer exakt der gewünschten Zeitspanne entsprechen wird, müssen wir den `BOTTOM`-Wert / Vorladewert so verändern (also erhöhen), dass die zeitliche Differenz zwischen dem Vorladewert und dem `TOP`-Wert genau der gewünschten Zeitspanne entspricht. Wie man dies programmtechnisch umsetzt, wird unten beim [Code](#tcntn-vorladen) erklärt. Um Ihnen die schwierigen Berechnungen zu ersparen, gibt es hier eine einfache Formel zur Berechnung des Vorladewertes:
 
 $$
 Vorladewert = 2^{Bit\;des\;Timers} - {gewünschte\;Zeitspanne\;in\;Sekunden} * \frac {Hz\;des\;Microcontrollers} {Prescaler}

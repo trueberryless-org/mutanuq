@@ -4,7 +4,7 @@ sidebar:
     order: 0
 ---
 
-Cloud Computing bezeichnet eine `PaaS` (Platform as a Service) Architektur, welche es Programmierern ermöglicht, sich zu 100% auf die Applikationen und die Userdaten zu konzentrieren, während große Cloud Anbieter, wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) sich darum kümmern, dass sie billig Server arrangieren und diese eine hohe Verfügbarkeit garantieren. Diese Methode der Programmierung ist in den letzten Jahrzehnten immer beliebter geworden, da es sowohl für die Anbieter, als auch die Kunden (Programmierer) einige Vorteile mit sich bringt.
+Cloud Computing bezeichnet eine `PaaS` (Platform as a Service) Architektur, welche es Programmierern ermöglicht, sich zu 100% auf die Applikationen und die Benutzerdaten zu konzentrieren, während große Cloud Anbieter, wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) sich darum kümmern, dass sie billig Server arrangieren und diese eine hohe Verfügbarkeit garantieren. Diese Methode der Programmierung ist in den letzten Jahrzehnten immer beliebter geworden, da es sowohl für die Anbieter, als auch die Kunden (Programmierer) einige Vorteile mit sich bringt.
 
 ## Übersicht
 

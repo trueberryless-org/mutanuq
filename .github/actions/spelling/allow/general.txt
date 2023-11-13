@@ -17,9 +17,11 @@ drehzahlgesteuert
 eeprom
 Elegoo
 emoji
+programmtechnisch
 Entitäten
 Entscheidungs
 ergebnisorientierten
+FaaS
 funktionsübergreifendes
 gettemperaturehumidity
 getxy
@@ -32,6 +34,7 @@ hardwarenahe
 hardwarenahen
 hosten
 HTL
+IaaS
 lcdc
 lcdh
 LCDs
@@ -45,6 +48,7 @@ microcontroller
 microcontrollers
 mutanuq
 ncrontab
+PaaS
 patreon
 paypal
 persistiert
@@ -62,6 +66,7 @@ Pulsweite
 PWM
 Redaktionsteam
 rehype
+SaaS
 situationsbezogen
 Stakeholdern
 Stilfiguren
