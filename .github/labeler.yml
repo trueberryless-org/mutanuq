@@ -11,3 +11,10 @@
   
 '✒️ documentation':
   - '**/README.md'
+  
+'🚧 astro':
+  - 'starlight/astro.config.mjs'
+  
+'📀 assets':
+  - 'starlight/src/assets/**'
+  - 'starlight/public/**'
