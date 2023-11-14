@@ -3,12 +3,12 @@
 '🚨 action':
   - .github/workflows/**
 
-'🌏 i18n':
-  - docs/en/**/*
-
 '📚 content':
-  - docs/**
+  - starlight/src/content/docs/**
   
+'🌏 i18n':
+  - starlight/src/content/docs/en/**
+
 '✒️ documentation':
   - '**/README.md'
   
