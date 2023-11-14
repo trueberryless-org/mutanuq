@@ -10,7 +10,7 @@
   - docs/**
   
 '✒️ documentation':
-  - 'README.md'
+  - '**/README.md'
   
 '🚧 astro':
   - 'starlight/astro.config.mjs'
