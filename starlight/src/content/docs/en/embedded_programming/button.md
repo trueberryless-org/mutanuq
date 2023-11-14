@@ -179,7 +179,7 @@ int main(void)
     EIMSK |= (1<<INT0);
 
     // set enable interrupt
-    be();
+    sei();
 
 	while (1)
 	{
@@ -228,7 +228,7 @@ int main(void)
 	PCMSK2 |= (1<<PCINT20);
 
     // set enable interrupt
-    be();
+    sei();
 
 	while (1)
 	{
