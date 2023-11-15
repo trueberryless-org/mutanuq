@@ -33,7 +33,7 @@ Then give the report a meaningful subject that briefly and succinctly summarises
 
 After the basic information, a short introduction is written, in which the metadata of the survey, presentation or accident are mentioned. This includes, for example, the source of the survey, when and with which participants it was carried out, and also the location of the survey if it was only carried out in one country. It is also important to mention the reason for writing the report in the first place.
 
-> The purpose of this report is to provide an overall picture of working abroad. It is based among a survey among around 3000 stundents at the ages of 18 to 29 years from Germany and was conducted in 2020.
+> The purpose of this report is to provide an overall picture of working abroad. It is based among a survey among around 3000 students at the ages of 18 to 29 years from Germany and was conducted in 2020.
 
 | Phrases                                            |
 | -------------------------------------------------- |
@@ -54,7 +54,7 @@ After the basic information, a short introduction is written, in which the metad
 |                                  | discuss ...                       |
 
 :::note
-These phrases use the word `report` very heavily. Once you used one phrase you can substitude `report` with `it`.
+These phrases use the word `report` very heavily. Once you used one phrase you can substitute `report` with `it`.
 :::
 
 ### Findings
@@ -71,7 +71,7 @@ The next step is to incorporate the most important numerical data from the study
 | The number of ... is rather _high / low_.                                   |
 | In the year ... there was _a peak / a rise / a decrease_ of ... percent.    |
 | In ... the number of ... _declined / rose / remained stable_.               |
-| There are considerable _differences / similarites_ between ...              |
+| There are considerable _differences / similarities_ between ...             |
 | Looking at ... it can be observed that ...                                  |
 | Comparing ... and ... it can be said that ...                               |
 | In comparison, _more than / less than_ ...                                  |
