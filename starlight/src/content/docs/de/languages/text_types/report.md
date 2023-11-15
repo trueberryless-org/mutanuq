@@ -87,7 +87,7 @@ Der nächste Schritt besteht darin, die wichtigsten numerischen Daten aus der St
 
 ### Mögliche Zwischenüberschriften
 
-Je nach dem von den Aufzählungspunkten geforderten Inhalt gibt es nun maximal zwei weitere Absätze mit Zwischenüberschriften. So ist es beispielsweise oft notwendig, eine Empfehlung auszusprechen, um die Umsetzung der Lösung der festgestellten Probleme zu erleichtern. Manchmal ist es aber auch einfach notwendig, weiter zu begründen, warum diese Probleme überhaupt entstanden sind. Der Bericht **endet** daher entweder mit einer **Empfehlung** oder einer **Schlussfolgerung**.
+Je nachdem, welcher Inhalt in der Aufgabenstellung verlangt wird, gibt es nun maximal zwei weitere Absätze mit Zwischenüberschriften. So ist es beispielsweise oft notwendig, eine Empfehlung auszusprechen, um die Umsetzung der Lösung der festgestellten Probleme zu erleichtern. Manchmal ist es aber auch einfach notwendig, weiter zu begründen, warum diese Probleme überhaupt entstanden sind. Der Bericht **endet** daher entweder mit einer **Empfehlung** oder einer **Schlussfolgerung**.
 
 #### Empfehlungen
 
