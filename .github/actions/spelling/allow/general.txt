@@ -30,6 +30,8 @@ emoji
 Entitäten
 Entscheidungs
 ergebnisorientierten
+ESX
+ESXi
 EWR
 Faa
 Franchisebörse
@@ -120,8 +122,10 @@ usart
 vect
 Verfügbarkeitszonen
 verhaltensbezogen
+virtualisation
 vorzuladen
 Wilderöm
 withastro
+Xen
 zeitbasierte
 ZRS
