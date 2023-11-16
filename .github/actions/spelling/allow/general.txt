@@ -15,6 +15,7 @@ Bulletpoints
 Bürokratisierung
 bzw
 Cashcows
+Citrix
 Clickbait
 clrscr
 computerunterstützt
@@ -64,6 +65,7 @@ marktökonomische
 marktpsychologische
 mathjax
 Matura
+mehrbenutzerfähig
 Meilensteinplan
 meinungsbasierte
 meinungsorientierte
