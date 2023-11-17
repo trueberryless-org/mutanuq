@@ -69,3 +69,28 @@ Die Hardware-Virtualisierung wird oft durch CPU-Funktionen wie Intel VT-x oder A
 ### Paravirtualisierung
 
 ### Containervirtualisierung
+
+Im Gegensatz zu anderen Virtualisierungen hat man bei einer Containervirtualisierung kein eigenes Betriebssystem bei den eigenen Containern. Deswegen benötigt man nicht so viel Platz und es kann schneller starten und auch laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen - auch `Environments` - schnell auf neuen Rechnern aufsetzen.
+
+![Containervirtualisierung Aufbau](../../../../assets/system_integration_and_infrastructure/Container_Structure.svg)
+
+#### Vorteile
+
+-   schneller
+-   wenig Speicherplatz
+-   leicht teilen und veröffentlichen
+-   Anwendung und Abhängigkeiten kapseln (nicht gesamtes Betriebssystem)
+
+#### Verwendung
+
+Um Containervirtualisierung zu verwenden, gibt es verschiedene Anbieter, wie zum Beispiel [Docker](https://www.docker.com/) und [Podman](https://podman.io). Falls Sie Docker verwenden, können Sie dies auf MacOS und Windows mittels [Docker Desktop](https://docs.docker.com/get-docker/) installieren.
+
+#### Images
+
+Ein Image ist ein Bauplan für einen Container. Im Vergleich zur Objektorientierten Programmierung ist ein Image eine Klasse und ein Container eine Instanz der Klasse. Ein Image enthält den Code und die Tools und Ausführungsprogramme, damit im Container alles enthalten ist, was man benötigt.
+
+#### Container
+
+#### Dockerfile
+
+#### Commands
