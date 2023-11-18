@@ -30,16 +30,16 @@ Der Hauptteil fasst innerhalb von zwei bis drei Sätzen den Inhalt des Ausgangst
 | Kriterium               | mögliche Ergebnisse                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------- |
 | Aufbau                  | Art der Einleitung, des Hauptteils und des Schlussteils                                |
-| Sinnesabschnitte        | Auflistung der inhaltlich getrennten Abschnitte mittels Zeilennummern                  |
+| Sinnabschnitte          | Auflistung der inhaltlich getrennten Abschnitte mittels Zeilennummern                  |
 | Sprache                 | Standardsprache, Bildungssprache, Umgangssprache                                       |
 | Wortfelder / Wortschatz | verwendet der Autor / die Autorin das Fachtermini des Themas                           |
 | Wortarten               | viele Nomen (Nominalstil), Verben, Adjektive                                           |
 | Satzstrukturen          | parataktisch (mehrheitlich Hauptsätze), hypotaktisch (viele Nebensätze und Satzgefüge) |
 | Argumentation           | Werteargumente, Vergleichsargumente, Faktenargumente, Autoritätsargumente              |
 | Stilmittel              | Welche Stilmittel werden verwendet?                                                    |
-| Intention               | Analyse von Aufmerksamkeit, Information und Appellierung + gelungen / nicht gelungen?  |
+| Intention               | Analyse von Aufmerksamkeit, Information und Appell + gelungen / nicht gelungen?        |
 
-Arbeiten Sie diese Kriterien in Ihrem Text ab und teilen Sie diese logisch in sprachliche Analyse, inhaltliche Analyse, stylistische Analyse.
+Arbeiten Sie diese Kriterien in Ihrem Text ab und teilen Sie diese logisch in sprachliche Analyse, inhaltliche Analyse, stilistische Analyse.
 
 ### Schluss
 
