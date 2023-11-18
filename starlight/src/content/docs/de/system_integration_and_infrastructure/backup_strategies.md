@@ -4,10 +4,10 @@ sidebar:
     order: 3
 ---
 
-Im privaten Bereicht gibt es keine Verpflichtung für die Datensicherung. Was Sie mit Ihren Daten machen, kann jedem anderen Menschen eigentlich recht egal sein. Doch bei Unternehmen sieht das anders aus. Unternehmen müssen eine Buchhaltung führen, für welche es die Pflicht gibt, Rechnungen sieben Jahre lang aufzubewahren. Und wenn Unternehmen Rechnungen digital führen wollen, dann müssen diese Rechnungen strategisch gesichert sein. Sonst kann es schnell passieren, dass aufgrund zu exessiven redundaten Speicherns der Platz ausgeht oder die Daten verloren gehen.
+Im privaten Bereicht gibt es keine Verpflichtung für die Datensicherung. Was Sie mit Ihren Daten machen, kann jedem anderen Menschen eigentlich recht egal sein. Doch bei Unternehmen sieht das anders aus. Unternehmen müssen eine Buchhaltung führen, für welche es die Pflicht gibt, Rechnungen sieben Jahre lang aufzubewahren. Und wenn Unternehmen Rechnungen digital führen wollen, dann müssen diese Rechnungen strategisch gesichert sein. Sonst kann es schnell passieren, dass aufgrund einer exzessiven redundanten Sicherung der Platz ausgeht oder die Daten verloren gehen.
 
 :::note[zusätzliche Information]
-Bei Unternehmen gibt es sogenannte ISO-Zertifizierungen, welche dazu dienen eine gewisse Qualität vorauszusetzen. Diese ISO-Normen definieren gewisse Bereiche und sind in alle Sektoren (Umwelt, IT, Qualität, Gebrauchsgüter, Ernährung, Medizin, ...). Beispiel für ISO-Normen sind:
+Bei Unternehmen gibt es sogenannte ISO-Zertifizierungen, welche dazu dienen eine gewisse Qualität voraus zu setzen. Diese ISO-Normen definieren gewisse Bereiche und sind in alle Sektoren (Umwelt, IT, Qualität, Gebrauchsgüter, Ernährung, Medizin, ...). Beispiel für ISO-Normen sind:
 
 -   9000: Qualitätsmanagement
 -   14000: Umweltmanagement
@@ -17,7 +17,7 @@ Bei Unternehmen gibt es sogenannte ISO-Zertifizierungen, welche dazu dienen eine
 
 ## Strategien
 
-Um eine Sicherung möglichst effizient betreiben zu können, gibt es einige Strategien, welche bei der aufsetzung eines Backups hilfreich sind.
+Um eine Sicherung möglichst effizient betreiben zu können, gibt es einige Strategien, welche bei der Aufsetzung eines Backups hilfreich sind.
 
 ### Kommunikation
 
@@ -41,7 +41,7 @@ Bei einer differentiellen Sicherung macht man regelmäßig eine Komplettsicherun
 
 #### Inkrementelle Sicherung
 
-Bei einer inkrementellen Sicherung macht manr regelmäßig eine Komplettsicherung und dazwischen in gewissen Zeitabständen eine Teilsicherung relativ zur letzten **Teilsicherung**. Beispielsweise sichert man wöchentlich alles erneut (vollständig) und täglich die Veränderung zum Vortag (Inkrement).
+Bei einer inkrementellen Sicherung macht man regelmäßig eine Komplettsicherung und dazwischen in gewissen Zeitabständen eine Teilsicherung relativ zur letzten **Teilsicherung**. Beispielsweise sichert man wöchentlich alles erneut (vollständig) und täglich die Veränderung zum Vortag (Inkrement).
 
 ![Backup Incremental](../../../../assets/system_integration_and_infrastructure/backup-incremental.png)
 
@@ -51,7 +51,7 @@ Das Generationenprinzip ist eine geprüfte Sicherungsstrategie, welches folgende
 
 > Bei einer Sicherung will man den Speicherplatz optimal nutzen und trotzdem Daten, welche sich täglich verändern und wachsen, speichern können. Wie kann ich beide Faktoren möglichst stark optimieren?
 
-Zuerst beantworten wir die Frage, was eine Generation in diesem Zusammenhang ist. Man spricht von einer neuen Generation, wenn diese eine Komplettsicherung aller zeitlich vorherigen Sicherungen aus vorherigen Generationen ist. Wie man in dem untrigen Bild erkennen kann ist `V1` (Freitag, 5. Jänner) eine neue Generation, da diese Sicherung alle Daten der Sicherungen `S1` - `S4` (1. - 4. Jänner) beinhaltet. Aus diesem Grund kann am 8. Jänner die Sicherung vom 1. Jänner überschrieben werden (gleiche Zeilen bedeuten gleiche Festplatten).
+Zuerst beantworten wir die Frage, was eine Generation in diesem Zusammenhang ist. Man spricht von einer neuen Generation, wenn diese eine Komplettsicherung aller zeitlich vorherigen Sicherungen aus vorherigen Generationen ist. Wie man in dem untigen Bild erkennen kann ist `V1` (Freitag, 5. Jänner) eine neue Generation, da diese Sicherung alle Daten der Sicherungen `S1` - `S4` (1. - 4. Jänner) beinhaltet. Aus diesem Grund kann am 8. Jänner die Sicherung vom 1. Jänner überschrieben werden (gleiche Zeilen bedeuten gleiche Festplatten).
 
 ![Generationenprinzip](../../../../assets/system_integration_and_infrastructure/generationenprinzip.png)
 
@@ -81,7 +81,7 @@ Unternehmen müssen Daten laut Gesetz mindestens sieben Jahre aufbewahren. Ob je
 
 ### Datenidentifikation - Welche Daten?
 
-In den meisten Fällen macht es Sinn, reine Nutzdaten zu sichern und das Betriebssystem und Programme nicht mit zu sichern. Um eine effiziente Sicherung durchführen zu können, wird empfohlen mit mehreren Mitarbeitern zu kommunizieren, um herauszufinden, welche Datentypen gesichert werden müssen. Denn viele Backupsysteme unterstützen auch die Einschränkung auf Dateiendungen.
+In den meisten Fällen macht es Sinn, reine Nutzdaten zu sichern und das Betriebssystem und Programme nicht mit zu sichern. Um eine effiziente Sicherung durchführen zu können, wird empfohlen mit mehreren Mitarbeitern zu kommunizieren, um herauszufinden, welche Datentypen gesichert werden müssen. Denn viele Backup-Systeme unterstützen auch die Einschränkung auf Dateiendungen.
 
 ### Speichermedium - Welches Medium?
 
