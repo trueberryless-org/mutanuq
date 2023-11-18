@@ -27,6 +27,7 @@ Degenerationsphase
 detailierter
 dotnet
 drehzahlgesteuert
+Echtzeitshoppen
 eeprom
 Elegoo
 emoji
@@ -37,6 +38,7 @@ ESX
 ESXi
 EWR
 Faa
+Fachtermini
 Fragmentiertung
 Franchisebörse
 Franchisegeber
@@ -58,6 +60,8 @@ hardwarenahen
 Helpdesk
 hosten
 HTL
+hypotaktisch
+Hypotaxen
 Iaa
 imma
 Kapitalaufbringung
@@ -83,7 +87,9 @@ Moin
 Motivationsfähigkeit
 mutanuq
 ncrontab
+Onlineshopping
 Paa
+parataktisch
 Passivkonstruktionen
 patreon
 paypal
@@ -113,6 +119,7 @@ rehype
 Reifephase
 Saa
 Segmentierungskriterien
+Sinnabschnitte
 situationsbezogen
 Sortimentspolitik
 SSDs
