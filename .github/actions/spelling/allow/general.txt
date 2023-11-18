@@ -9,6 +9,8 @@ ATmega
 Atmel
 aufklatschen
 avr
+blockbasierte
+blockbasierten
 Bräunungsstudio
 Bulletpoint
 Bulletpoints
@@ -35,9 +37,11 @@ ESX
 ESXi
 EWR
 Faa
+Fragmentiertung
 Franchisebörse
 Franchisegeber
 funktionsübergreifendes
+Generationenprinzip
 gettemperaturehumidity
 getxy
 Gewerberechtliche
@@ -51,6 +55,7 @@ hamma
 handgefertigter
 hardwarenahe
 hardwarenahen
+Helpdesk
 hosten
 HTL
 Iaa
@@ -110,13 +115,16 @@ Saa
 Segmentierungskriterien
 situationsbezogen
 Sortimentspolitik
+SSDs
 Stakeholdern
 Stilfiguren
 Storetest
 suggestiert
 summarises
+Synology
 tagline
 Teammitgliedern
+Testung
 trueberryless
 Unternehmensexterne
 Unternehmenskassa
@@ -125,9 +133,11 @@ vect
 Verfügbarkeitszonen
 verhaltensbezogen
 virtualisation
+VMI
 vorzuladen
 Wilderöm
 withastro
 Xen
+Xigma
 zeitbasierte
 ZRS
