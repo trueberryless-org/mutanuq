@@ -68,11 +68,46 @@ Die Hardware-Virtualisierung wird oft durch CPU-Funktionen wie Intel VT-x oder A
 
 ### Paravirtualisierung
 
+Paravirtualisierung ist eine Methode zur Virtualisierung, bei welcher die Gastbetriebssysteme (Guest) speziell für die Virtualisierung angepasst werden. Dies bedeutet, dass die Gastbetriebssysteme die Hardware direkt nicht mehr ansprechen können, sondern stattdessen über eine virtuelle Schnittstelle, die VMI (Virtual Machine Interface), mit der Hardware kommunizieren müssen. Die VMI wird vom Hypervisor bereitgestellt, der die virtuelle Maschine (VM) verwaltet.
+
+#### Virtual Machine Interface
+
+Die VMI ist eine zusätzliche Schicht zwischen den Gastbetriebssystemen und der Hardware. Sie ermöglicht es dem Hypervisor, die Kommunikation zwischen den Gastbetriebssystemen und der Hardware zu steuern.
+
+#### Funktionsbibliothek
+
+Die Funktionsbibliothek ist eine Sammlung von Funktionen, die zusammenarbeiten, um eine bestimmte Aufgabe zu erfüllen. Sie ermöglichen es den Gastbetriebssystemen, die Hardwarefunktionen zu nutzen, ohne dass sie direkt auf die Hardware zugreifen müssen.
+
+Die Funktionsbibliotheken sind in der Regel in zwei Teile unterteilt:
+
+-   **VMI-Treiber**  
+    Die VMI-Treiber stellen die Verbindung zwischen den Gastbetriebssystemen und der VMI her. Sie sind für die Übersetzung der Hardwareaufrufe der Gastbetriebssysteme in die entsprechenden Aufrufe der VMI verantwortlich.
+
+-   **VMI-Funktionen**  
+    Die VMI-Funktionen stellen die eigentlichen Hardwarefunktionen für die Gastbetriebssysteme bereit. Sie umfassen beispielsweise Funktionen zum Zugriff auf die CPU, den Speicher, die Festplatte und andere Hardwarekomponenten.
+    Die Funktionsbibliotheken werden vom Hypervisor bereitgestellt. Der Hypervisor lädt die Funktionsbibliotheken beim Start der Gastbetriebssysteme in den Arbeitsspeicher. Die Gastbetriebssysteme können dann die Funktionsbibliotheken verwenden, um auf die Hardware zuzugreifen.
+
+##### Beispiel
+
+Um eine Datei zu lesen, muss ein Gastbetriebssystem normalerweise direkt auf die Festplatte zugreifen. Bei der Paravirtualisierung muss das Gastbetriebssystem stattdessen die Funktion `read()` der Funktionsbibliothek aufrufen. Die Funktion `read()` sendet dann einen entsprechenden Aufruf an den Hypervisor. Der Hypervisor übersetzt den Aufruf und leitet ihn dann an die Festplatte weiter.
+
+##### Vorteile
+
+-   Sicherheit: Funktionsbibliotheken können helfen, die Sicherheit der Gastbetriebssysteme zu erhöhen. Dies liegt daran, dass die Gastbetriebssysteme nicht direkt auf die Hardware zugreifen können.
+-   Leistung: Funktionsbibliotheken können die Leistung der Gastbetriebssysteme verbessern. Dies liegt daran, dass die Funktionsbibliotheken die Hardwarefunktionen effizienter nutzen können als die Gastbetriebssysteme selbst.
+
+##### Nachteile
+
+-   Kompatibilität: Funktionsbibliotheken sind nicht mit allen Gastbetriebssystemen kompatibel.
+-   Kosten: Die Entwicklung von Funktionsbibliotheken kann kostspielig sein.
+
 ### Containervirtualisierung
 
 Im Gegensatz zu anderen Virtualisierungen hat man bei einer Containervirtualisierung kein eigenes Betriebssystem bei den eigenen Containern. Deswegen benötigt man nicht so viel Platz und es kann schneller starten und auch laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen - auch `Environments` - schnell auf neuen Rechnern aufsetzen.
 
 ![Containervirtualisierung Aufbau](../../../../assets/system_integration_and_infrastructure/Container_Structure.svg)
+
+Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Kern. Die Container nutzen nämlich den Kern des Hosts.
 
 #### Vorteile
 
@@ -94,3 +129,19 @@ Ein Image ist ein Bauplan für einen Container. Im Vergleich zur Objektorientier
 #### Dockerfile
 
 #### Commands
+
+## System / User Mode
+
+Gewisse Prozess können nicht von einer Anwendung, wie zum Beispiel dem Hypervisor, selbst, sondern müssen direkt vom Betriebssystem erledigt werden. Beispielsweise der Zugriff auf die Festplatte. Damit nun jedoch auch Anwendungen auf die Festplatte lesen und schreiben können, gibt es das Konzept des System Modes und des User Modes.
+
+### System Mode
+
+Bei einem PC, auf welchem ein normales Betriebssystem installiert ist, läuft nur das Betriebssystem und die Interrupt Service Routine im System Mode. Prozesse im System Mode können alles machen, da sie vollständigen Zugriff auf die Hardware haben.
+
+### User Mode
+
+Alle anderen Anwendungen laufen im User Mode. Wenn diese nun direkt auf die Hardware zugreifen müssen, wird folgender Ablauf gestartet:
+
+1. Die Anwendung ruft mittels `System calls` die Betriebssystemfunktionalität auf.
+2. Der ausgeführte Prozess wird kurzfristig an das Betriebssystem übergeben, sodass dieses die Aufgabe erledigen kann.
+3. Anschließend kehrt das Programm wieder in den User Mode zurück.
