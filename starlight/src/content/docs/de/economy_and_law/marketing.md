@@ -85,7 +85,7 @@ Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufg
 ### Produkt- und Sortimentspolitik (Product)
 
 -   Was kann das Produkt?
--   Kann man eine Produktgruppierung (z.B.: Handy + Hülle) vermarkten?
+-   Kann man eine Produktgruppierung (z. B.: Handy + Hülle) vermarkten?
 
 ### Kontrahierungspolitik / Preis und Konditionen (Price)
 
