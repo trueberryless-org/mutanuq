@@ -122,6 +122,14 @@ export default defineConfig({
                     autogenerate: { directory: "embedded_programming" },
                 },
                 {
+                    label: "Systemintegration und Infrastruktur",
+                    collapsed: true,
+                    translations: {
+                        en: "System integration and infrastructure",
+                    },
+                    autogenerate: { directory: "system_integration_and_infrastructure" },
+                },
+                {
                     label: "Projektmanagement",
                     collapsed: true,
                     translations: {
