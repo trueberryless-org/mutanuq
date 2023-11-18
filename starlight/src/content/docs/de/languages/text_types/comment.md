@@ -24,7 +24,7 @@ Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll d
 
 ### Einleitung
 
-Ein Kommentar hat eine kreative Einleitung, welche zumindest den Autor und den Titel des Ausgangstextes erwähnen soll. Allerdings müssen nicht alle Daten des Ausgangstextes in der Einleitung vorkommen. Beispielsweise ist das Erscheinungsdatum oder der -ort nicht erforderlich.
+Ein Kommentar hat eine kreative Einleitung, welche zumindest den Autor und den Titel des Ausgangstextes erwähnen soll. Allerdings müssen nicht alle Daten des Ausgangstextes in der Einleitung vorkommen. Beispielsweise ist das Erscheinungsdatum oder der -ort nicht erforderlich. Insgesamt soll die Einleitung ungefähr 50 Wörter umfassen.
 
 ### Hauptteil
 
