@@ -19,93 +19,9 @@ env:
   IMAGE_NAME: trueberryless/mutanuq
   NODE_VERSION: 18
 
-jobs:
-  # unit-test:
-  #   name: Run unit tests
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-      
-  #     - name: Setup PNPM
-  #       uses: pnpm/action-setup@v2
-  #       with:
-  #         version: 8
-      
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ env.NODE_VERSION }}
-  #         cache: 'pnpm'
-          
-  #     - name: Install Dependencies
-  #       working-directory: ./starlight
-  #       run: pnpm i
-      
-  #     - name: Test packages
-  #       working-directory: ./starlight
-  #       run: pnpm -r test:coverage
-
-  # pa11y:
-  #   name: Check for accessibility issues
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-
-  #     - name: Setup PNPM
-  #       uses: pnpm/action-setup@v2
-  #       with:
-  #         version: 8
-
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ env.NODE_VERSION }}
-  #         cache: 'pnpm'
-
-  #     - name: Install Dependencies
-  #       working-directory: ./starlight
-  #       run: pnpm i
-
-  #     - name: Build docs site
-  #       working-directory: ./starlight
-  #       run: pnpm build
-  #       env:
-  #         NO_GRADIENTS: true
-
-  #     - name: Run accessibility audit
-  #       working-directory: ./starlight
-  #       run: pnpm t
-
-  # windows-smoke:
-  #   name: Docs site builds on Windows
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-        
-  #     - name: Setup PNPM
-  #       uses: pnpm/action-setup@v2
-  #       with:
-  #         version: 8
-      
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ env.NODE_VERSION }}
-  #         cache: 'pnpm'
-        
-  #     - name: Install Dependencies
-  #       working-directory: ./starlight
-  #       run: pnpm i
-      
-  #     - name: Build docs site
-  #       working-directory: ./starlight
-  #       run: pnpm build
-  
+jobs:  
   docker-push-image:
-    if: contains(github.event.head_commit.message, 'version')
+    if: contains(github.event.head_commit.message, 'version') || ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest  
     permissions:
       contents: write
@@ -166,7 +82,7 @@ jobs:
           echo "PATCH=0" >> $GITHUB_ENV
         
       - name: Patch version
-        if: contains(github.event.head_commit.message, 'patch')
+        if: contains(github.event.head_commit.message, 'patch') || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           echo "New patch version"
           echo "PATCH=$((${{ env.PATCH }}+1))" >> $GITHUB_ENV
