@@ -149,8 +149,8 @@ Bei der Sachfortschrittskontrolle (auch Leistungskontrolle) geht es um die Besti
 -   **Statusschritt-Technik**
 -   **50-50-Technik**: 50% erledigt, sobald das Arbeitspaket gestartet; 100%, wenn fertig
 -   **0-100-Technik**: 0%, solange nicht fertig; 100%, wenn fertig; macht nur Sinn bei kleinen Arbeitspaketen
--   **Mengen-Proportionalität**: Anwendbar, wenn mess- oder zählbare Ergebniseinheiten vorliegen. Eine abgearbeitet Einheit (z.B. assemblierter PC) repräsentiert einen bestimmten Zuwachs von Fortschrittsgrad bzw. Fertigstellungswert (Earned Value, s.u.).
--   **Zeit-Proportionalität**: Für bestimmte Projekttätigkeiten, wie z.B. das Projektmanagement, für die eine „gleichmäßige Verteilung" über den gesamten Projektverlauf angenommen wird. Der Fortschrittsgrad ergibt sich aus der abgelaufenen Zeitdauer.
+-   **Mengen-Proportionalität**: Anwendbar, wenn mess- oder zählbare Ergebniseinheiten vorliegen. Eine abgearbeitet Einheit (z. B. assemblierter PC) repräsentiert einen bestimmten Zuwachs von Fortschrittsgrad bzw. Fertigstellungswert (Earned Value, s.u.).
+-   **Zeit-Proportionalität**: Für bestimmte Projekttätigkeiten, wie z. B. das Projektmanagement, für die eine „gleichmäßige Verteilung" über den gesamten Projektverlauf angenommen wird. Der Fortschrittsgrad ergibt sich aus der abgelaufenen Zeitdauer.
 
 ### Earned-Value Analyse
 
