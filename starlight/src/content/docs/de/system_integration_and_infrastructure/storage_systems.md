@@ -1,5 +1,7 @@
 ---
 title: Speichersysteme
+sidebar:
+    order: 2
 ---
 
 Professionelle Speichersysteme sind meistens eine zentrale Speicherlösung, damit alle Nutzer in einem Netzwerk auf diesen Speicher zugreifen können. Bei solchen Speichersystemen liegt am Host kein Speichersystem, sondern alles nur auf Virtuellen Maschinen.
