@@ -13,7 +13,7 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
 ### Funktionalitäten
 
 -   **RAID**  
-    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits RAID. Dieses kann sowohl nur auf Softwareebene, also auch auf Hardwareebene umgesetzt werden. Bei letzterem unterstütz NAS sogar das Speichern auf unterschiedlichen physischen Platten (NAT-Boxen).
+    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits RAID. Dieses kann sowohl nur auf Softwareebene, also auch auf Hardwareebene umgesetzt werden. Bei letzterem unterstützt NAS sogar das Speichern auf unterschiedlichen physischen Platten (NAT-Boxen).
 
 -   **Berechtigungsverwaltung**  
     NAS hat zusätzlich auch noch direkt eine Verwaltung für verschiedene Benutzer integriert.
@@ -54,7 +54,7 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
 
 ## SAN
 
-SAN steht für Storage Area Netzwork und ist die High-End Variante von zentralen Speichersystemen. Im Gegensatz zu NAS gibt es nämlich bei SAN ein eigenes Netzwerk, in welchem auf verschiedenen Servern die Daten abgelegt werden. Dies hat den Vorteil, dass bei einer Synchronisation der Sicherungsinstanzen kein zusätzlicher Netzverkehr anfällt, da dieser Verkehr vom Unternehmensnetzwerk abgeschottet ist.
+SAN steht für Storage Area Network und ist die High-End Variante von zentralen Speichersystemen. Im Gegensatz zu NAS gibt es nämlich bei SAN ein eigenes Netzwerk, in welchem auf verschiedenen Servern die Daten abgelegt werden. Dies hat den Vorteil, dass bei einer Synchronisation der Sicherungsinstanzen kein zusätzlicher Netzverkehr anfällt, da dieser Verkehr vom Unternehmensnetzwerk abgeschottet ist.
 
 ![SAN Aufbau](../../../../assets/system_integration_and_infrastructure/SAN-Aufbau.png)
 
@@ -67,7 +67,7 @@ Bei einem SAN-System ist es empfehlenswert, alle Komponenten von einem Herstelle
 ### Vorteile
 
 -   **Eigenes Netzwerk**  
-    Das N in SAN steht für Network. Dies bedeutet, dass bei SAN ein eigenens Netzwerk für die Verwaltung der Speichermedien existiert. Dadurch ist das Unternehmensnetzwerk nicht überlastet und Speichermedien können sich an verschiedenen Standorten befinden.
+    Das N in SAN steht für Network. Dies bedeutet, dass bei SAN ein eigenes Netzwerk für die Verwaltung der Speichermedien existiert. Dadurch ist das Unternehmensnetzwerk nicht überlastet und Speichermedien können sich an verschiedenen Standorten befinden.
 
 -   **Hohe Leistung**  
     SAN bietet in der Regel eine höhere Leistung als NAS, insbesondere bei blockbasierten Datenzugriffen. Es ist ideal für Anwendungen mit hohen Leistungsanforderungen, wie z. B. Datenbanken.
