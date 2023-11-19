@@ -35,9 +35,6 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
 -   **Kostengünstig für kleinere Umgebungen**  
     NAS-Systeme sind oft kostengünstiger als SAN-Systeme und daher gut für kleinere Unternehmen oder Heimnetzwerke (`SOHO`) geeignet.
 
--   **Einfache Integration**  
-    NAS-Geräte sind einfach in bestehende Netzwerke zu integrieren. Sie fungieren als eigenständige Server und sind über das Netzwerk zugänglich.
-
 -   **Berechtigungsverwaltung**  
     NAS hat standardmäßig bereits eine Verwaltung für verschiedene Benutzer integriert.
 
