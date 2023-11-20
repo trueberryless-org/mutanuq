@@ -106,11 +106,11 @@ Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektc
 
 > _Durch welche Kunden erzielt unser Unternehmen den größten Umsatz?_
 
-Ein bekannter Leitsatz lautet: "20% der Kunden machen 80% des Umsatzes aus" (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Bei Kundenunzufriedenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste einspielt.
+Ein bekannter Leitsatz lautet: „20% der Kunden machen 80% des Umsatzes aus“ (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Bei Kundenunzufriedenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste einspielt.
 
 ### Terminkontrolle
 
-Die regelmäßige und rechtzeitige Rückmeldung der „Ist-Termine" an den Projektleiter ist die Voraussetzung für eine wirkungsvolle Terminkontrolle. Zu jedem Arbeitspaket (Soll-Termin) ist anzugeben, ob der Termin eingehalten, überschritten oder vorverlegt wird.
+Die regelmäßige und rechtzeitige Rückmeldung der „Ist-Termine“ an den Projektleiter ist die Voraussetzung für eine wirkungsvolle Terminkontrolle. Zu jedem Arbeitspaket (Soll-Termin) ist anzugeben, ob der Termin eingehalten, überschritten oder vorverlegt wird.
 
 #### Gründe
 
@@ -150,7 +150,7 @@ Bei der Sachfortschrittskontrolle (auch Leistungskontrolle) geht es um die Besti
 -   **50-50-Technik**: 50% erledigt, sobald das Arbeitspaket gestartet; 100%, wenn fertig
 -   **0-100-Technik**: 0%, solange nicht fertig; 100%, wenn fertig; macht nur Sinn bei kleinen Arbeitspaketen
 -   **Mengen-Proportionalität**: Anwendbar, wenn mess- oder zählbare Ergebniseinheiten vorliegen. Eine abgearbeitet Einheit (z. B. assemblierter PC) repräsentiert einen bestimmten Zuwachs von Fortschrittsgrad bzw. Fertigstellungswert (Earned Value, s.u.).
--   **Zeit-Proportionalität**: Für bestimmte Projekttätigkeiten, wie z. B. das Projektmanagement, für die eine „gleichmäßige Verteilung" über den gesamten Projektverlauf angenommen wird. Der Fortschrittsgrad ergibt sich aus der abgelaufenen Zeitdauer.
+-   **Zeit-Proportionalität**: Für bestimmte Projekttätigkeiten, wie z. B. das Projektmanagement, für die eine „gleichmäßige Verteilung“ über den gesamten Projektverlauf angenommen wird. Der Fortschrittsgrad ergibt sich aus der abgelaufenen Zeitdauer.
 
 ### Earned-Value Analyse
 
@@ -159,12 +159,12 @@ Der Earned-Value ist eine Kennzahl, welche bei der Bestimmung folgender Fragen h
 > _Liegt mein Projekt zum Kontrollzeitpunkt im **Kostenplan** oder nicht?_
 
 -   Ja, wenn der Earned-Value höher ist als die Ist-Kosten. Das bedeutet, dass Sie innerhalb des Budgets liegen oder sogar darunter.
--   Nein, wenn der Earned-Value niedriger ist als die Ist-Kosten. In diesem Fall überschreiten Sie das Budget und Ihr Projekt liegt kostenmäßig "hinten".
+-   Nein, wenn der Earned-Value niedriger ist als die Ist-Kosten. In diesem Fall überschreiten Sie das Budget und Ihr Projekt liegt kostenmäßig „hinten“.
 
 > _Liegt mein Projekt zum Kontrollzeitpunkt im **Zeitplan** oder nicht?_
 
--   Ja, wenn der Earned-Value höher ist als die Plankosten. Das bedeutet, dass Sie mehr Fortschritt erzielt haben, als ursprünglich geplant, und Ihr Projekt liegt zeitlich "vorne".
--   Nein, wenn der Earned-Value niedriger ist als die Plankosten. In diesem Fall haben Sie weniger Fortschritt erzielt als geplant, und Ihr Projekt liegt zeitlich "hinten".
+-   Ja, wenn der Earned-Value höher ist als die Plankosten. Das bedeutet, dass Sie mehr Fortschritt erzielt haben, als ursprünglich geplant, und Ihr Projekt liegt zeitlich „vorne“.
+-   Nein, wenn der Earned-Value niedriger ist als die Plankosten. In diesem Fall haben Sie weniger Fortschritt erzielt als geplant, und Ihr Projekt liegt zeitlich „hinten“.
 
 Dabei sieht ein Diagramm bei der Earned-Value-Analyse so aus:
 
