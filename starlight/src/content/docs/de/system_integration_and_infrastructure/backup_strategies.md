@@ -94,3 +94,21 @@ Stellen Sie sich die Frage, ob eine Verschlüsselung notwendig ist oder nicht. W
 ### Wiederherstellung
 
 Es ist wirklich wichtig, regelmäßig zu testen, ob die Sicherung auch wiederhergestellt werden kann. Des Weiteren sollten Sie die Funktionalität der wiederhergestellten Dateien ausprobieren. Wenn Sie diese Testung nicht durchführen, kann es sein, dass die gesamte Sicherung und der verbundene Aufwand umsonst gewesen ist. Ein empfohlener Zeitabstand für diese Testung beträgt ein Jahr.
+
+## Standards
+
+Es gibt bezüglich Datensicherung auch einige Standards.
+
+### Linear Tape Open
+
+Linear Tape Open (LTO), auch bekannt als LTO-Ultrium-Format, ist ein leistungsstarkes, skalierbares, anpassungsfähiges offenes Bandformat, das für hohe Kapazität, maximale Speicherdichte und Leistung optimiert ist. Seit der Markteinführung der ersten LTO-Produkte wurden über 5,6 Millionen Laufwerke, 371.232.918 Kassetten und 517.958 Milliarden GB Medienkapazität ausgeliefert, was LTO Ultrium zum erfolgreichsten Bandformat der Geschichte macht.
+
+Die LTO-Technologie bietet eine kostengünstige Möglichkeit zur langfristigen Datenspeicherung, Datensicherung und Datenarchivierung. Die Bandlaufwerke verwenden Magnetbänder als Speichermedium und sind in der Lage, große Datenmengen effizient zu sichern und zu archivieren.
+
+Die verschiedenen Generationen von LTO haben sich kontinuierlich weiterentwickelt, wobei jede Generation normalerweise eine höhere Kapazität und schnellere Datenübertragungsraten bietet als die vorherige. Typischerweise sind LTO-Laufwerke abwärtskompatibel (zwei vorherige Generationen lesen und eine vorherige Generation schreiben), sodass neuere Bänder auch in älteren Laufwerken gelesen werden können, jedoch möglicherweise nicht die neuesten Funktionen unterstützen.
+
+![LTO Roadmap](../../../../assets/system_integration_and_infrastructure/LTO_Roadmap.jpg)
+
+Die Verwendung von LTO ist in verschiedenen Branchen weit verbreitet, darunter in Rechenzentren, Archivierungsumgebungen und anderen Szenarien, in denen eine zuverlässige und kostengünstige Datensicherung und -archivierung erforderlich ist.
+
+LTO verfügt auch über **Verschlüsselungsmethoden** und verfolgt die **WORM-Strategie** (Write Once Read Many).
