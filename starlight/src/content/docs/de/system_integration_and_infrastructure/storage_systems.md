@@ -13,7 +13,7 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
 ### Funktionalitäten
 
 -   **RAID**  
-    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits RAID. Dieses kann sowohl nur auf Softwareebene, also auch auf Hardwareebene umgesetzt werden. Bei letzterem unterstützt NAS sogar das Speichern auf unterschiedlichen physischen Platten (NAT-Boxen).
+    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits RAID. Dieses kann sowohl auf Softwareebene, also auch auf Hardwareebene umgesetzt werden. Bei letzterem unterstützt NAS sogar das Speichern auf unterschiedlichen physischen Platten (NAT-Boxen).
 
 -   **Berechtigungsverwaltung**  
     NAS hat zusätzlich auch noch direkt eine Verwaltung für verschiedene Benutzer integriert.
