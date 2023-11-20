@@ -119,6 +119,7 @@ Redaktionsteam
 rehype
 Reifephase
 Saa
+screenshots
 Segmentierungskriterien
 Sinnabschnitte
 situationsbezogen
