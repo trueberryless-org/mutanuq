@@ -12,13 +12,13 @@ Ein Evaluation Board ist eine System was man um ein Bauteil oder System herum ba
 
 ### Hardwarenahe Programmierung
 
-Eine hardwarenahe Programmierung ermöglicht dem Programmierer in erster Linie, auf mehrere `tiefere` (näher bei der Hardware befindend) Elemente der Hardware zuzugreifen. Dabei unterscheidet man `höhere` (in Abstraktion und Komplexität von der Ebene der Maschinensprachen deutlich entfernte) Programmiersprachen, wie zum Beispiel C, Javascript, usw., und "tiefe" Sprachen, wie Assembler. Letztere Programmiersprache ermöglicht bereits den Zugriff auf CPU-Register, welches viele andere höhere Programmiersprachen nicht unterstützen.
+Eine hardwarenahe Programmierung ermöglicht dem Programmierer in erster Linie, auf mehrere `tiefere` (näher bei der Hardware befindend) Elemente der Hardware zuzugreifen. Dabei unterscheidet man `höhere` (in Abstraktion und Komplexität von der Ebene der Maschinensprachen deutlich entfernte) Programmiersprachen, wie zum Beispiel C, Javascript, usw., und „tiefe“ Sprachen, wie Assembler. Letztere Programmiersprache ermöglicht bereits den Zugriff auf CPU-Register, welches viele andere höhere Programmiersprachen nicht unterstützen.
 
 Einige komplexe Programme können jedoch leider nur schwer oder gar nicht mit hardwarenahen Programmiersprachen umgesetzt werden. Aus diesem Grund haben Dennis Richie und Ken Thompson die Programmiersprache C entwickelt, mit dessen Hilfe sie dann Unix entwickelt haben...
 
 ### Assembler und „C“
 
-Wie bereits um oberen Absatz angeschnitten, sind Assembler und C eher hardwarenahe Programmiersprachen. Wobei allerdings der wichtige Unterschied ist, dass C zu einer Hochsprache zählt und Assembler nicht. Dafür kann man mit Assembler wirklich Kerne programmieren. Was man mit Assembler allerdings nicht kann, ist das Entwickeln von komplexen Programmen, weil dies nicht dem "Komfort" eines Programmierers entspricht (quasi viel zu kompliziert...).
+Wie bereits um oberen Absatz angeschnitten, sind Assembler und C eher hardwarenahe Programmiersprachen. Wobei allerdings der wichtige Unterschied ist, dass C zu einer Hochsprache zählt und Assembler nicht. Dafür kann man mit Assembler wirklich Kerne programmieren. Was man mit Assembler allerdings nicht kann, ist das Entwickeln von komplexen Programmen, weil dies nicht dem „Komfort“ eines Programmierers entspricht (quasi viel zu kompliziert...).
 
 Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") ausführlich erklärt, hat jede Programmiersprache ihre Existenzberechtigung. Allerdings kann man nicht mit jeder Programmiersprache alles erreichen, wie es dieses Zitat verdeutlichen soll (Z3-11):
 
