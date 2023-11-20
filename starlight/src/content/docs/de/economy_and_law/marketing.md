@@ -58,7 +58,7 @@ Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmär
 
 ##### Konzentriertes Marketing
 
-Hierbei wird das gleiche Marketing für mehrere Segmente wiederverwendet, da die Kriterien zwischen den Teilmärkten ähnlich sein können. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
+Das Marketing wird auf bestimmte Segmente fokussiert. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
 
 ##### Differenziertes Marketing
 
