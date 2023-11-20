@@ -4,7 +4,7 @@ sidebar:
     order: 4
 ---
 
-Tasten sind eine Eingabe des Benutzers auf einfachster Hardware-Ebene. Die Taste kann entweder gedrückt sein oder eben nicht. Diese binäre Zustandsoption ermöglicht das einfache Konvertieren in "Strom an" oder "Strom aus".
+Tasten sind eine Eingabe des Benutzers auf einfachster Hardware-Ebene. Die Taste kann entweder gedrückt sein oder eben nicht. Diese binäre Zustandsoption ermöglicht das einfache Konvertieren in „Strom an“ oder „Strom aus“.
 
 ## Theorie
 

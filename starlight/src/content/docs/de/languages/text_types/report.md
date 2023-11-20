@@ -8,8 +8,8 @@ Ein Bericht fasst die wichtigsten Informationen einer Präsentation, einer Umfra
 
 -   formell
 -   kein `Ich` und kein `Du` (Sprechen Sie den Leser nicht an!)
--   keine umgangssprachlichen Ausdrücke (z. B. "Mach‘s gut", "Moin", "Einen Kater haben", ...)
--   Verwendung von Passivkonstruktionen (z. B. "Es kann behauptet werden")
+-   keine umgangssprachlichen Ausdrücke (z. B. „Mach‘s gut“, „Moin“, „Einen Kater haben“, ...)
+-   Verwendung von Passivkonstruktionen (z. B. „Es kann behauptet werden“)
 -   alle Absätze haben Zwischenüberschriften
 
 ## Aufbau
