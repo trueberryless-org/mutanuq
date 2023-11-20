@@ -86,6 +86,6 @@ Bei einem SAN-System ist es empfehlenswert, alle Komponenten von einem Herstelle
 -   **eingeschränkte Dateifreigabe**  
     Im Vergleich zu NAS ist SAN weniger gut geeignet für die gemeinsame Nutzung von Dateien in einem Netzwerk, da es hauptsächlich auf blockbasierten Datenzugriff ausgerichtet ist.
 
-## DAN
+## DAS
 
 Der Direct Attatched Storage ist einfach eine Festplatte direkt im PC verbaut.
