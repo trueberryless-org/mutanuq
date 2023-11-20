@@ -58,7 +58,7 @@ Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmär
 
 ##### Konzentriertes Marketing
 
-Das Marketing wird auf bestimmte Segmente focusiert. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
+Das Marketing wird auf bestimmte Segmente fokusiert. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
 
 ##### Differenziertes Marketing
 
