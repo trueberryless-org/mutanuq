@@ -134,7 +134,7 @@ Ein Image ist ein Bauplan für einen Container. Im Vergleich zur Objektorientier
 
 ## System / User Mode
 
-Gewisse Prozess können nicht von einer Anwendung, wie zum Beispiel dem Hypervisor, selbst, sondern müssen direkt vom Betriebssystem erledigt werden. Beispielsweise der Zugriff auf die Festplatte. Damit nun jedoch auch Anwendungen auf die Festplatte lesen und schreiben können, gibt es das Konzept des System Modes und des User Modes.
+Gewisse Prozesse können nicht von einer Anwendung, wie zum Beispiel dem Hypervisor, selbst, sondern müssen direkt vom Betriebssystem erledigt werden. Beispielsweise der Zugriff auf die Festplatte. Damit nun jedoch auch Anwendungen auf die Festplatte lesen und schreiben können, gibt es das Konzept des System Modes und des User Modes.
 
 ### System Mode
 
