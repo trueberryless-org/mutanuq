@@ -58,7 +58,7 @@ Unternehmensübernahme bedeutet, dass man ein bereits bestehendes Unternehmen ü
 
 -   möglicherweise schlechte Reputation
 -   Prozessänderung meist unerwünscht (bestehende Strukturen / Hierarchien)  
-    _"Das hamma imma schon so gmacht"_
+    _„Das hamma imma schon so gmacht“_
 -   Mängel oder Lasten werden ebenfalls übernommen
 -   veraltete Ressourcen
 -   Mängel und Lasten

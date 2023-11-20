@@ -30,7 +30,7 @@ In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen übe
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
-> Der Artikel "grüne Wolle" von Arthur Wilderöm, welcher am 26.10.2023 in "Der Standard" erschienen ist, beschäftigt sich mit dem Thema Umweltbelastung in Bezug auf Polyester.
+> Der Artikel „grüne Wolle“ von Arthur Wilderöm, welcher am 26.10.2023 in „Der Standard“ erschienen ist, beschäftigt sich mit dem Thema Umweltbelastung in Bezug auf Polyester.
 
 ### Hauptteil
 
