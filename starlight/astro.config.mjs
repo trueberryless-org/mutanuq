@@ -3,7 +3,6 @@ import starlight from "@astrojs/starlight";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
 
-import expressiveCode from "astro-expressive-code";
 import starlightLinksValidator from "starlight-links-validator";
 
 // https://astro.build/config
@@ -36,6 +35,7 @@ export default defineConfig({
                 },
             },
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
+            expressiveCode: {},
             customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
             components: {
                 DownloadFile: "./src/components/DownloadFile.astro",
@@ -163,7 +163,6 @@ export default defineConfig({
                 },
             ],
         }),
-        expressiveCode(),
         starlightLinksValidator(),
     ],
     markdown: {
