@@ -23,7 +23,7 @@ Das Singleton Design Patterns sorgt dafür, dass eine Klasse nur eine einzige In
 
 #### Lösung
 
-Zuerst muss der Konstruktor auf privat gestellt werden, damit keine Instanz der Klasse erstellt werden kann. Diesen Prozess des Erstellens wollen nämlich wir als Programmierer steuern können. Deswegen wird außerdem eine statische Erstellungsmethode geschrieben, welche eine privat gespeicherte Instanz der Klasse zurückgibt. Somit wird sichergestellt, dass bei jedem Aufruf der `GetInstance()`-Methode immer die gleiche Instanz zurückgegeben wird.
+Zuerst muss der Konstruktor auf privat gestellt werden, damit keine Instanz der Klasse erstellt werden kann. Diesen Prozess des Erstellens wollen nämlich wir als Programmierer steuern können. Deswegen wird außerdem eine statische Erstellungsmethode geschrieben, welche eine privat gespeicherte Instanz der Klasse zurück gibt. Somit wird sichergestellt, dass bei jedem Aufruf der `GetInstance()`-Methode immer die gleiche Instanz zurückgegeben wird.
 
 Um dieses Verhalten auch bei Multi-Thread-Anwendungen zu garantieren, kann die `GetInstance()`-Methode mittels ThreadLock erweitert werden. Dabei kann das Double-Checked-Locking-Pattern verwendet werden, damit die Leistung verbessert wird. Denn nur der erste Aufruf der Methode, sperrt das `LockObject`.
 
@@ -91,7 +91,7 @@ Structural Design Patterns beschäftigen sich mit dem Aufbau von Klassen in gro�
 
 ## Behavioral Design Patterns
 
-Behavioral Design Patterns beschäftigen sich mit Algorithmen und Zuweisung von Verantworlichkeiten zwischen Objekten.
+Behavioral Design Patterns beschäftigen sich mit Algorithmen und Zuweisung von Verantwortlichkeiten zwischen Objekten.
 
 ### Command
 
