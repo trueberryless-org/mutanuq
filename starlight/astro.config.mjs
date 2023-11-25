@@ -166,6 +166,13 @@ export default defineConfig({
                             },
                             items: [
                                 {
+                                    label: "Literatur",
+                                    translations: {
+                                        en: "Literature",
+                                    },
+                                    autogenerate: { directory: "languages/german/literature" },
+                                },
+                                {
                                     label: "Textsorten",
                                     translations: {
                                         en: "Text Types",
