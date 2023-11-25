@@ -2,7 +2,7 @@
 title: Impressionismus
 ---
 
-In der Epoche Impressionismus fokusieren sich Künstler nicht auf eine konkrete Weltanschauung sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Standortlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. Statt scharfer Konturen, detaillierter Realismus und akribischer Genauigkeit bevorzugten die Impressionisten eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.
+In der Epoche Impressionismus fokussieren sich Künstler nicht auf eine konkrete Weltanschauung sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Standörtlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. Statt scharfer Konturen, detaillierter Realismus und akribischer Genauigkeit bevorzugten die Impressionisten eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.
 
 ## Merkmale
 
@@ -37,7 +37,7 @@ Ernst Mach meinte, die Realität und die Persönlichkeit sei ein Wechsel aus „
 
 ### Sigmund Freud
 
-Sigmund Freud war ein Psychoanalyst, welcher die **dreischichtige menschliche Persönlichkeit** deklarierte. Diese teilt die Denk- und Handelsweise jedes Menschen in drei Teilbereiche auf: **ICH**, **ÜBER-ICH**, **ES**. Während letzteres vollkommen unbewusst passiert und die eigene Verwirklichung, Sexualität und Agression leitet, ist das ÜBER-ICH der Gegenspieler zu diesem ES. ÜBER-ICH hat moralisches Gewissen, Instanzen, Werte und Normen. Das ICH findet den Mittelweg zwischen dem ÜBER-ICH und ES und liegt großteils im bewussten Denkwesen. Freud sah zum Beispiel Kultur als ICH. Auseinandersetzungen mit diesen drei Schichten bestimmen uns.
+Sigmund Freud war ein Psychoanalyst, welcher die **dreischichtige menschliche Persönlichkeit** deklarierte. Diese teilt die Denk- und Handelsweise jedes Menschen in drei Teilbereiche auf: **ICH**, **ÜBER-ICH**, **ES**. Während letzteres vollkommen unbewusst passiert und die eigene Verwirklichung, Sexualität und Aggression leitet, ist das ÜBER-ICH der Gegenspieler zu diesem ES. ÜBER-ICH hat moralisches Gewissen, Instanzen, Werte und Normen. Das ICH findet den Mittelweg zwischen dem ÜBER-ICH und ES und liegt großteils im bewussten Denkwesen. Freud sah zum Beispiel Kultur als ICH. Auseinandersetzungen mit diesen drei Schichten bestimmen uns.
 
 ![Dreischichtige menschliche Persönlichkeit](../../../../../../assets/languages/dreischichtige_menschliche_persoenlichkeit.png)
 
@@ -53,7 +53,7 @@ Schriftsteller und Autoren im Impressionismus stammen aus kultivierte, wohlhaben
 
 ### Der innere Monolog
 
-Arthur Schnitzler erfindet den inneren Monolog, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Ein Beispiel aus dem Impressionismus ist [Leutnant Gustl](). In solchen inneren Monologen wird das Innenleben eines Menschen auch of sexuell oder erotisch dargestellt, wie zum Beispiel in „Reigen“. Die Lyrik eignet sich perfekt für die Schaffung eines inneren Monologs, doch der Sinn dieser Texte bleibt oft unklar. Es obligt dem Leser, dem Gedicht eine Bedeutung zu geben.
+Arthur Schnitzler erfindet den inneren Monolog, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Ein Beispiel aus dem Impressionismus ist [Leutnant Gustl](). In solchen inneren Monologen wird das Innenleben eines Menschen auch of sexuell oder erotisch dargestellt, wie zum Beispiel in „Reigen“. Die Lyrik eignet sich perfekt für die Schaffung eines inneren Monologs, doch der Sinn dieser Texte bleibt oft unklar. Es obliegt dem Leser, dem Gedicht eine Bedeutung zu geben.
 
 > Rainer Maria Rilke, Hugo von Hofmannsthal
 

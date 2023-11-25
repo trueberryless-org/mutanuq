@@ -108,6 +108,7 @@ jobs:
                   extra_dictionaries: cspell:software-terms/dict/softwareTerms.txt
                       cspell:de_DE/src/hunspell/index.dic
                       cspell:de_AT/src/hunspell/index.dic
+                      cspell:fr_FR/src/hunspell/index.dic
 
                       cspell:node/dict/node.txt
                       cspell:filetypes/filetypes.txt
