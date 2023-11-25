@@ -145,11 +145,34 @@ export default defineConfig({
                     },
                     items: [
                         {
-                            label: "Textsorten",
+                            label: "Englisch",
                             translations: {
-                                en: "Text Types",
+                                en: "English",
                             },
-                            autogenerate: { directory: "languages/text_types" },
+                            items: [
+                                {
+                                    label: "Textsorten",
+                                    translations: {
+                                        en: "Text Types",
+                                    },
+                                    autogenerate: { directory: "languages/english/text_types" },
+                                },
+                            ],
+                        },
+                        {
+                            label: "Deutsch",
+                            translations: {
+                                en: "German",
+                            },
+                            items: [
+                                {
+                                    label: "Textsorten",
+                                    translations: {
+                                        en: "Text Types",
+                                    },
+                                    autogenerate: { directory: "languages/german/text_types" },
+                                },
+                            ],
                         },
                     ],
                 },
