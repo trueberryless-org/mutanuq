@@ -51,3 +51,7 @@ In der Dramatik gibt es einen Kampf zwischen dem „alten“ und dem „neuen“
 Im Expressionismus sind wenige Werke der Epik gewidmet. Die Sprachzertrümmerung, der Enthusiasmus und Pathos lassen sich in Lyrik und Dramatik viel besser anwenden. Ein Epiker aus dieser Zeit ist jedoch sehr berühmt: Franz Kafka. Jedoch kann er nicht eindeutig dem Expressionismus zugeordnet werden. Er berichtet von der Fremdheit des Menschen in einer Welt, die er nicht versteht. Einige seiner bedeutendsten Werke sind „Die Verwandlung“, „Der Prozess“ und „Eine alltägliche Verwirrung“. Außerdem schreibt er einen „Brief an den Vater“, welcher über 100 Seiten umfasst und den Charakter Franz Kafka
 
 ## Dadaismus
+
+Der Dadaismus entstand, als sich 1916 Hugo Ball, Huelsenbeck, Hans Arp und Trastan Zara in Zürich trafen und das Wort „Dada“ für die eigene Kunst im Wörterbuch entdeckten. Diese „Anti-Kunst“ richtete sich gegen alles Bisherige. Im „Dadaistischen Manifest“ von 1918 wird festgeschrieben, dass die Sprache die „Explosion“ der Zeit ausdrücken soll.
+
+Um diese Sprachzerstörung zu demonstrieren nutzen die vier Gründer verschiedene Methoden, wie zum Beispiel die „Unvernunft“ (keine Logik in Texten), Lautgedichte (keine Wörter sondern einzelne Laute), Buchstabengedichte (Konzentration auf ein Wort) und den Zufall. Ganz besonders hervorstechende Gedichte sind erstens das **bruitistische** Gedicht - auch lärmendes Gedicht -, welches um Töne und Schauspiel ergänzt wird und zweitens das **simultanistisches** Gedicht, wobei hier mehrere Gedichte gleichzeit gelesen werden.
