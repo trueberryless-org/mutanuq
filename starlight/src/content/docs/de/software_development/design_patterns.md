@@ -81,7 +81,7 @@ In Softwareentwicklungsszenarien kommt es häufig vor, dass verschiedene Systeme
 
 #### Lösung
 
-Sie können hierfür einen Adapter erstellen. Dieser Adapter ist eine eigene spezielle Klasse, welche ein Interface so konvertiert, dass es von einem anderen Objekt verstanden werden kann. In unserem Bespiel erbt dieser Adapter von `IQuackable` und hat eine Property `IHonkable`. In der Methode `Quack` wird die `Honk`-Methode von unserem `IHonkable`-Objekt aufgerufen.
+Sie können hierfür einen Adapter erstellen. Dieser Adapter ist eine eigene spezielle Klasse, welche ein Interface so konvertiert, dass es von einem anderen Objekt verstanden werden kann. In unserem Beispiel erbt dieser Adapter von `IQuackable` und hat eine Property `IHonkable`. In der Methode `Quack` wird die `Honk`-Methode von unserem `IHonkable`-Objekt aufgerufen.
 
 #### Code
 
@@ -109,7 +109,7 @@ Stelle Sie sich folgendes Szenario vor: Sie bauen eine App mit einem Benachricht
 
 #### Lösung
 
-Verwenden Sie für die Erweiterung des Verhaltens einen Decorator. Dieser Decorator enthält eine Refernenz auf die Klasse, welche erweitert werden soll. Außerdem erbt der Decorator von den gleichen Interfaces wie die Referenzklasse. In den Methoden kann nun zusätzliches Verhalten vor oder nach dem Aufruf der Referenzklasse implementiert werden.
+Verwenden Sie für die Erweiterung des Verhaltens einen Decorator. Dieser Decorator enthält eine Referenz auf die Klasse, welche erweitert werden soll. Außerdem erbt der Decorator von den gleichen Interfaces wie die Referenzklasse. In den Methoden kann nun zusätzliches Verhalten vor oder nach dem Aufruf der Referenzklasse implementiert werden.
 
 #### Code
 
@@ -147,7 +147,7 @@ Oft wollen Sie Programme entwickeln, welche Operationen rückgängig machen kön
 
 #### Lösung
 
-Das Command Pattern schlägt vor, eine Anfrage nicht als Methode sondern als eigenen Komponenten auszuimplementieren. Dadurch kann man die Anfrage nicht nur als Parameter in Methoden übergeben, sondern eben auch rückgängig machen.
+Das Command Pattern schlägt vor, eine Anfrage nicht als Methode sondern als eigenen Komponenten aus zu implementieren. Dadurch kann man die Anfrage nicht nur als Parameter in Methoden übergeben, sondern eben auch rückgängig machen.
 
 #### Code
 
@@ -179,11 +179,11 @@ public class MoveDownCommand
 
 #### Problem
 
-Wenn eine Klasse mehrere verschiedene Strategien anbieten soll, ein bestimmtes Ergebnis zu erzielen, dann kann diese Klasse schnell groß und unwartbar werden. Dies will man um jeden Preis vermeiden. Stelle Sie sich vor, Sie entwickeln eine Nagitionsapp mit den Funktionalitäten „zu Fuß gehen“, „mit dem Auto fahren“ und „Öffis benutzen“. All diese Funktionen in einer Klasse zu implementieren ist ein Schuss ins eigene Knie.
+Wenn eine Klasse mehrere verschiedene Strategien anbieten soll, ein bestimmtes Ergebnis zu erzielen, dann kann diese Klasse schnell groß und unwartbar werden. Dies will man um jeden Preis vermeiden. Stelle Sie sich vor, Sie entwickeln eine Navigationsapp mit den Funktionalitäten „zu Fuß gehen“, „mit dem Auto fahren“ und „Öffis benutzen“. All diese Funktionen in einer Klasse zu implementieren ist ein Schuss ins eigene Knie.
 
 #### Lösung
 
-Erstellen Sie für jede Funktionalität - für jede Strategie - eine eigene Klasse, alle erben von der gleichen Schnittstelle. Nun kann man in der `Context`-Klasse eine Referenz auf diese Schnittstelle speichern und die Methoden einfach aufrufen. In der Objekt-orientierten Programmierung spart man sich somit viele unnötige `If`-Bedingungen, da das Framework automatisch die richtige Implementierung aufruf. Das Framework erkennt den Typen der Referenz und ruft den Code von dieser Klasse auf.
+Erstellen Sie für jede Funktionalität - für jede Strategie - eine eigene Klasse, alle erben von der gleichen Schnittstelle. Nun kann man in der `Context`-Klasse eine Referenz auf diese Schnittstelle speichern und die Methoden einfach aufrufen. In der Objekt-orientierten Programmierung spart man sich somit viele unnötige `If`-Bedingungen, da das Framework automatisch die richtige Implementierung aufruft. Das Framework erkennt den Typen der Referenz und ruft den Code von dieser Klasse auf.
 
 #### Code
 
