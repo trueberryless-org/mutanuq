@@ -1,10 +1,12 @@
 ---
 title: Impressionismus
+sidebar:
+    order: 13
 ---
 
 In der Epoche Impressionismus fokussieren sich Künstler nicht auf eine konkrete Weltanschauung sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Standörtlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. Statt scharfer Konturen, detaillierter Realismus und akribischer Genauigkeit bevorzugten die Impressionisten eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.
 
-## Merkmale
+## Eckdaten
 
 -   Ende des 19. Jahrhunderts, Beginn des 20. Jahrhunderts
 -   Vielfalt von Weltanschauungen und literarischen Stilen
@@ -18,7 +20,7 @@ Der Begriff **Symbolismus** beschreibt hingegen eine Dichtung, welche keinen „
 
 Weitere Begriffe im Zusammenhang mit Impressionismus sind **Fin de Siècle** und die **Wiener Moderne**, wobei ersteres wortwörtlich aus dem Französischem übersetzt „Jahrhundertende“ heißt und aussagt, dass Kunst für sich selbst stehen soll. In der Wiener Moderne steht - wie der Name bereits sagt - Wien im Mittelpunkt der Literatur, Architektur, Malerei, usw.
 
-## Philosophen
+## Künstler
 
 ### Friedrich Nietzsche
 
@@ -42,6 +44,10 @@ Sigmund Freud war ein Psychoanalyst, welcher die **dreischichtige menschliche Pe
 ![Dreischichtige menschliche Persönlichkeit](../../../../../../assets/languages/dreischichtige_menschliche_persoenlichkeit.png)
 
 Freud fand heraus, dass ca. 80-90 Prozent unserer Entscheidungen unbewusst getroffen werden. Außerdem war Freud ein guter Freund mit [Schnitzler]().
+
+## Werke
+
+## Gattungen
 
 ## Wien
 
