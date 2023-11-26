@@ -3,6 +3,10 @@ dht
 honkable
 IDurable
 IHonk
+IHonkable
 ILogger
 IQuack
+IQuackable
+IStrategy
 ITable
+quackable

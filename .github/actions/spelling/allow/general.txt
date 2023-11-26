@@ -9,6 +9,7 @@ ATmega
 Atmel
 aufklatschen
 avr
+Benachrichtigungssystem
 blockbasierte
 blockbasierten
 Bräunungsstudio
@@ -93,7 +94,9 @@ microcontrollers
 Moin
 Motivationsfähigkeit
 mutanuq
+Navigationsapp
 ncrontab
+Öffis
 Onlineshopping
 Paa
 parataktisch
@@ -140,10 +143,12 @@ Synology
 tagline
 Teammitgliedern
 Testung
+Threadsicheres
 trueberryless
 Ultrium
 Unternehmensexterne
 Unternehmenskassa
+unwartbar
 usart
 vect
 Verfügbarkeitszonen
