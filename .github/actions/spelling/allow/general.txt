@@ -9,6 +9,7 @@ ATmega
 Atmel
 aufklatschen
 avr
+Benachrichtigungssystem
 blockbasierte
 blockbasierten
 Bräunungsstudio
@@ -74,7 +75,6 @@ LTO
 marktökonomische
 marktpsychologische
 mathjax
-Threadsicheres
 Matura
 mehrbenutzerfähig
 Meilensteinplan
@@ -89,6 +89,7 @@ Moin
 Motivationsfähigkeit
 mutanuq
 ncrontab
+Öffis
 Onlineshopping
 Paa
 parataktisch
@@ -135,10 +136,12 @@ Synology
 tagline
 Teammitgliedern
 Testung
+Threadsicheres
 trueberryless
 Ultrium
 Unternehmensexterne
 Unternehmenskassa
+unwartbar
 usart
 vect
 Verfügbarkeitszonen
