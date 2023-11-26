@@ -77,7 +77,7 @@ Structural Design Patterns beschäftigen sich mit dem Aufbau von Klassen in gro�
 
 #### Problem
 
-In Softwareentwicklungsszenarien kommt es häufig vor, dass verschiedene Systeme oder Komponenten unterschiedliche Methoden und Strukturen verwenden, was die direkte Zusammenarbeit erschwert. Ein Beispiel für diese Inkompatibilität zwischen zwei bestehenden Schnittstellen oder Klassen ist wie folgt: Sie haben ein Interface `IQuackable`, welches den Methodenkopf `Quack` vorgibt. Ein zweites Interface `IHonkable` gibt die Methode `Honk` an. Nun wollen Sie eine Liste mit IQuackables erstellen und dort soll ein Objekt enthalten sein, welches nur von `IHonkable` erbt.
+In Softwareentwicklungsszenarien kommt es häufig vor, dass verschiedene Systeme oder Komponenten unterschiedliche Methoden und Strukturen verwenden, was die direkte Zusammenarbeit erschwert. Ein Beispiel für diese Inkompatibilität zwischen zwei bestehenden Schnittstellen oder Klassen ist wie folgt: Sie haben ein Interface `IQuackable`, welches den Methodenkopf `Quack` vorgibt. Ein zweites Interface `IHonkable` gibt die Methode `Honk` an. Nun wollen Sie eine Liste mit `IQuackables` erstellen und dort soll ein Objekt enthalten sein, welches nur von `IHonkable` erbt.
 
 #### Lösung
 
