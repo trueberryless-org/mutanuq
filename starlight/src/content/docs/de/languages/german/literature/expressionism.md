@@ -32,7 +32,7 @@ Hermann Bahr war ein Kritiker mit dem Wunsch der Zerstörung. Er sah den Express
 
 ### Gottfried Benn
 
-Gottfried Benn nahm übte starge Kritik am Fortschritt der Militarisierung aus. Er meinte, er sehe keinen Fortschritt, wenn aus der mörderischen Gewehrkugel eine noch mörderischere Grante wird.
+Gottfried Benn übte starke Kritik am Fortschritt der Militarisierung aus. Er meinte, er sehe keinen Fortschritt, wenn aus der mörderischen Gewehrkugel eine noch mörderische Granate wird.
 
 ## Werke
 
@@ -40,7 +40,7 @@ Gottfried Benn nahm übte starge Kritik am Fortschritt der Militarisierung aus. 
 
 ### Lyrik
 
-Die Gedichte in der Lyrik sollen nicht „rühren“ sondern „aufrühren“ und einen Glauben an den „neuen“ Menschen schaffen. Die Konfrontation mit dem Bedrohlichen, Abstoßenden und Grotesken bildet die zweite Facette der Lyrik, wie die Gedichte „[Weltende]()“ von Jakob von Hoddis (1887-1942) und „[Schöne Jungend]()“ von [Gottfried Benn](#gottfried-benn).
+Die Gedichte in der Lyrik sollen nicht „rühren“ sondern „aufrühren“ und einen Glauben an den „neuen“ Menschen schaffen. Die Konfrontation mit dem Bedrohlichen, Abstoßenden und Grotesken bildet die zweite Facette der Lyrik, wie die Gedichte „[Weltende]()“ von Jakob von Hoddis (1887-1942) und „[Schöne Jugend]()“ von [Gottfried Benn](#gottfried-benn).
 
 Dabei ist die Form der Gedichte sehr unterschiedlich: Manche zeigen metaphernreiche und pathetische Sprache, während andere den Satzbau zertrümmern und die Logik negieren.
 
@@ -60,6 +60,6 @@ In dieser Epoche wurden viele literarische Zeitschriften verfasst, wie zum Beisp
 
 ## Dadaismus
 
-Der Dadaismus entstand, als sich 1916 Hugo Ball, Huelsenbeck, Hans Arp und Trastan Zara in Zürich trafen und das Wort „Dada“ für die eigene Kunst im Wörterbuch entdeckten. Diese „Anti-Kunst“ richtete sich gegen alles Bisherige. Im „Dadaistischen Manifest“ von 1918 wird festgeschrieben, dass die Sprache die „Explosion“ der Zeit ausdrücken soll.
+Der Dadaismus entstand, als sich 1916 Hugo Ball, Huelsenbeck, Hans Arp und Trastan Zara in Zürich trafen und das Wort „Dada“ für die eigene Kunst im Wörterbuch entdeckten. Diese „Anti-Kunst“ richtete sich gegen alles Bisherige. Im „dadaistischen Manifest“ von 1918 wird festgeschrieben, dass die Sprache die „Explosion“ der Zeit ausdrücken soll.
 
-Um diese Sprachzerstörung zu demonstrieren nutzen die vier Gründer verschiedene Methoden, wie zum Beispiel die „Unvernunft“ (keine Logik in Texten), Lautgedichte (keine Wörter sondern einzelne Laute), Buchstabengedichte (Konzentration auf ein Wort) und den Zufall. Ganz besonders hervorstechende Gedichte sind erstens das **bruitistische** Gedicht - auch lärmendes Gedicht -, welches um Töne und Schauspiel ergänzt wird und zweitens das **simultanistisches** Gedicht, wobei hier mehrere Gedichte gleichzeit gelesen werden.
+Um diese Sprachzerstörung zu demonstrieren nutzen die vier Gründer verschiedene Methoden, wie zum Beispiel die „Unvernunft“ (keine Logik in Texten), Lautgedichte (keine Wörter sondern einzelne Laute), Buchstabengedichte (Konzentration auf ein Wort) und den Zufall. Ganz besonders hervorstechende Gedichte sind erstens das **bruitistische** Gedicht - auch lärmendes Gedicht -, welches um Töne und Schauspiel ergänzt wird und zweitens das **simultanistisches** Gedicht, wobei hier mehrere Gedichte gleichzeitig gelesen werden.
