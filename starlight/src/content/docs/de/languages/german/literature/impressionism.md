@@ -57,7 +57,7 @@ Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Mode
 
 Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#der-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
 
-### Karl Kraus (1974-1936)
+### Karl Kraus (1874-1936)
 
 Karl Kraus war ein österreichischer Schriftsteller, Kritiker und Satiriker, der von 1874 bis 1936 lebte. Er war ein scharfzüngiger Kritiker der Wiener Moderne, der Presse und der Gesellschaft. Seine Texte waren geprägt von seiner Ablehnung des Phrasendreschertums und der Manipulation durch die Sprache. Kraus gilt als einer der bedeutendsten deutschsprachigen Autoren des 20. Jahrhunderts.
 
