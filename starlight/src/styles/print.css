@@ -1,8 +1,12 @@
 @media print {
-    .header,
-    #starlight__sidebar,
-    .right-sidebar-container,
-    footer {
+    :is(
+            .header,
+            #starlight__sidebar,
+            .right-sidebar-container,
+            footer,
+            starlight-menu-button,
+            .content-panel > div > p.sl-flex
+        ) {
         display: none;
     }
 
@@ -18,5 +22,9 @@
 
     .sl-container {
         --sl-content-width: 100%;
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+        color: black !important;
     }
 }
