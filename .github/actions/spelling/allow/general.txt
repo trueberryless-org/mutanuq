@@ -28,6 +28,7 @@ Controllings
 dadaistischen
 daß
 Datenverarbeitungsprogrammen
+Davidsohn
 Degenerationsphase
 detailierter
 Dinggedicht
@@ -73,6 +74,9 @@ hardwarenahe
 hardwarenahen
 hebiger
 Helpdesk
+herzensträge
+Heym
+Hoddis
 Hofmannsthals
 hosten
 HTL
@@ -89,6 +93,8 @@ Lautgedichte
 lcdc
 lcdh
 LCDs
+Lesertäuschung
+Lichtensteins
 LTO
 marktökonomische
 marktpsychologische
@@ -147,6 +153,7 @@ rehype
 Reifephase
 Rilkes
 Saa
+Schriftstellerbewegung
 screenshots
 Segmentierungskriterien
 simultanistisches
@@ -160,6 +167,7 @@ standörtlich
 Stilfiguren
 Stimulans
 Storetest
+Stramms
 suggestiert
 summarises
 Symbolismus
@@ -169,6 +177,7 @@ Teammitgliedern
 Terzinen
 Testung
 Threadsicheres
+tragischerweise
 Trastan
 trueberryless
 Ultrium
@@ -190,3 +199,4 @@ Xen
 Xigma
 zeitbasierte
 ZRS
+zweiteres
