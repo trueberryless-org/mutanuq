@@ -65,23 +65,23 @@ int main(void)
 {
     // Taste an Port B, Pin 0
     //  Port B, Pin 0 als Eingang konfigurieren
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
-	if (!(PINB & (1<<PINB0)))
-	{
-		// Taste wurde 1x gedrückt
-	}
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Taste wurde 1x gedrückt
+    }
 
     // Prellen vermeiden
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -97,23 +97,23 @@ int main(void)
 {
     // Taste an Port B, Pin 0
     //  Port B, Pin 0 als Eingang konfigurieren
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
-	if (PINB & (1<<PINB0))
-	{
-		// Taste wurde 1x gedrückt
-	}
+    if (PINB & (1<<PINB0))
+    {
+        // Taste wurde 1x gedrückt
+    }
 
     // Prellen vermeiden
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -129,26 +129,26 @@ int main(void)
 {
     // Taste an Port B, Pin 0
     //  Port B, Pin 0 als Eingang konfigurieren
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
     //  Port B, Pin 0 Spannung: 5V (internen Pull-Up Widerstand aktivieren)
-	PORTB |= (1<<PORTB0);
+    PORTB |= (1<<PORTB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
-	if (!(PINB & (1<<PINB0)))
-	{
-		// Taste wurde 1x gedrückt
-	}
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Taste wurde 1x gedrückt
+    }
 
     // Prellen vermeiden
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -169,10 +169,10 @@ int main(void)
 {
     // Taste an Port D, Pin 2
     //  Port D, Pin 2 als Eingang konfigurieren
-	DDRD &= ~(1<<DDD2);
+    DDRD &= ~(1<<DDD2);
 
     //  Port D, Pin 2 Spannung: 5V (internen Pull-Up Widerstand aktivieren)
-	PORTD |= (1<<PORTD2);
+    PORTD |= (1<<PORTD2);
 
     // Interrupt
     //  direktes externe Interrupt an Port D, Pin 2 aktivieren
@@ -181,9 +181,9 @@ int main(void)
     //  Set Enable Interrupt
     sei();
 
-	while (1)
-	{
-	}
+    while (1)
+    {
+    }
 }
 
 ISR (INT0_vect) {
@@ -217,30 +217,30 @@ int main(void)
 {
     // Taste an Port D, Pin 4
     //  Port D, Pin 4 als Eingang konfigurieren
-	DDRD &= ~(1<<DDD4);
+    DDRD &= ~(1<<DDD4);
 
     //  Port D, Pin 4 Spannung: 5V (internen Pull-Up Widerstand aktivieren)
-	PORTD |= (1<<PORTD4);
+    PORTD |= (1<<PORTD4);
 
     // Interrupt
     //  gruppenbasiertes externe Interrupt an Port D, Pin 4 aktivieren
     PCICR |= (1<<PCIE2);
-	PCMSK2 |= (1<<PCINT20);
+    PCMSK2 |= (1<<PCINT20);
 
     //  Set Enable Interrupt
     sei();
 
-	while (1)
-	{
-	}
+    while (1)
+    {
+    }
 }
 
 ISR (PCINT2_vect) {
     // notwendige Überprüfung des spezifischen PINs 4 auf Port D
     //  aufgrund der Verwendung von gruppenbasierten Interrupts
-	if(!(PIND & (1<<PIND4))){
+    if(!(PIND & (1<<PIND4))){
         // Taste wurde 1x gedrückt
-	}
+    }
 
     _delay_ms(70);
 }

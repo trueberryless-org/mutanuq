@@ -15,16 +15,16 @@ Der Orchestrator ist die organisatorische Funktion einer Durable Function. Sie i
 public static async Task<List<string>> Run(
     [OrchestrationTrigger] IDurableOrchestrationContext context)
 {
-	var outputs = new List<string>();
+    var outputs = new List<string>();
 
-	outputs.Add(await context
-		.CallActivityAsync<string>("SayHello", "Tokyo"));
-	outputs.Add(await context
-		.CallActivityAsync<string>("SayHello", "Seattle"));
-	outputs.Add(await context
-		.CallActivityAsync<string>("SayHello", "London"));
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "Tokyo"));
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "Seattle"));
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "London"));
 
-	return outputs;
+    return outputs;
 }
 ```
 
@@ -52,7 +52,7 @@ public static async Task<List<string>> Run(
     var startTime = DateTime.UtcNow;
 
     // irgendeine Activity
-	await context.CallActivityAsync("LogInfo", "London");
+    await context.CallActivityAsync("LogInfo", "London");
 
     var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
     log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
@@ -70,7 +70,7 @@ public static async Task<List<string>> Run(
     var startTime = context.CurrentUtcDateTime;
 
     // irgendeine Activity
-	await context.CallActivityAsync("LogInfo", "London");
+    await context.CallActivityAsync("LogInfo", "London");
 
     var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
     log.LogInformation($"Orchestrator hat {elapsedTimeMs}ms mit der Durchführung gebraucht.");
@@ -88,10 +88,10 @@ Eine Activity ist eine normale Azure Function, welche vom Orchestrator ein oder 
 ```csharp
 [FunctionName("SayHello")]
 public static string SayHello(
-	[ActivityTrigger] IDurableActivityContext helloContext)
+    [ActivityTrigger] IDurableActivityContext helloContext)
 {
-	string name = helloContext.GetInput<string>();
-	return $"Hello {name}!";
+    string name = helloContext.GetInput<string>();
+    return $"Hello {name}!";
 }
 ```
 
@@ -102,18 +102,18 @@ Manchmal muss der Orchestrator auf ein externes Event warten.
 ```csharp
 [FunctionName("BudgetApproval")]
 public static async Task Run(
-	[OrchestrationTrigger]
-	IDurableOrchestrationContext context)
+    [OrchestrationTrigger]
+    IDurableOrchestrationContext context)
 {
-	bool approved = await context.WaitForExternalEvent<bool>("Approval");
-	if (approved)
-	{
-		// approval granted - do the approved action
-	}
-	else
-	{
-		// approval denied - send a notification
-	}
+    bool approved = await context.WaitForExternalEvent<bool>("Approval");
+    if (approved)
+    {
+        // approval granted - do the approved action
+    }
+    else
+    {
+        // approval denied - send a notification
+    }
 }
 ```
 
@@ -125,7 +125,7 @@ public static async Task Run(
     [QueueTrigger("approval-queue")] string instanceId,
     [DurableClient] IDurableOrchestrationClient client)
 {
-	await client.RaiseEventAsync(instanceId, "Approval", true);
+    await client.RaiseEventAsync(instanceId, "Approval", true);
 }
 ```
 
@@ -150,13 +150,13 @@ public static async Task<object> Run(
     try
     {
         var x = await context.CallActivityAsync<object>(
-	        "F1", null);
+            "F1", null);
         var y = await context.CallActivityAsync<object>(
-	        "F2", x);
+            "F2", x);
         var z = await context.CallActivityAsync<object>(
-	        "F3", y);
+            "F3", y);
         return  await context.CallActivityAsync<object>(
-	        "F4", z);
+            "F4", z);
     }
     catch (Exception)
     {
@@ -176,7 +176,7 @@ In normalen Funktionen kann das Auffächern auswärts erreicht werden, indem die
 ```csharp
 [FunctionName("FanOutFanIn")]
 public static async Task Run(
-	[OrchestrationTrigger] IDurableOrchestrationContext context)
+    [OrchestrationTrigger] IDurableOrchestrationContext context)
 {
     var parallelTasks = new List<Task<int>>();
 

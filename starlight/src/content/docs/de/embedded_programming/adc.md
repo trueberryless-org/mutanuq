@@ -77,7 +77,6 @@ Beim normalen Modus muss die Konvertierung von analogen auf digitales Signal jed
 ```c
 int main(void)
 {
-    // ...
     // Standardmäßig sowieso 0, deswegen optional
     ADCSRA &= ~(1<<ADATE);
     // ...
@@ -92,7 +91,7 @@ ISR(ADC_vect) {
     // Code - Digitaler Input als `ADCW` verfügbar
 
     // nächste Messung starten
-	ADCSRA |= (1<<ADSC);
+    ADCSRA |= (1<<ADSC);
 }
 ```
 
@@ -149,18 +148,18 @@ Die Kombination dieser beiden Funktionalitäten erlauben das schnellere und effi
 
 int main(void)
 {
-	ADMUX |= (1<<REFS0);
-	ADMUX |= (1<<MUX0) | (1<<MUX2);
+    ADMUX |= (1<<REFS0);
+    ADMUX |= (1<<MUX0) | (1<<MUX2);
 
-	ADCSRA |= (1<<ADEN) | (1<<ADIE);
-	ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+    ADCSRA |= (1<<ADEN) | (1<<ADIE);
+    ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
 
     // optional:
     ADCSRA |= (1<<ADATE);
 
-	sei();
+    sei();
 
-	ADCSRA |= (1<<ADSC);
+    ADCSRA |= (1<<ADSC);
 
     while (1);
 }
@@ -169,6 +168,6 @@ ISR(ADC_vect) {
     // Code - Digitaler Input als `ADCW` verfügbar
 
 
-	ADCSRA |= (1<<ADSC);
+    ADCSRA |= (1<<ADSC);
 }
 ```
