@@ -73,7 +73,7 @@ Karl Kraus war ein österreichischer Schriftsteller, Kritiker und Satiriker, der
 
 ### Die Fackel (1899-1936)
 
-Die Fackel ist eine Zeitschrift, die von Karl Kraus von 1899 bis 1936 in Wien herausgegeben wurde. Die Zeitschrift hatte einen scharfen, polemischen Ton und thematisierte eine Vielzahl von sozialen, kulturellen und politischen Fragen. Die Fackel wurde zu einem zentralen Organ der Kritik an der österreichischen Gesellschaft und insbesondere an der Presse. [Kraus](#karl-kraus-1974-1936)' Stil war geprägt von pointierten Analysen, paradoxen Formulierungen und einem tiefen Misstrauen gegenüber den Mächten seiner Zeit.
+Die Fackel ist eine Zeitschrift, die von Karl Kraus von 1899 bis 1936 in Wien herausgegeben wurde. Die Zeitschrift hatte einen scharfen, polemischen Ton und thematisierte eine Vielzahl von sozialen, kulturellen und politischen Fragen. Die Fackel wurde zu einem zentralen Organ der Kritik an der österreichischen Gesellschaft und insbesondere an der Presse. [Kraus](#karl-kraus-1874-1936)' Stil war geprägt von pointierten Analysen, paradoxen Formulierungen und einem tiefen Misstrauen gegenüber den Mächten seiner Zeit.
 
 Inhaltlich setzte sich die Fackel mit verschiedenen Themen auseinander, darunter politische Korruption, soziale Ungerechtigkeit, aber auch kulturelle Entwicklungen und literarische Werke. Kraus nahm kein Blatt vor den Mund und griff sowohl Einzelpersonen als auch Institutionen scharf an, wenn er Missstände und Heuchelei identifizierte.
 
