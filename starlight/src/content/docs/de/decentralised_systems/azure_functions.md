@@ -11,12 +11,12 @@ Eine Azure Function, welche mittels [`NCRONTAB` expression](https://learn.micros
 ```csharp
 [Function("MyTimerTrigger")]
 public static string Run(
-	[TimerTrigger("*/10 * * * * *")] MyInfo myTimer,
-	FunctionContext context)
+    [TimerTrigger("*/10 * * * * *")] MyInfo myTimer,
+    FunctionContext context)
 {
-	var logger = context.GetLogger("RecurringEvent");
-	logger.LogInformation(
-		$"Function executed at: {DateTime.Now}");
+    var logger = context.GetLogger("RecurringEvent");
+    logger.LogInformation(
+        $"Function executed at: {DateTime.Now}");
 }
 ```
 
@@ -46,11 +46,11 @@ Wenn eine AF zum Beispiel alle 5 Minuten ausgeführt werden soll, kann man diese
 ```csharp
 [Function("MyTimerTrigger")]
 public static string Run(
-	[TimerTrigger("* */5 * * * *")] MyInfo myTimer,
-	ILogger log)
+    [TimerTrigger("* */5 * * * *")] MyInfo myTimer,
+    ILogger log)
 {
-	log.LogInformation(
-		$"Function executed at: {DateTime.Now}");
+    log.LogInformation(
+        $"Function executed at: {DateTime.Now}");
 }
 ```
 
@@ -61,8 +61,8 @@ Wenn eine AF zum Beispiel bei einem HTTP Request auf die Route `/trueberryless` 
 ```csharp
 [Function("MyHTTPTrigger")]
 public static string Run(
-	[HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req,
-	ILogger log)
+    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req,
+    ILogger log)
 {
     log.LogInformation($"C# HTTP trigger function processed a request.");
 }
@@ -75,8 +75,8 @@ Bei jeder neuen Datei im Container, wird diese AF durchgeführt:
 ```csharp
 [Function("MyBlobTrigger")]
 public static string Run(
-	[BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
-	ILogger log)
+    [BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
+    ILogger log)
 {
     log.LogInformation($"C# Blob trigger function processed a file.");
 }
@@ -89,8 +89,8 @@ Bei jeder neuen Message in der Queue wird die Function getriggert. Dabei muss ma
 ```csharp
 [Function("MyQueueTrigger")]
 public static string Run(
-	[QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string jsonString
-	ILogger log)
+    [QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string jsonString
+    ILogger log)
 {
     log.LogInformation($"C# Queue trigger function processed a message.");
 }
@@ -103,9 +103,9 @@ Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kan
 ```csharp
 [Function("MyInputBinding")]
 public static string Run(
-	[HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
+    [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
     [Table("TreeTable")] TableClient tableClient,
-	ILogger log)
+    ILogger log)
 {
     var tableEntity = new TreeTable()
     {
@@ -139,7 +139,7 @@ Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eign
 public static string Run(
     [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
     [Blob("thumbnails/{name}", FileAccess.Write)] Stream thumbnails,
-	ILogger log)
+    ILogger log)
 {
     using var image = await SixLabors.ImageSharp.Image.LoadAsync(imageStream);
     var newWidth = 300;

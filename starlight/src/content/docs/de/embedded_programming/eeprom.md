@@ -41,7 +41,7 @@ Um Daten zu lesen - diese Operation ist theoretisch unlimitiert durchführbar - 
 
 int main(void)
 {
-	uint16_t value = eeprom_read_word(0x00);
+    uint16_t value = eeprom_read_word(0x00);
 
     while (1);
 }
@@ -60,7 +60,7 @@ Um Daten zu schreiben - diese Operation ist laut [Datenblatt](https://ww1.microc
 int main(void)
 {
     int nice = 69420;
-	eeprom_write_word(0x00, nice);
+    eeprom_write_word(0x00, nice);
 
     while (1);
 }

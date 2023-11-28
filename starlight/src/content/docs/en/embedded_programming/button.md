@@ -65,23 +65,23 @@ int main(void)
 {
     // button to port B, pin 0
     // configure port B, pin 0 as input
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Check whether the button is pressed.
-	if (PINB & (1<<PINB0))
-	{
-		// Button was pressed 1x
-	}
+    if (PINB & (1<<PINB0))
+    {
+        // Button was pressed 1x
+    }
 
     // avoid bouncing
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -97,23 +97,23 @@ int main(void)
 {
     // button to port B, pin 0
     // configure port B, pin 0 as input
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Check whether the button is pressed.
-	if (!(PINB & (1<<PINB0)))
-	{
-		// Button was pressed 1x
-	}
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Button was pressed 1x
+    }
 
     // avoid bouncing
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -129,26 +129,26 @@ int main(void)
 {
     // button to port B, pin 0
     // configure port B, pin 0 as input
-	DDRB &= ~(1<<DDB0);
+    DDRB &= ~(1<<DDB0);
 
     // Port B, pin 0 voltage: 5V (activate internal pull-up resistor)
-	PORTB |= (1<<PORTB0);
+    PORTB |= (1<<PORTB0);
 
-	while (1)
-	{
-		checkButton();
-	}
+    while (1)
+    {
+        checkButton();
+    }
 }
 
 void checkButton(void) {
     // Check whether the button is pressed.
-	if (!(PINB & (1<<PINB0)))
-	{
-		// Button was pressed 1x
-	}
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Button was pressed 1x
+    }
 
     // avoid bouncing
-	_delay_ms(70);
+    _delay_ms(70);
 }
 ```
 
@@ -169,10 +169,10 @@ int main(void)
 {
     // key to port D, pin 2
     // configure port D, pin 2 as input
-	DDRD &= ~(1<<DDD2);
+    DDRD &= ~(1<<DDD2);
 
     // Port D, pin 2 voltage: 5V (activate internal pull-up resistor)
-	PORTD |= (1<<PORTD2);
+    PORTD |= (1<<PORTD2);
 
     // interrupt
     // activate direct external interrupt at port D, pin 2
@@ -181,9 +181,9 @@ int main(void)
     // set enable interrupt
     sei();
 
-	while (1)
-	{
-	}
+    while (1)
+    {
+    }
 }
 
 ISR (INT0_vect) {
@@ -217,30 +217,30 @@ int main(void)
 {
     // key to port D, pin 4
     // configure port D, pin 4 as input
-	DDRD &= ~(1<<DDD4);
+    DDRD &= ~(1<<DDD4);
 
     // Port D, pin 4 voltage: 5V (activate internal pull-up resistor)
-	PORTD |= (1<<PORTD4);
+    PORTD |= (1<<PORTD4);
 
     // interrupt
     // activate group-based external interrupt at port D, pin 4
     PCICR |= (1<<PCIE2);
-	PCMSK2 |= (1<<PCINT20);
+    PCMSK2 |= (1<<PCINT20);
 
     // set enable interrupt
     sei();
 
-	while (1)
-	{
-	}
+    while (1)
+    {
+    }
 }
 
 ISR (PCINT2_vect) {
     // necessary check of the specific PIN 4 on port D
     // due to the use of group-based interrupts.
-	if(!(PIND & (1<<PIND4))){
+    if(!(PIND & (1<<PIND4))){
         // key was pressed 1x
-	}
+    }
 
     _delay_ms(70);
 }
