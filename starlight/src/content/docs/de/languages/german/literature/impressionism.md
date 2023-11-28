@@ -55,7 +55,7 @@ Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Mode
 
 ### Rainer Maria Rilke (1875-1926)
 
-Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rikle viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfingendungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#der-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
+Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#der-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
 
 ### Karl Kraus (1974-1936)
 
@@ -73,7 +73,7 @@ Die Fackel kann als eine kritische Stimme in einer Zeit des Umbruchs und der pol
 
 ### Terzinen über Vergänglichkeit (1894)
 
-Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kreuzreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den vier Strophen (letzere eine Weise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
+Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kreuzreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den vier Strophen (letztere eine Weise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
 
 ### Leutnant Gustl (1900)
 
@@ -81,11 +81,11 @@ Ende 1900 erschien Leutnant Gustl in der Wiener „Neuen Freien Presse“. Diese
 
 #### Handlung
 
-Der Leutnant langweilt sich während des Konzertes, zu welchem er die Karten geschenkt bekommen hat. Beim Verlassen gibt es ein Gedränge an der Garderobe, weshalb Gustl in Streit mit einem Bäckermeister kommt. Dieser packt Gustls Säbel, eine Schande für jeden Offizier. Doch niemand bekommt dies mit. Nichtdestotrotz hat Gustl Angst, dass der Bäckermeister es weitererzählt, und denkt sich Auswege (z.B. nach Amerika ziehen) und Reaktionen seiner Angehörigen aus, will sich fast schon selbst erschießen, bis er schließlich auf einer Parkbank einschläft. Am nächsten Morgen im Kaffeehaus erfährt er, dass der Bäckermeister mitternachts gestorben ist.
+Der Leutnant langweilt sich während des Konzertes, zu welchem er die Karten geschenkt bekommen hat. Beim Verlassen gibt es ein Gedränge an der Garderobe, weshalb Gustl in Streit mit einem Bäckermeister kommt. Dieser packt Gustls Säbel, eine Schande für jeden Offizier. Doch niemand bekommt dies mit. Nichtsdestotrotz hat Gustl Angst, dass der Bäckermeister es weitererzählt, und denkt sich Auswege (z.B. nach Amerika ziehen) und Reaktionen seiner Angehörigen aus, will sich fast schon selbst erschießen, bis er schließlich auf einer Parkbank einschläft. Am nächsten Morgen im Kaffeehaus erfährt er, dass der Bäckermeister mitternachts gestorben ist.
 
 ### Chandos-Brief (1902)
 
-[Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) ist sensible gegenüber der Sprache und kann ihr Scheitern in der Kommunikation leichter spuren als andere. Um diesen Missbrauch der Sprache auszudrücken, veröffentlicht er 1902 eine kleine Schrift, den Chandos-Brief.
+[Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) ist sensible gegenüber der Sprache und kann ihr Scheitern in der Kommunikation leichter spüren als andere. Um diesen Missbrauch der Sprache auszudrücken, veröffentlicht er 1902 eine kleine Schrift, den Chandos-Brief.
 
 #### Handlung
 
@@ -95,11 +95,11 @@ Lord Chandos - fiktiver englischer Autor - versucht sein literarisches Verstumme
 
 ### Der Panther (1903)
 
-Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne frei sein würde. Das Paradoxon des Textes ist die natürliche Stärke des Panthers, doch die auch seine Schwäche aufgrund der tausenden, ihn umgebenden Gitterstäbe. Im allerletzten Vers betönt [Rilke](#rainer-maria-rilke-1875-1926) noch einmal den verengeten Lebensraum des Panthers mit einer Verkürzung des Versfußes.
+Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne frei sein würde. Das Paradoxon des Textes ist die natürliche Stärke des Panthers, doch die auch seine Schwäche aufgrund der tausenden, ihn umgebenden Gitterstäbe. Im allerletzten Vers betont [Rilke](#rainer-maria-rilke-1875-1926) noch einmal den verengten Lebensraum des Panthers mit einer Verkürzung des Versfußes.
 
 #### Handlung
 
-Der Panther liegt in seinem Käfig und existiert langsam so dahin. Er ist müde und schließt seine Augenlieder - Metapher: Vorhang der Pupille.
+Der Panther liegt in seinem Käfig und existiert langsam so dahin. Er ist müde und schließt seine Augenlider - Metapher: Vorhang der Pupille.
 
 <blockquote>
 DER PANTHER
