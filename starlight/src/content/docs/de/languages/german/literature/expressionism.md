@@ -24,7 +24,7 @@ Der Begriff Dadaismus ist in der Epoche des Expressionismus entstanden und besch
 
 ## Künstler
 
-Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](../impressionism#friedrich-nietzsche)s „Also sprach Zarathustra“, in diesem Werk stellt der Autor den „letzte~r~[n] Mensch“ (verneint Leben) dem „Übermensch[en]“ (wächst über eigene Persönlichkeit hinaus) gegenüber, und Sören Kierkegaards „Freiheit ist zentral“, eine dreistüfige Bedürfnispyramide.
+Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](../impressionism#friedrich-nietzsche)s „Also sprach Zarathustra“, in diesem Werk stellt der Autor den „letzte~r~[n] Mensch“ (verneint Leben) dem „Übermensch[en]“ (wächst über eigene Persönlichkeit hinaus) gegenüber, und Sören Kierkegaards „Freiheit ist zentral“, eine dreistufige Bedürfnispyramide.
 
 ### Hermann Bahr
 
