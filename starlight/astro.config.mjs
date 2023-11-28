@@ -36,7 +36,11 @@ export default defineConfig({
             },
             tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
             expressiveCode: {},
-            customCss: ["./src/styles/custom.css", "./src/styles/landing.css"],
+            customCss: [
+                "./src/styles/custom.css",
+                "./src/styles/landing.css",
+                "./src/styles/print.css",
+            ],
             components: {
                 DownloadFile: "./src/components/DownloadFile.astro",
             },
