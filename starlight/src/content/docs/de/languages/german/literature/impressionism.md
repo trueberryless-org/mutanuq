@@ -24,10 +24,12 @@ Weitere Begriffe im Zusammenhang mit Impressionismus sind **Fin de Siècle** und
 
 ### Friedrich Nietzsche (1844-1900)
 
-Der Philosoph Friedrich Nietzsche glaubt an einen „Durchschnittsmensch“, welche bloß dahinvegetierte. Um ein „Übermenschen“ zu werden, brauche man die Kunst. Diese Kunst soll frei von moralischen und politischen Vorgaben sein.
+Der Philosoph Friedrich Nietzsche glaubt an einen „Durchschnittsmensch“, welcher bloß dahinvegetierte. Um ein „Übermenschen“ zu werden, brauche man die Kunst. Diese Kunst soll frei von moralischen und politischen Vorgaben sein.
 
 > Die Kunst und nichts als die Kunst!  
 > _Sie ist die größte Ermöglicherin des Lebens, die große Verführerin zum Leben, das große Stimulans des Lebens!_
+
+In [Also sprach Zarathustra](#also-sprach-zarathustra-1883) wird diese Kritik speziell behandelt.
 
 ### Charles Baudelaire (1821-1867)
 
@@ -63,7 +65,13 @@ Karl Kraus war ein österreichischer Schriftsteller, Kritiker und Satiriker, der
 
 ## Werke
 
-### Die Fackel (1988-1936)
+### Also sprach Zarathustra (1883)
+
+[Friedrich Nietzsche](#friedrich-nietzsche-1844-1900) legt mit diesem und ein paar anderen Werken die philosophische Grundlage für die Kritik an der Zeit im [Expressionismus](../expressionism). In diesem Werk stellt Nietzsche dem nur auf seinen kleinlichen Profit achtenden „letzten Menschen“, der eigentlich das Leben verneint und zerstört, den „Übermenschen“ gegenüber. Er verachtet die herrschende Moral, das Denken, die Gesellschaft und wächst über seine persönliche Kleinlichkeit hinaus.
+
+> _„Ich lehre euch den Übermenschen.“_
+
+### Die Fackel (1899-1936)
 
 Die Fackel ist eine Zeitschrift, die von Karl Kraus von 1899 bis 1936 in Wien herausgegeben wurde. Die Zeitschrift hatte einen scharfen, polemischen Ton und thematisierte eine Vielzahl von sozialen, kulturellen und politischen Fragen. Die Fackel wurde zu einem zentralen Organ der Kritik an der österreichischen Gesellschaft und insbesondere an der Presse. [Kraus](#karl-kraus-1974-1936)' Stil war geprägt von pointierten Analysen, paradoxen Formulierungen und einem tiefen Misstrauen gegenüber den Mächten seiner Zeit.
 
@@ -102,6 +110,7 @@ Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne fre
 Der Panther liegt in seinem Käfig und existiert langsam so dahin. Er ist müde und schließt seine Augenlider - Metapher: Vorhang der Pupille.
 
 <blockquote>
+
 DER PANTHER
 
 IM JARDIN DES PLANTES, PARIS
@@ -128,6 +137,7 @@ und hört im Herzen auf zu sein.
 Der Hauptfokus im Dinggedicht liegt auf den Augen der Blinden. Die Augen sind das Ding. Und aus diesem Grund verhält sich die Blinde anders als andere Menschen - fasst Tee anders an, geht langsam, usw.
 
 <blockquote>
+
 Sie saß so wie die anderen beim Tee.  
 Mir war zuerst, als ob sie ihre Tasse  
 ein wenig anders als die andern fasse.  
