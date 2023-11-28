@@ -24,3 +24,6 @@
   
 '📦 package':
   - 'starlight/package.json'
+  
+'🏯 styles':
+  - starlight/src/styles/**
