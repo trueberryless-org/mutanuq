@@ -24,10 +24,12 @@ Weitere Begriffe im Zusammenhang mit Impressionismus sind **Fin de Siècle** und
 
 ### Friedrich Nietzsche (1844-1900)
 
-Der Philosoph Friedrich Nietzsche glaubt an einen „Durchschnittsmensch“, welche bloß dahinvegetierte. Um ein „Übermenschen“ zu werden, brauche man die Kunst. Diese Kunst soll frei von moralischen und politischen Vorgaben sein.
+Der Philosoph Friedrich Nietzsche glaubt an einen „Durchschnittsmensch“, welcher bloß dahinvegetierte. Um ein „Übermenschen“ zu werden, brauche man die Kunst. Diese Kunst soll frei von moralischen und politischen Vorgaben sein.
 
 > Die Kunst und nichts als die Kunst!  
 > _Sie ist die größte Ermöglicherin des Lebens, die große Verführerin zum Leben, das große Stimulans des Lebens!_
+
+In [Also sprach Zarathustra](#also-sprach-zarathustra-1883) wird diese Kritik speziell behandelt.
 
 ### Charles Baudelaire (1821-1867)
 
@@ -57,15 +59,21 @@ Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Mode
 
 Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#der-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
 
-### Karl Kraus (1974-1936)
+### Karl Kraus (1874-1936)
 
 Karl Kraus war ein österreichischer Schriftsteller, Kritiker und Satiriker, der von 1874 bis 1936 lebte. Er war ein scharfzüngiger Kritiker der Wiener Moderne, der Presse und der Gesellschaft. Seine Texte waren geprägt von seiner Ablehnung des Phrasendreschertums und der Manipulation durch die Sprache. Kraus gilt als einer der bedeutendsten deutschsprachigen Autoren des 20. Jahrhunderts.
 
 ## Werke
 
-### Die Fackel (1988-1936)
+### Also sprach Zarathustra (1883)
 
-Die Fackel ist eine Zeitschrift, die von Karl Kraus von 1899 bis 1936 in Wien herausgegeben wurde. Die Zeitschrift hatte einen scharfen, polemischen Ton und thematisierte eine Vielzahl von sozialen, kulturellen und politischen Fragen. Die Fackel wurde zu einem zentralen Organ der Kritik an der österreichischen Gesellschaft und insbesondere an der Presse. [Kraus](#karl-kraus-1974-1936)' Stil war geprägt von pointierten Analysen, paradoxen Formulierungen und einem tiefen Misstrauen gegenüber den Mächten seiner Zeit.
+[Friedrich Nietzsche](#friedrich-nietzsche-1844-1900) legt mit diesem und ein paar anderen Werken die philosophische Grundlage für die Kritik an der Zeit im [Expressionismus](../expressionism). In diesem Werk stellt Nietzsche dem nur auf seinen kleinlichen Profit achtenden „letzten Menschen“, der eigentlich das Leben verneint und zerstört, den „Übermenschen“ gegenüber. Er verachtet die herrschende Moral, das Denken, die Gesellschaft und wächst über seine persönliche Kleinlichkeit hinaus.
+
+> _„Ich lehre euch den Übermenschen.“_
+
+### Die Fackel (1899-1936)
+
+Die Fackel ist eine Zeitschrift, die von Karl Kraus von 1899 bis 1936 in Wien herausgegeben wurde. Die Zeitschrift hatte einen scharfen, polemischen Ton und thematisierte eine Vielzahl von sozialen, kulturellen und politischen Fragen. Die Fackel wurde zu einem zentralen Organ der Kritik an der österreichischen Gesellschaft und insbesondere an der Presse. [Kraus](#karl-kraus-1874-1936)' Stil war geprägt von pointierten Analysen, paradoxen Formulierungen und einem tiefen Misstrauen gegenüber den Mächten seiner Zeit.
 
 Inhaltlich setzte sich die Fackel mit verschiedenen Themen auseinander, darunter politische Korruption, soziale Ungerechtigkeit, aber auch kulturelle Entwicklungen und literarische Werke. Kraus nahm kein Blatt vor den Mund und griff sowohl Einzelpersonen als auch Institutionen scharf an, wenn er Missstände und Heuchelei identifizierte.
 
@@ -102,6 +110,7 @@ Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne fre
 Der Panther liegt in seinem Käfig und existiert langsam so dahin. Er ist müde und schließt seine Augenlider - Metapher: Vorhang der Pupille.
 
 <blockquote>
+
 DER PANTHER
 
 IM JARDIN DES PLANTES, PARIS
@@ -128,6 +137,7 @@ und hört im Herzen auf zu sein.
 Der Hauptfokus im Dinggedicht liegt auf den Augen der Blinden. Die Augen sind das Ding. Und aus diesem Grund verhält sich die Blinde anders als andere Menschen - fasst Tee anders an, geht langsam, usw.
 
 <blockquote>
+
 Sie saß so wie die anderen beim Tee.  
 Mir war zuerst, als ob sie ihre Tasse  
 ein wenig anders als die andern fasse.  
