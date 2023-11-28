@@ -41,7 +41,7 @@ To read data - this operation is theoretically unlimited - this simple code is s
 
 int main(void)
 {
-	uint16_t value = eeprom_read_word(0x00);
+    uint16_t value = eeprom_read_word(0x00);
 
     while (1);
 }
@@ -60,7 +60,7 @@ To write data - this operation can be performed 100,000 times according to [data
 int main(void)
 {
     int nice = 69420;
-	eeprom_write_word(0x00, nice);
+    eeprom_write_word(0x00, nice);
 
     while (1);
 }

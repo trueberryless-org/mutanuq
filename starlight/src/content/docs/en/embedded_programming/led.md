@@ -26,17 +26,17 @@ int main(void)
 {
     // LED to port B, pin 0
     // configure port B, pin 0 as output
-	DDRB |= (1<<DDB0);
+    DDRB |= (1<<DDB0);
 
     // Port B, pin 0 voltage: 0V
-	PORTB &= ~(1<<PORTB0);
+    PORTB &= ~(1<<PORTB0);
 
     // Port B, pin 0 voltage: 5V
-	PORTB |= (1<<PORTB0);
+    PORTB |= (1<<PORTB0);
 
-	while (1)
-	{
+    while (1)
+    {
 
-	}
+    }
 }
 ```

@@ -70,8 +70,8 @@ Um die Implementierung zu erleichtern, verwendet man [Pointer](../pointer). Dies
 
 ```c
 void write_char(char str) {
-	while (!(UCSR0A & (1<<UDRE0)));
-	UDR0=str;
+    while (!(UCSR0A & (1<<UDRE0)));
+    UDR0=str;
 }
 ```
 
@@ -79,10 +79,10 @@ Für ganze Zeichenketten gibt es diese einfache Methode:
 
 ```c
 void write_string(char *arr) {
-	while(*arr) {
-		while (!(UCSR0A & (1<<UDRE0)));
-		UDR0=*arr++;
-	}
+    while(*arr) {
+        while (!(UCSR0A & (1<<UDRE0)));
+        UDR0=*arr++;
+    }
 }
 ```
 
@@ -92,8 +92,8 @@ Während man ganze Zeichenketten schicken kann, kann man immer nur einzelne Zeic
 
 ```c
 ISR(USART_RX_vect) {
-	uint8_t tmp;
-	tmp = UDR0;
+    uint8_t tmp;
+    tmp = UDR0;
 }
 ```
 

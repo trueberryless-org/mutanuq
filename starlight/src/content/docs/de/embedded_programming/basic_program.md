@@ -24,11 +24,11 @@ Ein typisches C-Programm hat eine main-function, welche am Start des Programms a
 
 int main(void)
 {
-	// einmalige Aktionen
+    // einmalige Aktionen
 
-	while (1)
-	{
-		// Arbeitsschleife - mehrmalige Aktionen
-	}
+    while (1)
+    {
+        // Arbeitsschleife - mehrmalige Aktionen
+    }
 }
 ```
