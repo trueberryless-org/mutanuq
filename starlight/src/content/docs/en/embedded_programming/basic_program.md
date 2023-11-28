@@ -24,11 +24,11 @@ A typical C program has a main function that is called at the start of the progr
 
 int main(void)
 {
-	// one-time actions
+    // one-time actions
 
-	while (1)
-	{
-		// working loop - multiple actions
-	}
+    while (1)
+    {
+        // working loop - multiple actions
+    }
 }
 ```

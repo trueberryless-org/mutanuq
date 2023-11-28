@@ -207,7 +207,7 @@ Um diese Aufgabe zu lösen, verwenden wir die [Formel](#normal-mode), um uns den
 
 int main(void)
 {
-	// Timer Modus auf Normal setzen (optional)
+    // Timer Modus auf Normal setzen (optional)
     TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
     TCCR1B &= ~((1<<WGM12) | (1<<WGM13));
 
@@ -216,7 +216,7 @@ int main(void)
 
     sei();
 
-	while (1);
+    while (1);
 }
 
 // ISR wird jeden Überlauf getriggert - alle 4ms in diesem Fall
@@ -265,7 +265,7 @@ Um diese Aufgabe zu lösen, verwenden wir die [Formel](#ctc---clear-timer-on-com
 
 int main(void)
 {
-	// Timer Modus auf CTC setzen
+    // Timer Modus auf CTC setzen
     TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
     TCCR1B |= (1<<WGM12);
     TCCR1B &= ~(1<<WGM13);
@@ -278,7 +278,7 @@ int main(void)
 
     sei();
 
-	while (1);
+    while (1);
 }
 
 // ISR wird bei jedem Compare Match getriggert - alle 4ms in diesem Fall
@@ -326,51 +326,51 @@ Um diese Aufgabe zu lösen, verwenden wir die [Formel](#ctc---clear-timer-on-com
 
 int main(void)
 {
-	// PB1 als Ausgang konfigurieren
-	DDRB |= (1<<DDB1);
+    // PB1 als Ausgang konfigurieren
+    DDRB |= (1<<DDB1);
 
-	// WGM10 und WGM12: Fast PWM; 8-bit aktivieren (MAX -> 255)
-	TCCR1A |= (1<<WGM10);
-	TCCR1B |= (1<<WGM12);
+    // WGM10 und WGM12: Fast PWM; 8-bit aktivieren (MAX -> 255)
+    TCCR1A |= (1<<WGM10);
+    TCCR1B |= (1<<WGM12);
 
-	// CS12: 256er Prescaler setzen => PWM mit 244,1 Hz
-	TCCR1B |= (1<<CS12);
+    // CS12: 256er Prescaler setzen => PWM mit 244,1 Hz
+    TCCR1B |= (1<<CS12);
 
-	// non-inverting Mode einstellen
-	TCCR1A |= (1<<COM1A1);
+    // non-inverting Mode einstellen
+    TCCR1A |= (1<<COM1A1);
 
-	// REFS0: Aufgrund der Beschaltung des ADCs.
-	// A3: Analoges Signal an PC3 => MUX0 | MUX1
-	ADMUX |= (1<<REFS0) | (1<<MUX0) | (1<<MUX1);
+    // REFS0: Aufgrund der Beschaltung des ADCs.
+    // A3: Analoges Signal an PC3 => MUX0 | MUX1
+    ADMUX |= (1<<REFS0) | (1<<MUX0) | (1<<MUX1);
 
-	// ADEN => Enables ADC
-	// ADPSx => Division Factor to get between 50kHz and 200kHz with our 60MHz Elegoo.
-	ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+    // ADEN => Enables ADC
+    // ADPSx => Division Factor to get between 50kHz and 200kHz with our 60MHz Elegoo.
+    ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
 
-	ADCSRA |= (1<<ADIE);
+    ADCSRA |= (1<<ADIE);
 
-	// ADSC => Start Conversion
-	ADCSRA |= (1<<ADSC);
+    // ADSC => Start Conversion
+    ADCSRA |= (1<<ADSC);
 
-	sei();
+    sei();
 
     /* Replace with your application code */
     while (1)
     {
-		//OCR1A = 65;				// Pulsweite DC von ca. 25%
-		//_delay_ms(2000);
-		//OCR1A = 123;			// Pulsweite DC von ca. 50%
-		//_delay_ms(2000);
-		//OCR1A = 255;			// Pulsweite DC von ca. 100%
-		//_delay_ms(2000);
+        //OCR1A = 65;             // Pulsweite DC von ca. 25%
+        //_delay_ms(2000);
+        //OCR1A = 123;            // Pulsweite DC von ca. 50%
+        //_delay_ms(2000);
+        //OCR1A = 255;            // Pulsweite DC von ca. 100%
+        //_delay_ms(2000);
     }
 }
 
 ISR(ADC_vect) {
-	OCR1A = ADCW / (1023 / 255);
+    OCR1A = ADCW / (1023 / 255);
 
-	// ADSC => Start Conversion
-	ADCSRA |= (1<<ADSC);
+    // ADSC => Start Conversion
+    ADCSRA |= (1<<ADSC);
 }
 ```
 

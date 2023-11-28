@@ -71,16 +71,16 @@ int main(void)
     lcd_init(LCD_DISP_ON);
 
     while(1) {
-	    if (dht_gettemperaturehumidity(&temperature, &humidity) != -1) {
-			sprintf(buffer, "T: %u C, H: %u", temperature, humidity);
-			lcd_puts(buffer);
-			lcd_puts("%");
-		}
+        if (dht_gettemperaturehumidity(&temperature, &humidity) != -1) {
+            sprintf(buffer, "T: %u C, H: %u", temperature, humidity);
+            lcd_puts(buffer);
+            lcd_puts("%");
+        }
         else {
-			lcd_puts("Error");
-	    }
-	    _delay_ms(2000);
-		lcd_clrscr();
+            lcd_puts("Error");
+        }
+        _delay_ms(2000);
+        lcd_clrscr();
     }
 }
 ```

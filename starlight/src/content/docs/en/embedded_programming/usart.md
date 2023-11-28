@@ -18,8 +18,8 @@ To facilitate the implementation, use [Pointer](../pointer). This is the method 
 
 ```c
 void write_char(char str) {
-	while (!(UCSR0A & (1<<UDRE0)));
-	UDR0=str;
+    while (!(UCSR0A & (1<<UDRE0)));
+    UDR0=str;
 }
 ```
 
@@ -27,11 +27,11 @@ For whole strings, there is this simple method:
 
 ```c
 void write_string(char *arr) {
-	while(*arr) {
-		while (!(UCSR0A & (1<<UDRE0)));
-		UDR0=*arr++;
-	}
-	while (!(UCSR0A & (1<<UDRE0)));
+    while(*arr) {
+        while (!(UCSR0A & (1<<UDRE0)));
+        UDR0=*arr++;
+    }
+    while (!(UCSR0A & (1<<UDRE0)));
 }
 ```
 
@@ -41,8 +41,8 @@ While you can send whole strings, you can only ever receive single characters.
 
 ```c
 ISR(USART_RX_vect) {
-	uint8_t tmp;
-	tmp = UDR0;
+    uint8_t tmp;
+    tmp = UDR0;
 }
 ```
 
