@@ -1,4 +1,5 @@
 abzuschöpfen
+Achleitner
 ADCs
 aggregiert
 allerkleinsten
@@ -54,10 +55,12 @@ ESXi
 EWR
 Faa
 Fachtermini
+Fäkalsprache
 Fragmentiertung
 Franchisebörse
 Franchisegeber
 funktionsübergreifendes
+Gedichtband
 Generationenprinzip
 gettemperaturehumidity
 getxy
@@ -90,6 +93,7 @@ hypotaktisch
 Hypotaxen
 Iaa
 imma
+Jandl
 Kapitalaufbringung
 Kierkegaards
 Kontrahierungspolitik
@@ -103,10 +107,12 @@ LCDs
 Lesertäuschung
 Lichtensteins
 LTO
+Lyrikbestseller
 marktökonomische
 marktpsychologische
 mathjax
 Matura
+Mayröcker
 mehrbenutzerfähig
 Meilensteinplan
 meinungsbasierte
@@ -118,6 +124,7 @@ methoden
 microcontroller
 microcontrollers
 Militarisierung
+miteinschließt
 mitternachts
 Moin
 Motivationsfähigkeit
@@ -125,6 +132,7 @@ müd
 mutanuq
 Navigationsapp
 ncrontab
+ned
 Öffis
 Onlineshopping
 Paa
@@ -159,6 +167,7 @@ Redaktionsteam
 rehype
 Reifephase
 Rilkes
+Rühm
 Saa
 Schriftstellerbewegung
 screenshots
