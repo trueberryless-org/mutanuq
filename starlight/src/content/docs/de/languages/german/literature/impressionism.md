@@ -86,6 +86,28 @@ Die Fackel kann als eine kritische Stimme in einer Zeit des Umbruchs und der pol
 
 Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kreuzreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den fünf Strophen (letztere eine Weise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
 
+<blockquote>
+
+Noch spür ich ihren Atem auf den Wangen:  
+Wie kann das sein, daß diese nahen Tage  
+Fort sind, für immer fort, und ganz vergangen?  
+
+Dies ist ein Ding, das keiner voll aussinnt,  
+Und viel zu grauenvoll, als daß man klage:  
+Daß alles gleitet und vorüberrinnt.  
+
+Und daß mein eignes Ich, durch nichts gehemmt,  
+Herüberglitt aus einem kleinen Kind  
+Mir wie ein Hund unheimlich stumm und fremd.  
+
+Dann: daß ich auch vor hundert Jahren war  
+Und meine Ahnen, die im Totenhemd,  
+Mit mir verwandt sind wie mein eignes Haar,  
+
+So eins mit mir als wie mein eignes Haar.
+
+</blockquote>
+
 ### Leutnant Gustl (1900)
 
 Ende 1900 erschien Leutnant Gustl in der Wiener „Neuen Freien Presse“. Dieses Werk wurde von [Arthur Schnitzler](#arthur-schnitzler-1862-1931) in nur fünf Tagen geschrieben. Daraufhin wurde ein Ehrengerichtsverfahren gegen Schnitzler eingeleitet, da in dem Werk ein Offizierscharakter für verlustig erklärt wird. Das Werk ist das erste Exemplar eines [inneren Monologs](#der-innere-monolog). Diese Form wurde aufgrund der Neuheit als Provokation und Schande der Armee gesehen.
