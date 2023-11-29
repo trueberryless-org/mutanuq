@@ -2,6 +2,9 @@
 title: Impressionismus
 sidebar:
     order: 13
+tableOfContents:
+    minHeadingLevel: 2
+    maxHeadingLevel: 3
 ---
 
 In der Epoche Impressionismus fokussieren sich Künstler nicht auf eine konkrete Weltanschauung sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Standörtlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. Statt scharfer Konturen, detaillierter Realismus und akribischer Genauigkeit bevorzugten die Impressionisten eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.

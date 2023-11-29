@@ -2,6 +2,9 @@
 title: Expressionismus
 sidebar:
     order: 14
+tableOfContents:
+    minHeadingLevel: 2
+    maxHeadingLevel: 3
 ---
 
 In der Epoche Expressionismus äußern die Künstler starke Kritik an einigen Themen, wie zum Beispiel Großstadt, Massengesellschaft, Industrialisierung, Militarisierung, Manipulation und dem Ersten Weltkrieg. Diese Epoche ist eine Opposition vom Realismus und Naturalismus, welche nur die Realität abgebildet haben. Außerdem wendet man sich von Fin de Siècle (Flucht in Ästhetik) und Goethe ab.
@@ -302,7 +305,119 @@ Der Dadaismus entstand, als sich 1916 Hugo Ball, Huelsenbeck, Hans Arp und Trast
 
 Um diese Sprachzerstörung zu demonstrieren nutzen die vier Gründer verschiedene Methoden, wie zum Beispiel die „Unvernunft“ (keine Logik in Texten), Lautgedichte (keine Wörter sondern einzelne Laute), Buchstabengedichte (Konzentration auf ein Wort) und den Zufall. Ganz besonders hervorstechende Gedichte sind erstens das **bruitistische** Gedicht - auch lärmendes Gedicht -, welches um Töne und Schauspiel ergänzt wird und zweitens das **simultanistisches** Gedicht, wobei hier mehrere Gedichte gleichzeitig gelesen werden.
 
----
+### Die Wiener Gruppe
+
+Ende der 50er-Jahre des 20. Jahrhunderts tritt in der österreichischen Literatur eine Gruppe von Dichtern und Dichterinnen auf, die zunächst auf massiven Widerstand der Öffentlichkeit stößt. Friedrich Achleitner, H. C. Artmann, Konrad Bayer, Gerhard Rühm, Oswald Wiener und die der Gruppe nahestehenden Ernst Jandl und Friederike Mayröcker provozieren. Wörter und Sätze werden zerlegt und vertauscht, die grammatischen, orthographischen und syntaktischen Normen der Sprache werden zerstört. Absolut „unpoetische“ Vokabel der Alltags- bis Fäkalsprache finden Eingang in die Dichtung, man schreibt radikal klein, um die Nomen nicht zu bevorzugen. Die Einbeziehung akustischer und grafischer Elemente der Sprache in die Dichtung verblüfft genauso wie die Entdeckung des Dialekts für die Lyrik, die sich unter anderem in dem später zum Lyrikbestseller gewordenen Werk H. C. Artmanns „med ana schwoazzn dintn“ zeigt.
+
+### Beispiele
+
+#### wos na ge - Friedrich Achleitner
+
+<blockquote>
+
+wos  
+na  
+ge
+
+ge  
+na  
+wos
+
+na  
+wos  
+ge
+
+ge  
+wos  
+na
+
+wos  
+ge  
+na
+
+na  
+ge  
+wos
+
+</blockquote>
+  
+#### auf dem land - Ernst Jandl
+
+<blockquote>
+
+rininininininininDER  
+brüllüllüllüllüllüllüllüllEN
+
+schweineineineineineineineinE  
+grununununununununZEN
+
+hununununununununDE  
+bellellellellellellellellEN
+
+katatatatatatatatZEN  
+miauiauiauiauiauiauiauiauEN
+
+katatatatatatatatER  
+schnurrurrurrurrurrurrurrurrEN
+
+gänänänänänänänänSE  
+schnattattattattattattattattERN
+
+ziegiegiegiegiegiegiegiegEN  
+meckeckeckeckeckeckeckeckERN
+
+bienienienienienienienienEN  
+summummummummummummummummEN
+
+grillillillillillillillillEN  
+ziriririririririrPEN
+
+fröschöschöschöschöschöschöschöschE  
+quakakakakakakakakEN
+
+hummummummummummummummummELN  
+brummummummummummummummummEN
+
+vögögögögögögögögEL  
+zwitschitschitschitschitschitschitschitschERN
+
+</blockquote>
+
+#### med ana schwoazzn dintn - H. C. Artmann
+
+„med ana schwoazzn dintn“ ist ein von H. C. Artmann bekanntes Gedichtband, welches zum Beispiel das Gedicht „frog me ned“ miteinschließt:
+
+<blockquote>
+
+frog me ned  
+wos fia r a numera  
+da dod hod
+
+i was nua  
+das ar a grins  
+kapö aufhod  
+un zwar r aung  
+wia r a grod
+
+aung wia r a grod  
+a grins kapö  
+und a numara
+
+de numa r is owa  
+scho soo schwoazz  
+das e s ned lesn kau  
+waun e a woit!
+
+gib liawa  
+dei frogarei auf  
+sunzt dales e s aum end  
+no wiaklech...
+
+</blockquote>
+
+#### Fisches Nachtgesang
+
+![Fisches Nachtgesang](../../../../../../assets/languages/fisches_nachtgesang.jpg)
 
 [^1]: Gellen: Schuss, Schrei
 [^2]: Pawlatsche: überdachter Holzbalkon
