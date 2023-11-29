@@ -12,6 +12,7 @@ dunkelhelllila
 ELN
 ersoffener
 feinden
+fia
 Fleischerfaust
 frißt
 frogarei
@@ -39,12 +40,14 @@ miauiauiauiauiauiauiauiau
 muß
 nebenliegende
 Niedergleiten
+nua
 numa
 numara
 numera
 owa
 panzerartig
 Pawlatsche
+PLANTES
 quakakakakakakakak
 raschlig
 rinininininininin
