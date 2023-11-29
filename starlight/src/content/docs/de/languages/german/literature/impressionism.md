@@ -60,7 +60,7 @@ Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Mode
 
 ### Rainer Maria Rilke (1875-1926)
 
-Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#der-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
+Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Darunter zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Der Erblindende (1906)](#die-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
 
 ### Karl Kraus (1874-1936)
 
