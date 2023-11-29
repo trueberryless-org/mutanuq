@@ -166,8 +166,8 @@ Zunge und Gaumen herausschnitt,
 Muss ich sie angestoßen haben, denn sie glitt in das nebenliegende Gehirn.  
 Ich packte sie ihm in die Brusthöhle zwischen die Holzwolle,  
 als man zunähte.  
-Trinke dich satt in deiner Vase!
-Ruhe sanft,
+Trinke dich satt in deiner Vase!  
+Ruhe sanft,  
 Kleine Aster!
 
 </blockquote>
