@@ -104,12 +104,17 @@ jobs:
                   warnings: bad-regex,binary-file,deprecated-feature,large-file,limited-references,no-newline-at-eof,noisy-file,non-alpha-in-dictionary,token-is-substring,unexpected-line-ending,whitespace-in-dictionary,minified-file,unsupported-configuration,no-files-to-check
                   experimental_apply_changes_via_bot: 1
                   use_sarif: ${{ (!github.event.pull_request || (github.event.pull_request.head.repo.full_name == github.repository)) && 1 }}
-                  extra_dictionary_limit: 20
+                  extra_dictionary_limit: 50
                   extra_dictionaries: cspell:software-terms/dict/softwareTerms.txt
                       cspell:de_DE/src/hunspell/index.dic
                       cspell:de_AT/src/hunspell/index.dic
                       cspell:fr_FR/src/hunspell-french-dictionaries-v7.0/fr-classique.dic
-
+                      cspell:fr_FR/src/hunspell-french-dictionaries-v7.0/fr-reforme1990.dic
+                      cspell:fr_FR/src/hunspell-french-dictionaries-v7.0/fr-toutesvariantes.dic
+                      cspell:fr_FR_90/src/hunspell-french-dictionaries-v7.0/fr-classique.dic
+                      cspell:fr_FR_90/src/hunspell-french-dictionaries-v7.0/fr-reforme1990.dic
+                      cspell:fr_FR_90/src/hunspell-french-dictionaries-v7.0/fr-toutesvariantes.dic
+          
                       cspell:node/dict/node.txt
                       cspell:filetypes/filetypes.txt
                       cspell:php/dict/php.txt
