@@ -36,6 +36,18 @@ Hermann Bahr war ein Kritiker mit dem Wunsch der Zerstörung. Er sah den Express
 
 August Stramm war ein deutscher expressionistischer Dichter und Dramatiker. Er starb im Ersten Weltkrieg. Bekannt für innovative Sprache und experimentellen Stil, hinterließ er Gedichtsammlungen wie „Tropfblut“ und „Menschheitsdämmerung“. Stramms radikale Herangehensweise an Literatur beeinflusste den Expressionismus maßgeblich. Einige seiner bekannten Werke sind [„Zwist“ (1914)](#zwist-1914) und [„Patrouille“ (1915)](#patrouille-1915).
 
+### Franz Kafka (1883-1924)
+
+Franz Kafka war ein einflussreicher deutschsprachiger Schriftsteller des 20. Jahrhunderts. Bekannt für seine einzigartige literarische Welt, schuf er Werke wie [„Die Verwandlung“ (1915)](#die-verwandlung-1915), in dem der Protagonist zu einem Käfer wird, und [„Der Prozess“ (1914)](#der-prozess-1914), der die Absurditäten eines undurchsichtigen Gerichtssystems thematisiert. In seinem [„Brief an den Vater“ (1919)](#brief-an-den-vater-1919) reflektiert Kafka über seine Beziehung zu seinem autoritären Vater.
+
+Obwohl er zur Zeit des Expressionismus lebte, entzogen sich Kafkas Werke einer einfachen Einordnung in diese Epoche. Seine Werke zeichnen sich durch existenzielle Themen, Isolation und dem Ausbruch aus der Realität aus. In fast jedem seiner Werke geschieht ein Zwischenfall, welcher den Lebensalltag unterbricht.
+
+Kafka verstarb 1924 und hinterließ ein literarisches Erbe von großer Tiefe und Komplexität, das weiterhin Leser weltweit fasziniert. Aufgrund seines einzigartigen Schreibstiles und Inhalts hat Kafka ein eigenes Adjektiv verdient: „kafkaesk“ (_in der Art der Schilderungen Kafkas, auf rätselhafte Weise unheimlich, bedrohlich_).
+
+#### Kafkas Leben
+
+Kafka baut in vielen Werken seinen eigenen Namen mit Ähnlichkeiten zum Hauptcharakter ein. Beispielsweise hat `Samsa` die gleiche Vokalfolge und Buchstabenanzahl wie `Kafka`. Außerdem gibt es Übereinstimmungen zwischen Gregors Wohnung in [der „Verwandlung“](#die-verwandlung-1915) mit Kafkas eigener Wohnung. Dies lässt darauf schließen, dass die Erkenntnis der Chancenlosigkeit Kafkas Personen, welche die eigenen Kräfte übersteigt, persönliche Hintergründe haben. Einige Traumen Kafkas können in dem [Brief an den Vater](#brief-an-den-vater-1919) herausgelesen werden.
+
 ### Gottfried Benn (1886-1956)
 
 Gottfried Benn übte starke Kritik am Fortschritt der Militarisierung aus. Er meinte, er sehe keinen Fortschritt, wenn aus der mörderischen Gewehrkugel eine noch mörderische Granate wird. Zu seinen bekanntesten Werken zählt [Kleine Aster](#kleine-aster-1912) und [Schöne Jugend](#schöne-jugend-1912).
@@ -157,6 +169,10 @@ Kleine Aster!
 
 </blockquote>
 
+### Der Prozess (1914)
+
+Eine Geschichte, in welcher Josef K. verhaftet wird, obwohl er nichts falsches getan hat. Während der gesamten Handlung wird eine Schuld von Josef K. nicht erkennbar. Aus diesem Grund endet „Der Prozess“ auch nicht mit einer Verhandlung. So wie am Beginn des Romans zwei Männer in K.s Zimmer auftauchen und ihn aus seinem gewohnten Leben werfen, so tauchen im Schlusskapitel zwei Männer auf, um den „Prozess“ zu beenden. Josef K. weiß, dass es seine Pflicht wäre, sich mit dem Messer selbst umzubringen, jedoch tut er dies nicht. Stattdessen bringen die beiden Männer ihm zu einem an den Steinbruch angrenzenden Haus, wo sie ihn erstechen.
+
 ### Zwist (1914)
 
 In dem Gedicht kann man nicht alles deuten, jedoch kann man einige Stilfiguren herauslesen, z. B. Antithesen (Quälen küsst, Kosen schelten, ...). Eine weitere (eventuell erwähnenswerte) Eigenschaft ist die exzessive Verwendung von Verben.
@@ -180,21 +196,6 @@ Quälen küsst
 
 </blockquote>
 
-### Patrouille (1915)
-
-In diesem Gedicht verarbeitet [August Stramm](#august-stramm-1874-1915) seine Erlebnisse im Zweiten Weltkrieg.
-
-<blockquote>
-
-Die Steine feinden  
-Fenster grinst Verrat  
-Äste würgen  
-Berge Sträucher blättern raschlig  
-Gellen[^1]  
-Tod.
-
-</blockquote>
-
 ### Abschied (1914)
 
 [Alfred Lichtenstein](#alfred-lichtenstein-1889-1914) schrieb kurz vor seinem Tod im Ersten Weltkrieg noch dieses sprachlich exzellente Gedicht.
@@ -215,6 +216,61 @@ Bald wirft man mich ins milde Massengrab.
 
 Am Himmel brennt das brave Abendrot.  
 Vielleicht bin ich in dreizehn Tagen tot.
+
+</blockquote>
+
+### Die Verwandlung (1915)
+
+Kafkas Erzählungen und Romane setzen oft mit Situationen ein, die für die Betroffenen unerklärlich und bedrohlich sind. Ein durchaus realistischer Sachverhalt sprengt plötzlich die Grenzen der Realität. Es gibt viele Parodien von der Verwandlung, zum Beispiel [Jan Böhmermanns Satire](https://www.youtube.com/watch?v=8F2IXNErOas). „Die Verwandlung“ beginnt mit folgenden Sätzen:
+
+<blockquote>
+
+Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt. Er lag auf seinem panzerartig harten Rücken und sah, wenn er den Kopf ein wenig hob, seinen gewölbten, braunen, von bogenförmigen Versteifungen geteilten Bauch, auf dessen Höhe sich die Bettdecke, zum gänzlichen Niedergleiten bereit, kaum noch erhalten konnte. Seine vielen, im Vergleich zu seinem sonstigen Umfang kläglich dünnen Beine flimmerten ihm hilflos vor den Augen. »Was ist mit mir geschehen?« dachte er. Es war kein Traum.
+
+</blockquote>
+
+Der Stück ist in drei Teile geteilt, wobei der erste die ersten Stunden nach der Verwandlung behandelt. Der zweite Teil beschreibt den Abend des Tages der Verwandlung. Der letzte Teil erzählt von langfristigen Folgen, welche erst Monate nach der Verwandlung passierten.
+
+#### Teil 1
+
+Gregor Samsa wacht morgens auf und merk, dass er ein Käfer in der Größe eines Menschen ist. Er denkt über seinen Beruf als reisender Vertreter für Tuchwaren nach. Dieser ist ihm verhasst, jedoch notwendig, um die Familie zu versorgen. Mutter, Vater und Schwester Grete klopfen an der Tür, weil sie sich besorgt erkundigen wollen. Es dauert so lange, bis Gregor aus dem Bett kommt, dass in der Zwischenzeit bereits ein Prokurist von Gregors Arbeitgeber aufgetaucht ist, um nach ihm zu fragen. Außerdem werden seine beruflichen Leistungen bemängelt. Gregor will daraufhin versichern, dass er den nächsten Zug nehmen wird, jedoch hören die Anwesenden nur tierische Laute. Es wird ein Arzt und ein Schlosser gerufen, um die Tür zu öffnen. Doch Gregor öffnet mit seinem Kiefer die Tür, damit seine Familie ihm helfen kann. Auf seinen Anblick reagieren Vater, Mutter und Prokurist entsetzt. Gregor wird mittels Stock zurückgedrängt und am linken Bein verletzt.
+
+#### Teil 2
+
+Abends erwacht Gregor aufgrund des Geruches von leckerem Essen. Seine Schwester hat ihm sein Lieblingsgetränk an die Tür gestellt, doch er empfindet Widerwillen gegen die Milch. Er kraxelt unter das Kanapee und fühlt sich endlich behaglich. Am frühen Morgen bekommt er von Grete eine große Auswahl an Speisen, wovon er nur die halb verfaulten mit Genuss verzehrt.
+
+In den kommenden Tagen macht sich die Familien Gedanken ums Geld. Es wird entschieden, dass Grete den Käfer versorgen soll, weshalb ihr auffällt, dass Gregor gerne an Wänden empor kriecht. Daraufhin werden alle Möbel außer ein Bild mit einer Dame entfernt. Die Mutter fällt in Ohnmacht und Gregor möchte ihr helfen. Die Schwester meint, der Käfer sei ausgebrochen, und der Vater bewirft ihn mit Äpfeln.
+
+#### Teil 3
+
+Einer der Äpfel bleibt monatelang in seinem Körper stecken, sodass sich die Stelle entzündet. Gregor wird immer mehr vernachlässigt und das Zimmer wird zur Abstellkammer. Die Familie vermietet als weitere Einnahmequelle die Wohnung an drei Herren, weshalb Gregors Tür beim Abendessen geschlossen bleibt. Als die Schwester jedoch Violine spielt, öffnet Gregor die Tür und die Herren drohen mit der Kündigung. Grete meint, **es** (Gregor) muss los gelassen werden. In dieser Nacht stirbt Gregor aufgrund der Anstrengung des Kriechens mit dem Apfel im Körper. Die neue Bedienerin - die Einzige, welche Gregor nicht verabscheut - informiert die Familie und entsorgt ihn.
+
+Die Familie freut sich, sie kündigen die drei Herren und die Bedienerin und hoffen, dass Grete bald einen Mann bekommt.
+
+### Patrouille (1915)
+
+In diesem Gedicht verarbeitet [August Stramm](#august-stramm-1874-1915) seine Erlebnisse im Zweiten Weltkrieg.
+
+<blockquote>
+
+Die Steine feinden  
+Fenster grinst Verrat  
+Äste würgen  
+Berge Sträucher blättern raschlig  
+Gellen[^1]  
+Tod.
+
+</blockquote>
+
+### Brief an den Vater (1919)
+
+In der Nacht von 22. zum 23. September 1912 schreibt Kafka die Erzählung „Das Urteil“. Die zwei agierenden Personen sind Vater und Sohn. Am Ende eines langen Gesprächs sagt der Vater zum Sohn: _„Ich verurteile dich jetzt zum Tode des Ertrinkens!“_ Widerstandslos nimmt der Sohn das Urteil an und lässt sich von der Brücke in den Fluss fallen. Als 36-Jähriger schreibt Kafka 1919 den „Brief an den Vater“. Er umfasst mehr als 100 Seiten und war tatsächlich dazu bestimmt, dem Vater übergeben zu werden. Kafka bat vermutlich seine Mutter um die Übergabe, diese fand jedoch nie statt.
+
+<blockquote>
+
+Deine äußerst wirkungsvollen, wenigstens mir gegenüber niemals versagenden rednerischen Mittel bei der Erziehung waren: Schimpfen, Drohen, Ironie, böses Lachen und merkwürdigerweise - Selbstbeklagung. Das Schimpfen verstärktest Du mit Drohen [...]. Schrecklich war mir zum Beispiel dieses: ich zerreiße Dich wie einen Fisch, trotzdem ich ja wusste, dass dem nichts Schlimmeres nachfolgte (als kleines Kind wusste ich das allerdings nicht), aber es entsprach fast meinen Vorstellungen von Deiner Macht, dass Du auch das imstande gewesen wärest. Schrecklich war es auch, wenn Du schreiend um den Tisch herumliefst, um einen zu fassen, offenbar gar nicht fassen wolltest, aber doch so tatest und die Mutter einen schließlich scheinbar rettete. Wieder hatte man einmal, so schien es dem Kind, das Leben durch Deine Gnade behalten und trug es als Dein unverdientes Geschenk weiter. [...]
+
+Deine Erziehungsmittel in den allerersten Jahren kann ich heute natürlich nicht unmittelbar beschreiben, aber ich kann sie mir etwa vorstellen durch Rückschluss aus den später erfahrenen [...]. Direkt erinnere ich mich nur an einen Vorfall aus den ersten Jahren. Du erinnerst Dich vielleicht auch daran. Ich winselte einmal in der Nacht immerfort um Wasser, gewiss nicht aus Durst, sondern wahrscheinlich teils um zu ärgern, teils um mich zu unterhalten. Nachdem einige starke Drohungen nicht geholfen hatten, nahmst Du mich aus dem Bett, trust mich auf die Pawlatsche[^2] und ließest mich dort allein vor der geschlossenen Tür ein Weilchen im Hemd stehn. Ich will nicht sagen, dass das unrichtig war, vielleicht war damals die Nachtruhe auf andere Weise wirklich nicht zu verschaffen, ich will aber damit Deine Erziehungsmittel und ihre Wirkung auf mich charakterisieren. Ich war damals nachher wohl schon folgsam, aber ich hatte einen inneren Schaden davon. [...] Noch nach Jahren litt ich unter der quälenden Vorstellung, dass der riesige Mann, mein Vater, die letzte Instanz, fast ohne Grund kommen und mich in der Nacht aus dem Bett auf die Pawlatsche tragen konnte und dass ich also ein solches Nichts für ihn war.
 
 </blockquote>
 
@@ -249,3 +305,4 @@ Um diese Sprachzerstörung zu demonstrieren nutzen die vier Gründer verschieden
 ---
 
 [^1]: Gellen: Schuss, Schrei
+[^2]: Pawlatsche: überdachter Holzbalkon

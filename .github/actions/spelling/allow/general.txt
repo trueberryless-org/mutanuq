@@ -13,6 +13,7 @@ avr
 Benachrichtigungssystem
 blockbasierte
 blockbasierten
+Böhmermanns
 Bräunungsstudio
 bruitistische
 Bulletpoint
@@ -20,6 +21,7 @@ Bulletpoints
 Bürokratisierung
 bzw
 Cashcows
+Chancenlosigkeit
 Citrix
 Clickbait
 clrscr
@@ -46,6 +48,7 @@ Epik
 Epiker
 ergebnisorientierten
 Ermöglicherin
+Ertrinkens
 ESX
 ESXi
 EWR
@@ -74,6 +77,7 @@ hardwarenahe
 hardwarenahen
 hebiger
 Helpdesk
+herausgelesen
 herzensträge
 Heym
 Heyms
@@ -89,6 +93,8 @@ imma
 Kapitalaufbringung
 Kierkegaards
 Kontrahierungspolitik
+kraxelt
+Kriechens
 kundenorientiert
 Lautgedichte
 lcdc
@@ -180,6 +186,7 @@ Testung
 Threadsicheres
 tragischerweise
 Trastan
+Traumen
 trueberryless
 Ultrium
 Umbruchs
