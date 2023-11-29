@@ -84,7 +84,7 @@ Die Fackel kann als eine kritische Stimme in einer Zeit des Umbruchs und der pol
 
 ### Terzinen über Vergänglichkeit (1894)
 
-Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kreuzreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den vier Strophen (letztere eine Weise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
+Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kreuzreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den fünf Strophen (letztere eine Weise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
 
 ### Leutnant Gustl (1900)
 
