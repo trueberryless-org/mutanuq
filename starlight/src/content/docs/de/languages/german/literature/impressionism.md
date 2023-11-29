@@ -167,7 +167,7 @@ sie nicht mehr gehen würde, sondern fliegen.
 
 ## Wien
 
-Während des Impressionismus ist Wien stark gewachsen. Von 400.000 Einwohnern waren es auf einmal zwei Millionen Einwohner, viele davon jüdische Bürger. Zeitgleich war der Beginn des Antisemitismus. Hermann Bahr meinte: „Morphium der kleinen Leute“.
+Während des Impressionismus ist Wien stark gewachsen. Von 400.000 Einwohnern waren es auf einmal zwei Millionen Einwohner, viele davon jüdische Bürger. Zeitgleich war der Beginn des Antisemitismus. Hermann Bahr bezeichnete den Antisemitismus als „Morphium der kleinen Leute“, da dieser den Demagogen als Mittel, nationale und soziale Spannungen auf jüdische Menschen als Sündenbock zu kanalisieren, diente.
 
 ## Literatur
 
