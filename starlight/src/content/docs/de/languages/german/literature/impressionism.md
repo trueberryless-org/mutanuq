@@ -175,7 +175,7 @@ Schriftsteller und Autoren im Impressionismus stammen aus kultivierte, wohlhaben
 
 ### Der innere Monolog
 
-Arthur Schnitzler erfindet den inneren Monolog, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Ein Beispiel aus dem Impressionismus ist [Leutnant Gustl](#leutnant-gustl-1900). In solchen inneren Monologen wird das Innenleben eines Menschen auch of sexuell oder erotisch dargestellt, wie zum Beispiel in „Reigen“. Die Lyrik eignet sich perfekt für die Schaffung eines inneren Monologs, doch der Sinn dieser Texte bleibt oft unklar. Es obliegt dem Leser, dem Gedicht eine Bedeutung zu geben.
+[Arthur Schnitzler](#arthur-schnitzler-1862-1931) erfindet den inneren Monolog, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Paradebeispiel für diese Technik ist die Novelle [Leutnant Gustl](#leutnant-gustl-1900) von Arthur Schnitzler. In solchen inneren Monologen wird das Innenleben eines Menschen auch of sexuell oder erotisch dargestellt, wie zum Beispiel in „Reigen“. Die Lyrik eignet sich perfekt für die Schaffung eines inneren Monologs, doch der Sinn dieser Texte bleibt oft unklar. Es obliegt dem Leser, dem Gedicht eine Bedeutung zu geben.
 
 > Rainer Maria Rilke, Hugo von Hofmannsthal
 
