@@ -157,7 +157,7 @@ und hört im Herzen auf zu sein.
 
 </blockquote>
 
-### Der Erblindende (1906)
+### Die Erblindende (1906)
 
 Der Hauptfokus im Dinggedicht liegt auf den Augen der Blinden. Die Augen sind das Ding. Und aus diesem Grund verhält sich die Blinde anders als andere Menschen - fasst Tee anders an, geht langsam, usw.
 
