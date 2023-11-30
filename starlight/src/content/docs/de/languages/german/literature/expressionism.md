@@ -281,7 +281,7 @@ Deine Erziehungsmittel in den allerersten Jahren kann ich heute natürlich nicht
 
 ### Lyrik
 
-Die Gedichte in der Lyrik sollen nicht „rühren“ sondern „aufrühren“ und einen Glauben an den „neuen“ Menschen schaffen. Die Konfrontation mit dem Bedrohlichen, Abstoßenden und Grotesken bildet die zweite Facette der Lyrik, wie die Gedichte [„Weltende“ (1911)](#weltende-1911) von Jakob van Hoddis (1887-1942) und [„Schöne Jugend“ (1912)](#schöne-jugend-1912) von [Gottfried Benn](#gottfried-benn-1886-1956).
+Die Gedichte in der Lyrik sollen nicht „rühren“ sondern „aufrühren“ und einen Glauben an den „neuen“ Menschen schaffen. Die Konfrontation mit dem Bedrohlichen, Abstoßenden und Grotesken bildet die zweite Facette der Lyrik, wie die Gedichte [„Weltende“ (1911)](#weltende-1911) von [Jakob van Hoddis](#jakob-van-hoddis-1887-1942) und [„Schöne Jugend“ (1912)](#schöne-jugend-1912) von [Gottfried Benn](#gottfried-benn-1886-1956).
 
 Dabei ist die Form der Gedichte sehr unterschiedlich: Manche zeigen metaphernreiche und pathetische Sprache, während andere den Satzbau zertrümmern und die Logik negieren.
 
