@@ -53,7 +53,7 @@ Außerdem sinkt der Kostenanteil des Projektcontrollings indirekt proportional z
 
 ![Necessity Project Controlling](../../../../assets/project_management/project_controlling_necessity-2.png)
 
-## Vier Aspekte
+## Vier Aspekte - Kubanetischer Kreislauf
 
 Projektcontrolling behandelt diese vier Aspekte:
 
