@@ -419,5 +419,44 @@ no wiaklech...
 
 ![Fisches Nachtgesang](../../../../../../assets/languages/fisches_nachtgesang.jpg)
 
+#### Blumenwiese
+
+Die „Blumenwiese“ ist ein simultanistisches Gedicht von Alexander Vock und Felix Schneider.
+
+<table>
+    <tr>
+        <th>Sprecher 1</th>
+        <th>Sprecher 2</th>
+    </tr>
+    <tr>
+        <td>
+            <blockquote>
+                Blumen<br/>
+Auf einer schönen Blume<br/>
+Sitzt eine große Biene<br/>
+Sie trinkt ergötzlich Nektar<br/>
+Und isst dazu das Schwein<br/>
+Die Sonne strahlt vom Boden<br/>
+Das Licht fällt auf den Schimmel<br/>
+Auf einmal kommt ein Käfer<br/>
+Und frisst die Löwin auf
+            </blockquote>
+        </td>
+        <td>
+            <blockquote>
+                Wiese<br/>
+Auf einer großen Wiese<br/>
+Sitzt eine kleine Löwin<br/>
+Sie trinkt genüsslich Rotwein<br/>
+Und isst dazu das Frühjahr<br/>
+Die Sonne strahlt vom Himmel<br/>
+Das Licht fällt als Photonen<br/>
+Auf einmal kommt ein Adler<br/>
+Und frisst die Biene auf
+            </blockquote>
+        </td>
+    </tr>
+</table>
+
 [^1]: Gellen: Schuss, Schrei
 [^2]: Pawlatsche: überdachter Holzbalkon
