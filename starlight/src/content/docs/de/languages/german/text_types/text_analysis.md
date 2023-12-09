@@ -1,5 +1,7 @@
 ---
 title: Textanalyse
+sidebar:
+    order: 5
 ---
 
 Die Textanalyse ist eine sachliche, analytische Textsorte, welche den Ausgangstext nach vielen Kriterien analysiert. Aufgrund dieser Kriterien ist die Textanalyse immer nach dem gleichen Schema aufgebaut, welches man nur auswendig lernen muss. Die Textanalyse wird in Präsens und Perfekt geschrieben.
