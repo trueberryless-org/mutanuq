@@ -27,7 +27,7 @@ Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll d
 
 ### Anrede
 
-In der Aufgabenstellung ist eine Situation beschrieben, welche die Umgebung und Personen, vor welchen man die Meinungsrede vorträgt, erläutert. Aus dieser Situtation muss man schließen bzw. entscheiden, welche Personen man in der Anrede ansprechen möchte und soll. Es müssen immer alle Geschlechter angesprochen werden, wenn Sie nicht wissen, ob das Publikum ausschließlich aus männlichen bzw. weiblichen Personen besteht. Falls eine Autoritätsperson bzw. Person aus einem höheren Rang als Ihr eigener im Publikum sitzt, müssen Sie formell schreiben (`Sie` / `Ihren` / ...). Wenn Sie wissen, dass nur Ihre Freunde im Publikum sitzen, können Sie - es wäre wohl sinnvoll - informell schreiben (`du` / `euren` / ...).
+In der Aufgabenstellung ist eine Situation beschrieben, welche die Umgebung und Personen, vor welchen man die Meinungsrede vorträgt, erläutert. Aus dieser Situation muss man schließen bzw. entscheiden, welche Personen man in der Anrede ansprechen möchte und soll. Es müssen immer alle Geschlechter angesprochen werden, wenn Sie nicht wissen, ob das Publikum ausschließlich aus männlichen bzw. weiblichen Personen besteht. Falls eine Autoritätsperson bzw. Person aus einem höheren Rang als Ihr eigener im Publikum sitzt, müssen Sie formell schreiben (`Sie` / `Ihren` / ...). Wenn Sie wissen, dass nur Ihre Freunde im Publikum sitzen, können Sie - es wäre wohl sinnvoll - informell schreiben (`du` / `euren` / ...).
 
 > Sehr geehrte Schülerinnen und Schüler!  
 > Sehr geehrte Professorinnen und Professoren!
@@ -42,25 +42,25 @@ Eine Meinungsrede hat eine kreative Einleitung, welche zumindest den Autor und d
 
 Fassen Sie als erstes das Thema, um welches es in der Meinungsrede gehen wird, zusammen. Dieser Anfang des Hauptteils ist wichtig, damit alle Personen im Publikum die notwendigen Informationen dieses Themas wissen.
 
-Anschließend sollen Sie einige Argumente (jeweils ein Absatz) erwähnen und diese ausführlich begründen. Als Hilfestellung gibt es verscheidene [Redeaufbaumodelle](#redeaufbaumodelle), um die Meinungsrede in sich geschlossen und flüssig zu gestalten.
+Anschließend sollen Sie einige Argumente (jeweils ein Absatz) erwähnen und diese ausführlich begründen. Als Hilfestellung gibt es verschiedene [Redeaufbaumodelle](#redeaufbaumodelle), um die Meinungsrede in sich geschlossen und flüssig zu gestalten.
 
 Sprechen Sie das Publikum an und stellen Sie Verknüpfungen mit einem typischen Alltag in Ihren Beispielen her, damit die zuhörenden Personen mit diesen Situationen eine Verbindung herstellen und Ihre Meinung unterstützen.
 
 > Sie wissen das ja auch.  
 > Jeder kennt den Moment, wenn der Toast vom Tellerrand kippt und man weiß bereits vorher, dass er 100%ig auf der Marmeladenseite aufklatschen wird.
 
-Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente Ihre eigene Meinungs sind.
+Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente Ihre eigene Meinung sind.
 
 #### Redeaufbaumodelle
 
 ##### AIDA Formel
 
-| Abkürzung | Inhalt                                                                                              |
-| --------- | --------------------------------------------------------------------------------------------------- |
-| Attention | Schaffen Sie eine emotionale Verbindung, indem Sie beispielweise etwas empörendes erzählen.         |
-| Interest  | Erwecken Sie das Interesse des Publikums mittels detailierterer Erzählung des Inhalts des Arguments |
-| Desire    | Stellen Sie den gewünschten Soll-Zustand dar.                                                       |
-| Action    | Schlagen Sie Maßnahmen vor, um diesen Wunsch-Zustand zu erreichen.                                  |
+| Abkürzung | Inhalt                                                                                               |
+| --------- | ---------------------------------------------------------------------------------------------------- |
+| Attention | Schaffen Sie eine emotionale Verbindung, indem Sie beispielsweise etwas empörendes erzählen.         |
+| Interest  | Erwecken Sie das Interesse des Publikums mittels detaillierterer Erzählung des Inhalts des Arguments |
+| Desire    | Stellen Sie den gewünschten Soll-Zustand dar.                                                        |
+| Action    | Schlagen Sie Maßnahmen vor, um diesen Wunsch-Zustand zu erreichen.                                   |
 
 ##### ABBA Prinzip
 
@@ -92,7 +92,7 @@ Dieses Modell ist nicht immer anwendbar, da es diese Vergleiche vor allem bei ku
 
 ##### Plusminus Formel
 
-Bei der Plusminus Formel stellt man die Vor- und Nachteile mittels Pro- und Kontraargumenten so gegenüber, dass das eigene Anliegen zur Wirkung kommt.
+Bei der Plusminus Formel stellt man die Vor- und Nachteile mittels Pro- und Kontra-Argumenten so gegenüber, dass das eigene Anliegen zur Wirkung kommt.
 
 ### Schluss
 
