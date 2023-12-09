@@ -49,6 +49,7 @@ Entscheidungs
 Epik
 Epiker
 ergebnisorientierten
+ergötzlich
 Ermöglicherin
 Ertrinkens
 ESX
@@ -209,6 +210,7 @@ Verfügbarkeitszonen
 verhaltensbezogen
 virtualisation
 VMI
+Vock
 Vorübergehn
 vorzuladen
 Wilderöm
