@@ -82,7 +82,7 @@ Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Rep
 
 ## Instrumente / Methoden
 
-Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte) bieten.
+Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte---kubanetischer-kreislauf) bieten.
 
 #### Kosten- und Leistungskontrolle
 

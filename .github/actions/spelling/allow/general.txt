@@ -2,6 +2,7 @@ abzuschöpfen
 Achleitner
 ADCs
 aggregiert
+AIDA
 allerkleinsten
 Animateure
 Arduino
@@ -100,6 +101,7 @@ Kierkegaards
 Kontrahierungspolitik
 kraxelt
 Kriechens
+Kubanetischer
 kundenorientiert
 Lautgedichte
 lcdc
@@ -153,6 +155,7 @@ Plattformabhängigkeit
 plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
+Plusminus
 Portfolioanalyse
 Prescaler
 Produktzyklusanalyse

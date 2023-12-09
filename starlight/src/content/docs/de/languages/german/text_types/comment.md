@@ -1,5 +1,7 @@
 ---
 title: Kommentar
+sidebar:
+    order: 4
 ---
 
 Der Kommentar ist eine meinungsbasierte, kritische, satirische, ineinander kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenten Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Die Gegenargumente müssen kleinlich formuliert sein und als nicht stichhaltig angesehen werden.
