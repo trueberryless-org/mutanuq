@@ -59,15 +59,7 @@ export default defineConfig({
                     translations: {
                         en: "Information systems",
                     },
-                    items: [
-                        {
-                            label: "Relationale Datenbanken",
-                            translations: {
-                                en: "Relational Databases",
-                            },
-                            autogenerate: { directory: "information_systems/relational_databases" },
-                        },
-                    ],
+                    autogenerate: { directory: "information_systems" },
                 },
                 {
                     label: "Dezentrale Systeme",
