@@ -55,7 +55,7 @@ Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sin
     Transaktionen sind nicht aufspaltbar.
 
 -   **C**onsistent  
-    Relationale Datenbanken haben eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](./document_orientated_databases/#base-transaktionen) bedeutet, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht ge­zwun­ge­ner­ma­ßen jetzt sofort).
+    Relationale Datenbanken haben eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](./document_orientated_databases/#base-transaktionen) bedeutet, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht gezwungenermaßen jetzt sofort).
 
     Bei SQL-Datenbanken wird diese hohe Datenkonsistenz mittels Constraints (`NOT NULL`, `PRIMARY KEY` / `FOREIGN KEY`, `UNIQUE`, `CHECK`, `DEFAULT`) gewährleistet.
 
