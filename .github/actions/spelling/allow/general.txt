@@ -207,6 +207,16 @@ Umbruchs
 Unternehmensexterne
 Unternehmenskassa
 unwartbar
+ausimplementieren
+ausimplementiert
+ausimplementierten
+Blazor
+instanziiert
+Liskov
+Nebenläufigkeitstransparenz
+Polymorphie
+Replikationstransparenz
+typbasierten
 usart
 vect
 Verfügbarkeitszonen
