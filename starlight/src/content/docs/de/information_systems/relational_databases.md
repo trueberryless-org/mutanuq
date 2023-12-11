@@ -4,7 +4,7 @@ sidebar:
     order: 1
 ---
 
-Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme und Anwendungen. Ihr Konzept basiert auf der Organisierung von Daten in tabellenähnlichen Strukturen, in denen Beziehungen zwischen verschiedenen Datensätzen durch Schlüssel definiert werden. Diese Struktur ermöglicht eine effiziente Verwaltung und Abfrage von Daten. In diesem Kontext spielen Vorteile wie hohe Datenkonsistenz, Flexibilität und einfaches Datenmodell eine zentrale Rolle. Dennoch sind auch Herausforderungen und Nachteile zu berücksichtigen, darunter Skalierbarkeitsprobleme und Einschränkungen bei der Handhabung von komplexen Datenstrukturen.
+Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme und Anwendungen. Ihr Konzept basiert auf der Organisation von Daten in tabellenähnlichen Strukturen, in denen Beziehungen zwischen verschiedenen Datensätzen durch Schlüssel definiert werden. Diese Struktur ermöglicht eine effiziente Verwaltung und Abfrage von Daten. In diesem Kontext spielen Vorteile wie hohe Datenkonsistenz, Flexibilität und einfaches Datenmodell eine zentrale Rolle. Dennoch sind auch Herausforderungen und Nachteile zu berücksichtigen, darunter Skalierbarkeitsprobleme und Einschränkungen bei der Handhabung von komplexen Datenstrukturen.
 
 ## Vorteile
 
