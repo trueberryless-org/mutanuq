@@ -213,6 +213,8 @@ tabellenbasierte
 tabellenähnlichen
 Unternehmenskassa
 unwartbar
+verschnellern
+zurückspeichert
 dokumentenorientierte
 Entität
 Mengenorientierte
