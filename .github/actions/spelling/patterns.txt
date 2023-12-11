@@ -9,3 +9,6 @@
 
 # Words after hyphen written lowercase
 (?<= -)(\p{Ll})+
+
+# First letter thick
+\*\*([A-Z][a-z]*)\*\*
