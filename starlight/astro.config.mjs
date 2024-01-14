@@ -94,6 +94,14 @@ export default defineConfig({
                     autogenerate: { directory: "system_integration_and_infrastructure" },
                 },
                 {
+                    label: "Künstliche Intelligenz",
+                    collapsed: true,
+                    translations: {
+                        en: "Artificial Intelligence",
+                    },
+                    autogenerate: { directory: "artificial_intelligence" },
+                },
+                {
                     label: "Projektmanagement",
                     collapsed: true,
                     translations: {
