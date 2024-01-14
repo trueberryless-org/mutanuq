@@ -6,9 +6,9 @@ sidebar:
 
 Python ist eine weit verbreitete, benutzerfreundliche Programmiersprache, entwickelt von Guido van Rossum. Mit klarer Syntax und hoher Lesbarkeit ist sie für Anfänger und erfahrene Entwickler gleichermaßen attraktiv. Python wird in Webentwicklung, Datenanalyse, künstlicher Intelligenz und anderen Bereichen eingesetzt. Die Sprache zeichnet sich durch Einfachheit und Flexibilität aus. Ein charakteristisches Merkmal ist, dass Python eine interpretierte Sprache ist, was bedeutet, dass ein Interpreter verwendet wird, um den Code direkt auszuführen, ohne ihn vorher zu kompilieren. Mit einer umfangreichen Standardbibliothek und einer aktiven Entwicklergemeinschaft bietet Python eine robuste Plattform für verschiedene Projekte.
 
-# Grundlegende Syntax
+## Grundlegende Syntax
 
-## Variablen
+### Variablen
 
 In Python können verschiedene Datentypen für die Speicherung von Informationen verwendet werden.
 
@@ -39,7 +39,7 @@ person["favourite_numbers"] = numbers
 print(person["name"])  # Gibt den Wert des Schlüssels "name" im Dictionary aus.
 ```
 
-## Ablaufsteuerung
+### Ablaufsteuerung
 
 Die Ablaufsteuerung ermöglicht die Kontrolle über den Programmfluss.
 
@@ -74,7 +74,7 @@ while age < 66:
     age += 1
 ```
 
-## Klassen
+### Klassen
 
 Klassen ermöglichen die Definition von benutzerdefinierten Datentypen (Eigenschaften realer Objekte) und Methoden (Verhalten realer Objekte).
 
