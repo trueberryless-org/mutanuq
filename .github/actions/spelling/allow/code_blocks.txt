@@ -2,6 +2,7 @@ baf
 dht
 dropna
 dtype
+dtypes
 ent
 fillna
 honkable
