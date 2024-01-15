@@ -36,6 +36,7 @@ computerunterstützt
 Controllings
 dadaistischen
 daß
+datenintensiven
 Datenverarbeitungsprogrammen
 Davidsohn
 Degenerationsphase
@@ -50,6 +51,7 @@ einschläft
 Elegoo
 emoji
 Entitäten
+Entitätenverknüpfung
 Entscheidungs
 Epik
 Epiker
@@ -100,10 +102,12 @@ hypotaktisch
 Hypotaxen
 Iaa
 imma
+insgesamte
 instanziiert
 Jandl
 Kapitalaufbringung
 Kierkegaards
+Klassifikationsalgorithmen
 Kontrahierungspolitik
 kraxelt
 Kriechens
@@ -113,6 +117,7 @@ Lautgedichte
 lcdc
 lcdh
 LCDs
+Lemmatization
 Lesertäuschung
 Lichtensteins
 Liskov
@@ -151,6 +156,7 @@ parataktisch
 Passivkonstruktionen
 patreon
 paypal
+persistieren
 persistiert
 Personalzufriendenheit
 Phrasendreschertums
@@ -181,11 +187,13 @@ rehype
 Reifephase
 Replikationstransparenz
 Rilkes
+Rossum
 Rühm
 Saa
 Schriftstellerbewegung
 screenshots
 Segmentierungskriterien
+Sentimentanalyse
 simultanistisches
 Sinnabschnitte
 situationsbezogen
@@ -196,17 +204,20 @@ Stakeholdern
 standörtlich
 Stilfiguren
 Stimulans
+Stoppwörter
 Storetest
 Stramms
 suggestiert
 summarises
 Symbolismus
 Synology
+tabellenähnliche
 tagline
 Teammitgliedern
 Terzinen
 Testung
 Threadsicheres
+Tokenisierung
 tragischerweise
 Trastan
 Traumen
@@ -227,6 +238,7 @@ Vock
 Vorübergehn
 vorzuladen
 Wilderöm
+Wissensgraphenaufbau
 withastro
 Xen
 Xigma
