@@ -21,4 +21,5 @@ nlp
 PROPN
 pysqlite
 quackable
+sklearn
 stopwords
