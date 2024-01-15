@@ -105,3 +105,161 @@ class SpaceShip(Vehicle):
 # Ein Objekt der Klasse "Car" wird erstellt.
 tesla_model_s = Car(4, 300)
 ```
+
+## Natural Language Processing
+
+### Text Processing
+
+#### Normalisieren
+
+Als Normalisierung bezeichnet man die Konvertierung von Text in Kleinbuchstaben. Dies ist in den meisten Fällen der Textverarbeitung sinnvoll, muss jedoch nicht unbedingt geschehen. Außerdem kann auch die Entfernung der Satzzeichen unter der Normalisierung erfolgen.
+
+```python
+# Konvertierung in Kleinbuchstaben
+df = pd.DataFrame({'tweets': [col.lower() for col in ['I am a dog', 'I am a cat', 'I am a fish']]}).
+
+# Entfernung der Satzzeichen
+import re
+df.tweets = [re.sub("[^a-z0-9 .]", '', col) for col in df.tweets]
+```
+
+#### Tokenisieren
+
+Als Tokenisierung bezeichnet man die Aufteilung eines Textes in einzelne Wörter. Diese Wörter werden als Tokens bezeichnet.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") # en_core_web_sm
+doc = nlp("Steve Jobs, CEO von Apple, erwägt den Kauf eines österreichischen Startups um 6 Mio. Euro.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.pos_:{10}}", f"{token.ent_type_:{10}}", f"{str(token.is_stop):{10}}", f"{token.lemma_:{20}}")
+```
+
+```python
+// token.output
+Text                 POS        ENT_TYPE   IS_STOP    Lemma
+--------------------------------------------------------------------------
+Steve                PROPN      PER        False      Steve
+Jobs                 PROPN      PER        False      Jobs
+,                    PUNCT                 False      --
+CEO                  PROPN                 False      CEO
+von                  ADP                   True       von
+Apple                PROPN      ORG        False      Apple
+,                    PUNCT                 False      --
+erwägt               VERB                  False      erwägen
+den                  DET                   True       der
+Kauf                 NOUN                  False      Kauf
+eines                DET                   True       ein
+österreichischen     ADJ        MISC       False      österreichisch
+Startups             NOUN                  False      Startup
+um                   ADP                   True       um
+6                    NUM                   False      6
+Mio.                 NOUN                  False      Mio.
+Euro                 NOUN                  False      Euro
+.                    PUNCT                 False      --
+```
+
+#### Stoppwörter entfernen
+
+Vieler Wörter jeder Sprache haben eine geringen Einfluss auf die Aussagekraft eines Textes. Diese Wörter werden als Stoppwörter bezeichnet. Im Normalfall können KI-Modelle besser trainiert werden, wenn die Stoppwörter aus dem Text entfernt werden.
+
+```python
+import spacy
+nlp = spacy.load("en_core_web_sm") # de_core_news_sm
+
+class NLP:
+    def __init__(self, text):
+        self.text = text
+
+    def remove_stopwords(self):
+        doc = nlp(self.text)
+        self.text = " ".join([token for token in doc if not token.is_stop])
+        return self.text
+
+text = "How to develop a chatbot using Python"
+text = NLP(text).remove_stopwords()
+print(text) # develop chatbot Python
+```
+
+#### Parts of Speech Tagging
+
+Part-of-Speech-Tagging ist eine NLP-Technik, die jedem Wort in einem Text grammatikalische Kategorien zuweist, wie Nomen, Verben oder Adjektive. Diese Markierungen helfen bei der Analyse der Satzstruktur und unterstützen Aufgaben wie Textanalyse und Sentimentanalyse.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") # en_core_web_sm
+doc = nlp("Ich habe immer Hunger.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.pos_:{10}}")
+```
+
+```python
+// pos.output
+Text                 POS
+--------------------------------
+Ich                  PRON
+habe                 AUX
+immer                ADV
+Hunger               NOUN
+.                    PUNCT
+```
+
+#### Named Entity Recognition
+
+NER identifiziert und klassifiziert spezifische Entitäten wie Personen, Orte und Organisationen in einem Text. Diese Informationsextraktion ist entscheidend für Anwendungen wie Entitätenverknüpfung und Wissensgraphenaufbau.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") # en_core_web_sm
+doc = nlp("Marie Curie besuchte das Louvre-Museum in Paris.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.ent_type_:{10}}")
+```
+
+```python
+// ner.output
+Text                 ENT_TYPE
+--------------------------------
+Marie                PER
+Curie                PER
+besuchte
+das
+Louvre-Museum        LOC
+in
+Paris                LOC
+.
+```
+
+#### Stemming & Lemmatization
+
+Stemming und Lemmatisierung sind Techniken zur Textnormalisierung in der NLP. Sie reduzieren Wörter auf ihre Basisformen (Stammwörter), was die Effizienz von Such- und Klassifikationsalgorithmen verbessert. Lemmatisierung hat hierbei den Vorteil gegenüber Stemming, ein Wörterbuch zu verwenden, das die Wortformen auf ihre Stammebene normalisiert.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") # en_core_web_sm
+doc = nlp("Michael Jordan erwägt den Kauf eines Autos.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.lemma_:{20}}")
+```
+
+```python
+// lemma.output
+Text                 Lemma
+------------------------------------------
+Michael              Michael
+Jordan               Jordan
+erwägt               erwägen
+den                  der
+Kauf                 Kauf
+eines                ein
+Autos                Auto
+.                    --
+```
+
+### Feature Extraction
+
+### Modeling
