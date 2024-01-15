@@ -295,6 +295,21 @@ Methoden zur Umwandlung von Text in numerische Darstellungen sind beispielsweise
 
 #### One-Hot Encoding
 
+One-Hot Encoding ist eine Methode, bei der jedes Wort in einem Text in eine binäre Vektorform umgewandelt wird. Jedes Wort wird durch eine Spalte repräsentiert, und wenn das Wort im Text vorkommt, wird die entsprechende Spalte auf 1 gesetzt, sonst auf 0.
+
+```python
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+
+text_data = ["Das ist ein Beispiel.", "Ein weiteres Beispiel."]
+
+# Initialisierung des One-Hot Encoders
+encoder = OneHotEncoder(sparse=False)
+one_hot_encoded = encoder.fit_transform(pd.DataFrame(text_data, columns=['text']))
+
+print(one_hot_encoded)
+```
+
 #### Bag-of-words (BOW)
 
 ### Modeling
