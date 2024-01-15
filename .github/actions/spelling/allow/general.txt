@@ -11,10 +11,12 @@ astrojs
 ATmega
 Atmel
 aufklatschen
+aufspaltbar
 ausimplementieren
 ausimplementiert
 ausimplementierten
 avr
+BCNF
 Benachrichtigungssystem
 Blazor
 blockbasierte
@@ -43,6 +45,7 @@ Degenerationsphase
 detailierter
 Dinggedicht
 Dinggedichte
+dokumentenorientierte
 dotnet
 drehzahlgesteuert
 Echtzeitshoppen
@@ -50,6 +53,7 @@ eeprom
 einschläft
 Elegoo
 emoji
+Entität
 Entitäten
 Entitätenverknüpfung
 Entscheidungs
@@ -133,6 +137,8 @@ Meilensteinplan
 meinungsbasierte
 meinungsorientierte
 meinungsorientierter
+Mengenorientierte
+mengenorientierten
 Metadaten
 metaphernreiche
 methoden
@@ -145,6 +151,7 @@ Moin
 Motivationsfähigkeit
 müd
 mutanuq
+MVCC
 Navigationsapp
 ncrontab
 Nebenläufigkeitstransparenz
@@ -172,6 +179,7 @@ Plattformunabhängigkeit
 Plusminus
 Polymorphie
 Portfolioanalyse
+Postgre
 Prescaler
 Produktzyklusanalyse
 programmtechnisch
@@ -183,6 +191,7 @@ Pulsweite
 PWM
 Questionmarks
 Redaktionsteam
+redundanzfreie
 rehype
 Reifephase
 Replikationstransparenz
@@ -197,6 +206,7 @@ Sentimentanalyse
 simultanistisches
 Sinnabschnitte
 situationsbezogen
+Skalierbarkeitsprobleme
 Sören
 Sortimentspolitik
 SSDs
@@ -212,6 +222,8 @@ summarises
 Symbolismus
 Synology
 tabellenähnliche
+tabellenähnlichen
+tabellenbasierte
 tagline
 Teammitgliedern
 Terzinen
@@ -232,6 +244,7 @@ usart
 vect
 Verfügbarkeitszonen
 verhaltensbezogen
+verschnellern
 virtualisation
 VMI
 Vock
@@ -244,4 +257,5 @@ Xen
 Xigma
 zeitbasierte
 ZRS
+zurückspeichert
 zweiteres
