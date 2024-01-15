@@ -19,6 +19,10 @@ Eine Textanalyse weist folgende Eigenschaften auf:
 
 ## Aufbau
 
+### Überschrift
+
+Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll diese verwendet werden.
+
 ### Einleitung
 
 In der Einleitung einer Textanalyse erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Bericht, Glosse, Kommentar, Kolumne, ...) des Ausgangstextes. Man kann hierfür eine Basiseinleitung hernehmen:
