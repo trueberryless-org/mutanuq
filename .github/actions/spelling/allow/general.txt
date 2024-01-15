@@ -32,6 +32,7 @@ computerunterstützt
 Controllings
 dadaistischen
 daß
+datenintensiven
 Datenverarbeitungsprogrammen
 Davidsohn
 Degenerationsphase
@@ -46,6 +47,7 @@ einschläft
 Elegoo
 emoji
 Entitäten
+Entitätenverknüpfung
 Entscheidungs
 Epik
 Epiker
