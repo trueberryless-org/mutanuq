@@ -123,7 +123,7 @@ df.head(5) # fünf ersten Zeilen ausgeben
 df.tail(3) # letzten drei Zeilen ausgeben
 ```
 
-Zeilen und Spalten spezifisch ausgeben, jeweil mit Index und Namen:
+Zeilen und Spalten spezifisch ausgeben, jeweils mit Index und Namen:
 
 ```python
 df['oranges'] # Series 'oranges' ausgeben
@@ -136,7 +136,7 @@ df.loc['December'] # Zeile 'December' ausgeben
 df.loc['October':'December'] # Zeilen von 'October' bis 'December' ausgeben
 ```
 
-Metainformationen der Tabelle herausfinden:
+Metadaten der Tabelle herausfinden:
 
 ```python
 df.shape # Anzahl der Zeilen und Spalten (Beispiel: (1000, 11))
@@ -174,7 +174,7 @@ df.isnull().sum() # Gibt die Anzahl der Nullwerte in jeder Series zurück
 df.isnull().sum().sum() # Gibt die insgesamte Anzahl der Nullwerte zurück
 ```
 
-Statistiken eines Dataframes herausfinden (Anzahl, Mittelwert, Standardabweichung, Minimun, Maximun, etc.).
+Statistiken eines Dataframes herausfinden (Anzahl, Mittelwert, Standardabweichung, Minimum, Maximum, etc.).
 
 ```python
 df.describe()
@@ -209,7 +209,7 @@ df3 = df.append(df2)
 Die Methode `rename()` wird verwendet, um bestimmte Spalten im Dataframe df umzubenennen, indem ein Dictionary mit den alten und neuen Spaltennamen bereitgestellt wird.
 
 ```python
-df.columnes = ['Amount of Fruits (Apple)', 'Amount of Fruits (Orange)']
+df.columns = ['Amount of Fruits (Apple)', 'Amount of Fruits (Orange)']
 ```
 
 ```python

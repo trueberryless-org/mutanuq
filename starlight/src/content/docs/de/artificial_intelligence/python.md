@@ -110,7 +110,7 @@ tesla_model_s = Car(4, 300)
 
 ### Text Processing
 
-#### Normalisieren
+#### Normalisierung
 
 Als Normalisierung bezeichnet man die Konvertierung von Text in Kleinbuchstaben. Dies ist in den meisten Fällen der Textverarbeitung sinnvoll, muss jedoch nicht unbedingt geschehen. Außerdem kann auch die Entfernung der Satzzeichen unter der Normalisierung erfolgen.
 
@@ -123,7 +123,7 @@ import re
 df.tweets = [re.sub("[^a-z0-9 .]", '', col) for col in df.tweets]
 ```
 
-#### Tokenisieren
+#### Tokenisierung
 
 Als Tokenisierung bezeichnet man die Aufteilung eines Textes in einzelne Wörter. Diese Wörter werden als Tokens bezeichnet.
 
