@@ -11,8 +11,12 @@ astrojs
 ATmega
 Atmel
 aufklatschen
+ausimplementieren
+ausimplementiert
+ausimplementierten
 avr
 Benachrichtigungssystem
+Blazor
 blockbasierte
 blockbasierten
 Böhmermanns
@@ -99,6 +103,7 @@ Hypotaxen
 Iaa
 imma
 insgesamte
+instanziiert
 Jandl
 Kapitalaufbringung
 Kierkegaards
@@ -115,6 +120,7 @@ LCDs
 Lemmatization
 Lesertäuschung
 Lichtensteins
+Liskov
 LTO
 Lyrikbestseller
 marktökonomische
@@ -141,6 +147,7 @@ müd
 mutanuq
 Navigationsapp
 ncrontab
+Nebenläufigkeitstransparenz
 ned
 Öffis
 Onlineshopping
@@ -163,6 +170,7 @@ plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
 Plusminus
+Polymorphie
 Portfolioanalyse
 Prescaler
 Produktzyklusanalyse
@@ -177,6 +185,7 @@ Questionmarks
 Redaktionsteam
 rehype
 Reifephase
+Replikationstransparenz
 Rilkes
 Rossum
 Rühm
@@ -213,6 +222,7 @@ tragischerweise
 Trastan
 Traumen
 trueberryless
+typbasierten
 Ultrium
 Umbruchs
 Unternehmensexterne
