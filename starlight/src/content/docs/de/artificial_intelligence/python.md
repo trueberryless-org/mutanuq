@@ -298,16 +298,102 @@ Methoden zur Umwandlung von Text in numerische Darstellungen sind beispielsweise
 One-Hot Encoding ist eine Methode, bei der jedes Wort in einem Text in eine binäre Vektorform umgewandelt wird. Jedes Wort wird durch eine Spalte repräsentiert, und wenn das Wort im Text vorkommt, wird die entsprechende Spalte auf 1 gesetzt, sonst auf 0.
 
 ```python
-from sklearn.preprocessing import OneHotEncoder
+import spacy
+from sklearn.feature_extraction.text import CountVectorizer
+nlp = spacy.load('en_core_web_sm') # de_core_news_sm
+
+text="Jim loves NLP. He will learn NLP in two monts. NLP is Jim's future."
+
+def get_spacy_tokens(text):
+    doc = nlp(text)
+    return [token.text for token in doc]
+text_tokens = get_spacy_tokens(text)
+vectorizer = CountVectorizer(tokenizer=get_spacy_tokens, lowercase=False, token_pattern=None)
+
+vectorizer.fit(text_tokens)
+print("Vocabulary:\n", vectorizer.vocabulary_)
+
+vector = vectorizer.transform(text_tokens)
+print("Encoded Document is:\n", vector.toarray())
+```
+
+```python
+// one-hot.output
+Vocabulary:
+ {'Jim': 3, 'loves': 9, 'NLP': 4, '.': 1, 'He': 2, 'will': 12, 'learn': 8, 'in': 6, 'two': 11, 'monts': 10, 'is': 7, "'s": 0, 'future': 5}
+Encoded Document is:
+ [[0 0 0 1 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 1 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 1 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 1]
+ [0 0 0 0 0 0 0 0 1 0 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 1 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 0 0 0 1 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 1 0 0 0 0 0]
+ [0 0 0 1 0 0 0 0 0 0 0 0 0]
+ [1 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]]
+```
+
+##### mit Pandas
+
+Mittels der verwirrend benannten Methode `get_dummies()` kann man One-Hot Encoding auch mit Pandas durchführen.
+
+```txt
+// products.csv
+produkt_id,kategorie
+1,Elektronik
+2,Kleidung
+3,Bücher
+4,Elektronik
+5,Elektronik
+6,Bücher
+7,Kleidung
+8,Bücher
+9,Elektronik
+10,Kleidung
+11,Bücher
+12,Elektronik
+13,Bücher
+14,Elektronik
+15,Kleidung
+16,Kleidung
+```
+
+```python
 import pandas as pd
+df = pd.read_csv('products.csv')
+df = pd.get_dummies(df, columns=["kategorie"], dtype=int)
+df.columns = map(str.lower, df.columns)
+print(df)
+```
 
-text_data = ["Das ist ein Beispiel.", "Ein weiteres Beispiel."]
-
-# Initialisierung des One-Hot Encoders
-encoder = OneHotEncoder(sparse=False)
-one_hot_encoded = encoder.fit_transform(pd.DataFrame(text_data, columns=['text']))
-
-print(one_hot_encoded)
+```python
+// one-hot_pandas.output
+    produkt_id  kategorie_bücher  kategorie_elektronik  kategorie_kleidung
+0            1                 0                     1                   0
+1            2                 0                     0                   1
+2            3                 1                     0                   0
+3            4                 0                     1                   0
+4            5                 0                     1                   0
+5            6                 1                     0                   0
+6            7                 0                     0                   1
+7            8                 1                     0                   0
+8            9                 0                     1                   0
+9           10                 0                     0                   1
+10          11                 1                     0                   0
+11          12                 0                     1                   0
+12          13                 1                     0                   0
+13          14                 0                     1                   0
+14          15                 0                     0                   1
+15          16                 0                     0                   1
 ```
 
 #### Bag-of-words (BOW)
