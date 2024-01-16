@@ -19,6 +19,7 @@ IStrategy
 ITable
 kategorie
 kleidung
+lisa
 Metascore
 monts
 ner
