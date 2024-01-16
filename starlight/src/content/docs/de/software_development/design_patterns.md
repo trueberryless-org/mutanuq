@@ -1,5 +1,7 @@
 ---
 title: Design Patterns
+sidebar:
+    order: 3
 tableOfContents:
     minHeadingLevel: 2
     maxHeadingLevel: 3
