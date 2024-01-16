@@ -443,7 +443,7 @@ print(vectorizer.get_feature_names_out())
 # ['adventures' 'apples' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'forest' 'gathered' 'gatherings' 'grateful' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'whiskers' 'wildflowers']
 ```
 
-Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `unite states of america` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
+Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `max lisa tim` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
 
 ```python
 vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
