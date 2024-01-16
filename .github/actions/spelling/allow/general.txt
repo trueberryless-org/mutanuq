@@ -11,9 +11,15 @@ astrojs
 ATmega
 Atmel
 aufklatschen
+aufspaltbar
+ausimplementieren
+ausimplementiert
+ausimplementierten
 avr
 Bayes'schen
+BCNF
 Benachrichtigungssystem
+Blazor
 blockbasierte
 blockbasierten
 Böhmermanns
@@ -40,6 +46,7 @@ Degenerationsphase
 detailierter
 Dinggedicht
 Dinggedichte
+dokumentenorientierte
 dotnet
 drehzahlgesteuert
 Echtzeitshoppen
@@ -48,6 +55,7 @@ einbuchstabige
 einschläft
 Elegoo
 emoji
+Entität
 Entitäten
 Entitätenverknüpfung
 Entscheidungs
@@ -103,6 +111,7 @@ Hypotaxen
 Iaa
 imma
 insgesamte
+instanziiert
 Jandl
 Kapitalaufbringung
 Kierkegaards
@@ -121,6 +130,7 @@ Leistungs
 Lemmatization
 Lesertäuschung
 Lichtensteins
+Liskov
 LTO
 Lyrikbestseller
 marktökonomische
@@ -133,6 +143,8 @@ Meilensteinplan
 meinungsbasierte
 meinungsorientierte
 meinungsorientierter
+Mengenorientierte
+mengenorientierten
 Metadaten
 metaphernreiche
 methoden
@@ -145,8 +157,10 @@ Moin
 Motivationsfähigkeit
 müd
 mutanuq
+MVCC
 Navigationsapp
 ncrontab
+Nebenläufigkeitstransparenz
 ned
 Öffis
 Onlineshopping
@@ -169,7 +183,9 @@ plattformunabhängige
 plattformunabhängigen
 Plattformunabhängigkeit
 Plusminus
+Polymorphie
 Portfolioanalyse
+Postgre
 Prescaler
 Produktzyklusanalyse
 programmtechnisch
@@ -181,8 +197,10 @@ Pulsweite
 PWM
 Questionmarks
 Redaktionsteam
+redundanzfreie
 rehype
 Reifephase
+Replikationstransparenz
 Rilkes
 Rossum
 Rühm
@@ -194,6 +212,7 @@ Sentimentanalyse
 simultanistisches
 Sinnabschnitte
 situationsbezogen
+Skalierbarkeitsprobleme
 Sören
 Sortimentspolitik
 SSDs
@@ -209,6 +228,8 @@ summarises
 Symbolismus
 Synology
 tabellenähnliche
+tabellenähnlichen
+tabellenbasierte
 tagline
 Teammitgliedern
 Tensorflow
@@ -222,6 +243,7 @@ tragischerweise
 Trastan
 Traumen
 trueberryless
+typbasierten
 Ultrium
 Umbruchs
 Unternehmensexterne
@@ -231,6 +253,7 @@ usart
 vect
 Verfügbarkeitszonen
 verhaltensbezogen
+verschnellern
 virtualisation
 VMI
 Vock
@@ -243,4 +266,5 @@ Xen
 Xigma
 zeitbasierte
 ZRS
+zurückspeichert
 zweiteres
