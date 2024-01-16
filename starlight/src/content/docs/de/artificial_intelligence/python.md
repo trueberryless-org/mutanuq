@@ -396,7 +396,11 @@ print(df)
 15          16                 0                     0                   1
 ```
 
-#### Count Vectorizer
+#### Bag-of-words (BOW)
+
+Die `Bag of Words` (BoW) ist eine häufig verwendete Methode in der Textverarbeitung und maschinellen Sprachverarbeitung. Ihr Ansatz ist darauf ausgerichtet, einen Text auf eine Menge von Wörtern zu reduzieren und die Häufigkeit jedes Worts im Text zu zählen, ohne dabei die Reihenfolge der Wörter zu berücksichtigen.
+
+##### CountVectorizer
 
 Mithilfe des `CountVectorizer` kann man ein Vokabular erstellen und die Wörter in einem Text in numerische Vektoren umwandeln.
 
@@ -469,7 +473,7 @@ print(vectorizer.vocabulary_)
 # {'charming': 8, 'village': 50, 'max': 31, 'lisa': 29, 'tim': 47, 'enjoyed': 16, 'life': 28, 'joys': 26, 'their': 44, 'pets': 35, 'rocky': 39, 'lively': 30, 'dog': 14, 'whiskers': 51, 'elegant': 15, 'cat': 6, 'charlie': 7, 'colorful': 9, 'parrot': 34, 'daily': 11, 'they': 46, 'gathered': 21, 'square': 41, 'exploring': 18, 'nearby': 33, 'forest': 20, 'discovering': 13, 'vibrant': 49, 'birds': 3, 'wildflowers': 52, 'babbling': 2, 'stream': 42, 'grateful': 23, 'adventures': 0, 'remained': 38, 'inseparable': 25, 'even': 17, 'rainy': 37, 'days': 12, 'trio': 48, 'met': 32, 'indoors': 24, 'brought': 4, 'tea': 43, 'cookies': 10, 'shared': 40, 'apples': 1, 'these': 45, 'gatherings': 22, 'filled': 19, 'laughter': 27, 'camaraderie': 5, 'quaint': 36}
 ```
 
-Nun kann man die Features mittels `.transform()` in einem Nummern-Matrix umwandeln. Diese sagt aus, welche Vokabeln in den drei Sätzen von `corpus` vorkommen. Beispielsweise kommt im ersten Satz das Wort `charming` vor, weswegen bei Index 8 die Zahl 1 steht (grün markiert). Kommt ein Wort öfter vor, steht die entsprechende Anzahl an der Stelle. Hierbei ist das Wort `Lisa` (Index 29) rot markiert, da Lisa im dritten String zweimal vorkommt.
+Nun kann man die Features mittels `.transform()` in einem Nummern-Matrix umwandeln. Diese sagt aus, welche Vokabeln in den drei Sätzen von `corpus` vorkommen. Beispielsweise kommt im ersten Satz das Wort `charming` vor, weswegen bei Index 8 die Zahl 1 steht (grün markiert). Kommt ein Wort öfter vor, steht die entsprechende Anzahl an der Stelle. Hierbei ist das Wort `lisa` (Index 29) rot markiert, da Lisa im dritten String zweimal vorkommt.
 
 ```python ins="‎1" del="‎2"
 vector = vectorizer.transform(corpus)
@@ -483,7 +487,18 @@ print(vector.toarray())
 ```
 
 :::tip[Aha]
-Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert.
+Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert. Der Vectorizer verfügt somit über ein Vokabular von 53 Wörtern.
+:::
+
+:::note
+Man kann mithilfe der Methode `fit_transform()` die einzelnen Schritte einfach zusammenfassung und gleichzeitig ein Vokabular erlernen und den Text in eine `Bag-of-Words`-Darstellung bringen.
+
+```python
+vectorizer.fit_transform(["Ich bin cool!"])
+vectorizer.get_feature_names_out()
+# array(['bin', 'cool', 'ich'], dtype=object)
+```
+
 :::
 
 Mit dem `CountVectorizer` kann man auch die Features in einem Pandas DataFrame anzeigen lassen.
@@ -495,6 +510,15 @@ pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
 
 ![CountVectorizer Pandas - Output](../../../../assets/artificial_intelligence/count_vectorizer_pandas_output.png)
 
-#### Bag-of-words (BOW)
+##### LabelEncoder
+
+Ein `LabelEncoder` nummeriert die verschiedenen Wörter in einem Vokabular. Diese Wörter werden dann in einem Array zusammengefasst.
+
+```python
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+labels = le.fit_transform(['Muffin', 'Donat', 'Donat', 'Donat', 'Muffin', 'Muffin', 'Donat', 'Muffin', 'Donat', 'Muffin'])
+print(labels) # [1 0 0 0 1 1 0 1 0 1]
+```
 
 ### Modeling

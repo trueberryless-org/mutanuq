@@ -189,17 +189,6 @@ df['apples'].value_counts() # Gruppierte Werte und Anzahl der Vorkommen
 
 Bei den meisten Veränderungen von Daten gibt es einen Parameter namens `inplace`, welcher angibt, ob die Änderungen direkt auf das Dataframe angewendet werden sollen oder ob die Änderungen in einem neuen Dataframe gespeichert werden sollen. Standardmäßig ist `inplace` auf `False` gesetzt, was bedeutet, dass die Änderungen in einem neuen Dataframe gespeichert werden.
 
-Der Codeblock zeigt verschiedene Methoden zum Entfernen von Duplikaten aus einem Pandas-Dataframe. Die Funktion `drop_duplicates()` wird verwendet, um Duplikate zu entfernen.
-
-```python
-df = df.drop_duplicates()
-df.drop_duplicates(inplace=True)
-
-df.drop_duplicates(inplace=True, keep='first') # nur erste Duplikate behalten
-df.drop_duplicates(inplace=True, keep='last') # nur letzte Duplikate behalten
-df.drop_duplicates(inplace=True, keep='False') # alle Duplikate löschen
-```
-
 Die Methode `append()` wird verwendet, um zwei Dataframes (df und df2) zu verketten. Dies führt zu einem neuen Dataframe df3, das alle Zeilen von df und df2 enthält.
 
 ```python
@@ -223,6 +212,23 @@ Aufgrund der Aneinanderreihung solcher Methoden können Spaltennamen auch automa
 
 ```python
 df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
+```
+
+Mittels Methode `drop()` können spezifische Spalten auch gelöscht werden. Hierbei muss jedoch immer der Verluss der Daten vorher bedacht werden.
+
+```python
+df.drop(columns= { "Unnamed: 1", "Unnamed: 2", "Unnamed: 3" }, inplace=True)
+```
+
+Der Codeblock zeigt verschiedene Methoden zum Entfernen von Duplikaten aus einem Pandas-Dataframe. Die Funktion `drop_duplicates()` wird verwendet, um Duplikate zu entfernen.
+
+```python
+df = df.drop_duplicates()
+df.drop_duplicates(inplace=True)
+
+df.drop_duplicates(inplace=True, keep='first') # nur erste Duplikate behalten
+df.drop_duplicates(inplace=True, keep='last') # nur letzte Duplikate behalten
+df.drop_duplicates(inplace=True, keep='False') # alle Duplikate löschen
 ```
 
 Die Methode `dropna()` wird verwendet, um Zeilen oder Spalten mit NaN-Werten zu entfernen, während `fillna()` genutzt wird, um fehlende Werte durch einen bestimmten Wert, wie den Mittelwert, zu ersetzen.
