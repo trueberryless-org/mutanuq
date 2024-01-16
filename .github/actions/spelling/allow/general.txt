@@ -50,6 +50,7 @@ dotnet
 drehzahlgesteuert
 Echtzeitshoppen
 eeprom
+einbuchstabige
 einschläft
 Elegoo
 emoji
@@ -229,6 +230,7 @@ Teammitgliedern
 Terzinen
 Testung
 Threadsicheres
+tokenisiert
 Tokenisierung
 tragischerweise
 Trastan

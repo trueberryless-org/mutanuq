@@ -396,6 +396,105 @@ print(df)
 15          16                 0                     0                   1
 ```
 
+#### Count Vectorizer
+
+Mithilfe des `CountVectorizer` kann man ein Vokabular erstellen und die Wörter in einem Text in numerische Vektoren umwandeln.
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+```
+
+```python
+corpus = ["In a charming village, Max, Lisa, and Tim enjoyed life's joys with their pets: Rocky, the lively dog; Whiskers, Lisa's elegant cat; and Charlie, Tim's colorful parrot. Daily, they gathered at the village square, exploring the nearby forest, discovering vibrant birds, wildflowers, and a babbling stream.",
+          "Grateful for adventures, Max, Lisa, and Tim, with Rocky, Whiskers, and Charlie, remained inseparable. Even on rainy days, the trio met indoors. Max brought tea, Lisa had cookies, and Tim shared apples. These gatherings were filled with laughter and camaraderie.",
+          "In a quaint village, Max, Lisa, and Tim enjoyed life's joys with their pets: Rocky, the lively dog; Whiskers, Lisa's elegant cat; and Charlie, Tim's colorful parrot."]
+
+```
+
+Standardmäßig kann der `CountVectorizer` so verwendet werden:
+
+```python
+vectorizer = CountVectorizer()
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+# ['adventures' 'and' 'apples' 'at' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'for' 'forest' 'gathered' 'gatherings' 'grateful' 'had' 'in' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'on' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'the' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'were' 'whiskers' 'wildflowers' 'with']
+```
+
+Dabei werden einbuchstabige Wörter wie `a`, `I` oder Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b')
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+# ['a' 'adventures' 'and' 'apples' 'at' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'for' 'forest' 'gathered' 'gatherings' 'grateful' 'had' 'in' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'on' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 's' 'shared' 'square' 'stream' 'tea' 'the' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'were' 'whiskers' 'wildflowers' 'with']
+```
+
+Wenn gewisse Wörter gefiltert werden sollen, kann man dies mit `stop_words` tun.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'])
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+# ['adventures' 'apples' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'forest' 'gathered' 'gatherings' 'grateful' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'whiskers' 'wildflowers']
+```
+
+Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `unite states of america` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'],
+                             ngram_range=(1,3))
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+# ['adventures' 'adventures max' 'adventures max lisa' 'apples' 'apples these' 'apples these gatherings' 'babbling' 'babbling stream' 'birds' 'birds wildflowers' 'birds wildflowers babbling' 'brought' 'brought tea' 'brought tea lisa' 'camaraderie' 'cat' 'cat charlie' 'cat charlie tim' 'charlie' 'charlie remained' 'charlie remained inseparable' 'charlie tim' 'charlie tim colorful' 'charming' 'charming village' 'charming village max' 'colorful' 'colorful parrot' 'colorful parrot daily' 'cookies' 'cookies tim' 'cookies tim shared' 'daily' 'daily they' 'daily they gathered' 'days' 'days trio' 'days trio met' 'discovering' 'discovering vibrant' 'discovering vibrant birds' 'dog' 'dog whiskers' 'dog whiskers lisa' 'elegant' 'elegant cat' 'elegant cat charlie' 'enjoyed' 'enjoyed life' 'enjoyed life joys' 'even' 'even rainy' 'even rainy days' 'exploring' 'exploring nearby' 'exploring nearby forest' 'filled' 'filled laughter' 'filled laughter camaraderie' 'forest' 'forest discovering' 'forest discovering vibrant' 'gathered' 'gathered village' 'gathered village square' 'gatherings' 'gatherings filled' 'gatherings filled laughter' 'grateful' 'grateful adventures' 'grateful adventures max' 'indoors' 'indoors max' 'indoors max brought' 'inseparable' 'inseparable even' 'inseparable even rainy' 'joys' 'joys their' 'joys their pets' 'laughter' 'laughter camaraderie' 'life' 'life joys' 'life joys their' 'lisa' 'lisa cookies' 'lisa cookies tim' 'lisa elegant' 'lisa elegant cat' 'lisa tim' 'lisa tim enjoyed' 'lisa tim rocky' 'lively' 'lively dog' 'lively dog whiskers' 'max' 'max brought' 'max brought tea' 'max lisa' 'max lisa tim' 'met' 'met indoors' 'met indoors max' 'nearby' 'nearby forest' 'nearby forest discovering' 'parrot' 'parrot daily' 'parrot daily they' 'pets' 'pets rocky' 'pets rocky lively' 'quaint' 'quaint village' 'quaint village max' 'rainy' 'rainy days' 'rainy days trio' 'remained' 'remained inseparable' 'remained inseparable even' 'rocky' 'rocky lively' 'rocky lively dog' 'rocky whiskers' 'rocky whiskers charlie' 'shared' 'shared apples' 'shared apples these' 'square' 'square exploring' 'square exploring nearby' 'stream' 'tea' 'tea lisa' 'tea lisa cookies' 'their' 'their pets' 'their pets rocky' 'these' 'these gatherings' 'these gatherings filled' 'they' 'they gathered' 'they gathered village' 'tim' 'tim colorful' 'tim colorful parrot' 'tim enjoyed' 'tim enjoyed life' 'tim rocky' 'tim rocky whiskers' 'tim shared' 'tim shared apples' 'trio' 'trio met' 'trio met indoors' 'vibrant' 'vibrant birds' 'vibrant birds wildflowers' 'village' 'village max' 'village max lisa' 'village square' 'village square exploring' 'whiskers' 'whiskers charlie' 'whiskers charlie remained' 'whiskers lisa' 'whiskers lisa elegant' 'wildflowers' 'wildflowers babbling' 'wildflowers babbling stream']
+```
+
+Will man das Vokabular auf bestimmte Vokabeln begrenzen, kann man dies mit `vocabulary` tun.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'],
+                             ngram_range=(1,4),
+                             vocabulary=['max lisa tim'])
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+# ['max lisa tim']
+```
+
+Sobald man mit den Features zufrieden ist, kann man sich das Vokabular anzeigen lassen. Dieses ist ein Dictionary, welches jedes Wort einer Zahl zuweist, damit beim Machine Learning Prozess besser damit gearbeitet werden kann. Computer verstehen Nummern besser als Wörter.
+
+```python
+print(vectorizer.vocabulary_)
+# {'charming': 8, 'village': 50, 'max': 31, 'lisa': 29, 'tim': 47, 'enjoyed': 16, 'life': 28, 'joys': 26, 'their': 44, 'pets': 35, 'rocky': 39, 'lively': 30, 'dog': 14, 'whiskers': 51, 'elegant': 15, 'cat': 6, 'charlie': 7, 'colorful': 9, 'parrot': 34, 'daily': 11, 'they': 46, 'gathered': 21, 'square': 41, 'exploring': 18, 'nearby': 33, 'forest': 20, 'discovering': 13, 'vibrant': 49, 'birds': 3, 'wildflowers': 52, 'babbling': 2, 'stream': 42, 'grateful': 23, 'adventures': 0, 'remained': 38, 'inseparable': 25, 'even': 17, 'rainy': 37, 'days': 12, 'trio': 48, 'met': 32, 'indoors': 24, 'brought': 4, 'tea': 43, 'cookies': 10, 'shared': 40, 'apples': 1, 'these': 45, 'gatherings': 22, 'filled': 19, 'laughter': 27, 'camaraderie': 5, 'quaint': 36}
+```
+
+Nun kann man die Features mittels `.transform()` in einem Nummern-Matrix umwandeln. Diese sagt aus, welche Vokabeln in den drei Sätzen von `corpus` vorkommen. Beispielsweise kommt im ersten Satz das Wort `charming` vor, weswegen bei Index 8 die Zahl 1 steht (grün markiert). Kommt ein Wort öfter vor, steht die entsprechende Anzahl an der Stelle. Hierbei ist das Wort `Lisa` (Index 29) rot markiert, da Lisa im dritten String zweimal vorkommt.
+
+```python ins="‎1" del="‎2"
+vector = vectorizer.transform(corpus)
+print(vector.shape) # (3, 53)
+print(vector.toarray())
+# [
+# [0 0 1 1 0 0 1 1 ‎1 1 0 1 0 1 1 1 1 0 1 0 1 1 0 0 0 0 1 0 1 2 1 1 0 1 1 1 0 0 0 1 0 1 1 0 1 0 1 2 0 1 2 1 1]
+# [1 1 0 0 1 1 0 1 0 0 1 0 1 0 0 0 0 1 0 1 0 0 1 1 1 1 0 1 0 2 0 2 1 0 0 0 0 1 1 1 1 0 0 1 0 1 0 2 1 0 0 1 0]
+# [0 0 0 0 0 0 1 1 0 1 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 1 0 1 ‎2 1 1 0 0 1 1 1 0 0 1 0 0 0 0 1 0 0 2 0 0 1 1 0]
+# ]
+```
+
+:::tip[Aha]
+Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert.
+:::
+
+Mit dem `CountVectorizer` kann man auch die Features in einem Pandas DataFrame anzeigen lassen.
+
+```python
+import pandas as pd
+pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
+```
+
+![CountVectorizer Pandas - Output](../../../../assets/artificial_intelligence/count_vectorizer_pandas_output.png)
+
 #### Bag-of-words (BOW)
 
 ### Modeling
