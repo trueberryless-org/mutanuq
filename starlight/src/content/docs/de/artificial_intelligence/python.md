@@ -396,6 +396,106 @@ print(df)
 15          16                 0                     0                   1
 ```
 
+#### Count Vectorizer
+
+Mithilfe des `CountVectorizer` kann man ein Vokabular erstellen und die Wörter in einem Text in numerische Vektoren umwandeln.
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+```
+
+```python
+text = ["Tom's family includes 5 kids 2 dogs and 1 cat",
+        "The dogs are friendly. The cat is beautiful",
+        "The dog is 11 years old",
+        "Tom loves in the United States of America"]
+```
+
+Standardmäßig kann der `CountVectorizer` so verwendet werden:
+
+```python
+vectorizer = CountVectorizer()
+vectorizer.fit(text)
+print(vectorizer.get_feature_names_out())
+# ['11' 'america' 'and' 'are' 'beautiful' 'cat' 'dog' 'dogs' 'family' 'friendly' 'in' 'includes' 'is' 'kids' 'loves' 'of' 'old' states' 'the' 'tom' 'united' 'years']
+```
+
+Dabei werden einbuchstäbige Wörter wie `a`, `I` oder Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b')
+vectorizer.fit(text)
+print(vectorizer.get_feature_names_out())
+# ['1' '11' '2' '5' 'america' 'and' 'are' 'beautiful' 'cat' 'dog' 'dogs' 'family' 'friendly' 'in' 'includes' 'is' 'kids' 'loves' 'of' 'old' 's' 'states' 'the' 'tom' 'united' 'years']
+```
+
+Wenn gewisse Wörter gefiltert werden sollen, kann man dies mit `stop_words` tun.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['is','are','and','in','the'])
+vectorizer.fit(text)
+print(vectorizer.get_feature_names_out())
+# ['1' '11' '2' '5' 'america' 'beautiful' 'cat' 'dog' 'dogs' 'family' 'friendly' 'includes' 'kids' 'loves' 'of' 'old' 's' 'states' 'tom' 'united' 'years']
+```
+
+Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `unite states of america` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die Mindest- und maximale Wortanzahl festlegen.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['is','are','and','in','the'],
+                             ngram_range=(1,4))
+vectorizer.fit(text)
+print(vectorizer.get_feature_names_out())
+# ['1' '1 cat' '11' '11 years' '11 years old' '2' '2 dogs' '2 dogs 1' '2 dogs 1 cat' '5' '5 kids' '5 kids 2' '5 kids 2 dogs' 'america' 'beautiful' 'cat' 'cat beautiful' 'dog' 'dog 11' 'dog 11 years' 'dog 11 years old' 'dogs' 'dogs 1' 'dogs 1 cat' 'dogs friendly' 'dogs friendly cat' 'dogs friendly cat beautiful' 'family' 'family includes' 'family includes 5' 'family includes 5 kids' 'friendly' 'friendly cat' 'friendly cat beautiful' 'includes' 'includes 5' 'includes 5 kids' 'includes 5 kids 2' 'kids' 'kids 2' 'kids 2 dogs' 'kids 2 dogs 1' 'loves' 'loves united' 'loves united states' 'loves united states of' 'of' 'of america' 'old' 's' 's family' 's family includes' 's family includes 5' 'states' 'states of' 'states of america' 'tom' 'tom loves' 'tom loves united' 'tom loves united states' 'tom s' 'tom s family' 'tom s family includes' 'united' 'united states' 'united states of' 'united states of america' 'years' 'years old']
+```
+
+Will man das Vokabular auf bestimmte Vokabeln begrenzen, kann man dies mit `vocabulary` tun.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['is','are','and','in','the'],
+                             ngram_range=(1,4),
+                             vocabulary=['united states of america'])
+vectorizer.fit(text)
+print(vectorizer.get_feature_names_out())
+# ['united states of america']
+```
+
+Sobald man mit den Features zufrieden ist, kann man sich das Vokabular anzeigen lassen. Dieses ist ein Dictionary, welches jedes Wort einer Zahl zuweist, damit beim Machine Learning Prozess besser damit gearbeitet werden kann. Computer verstehen Nummern besser als Wörter.
+
+```python
+print(vectorizer.vocabulary_)
+# {'tom': 18, 's': 16, 'family': 9, 'includes': 11, '5': 3, 'kids': 12, '2': 2, 'dogs': 8, '1': 0, 'cat': 6, 'friendly': 10, 'beautiful': 5, 'dog': 7, '11': 1, 'years': 20, 'old': 15, 'loves': 13, 'united': 19, 'states': 17, 'of': 14, 'america': 4}
+```
+
+Nun kann man die Features mittels `.transform()` in einem Nummern-Matrix umwandeln. Diese sagt aus, welche Vokabeln in den vier Sätzen von `text` vorkommen. Beispielsweise kommt im ersten Satz das Wort `Tom` vor, weswegen an Index 18 die Zahl 1 steht (grün markiert).
+
+```python ins="‎1"
+vector = vectorizer.transform(text)
+print(vector.shape) # (4, 21)
+print(vector.toarray())
+# [
+# [1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 0 1 0 ‎1 0 0]
+# [0 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0]
+# [0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 1]
+# [0 0 0 0 1 0 0 0 0 0 0 0 0 1 1 0 0 1 1 1 0]
+# ]
+```
+
+:::tip[Aha]
+Falls Sie sich fragen, woher die Zahl `21` bei der Shape kommt: Es gibt 21 unterschiedliche Wörter in den Sätzen von `text`. Zumindest hat der CountVectorizer die Sätze so tokenisiert.
+:::
+
+Mit dem `CountVectorizer` kann man auch die Features in einem Pandas DataFrame anzeigen lassen.
+
+```python
+import pandas as pd
+pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
+```
+
+![](../../../../assets/artificial_intelligence/count_vectorizer_pandas_output.png)
+
 #### Bag-of-words (BOW)
 
 ### Modeling
