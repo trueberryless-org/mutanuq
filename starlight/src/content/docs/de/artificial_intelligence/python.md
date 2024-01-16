@@ -491,7 +491,7 @@ Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unter
 :::
 
 :::note
-Man kann mithilfe der Methode `fit_transform()` die einzelnen Schritte einfach zusammenfassung und gleichzeitig ein Vokabular erlernen und den Text in eine `Bag-of-Words`-Darstellung bringen.
+Man kann mithilfe der Methode `fit_transform()` die einzelnen Schritte einfach zusammenfassen und gleichzeitig ein Vokabular erlernen und den Text in eine `Bag-of-Words`-Darstellung bringen.
 
 ```python
 vectorizer.fit_transform(["Ich bin cool!"])
