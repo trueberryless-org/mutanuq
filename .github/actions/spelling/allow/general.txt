@@ -12,6 +12,7 @@ ATmega
 Atmel
 aufklatschen
 avr
+Bayes'schen
 Benachrichtigungssystem
 blockbasierte
 blockbasierten
