@@ -420,7 +420,7 @@ print(vectorizer.get_feature_names_out())
 # ['11' 'america' 'and' 'are' 'beautiful' 'cat' 'dog' 'dogs' 'family' 'friendly' 'in' 'includes' 'is' 'kids' 'loves' 'of' 'old' states' 'the' 'tom' 'united' 'years']
 ```
 
-Dabei werden einbuchstäbige Wörter wie `a`, `I` oder Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
+Dabei werden einbuchstabige Wörter wie `a`, `I` oder Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
 
 ```python
 vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b')
@@ -439,7 +439,7 @@ print(vectorizer.get_feature_names_out())
 # ['1' '11' '2' '5' 'america' 'beautiful' 'cat' 'dog' 'dogs' 'family' 'friendly' 'includes' 'kids' 'loves' 'of' 'old' 's' 'states' 'tom' 'united' 'years']
 ```
 
-Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `unite states of america` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die Mindest- und maximale Wortanzahl festlegen.
+Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `unite states of america` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
 
 ```python
 vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
