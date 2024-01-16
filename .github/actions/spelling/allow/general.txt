@@ -43,6 +43,7 @@ dotnet
 drehzahlgesteuert
 Echtzeitshoppen
 eeprom
+einbuchstabige
 einschläft
 Elegoo
 emoji
