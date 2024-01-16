@@ -67,6 +67,8 @@ Franchisebörse
 Franchisegeber
 funktionsübergreifendes
 Gedichtband
+gelabelte
+gelabelten
 Generationenprinzip
 gettemperaturehumidity
 getxy
@@ -104,6 +106,7 @@ Jandl
 Kapitalaufbringung
 Kierkegaards
 Klassifikationsalgorithmen
+KNN
 Kontrahierungspolitik
 kraxelt
 Kriechens
@@ -113,6 +116,7 @@ Lautgedichte
 lcdc
 lcdh
 LCDs
+Leistungs
 Lemmatization
 Lesertäuschung
 Lichtensteins
@@ -206,8 +210,10 @@ Synology
 tabellenähnliche
 tagline
 Teammitgliedern
+Tensorflow
 Terzinen
 Testung
+Textklassifikationsmethode
 Threadsicheres
 tokenisiert
 Tokenisierung

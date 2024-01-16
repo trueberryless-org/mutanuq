@@ -214,7 +214,7 @@ Aufgrund der Aneinanderreihung solcher Methoden können Spaltennamen auch automa
 df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
 ```
 
-Mittels Methode `drop()` können spezifische Spalten auch gelöscht werden. Hierbei muss jedoch immer der Verluss der Daten vorher bedacht werden.
+Mittels Methode `drop()` können spezifische Spalten auch gelöscht werden. Hierbei muss jedoch immer der Verlust der Daten vorher bedacht werden.
 
 ```python
 df.drop(columns= { "Unnamed: 1", "Unnamed: 2", "Unnamed: 3" }, inplace=True)
