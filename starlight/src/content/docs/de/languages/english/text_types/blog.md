@@ -9,7 +9,7 @@ Ein Blog ist meistens eine Diskussion, welche auf einer Webseite durchgeführt w
 ### Merkmale
 
 -   formell oder informell; variiert nach Leserschaft (meist aber informell)
--   `Ich` und `Du` können eingesetzen werden, um den Leser anzusprechen
+-   `Ich` und `Du` können eingesetzt werden, um den Leser anzusprechen
 -   Direkte Fragen an den Leser stellen
 -   Keine Zwischenüberschriften
 
@@ -24,7 +24,7 @@ Bei einem Blogbeitrag gibt man seinen Namen und das Datum an. Beim Datum darf ma
 
 #### Überschrift
 
-Für den Blogbeitrag ist es wichtig die Aufmerksamkeit des Lesers zu erlangen, darum ist es essentiel eine fesselnde Überschrift zu benutzen. Da kann man, wenn man will, auch schon eine Frage in den Raum werfen.
+Für den Blogbeitrag ist es wichtig die Aufmerksamkeit des Lesers zu erlangen, darum ist es essenziell eine fesselnde Überschrift zu benutzen. Da kann man, wenn man will, auch schon eine Frage in den Raum werfen.
 
 > Bargeld - bald Vergangenheit?
 
@@ -96,13 +96,13 @@ Bei einem Blogkommentar gibt es keine Überschrift!
 
 Bei einem Blogkommentar bezieht man sich auf den Ausgangstext und erzählt, warum man sich entschieden hat, mit einen Kommentar zu antworten.
 
-> Ich habe gerde deinen Post über Bargeld gelesen und würde gerne meine Meinung dazu teilen.
+> Ich habe gerade deinen Post über Bargeld gelesen und würde gerne meine Meinung dazu teilen.
 
-| Phrasen Einleitung                                                                    |
-| ------------------------------------------------------------------------------------- |
-| Ich habe gerde deinen Post über ... gelesen und würde gerne meine Meinung dazu teilen |
-| Ich bin erst küzlich auf deinen Beitrag gestoßen und ...                              |
-| Nachdem ich deinen letzten Beitrag gelesen habe, habe ich mich gefragt ...            |
+| Phrasen Einleitung                                                                     |
+| -------------------------------------------------------------------------------------- |
+| Ich habe gerade deinen Post über ... gelesen und würde gerne meine Meinung dazu teilen |
+| Ich bin erst kürzlich auf deinen Beitrag gestoßen und ...                              |
+| Nachdem ich deinen letzten Beitrag gelesen habe, habe ich mich gefragt ...             |
 
 #### Hauptteil
 

@@ -20,7 +20,7 @@ Eine informelle E-Mail schreibt man meistens an Freunde, private Kollegen oder a
 
 #### Allgemeine Informationen
 
-Schreiben Sie zuerst die E-Mail-Addressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
+Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
 
 > Von: trueberryless@email.com  
 > An: tom.cruise@email.com  
@@ -101,7 +101,7 @@ Im beruflichen Leben werden E-Mails meistens formell geschrieben, da man somit R
 
 #### Allgemeine Informationen
 
-Schreiben Sie zuerst die E-Mail-Addressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
+Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
 
 > Von: f.schneider@email.com  
 > An: a.hauleitner@email.com  
