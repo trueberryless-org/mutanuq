@@ -75,7 +75,7 @@ Ein Blogbeitrag endet damit, dass man den Leser noch eine Frage stellt und somit
 
 ### Merkmale
 
--   Versuche den selben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blog-post))
+-   Versuche den selben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blogbeitrag))
 -   Direkt den Author und andere Leser ansprechen
 -   Keine Zwischenüberschriften
 
