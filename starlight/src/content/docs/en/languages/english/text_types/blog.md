@@ -19,7 +19,7 @@ The goal of many bloggers is to provide their readers with information, to open 
 
 #### Overall information
 
-A blog post starts with the name of the authro and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
+A blog post starts with the name of the author and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
 
 > Angela Wilson  
 > 2 June, 3:32 pm
@@ -87,7 +87,7 @@ Sum up the information in one short paragraph or ask the reader to share their o
 
 #### Overall information
 
-A blog post starts with the name of the authro and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
+A blog post starts with the name of the author and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
 
 > Brad Cruise  
 > 2 June, 3:54 pm
