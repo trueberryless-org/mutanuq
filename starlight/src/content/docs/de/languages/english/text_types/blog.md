@@ -10,8 +10,8 @@ Ein Blog ist meistens eine Diskussion, welche auf einer Webseite durchgeführt w
 
 -   formell oder informell; variiert nach Leserschaft (meist aber informell)
 -   `Ich` und `Du` können eingesetzt werden, um den Leser anzusprechen
--   Direkte Fragen an den Leser stellen
--   Keine Zwischenüberschriften
+-   direkte Fragen an den Leser stellen
+-   keine Zwischenüberschriften
 
 ### Aufbau
 
@@ -34,12 +34,12 @@ Bei einem Blogbeitrag übermittelt man in der Einleitung dem Leser worum es geht
 
 > Öfter frage ich mich warum noch so viele Menschen mit Bargeld zahlen. Für mich Persönlich macht das keinen Sinn, mit der Karte zu zahlen ist doch viel einfacher.
 
-| Phrasen Einleitung                                             |
-| -------------------------------------------------------------- |
-| Wusstest du das ...                                            |
-| Öfter frage ich mich ...                                       |
-| Ich bin letztens auf ... gestoßen und konnte nicht glauben ... |
-| Warum ist es, dass ...                                         |
+| Phrasen                                                              |
+| -------------------------------------------------------------------- |
+| Wusstest du, dass ...                                                |
+| Öfters frage ich mich, ob ...                                        |
+| Ich bin letztens auf ... gestoßen und konnte nicht glauben, dass ... |
+| Warum ist es, dass ...                                               |
 
 #### Hauptteil
 
@@ -51,7 +51,7 @@ Die Argumente müssen nicht sachlich sein. Da ein Blogbeitrag sehr subjektiv ist
 
 | Phrasen                                                  |
 | -------------------------------------------------------- |
-| Auf der einen Seite ... jedoch auf der anderen Seite ... |
+| Auf der einen Seite finde ich, dass ... Andererseits ... |
 | Wie du dir vorstellen kannst ...                         |
 | Wenn man mich fragt ...                                  |
 | Was man vielleicht in Betracht ziehen sollte ...         |
@@ -85,8 +85,8 @@ Ein Blogbeitrag endet damit, dass man den Leser noch eine Frage stellt und somit
 
 Beim Blogkommentar gibt man seinen Namen und das Datum an. Beim Datum nicht darauf vergessen auch die Uhrzeit mit anzugeben
 
-> Max Mustermann  
-> 20. Jänner, 10:43 Uhr
+> Harald Hilfinger  
+> 20. Jänner, 11:29 Uhr
 
 :::caution
 Bei einem Blogkommentar gibt es keine Überschrift!
@@ -98,7 +98,7 @@ Bei einem Blogkommentar bezieht man sich auf den Ausgangstext und erzählt, waru
 
 > Ich habe gerade deinen Post über Bargeld gelesen und würde gerne meine Meinung dazu teilen.
 
-| Phrasen Einleitung                                                                     |
+| Phrasen                                                                                |
 | -------------------------------------------------------------------------------------- |
 | Ich habe gerade deinen Post über ... gelesen und würde gerne meine Meinung dazu teilen |
 | Ich bin erst kürzlich auf deinen Beitrag gestoßen und ...                              |
@@ -118,7 +118,7 @@ Die Argumente müssen nicht sachlich sein. Da ein Blogbeitrag sehr subjektiv ist
 | Wie du dir vorstellen kannst ...                         |
 | Wenn man mich fragt ...                                  |
 | Was man vielleicht in Betracht ziehen sollte ...         |
-| Wie ich es sehe ...                                      |
+| Sowie ich das es sehe, ...                               |
 
 #### Schluss
 
