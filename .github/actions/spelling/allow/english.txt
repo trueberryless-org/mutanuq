@@ -2,4 +2,6 @@ bloggers
 blogs
 commenters
 Hilfinger
+kinda
+OMG
 smartphone

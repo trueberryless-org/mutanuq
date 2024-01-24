@@ -44,17 +44,17 @@ There are also two options if it comes to punctuation after the salutation:
 -   Comma: `Dear Sir or Madam,`
 
 :::caution[Caution]
-No matter whether you end the salutation with exclamation mark or comma, the first letter of the intruduction must always be **UPPERCASE**.
+No matter whether you end the salutation with exclamation mark or comma, the first letter of the introduction must always be **UPPERCASE**.
 :::
 
 #### Introduction
 
 Write a nice introduction where you explain why you are writing the email (kinda like a longer version of the subject line).
 
-| Phrases                                                                           |
-| --------------------------------------------------------------------------------- |
-| Haven't heart from you for a while. What's up?                                    |
-| I'm sorry to hear that something terrible happend. Can you tell me more about it? |
+| Phrases                                                                            |
+| ---------------------------------------------------------------------------------- |
+| Haven't heart from you for a while. What's up?                                     |
+| I'm sorry to hear that something terrible happened. Can you tell me more about it? |
 
 Depending on the topic or reason of the email, you should also add a personalized introduction.
 
@@ -106,7 +106,7 @@ Always start with the metadata, like your own email, the recipient's email, the 
 > To: a.hauleitner@email.com  
 > Date: 20th January, 2024
 
-> Subject: Increaes in salary
+> Subject: Increase in salary
 
 #### Salutation
 
@@ -124,7 +124,7 @@ There are also two options if it comes to punctuation after the salutation:
 -   Comma: `Dear Sir or Madam,`
 
 :::caution[Caution]
-No matter whether you end the salutation with exclamation mark or comma, the first letter of the intruduction must always be **UPPERCASE**.
+No matter whether you end the salutation with exclamation mark or comma, the first letter of the introduction must always be **UPPERCASE**.
 :::
 
 #### Introduction
@@ -208,7 +208,7 @@ State the reason for your complain in the introduction. In the first paragraph o
 | I am writing in order to express my deepest dissatisfaction with ... |
 | I am writing to complain about ...                                   |
 | I have to say that I was not at all satisfied with ...               |
-| I am sorry to say that I was extremly disappointed with ...          |
+| I am sorry to say that I was extremely disappointed with ...         |
 
 | Main part                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
