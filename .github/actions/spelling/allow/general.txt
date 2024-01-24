@@ -19,9 +19,11 @@ avr
 Bayes'schen
 BCNF
 Benachrichtigungssystem
+Bewerbungs
 Blazor
 blockbasierte
 blockbasierten
+Blogkommentar
 Böhmermanns
 Bräunungsstudio
 bruitistische
@@ -55,6 +57,7 @@ einbuchstabige
 einschläft
 Elegoo
 emoji
+emotionsbasiert
 Entität
 Entitäten
 Entitätenverknüpfung
@@ -95,6 +98,7 @@ hamma
 handgefertigter
 hardwarenahe
 hardwarenahen
+hauleitner
 hebiger
 Helpdesk
 herausgelesen
@@ -127,6 +131,7 @@ lcdc
 lcdh
 LCDs
 Leistungs
+Leiwand
 Lemmatization
 Lesertäuschung
 Lichtensteins
@@ -209,6 +214,7 @@ Schriftstellerbewegung
 screenshots
 Segmentierungskriterien
 Sentimentanalyse
+Servas
 simultanistisches
 Sinnabschnitte
 situationsbezogen
@@ -259,6 +265,7 @@ VMI
 Vock
 Vorübergehn
 vorzuladen
+weiterschreiben
 Wilderöm
 Wissensgraphenaufbau
 withastro
