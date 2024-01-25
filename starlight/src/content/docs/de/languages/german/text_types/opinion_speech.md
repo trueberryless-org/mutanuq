@@ -1,7 +1,7 @@
 ---
 title: Meinungsrede
 sidebar:
-    order: 6
+    order: 7
 ---
 
 Die Meinungsrede ist eine subjektive, argumentative, überzeugende Textsorte, welche vor einem bestimmten Publikum vorgetragen wird. Aus diesem Grund müssen auch alle zuhörenden Personen in der [Anrede](#anrede) angesprochen werden.
