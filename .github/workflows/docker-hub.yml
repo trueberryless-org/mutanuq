@@ -32,6 +32,6 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Push to Docker Hub
-        uses: trueberryless-org/version-build-push-docker-action@v1.0.0
+        uses: trueberryless-org/version-build-push-docker-action@v.1.0.0
         with:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
