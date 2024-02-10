@@ -15,6 +15,7 @@
         "@zachleat/table-saw": "^1.0.6",
         "astro": "^3.4.4",
         "astro-expressive-code": "^0.26.2",
+        "astro-feelback": "^0.3.4",
         "rehype-mathjax": "^4.0.3",
         "remark-math": "^5.1.1",
         "sharp": "^0.32.6",

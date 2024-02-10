@@ -156,6 +156,9 @@ export default defineConfig({
                     autogenerate: { directory: "economy_and_law" },
                 },
             ],
+            components: {
+                Pagination: "./src/components/CustomPagination.astro",
+            },
         }),
         starlightLinksValidator(),
     ],
