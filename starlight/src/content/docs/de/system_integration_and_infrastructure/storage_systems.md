@@ -53,7 +53,7 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
 
 SAN steht für Storage Area Network und ist die High-End Variante von zentralen Speichersystemen. Im Gegensatz zu NAS gibt es nämlich bei SAN ein eigenes Netzwerk, in welchem auf verschiedenen Servern die Daten abgelegt werden. Dies hat den Vorteil, dass bei einer Synchronisation der Sicherungsinstanzen kein zusätzlicher Netzverkehr anfällt, da dieser Verkehr vom Unternehmensnetzwerk abgeschottet ist.
 
-![SAN Aufbau](../../../../assets/system_integration_and_infrastructure/SAN-Aufbau.png)
+![SAN Aufbau](/src/assets/system_integration_and_infrastructure/SAN-Aufbau.png)
 
 Wie man im Bild sehen kann, haben die Server eigenen Netzwerkkarten, um auf den Speicher zugreifen zu können. Aufgrund der `Host Bus Adapter (HBA)` glauben die Server, dass die Speicherplatten direkt an ihn angeschlossen sind. Das gesamte SAN ist für die Server also transparent.
 

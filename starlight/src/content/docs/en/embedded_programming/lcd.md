@@ -10,8 +10,8 @@ To use the display, we recommend [lcd.h and lcd.c](#downloads).
 
 ## Structure
 
-![Grid of an LCD on the ATmega 328p](../../../../assets/embedded_programming/lcd/lcd_composition.png)
-![Grid of an LCD](../../../../assets/embedded_programming/lcd/lcd_grid.png)
+![Grid of an LCD on the ATmega 328p](/src/assets/embedded_programming/lcd/lcd_composition.png)
+![Grid of an LCD](/src/assets/embedded_programming/lcd/lcd_grid.png)
 
 ## Code
 

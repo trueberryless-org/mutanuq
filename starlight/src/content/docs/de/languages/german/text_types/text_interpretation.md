@@ -4,7 +4,7 @@ sidebar:
     order: 6
 ---
 
-## Übersicht
+## Eigenschaften
 
 ## Aufbau
 

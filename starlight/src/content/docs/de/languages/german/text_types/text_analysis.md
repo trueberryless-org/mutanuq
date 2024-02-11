@@ -6,12 +6,12 @@ sidebar:
 
 Die Textanalyse ist eine sachliche, analytische Textsorte, welche den Ausgangstext nach vielen Kriterien analysiert. Aufgrund dieser Kriterien ist die Textanalyse immer nach dem gleichen Schema aufgebaut, welches man nur auswendig lernen muss. Die Textanalyse wird in Präsens und Perfekt geschrieben.
 
-## Übersicht
+## Eigenschaften
 
 Eine Textanalyse weist folgende Eigenschaften auf:
 
 -   08/15 Einleitung mit Titel, Autor, Textsorte, Erscheinungsort und -datum des Ausgangstextes
--   nicht interpretieren, sondern nur zitieren
+-   nicht interpretieren, sondern nur zitieren (direkte Zitate)
 -   Fachtermini verwenden (Wenn das Thema `IT` ist, kann man solches Fachvokabular einbauen)
 -   sachliche Formulierungen
 -   max. 50 Wörter mehr schreiben
