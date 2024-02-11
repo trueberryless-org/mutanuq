@@ -1114,7 +1114,7 @@ Dabei muss die Kommunikation immer vom Controller aus gestartet werden. Ein Peri
 Das SPI verwendet separate Takt- und Datenleitungen sowie eine Auswahlleitung, um das Gerät auszuwählen, mit dem Sie sprechen möchten. Dies ist auch einer der Unterschiede zum [USART](#usart---universal-synchronous-and-asynchronous-receiver-transmitter), welches keine synchrone Schnittstelle ist, da es keine Garantie gibt, dass beide Seiten mit der gleichen Taktrate laufen. Beim USART müssen sich die beiden Seiten im Vorhinein einigen, mit welcher Übertragungsgeschwindigkeit ([Baudrate](#baud-rate)) sie kommunizieren und es müssen zusätzliche Start- und Stoppbits übertragen werden.
 
 :::note
-Einige Dokumentationen verwenden noch die veralteten Begriffe, wie `Master` oder `Slave`. Aufgrund ihrer historischen Verbindung mit Rassismus werden diese Begriffe heutzutage durch neutralere und inklusivere Alternativen ersetzt. Folgende Tabelle zeigt die Änderungen diesbezüglich:
+Einige Dokumentationen verwenden noch die veralteten Begriffe, wie `Master` oder `Slave`. Aufgrund ihrer historischen Verbindung mit Rassismus werden diese Begriffe heutzutage durch neutralere Alternativen ersetzt. Folgende Tabelle zeigt die Änderungen diesbezüglich:
 
 | Veralteter Begriff         | Neuer Name                          |
 | -------------------------- | ----------------------------------- |
