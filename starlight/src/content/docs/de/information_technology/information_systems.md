@@ -1,12 +1,14 @@
 ---
-title: Relationale Datenbanken
+title: Informationssysteme
 sidebar:
-    order: 1
+    order: 2
 ---
+
+## Relationale Datenbanken
 
 Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme und Anwendungen. Ihr Konzept basiert auf der Organisation von Daten in tabellenähnlichen Strukturen, in denen Beziehungen zwischen verschiedenen Datensätzen durch Schlüssel definiert werden. Diese Struktur ermöglicht eine effiziente Verwaltung und Abfrage von Daten. In diesem Kontext spielen Vorteile wie hohe Datenkonsistenz, Flexibilität und einfaches Datenmodell eine zentrale Rolle. Dennoch sind auch Herausforderungen und Nachteile zu berücksichtigen, darunter Skalierbarkeitsprobleme und Einschränkungen bei der Handhabung von komplexen Datenstrukturen.
 
-## Vorteile
+### Vorteile
 
 -   **Einfaches Datenmodell**  
     Dem relationalen Datenbankmodell liegt ein vergleichsweise einfach umsetzbares Datenmodell zugrunde. Informationen wie Kundendaten, Bestelllisten oder Kontobewegungen, die Unternehmen langfristig speichern wollen, lassen sich mit der Tabellenstruktur, die dem relationalen Datenbankmodell zugrunde liegt, ideal abbilden.
@@ -23,7 +25,7 @@ Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme
 -   **Einheitliche Abfragesprache**  
     Für Abfragen relationaler Datenbanken hat sich die durch ein Gremium von ISO und IEC standardisierte Datenbanksprache SQL etabliert. Diese Standardisierung ermöglicht es, Anwendungen weitgehend unabhängig vom zugrunde liegenden Datenbank-Managementsystem zu entwickeln und auszuführen. Allerdings variiert der Support von SQL je nach DBMS nach wie vor erheblich.
 
-## Nachteile
+### Nachteile
 
 -   **Big Data**  
     Bei enormen Datenmengen zeigen sich die Grenzen relationaler Datenbanken, insbesondere in Bezug auf die Effizienz von [JOIN-Operationen](#join-operationen). In solchen Umgebungen, in denen Big Data verarbeitet wird, erweisen sich relationale Datenbanken aufgrund ihrer Performance-Belastung durch JOINs oft als weniger empfehlenswert.
@@ -37,17 +39,17 @@ Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme
 -   **Segmentierung der Daten und komplexe Abfragen**  
     Die fundamentale Praxis der Datensegmentierung durch Normalisierung in relationalen Datenbanksystemen kann zu einer fragmentierten Datenhaltung führen. Das Zusammenführen von thematisch zusammenhängenden Daten gestaltet sich schwieriger, was zu komplexen Abfragen über mehrere Tabellen und damit zu einer potenziellen Beeinträchtigung der Performance auf der Anwendungsebene führen kann.
 
-## Konzepte
+### Konzepte
 
-### Entitäten
+#### Entitäten
 
-### Relationen
+#### Relationen
 
-### Schlüssel
+#### Schlüssel
 
-### JOIN-Operationen
+#### JOIN-Operationen
 
-### ACID-Transaktionen
+#### ACID-Transaktionen
 
 Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Sprich, Transaktionen sind atomar. Dies wird beim ACID-Transaktionsmodell (Akronym) erneuert ersichtlich:
 
@@ -55,7 +57,7 @@ Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sin
     Transaktionen sind nicht aufspaltbar.
 
 -   **C**onsistent  
-    Relationale Datenbanken haben eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](./document_orientated_databases/#base-transaktionen) bedeutet, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht gezwungenermaßen jetzt sofort).
+    Relationale Datenbanken haben eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](#base-transaktionen) bedeutet, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht gezwungenermaßen jetzt sofort).
 
     Bei SQL-Datenbanken wird diese hohe Datenkonsistenz mittels Constraints (`NOT NULL`, `PRIMARY KEY` / `FOREIGN KEY`, `UNIQUE`, `CHECK`, `DEFAULT`) gewährleistet.
 
@@ -65,46 +67,89 @@ Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sin
 -   **D**urable  
     Die Daten werden selbst bei einem Ausfall gespeichert. Somit werden die Ergebnisse im Rahmen einer Transaktion sogar bei Ausfallzeiten fortlaufend geliefert.
 
-#### Isolation verbessern
+##### Isolation verbessern
 
 Die Datensperre bei jeder Transaktion ist ein kritischer Punkt bei Datenbanken, denn man möchte so viele Anfragen wie möglich pro Sekunde entgegen nehmen können. Aus diesem Grund wurden Techniken entwickelt, um die Isolation zu verbessern und somit Transaktionssperren zu verschnellern.
 
-##### mehrere Server
+###### mehrere Server
 
 Eine einfache Möglichkeit, mehr Transaktionen entgegennehmen zu können, ist die Aufteilung der Entitäten auf verschiedene Server. Beispielsweise kann man alle Benutzernamen, dessen Anfangsbuchstabe zwischen _A_ und _C_ liegt, auf einem Server und alle _D_ bis _F_ Benutzernamen auf einem weiteren Server speichern.
 
-##### MVCC
+###### MVCC
 
 **Multiversion Concurrency Control** schlägt vor, bei Daten, welche sich selten ändern, eine zusätzliche Spalte mit einer inkrementierenden Version der Entität zu speichern. Bevor eine Transaktion die aktualisierten Werte in die Datenbank zurückspeichert, muss überprüft werden, ob die Versionsnummern übereinstimmen. Erst wenn dies zutrifft, sind während der Operationen keine anderen Änderungen geschehen und der Datensatz kann mit einer erhöhten Versionsnummer gespeichert werden.
 
 Dieses Verfahren ist schneller als die Sperre (_Lock_) des Datensatzes, da Locks teuer sind, sprich viel Rechenzeit in Anspruch nehmen.
 
-## Normalisierung
+### Normalisierung
 
 Verschiedene Stufen der Normalisierung sorgen für eine geringe Datenredundanz, sodass keine Daten doppelt gespeichert werden müssen. Ab Normalform 3 gelten Datenbanken als gut normalisiert.
 
-### 1. Normalform (1NF)
+#### 1. Normalform (1NF)
 
-### 2. Normalform (2NF)
+#### 2. Normalform (2NF)
 
-### 3. Normalform (3NF)
+#### 3. Normalform (3NF)
 
-### Boyce-Codd-Normalform (BCNF)
+#### Boyce-Codd-Normalform (BCNF)
 
-### 4. Normalform (4NF)
+#### 4. Normalform (4NF)
 
-### 5. Normalform (5NF)
+#### 5. Normalform (5NF)
 
-## Realisierungen
+### Realisierungen
 
-### Oracle
+#### Oracle
 
-### MySQL
+#### MySQL
 
-### Microsoft SQL Server
+#### Microsoft SQL Server
 
-### PostgreSQL
+#### PostgreSQL
 
-### SQLite
+#### SQLite
 
-### MariaDB
+#### MariaDB
+
+## Dokumentenorientierte Datenbanken
+
+### Vorteile
+
+### Nachteile
+
+### Konzepte
+
+#### Collections
+
+#### BASE-Transaktionen
+
+Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Sprich, Transaktionen sind atomar. Das Akronym BASE steht für folgende Eigenschaften bei dokumentenorientierte Datenbanken:
+
+-   **B**asically **A**vailable  
+    Die Daten sind jederzeit zugänglich und erreichbar.
+
+-   **S**oft State  
+    Es ist erlaubt, dass es Zustände im System geben kann, in welchem Daten falsch sind.
+
+-   **E**ventual Consistency  
+    Es wird garantiert, dass die Daten zu irgendeinem Zeitpunkt in der Zukunft richtig sein werden. Dies muss jedoch nicht jetzt sein. Das Gegenteil wäre _Strong Consistency_, wie es bei [relationalen Datenbanken](#relationale-datenbanken) der Fall ist.
+
+### Realisierungen
+
+#### MongoDB
+
+#### CouchDB
+
+## CAP-Theorem
+
+## Schema
+
+-   Beim Arbeiten mit den Daten dürfen keine Dateninkonsistenzen entstehen
+-   keine Null-Werte eintragen
+-   Datenredundanzen vermeiden
+-   atomare Spaltenwerte
+-   Entitäten (Datenbanken Tabellen)
+-   Konsistenz <-> Constrains
+    -   AttributConstrain
+    -   RelationalConstrain
+    -   CHECK Constrain
