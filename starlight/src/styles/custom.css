@@ -1,8 +1,8 @@
-.content .math.math-inline svg {
+.math.math-inline svg {
     display: inline;
 }
 
-.content svg.inline {
+svg.inline {
     display: inline;
     transform: translateY(0.2em);
 }
