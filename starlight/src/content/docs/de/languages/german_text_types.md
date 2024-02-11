@@ -102,7 +102,7 @@ Beenden Sie Ihren Brief mit einer Grußformel.
 
 Falls Sie den Text digital verschicken, reicht Ihre Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
 
-<img src="/src/assets/languages/Signature_white.png" alt="Signature" width="200" />
+![Signature](../../../../assets/languages/Signature_white.png)
 
 ## Erörterung
 
