@@ -226,6 +226,7 @@ Stakeholdern
 standörtlich
 Stilfiguren
 Stimulans
+Stoppbits
 Stoppwörter
 Storetest
 Stramms
