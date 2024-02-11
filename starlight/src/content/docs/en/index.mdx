@@ -5,7 +5,7 @@ template: splash
 hero:
     tagline: Explore the Mutanuq universe.
     image:
-        file: ../../../assets/start_logo.svg
+        file: /src/assets/start_logo.svg
     actions:
         - text: Explore
           link: /en/decentralised_systems/cloud_computing
@@ -32,8 +32,9 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
     </Card>
     <Card title="Support my work" icon="rocket">
         I would really appreciate if you support my work, either on
-        <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>, 
-        <a href="https://www.patreon.com/trueberryless">Patreon</a> or 
+        <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>,<a href="https://www.patreon.com/trueberryless">
+            Patreon
+        </a> or
         <a href="https://ko-fi.com/trueberryless">Ko-fi</a>.
     </Card>
     <Card title="Star the project" icon="star">
@@ -49,6 +50,6 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 We would like to sincerely thank all the volunteer contributors to our open source project. Without your contributions, this project would not be possible. You work tirelessly to improve the site, add new content, and fix bugs. You donate your time and expertise so that everyone can benefit from this website.
 
-import ContributorList from "../../../assets/components/ContributorList.astro";
+import ContributorList from "/src/assets/components/ContributorList.astro";
 
 <ContributorList githubRepo="trueberryless-org/mutanuq" />

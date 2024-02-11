@@ -6,7 +6,7 @@ sidebar:
 
 Die Zusammenfassung ist eine neutrale, objektive Textsorte, welche in Präsens und Perfekt geschrieben wird.
 
-## Übersicht
+## Eigenschaften
 
 Eine Zusammenfassung weist folgende Eigenschaften auf:
 
@@ -14,8 +14,8 @@ Eine Zusammenfassung weist folgende Eigenschaften auf:
 -   nur die wesentlichsten Informationen zusammenfassen
 -   in eigenen Worten formulieren
 -   kein Schlussteil
--   Wortvorgabe genau einhalten
 -   den Leser nicht ansprechen
+-   Wortanzahl genau einhalten
 -   Überschrift: `Zusammenfassung von ...`
 
 ## Aufbau

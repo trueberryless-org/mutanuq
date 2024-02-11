@@ -6,14 +6,15 @@ sidebar:
 
 Der Leserbrief ist eine meinungsorientierte, subjektive Textsorte, welche in Präsens und Perfekt geschrieben wird.
 
-## Übersicht
+## Eigenschaften
 
 Ein Leserbrief weist folgende Eigenschaften auf:
 
 -   Verbindung zum Ausgangstext und besonders zum Autor aufbauen
 -   eigene Argumente formulieren
+-   Leser ansprechen
+-   Wortanzahl genau einhalten
 -   besonderer Aufbau mit Kopfzeile, Anrede und Grußformel (+ Unterschrift)
--   Adressaten ansprechen
 
 ## Aufbau
 
@@ -37,7 +38,7 @@ Bedenken Sie bei einer Anrede, dass nach einem `,` (Beistrich) der nachfolgende 
 
 ### Einleitung
 
-In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein.
 
 Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
@@ -51,7 +52,7 @@ Unterteilen Sie den Hauptteil in inhaltlich zusammenhängende Abschnitte und mar
 
 ### Schluss
 
-Fassen Sie im Schlussteil nochmals den wichtigsten Kritikpunkt Ihres Leserbriefs zusammen. Wenn die Aufgabenstellung nach einem Appell verlangt, eignet sich der Schlussteil hervorragend dafür. Appellieren Sie also an all Leser:innen oder eine bestimmte Gruppe im Schlussteil oder schreiben Sie ein einfaches Fazit des Briefes.
+Fassen Sie im Schlussteil nochmals den wichtigsten Kritikpunkt Ihres Leserbriefs zusammen. Wenn die Aufgabenstellung nach einem Appell verlangt, eignet sich der Schlussteil hervorragend dafür. Appellieren Sie also an alle Leser\*innen oder eine bestimmte Gruppe im Schlussteil oder schreiben Sie ein einfaches Fazit des Briefes.
 
 ### Grußformel
 
@@ -63,4 +64,4 @@ Beenden Sie Ihren Brief mit einer Grußformel.
 
 Falls Sie den Text digital verschicken, reicht Ihre Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
 
-![Signature](../../../../../../assets/languages/Signature_white.png)
+<img src="/src/assets/languages/Signature_white.png" alt="Signature" width="200" />
