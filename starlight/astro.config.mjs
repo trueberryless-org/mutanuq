@@ -166,4 +166,7 @@ export default defineConfig({
         remarkPlugins: [remarkMath],
         rehypePlugins: [rehypeMathjax],
     },
+    redirects: {
+        "/": "/de/",
+    },
 });
