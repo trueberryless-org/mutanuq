@@ -417,7 +417,7 @@ no wiaklech...
 
 #### Fisches Nachtgesang
 
-![Fisches Nachtgesang](../../../../../../assets/languages/fisches_nachtgesang.jpg)
+![Fisches Nachtgesang](/src/assets/languages/fisches_nachtgesang.jpg)
 
 #### Blumenwiese
 

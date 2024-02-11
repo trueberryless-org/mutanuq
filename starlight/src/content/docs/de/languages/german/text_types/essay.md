@@ -6,16 +6,15 @@ sidebar:
 
 Die Erörterung ist eine neutrale, objektive Textsorte mit ausgeklügelter Argumentation, welche in Präsens und Perfekt geschrieben wird.
 
-## Übersicht
+## Eigenschaften
 
 Eine Erörterung weist folgende Eigenschaften auf:
 
--   kreative Einleitung
--   zusammenfassender (und appellierender) Schlussteil, Fazit
--   Meinung im Schluss
 -   sachliche Formulierungen
 -   neutraler Ton
--   Wortanzahl nicht unterschreiten
+-   kreative Einleitung
+-   zusammenfassender (und appellierender) Schlussteil mit eigener Meinung, Fazit
+-   max. 50 Wörter mehr schreiben
 -   Überschrift möglich
 
 ## Aufbau

@@ -43,7 +43,7 @@ Je nach Virtualisierungstyp ist der Hypervisor entweder ein einfaches `Anwendung
 
 Bei einer Typ 1 Virtualisierung (auch Bare-Metall Virtualisierung genannt) interagiert der Hypervisor direkt mit der Hardware. Es gibt kein Betriebssystem zwischen Hardware und Hypervisor. Weil ein Hypervisor ohne Betriebssystem nicht installierbar ist, muss man bei einer Installation zuerst ein Betriebssystem installieren, von welchem aus man anschließend den Hypervisor installieren kann, um anschließend die Betriebssysteme installieren zu können 🫠.
 
-![Typ-1-Virtualisierung](../../../../assets/system_integration_and_infrastructure/Typ-1-Virtualisierung.png)
+![Typ-1-Virtualisierung](/src/assets/system_integration_and_infrastructure/Typ-1-Virtualisierung.png)
 
 #### Beispiele
 
@@ -61,7 +61,7 @@ Jedoch kann der Hypervisor als Anwendung dem virtuellen Betriebssystem nicht vor
 
 Die Hardware-Virtualisierung wird oft durch CPU-Funktionen wie Intel VT-x oder AMD-V ermöglicht. Diese Technologien erlauben es dem Hypervisor, virtuelle Maschinen direkt auf die physische Hardware zuzugreifen, wodurch die Verwaltungsschicht des Host-Betriebssystems umgangen wird. Dadurch kann der Hypervisor dem virtualisierten Betriebssystem effektiv vortäuschen, dass es exklusiven Zugriff auf die Hardware hat.
 
-![Typ-2-Virtualisierung](../../../../assets/system_integration_and_infrastructure/Typ-2-Virtualisierung.png)
+![Typ-2-Virtualisierung](/src/assets/system_integration_and_infrastructure/Typ-2-Virtualisierung.png)
 
 #### Beispiele
 
@@ -107,7 +107,7 @@ Um eine Datei zu lesen, muss ein Gastbetriebssystem normalerweise direkt auf die
 
 Im Gegensatz zu anderen Virtualisierungen hat man bei einer Containervirtualisierung kein eigenes Betriebssystem bei den eigenen Containern. Deswegen benötigt man nicht so viel Platz und es kann schneller starten und auch laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen - auch `Environments` - schnell auf neuen Rechnern aufsetzen.
 
-![Containervirtualisierung Aufbau](../../../../assets/system_integration_and_infrastructure/Container_Structure.svg)
+![Containervirtualisierung Aufbau](/src/assets/system_integration_and_infrastructure/Container_Structure.svg)
 
 Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Kern. Die Container nutzen nämlich den Kern des Hosts.
 

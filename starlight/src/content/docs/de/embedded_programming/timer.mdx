@@ -30,7 +30,7 @@ Der 16-bit Timer verfügt hierbei über einen größeren Speicherplatz für das 
 
 Der Prozess des Überlaufs ist periodisch und wird hier grafisch dargestellt:
 
-![Timer Überlauf](../../../../assets/embedded_programming/timer/timer_ueberlauf.png)
+![Timer Überlauf](/src/assets/embedded_programming/timer/timer_ueberlauf.png)
 
 :::tip[Formular]
 Um sich die Zeitspanne $\Delta t$ auszurechnen, welche beschreibt, in welchen Zeitabständen der jeweilige Timer zum Überlauf kommt, gibt es folgende Formel:
@@ -66,7 +66,7 @@ $$
 
 Dabei hat jeder Timer 3 verschiedene Modi, welche in der Tabelle kurz erklärt werden:
 
-import ResponsiveTable from "../../../../assets/components/ResponsiveTable.astro";
+import ResponsiveTable from "/src/assets/components/ResponsiveTable.astro";
 
 <ResponsiveTable>
 
@@ -100,7 +100,7 @@ Wenn man die Definitionsmengen nämlich nicht erfüllt, würden Werte für den V
 
 Zur Visualisierung, was wir eigentlich gerade gemacht haben, eignet sich dieses Bild:
 
-![Timer mit bestimmten Wert vorlade](../../../../assets/embedded_programming/timer/timer_vorladen.png)
+![Timer mit bestimmten Wert vorlade](/src/assets/embedded_programming/timer/timer_vorladen.png)
 
 #### CTC - Clear Timer on Compare Match
 
@@ -118,7 +118,7 @@ Mithilfe des PWM Modes kann man an bestimmten PINs eine bestimmte Spannung zwisc
 
 Diese Vorgang passiert in Realität so schnell, dass man das ständigen Ein- und Ausschalten nicht mitbekommt. Hier ist der Prozess dargestellt:
 
-![Duty Cycle stellt sich langsam auf den Mittelwert ein](../../../../assets/embedded_programming/timer/timer_pwm_duty_cycle_average.png)
+![Duty Cycle stellt sich langsam auf den Mittelwert ein](/src/assets/embedded_programming/timer/timer_pwm_duty_cycle_average.png)
 
 Der PWM Mode ermöglicht uns also das exakte Einstellen der Spannung bei Laufzeit.
 
@@ -136,7 +136,7 @@ $T$ ist die Periodendauer, also das Zeitintervall, in welchem die Spannung entwe
 
 Konfigurieren kann man den Duty Cycle mittels dem `OCRnx` Register. Dieses bestimmt - genau wie beim CTC Mode - den Vergleichswert (`Output Compare Register`).
 
-![PWM Mode Compare Register](../../../../assets/embedded_programming/timer/timer_pwm_compare_register.png)
+![PWM Mode Compare Register](/src/assets/embedded_programming/timer/timer_pwm_compare_register.png)
 
 ---
 
@@ -146,13 +146,13 @@ Der PWM Mode kann invertiert oder nicht invertiert betrieben werden:
 
 Beim invertierten Modus wird beim Erreichen des Vergleichswertes (`TCNTn` $=$ `OCRnx`) die Spannung auf _high_ gesetzt und beim Überlauf auf _low_.
 
-![PWM Mode Invertierter Modus](../../../../assets/embedded_programming/timer/timer_pwm_inverting_mode.png)
+![PWM Mode Invertierter Modus](/src/assets/embedded_programming/timer/timer_pwm_inverting_mode.png)
 
 ##### Nicht Invertierter Modus
 
 Beim nicht invertierten Modus ist es genau umgekehrt. Beim Erreichen des Vergleichswertes (`TCNTn` $=$ `OCRnx`) wird die Spannung auf _low_ gesetzt und beim Überlauf auf _high_.
 
-![PWM Mode Nicht Invertierter Modus](../../../../assets/embedded_programming/timer/timer_pwm_non_inverting_mode.png)
+![PWM Mode Nicht Invertierter Modus](/src/assets/embedded_programming/timer/timer_pwm_non_inverting_mode.png)
 
 ### Interrupts
 

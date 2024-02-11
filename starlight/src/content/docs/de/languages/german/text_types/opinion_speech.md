@@ -1,21 +1,21 @@
 ---
 title: Meinungsrede
 sidebar:
-    order: 6
+    order: 7
 ---
 
 Die Meinungsrede ist eine subjektive, argumentative, überzeugende Textsorte, welche vor einem bestimmten Publikum vorgetragen wird. Aus diesem Grund müssen auch alle zuhörenden Personen in der [Anrede](#anrede) angesprochen werden.
 
 Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eigene Meinung mittels schlüssigen Argumenten. Je nach Publikum kann die Meinungsrede formell (z. B.: `Sie` / `Ihren`) oder informell (z. B.: `du` / `euren`) geschrieben werden. Die Meinungsrede wird mit den Zeitformen Präsens und Perfekt geschrieben und soll keine Beleidigungen oder Diskriminierungen enthalten.
 
-## Übersicht
+## Eigenschaften
 
--   Publikum von meiner Meinung überzeugen
+-   `Ich` kann verwendet werden
+-   Publikum von meiner Meinung überzeugen (Publikum ansprechen)
 -   kreative Einleitung, worin Titel und Autor vorkommt
 -   Hauptteil ist in sich flüssig argumentiert
 -   zusammenfassender Schlussteil mit Appell
 -   Stilfiguren verwenden
--   `Ich` kann verwendet werden
 -   max. 50 Wörter mehr schreiben
 -   Überschrift situationsbezogen
 

@@ -10,8 +10,8 @@ Für die Verwendung des Display empfiehlt sich <a href="/embedded_programming/lc
 
 ## Aufbau
 
-![Aufbau eines LCDs am ATmega 328p](../../../../assets/embedded_programming/lcd/lcd_composition.png)
-![Grid eines LCDs](../../../../assets/embedded_programming/lcd/lcd_grid.png)
+![Aufbau eines LCDs am ATmega 328p](/src/assets/embedded_programming/lcd/lcd_composition.png)
+![Grid eines LCDs](/src/assets/embedded_programming/lcd/lcd_grid.png)
 
 ## Code
 
