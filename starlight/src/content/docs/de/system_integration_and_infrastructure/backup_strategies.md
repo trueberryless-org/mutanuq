@@ -31,19 +31,19 @@ Es gibt verschiedene Möglichkeiten, auf welche Art man die Daten sichern will. 
 
 Bei einer vollständigen (oder kompletten) Sicherung macht man eine 1:1 Kopie des Mediums. Deswegen hat man einen hohen Speicherbedarf, wenn zum Beispiel täglich immer alle Daten erneut gesichert werden. Nach einer Woche, benötigt die Sicherung bereits zirka sieben Mal so viel Platz, wie die Daten selbst. Allerdings hat man den Vorteil, einen geringen Aufwand beim Sichern und beim Wiederherstellen zu haben.
 
-![Backup Full](../../../../assets/system_integration_and_infrastructure/backup-full.png)
+![Backup Full](/src/assets/system_integration_and_infrastructure/backup-full.png)
 
 #### Differentielle Sicherung
 
 Bei einer differentiellen Sicherung macht man regelmäßig eine Komplettsicherung und dazwischen in gewissen Zeitabständen immer eine Teilsicherung mit allen Änderungen zur letzten **Komplettsicherung**. Beispielsweise sichert man wöchentlich alles erneut (vollständig) und täglich die Veränderung seit Wochenanfang (Differenz).
 
-![Backup Differential](../../../../assets/system_integration_and_infrastructure/backup-differential.png)
+![Backup Differential](/src/assets/system_integration_and_infrastructure/backup-differential.png)
 
 #### Inkrementelle Sicherung
 
 Bei einer inkrementellen Sicherung macht man regelmäßig eine Komplettsicherung und dazwischen in gewissen Zeitabständen eine Teilsicherung relativ zur letzten **Teilsicherung**. Beispielsweise sichert man wöchentlich alles erneut (vollständig) und täglich die Veränderung zum Vortag (Inkrement).
 
-![Backup Incremental](../../../../assets/system_integration_and_infrastructure/backup-incremental.png)
+![Backup Incremental](/src/assets/system_integration_and_infrastructure/backup-incremental.png)
 
 #### Generationenprinzip
 
@@ -53,7 +53,7 @@ Das Generationenprinzip ist eine geprüfte Sicherungsstrategie, welches folgende
 
 Zuerst beantworten wir die Frage, was eine Generation in diesem Zusammenhang ist. Man spricht von einer neuen Generation, wenn diese eine Komplettsicherung aller zeitlich vorherigen Sicherungen aus vorherigen Generationen ist. Wie man in dem Bild unten erkennen kann ist `V1` (Freitag, 5. Jänner) eine neue Generation, da diese Sicherung alle Daten der Sicherungen `S1` - `S4` (1. - 4. Jänner) beinhaltet. Aus diesem Grund kann am 8. Jänner die Sicherung vom 1. Jänner überschrieben werden (gleiche Zeilen bedeuten gleiche Festplatten).
 
-![Generationenprinzip](../../../../assets/system_integration_and_infrastructure/generationenprinzip.png)
+![Generationenprinzip](/src/assets/system_integration_and_infrastructure/generationenprinzip.png)
 
 Um das Prinzip nun fachlich zu formulieren:
 
@@ -107,7 +107,7 @@ Die LTO-Technologie bietet eine kostengünstige Möglichkeit zur langfristigen D
 
 Die verschiedenen Generationen von LTO haben sich kontinuierlich weiterentwickelt, wobei jede Generation normalerweise eine höhere Kapazität und schnellere Datenübertragungsraten bietet als die vorherige. Typischerweise sind LTO-Laufwerke abwärtskompatibel (zwei vorherige Generationen lesen und eine vorherige Generation schreiben), sodass neuere Bänder auch in älteren Laufwerken gelesen werden können, jedoch möglicherweise nicht die neuesten Funktionen unterstützen.
 
-![LTO Roadmap](../../../../assets/system_integration_and_infrastructure/LTO_Roadmap.jpg)
+![LTO Roadmap](/src/assets/system_integration_and_infrastructure/LTO_Roadmap.jpg)
 
 Die Verwendung von LTO ist in verschiedenen Branchen weit verbreitet, darunter in Rechenzentren, Archivierungsumgebungen und anderen Szenarien, in denen eine zuverlässige und kostengünstige Datensicherung und -archivierung erforderlich ist.
 

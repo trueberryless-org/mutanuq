@@ -46,7 +46,7 @@ Ernst Mach meinte, die Realität und die Persönlichkeit sei ein Wechsel aus „
 
 Sigmund Freud war ein Psychoanalyst, welcher die **dreischichtige menschliche Persönlichkeit** deklarierte. Diese teilt die Denk- und Handelsweise jedes Menschen in drei Teilbereiche auf: **ICH**, **ÜBER-ICH**, **ES**. Während letzteres vollkommen unbewusst passiert und die eigene Verwirklichung, Sexualität und Aggression leitet, ist das ÜBER-ICH der Gegenspieler zu diesem ES. ÜBER-ICH hat moralisches Gewissen, Instanzen, Werte und Normen. Das ICH findet den Mittelweg zwischen dem ÜBER-ICH und ES und liegt großteils im bewussten Denkwesen. Freud sah zum Beispiel Kultur als ICH. Auseinandersetzungen mit diesen drei Schichten bestimmen uns.
 
-![Dreischichtige menschliche Persönlichkeit](../../../../../../assets/languages/dreischichtige_menschliche_persoenlichkeit.png)
+![Dreischichtige menschliche Persönlichkeit](/src/assets/languages/dreischichtige_menschliche_persoenlichkeit.png)
 
 Freud fand heraus, dass ca. 80-90 Prozent unserer Entscheidungen unbewusst getroffen werden. Außerdem war Freud ein guter Freund mit [Schnitzler](#arthur-schnitzler-1862-1931).
 
@@ -90,19 +90,19 @@ Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-h
 
 Noch spür ich ihren Atem auf den Wangen:  
 Wie kann das sein, daß diese nahen Tage  
-Fort sind, für immer fort, und ganz vergangen?  
+Fort sind, für immer fort, und ganz vergangen?
 
 Dies ist ein Ding, das keiner voll aussinnt,  
 Und viel zu grauenvoll, als daß man klage:  
-Daß alles gleitet und vorüberrinnt.  
+Daß alles gleitet und vorüberrinnt.
 
 Und daß mein eignes Ich, durch nichts gehemmt,  
 Herüberglitt aus einem kleinen Kind  
-Mir wie ein Hund unheimlich stumm und fremd.  
+Mir wie ein Hund unheimlich stumm und fremd.
 
 Dann: daß ich auch vor hundert Jahren war  
 Und meine Ahnen, die im Totenhemd,  
-Mit mir verwandt sind wie mein eignes Haar,  
+Mit mir verwandt sind wie mein eignes Haar,
 
 So eins mit mir als wie mein eignes Haar.
 

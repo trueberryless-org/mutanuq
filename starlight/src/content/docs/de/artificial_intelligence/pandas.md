@@ -18,7 +18,7 @@ import pandas as pd
 
 Pandas führt zwei grundlegende Datenstrukturen ein: Dataframes und Series. Ein Dataframe kann als eine zweidimensionale Datenstruktur betrachtet werden, die in Form einer Tabelle organisiert ist. Diese Tabelle besteht aus Zeilen und Spalten, wobei jede Spalte einen bestimmten Datentyp repräsentiert. Einzelne Spalten in einem Dataframe werden als Series bezeichnet. Series hingegen kann als eindimensionales Array oder eine Liste betrachtet werden und enthält Daten eines bestimmten Datentyps.
 
-![Series and Dataframe](../../../../assets/artificial_intelligence/series-and-dataframe.png)
+![Series and Dataframe](/src/assets/artificial_intelligence/series-and-dataframe.png)
 
 ### Dataframe
 

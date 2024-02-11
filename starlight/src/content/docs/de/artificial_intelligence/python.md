@@ -508,7 +508,7 @@ import pandas as pd
 pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
 ```
 
-![CountVectorizer Pandas - Output](../../../../assets/artificial_intelligence/count_vectorizer_pandas_output.png)
+![CountVectorizer Pandas - Output](/src/assets/artificial_intelligence/count_vectorizer_pandas_output.png)
 
 ##### LabelEncoder
 

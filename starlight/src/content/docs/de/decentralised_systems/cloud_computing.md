@@ -10,7 +10,7 @@ Cloud Computing bezeichnet eine `PaaS` (Platform as a Service) Architektur, welc
 
 Es gibt allgemein verschiedene Formen von Anbietern. In diesem Kapitel beschäftigen wir uns großteils mit `PaaS` (Platform as a Service).
 
-![IaaS, PaaS, SaaS](../../../../assets/decentralised_systems/iaas-paas-saas.png)
+![IaaS, PaaS, SaaS](/src/assets/decentralised_systems/iaas-paas-saas.png)
 
 ### Vorteile
 
