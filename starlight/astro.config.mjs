@@ -34,7 +34,7 @@ export default defineConfig({
                     label: "English",
                 },
             },
-            tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
+            tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
             expressiveCode: {},
             customCss: [
                 "./src/styles/custom.css",
@@ -46,56 +46,16 @@ export default defineConfig({
             },
             sidebar: [
                 {
-                    label: "Softwareentwicklung",
-                    collapsed: true,
+                    label: "Informationstechnologie",
+                    collapsed: false,
                     translations: {
-                        en: "Software Development",
+                        en: "Information Technology",
                     },
-                    autogenerate: { directory: "software_development" },
-                },
-                {
-                    label: "Informationssysteme",
-                    collapsed: true,
-                    translations: {
-                        en: "Information systems",
-                    },
-                    autogenerate: { directory: "information_systems" },
-                },
-                {
-                    label: "Dezentrale Systeme",
-                    collapsed: true,
-                    translations: {
-                        en: "Decentralised Systems",
-                    },
-                    autogenerate: { directory: "decentralised_systems" },
-                },
-                {
-                    label: "Eingebettete Programmierung",
-                    collapsed: true,
-                    translations: {
-                        en: "Embedded Programming",
-                    },
-                    autogenerate: { directory: "embedded_programming" },
-                },
-                {
-                    label: "Systemintegration und Infrastruktur",
-                    collapsed: true,
-                    translations: {
-                        en: "System integration and infrastructure",
-                    },
-                    autogenerate: { directory: "system_integration_and_infrastructure" },
-                },
-                {
-                    label: "Künstliche Intelligenz",
-                    collapsed: true,
-                    translations: {
-                        en: "Artificial Intelligence",
-                    },
-                    autogenerate: { directory: "artificial_intelligence" },
+                    autogenerate: { directory: "information_technology" },
                 },
                 {
                     label: "Projektmanagement",
-                    collapsed: true,
+                    collapsed: false,
                     translations: {
                         en: "Project Management",
                     },
@@ -103,53 +63,15 @@ export default defineConfig({
                 },
                 {
                     label: "Sprachen",
-                    collapsed: true,
+                    collapsed: false,
                     translations: {
                         en: "Languages",
                     },
-                    items: [
-                        {
-                            label: "Englisch",
-                            translations: {
-                                en: "English",
-                            },
-                            items: [
-                                {
-                                    label: "Textsorten",
-                                    translations: {
-                                        en: "Text Types",
-                                    },
-                                    autogenerate: { directory: "languages/english/text_types" },
-                                },
-                            ],
-                        },
-                        {
-                            label: "Deutsch",
-                            translations: {
-                                en: "German",
-                            },
-                            items: [
-                                {
-                                    label: "Literatur",
-                                    translations: {
-                                        en: "Literature",
-                                    },
-                                    autogenerate: { directory: "languages/german/literature" },
-                                },
-                                {
-                                    label: "Textsorten",
-                                    translations: {
-                                        en: "Text Types",
-                                    },
-                                    autogenerate: { directory: "languages/german/text_types" },
-                                },
-                            ],
-                        },
-                    ],
+                    autogenerate: { directory: "languages" },
                 },
                 {
                     label: "Wirtschaft und Recht",
-                    collapsed: true,
+                    collapsed: false,
                     translations: {
                         en: "Economy and Law",
                     },
