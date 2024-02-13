@@ -4,6 +4,47 @@ sidebar:
     order: 0
 ---
 
+## Stilfiguren
+
+Stilfiguren und rhetorische Mittel sind sprachliche Elemente, die Texte wirkungsvoller gestalten. Stilfiguren sind besondere sprachliche Ausdrücke, die bewusst von der Norm abweichen, um Effekte zu erzielen. Rhetorische Mittel sind Techniken, die die Überzeugungskraft von Aussagen steigern. Von Metaphern bis Ironie bieten sie vielfältige Möglichkeiten, Kommunikation zu verfeinern und Gedanken intensiver auszudrücken. Autoren und Redner nutzen diese Werkzeuge, um ihre Botschaften eindrucksvoll zu präsentieren.
+
+| Begriff                 | Beschreibung                                                                                                   | Beispiel                                                                                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Allegorie               | Darstellung eines abstrakten Begriffes als Person                                                              | Frau Sonne, Gerechtigkeit tritt in Theaterstück auf                                                                                                 |
+| Alliteration (Stabreim) | gleiche Anlautung der Stammsilben von aufeinander folgenden Wörtern                                            | Zimt und Zucker, über Stock und Stein                                                                                                               |
+| Anadiplose              | Wiederholung des letzten Wortes oder der letzten Wörter am Satzende am Satzanfang des folgenden Satzes         | Die Nacht ist dunkel. Dunkel ist der Wald. Wald voller Geheimnisse.                                                                                 |
+| Anapher                 | Wiederholung von Wörtern oder Satzteilen am Beginn                                                             | Tatsache ist, ich habe verloren. Tatsache ist, ich werde daraus Konsequenzen ziehen.                                                                |
+| Antithese               | Gegenüberstellung                                                                                              | Groß und Klein, Arm und Reich                                                                                                                       |
+| Assonanz (Klangmalerei) | gleicher/ähnlicher Vokal kommt in aufeinander folgenden Wörtern oder Sätzen gehäuft vor = Häufung eines Vokals | Der Wind zischte, pfiff, blies. Der Mond thront ober dem Wolkenhügel.                                                                               |
+| Chiasmus                | Überkreuzstellung von Satzgliedern                                                                             | Die Kunst ist lang und kurz ist unser Leben.                                                                                                        |
+| Dysphemismus            | Verschleiernde Verschlimmerung eines Ausdrucks                                                                 | Diese Mahlzeit ist wirklich eine Geschmacksexplosion. (ironisch für "schmeckt nicht gut")                                                           |
+| Ellipse                 | unvollständiger Satz                                                                                           | Was nun?                                                                                                                                            |
+| Epipher                 | Wiederholung am Satzende                                                                                       | Ich fordere mehr Mut. Ich lebe mehr Mut.                                                                                                            |
+| Euphemismus             | verschleiernde Beschönigung eines negativen Ausdruckes                                                         | die Radieschen von unten ansehen, das Zeitliche segnen, Raumpflegerin                                                                               |
+| Häufung                 | Aufzählung / Wiederholung derselben Wortart                                                                    | Amsel, Drossel, Fink und Star                                                                                                                       |
+| Hyperbel                | Übertreibung                                                                                                   | Hundertmal hab‘ ich es dir gesagt.                                                                                                                  |
+| Hypotaxe                | Satzgefüge                                                                                                     | Um zu beweisen, dass er unschuldig war, legte er seine Handyrechnung vor, aus der hervorging, wen er zum fraglichen Zeitpunkt angerufen hatte. Star |
+| Ironie                  | Gegenteil dessen, was ausgedrückt wird, wird gemeint                                                           | Das hast du ja mal wieder toll gemacht!                                                                                                             |
+| Klimax                  | stufenweise Steigerung in einem Satz                                                                           | Ich kam, sah und siegte. (Cäsar)                                                                                                                    |
+| Litotes                 | Bejahung durch Verneinung                                                                                      | Nicht schlecht!                                                                                                                                     |
+| Metapher                | sprachliches Bild                                                                                              | Du bist meine Rose. Die Wüstenschiffe ziehen weiter. Füll den Tiger in den Tank.                                                                    |
+| Metonymie               | Ersetzen eines Begriffs durch einen anderen, der in Beziehung steht                                            | Die Königin trägt die Krone. (Die Krone steht für die königliche Autorität)                                                                         |
+| Neologismus             | Wortneuschöpfung                                                                                               | downloaden                                                                                                                                          |
+| Onomatopoesie           | Nachahmung natürlicher Klänge durch sprachlichen Ausdruck                                                      | Der Hund bellte laut. Die Vögel zwitscherten im Baum.                                                                                               |
+| Oxymoron                | Zusammenfügung zweier Teile, die sich logisch                                                                  | Minuswachstum, schwarze Milch                                                                                                                       |
+| Parallelsimus           | sich wiederholende Wortfolge/Satzkonstruktion                                                                  | Sie hören weit, sie sehen fern.                                                                                                                     |
+| Parataxe                | Aneinanderreihung von Hauptsätzen                                                                              | Er sah, er reagierte.                                                                                                                               |
+| Parenthese              | Einschub                                                                                                       | Er ist – wie gesagt – nicht dumm.                                                                                                                   |
+| Paronomasie             | Wortspiel durch Klangähnlichkeit bei unterschiedlicher Bedeutung                                               | Wer rastet, der rostet.                                                                                                                             |
+| Personifikation         | Vermenschlichung                                                                                               | Die Sonne lacht. Die Finsternis sieht mit hundert schwarzen Augen.                                                                                  |
+| Pleonasmus              | Überflüssige Verwendung von Wörtern, die bereits im Kontext enthalten sind                                     | Der nasse Regen.                                                                                                                                    |
+| Rhetorische Frage       | Scheinfrage, beantwortet sich selbst                                                                           | Das ist doch nicht dein Ernst? Bin ich deine Putzfrau?                                                                                              |
+| Symbol                  | sprachliches Bild, das über sich selbst hinausweist                                                            | Wasser (für Leben), Herz (für Liebe), Feuer (für Leidenschaft)                                                                                      |
+| Synekdoche              | Ein Teil steht für das Ganze oder umgekehrt                                                                    | Alle Hände an Deck! (Hände stehen für die Menschen)                                                                                                 |
+| Vergleich               | Gleichsetzung von zwei Dingen, Vergleichswort „wie“                                                            | Er kämpft wie ein Löwe.                                                                                                                             |
+| Wiederholung            | Wiederholung identischer Wörter                                                                                | Geliebte, o meine Geliebte!                                                                                                                         |
+| Zeugma                  | Ein Wort bezieht sich auf zwei andere, aber in unterschiedlichen Bedeutungen                                   | Er schlug die Tür zu und sein Herz in Angst.                                                                                                        |
+
 ## Zusammenfassung
 
 Die Zusammenfassung ist eine neutrale, objektive Textsorte, welche in Präsens und Perfekt geschrieben wird.
@@ -152,7 +193,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 -   in eigenen Worten formulieren oder richtig zitieren (nur indirekte Zitate)
 -   Adressaten ansprechen
 -   kreative Einleitung, worin Titel und Autor vorkommt
--   Hauptteil ist in sich flüssig argumentiert (viele Stilfiguren verwenden)
+-   Hauptteil ist in sich flüssig argumentiert (viele [Stilfiguren](#stilfiguren) verwenden)
 -   meinungsorientierter Schlussteil mit Lösungsvorschlägen
 -   max. 50 Wörter mehr schreiben
 -   Überschrift situationsbezogen
@@ -201,6 +242,7 @@ Eine Textanalyse weist folgende Eigenschaften auf:
 
 -   08/15 Einleitung mit Titel, Autor, Textsorte, Erscheinungsort und -datum des Ausgangstextes
 -   nicht interpretieren, sondern nur zitieren (direkte Zitate)
+-   [Stilfiguren](#stilfiguren) erkennen können
 -   Fachtermini verwenden (Wenn das Thema `IT` ist, kann man solches Fachvokabular einbauen)
 -   sachliche Formulierungen
 -   max. 50 Wörter mehr schreiben
@@ -222,17 +264,17 @@ In der Einleitung einer Textanalyse erwähnt man nur kurz den Autor, den Titel, 
 
 Der Hauptteil fasst innerhalb von zwei bis drei Sätzen den Inhalt des Ausgangstextes zusammen und geht nachher direkt in die formale (Aufbau und Gliederung), sprachliche (Sprache, Stil, Wortverwendung, Satzstrukturen, rhetorische Mittel) und inhaltliche (Inhalt, Argumentation) Analyse über. Folgende Tabelle zeigt, welche Merkmale immer analysiert werden müssen:
 
-| Kriterium               | mögliche Ergebnisse                                                                    |
-| ----------------------- | -------------------------------------------------------------------------------------- |
-| Aufbau                  | Art der Einleitung, des Hauptteils und des Schlussteils                                |
-| Sinnabschnitte          | Auflistung der inhaltlich getrennten Abschnitte mittels Zeilennummern                  |
-| Sprache                 | Standardsprache, Bildungssprache, Umgangssprache                                       |
-| Wortfelder / Wortschatz | verwendet der Autor / die Autorin das Fachtermini des Themas                           |
-| Wortarten               | viele Nomen (Nominalstil), Verben, Adjektive                                           |
-| Satzstrukturen          | parataktisch (mehrheitlich Hauptsätze), hypotaktisch (viele Nebensätze und Satzgefüge) |
-| Argumentation           | Werteargumente, Vergleichsargumente, Faktenargumente, Autoritätsargumente              |
-| Stilmittel              | Welche Stilmittel werden verwendet?                                                    |
-| Intention               | Analyse von Aufmerksamkeit, Information und Appell + gelungen / nicht gelungen?        |
+| Kriterium                  | mögliche Ergebnisse                                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Aufbau                     | Art der Einleitung, des Hauptteils und des Schlussteils                                               |
+| Sinnabschnitte             | Auflistung der inhaltlich getrennten Abschnitte mittels Zeilennummern                                 |
+| Sprache                    | Standardsprache, Bildungssprache, Umgangssprache                                                      |
+| Wortfelder / Wortschatz    | verwendet der Autor / die Autorin das Fachtermini des Themas                                          |
+| Wortarten                  | viele Nomen (Nominalstil), Verben, Adjektive                                                          |
+| Satzstrukturen             | parataktisch (mehrheitlich Hauptsätze), hypotaktisch (viele Nebensätze und Satzgefüge)                |
+| Argumentation              | Werteargumente, Vergleichsargumente, Faktenargumente, Autoritätsargumente                             |
+| [Stilmittel](#stilfiguren) | Welche Stilmittel werden verwendet? Nennen Sie immer die Art des rhetorischen Mittels mit Beispielen. |
+| Intention                  | Analyse von Aufmerksamkeit, Information und Appell + gelungen / nicht gelungen?                       |
 
 Arbeiten Sie diese Kriterien in Ihrem Text ab und teilen Sie diese logisch in sprachliche Analyse, inhaltliche Analyse, stilistische Analyse.
 
@@ -300,7 +342,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 -   kreative Einleitung, worin Titel und Autor vorkommt
 -   Hauptteil ist in sich flüssig argumentiert
 -   zusammenfassender Schlussteil mit Appell
--   Stilfiguren verwenden
+-   [Stilfiguren](#stilfiguren) verwenden
 -   max. 50 Wörter mehr schreiben
 -   Überschrift situationsbezogen
 
