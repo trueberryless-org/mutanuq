@@ -202,7 +202,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 
 #### Überschrift
 
-Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll diese verwendet werden.
+Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll diese verwendet werden. Da der Kommentar eine sehr kreative Textsorte ist, soll auch die Überschrift äußerst kreativ und fesselnd sein und den Leser neugirig auf den Text machen.
 
 #### Einleitung
 
