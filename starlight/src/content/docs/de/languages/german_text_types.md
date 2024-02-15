@@ -384,7 +384,7 @@ Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente I
 
 | Abkürzung | Inhalt                                                                                               |
 | --------- | ---------------------------------------------------------------------------------------------------- |
-| Attention | Schaffen Sie eine emotionale Verbindung, indem Sie beispielsweise etwas empörendes erzählen.         |
+| Attention | Schaffen Sie eine emotionale Verbindung, indem Sie beispielsweise etwas Empörendes erzählen.         |
 | Interest  | Erwecken Sie das Interesse des Publikums mittels detaillierterer Erzählung des Inhalts des Arguments |
 | Desire    | Stellen Sie den gewünschten Soll-Zustand dar.                                                        |
 | Action    | Schlagen Sie Maßnahmen vor, um diesen Wunsch-Zustand zu erreichen.                                   |
