@@ -196,13 +196,13 @@ Ein Kommentar weist folgende Eigenschaften auf:
 -   Hauptteil ist in sich flüssig argumentiert (viele [Stilfiguren](#stilfiguren) verwenden)
 -   meinungsorientierter Schlussteil mit Lösungsvorschlägen
 -   max. 50 Wörter mehr schreiben
--   Überschrift situationsbezogen
+-   meinungsbetonte, kreative Überschrift
 
 ### Aufbau
 
 #### Überschrift
 
-Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll diese verwendet werden. Da der Kommentar eine sehr kreative Textsorte ist, soll auch die Überschrift äußerst kreativ und fesselnd sein und den Leser neugirig auf den Text machen.
+Da der Kommentar eine sehr kreative Textsorte ist, soll auch die Überschrift äußerst kreativ und fesselnd sein und den Leser neugirig auf den Text machen.
 
 #### Einleitung
 
