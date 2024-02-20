@@ -202,7 +202,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 
 #### Überschrift
 
-Da der Kommentar eine sehr kreative Textsorte ist, soll auch die Überschrift äußerst kreativ und fesselnd sein und den Leser neugirig auf den Text machen.
+Da der Kommentar eine sehr kreative Textsorte ist, soll auch die Überschrift äußerst kreativ und fesselnd sein und den Leser neugierig auf den Text machen.
 
 #### Einleitung
 
