@@ -1129,34 +1129,105 @@ Für weitere Informationen siehe [Wikipedia](<https://en.wikipedia.org/wiki/Mast
 
 #### Clock
 
-PB5
+Genau wie der [Timer](#timer--counter) benötigt das SPI einen Prescaler, um den Systemtakt anzupassen. Mithilfe dieser Tabelle ([Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=141)) und diesen Registern kann man den Prescaler einstellen:
+
+| `SPI2X` | `SPR1` | `SPR0` | `SCK` Frequency       |
+| ------- | ------ | ------ | --------------------- |
+| 0       | 0      | 0      | f<sub>OSC</sub> / 4   |
+| 0       | 0      | 1      | f<sub>OSC</sub> / 16  |
+| 0       | 1      | 0      | f<sub>OSC</sub> / 64  |
+| 0       | 1      | 1      | f<sub>OSC</sub> / 128 |
+| 1       | 0      | 0      | f<sub>OSC</sub> / 2   |
+| 1       | 0      | 1      | f<sub>OSC</sub> / 8   |
+| 1       | 1      | 0      | f<sub>OSC</sub> / 32  |
+| 1       | 1      | 1      | f<sub>OSC</sub> / 64  |
+
+Diese Bits können in den Registern `SPSR` (`SPI2X`) und `SPCR` (`SPR1`, `SPR0`) gesetzt werden.
+
+```c
+SPCR |= (1<<SPR0) | (1<<SPR1);
+SPSR |= (1<<SPI2X);
+```
 
 #### Chip Select
 
-PB2, nur relevant, wenn unser Microcontroller ein Peripheral Gerät ist.
+Vor jedem Senden und Empfangen der Daten wird empfohlen das Peripheral zu selektieren, indem das jeweilige PIN auf 0V gesetzt wird und anschließend die interne Spannung wieder auf 5V gesetzt wird. Anders gesagt, ist der Chip Select `active low`.
+
+Beispielsweise kann man mittels dieser Konfiguration den `RFID` (ein Kartenlesegerät) selektieren:
+
+```c
+#define RFID PORTB2
+PORTB &= ~(1<<RFID);
+```
+
+Und anschließend wieder deselektieren:
+
+```c
+PORTB |= (1<<RFID);
+```
+
+Für jedes Peripheral muss man einen eigenen Chip Select PIN verwenden. Diese Architektur kann in diesem Bild ([Quelle](https://learn.sparkfun.com/tutorials/serial-peripheral-interface-spi/all)) noch einmal besser veranschaulicht werden:
+
+![Aufbau SPI](../../../../assets/embedded_programming/spi/architecture.png)
+
+#### Read und Write
+
+Das Prinzip bei SPI ist immer: Der Controller sendet Daten an das Peripheral und der Peripheral sendet Daten zurück. Allerdings werden immer alle Bits gleichzeitig verschoben (also eigentlich ein Schieberegister). Während der Controller Bits von rechts nach links (Controller beginnt mit dem MSB) sendet, sendet der Peripheral die Bits, die aus seinem Byte hinausgeschoben werden zurück an den Controller.
+
+Das bedeutet, dass in den ersten **acht Zyklen** die Daten von Controller an den Peripheral gesendet werden. Gleichzeit erhält der Controller nutzlose Daten vom Peripheral, welche noch im Byte vom Peripheral enthalten waren. Und anschließend kann der Controller mithilfe von `Dummy Daten` die eigentlichen Daten vom Peripheral auslesen.
+
+In diesem Beispiel werden die Daten zuerst vom Controller zum Peripheral gesendet:
+
+```c
+uint8_t data = ((1<<7) | (0x37<<1));
+
+SPDR = data;
+while(!(SPSR & (1<<SPIF)));
+
+uint8_t temp = SPDR;
+```
+
+Der Prozess dieses Ablaufs ist in diesem Diagramm nochmal dargestellt:
+
+![Data Transfer](../../../../assets/embedded_programming/spi/transfer_data.png)
+
+Und anschließend werden die berechneten Daten vom Peripheral zum Controller gesendet:
+
+```c
+uint8_t dummyData = 0x00;
+
+SPDR = dummyData;
+while(!(SPSR & (1<<SPIF)));
+
+uint8_t versionNumber = SPDR;
+```
+
+![Data Transfer](../../../../assets/embedded_programming/spi/transfer_data_2.png)
 
 ### Code
 
 #### Config
 
 ```c
-void SPI_MasterInit(void)
-{
-	/* Set PICO [obsolete: MOSI], SCK output and CS [obsolete: SS], all others input */
-	DDRB = (1<<DDB3) | (1<<DDB5) | (1<<DDB2);
-	/* Enable SPI, Master, set clock rate fck/128 */
-	SPCR = (1<<SPE) | (1<<MSTR) | (1<<SPR0) | (1<<SPR1);
+#define CS_PIN PORTB2
 
+void SPI_init(void)
+{
+    DDRB |= (1<<DDB2) | (1<<DDB3) | (1<<DDB5);
+    PORTB |= (1<<CS_PIN);
+    SPCR |= (1<<MSTR) | (1<<SPE) | (1<<SPR0);
+}
+```
+
+#### Read und Write Methods
+
+```c
+uint8_t ReadCommand(uint8_t command) {
+	return ((1<<7) | (command<<1));
 }
 
-char SPI_MasterTransmit(char cData)
-{
-	/* Start transmission */
-	SPDR = cData;
-	/* Wait for transmission complete */
-	while(!(SPSR & (1<<SPIF)));
-
-    return SPDR;
+uint8_t WriteCommand(uint8_t command) {
+	return (command<<1);
 }
 ```
 
