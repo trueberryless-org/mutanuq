@@ -155,6 +155,7 @@ Mayröcker
 mehrbenutzerfähig
 Meilensteinplan
 meinungsbasierte
+meinungsbetonte
 meinungsorientierte
 meinungsorientierter
 Mengenorientierte
