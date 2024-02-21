@@ -54,6 +54,6 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
 
 ## License
 
-Licensed under the MIT License, Copyright © trueberryless.
+Licensed under the GNU General Public License v3.0, Copyright © trueberryless.
 
 See [LICENSE](https://github.com/trueberryless-org/mutanuq/blob/main/LICENSE) for more information.
