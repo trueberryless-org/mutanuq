@@ -334,11 +334,11 @@ The main reason for writing an email of application is the **ask for an intervie
 | I would very much like the opportunity to meet you personally to discuss my application further. |
 | I look forward to hearing from you.                                                              |
 
-### Email of concern
+### Email of complaint
 
 #### Content
 
-State the reason for your complain in the introduction. In the first paragraph of the main part explain clearly what went wrong. Then, say how this has affected you. Finish the body of your email by asking for some action. First, ask for or suggest a solution. Second, if appropriate, issue a warning.
+State the reason for your complaint in the introduction. In the first paragraph of the main part explain clearly what went wrong. Then, say how this has affected you. Finish the body of your email by asking for some action. First, ask for or suggest a solution. Second, if appropriate, issue a warning.
 
 #### Phrases
 
