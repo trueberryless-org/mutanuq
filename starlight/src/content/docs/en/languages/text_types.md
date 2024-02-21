@@ -129,7 +129,7 @@ Write two to three paragraphs about the actual topic and try to convince your re
 | Something you might want to consider is ...                                          |
 
 :::caution
-If you want to use arguments against your own opinion, display them week because this makes your point of view far more convincing.
+If you want to use arguments against your own opinion, display them weak because this makes your point of view far more convincing.
 :::
 
 ##### Conclusion
