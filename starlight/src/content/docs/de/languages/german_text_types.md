@@ -247,6 +247,7 @@ Eine Textanalyse weist folgende Eigenschaften auf:
 -   sachliche Formulierungen
 -   max. 50 Wörter mehr schreiben
 -   Überschrift möglich
+-   immer lange Textsorte
 
 ### Aufbau
 
@@ -317,17 +318,42 @@ Bei der Textanalyse hilft es durchaus, Phrasen auswendig zu lernen, da bei jeder
 
 ## Textinterpretation
 
+dramatik, lyrik und epische interpretation
+
+klarer aufbau, man weiß was erwartet wird (ähnlich textanalyse), alles was bei textanalyse auch bei interpretaion, aufbau, wortfelder, (gedicht = strohphe), sprache( stilfirugren), interpretiere, warum welche stilfigur verwendet worden ist.
+
 ### Eigenschaften
 
 ### Aufbau
 
 #### Überschrift
 
+Textinterpretation: "Titel" von Autor (optional)
+
 #### Einleitung
+
+kirz vorums geht
 
 #### Hauptteil
 
 #### Schluss
+
+### Arten
+
+#### Drama
+
+beispiel microdrama
+
+Tragödie (negativ), Komödie (positiv), Tragikomödie (lachend und weinend, kann auch tragisch sein (schelme))
+
+3 einheiten, zeit ort und handlung, figurenverzeichnis (welche, karagteriker, anweisungen aus dem off (rechieanweisung)), bühnenbild (nicht analysierbar, da nur text)
+
+inhaltlich: start exponisition (vorstellung), höhepunkt, fall der handlung
+
+sorache: dialog oder monolog, köre die was zusammenfassen
+
+dialog: aneinander vorbeisprechen; miteinander
+monolog: wie geht es dieser figur?
 
 ## Meinungsrede
 
@@ -344,7 +370,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 -   zusammenfassender Schlussteil mit Appell
 -   [Stilfiguren](#stilfiguren) verwenden
 -   max. 50 Wörter mehr schreiben
--   Überschrift situationsbezogen
+-   Überschrift situationsbezogen (wenn verlangt)
 
 ### Aufbau
 
