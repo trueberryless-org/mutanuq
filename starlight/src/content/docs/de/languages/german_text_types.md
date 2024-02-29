@@ -324,6 +324,8 @@ klarer aufbau, man weiß was erwartet wird (ähnlich textanalyse), alles was bei
 
 ### Eigenschaften
 
+lange Textsorte (nach oben keine Grenzen)
+
 ### Aufbau
 
 #### Überschrift
@@ -334,13 +336,43 @@ Textinterpretation: "Titel" von Autor (optional)
 
 kirz vorums geht
 
+08/15
+
 #### Hauptteil
+
+bei interpretation und schluss: ich manchmal möglich (für mich ist das...)
 
 #### Schluss
 
+ich auch hier möglich; eigentlich optional, kann mit interpretation geschlossen werden. inhalt und aussage des textes passt zu meinen, ist das heutzutage noch so?
+
 ### Arten
 
-#### Drama
+#### Epik
+
+Erzählform
+Erzählhaltung: Ich personalen (häfigsten, er sie), neutralen (selten; keine emotionen, nur bericht) auktorialen (alles weis)
+Perspektive: innen außen
+handlungsferlauf
+zeitgestaltung: dehnen, deckend, raffend
+erzählzeit (brauchen zum erzählen)
+erzählte zeit
+raum, ort
+
+redeform: erzählbericht, figurenrede
+
+#### Lyrik
+
+verse und strophen
+reim bestimmen
+metrik (daktylus, trochäus, jambus) 6-hebig, ...
+
+wortschafts
+satzstruktur
+inhalt
+...
+
+#### Dramatik
 
 beispiel microdrama
 
@@ -456,3 +488,9 @@ Fassen Sie Ihre Meinung nochmals kurz zusammen und appellieren Sie Lösungsvorsc
 Genau wie bei einem Referat bedankt man sich in der Schlussfloskel.
 
 > Danke für die Aufmerksamkeit!
+
+kurz: Zusammenfassung, Lwsebrief, Kommentar
+
+mittel: Erörterung, Kommentar, Zusa, Analyse, Meinungsrede (eher lang)
+
+algn: interpretation: meingungsrede, textanalyse, erörterung
