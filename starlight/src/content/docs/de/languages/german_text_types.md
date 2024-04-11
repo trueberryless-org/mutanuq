@@ -379,7 +379,7 @@ Recherchieren Sie Daten bezüglich _des Autors / der Autorin_ und stellen Sie ev
 
 ##### Titel
 
-Deuten Sie den Titel in Bezug auf das Thema und Weltgeschehnisse. Nennen Sie das Thema des Textes
+Deuten Sie den Titel in Bezug auf das Thema und Weltgeschehnisse. Nennen Sie das Thema des Textes.
 
 ##### Erzählfigur, Erzählperspektive und Erzählhaltung
 
