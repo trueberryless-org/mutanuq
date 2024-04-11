@@ -325,7 +325,7 @@ Die Textinterpretation kann für drei verschiedene Typen von Ausgangstexten gesc
 
 Eine Textinterpretation weist folgende Eigenschaften auf:
 
--   kein `Ich` verwenden (möglich im Interpretationsteil und Schluss)
+-   kein `Ich` verwenden (möglich im Schlussteil)
 -   08/15 Einleitung mit Titel, Autor, Textsorte, Erscheinungsort und -datum des Ausgangstextes
 -   bei Beispielen zitieren (direkte Zitate)
 -   [Stilfiguren](#stilfiguren) erkennen und interpretieren können
@@ -349,21 +349,17 @@ Die Überschrift einer Textinterpretation ist optional. Wenn eine Überschrift v
 
 #### Einleitung
 
-Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Bericht, Glosse, Kommentar, Kolumne, ...) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
+Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Epik, Lyrik, Dramatik) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
 
 > Die Glosse „Online einkaufen war gestern - heute gehen wir Echtzeitshoppen“ von Sybille Hamann aus „der Presse“ beschäftigt sich auf satirische Weise mit dem Thema Onlineshopping und dem damit verbundenen Riesenaufwand.
 
 #### Hauptteil
 
-In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Außerdem muss man die Intention des Autors, die Stilfiguren und alle Aspekte des Ausgangstextes interpretieren. Für den Interpretationsteil kann man ausnahmsweise auch das `Ich` verwenden. Hier ist ein Beispiel:
-
-> Für _mich_ ist die Verwendung einer Anapher ein Hinweis, dass die Autorin auf ...
+In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Außerdem muss man die Intention des Autors, die Stilfiguren und alle Aspekte des Ausgangstextes interpretieren. Der abschließende Teil des Hauptteils ist die Interpretation des Ausgangstextes. Im gesamten Hauptteil darf kein `Ich` verwendet werden.
 
 #### Schluss
 
-Der Schluss einer Textinterpretation ist optional, da dieser bereits mit dem Interpretationsteil abgeschlossen werden kann. Wenn in der Angabe ein Schlussteil verlangt wird, muss dieser jedoch geschrieben werden. Hierbei wird meistens nach der persönlichen Meinung gefragt. Genau wie im Interpretationsteil kann man auch hier das `Ich` in den Text einbauen.
-
-<!-- ich auch hier möglich; eigentlich optional, kann mit interpretation geschlossen werden. inhalt und aussage des textes passt zu meinen, ist das heutzutage noch so? -->
+Jede Textinterpretation muss einen Schlussteil haben. Hierbei wird meistens nach der persönlichen Meinung gefragt. Man beschäftigt sich vor allem mit der Frage, ob die Intention und Meinung des Autors mit der eigenen übereinstimmt oder ob gewisse Formalitäten oder Sitten im Text heutzutage noch immer zutreffen. Nur im Schluss kann man das `Ich` in den Text einbauen.
 
 ### Arten
 
@@ -383,30 +379,35 @@ Deuten Sie den Titel in Bezug auf das Thema und Weltgeschehnisse. Nennen Sie das
 
 ##### Erzählfigur, Erzählperspektive und Erzählhaltung
 
-Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittelnde Funktion zwischen dem Erzählten und den Lesern/Leserinnen. In jedem Fall ist der Erzähler nicht identisch mit dem Autor/der Autorin eines erzählenden Textes!
+Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittelnde Funktion zwischen dem Erzählten und den Lesern/Leserinnen. Der Erzähler ist in den meisten Fällen nicht identisch mit _dem Autor / der Autorin_ eines erzählenden Textes, jedoch kann dies auch möglich sein.
 
--   **Erzählperspektive und -haltung**  
+-   **Erzählperspektive**  
     Den Blickwinkel, aus dem eine Geschichte erzählt wird, nennt man Erzählperspektive. Geschichten aus zwei verschiedenen Perspektiven erzählt werden:
 
     -   _Außenperspektive_  
-        Man schaut von außen auf ein Geschehen und erzählt dieses. Hierbei gibt es zwei verschiedene Unterkategorien:
-
-        -   **auktoriale Erzählhaltung**  
-            Dieser Erzähler weiß alles: Er kennt die Gedanken und Gefühle aller Figuren. Außerdem kommentiert er das Geschehen, wie zum Beispiel:
-
-            > Hans bewegt seine Hand zur Schere. Ich habe mir bereits gedacht, dass er dies trotz seiner Angst gegenüber dem Objekt tun wird. Er denkt ein letztes mal an den potentiellen Tod und greift schließlich zu.
-
-        -   **neutrale Erzählhaltung**  
-            Dieser Erzähler mischt sich nicht in das Geschehen ein und gibt nur die Handlung wieder. Man erfährt auch wenig über die Gedankengänge der Personen.
-
-            > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
+        Man schaut von außen auf ein Geschehen und erzählt dieses.
 
     -   _Innenperspektive_  
-        Der Erzähler ist mitten im Geschehen. Es handelt sich um eine personale Erzählhaltung. Hierzu zählt auch der `Ich-Erzähler`.
+        Der Erzähler ist mitten im Geschehen.
+
+-   **Erzählhaltung**
+
+    -   _auktoriale Erzählhaltung_  
+        Dieser Erzähler weiß alles: Er kennt die Gedanken und Gefühle aller Figuren. Außerdem kommentiert er das Geschehen, wie zum Beispiel:
+
+        > Hans bewegt seine Hand zur Schere. Ich habe mir bereits gedacht, dass er dies trotz seiner Angst gegenüber dem Objekt tun wird. Er denkt ein letztes Mal an den potentiellen Tod und greift schließlich zu.
+
+    -   _neutrale Erzählhaltung_  
+        Dieser Erzähler mischt sich nicht in das Geschehen ein und gibt nur die Handlung wieder. Man erfährt auch wenig über die Gedankengänge der Personen.
+
+        > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
+
+    -   _peronale Erzählhaltung_  
+        Dieser Erzähler kennt die Gefühle und Gedanken einer Person, jedoch nicht die Gedanken und Gefühle anderer Personen. Hierbei kann die Perspektive der Geschichte von der Person im dritten Fall oder mithilfe des `Ich-Erzählers` übermittelt werden.
 
         Hier sind zwei Beispiele (zuerst ein personaler Erzähler und anschließend der `Ich-Erzähler`):
 
-        > Hans fragt sich, ob die Schere gefährlich sei. Nichtsdestotrotz beschließt er, nach dem Objekt zu greifen. Es fühlt sich eiskalt in seiner Hand an.
+        > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
 
         > Ist der Tod mir Nahe? Ich spüre die Kälte des Objekts als ich langsam zur Schere greife.
 
@@ -423,7 +424,7 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
     Die Zeit, in der eine Erzählung stattfindet.
 
     -   _Epoche_  
-        Analysieren Sie, in welcher Epoche sich der Text ansiedelt (Zweiter Weltkrieg, Römische Reich, Jetztzeit).
+        Analysieren Sie, in welche Epoche der Text einzuordnet ist (Zweiter Weltkrieg, Römische Reich, Jetztzeit).
 
     -   _Erzählzeit_  
         Die Zeit, die man zum Erzählen einer Geschichte benötigt (Vorlesezeit).
@@ -432,6 +433,18 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
         Die Zeitspanne, die innerhalb der erzählten Handlung vergeht.
 
         > Spielt die Geschichte über mehrere Jahre oder nur Minuten?
+
+    -   _Zeitrelation_  
+        Setzt man die _Erzählzeit_ und die _erzählte Zeit_ in Relation, so erhält man die Zeitart des Textes. Hierbei werden drei Arten unterschieden:
+
+        -   **Zeit dehnend**  
+            Wenn gilt: $Erzählzeit\;>\;erzählte\;Zeit$, dann spricht man von einer dehnenden Zeit. Die Ereignisse geschehen quasi in Slowmotion.
+
+        -   **Zeit deckend**  
+            Wenn gilt: $Erzählzeit\;\approx\;erzählte\;Zeit$, dann spricht man von einer deckenden Zeit. Die Ereignisse geschehen so, wie wenn man sie durchleben würde.
+
+        -   **Zeit raffend**  
+            Wenn gilt: $Erzählzeit\;<\;erzählte\;Zeit$, dann spricht man von einer raffenden Zeit. Die Ereignisse geschehen sehr schnell hintereinander, teilweise beschreiben nur wenige Wörte eine Szene.
 
     -   _Zeitablauf_  
         Die Reihenfolge, in welcher die Geschehnisse auftreten.
