@@ -11,6 +11,9 @@ dependencies:
   '@astrojs/starlight':
     specifier: ^0.13.0
     version: 0.13.1(astro@3.6.4)
+  '@fontsource-variable/jetbrains-mono':
+    specifier: ^5.0.20
+    version: 5.0.20
   '@zachleat/table-saw':
     specifier: ^1.0.6
     version: 1.0.6
@@ -875,6 +878,10 @@ packages:
 
   /@feelback/js@0.3.4:
     resolution: {integrity: sha512-xr7gTqSJcVUYQlELs1TntYovCBjMcYUr/hGKTnDoF64/lig5CbX4bOmqLoF50IImCy5q3oIwg9w+TSFvtBwsIA==}
+    dev: false
+
+  /@fontsource-variable/jetbrains-mono@5.0.20:
+    resolution: {integrity: sha512-IWJnmY9vT5Olcac1vzA7FMdnojCrZWMq+g7SqC2jsFpY0LQTjIgp9gBjjw9kUOkNbLw37/evZO4w6rdPeMA68A==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:

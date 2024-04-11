@@ -14,3 +14,7 @@ html[data-theme="light"] .dark-only {
 html[data-theme="dark"] .light-only {
     display: none;
 }
+
+:is(code, code *) {
+    font-family: "JetBrains Mono Variable", sans-serif !important;
+}
