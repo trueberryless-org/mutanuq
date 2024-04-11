@@ -59,13 +59,13 @@ Eine Zusammenfassung weist folgende Eigenschaften auf:
 -   kein Schlussteil
 -   den Leser nicht ansprechen
 -   Wortanzahl genau einhalten
--   Überschrift: `Zusammenfassung von ...`
+-   Überschrift (möglich): `Zusammenfassung von ...`
 
 ### Aufbau
 
 #### Überschrift
 
-Die Überschrift setzt sich aus `Zusammenfassung von` und dem Titel des Ausgangstextes zusammen.
+Die Überschrift setzt sich aus `Zusammenfassung von` und dem Titel des Ausgangstextes zusammen und ist optional.
 
 #### Einleitung
 
@@ -83,7 +83,7 @@ Um die wichtigsten Informationen leicht extrahieren zu können, lesen Sie sich d
 
 ## Leserbrief
 
-Der Leserbrief ist eine meinungsorientierte, subjektive Textsorte, welche in Präsens und Perfekt geschrieben wird.
+Der Leserbrief ist eine meinungsorientierte, subjektive Textsorte, welche im Präsens und Perfekt geschrieben wird.
 
 ### Eigenschaften
 
@@ -101,7 +101,7 @@ Ein Leserbrief weist folgende Eigenschaften auf:
 
 Damit der Leserbrief strukturell wie ein Brief aussieht, gehört ganz _oben rechts_ der Ort und das Datum, wo und an welchem Tag der Brief geschrieben worden ist.
 
-> Stockholm, 26.10.2023
+> Stockholm, 26 Oktober 2023
 
 #### Anrede
 
@@ -125,7 +125,7 @@ Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstrier
 
 #### Hauptteil
 
-Im Hauptteil referenzieren Sie alle Stellen im Ausgangstext, zu denen Sie noch etwas hinzufügen oder verbessern wollen. Wenn Sie zum Beispiel anderer Meinung sind, argumentieren Sie, warum Ihre Meinung vertretbarer ist, als die des Autors. Verfestigen Sie Ihre Meinung konkret mit Beispielen. Sie können die 3B-Method oder die 5-Schritt-Methode als Hilfe für Ihre Argumente nehmen.
+Im Hauptteil referenzieren Sie alle Stellen im Ausgangstext, zu denen Sie noch etwas hinzufügen oder verbessern wollen. Wenn Sie zum Beispiel anderer Meinung sind, argumentieren Sie, warum Ihre Meinung vertretbarer ist als die des Autors. Verfestigen Sie Ihre Meinung konkret mit Beispielen. Sie können die 3B-Methode oder die 5-Schritt-Methode als Hilfe für Ihre Argumente nehmen.
 
 Unterteilen Sie den Hauptteil in inhaltlich zusammenhängende Abschnitte und markieren Sie diese Absätze mittels Leerzeilen.
 
@@ -183,7 +183,7 @@ Im Schlussteil einer Erörterung fassen Sie die wichtigsten Hauptaussagen noch e
 
 ## Kommentar
 
-Der Kommentar ist eine meinungsbasierte, kritische, satirische, ineinander kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenter Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Gegenargumente müssen kleinlich formuliert sein und als nicht stichhaltig angesehen werden.
+Der Kommentar ist eine meinungsbasierte, kritische, satirische, ineinander kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenter Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Gegenargumente müssen schwach formuliert sein und als nicht stichhaltig angesehen werden.
 
 ### Eigenschaften
 
@@ -240,13 +240,15 @@ Die Textanalyse ist eine sachliche, analytische Textsorte, welche den Ausgangste
 
 Eine Textanalyse weist folgende Eigenschaften auf:
 
+-   kein `Ich` verwenden
 -   08/15 Einleitung mit Titel, Autor, Textsorte, Erscheinungsort und -datum des Ausgangstextes
 -   nicht interpretieren, sondern nur zitieren (direkte Zitate)
 -   [Stilfiguren](#stilfiguren) erkennen können
 -   Fachtermini verwenden (Wenn das Thema `IT` ist, kann man solches Fachvokabular einbauen)
 -   sachliche Formulierungen
 -   max. 50 Wörter mehr schreiben
--   Überschrift möglich
+-   keine Überschrift
+-   mittlere oder lange Textsorte
 
 ### Aufbau
 
@@ -317,21 +319,250 @@ Bei der Textanalyse hilft es durchaus, Phrasen auswendig zu lernen, da bei jeder
 
 ## Textinterpretation
 
+Die Textinterpretation kann für drei verschiedene Typen von Ausgangstexten geschrieben werden. Dabei unterscheidet sich der Aufbau der Interpretation vor allem bei den letzten zu erfüllenden Punkten des Textes. Apropos Aufbau: Dieser ist genau wie bei der Textanalyse klar und deutlich vorgegeben, sodass jedes Mal nach dem gleichen Schema gearbeitet werden kann.
+
 ### Eigenschaften
+
+Eine Textinterpretation weist folgende Eigenschaften auf:
+
+-   kein `Ich` verwenden (möglich im Interpretationsteil und Schluss)
+-   08/15 Einleitung mit Titel, Autor, Textsorte, Erscheinungsort und -datum des Ausgangstextes
+-   bei Beispielen zitieren (direkte Zitate)
+-   [Stilfiguren](#stilfiguren) erkennen und interpretieren können
+-   Fachtermini verwenden (Wenn das Thema `IT` ist, kann man solches Fachvokabular einbauen)
+-   sachliche Formulierungen
+-   Wortanzahl nicht unterschreiten; keine Obergrenze (längste Textsorte)
+-   Überschrift möglich
+-   immer lange Textsorte
 
 ### Aufbau
 
+Am Beginn der Textinterpratation muss man alle Aufgaben der Textanalyse etwas kürzer durchführen (siehe [Textanalyse](#hauptteil-4)). Zusätzlich muss man interpretieren, warum welche Stilfiguren verwendet worden sind, und einige gattungsspezifische -- Epik, Lyrik, Dramatik -- Merkmale herausfinden.
+
+<!-- klarer aufbau, man weiß was erwartet wird (ähnlich textanalyse), alles was bei textanalyse auch bei interpretaion, aufbau, wortfelder, (gedicht = strohphe), sprache( stilfirugren), interpretiere, warum welche stilfigur verwendet worden ist. -->
+
 #### Überschrift
+
+Die Überschrift einer Textinterpretation ist optional. Wenn eine Überschrift verlangt wird, muss diese folgendermaßen aussehen:
+
+> Textinterpretation: „Titel“ von Autor
 
 #### Einleitung
 
+Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Bericht, Glosse, Kommentar, Kolumne, ...) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
+
+> Die Glosse „Online einkaufen war gestern - heute gehen wir Echtzeitshoppen“ von Sybille Hamann aus „der Presse“ beschäftigt sich auf satirische Weise mit dem Thema Onlineshopping und dem damit verbundenen Riesenaufwand.
+
 #### Hauptteil
+
+In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Außerdem muss man die Intention des Autors, die Stilfiguren und alle Aspekte des Ausgangstextes interpretieren. Für den Interpretationsteil kann man ausnahmsweise auch das `Ich` verwenden. Hier ist ein Beispiel:
+
+> Für _mich_ ist die Verwendung einer Anapher ein Hinweis, dass die Autorin auf ...
 
 #### Schluss
 
+Der Schluss einer Textinterpretation ist optional, da dieser bereits mit dem Interpretationsteil abgeschlossen werden kann. Wenn in der Angabe ein Schlussteil verlangt wird, muss dieser jedoch geschrieben werden. Hierbei wird meistens nach der persönlichen Meinung gefragt. Genau wie im Interpretationsteil kann man auch hier das `Ich` in den Text einbauen.
+
+<!-- ich auch hier möglich; eigentlich optional, kann mit interpretation geschlossen werden. inhalt und aussage des textes passt zu meinen, ist das heutzutage noch so? -->
+
+### Arten
+
+Je nach Art des Ausgangstextes müssen verschiedene Merkmale in der Textinterpretation analysiert werden.
+
+#### Epik
+
+Wenn der Ausgangstext eine epische Textsorte ist, müssen folgende Merkmale analysiert und gedeutet werden:
+
+##### Autor
+
+Recherchieren Sie Daten bezüglich _des Autors / der Autorin_ und stellen Sie eventuell literaturgeschichtliche Bezüge her.
+
+##### Titel
+
+Deuten Sie den Titel in Bezug auf das Thema und Weltgeschehnisse. Nennen Sie das Thema des Textes
+
+##### Erzählfigur, Erzählperspektive und Erzählhaltung
+
+Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittelnde Funktion zwischen dem Erzählten und den Lesern/Leserinnen. In jedem Fall ist der Erzähler nicht identisch mit dem Autor/der Autorin eines erzählenden Textes!
+
+-   **Erzählperspektive und -haltung**  
+    Den Blickwinkel, aus dem eine Geschichte erzählt wird, nennt man Erzählperspektive. Geschichten aus zwei verschiedenen Perspektiven erzählt werden:
+
+    -   _Außenperspektive_  
+        Man schaut von außen auf ein Geschehen und erzählt dieses. Hierbei gibt es zwei verschiedene Unterkategorien:
+
+        -   **auktoriale Erzählhaltung**  
+            Dieser Erzähler weiß alles: Er kennt die Gedanken und Gefühle aller Figuren. Außerdem kommentiert er das Geschehen, wie zum Beispiel:
+
+            > Hans bewegt seine Hand zur Schere. Ich habe mir bereits gedacht, dass er dies trotz seiner Angst gegenüber dem Objekt tun wird. Er denkt ein letztes mal an den potentiellen Tod und greift schließlich zu.
+
+        -   **neutrale Erzählhaltung**  
+            Dieser Erzähler mischt sich nicht in das Geschehen ein und gibt nur die Handlung wieder. Man erfährt auch wenig über die Gedankengänge der Personen.
+
+            > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
+
+    -   _Innenperspektive_  
+        Der Erzähler ist mitten im Geschehen. Es handelt sich um eine personale Erzählhaltung. Hierzu zählt auch der `Ich-Erzähler`.
+
+        Hier sind zwei Beispiele (zuerst ein personaler Erzähler und anschließend der `Ich-Erzähler`):
+
+        > Hans fragt sich, ob die Schere gefährlich sei. Nichtsdestotrotz beschließt er, nach dem Objekt zu greifen. Es fühlt sich eiskalt in seiner Hand an.
+
+        > Ist der Tod mir Nahe? Ich spüre die Kälte des Objekts als ich langsam zur Schere greife.
+
+##### Raum und Zeit
+
+-   **Raum**  
+    Die Umgebung, Landschaft oder der Ort, an dem eine Erzählung spielt.
+
+    Der Raum kann real (z.B. Wien), symbolisch (z.B. eine Großstadt, im Wald, am Meer, ...) oder surreal (z.B. ein Wohnzimmer in einem Dromedar) sein.
+
+    In kurzen Texten wird der Raum nur allgemein angedeutet und nicht spezifiziert.
+
+-   **Zeit**  
+    Die Zeit, in der eine Erzählung stattfindet.
+
+    -   _Epoche_  
+        Analysieren Sie, in welcher Epoche sich der Text ansiedelt (Zweiter Weltkrieg, Römische Reich, Jetztzeit).
+
+    -   _Erzählzeit_  
+        Die Zeit, die man zum Erzählen einer Geschichte benötigt (Vorlesezeit).
+
+    -   _erzählte Zeit_
+        Die Zeitspanne, die innerhalb der erzählten Handlung vergeht.
+
+        > Spielt die Geschichte über mehrere Jahre oder nur Minuten?
+
+    -   _Zeitablauf_  
+        Die Reihenfolge, in welcher die Geschehnisse auftreten.
+
+        -   **chronologisch**  
+            Die Geschichte startet mit den Ereignissen, welche am frühesten geschehen sind, und endet mit denen, welche am spätesten geschehen sind.
+
+        -   **mit Rückblenden und Vorausblicken**  
+            Momente, welche entwender vor oder nach dem Haupthandlungszeitablauf auftreten, werden mitten im Fluss der Zeit eingebaut, um Erinnerungen oder Visionen zu symbolisieren.
+
+        -   **unter völliger Auflösung des üblichen Zeitbegriffs**  
+            Vergangenes, Gegenwärtiges und Zukünftiges rinnen ineinander („stürtzende Zeit“).
+
+##### Personen
+
+-   **Charakterisierung**  
+    Wie die Personen _dem Leser / der Leserin_ vorgestellt werden.
+
+    -   _direkt charakterisiert_
+
+        > brav, einfällig, vorlaut, muskulös, ...
+
+    -   _indirekt charakterisiert_  
+        Der Leser erschließt seinen eigenen Charakter aus dem Verhalten und Aussagen der Figur.
+
+-   **Figurenkonstellation**
+    Die Beziehung zwischen den Figuren
+
+-   **Redeformen**
+
+    -   _Erzählerbericht_  
+        Redebeiträge des Erzählers in Kontexten (Abschnitten):
+
+        -   Handlungswiedergabe
+        -   szenische Darstellung (direkte Rede)
+        -   Beschreibung / Schilderung (Orte, Figuren)
+        -   Erzähler-Kommentare
+        -   Reflexion (Gedanken)
+        -   Zusammenfassungen
+
+    -   _Figurenrede_  
+        Äußerungen von fiktiven Figuren
+
+        -   direkte Rede
+        -   indirekte Rede
+        -   erlebte Rede: Wiedergabe der Gedanken, Empfindungen, usw. einer Figur in der 3. Person Singular, Präteritum:
+            > Medina musterte den Mann misstrauisch. Sollte das wirklich ihr Bruder sein? Hatte der nicht eine kantigere Nase und eine Narbe am Hals?
+        -   innere Monolog: stummes Selbstgespräch in der `Ich-Form` und im Präsens
+            > [...] Zum wievielten Mal lauf' ich jetzt eigentlich um das Hotel herum? Also was jetzt? Da steh' ich vor dem Tor. In der Halle ist noch niemand. Natürlich -- sie sitzen ja noch alle beim Diner. Seltsam sieht die Halle aus so ganz ohne Menschen. Auf dem Sessel dort liegt ein Hut, ein Touristenhut, ganz fest. Hübscher Gemsbart. [...] (Arthur Schnitzler: Fräulein Else)
+        -   Bewusstseinsstrom: assoziative Reihung von Bewusstseinsinhalten (Empfindungen, Erinnerungen, Gedanken, Wahrnehmungen, uws.) einer Figur
+            > [...] Eine Kugel kam geflogen, gilt sie mir oder gilt sie dir. Sie hat ihn weggerissen, er liegt mir zu den Füßen, als wärs ein Stück von mir. Da steht er: Franz Biberkopf, Arm hat er ab, Kriegsinvalide, der Kerl ist besoffen, oder nicht. Macht er eine Bewegung, knall ich ihn ab. [...] (Alfred Döblin: Berlin Alexanderplatz)
+
+##### Formen und besondere Verfahrensweisen
+
+-   **Formen**  
+    Formen der erzählenden Literatur (Roman, Novelle, Kurzgeschichte, Parabel) folgen bestimmten Regeln. Praktisch alle literarischen Texte verwenden solche Formen, können sie aber auch verändern.
+
+-   **besondere Verfahrensweisen**
+
+    -   _Rahmen- und Binnenhandlung_  
+        Von einer Handlung aus werden eine oder mehrere neue Geschichten erzählt.
+        Z.B. könnte ein Erzähler berichten, dass er auf seiner Reise durch ein fremdes Land in einer Gaststätte die folgende Geschichte erfahren hat ... Daraufhin wird diese Geschichte erzählt. Rahmenhandlungen finden sich v. a. in längeren Texten, z.B. Novellen.
+
+    -   _Montage_  
+        Wie in einem Film (Schnitttechnik) werden disparate (verschiedene) Elemente ein- oder aneinandergefügt. Solche Elemente können auch unterschiedlicher Herkunft sein (z.B. Werbung, Zeitung, Rezept, Gesetz), auch Phrasen, Redensarten und leere Sprüche.
+
+<!-- Erzählform
+Erzählhaltung: Ich personalen (häfigsten, er sie), neutralen (selten; keine emotionen, nur bericht) auktorialen (alles weis)
+Perspektive: innen außen
+handlungsferlauf
+zeitgestaltung: dehnen, deckend, raffend
+erzählzeit (brauchen zum erzählen)
+erzählte zeit
+raum, ort
+
+redeform: erzählbericht, figurenrede
+
+---
+
+Erzählform:
+
+Erzählhaltung: neutral / personal / auktorial / Ich
+
+Perspektive: innen /außen
+
+Handlungsverlauf:
+
+Zeitgestaltung: dehnend / deckend / raffend
+
+Erzählzeit: Wie lange dauert das lesen?
+
+Erzählte Zeit: Wie lange braucht die Geschichte in RL?
+
+Raum:
+
+Ort:
+
+Redeform: Erzählbericht / Figurenrede -->
+
+#### Lyrik
+
+<!-- verse und strophen
+reim bestimmen (stabreim, schweifreim, paarreim, kreuzreim)
+unrein reiner reim
+stellung des reims (endreim, startreim, umarmender reim)
+metrum (daktylus, trochäus, jambus) 6-hebig, ...
+hebungen senkungen
+
+wortschafts
+satzstruktur
+inhalt
+... -->
+
+#### Dramatik
+
+<!-- beispiel microdrama
+
+Tragödie (negativ), Komödie (positiv), Tragikomödie (lachend und weinend, kann auch tragisch sein (schelme))
+
+3 einheiten, zeit ort und handlung, figurenverzeichnis (welche, karagteriker, anweisungen aus dem off (rechieanweisung)), bühnenbild (nicht analysierbar, da nur text)
+
+inhaltlich: start exponisition (vorstellung), höhepunkt, fall der handlung
+
+sorache: dialog oder monolog, köre die was zusammenfassen
+
+dialog: aneinander vorbeisprechen; miteinander
+monolog: wie geht es dieser figur? -->
+
 ## Meinungsrede
 
-Die Meinungsrede ist eine subjektive, argumentative, überzeugende Textsorte, welche vor einem bestimmten Publikum vorgetragen wird. Aus diesem Grund müssen auch alle zuhörenden Personen in der [Anrede](#anrede) angesprochen werden.
+Die Meinungsrede ist eine subjektive, argumentative, überzeugende Textsorte, welche vor einem bestimmten Publikum vorgetragen wird. Aus diesem Grund müssen auch alle zuhörenden Personen angesprochen werden ([Anrede](#anrede-1)).
 
 Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eigene Meinung mittels schlüssigen Argumenten. Je nach Publikum kann die Meinungsrede formell (z. B.: `Sie` / `Ihren`) oder informell (z. B.: `du` / `euren`) geschrieben werden. Die Meinungsrede wird mit den Zeitformen Präsens und Perfekt geschrieben und soll keine Beleidigungen oder Diskriminierungen enthalten.
 
@@ -344,7 +575,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 -   zusammenfassender Schlussteil mit Appell
 -   [Stilfiguren](#stilfiguren) verwenden
 -   max. 50 Wörter mehr schreiben
--   Überschrift situationsbezogen
+-   Überschrift situationsbezogen (wenn verlangt)
 
 ### Aufbau
 
@@ -430,3 +661,11 @@ Fassen Sie Ihre Meinung nochmals kurz zusammen und appellieren Sie Lösungsvorsc
 Genau wie bei einem Referat bedankt man sich in der Schlussfloskel.
 
 > Danke für die Aufmerksamkeit!
+
+# TODO
+
+kurz: Zusammenfassung, Lwsebrief, Kommentar
+
+mittel: Erörterung, Kommentar, Zusa, Analyse, Meinungsrede (eher lang)
+
+algn: interpretation: meingungsrede, textanalyse, erörterung
