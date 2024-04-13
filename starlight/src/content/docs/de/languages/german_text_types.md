@@ -349,7 +349,7 @@ Die Überschrift einer Textinterpretation ist optional. Wenn eine Überschrift v
 
 #### Einleitung
 
-Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Epik, Lyrik, Dramatik) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
+Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Kurzgeschichte, Novelle, Gedicht, Tragödie, ...) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
 
 > Die Glosse „Online einkaufen war gestern - heute gehen wir Echtzeitshoppen“ von Sybille Hamann aus „der Presse“ beschäftigt sich auf satirische Weise mit dem Thema Onlineshopping und dem damit verbundenen Riesenaufwand.
 
@@ -434,8 +434,8 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
 
         > Spielt die Geschichte über mehrere Jahre oder nur Minuten?
 
-    -   _Zeitrelation_  
-        Setzt man die _Erzählzeit_ und die _erzählte Zeit_ in Relation, so erhält man die Zeitart des Textes. Hierbei werden drei Arten unterschieden:
+    -   _Zeitgestaltung_  
+        Setzt man die _Erzählzeit_ und die _erzählte Zeit_ in Relation, so erhält man die Zeitgestaltung des Textes. Hierbei werden drei Arten unterschieden:
 
         -   **Zeit dehnend**  
             Wenn gilt: $Erzählzeit\;>\;erzählte\;Zeit$, dann spricht man von einer dehnenden Zeit. Die Ereignisse geschehen quasi in Slowmotion.
