@@ -495,7 +495,7 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
     -   _indirekt charakterisiert_  
         Der Leser erschließt seinen eigenen Charakter aus dem Verhalten und Aussagen der Figur.
 
--   **Figurenkonstellation**
+-   **Figurenkonstellation**  
     Die Beziehung zwischen den Figuren
 
 -   **Redeformen**
@@ -570,7 +570,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
 -   **Gedichtform**  
     Die Gedichtform ist die Textsorte des Ausgangstextes. Sprich, es kann sich um eine Ballade, Elegie, Hymne, Ode, Epigramm, Lied, Sonett, ... handeln.
 
--   **Strophen**
+-   **Strophen**  
     Die Bestimmung der Strophenform kann mittels Länge und Anzahl der Strophen im Gedicht erfolgen.
 
     -   _Sonett_  
