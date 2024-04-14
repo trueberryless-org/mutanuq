@@ -63,6 +63,7 @@ Eine Zusammenfassung weist folgende Eigenschaften auf:
 -   den Leser nicht ansprechen
 -   Wortanzahl genau einhalten
 -   Überschrift (möglich): `Zusammenfassung von ...`
+-   kurze bis mittlere Textsorte
 
 ### Aufbau
 
@@ -97,6 +98,7 @@ Ein Leserbrief weist folgende Eigenschaften auf:
 -   Leser ansprechen
 -   Wortanzahl genau einhalten
 -   besonderer Aufbau mit Kopfzeile, Anrede und Grußformel (+ Unterschrift)
+-   kurze Textsorte
 
 ### Aufbau
 
@@ -162,6 +164,7 @@ Eine Erörterung weist folgende Eigenschaften auf:
 -   zusammenfassender (und appellierender) Schlussteil mit eigener Meinung, Fazit
 -   max. 50 Wörter mehr schreiben
 -   Überschrift möglich
+-   mittlere bis lange Textsorte
 
 ### Aufbau
 
@@ -200,6 +203,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 -   meinungsorientierter Schlussteil mit Lösungsvorschlägen
 -   max. 50 Wörter mehr schreiben
 -   meinungsbetonte, kreative Überschrift
+-   kurze bis mittlere Textsorte
 
 ### Aufbau
 
@@ -251,7 +255,7 @@ Eine Textanalyse weist folgende Eigenschaften auf:
 -   sachliche Formulierungen
 -   max. 50 Wörter mehr schreiben
 -   keine Überschrift
--   mittlere oder lange Textsorte
+-   mittlere bis lange Textsorte
 
 ### Aufbau
 
@@ -358,7 +362,29 @@ Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Ein
 
 #### Hauptteil
 
-In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Außerdem muss man die Intention des Autors, die Stilfiguren und alle Aspekte des Ausgangstextes interpretieren. Der abschließende Teil des Hauptteils ist die Interpretation des Ausgangstextes. Im gesamten Hauptteil darf kein `Ich` verwendet werden.
+In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Wichtig ist auch die Interpretation der Stilfiguren (Warum werden diese Stilfiguren verwendet? Was will _der Autor / die Autorin_ damit ausdrücken?) und die Intention des Autors. Trennen Sie die Interpretation nicht von der Analyse und machen Sie keinen eigenen Absatz mit der Interpretation. Behandeln Sie die Inhalte viel mehr nach den Themen und Merkmalen gruppiert. Im gesamten Hauptteil darf kein `Ich` verwendet werden.
+
+##### Interpretationsansätze
+
+Da die Interpretation eines epischen, lyrischen und dramatischen Textes nicht immer das Einfachste ist, gibt es ein paar Ansätze, damit Sie auf die Sprünge kommen.
+
+-   **Kontextualisierung**  
+    Überlegen Sie anhander der Analyse der Zeit und des Ortes, in welchen historischen Kontext der Text eingeordnet werden kann. Zu welcher Epoche / Literaturgeschichte zählt der Text?
+
+-   **Auswirkung auf den Leser**  
+    Welche Auswirkungen hat der Text auf den Leser? Welche Eindrücke und Gefühle werden erzeugt? _Der Autor / Die Autorin_ hat den Text zu dieser Zeit sicherlich nicht unnötig verfasst, sondern wollte viel mehr, dass es den Leser dazu bewirkt, über etwas nachzudenken. Vielleicht hängt diese Intention auch mit den historischen Ereignissen zusammen.
+
+-   **Soziologie**  
+    Hat _der Autor / die Autorin_ Kritik an gesellschaftlichen Zuständen genommen? Wenn ja, welche Auswirkungen hatte die gesellschaftliche Wirklichkeit auf _den Autor / die Autorin_?
+
+-   **Psychologie**  
+    Deuten Sie die Handlungen der Figuren und analysieren Sie ihre Motive. Warum hat sich _der Autor / die Autorin_ gedacht, dass die Figuren in den bestimmten Situationen so und so handeln werden?
+
+-   **Kommunikationtheorie**  
+    In einigen Gedichten reden die Figuren aneinander vorbei. Analysieren Sie, ob _der Autor / die Autorin_ solche Merkmale auch in Ihren Ausgangstext eingebaut hat!
+
+-   **Textsorten**  
+    _Der Autor / Die Autorin_ hat aus einem bestimmten Grund die Handlung mittels Glosse, Lied, Ballade, Gedicht, Tragödie, Roman, Sage, Bildsprache, usw. verfasst. Diese Auswahl muss nicht grundlos geschehen sein. Viele Autoren sind sich über die Auswirkungen, Stärken und Schwächen jener Textsorten bewusst und nutzen diese, um ihre Intentionen (un)bewusst an den Leser zu übertragen. Auch hier ist wieder die Verbindungen mit dem Kontext herzustellen, da zu manchen historischen Zeiten das Veröffentlichen bestimmter Inhalte verboten war und Autoren Textarten genutzt haben, um diese Verbote zu umgehen. Warum?
 
 #### Schluss
 
@@ -681,12 +707,12 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         </blockquote>
 
 -   **Metrum / Versmaß**  
-    Das Metrum beschreibt, welche Silben innerhalb der einzelnen Verse jeweils betont bzw. unbetont sind.
+    Das Metrum beschreibt, welche Silben innerhalb der einzelnen Verse jeweils betont (Hebungen) bzw. unbetont (Senkungen) sind.
 
     -   _Namen der Versmaße_
 
         -   **Jambus**  
-            Der Jambus besteht immer aus zwei Silben, wobei die zweite betont ist: `-‘`
+            Der Jambus besteht immer aus zwei Silben, wobei die zweite betont ist: `-‘`. Der Jambus setzt sich also aus einer Senkung und einer Hebung zusammen.
 
             | Beispiele für einen Jambus |
             | -------------------------- |
@@ -695,7 +721,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | Geduld                     |
 
         -   **Trochäus**  
-            Der Trochäus besteht immer aus zwei Silben, wobei die erste betont ist: `‘-`
+            Der Trochäus besteht immer aus zwei Silben, wobei die erste betont ist: `‘-`. Der Trochäus setzt sich also aus einer Hebung und einer Senkung zusammen.
 
             | Beispiele für einen Trochäus |
             | ---------------------------- |
@@ -704,7 +730,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | mähen                        |
 
         -   **Anapäst**  
-            Die Anapäst besteht immer aus drei Silben, wobei die letzte betont ist: `--‘`
+            Die Anapäst besteht immer aus drei Silben, wobei die letzte betont ist: `--‘`. Die Anapäst setzt sich also aus zwei Senkungen und einer Hebung zusammen.
 
             | Beispiele für eine Anapäst |
             | -------------------------- |
@@ -713,7 +739,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | analog                     |
 
         -   **Daktylus**  
-            Der Daktylus besteht immer aus drei Silben, wobei die erste betont ist: `‘--`
+            Der Daktylus besteht immer aus drei Silben, wobei die erste betont ist: `‘--`. Der Daktylus setzt sich also aus einer Hebung und zwei Senkungen zusammen.
 
             | Beispiele für einen Daktylus |
             | ---------------------------- |
@@ -721,13 +747,28 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | jugendlich                   |
             | eisige                       |
 
+    -   _Anzahl der Hebungen_  
+        Um die Länge eines Verses bestimmten zu können, gibt es die analytische Einheit der Hebungen. Hierbei werden einfach die Vorkommnisse des jeweiligen Metrums in einem Vers gezählt. Um dies zu verdeutlichen nehmen wir nun diesen schönen Vers von Schiller aus „Das Mädchen aus der Fremde“ her:
+
+        > Doch nahte sich ein liebend Paar
+
+        Versuchen Sie den Vers laut auszusprechen und die Metrik anhand der Hebungen und Senkungen zu erkennen. Kleiner Spoiler, es ist der `Jambus`, da die Betonungen bei `nah`, `sich`, `lie` und `Paar` liegen. Diese Betonungen kann man so symbolisieren: `x` `x́` `x` `x́` `x` `x́` `x` `x́`. Normale `x`e stehen für Senkungen, eine Hebung wird mittels Akut (`x́`) markiert.
+
+        An dieser Folge kann man gut erkennen, dass der Vers **vier Hebungen** hat. Deshalb bezeichnen wir den Vers als `4-hebigen Jambus`. Da der Vers auch mit einer Hebung endet, sprich man von einem vollständigen Jambus. Das Gegenteil eines vollständigen Jambus nennt man unvollständigen Jambus oder auch katalektischen Jambus. Folgendes Beispiel ist ein 3-hebiger katalektischer Jambus:
+
+        > Da ist in meinem Herzen  
+        > `x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x`
+
     -   _besondere Formen_
         -   **männlich stumpf**: Verszeile endet mit einer Hebung (betonte Silbe)
         -   **weiblich klingend**: Verszeile endet mit einer Senkung (unbetonte Silbe)
         ***
-        -   **Blankvers**: fünfhebiger, reimloser Jambus
-        -   **Alexandriner**: sechshebiger Jambus mit Zäsur (`/`) meistens in der Mitte
-        -   **Hexameter**: sechsfüßiger Daktylus
+        -   **Blankvers**: 5-hebiger, reimloser Jambus  
+            (`x` `x́` `x` `x́` `x` `x́` `x` `x́` `x` `x́`)
+        -   **Alexandriner**: 6-hebiger Jambus mit Zäsur (`/`) meistens in der Mitte  
+            (`x` `x́` `x` `x́` `x` `x́` `/` `x` `x́` `x` `x́` `x` `x́`)
+        -   **Hexameter**: 6-füßiger Daktylus (die letzte Silbe des letzten Daktylus fällt weg)  
+            (`x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x`)
         -   **freier Rhythmus**: kein einheitlicher Rhythmus
 
 -   **Reim**
@@ -1110,21 +1151,136 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         > Wir sind die Tr**eibenden** […]  
         > Im immer Bl**eibenden**.
 
-<!-- verse und strophen
-metrum (daktylus, trochäus, jambus) 6-hebig, ...
--->
+##### Inhaltliche Analyse
+
+-   **Strophen und Gliederung**  
+    Worum geht es in den einzelnen Strophen? Lassen sich die Strophen irgendwie gliedern (Steigerung, Höhepunkt, Wendepunkt) oder sind die Strophen die Gliederung?
+
+-   **Figuren**  
+    Welche Figuren kommen vor? Wer ist der Sprecher? Wer wird angesprochen? Was erfährt das Publikum über die Figuren?
+
+-   **Ort und Zeit**  
+    An welchem Ort und zu welcher Zeit spielt die Handlung? Sind die Ortsangaben (falls in den Strophen welche vorkommen) real oder haben diese nur eine symbolische Bedeutung? Interpretieren Sie über den Ort und dessen Bedeutung.
+
+    Zu welcher Epoche spielt die lyrische Erzählung? Auch die Zeit kann eine symbolische Bedeutung haben, welche von Ihnen interpretiert werden muss. Zum Beispiel hat der Herbst in Rainer Maria Rilkes Gedicht „Herbsttag“ einen großen Einfluss auf die Einsamkeit der Menschen und symbolisiert allgemein das Ende des Sommers.
 
 #### Dramatik
 
 Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale analysiert und gedeutet werden:
 
+##### Dramengattung
+
+-   **Textsorte**  
+    Handelt es sich bei dem Ausgangstext um eine Tragödie, Komödie oder auch Tragikomödie. Ersteres ist sehr negativ gestimmt, zweiteres soll das Publikum unterhalten und letzteres ist einerseits traurig, jedoch hat es auch einen lustigen Faktor an sich. Vor allem Handlungen von Schelmen sind in der Tragikomödie angesiedelt.
+
+    -   _Komödie_  
+        Mittelpunkt der Komödie sind Personen niedrigeren Standes, Normen und Institutionen, die dem Gelächter preisgegeben werden. Die Komödie zeichnet sich von Anfang an durch einen lockeren und leichten Aufbau aus. Herrschende Verhältnisse werden in der Komödie auf den Kopf gestellt, öffentliche Personen und politische Missstände ätzendem Spott ausgesetzt. Im Fokus steht die Darstellung der Unzulänglichkeiten und Schwächen des Menschen und des menschlichen Lebens. Erheiterung findet durch Situations- und Sprachkomik statt. Der Sprachstil befindet sich auf einem niedrigen Level, sodass der Sprachgebrauch niedriger Schichten passend abgebildet wird. Auch die Protagonisten der Komödie sind einem Konflikt ausgesetzt, der allerdings überwunden wird.
+
+    -   _Tragödie_  
+        Neben der Komödie ist die Tragödie die zweite Hauptform des Dramas. Die Tragödie ist auch unter dem Namen Trauerspiel bekannt. Mittelpunkt der Tragödie ist eine Person höheren Standes, die vor einem tragischen, unauflösbaren Konflikt steht, der zum unausweichlichen Untergang des Helden führt, entweder in Form seines Todes oder eines anderes elendigen Zustands. Dem Zuschauer soll mittels der Tragödie vor Augen geführt werden, dass der menschliche Handlungs- und Entscheidungsspielraum begrenzt ist und dass der Mensch seinem bestimmten Schicksal mit eigener Handlung nicht entgehen kann. Nach der antiken Poetik des Aristoteles soll das Schicksal des tragischen Helden vor allem Furcht und Mitleid beim Zuschauer erregen, sodass seine seelische Reinigung (Katharsis) bewirkt wird. Der Zuschauer soll lernen, dass man mit denjenigen Menschen Mitleid haben soll, die es verdienen, und er sich vor den Dingen zu fürchten hat, die er auch selbst fürchten muss. Der Sprachstil in der Tragödie ist als hoch, würdevoll, gehoben, exakt und treffsicher zu charakterisieren.
+
+    -   _Tragikomödie_  
+        Eine Mischform von Tragödie und Komödie ist die Tragikomödie. Sie war erstmals in der Epoche „Sturm und Drang“ vorzufinden. Tragik und Komik sind hierbei unauflösbar miteinander verbunden und verstärken sich gegenseitig. Komische Momente steigern hierbei die Wirkung tragischer Zusammenhänge.
+
+-   **Analyse vs Synthese**  
+    Ist das Drama analytisch oder synthetisch?
+
+    -   _analytische Dramen_  
+        Ein analytisches Drama, Entdeckungs- oder Enthüllungsdrama bezeichnet man ein Drama, welches auf einen bestimmten Vorfall inder Vorgeschichte des dargestellten Geschehens aufbaut. Von dieser Begebenheit sind zunächst nur Auswirkungen erkennbar, deren Ursache erst im Verlauf der Handlung sukzessive, Schritt für Schritt entdeckt bzw. enthüllt wird.
+
+        Somit lassen sich zwei Handlungsebenen eines analytischen Dramas ausmachen:
+
+        -   Die Vorgeschichte, in der ein Ereignis stattfindet, dessen Folgen zwar bis in die Bühnengegenwart reichen, das aber zu Beginn der Darstellung noch nicht bekannt ist (dem Publikum auch deswegen, weil es nicht auf der Bühne gezeigt wird).
+        -   Das unmittelbare Bühnengeschehen, in dessen Rahmen das vergangene Ereignis analytisch aufgedeckt wird. Diese Enthüllung wiederum kann Auswirkungen auf die dargestellte Gegenwart haben.
+
+        <br/>
+
+    -   _synthetische Dramen_  
+        Ein synthetisches Drama, Entfaltungs-, Konflikt- oder Zieldrama bezeichnet man ein Drama, welches mit einem bestimmten Vorfall oder Vorgang beginnt. Dieser fungiert als Auslöser für das weitere Geschehen und entfaltet somit die Handlung. Auch wenn eine Vorgeschichte eine gewisse Rolle spielen kann, richtet sich der Handlungsablauf auf ein in der Zukunft liegendes Ereignis, das namensgebende Ziel, aus.
+
+        Im Mittelpunkt des Geschehens steht meist ein innerer oder äußerer Konflikt:
+
+        -   Ein innerer Konflikt existiert im Inneren des Helden, der zwischen zwei Entscheidungen hin- und hergerissen ist.
+        -   Ein äußerer Konflikt hingegen besteht zwischen dem Protagonist und einem Antagonist, einem Gegenspieler, der ein den Intentionen des Helden entgegengesetztes Ziel verfolgt.
+
+-   **Offenheit**
+    Man unterscheidet geschlossene und offene Dramen.
+
+    -   _geschlossene Dramen_  
+        Ein geschlossenes Drama beinhaltet eine Haupthandlung, die zielführend ist. Einzelne Handlungsschritte bauen kausal aufeinander auf, Szenen sind nicht austauschbar. Die Protagonisten des geschlossenen Dramas sind mündig und können selbstbestimmt handeln und somit das Geschehene bestimmen. Die Anzahl der Hauptfiguren ist begrenzt, es gibt nur wenige Haupt- und Nebenfiguren. Die Personenkonstellation ist für den Zuschauer übersichtlich und nachvollziehbar.
+
+        Häufig stehen sich im geschlossenen Drama Held und Gegenspieler gegenüber. Eine Dreieckssituation ist auch möglich, in der drei Protagonisten miteinander interagieren. Das geschlossene Drama zeichnet sich durch eine Klärung der Vorgeschichte in der Exposition, einem einleitenden Anfang, dem Eintreten eines Konflikts und einer eindeutigen Lösung zum Schluss aus.
+
+        Das Drama ist in Verssprache verfasst. Eine Individualisierung der Protagonisten ist aber mittels Sprachgebrauch möglich. Die dargestellte Handlung findet innerhalb eines kurzen Zeitraums statt und beschränkt sich auf wenige Schauplätze. Es wird nicht die Realität, sondern ein idealisiertes Abbild der Wirklichkeit auf die Bühne gebracht.
+
+        Ein sehr bekanntes geschlossenes Drama ist das Werk „Don Carlos, Infant von Spanien“, 1787 von Friedrich Schiller verfasst.
+
+    -   _offene Dramen_  
+        Das offene Drama beinhaltet zumeist mehrere gleichwertige Handlungen, insgesamt ist eine lockere Struktur der einzelnen Szenen vorzufinden. Inhaltliche Zusammenhänge werden über Figuren und Leitmotive aufgezeigt. Die Protagonisten sind Antihelden, die nicht selbstbestimmt handeln können, sondern durch ihr soziales Umfeld beeinflusst werden. Sie haben wenig Handlungs- und Entscheidungsspielraum. Die Figurenkonstellation ist im offenen Drama eher unübersichtlich, da viele Figuren aus unterschiedlichen Schichten beteiligt sind.
+
+        Die Vorgeschichte wird nicht genauer erklärt, auch der Schluss bleibt häufig unklar. Jenes Drama ist in Alltagssprache verfasst, oft werden Stilmittel wie die Parataxe (Aneinanderreihung von Hauptsätzen), Reihung, Satzbrüche und Ellipsen (Auslassung von Satzteilen) verwendet. Die Handlung umfasst insgesamt meist mehrere Jahre, viele verschiedene Handlungsorte werden dargestellt, die auch weit voneinander entfernt liegen können. Die Schrift „Dantons Tod“ von Georg Büchner (1835) ist eines der bekanntesten offenen Dramen.
+
+##### Drei Aristotelische Einheiten
+
+Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
+
+-   **Raum**  
+    An welchem Ort spielt das Drama?
+
+-   **Zeit**  
+    Ähnlich wie bei einer Interpretation eines epischen Textes wird die Zeit verglichen, welche in und zwischen den Szenen vergeht. Außerdem wird analysiert, wann das Theaterstück spielen soll.
+
+-   **Handlung**  
+    Unter die Analyse der Handlung fallen Fragen, wie zum Beispiel: Gibt es Nebenhandlungen oder spielt das gesamte Drama an einem Hauptstrang? Ist die Handlung in sich geschlossen, sprich gibt es einen klaren Anfang, eine Mitte und ein Ende?
+
+##### Figuren
+
+-   **Figurenverzeichnis**  
+    In einigen Dramen gibt es ein Figurenverzeichnis, welches die Figuren und ihre Rollen im Drama erklärt. Nutzen Sie dieses Verzeichnis, um die Figuren zu analysieren und zu beschreiben. Listen Sie dich wichtigsten Figuren auf und interpretieren Sie, warum jene Figuren in gewissen Situationen so und so handeln!
+
+-   **Charakteristik der Figuren**  
+    Das Publikum erfährt auf irgendeine Art und Weise, welche Charaktere in dem Stück mitspielen. Analysieren Sie diese Wege und beschreiben Sie außerdem, welche Charakteristik die verschiedenen Figuren haben. Beziehen Sie sich nur auf die notwenigsten Figuren im Drama. Vor allem die Entwicklung der Hauptfigur ist äußerst interessant. Beantworten Sie, ob die Geschehnisse die Denkweise dieser Figur mit dem Laufe der Zeit verändert und welche Auswirkung dies widerum auf das Drama hat.
+
+    Gehen Sie auch auf die Gefühle, Absichten und Gedanken der wichtigsten Figuren ein. Diese spielen meistens eine wesentliche Rolle bezüglich dem Ende aller Handlungen.
+
+-   **Soziogramm**  
+    Wie stehen die Figuren zueinander? Analysieren und interpretieren Sie die Verbindungen und Beziehungen aller wichtigen Figuren.
+
+##### Bühnenbild
+
+Erwähnen Sie die Erklärungen des Bühnenbildes und Gestaltung der Bühne in Ihrem Text, falls diese vorhanden sind. Sie können nicht das Bühnenbild selbst analysieren, da es in dem Text keine Bühne selbst gibt. Jedoch beschreiben einige Autoren vor jeder Szene, wie die Umgebung der Figuren aussehen soll. Analysieren Sie diese Umgebung.
+
+Beschreiben Sie, ob das Bühnenbild realistisch, symbolisch oder antiillusionistisch ist!
+
+##### Struktur des Dramas
+
+In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
+
+##### Regieanweisungen
+
+Teilweise kommen in Dramen Anweisungen aus „dem Off“ vor, um gewisse Handlungen zu beschreiben oder direkt mit den Figuren zu interagieren. Erklären Sie, warum _der Autor / die Autorin_ sich für diese Art der Erzählung entschieden hat. Hat es auf diese Art mehr Humor?
+
+Anweisungen kann es für mehrere Elemente des Dramas geben:
+
+-   Regie
+-   Rollenbesetzung
+-   SchauspielerInnen
+-   Kostümbild
+-   Maske
+-   Requisiten
+-   Beleuchtung
+-   Ton
+-   ...
+
+##### Sprache des Dramas
+
+Ist das Stück großteils in einem Dialog oder vorwiegend als Monolog verfasst? Falls die Figuren Dialoge führen, sprechen diese aneinander vorbei oder viel eher miteinander? Sind die Dialoge realistisch oder absurd? Kann man sich psychologisch in die Figur hineinversetzen?
+
+Welche Sprache sprechen die Figuren (Dialekt, Mundart, Bühnendeutsch)? Sprechen die Figuren gemäß ihrer sozialen Stellung? Ist das Drama in Versen oder in Prosa verfasst? Gibt es eine eigene „Kunstsprache“ im Drama oder bei einzelnen Figuren? Falls Monologe vorkommen, wann und wie werden diese verwendet (Konflikmonologe, „Botenbericht-Monolog“, ...)?
+
+Tritt ein Chor auf? Welche Funktion hat dieser? Wie spricht er? Fasst der Chor die Geschehnisse zusammen, sieht er diese vorraus oder kommentiert er die Handlung nur?
+
 <!-- beispiel microdrama
-
-Tragödie (negativ), Komödie (positiv), Tragikomödie (lachend und weinend, kann auch tragisch sein (schelme))
-
-3 einheiten, zeit ort und handlung, figurenverzeichnis (welche, karagteriker, anweisungen aus dem off (rechieanweisung)), bühnenbild (nicht analysierbar, da nur text)
-
-inhaltlich: start exponisition (vorstellung), höhepunkt, fall der handlung
 
 sorache: dialog oder monolog, köre die was zusammenfassen
 
@@ -1139,7 +1295,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 
 ### Eigenschaften
 
--   `Ich` kann verwendet werden
+-   `Ich` soll verwendet werden
 -   Publikum von meiner Meinung überzeugen (Publikum ansprechen)
 -   kreative Einleitung, worin Titel und Autor vorkommt
 -   Hauptteil ist in sich flüssig argumentiert
@@ -1147,6 +1303,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 -   [Stilfiguren](#stilfiguren) verwenden
 -   max. 50 Wörter mehr schreiben
 -   Überschrift situationsbezogen (wenn verlangt)
+-   eher lange Textsorte; manchmal auch mittlere Textsorte
 
 ### Aufbau
 
@@ -1232,11 +1389,3 @@ Fassen Sie Ihre Meinung nochmals kurz zusammen und appellieren Sie Lösungsvorsc
 Genau wie bei einem Referat bedankt man sich in der Schlussfloskel.
 
 > Danke für die Aufmerksamkeit!
-
-# TODO
-
-kurz: Zusammenfassung, Lwsebrief, Kommentar
-
-mittel: Erörterung, Kommentar, Zusa, Analyse, Meinungsrede (eher lang)
-
-algn: interpretation: meingungsrede, textanalyse, erörterung
