@@ -990,7 +990,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | Feuer -- teuer            |
             | abzufahren -- offenbaren  |
 
-        -   **unreimer Reim**  
+        -   **unreiner Reim**  
             Beim unreinen Reim werden Silben kombiniert, die sich nur annähernd reimen. Sie sind also nicht identisch.
 
             | Beispiele für unreine Reime |
