@@ -1222,7 +1222,7 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
 
 ##### Drei Aristotelische Einheiten
 
-Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
+Die drei Aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
 
 -   **Raum**  
     An welchem Ort spielt das Drama?
@@ -1254,7 +1254,7 @@ Beschreiben Sie, ob das Bühnenbild realistisch, symbolisch oder antiillusionist
 
 ##### Struktur des Dramas
 
-In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
+In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei Aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
 
 ##### Regieanweisungen
 
