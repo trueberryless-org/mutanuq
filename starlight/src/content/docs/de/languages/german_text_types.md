@@ -712,40 +712,40 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
     -   _Namen der Versmaße_
 
         -   **Jambus**  
-            Der Jambus besteht immer aus zwei Silben, wobei die zweite betont ist: `-‘`. Der Jambus setzt sich also aus einer Senkung und einer Hebung zusammen.
+            Das Metrum Jambus besteht immer aus zwei Silben, wobei die zweite betont ist: `-‘`. Jambus setzt sich also aus einer Senkung und einer Hebung zusammen.
 
-            | Beispiele für einen Jambus |
-            | -------------------------- |
-            | bemüht                     |
-            | verkehrt                   |
-            | Geduld                     |
+            | Beispiele für Jambus |
+            | -------------------- |
+            | bemüht               |
+            | verkehrt             |
+            | Geduld               |
 
         -   **Trochäus**  
-            Der Trochäus besteht immer aus zwei Silben, wobei die erste betont ist: `‘-`. Der Trochäus setzt sich also aus einer Hebung und einer Senkung zusammen.
+            Das Metrum Trochäus besteht immer aus zwei Silben, wobei die erste betont ist: `‘-`. Trochäus setzt sich also aus einer Hebung und einer Senkung zusammen.
 
-            | Beispiele für einen Trochäus |
-            | ---------------------------- |
-            | Sieger                       |
-            | Rabe                         |
-            | mähen                        |
+            | Beispiele für Trochäus |
+            | ---------------------- |
+            | Sieger                 |
+            | Rabe                   |
+            | mähen                  |
 
         -   **Anapäst**  
-            Die Anapäst besteht immer aus drei Silben, wobei die letzte betont ist: `--‘`. Die Anapäst setzt sich also aus zwei Senkungen und einer Hebung zusammen.
+            Das Metrum Anapäst besteht immer aus drei Silben, wobei die letzte betont ist: `--‘`. Anapäst setzt sich also aus zwei Senkungen und einer Hebung zusammen.
 
-            | Beispiele für eine Anapäst |
-            | -------------------------- |
-            | Elefant                    |
-            | reserviert                 |
-            | analog                     |
+            | Beispiele für Anapäst |
+            | --------------------- |
+            | Elefant               |
+            | reserviert            |
+            | analog                |
 
         -   **Daktylus**  
-            Der Daktylus besteht immer aus drei Silben, wobei die erste betont ist: `‘--`. Der Daktylus setzt sich also aus einer Hebung und zwei Senkungen zusammen.
+            Das Metrum Daktylus besteht immer aus drei Silben, wobei die erste betont ist: `‘--`. Daktylus setzt sich also aus einer Hebung und zwei Senkungen zusammen.
 
-            | Beispiele für einen Daktylus |
-            | ---------------------------- |
-            | untere                       |
-            | jugendlich                   |
-            | eisige                       |
+            | Beispiele für Daktylus |
+            | ---------------------- |
+            | untere                 |
+            | jugendlich             |
+            | eisige                 |
 
     -   _Anzahl der Hebungen_  
         Um die Länge eines Verses bestimmten zu können, gibt es die analytische Einheit der Hebungen. Hierbei werden einfach die Vorkommnisse des jeweiligen Metrums in einem Vers gezählt. Um dies zu verdeutlichen nehmen wir nun diesen schönen Vers von Schiller aus „Das Mädchen aus der Fremde“ her:
@@ -1220,9 +1220,9 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
 
         Die Vorgeschichte wird nicht genauer erklärt, auch der Schluss bleibt häufig unklar. Jenes Drama ist in Alltagssprache verfasst, oft werden Stilmittel wie die Parataxe (Aneinanderreihung von Hauptsätzen), Reihung, Satzbrüche und Ellipsen (Auslassung von Satzteilen) verwendet. Die Handlung umfasst insgesamt meist mehrere Jahre, viele verschiedene Handlungsorte werden dargestellt, die auch weit voneinander entfernt liegen können. Die Schrift „Dantons Tod“ von Georg Büchner (1835) ist eines der bekanntesten offenen Dramen.
 
-##### Drei Aristotelische Einheiten
+##### Drei aristotelische Einheiten
 
-Die drei Aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
+Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
 
 -   **Raum**  
     An welchem Ort spielt das Drama?
@@ -1254,7 +1254,7 @@ Beschreiben Sie, ob das Bühnenbild realistisch, symbolisch oder antiillusionist
 
 ##### Struktur des Dramas
 
-In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei Aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
+In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
 
 ##### Regieanweisungen
 
