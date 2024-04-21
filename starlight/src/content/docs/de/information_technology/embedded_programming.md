@@ -1027,11 +1027,16 @@ printf("Adresse: %p", p); // zB: Adresse: 0x00000008
 printf("Wert: %d", *p); // Wert: 12
 ```
 
+Der finale Zustand des Programms im Arbeitsspeicher ist hier visualisiert (die Adressen sind natürlich frei erfunden und dies ist nur ein fiktiver Auszug aus dem Arbeitsspeicher):
+
+| Variablenname | Adresse    | Wert       |
+| ------------- | ---------- | ---------- |
+| `i`           | `00000008` | 12         |
+| `p`           | `00000069` | `00000008` |
+
 ### Operatoren
 
 Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
-
-import { Icon } from "@astrojs/starlight/components";
 
 <table>
     <thead>
@@ -1049,16 +1054,11 @@ import { Icon } from "@astrojs/starlight/components";
             <td>
                 Pointer erstellen
                 <blockquote>
-                    <strong>Anmerkung</strong>: Die Position des Sternchens relativ zum
+                    <strong><a href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration">Anmerkung</a></strong>: 
+                    Die Position des Sternchens relativ zum
                     Variablennamen macht keinen Unterschied. Jedoch gilt das Sternchen immer nur für
                     die folgende Variable! In Beispiel 4 wird demnach genau wie in Beispiel 3 nur
-                    ein Pointer und eine normale Variable erstellt.
-                    <a
-                        href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration"
-                        style="display:inline-block"
-                    >
-                        <Icon name="external" />
-                    </a>
+                    ein Pointer und eine normale Variable erstellt.                    
                 </blockquote>
             </td>
             <td>
@@ -1094,11 +1094,46 @@ import { Icon } from "@astrojs/starlight/components";
 
 ### mit Arrays arbeiten
 
-Wenn wir eine Liste von Zahlentypen ausgeben wollen, kann der C-Code von unten verwendet werden. Dies funktioniert nur, weil nach dem Array das Terminierungszeichen `\0` steht. Somit wird am Ende der Liste die while-Schleife aushören, da 0 als falscher Wert interpretiert wird.
+Häufig müssen wir mit Arrays, sprich Listen von Werte, arbeiten. Hierbei soll vorab angemerkt werden, dass beim Deklarieren des Pointers automatisch die Liste dereferenziert wird. Somit machen diese Code-Beispiele das gleiche:
+
+```c del="&"
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = &numbers;
+```
 
 ```c
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
 uint8_t *p = numbers; // Automatische Dereferenzierung
+```
+
+Der Pointer in dem obigen Beispiel zeigt somit auf das **erste Element** des Arrays. Somit sieht ein Teil des Arbeitsspeichers folgendermaßen aus (Adressen frei erfunden).
+
+| Variablenname | Adresse    | Wert                        |
+| ------------- | ---------- | --------------------------- |
+| `numbers`     | `00000F01` | 1                           |
+| `numbers`     | `00000F02` | 2                           |
+| `numbers`     | `00000F03` | 3                           |
+| `numbers`     | `00000F04` | 4                           |
+| `numbers`     | `00000F05` | 5                           |
+| `numbers`     | `00000F06` | `\0` (Terminierungszeichen) |
+| `p`           | `00000F42` | `00000F01`                  |
+
+Nun kann man auf die einzelnen Werte des Arrays zugreifen, indem man entweder den `[]`-Operator nutzt oder den Index und den Pointer addiert und anschließend dereferenziert.
+
+```c
+// []-Operator
+uint8_t third = numbers[2];
+
+// Pointer Zugriff
+p += 2; // 0x00000F03
+third = *p;
+```
+
+Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Dies funktioniert nur, weil nach dem Array das Terminierungszeichen `\0` steht. Somit wird am Ende der Liste die while-Schleife aushören, da `0` als falscher Wert interpretiert wird.
+
+```c
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = numbers;
 
 while(*p) {
     printf("%u", *p);
@@ -1106,7 +1141,7 @@ while(*p) {
 }
 ```
 
-Ähnlich kann auch ein Array von Zeichen (String) ausgeben werden.
+Ähnlich kann auch ein Array von Zeichen (String) ausgeben werden. Genau auf diese Art und Weise werden beim [USART](#daten-senden) die Zeichen einzeln hintereinander versendet.
 
 ```c
 char buffer[10] = "Hallo";
@@ -1115,6 +1150,17 @@ char *p = buffer;
 while(*p) {
     printf("%c", *p);
     p++;
+}
+```
+
+Wohlgemerkt kann man das Dereferenzieren und Addieren des Pointers gleich in einer Zeile schreiben.
+
+```c "*p++"
+char buffer[10] = "Hallo";
+char *p = buffer;
+
+while(*p) {
+    printf("%c", *p++);
 }
 ```
 
