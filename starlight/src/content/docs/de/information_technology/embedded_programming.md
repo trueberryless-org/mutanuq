@@ -1027,7 +1027,7 @@ printf("Adresse: %p", p); // zB: Adresse: 0x00000008
 printf("Wert: %d", *p); // Wert: 12
 ```
 
-Der finale Zustand des Programms im Arbeitsspeicher ist hier visualisiert (die Adressen sind natürlich frei erfunden und dies ist nur ein fiktiver Auszug aus dem Arbeitsspeicher):
+Der finale Zustand des Programms im Arbeitsspeicher (Stack) ist hier visualisiert (die Adressen sind natürlich frei erfunden und dies ist nur ein fiktiver Auszug aus dem Arbeitsspeicher):
 
 | Variablenname | Adresse    | Wert       |
 | ------------- | ---------- | ---------- |
@@ -1094,7 +1094,7 @@ Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
 
 ### mit Arrays arbeiten
 
-Häufig müssen wir mit Arrays, sprich Listen von Werte, arbeiten. Hierbei soll vorab angemerkt werden, dass beim Deklarieren des Pointers automatisch die Liste dereferenziert wird. Somit machen diese Code-Beispiele das gleiche:
+Häufig müssen wir mit Arrays, sprich Listen von Werte, arbeiten. Arrays werden in `C` mittels Pointern realisiert, da es in `C` keine Referenzen, sondern nur Pointer gibt. Das bedeutet, dass beim Deklarieren ein Pointer auf das erste Element zeigt und die Daten im Stack gespeichert werden. Aus diesem Grund ist es auch nicht möglich, außerhalb des Scopes die Größe eines Arrays herauszufinden. Hierbei soll vorab angemerkt werden, dass beim Deklarieren des Pointers automatisch die Liste referenziert wird. Somit machen diese Code-Beispiele das gleiche:
 
 ```c del="&"
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
@@ -1106,42 +1106,39 @@ uint8_t numbers[] = { 1, 2, 3, 4, 5 };
 uint8_t *p = numbers; // Automatische Dereferenzierung
 ```
 
-Der Pointer in dem obigen Beispiel zeigt somit auf das **erste Element** des Arrays. Somit sieht ein Teil des Arbeitsspeichers folgendermaßen aus (Adressen frei erfunden).
+Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Somit sieht ein Teil des Arbeitsspeichers (Stack) folgendermaßen aus (Adressen frei erfunden).
 
-| Variablenname | Adresse    | Wert                        |
-| ------------- | ---------- | --------------------------- |
-| `numbers`     | `00000F01` | 1                           |
-| `numbers`     | `00000F02` | 2                           |
-| `numbers`     | `00000F03` | 3                           |
-| `numbers`     | `00000F04` | 4                           |
-| `numbers`     | `00000F05` | 5                           |
-| `numbers`     | `00000F06` | `\0` (Terminierungszeichen) |
-| `p`           | `00000F42` | `00000F01`                  |
+| Variablenname | Adresse    | Wert       |
+| ------------- | ---------- | ---------- |
+| `numbers`     | `00000F00` | `00000F01` |
+|               | `00000F01` | 1          |
+|               | `00000F02` | 2          |
+|               | `00000F03` | 3          |
+|               | `00000F04` | 4          |
+|               | `00000F05` | 5          |
+| `p`           | `00000F42` | `00000F01` |
 
 Nun kann man auf die einzelnen Werte des Arrays zugreifen, indem man entweder den `[]`-Operator nutzt oder den Index und den Pointer addiert und anschließend dereferenziert.
 
 ```c
 // []-Operator
-uint8_t third = numbers[2];
+uint8_t three = numbers[2];
 
 // Pointer Zugriff
-p += 2; // 0x00000F03
-third = *p;
+three = *(numbers + 2);
 ```
 
-Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Dies funktioniert nur, weil nach dem Array das Terminierungszeichen `\0` steht. Somit wird am Ende der Liste die while-Schleife aushören, da `0` als falscher Wert interpretiert wird.
+Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Die Methode `sizeof` ist hierbei nur in diesem Scope verfügbar, da hier auch die Varibale numbers deklariert ist.
 
 ```c
-uint8_t numbers[] = { 1, 2, 3, 4, 5 };
-uint8_t *p = numbers;
+uint8_t numbers[5] = { 1, 2, 3, 4, 5 };
 
-while(*p) {
-    printf("%u", *p);
-    p++;
+for(int i = 0; i < sizeof(numbers); i++) {
+    printf("%u", *(numbers + i));
 }
 ```
 
-Ähnlich kann auch ein Array von Zeichen (String) ausgeben werden. Genau auf diese Art und Weise werden beim [USART](#daten-senden) die Zeichen einzeln hintereinander versendet.
+Bei Strings, sprich Array von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem Array gespeichert, sodass man untige `while`-Schleife zum Ausgeben verwenden kann. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](#daten-senden) die Zeichen einzeln hintereinander versendet.
 
 ```c
 char buffer[10] = "Hallo";
