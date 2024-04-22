@@ -1006,6 +1006,161 @@ ISR(TIMERn_COMPx_vect) {
 
 ## Pointer
 
+Pointer sind Variablen, welche Speicheradressen aufnehmen und somit zu anderen Daten zeigen. Pointer bieten ein umfangsreiches und mächtiges Tool, um mit Datentypen zu interagieren, welche mehr als ein Byte Speicherplatz benötigen. Vor allem für den Umgang mit Arrays sind Pointer in `C` überaus wichtig.
+
+Wie man im nachfolgenden Code sehen kann, gibt es die beiden Operatoren `*` und `&` in Bezug auf Pointer.
+
+```c
+// Variable i mit Wert 12
+int i = 12;
+
+// Pointer-Variable p
+int *p = NULL;
+
+// Pointer auf val
+p = &i;
+
+// Ausgabe von p (Adresse)
+printf("Adresse: %p", p); // zB: Adresse: 0x00000008
+
+// Ausgabe von p (Wert)
+printf("Wert: %d", *p); // Wert: 12
+```
+
+Der finale Zustand des Programms im Arbeitsspeicher (Stack) ist hier visualisiert (die Adressen sind natürlich frei erfunden und dies ist nur ein fiktiver Auszug aus dem Arbeitsspeicher):
+
+| Variablenname | Adresse    | Wert       |
+| ------------- | ---------- | ---------- |
+| `i`           | `00000008` | 12         |
+| `p`           | `00000069` | `00000008` |
+
+### Operatoren
+
+Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
+
+<table>
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Funktion</th>
+            <th style="min-width: 200px;">Beispiel</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">
+                <code>*</code>
+            </td>
+            <td>
+                Pointer erstellen
+                <blockquote>
+                    <strong><a href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration">Anmerkung</a></strong>: 
+                    Die Position des Sternchens relativ zum
+                    Variablennamen macht keinen Unterschied. Jedoch gilt das Sternchen immer nur für
+                    die folgende Variable! In Beispiel 4 wird demnach genau wie in Beispiel 3 nur
+                    ein Pointer und eine normale Variable erstellt.                    
+                </blockquote>
+            </td>
+            <td>
+                <code>int *p;</code>
+                <br />
+                <code>int* p;</code>
+                <br />
+                <code>int *p, q;</code>
+                <br />
+                <code>int* p, q;</code>
+            </td>
+        </tr>
+        <tr>
+            <td>den Wert des Pointers auslesen (Dereferenzierung)</td>
+            <td>
+                <code>int i = *p;</code>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <code>&</code>
+            </td>
+            <td>
+                Mit dem Adressoperator kann man einen Wert zu einem Pointer konvertieren (die
+                Adresse des Wertes auslesen).
+            </td>
+            <td>
+                <code>int *p = &i;</code>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+### mit Arrays arbeiten
+
+Häufig müssen wir mit Arrays, sprich Listen von Werte, arbeiten. Arrays werden in `C` mittels Pointern realisiert, da es in `C` keine Referenzen, sondern nur Pointer gibt. Das bedeutet, dass beim Deklarieren ein Pointer auf das erste Element zeigt und die Daten im Stack gespeichert werden. Aus diesem Grund ist es auch nicht möglich, außerhalb des Scopes die Größe eines Arrays herauszufinden. Hierbei soll vorab angemerkt werden, dass beim Deklarieren des Pointers automatisch die Liste referenziert wird. Somit machen diese Code-Beispiele das gleiche:
+
+```c del="&"
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = &numbers;
+```
+
+```c
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = numbers; // Automatische Dereferenzierung
+```
+
+Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Somit sieht ein Teil des Arbeitsspeichers (Stack) folgendermaßen aus (Adressen frei erfunden).
+
+| Variablenname | Adresse    | Wert       |
+| ------------- | ---------- | ---------- |
+| `numbers`     | `00000F00` | `00000F01` |
+|               | `00000F01` | 1          |
+|               | `00000F02` | 2          |
+|               | `00000F03` | 3          |
+|               | `00000F04` | 4          |
+|               | `00000F05` | 5          |
+| `p`           | `00000F42` | `00000F01` |
+
+Nun kann man auf die einzelnen Werte des Arrays zugreifen, indem man entweder den `[]`-Operator nutzt oder den Index und den Pointer addiert und anschließend dereferenziert.
+
+```c
+// []-Operator
+uint8_t three = numbers[2];
+
+// Pointer Zugriff
+three = *(numbers + 2);
+```
+
+Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Die Methode `sizeof` ist hierbei nur in diesem Scope verfügbar, da hier auch die Varibale numbers deklariert ist.
+
+```c
+uint8_t numbers[5] = { 1, 2, 3, 4, 5 };
+
+for(int i = 0; i < sizeof(numbers); i++) {
+    printf("%u", *(numbers + i));
+}
+```
+
+Bei Strings, sprich Array von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem Array gespeichert, sodass man untige `while`-Schleife zum Ausgeben verwenden kann. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](#daten-senden) die Zeichen einzeln hintereinander versendet.
+
+```c
+char buffer[10] = "Hallo";
+char *p = buffer;
+
+while(*p) {
+    printf("%c", *p);
+    p++;
+}
+```
+
+Wohlgemerkt kann man das Dereferenzieren und Addieren des Pointers gleich in einer Zeile schreiben.
+
+```c "*p++"
+char buffer[10] = "Hallo";
+char *p = buffer;
+
+while(*p) {
+    printf("%c", *p++);
+}
+```
+
 ## USART - Universal Synchronous and Asynchronous Receiver Transmitter
 
 In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, Daten zwischen Computern auszutauschen. Um diese Verbindung zwischen unserem ATmega328p Board und unserer Entwicklungsmaschine herzustellen, gibt es das USART (Universal Synchronous/Asynchronous Receiver Transmitter).
@@ -1189,8 +1344,16 @@ uint8_t temp = SPDR;
 
 Der Prozess dieses Ablaufs ist in diesem Diagramm nochmal dargestellt:
 
-<img src="/images/embedded_programming/spi/transfer_data.png" alt="Data Transfer" class="light-only"/>
-<img src="/images/embedded_programming/spi/transfer_data_dark.png" alt="Data Transfer" class="dark-only"/>
+<img
+    src="/images/embedded_programming/spi/transfer_data.png"
+    alt="Data Transfer"
+    class="light-only"
+/>
+<img
+    src="/images/embedded_programming/spi/transfer_data_dark.png"
+    alt="Data Transfer"
+    class="dark-only"
+/>
 
 Und anschließend werden die berechneten Daten vom Peripheral zum Controller gesendet:
 
@@ -1203,8 +1366,16 @@ while(!(SPSR & (1<<SPIF)));
 uint8_t versionNumber = SPDR;
 ```
 
-<img src="/images/embedded_programming/spi/transfer_data_2.png" alt="Data Transfer" class="light-only"/>
-<img src="/images/embedded_programming/spi/transfer_data_2_dark.png" alt="Data Transfer" class="dark-only"/>
+<img
+    src="/images/embedded_programming/spi/transfer_data_2.png"
+    alt="Data Transfer"
+    class="light-only"
+/>
+<img
+    src="/images/embedded_programming/spi/transfer_data_2_dark.png"
+    alt="Data Transfer"
+    class="dark-only"
+/>
 
 ### Code
 
