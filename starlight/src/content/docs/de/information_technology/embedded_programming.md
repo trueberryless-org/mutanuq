@@ -71,6 +71,46 @@ int main(void)
 }
 ```
 
+## Special Function Register
+
+Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten verwendet werden. Nachstehende Tabelle fasst diese für die drei Ports jeweils zusammen.
+
+<table>
+<tr><th></th><th>Data Direction Register</th><th>Ausgangsregister</th><th>Eingangsregister</th></tr>
+<tr><td>B</td><td><code>DDRB</code></td><td><code>PORTB</code></td><td><code>PINB</code></td></tr>
+<tr><td>C</td><td><code>DDRC</code></td><td><code>PORTC</code></td><td><code>PINC</code></td></tr>
+<tr><td>D</td><td><code>DDRD</code></td><td><code>PORTD</code></td><td><code>PIND</code></td></tr>
+<tr><td>Beschreibung</td>
+<td>Jedes Pin kann entweder ein Eingang oder ein Ausgang sein. Diese Flussrichtung der Daten, kann mittels Data Direction Register eingestellt werden. Da standardmäßig alle <code>DDR</code> auf <code>0</code> gesetzt sind, ist auch **standardmäßig alles ein Eingang**. Mit dem Code unten kann man die jeweilgen Pins auf Ausgänge setzen (für LED zB).</td>
+<td>Will man intern bei dem jeweiligen Pin <code>5V</code> anlegen, so kann man dies tun, indem man das korrespondierende Ausgangsregister auf <code>1</code> setzt.</td>
+<td>Die Eingangsregister erlauben Konfigurationen, welche beim Arbeiten mit Tasten von Entscheidung sind.</td></tr>
+<tr><td>Beispiel</td><td>
+
+`DDRD |= (1<<PORTD1);`
+
+</td><td>
+
+`DDRD |= (1<<PORTD1);`
+
+</td><td>
+
+`DDRD |= (1<<PORTD1);`
+
+</td></tr>
+</table>
+
+So kann man den Pin `1` and Port `D` als Ausgang einstellen:
+
+```c
+DDRD |= (1<<PORTD1);
+```
+
+So kann man den Pin `1` and Port `D` als Eingang einstellen (Standard):
+
+```c
+DDRD &= ~(1<<PORTD1);
+```
+
 ## LED - Licht emittierende Diode
 
 Eine LED ist eine simple Diode, welche Licht emittiert. Damit diese leuchtet, müssen 5V Spannung an der Diode anliegen. Wenn sie nicht leuchten soll, legt man 0V Spannung an.
