@@ -73,7 +73,9 @@ int main(void)
 
 ## Special Function Register
 
-Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten verwendet werden. Nachstehende Tabelle fasst diese für die drei Ports jeweils zusammen.
+Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten verwendet werden. Diese Register sind „case-sensitive“, wobei `SFR` immer `UPPERCASE` sind. Außerdem sind diese immer acht Bit breit, sprich `1 Byte`. Standardmäßig sind alle `DDRx` und `PORTx` Register mit `0` initialisiert.
+
+Nachstehende Tabelle fasst die SFR für die drei Ports jeweils zusammen.
 
 <table>
 <tr><th></th><th>Data Direction Register</th><th>Ausgangsregister</th><th>Eingangsregister</th></tr>
@@ -81,34 +83,62 @@ Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten 
 <tr><td>C</td><td><code>DDRC</code></td><td><code>PORTC</code></td><td><code>PINC</code></td></tr>
 <tr><td>D</td><td><code>DDRD</code></td><td><code>PORTD</code></td><td><code>PIND</code></td></tr>
 <tr><td>Beschreibung</td>
-<td>Jedes Pin kann entweder ein Eingang oder ein Ausgang sein. Diese Flussrichtung der Daten, kann mittels Data Direction Register eingestellt werden. Da standardmäßig alle <code>DDR</code> auf <code>0</code> gesetzt sind, ist auch **standardmäßig alles ein Eingang**. Mit dem Code unten kann man die jeweilgen Pins auf Ausgänge setzen (für LED zB).</td>
+<td>Jedes Pin kann entweder ein Eingang oder ein Ausgang sein. Diese Flussrichtung der Daten, kann mittels Data Direction Register eingestellt werden. Da standardmäßig alle <code>DDR</code> auf <code>0</code> gesetzt sind, ist auch <strong>standardmäßig alles ein Eingang</strong>. Mit dem Code unten kann man die jeweilgen Pins auf Ausgänge setzen (für LED zB).</td>
 <td>Will man intern bei dem jeweiligen Pin <code>5V</code> anlegen, so kann man dies tun, indem man das korrespondierende Ausgangsregister auf <code>1</code> setzt.</td>
 <td>Die Eingangsregister erlauben Konfigurationen, welche beim Arbeiten mit Tasten von Entscheidung sind.</td></tr>
-<tr><td>Beispiel</td><td>
-
-`DDRD |= (1<<PORTD1);`
-
-</td><td>
-
-`DDRD |= (1<<PORTD1);`
-
-</td><td>
-
-`DDRD |= (1<<PORTD1);`
-
-</td></tr>
 </table>
 
-So kann man den Pin `1` and Port `D` als Ausgang einstellen:
+### Beispiele
+
+#### Eingang / Ausgang setzen
+
+So kann man den Pin `1` an Port `D` als Ausgang einstellen:
 
 ```c
 DDRD |= (1<<PORTD1);
 ```
 
-So kann man den Pin `1` and Port `D` als Eingang einstellen (Standard):
+So kann man den Pin `1` an Port `D` als Eingang einstellen (Standard):
 
 ```c
 DDRD &= ~(1<<PORTD1);
+```
+
+#### Spannung an Pin anlegen
+
+So kann man am Pin `1` von Port `D` eine Spannung von `5V` anlegen:
+
+```c
+PORTD |= (1<<PORTD1);
+```
+
+So kann man am Pin `1` von Port `D` keine Spannung anlegen (Standard):
+
+```c
+PORTD &= ~(1<<PORTD1);
+```
+
+#### Spannung von Pin abfragen
+
+So kann man die Spannung von Pin `1`, Port `D` abfragen:
+
+```c
+if (PIND & (1<<PIND1))
+{
+    // Es liegt eine Spannung größer als 0.7V an.
+}
+```
+
+Meistens verwendet man bei der Abfrage von Tasteneingaben die `Interne Pull-Up Widerstand`-Methode. Hierbei liegen 0V an, wenn die Taste gedrückt ist, was bedeutet, dass die Bedinung negiert werden muss. Um diese dann noch zu entprellen (auf Softwareebene) macht man ein Delay.
+
+```c del="!"
+if (!(PIND & (1<<PIND1)))
+{
+    // Taste (Pull-Up) 1x gedrückt
+}
+
+// Prellen vermeiden
+_delay_ms(70);
 ```
 
 ## LED - Licht emittierende Diode
