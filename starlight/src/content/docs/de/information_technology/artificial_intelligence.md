@@ -4,11 +4,30 @@ sidebar:
     order: 5
 ---
 
-## Python
+Künstliche Intelligenz (KI) bezeichnet die Fähigkeit von Maschinen, menschliche Intelligenz nachzuahmen, indem sie Aufgaben wie Lernen, Problemlösen und Entscheidungsfindung durchführen. Die Entwicklung der KI hat in der Vergangenheit drei bedeutende Hype-Phasen erlebt: in den 1960er, 1980er und 2010er Jahren.
+
+## Geschichte & Entwicklung
+
+In den 1960er Jahren erlebte die KI ihre erste Blütezeit, angetrieben durch frühe Fortschritte in der symbolischen KI und die Entwicklung der ersten neuronalen Netzwerke. Der zweite Hype in den 1980er Jahren wurde durch die Einführung von Expertensystemen und verbesserten Algorithmen beflügelt. Der jüngste und bislang bedeutendste Hype begann in den 2010er Jahren, als Fortschritte in der Hardware, wie leistungsfähigere und erschwinglichere GPUs, die Demokratisierung der KI ermöglichten. Gleichzeitig führte die Verfügbarkeit großer Datenmengen (Big Data) dazu, dass maschinelles Lernen und insbesondere Deep Learning enorme Fortschritte machten.
+
+In den letzten Jahren hat die Entwicklung von KI einen weiteren Schub erhalten. Modelle wie ChatGPT, das öffentlich zugänglich gemacht wurde, demonstrieren die Leistungsfähigkeit moderner Sprachmodelle, die in der Lage sind, menschenähnliche Texte zu generieren und komplexe Anfragen zu beantworten. Heutzutage wird KI in vielen Bereichen inkludiert, darunter Gesundheitswesen, Finanzwesen, Bildung, Automobilindustrie und Kundenservice. Diese Anwendungen revolutionieren die Art und Weise, wie wir leben und arbeiten, und machen KI zu einem integralen Bestandteil unseres Alltags.
+
+## Anwendungsbereiche
+
+Künstliche Intelligenz (KI) hat in den letzten Jahren eine Vielzahl von Anwendungsbereichen gefunden, die unser tägliches Leben und verschiedene Industrien revolutionieren. Von der Medizin bis zum Verkehr bietet KI Lösungen, die Effizienz und Genauigkeit erhöhen. Hier sind einige der wichtigsten Anwendungsbereiche von KI:
+
+-   **Medizin**: Erkennung von Krankheiten und Unterstützung bei Diagnosen.
+-   **Finanzen**: Analyse von Finanzmärkten und Betrugserkennung.
+-   **Generierung** von Medien: Erstellen von Texten, Bildern und Videos.
+-   **Gesichtserkennung**: Sicherheitsanwendungen wie Überwachung und Zugangskontrolle.
+-   **Verkehr**: Autonomes Fahren und Verkehrssteuerung.
+-   **Chatbots**: Kundenservice und automatisierte Kommunikation.
+
+## Python & Data Science Module
 
 Python ist eine weit verbreitete, benutzerfreundliche Programmiersprache, entwickelt von Guido van Rossum. Mit klarer Syntax und hoher Lesbarkeit ist sie für Anfänger und erfahrene Entwickler gleichermaßen attraktiv. Python wird in Webentwicklung, Datenanalyse, künstlicher Intelligenz und anderen Bereichen eingesetzt. Die Sprache zeichnet sich durch Einfachheit und Flexibilität aus. Ein charakteristisches Merkmal ist, dass Python eine interpretierte Sprache ist, was bedeutet, dass ein Interpreter verwendet wird, um den Code direkt auszuführen, ohne ihn vorher zu kompilieren. Mit einer umfangreichen Standardbibliothek und einer aktiven Entwicklergemeinschaft bietet Python eine robuste Plattform für verschiedene Projekte.
 
-### Grundlegende Syntax
+### Python
 
 #### Variablen
 
@@ -107,6 +126,1122 @@ class SpaceShip(Vehicle):
 ## Ein Objekt der Klasse "Car" wird erstellt.
 tesla_model_s = Car(4, 300)
 ```
+
+### NumPy
+
+NumPy ist eine grundlegende Bibliothek für numerische Berechnungen in Python. Sie bietet Unterstützung für große, mehrdimensionale Arrays und Matrizen sowie eine Sammlung von mathematischen Funktionen, um diese effizient zu bearbeiten. Viele andere Module in der Python-Community basieren auf NumPy.
+
+#### Installation
+
+Um NumPy zu installieren, kann man pip verwenden:
+
+```bash
+pip install numpy
+```
+
+#### Theorie
+
+##### Mathematische Strukturen
+
+In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit verschiedenen Dimensionen:
+
+-   **Skalar**: Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
+-   **Vektor**: Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
+-   **Matrix**: Eine zweidimensionale Sammlung von Werten, zum Beispiel
+    $\mathbf{M} = \begin{bmatrix}
+    1 & 2 \\
+    3 & 4
+    \end{bmatrix}$.
+-   **Tensore**: Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+
+#### Erstellen von Arrays
+
+NumPy-Arrays können auf verschiedene Weisen erstellt werden:
+
+```python
+import numpy as np
+
+# Array aus einer Liste
+array1 = np.array([1, 2, 3])
+print("Array aus einer Liste:\n", array1)
+
+# Zweidimensionales Array (Matrix)
+array2 = np.array([[1, 2], [3, 4]])
+print("Zweidimensionales Array:\n", array2)
+
+# Array aus einem Bereich
+array3 = np.arange(10)
+print("Array aus einem Bereich:\n", array3)
+
+# Array mit gleichmäßig verteilten Werten
+array4 = np.linspace(0, 1, 5)
+print("Array mit gleichmäßig verteilten Werten:\n", array4)
+
+# Zufalls-Array
+array5 = np.random.rand(3, 3)
+print("Zufalls-Array:\n", array5)
+```
+
+```
+//output.txt
+Array aus einer Liste:
+ [1 2 3]
+Zweidimensionales Array:
+ [[1 2]
+ [3 4]]
+Array aus einem Bereich:
+ [0 1 2 3 4 5 6 7 8 9]
+Array mit gleichmäßig verteilten Werten:
+ [0.   0.25 0.5  0.75 1.  ]
+Zufalls-Array:
+ [[0.3599989  0.00788199 0.28990732]
+ [0.52026756 0.65163794 0.53505392]
+ [0.75076473 0.36474315 0.30692188]]
+```
+
+#### Grundlegende Operationen
+
+##### Addition und Subtraktion
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Addition
+c = a + b
+print("Addition:", c)
+
+# Subtraktion
+d = a - b
+print("Subtraktion:", d)
+```
+
+```
+//output.txt
+Addition: [5 7 9]
+Subtraktion: [-3 -3 -3]
+```
+
+##### Multiplikation und Division
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Multiplikation
+e = a * b
+print("Multiplikation:", e)
+
+# Division
+f = a / b
+print("Division:", f)
+```
+
+```
+//output.txt
+Multiplikation: [ 4 10 18]
+Division: [0.25 0.4  0.5 ]
+```
+
+##### Matrixmultiplikation
+
+```python
+import numpy as np
+
+# Matrizen erstellen
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+# Matrixmultiplikation
+C = np.dot(A, B)
+print("Matrixmultiplikation:\n", C)
+```
+
+```
+//output.txt
+Matrixmultiplikation:
+ [[19 22]
+ [43 50]]
+```
+
+#### Funktionen und Methoden
+
+##### Aggregationsfunktionen
+
+NumPy bietet eine Vielzahl von Funktionen zur Berechnung von Aggregaten:
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Summe
+sum_a = np.sum(a)
+print("Summe:", sum_a)
+
+# Mittelwert
+mean_a = np.mean(a)
+print("Mittelwert:", mean_a)
+
+# Standardabweichung
+std_a = np.std(a)
+print("Standardabweichung:", std_a)
+
+# Minimum und Maximum
+min_a = np.min(a)
+max_a = np.max(a)
+print("Minimum:", min_a)
+print("Maximum:", max_a)
+```
+
+```
+//output.txt
+Summe: 15
+Mittelwert: 3.0
+Standardabweichung: 1.4142135623730951
+Minimum: 1
+Maximum: 5
+```
+
+##### Reshape und Transponieren
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([[1, 2, 3], [4, 5, 6]])
+print("Array:\n", a)
+
+# Reshape
+b = a.reshape((3, 2))
+print("Reshaped Array:\n", b)
+
+# Transponieren
+c = a.T
+print("Transponiertes Array:\n", c)
+```
+
+```
+//output.txt
+Array:
+ [[1 2 3]
+ [4 5 6]]
+Reshaped Array:
+ [[1 2]
+ [3 4]
+ [5 6]]
+Transponiertes Array:
+ [[1 4]
+ [2 5]
+ [3 6]]
+```
+
+##### Broadcasting
+
+Broadcasting ermöglicht das Durchführen von Operationen auf Arrays unterschiedlicher Formen:
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([[1], [2], [3]])
+
+# Broadcasting
+c = a + b
+print("Broadcasting Ergebnis:\n", c)
+```
+
+```
+//output.txt
+Broadcasting Ergebnis:
+ [[2 3 4]
+ [3 4 5]
+ [4 5 6]]
+```
+
+#### Weitere Funktionen
+
+##### Erzeugen von speziellen Arrays
+
+```python
+import numpy as np
+
+# Null-Array
+zero_array = np.zeros((2, 3))
+print("Null-Array:\n", zero_array)
+
+# Einsen-Array
+ones_array = np.ones((2, 3))
+print("Einsen-Array:\n", ones_array)
+
+# Identitätsmatrix
+identity_matrix = np.eye(3)
+print("Identitätsmatrix:\n", identity_matrix)
+```
+
+```
+//output.txt
+Null-Array:
+ [[0. 0. 0.]
+ [0. 0. 0.]]
+Einsen-Array:
+ [[1. 1. 1.]
+ [1. 1. 1.]]
+Identitätsmatrix:
+ [[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+```
+
+##### Slicing und Indexierung
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Slicing
+slice_a = a[1:4]
+print("Slicing:", slice_a)
+
+# Boolean Indexing
+bool_idx = (a > 3)
+print("Boolean Indexing:", a[bool_idx])
+```
+
+```
+//output.txt
+Slicing: [2 3 4]
+Boolean Indexing: [4 5]
+```
+
+##### Lineare Algebra
+
+```python
+import numpy as np
+
+# Matrix erstellen
+A = np.array([[1, 2], [3, 4]])
+print("Array:\n", A)
+
+# Inverse der Matrix
+A_inv = np.linalg.inv(A)
+print("Inverse der Matrix:\n", A_inv)
+
+# Determinante der Matrix
+det_A = np.linalg.det(A)
+print("Determinante der Matrix:", det_A)
+
+# Eigenwerte und Eigenvektoren
+eigvals, eigvecs = np.linalg.eig(A)
+print("Eigenwerte:", eigvals)
+print("Eigenvektoren:\n", eigvecs)
+```
+
+```
+//output.txt
+Array:
+ [[1 2]
+ [3 4]]
+Inverse der Matrix:
+ [[-2.   1. ]
+ [ 1.5 -0.5]]
+Determinante der Matrix: -2.0000000000000004
+Eigenwerte: [-0.37228132  5.37228132]
+Eigenvektoren:
+ [[-0.82456484 -0.41597356]
+ [ 0.56576746 -0.90937671]]
+```
+
+NumPy ist eine äußerst mächtige Bibliothek, die in vielen wissenschaftlichen und technischen Anwendungen verwendet wird. Die oben genannten Beispiele decken einige der grundlegendsten Funktionen ab, aber NumPy bietet noch viele weitere fortgeschrittene Features, die das Arbeiten mit numerischen Daten in Python effizient und bequem machen.
+
+### Pandas
+
+Pandas ist eine leistungsstarke und weit verbreitete Bibliothek für Datenanalyse und -manipulation in der Programmiersprache Python. Entwickelt auf Basis von NumPy bietet Pandas Datenstrukturen, die ideal für die Verarbeitung und Analyse von strukturierten Daten wie Tabellen oder CSV-Dateien geeignet sind. Diese Bibliothek erleichtert das Arbeiten mit großen Datensätzen und ermöglicht es, komplexe Operationen auf Daten schnell und effizient durchzuführen. Pandas wird in den Bereichen Datenwissenschaft, Finanzanalyse, Machine Learning und anderen datenintensiven Anwendungen eingesetzt. In dieser Einführung werden wir einen Blick auf die Schlüsselfunktionen und -konzepte von Pandas werfen, um ein Verständnis für die Vielseitigkeit dieser Bibliothek zu entwickeln.
+
+```bash title="Installing pandas"
+pip install pandas
+```
+
+```python
+import pandas as pd
+```
+
+#### Theorie
+
+Pandas führt zwei grundlegende Datenstrukturen ein: Dataframes und Series. Ein Dataframe kann als eine zweidimensionale Datenstruktur betrachtet werden, die in Form einer Tabelle organisiert ist. Diese Tabelle besteht aus Zeilen und Spalten, wobei jede Spalte einen bestimmten Datentyp repräsentiert. Einzelne Spalten in einem Dataframe werden als Series bezeichnet. Series hingegen kann als eindimensionales Array oder eine Liste betrachtet werden und enthält Daten eines bestimmten Datentyps.
+
+![Series and Dataframe](/images/artificial_intelligence/series-and-dataframe.png)
+
+##### Dataframe
+
+Ein Dataframe ist die Hauptdatenstruktur in Pandas und kann als eine zweidimensionale, tabellenähnliche Datenstruktur betrachtet werden. Es organisiert Daten in Zeilen und Spalten, wobei jede Spalte eine Series darstellt. Dataframes sind äußerst vielseitig und ermöglichen die effiziente Verarbeitung und Analyse von strukturierten Daten. Sie können aus verschiedenen Datentypen bestehen und erleichtern den Zugriff, die Filterung und die Transformation von Daten. Dataframes werden häufig für die Darstellung von Tabellen in CSV-Dateien, Excel-Tabellen oder SQL-Abfragen verwendet. Die Operationen auf Dataframes können sowohl auf Zeilen als auch auf Spalten angewendet werden, was eine umfassende Datenmanipulation ermöglicht.
+
+##### Series
+
+Eine Series ist eine grundlegende Datenstruktur in Pandas und kann als eindimensionales Array oder Liste betrachtet werden. Jede Spalte in einem Dataframe ist eine Series. Series können Daten unterschiedlichen Datentyps enthalten, einschließlich numerischer Werte, Zeichenketten oder Zeitstempel. Sie ermöglichen den Zugriff auf Daten durch einen Index und unterstützen zahlreiche Funktionen zur Datenmanipulation. Durch die Verwendung von Series können bestimmte Datenpunkte in einem Dataframe isoliert und spezifische Operationen auf einzelnen Spalten durchgeführt werden. Dies macht Series zu einem wichtigen Baustein für die Arbeit mit strukturierten Daten in Pandas.
+
+#### Code
+
+##### Dataframe erstellen
+
+Man kann ein Dataframe auf mehrere Arten erstellen:
+
+-   aus einem Dictionary
+
+    ```python
+    data = {
+        'apples': [3, 2, 0, 1],
+        'oranges': [0, 3, 7, 2]
+    }
+    ```
+
+    ```python
+    purchases = pd.DataFrame(data)
+    ```
+
+-   aus einer CSV-Datei
+
+    ```csv
+    // purchases.csv
+    ,apples,oranges
+    June,3,0
+    Robert,2,3
+    Lily,0,7
+    David,1,2
+    ```
+
+    ```python
+    df = pd.read_csv('purchases.csv', index_col=0)
+    ```
+
+-   aus einer JSON-Datei
+
+    ```json
+    // purchases.json
+    {
+        "apples": { "June": 3, "Robert": 2, "Lily": 0, "David": 1 },
+        "oranges": { "June": 0, "Robert": 3, "Lily": 7, "David": 2 }
+    }
+    ```
+
+    ```python
+    df = pd.read_json('purchases.json')
+    ```
+
+-   oder auch einer SQL-Datenbank
+
+    ```bash title="Installing sqlite3"
+    pip install pysqlite3
+    ```
+
+    ```python
+    import sqlite3
+    con = sqlite3.connect("database.db")
+
+    df = pd.read_sql_query("SELECT * FROM purchases", con)
+    ```
+
+##### Daten in Datei persistieren
+
+Man kann ein Dataframe genauso wieder in eine Datei schreiben, wie es aus einer Datei gelesen wurde.
+
+-   in eine CSV-Datei
+
+    ```python
+    df.to_csv('new_purchases.csv')
+    ```
+
+-   in eine JSON-Datei
+
+    ```python
+    df.to_json('new_purchases.json')
+    ```
+
+-   mittels SQL
+
+    ```python
+    df.to_sql('new_purchases.sql', con)
+    ```
+
+##### Operation mit Dataframes
+
+###### Ausgaben
+
+Ein logisches Verständnis über die Konstellation der Daten zu haben ist besonders wichtig, wenn man mit Pandas arbeitet. Die Ausgabe von Dataframes kann auf verschiedene Arten erfolgen.
+
+```python
+df.head(5) ## fünf ersten Zeilen ausgeben
+df.tail(3) ## letzten drei Zeilen ausgeben
+```
+
+Zeilen und Spalten spezifisch ausgeben, jeweils mit Index und Namen:
+
+```python
+df['oranges'] ## Series 'oranges' ausgeben
+df[['oranges']] ## 'oranges' als Dataframe ausgeben
+df[['apples', 'oranges']] ## Dataframe ausgeben
+
+df.iloc[11] ## Zeile mit Index 11 ausgeben
+df.iloc[11:13] ## Zeilen 11 bis 13 ausgeben
+df.loc['December'] ## Zeile 'December' ausgeben
+df.loc['October':'December'] ## Zeilen von 'October' bis 'December' ausgeben
+```
+
+Metadaten der Tabelle herausfinden:
+
+```python
+df.shape ## Anzahl der Zeilen und Spalten (Beispiel: (1000, 11))
+df.columns ## Spaltennamen
+df.info()
+```
+
+```txt
+// df.info_output
+<class 'pandas.core.frame.DataFrame'>
+Index: 1000 entries, Guardians of the Galaxy to Nine Lives
+Data columns (total 11 columns):
+ ##   Column              Non-Null Count  Dtype
+---  ------              --------------  -----
+ 0   Rank                1000 non-null   int64
+ 1   Genre               1000 non-null   object
+ 2   Description         1000 non-null   object
+ 3   Director            1000 non-null   object
+ 4   Actors              1000 non-null   object
+ 5   Year                1000 non-null   int64
+ 6   Runtime (Minutes)   1000 non-null   int64
+ 7   Rating              1000 non-null   float64
+ 8   Votes               1000 non-null   int64
+ 9   Revenue (Millions)  872 non-null    float64
+ 10  Metascore           936 non-null    float64
+dtypes: float64(3), int64(4), object(4)
+memory usage: 93.8+ KB
+```
+
+Nullwerte herausfinden:
+
+```python
+df.isnull() ## Gibt ein Dataframe zurück, wo alle Zellen True sind, falls die Werte null sind
+df.isnull().sum() ## Gibt die Anzahl der Nullwerte in jeder Series zurück
+df.isnull().sum().sum() ## Gibt die insgesamte Anzahl der Nullwerte zurück
+```
+
+Statistiken eines Dataframes herausfinden (Anzahl, Mittelwert, Standardabweichung, Minimum, Maximum, etc.).
+
+```python
+df.describe()
+df.corr() ## Korrelationen zwischen den Spalten
+```
+
+```python
+df['apples'].value_counts() ## Gruppierte Werte und Anzahl der Vorkommen
+```
+
+###### Datenmanipulationen
+
+Bei den meisten Veränderungen von Daten gibt es einen Parameter namens `inplace`, welcher angibt, ob die Änderungen direkt auf das Dataframe angewendet werden sollen oder ob die Änderungen in einem neuen Dataframe gespeichert werden sollen. Standardmäßig ist `inplace` auf `False` gesetzt, was bedeutet, dass die Änderungen in einem neuen Dataframe gespeichert werden.
+
+Die Methode `append()` wird verwendet, um zwei Dataframes (df und df2) zu verketten. Dies führt zu einem neuen Dataframe df3, das alle Zeilen von df und df2 enthält.
+
+```python
+df3 = df.append(df2)
+```
+
+Die Methode `rename()` wird verwendet, um bestimmte Spalten im Dataframe df umzubenennen, indem ein Dictionary mit den alten und neuen Spaltennamen bereitgestellt wird.
+
+```python
+df.columns = ['Amount of Fruits (Apple)', 'Amount of Fruits (Orange)']
+```
+
+```python
+df.rename(columns={
+    'Amount of Fruits (Apple)': 'apple_amount',
+    'Amount of Fruits (Orange)': 'orange_amount'
+}, inplace=True)
+```
+
+Aufgrund der Aneinanderreihung solcher Methoden können Spaltennamen auch automatisch bearbeitet werden. Die Methode `replace()` wird verwendet, um bestimmte Werte in einer Spalte zu ersetzen.
+
+```python
+df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
+```
+
+Mittels Methode `drop()` können spezifische Spalten auch gelöscht werden. Hierbei muss jedoch immer der Verlust der Daten vorher bedacht werden.
+
+```python
+df.drop(columns= { "Unnamed: 1", "Unnamed: 2", "Unnamed: 3" }, inplace=True)
+```
+
+Der Codeblock zeigt verschiedene Methoden zum Entfernen von Duplikaten aus einem Pandas-Dataframe. Die Funktion `drop_duplicates()` wird verwendet, um Duplikate zu entfernen.
+
+```python
+df = df.drop_duplicates()
+df.drop_duplicates(inplace=True)
+
+df.drop_duplicates(inplace=True, keep='first') ## nur erste Duplikate behalten
+df.drop_duplicates(inplace=True, keep='last') ## nur letzte Duplikate behalten
+df.drop_duplicates(inplace=True, keep='False') ## alle Duplikate löschen
+```
+
+Die Methode `dropna()` wird verwendet, um Zeilen oder Spalten mit NaN-Werten zu entfernen, während `fillna()` genutzt wird, um fehlende Werte durch einen bestimmten Wert, wie den Mittelwert, zu ersetzen.
+
+```python
+df.dropna() ## Löscht Zeilen, in denen alle Werte null sind
+df.dropna(axis=1) ## Löscht Spalten, in denen alle Werte null sind
+df['apples'].fillna(df['apples'].mean(), inplace=True) ## Füllt fehlende Werte mit dem Mittelwert der Spalte 'apples' aus
+```
+
+### Matplotlib
+
+Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter und interaktiver Visualisierungen in Python. Es ist besonders nützlich für wissenschaftliche und datenbezogene Visualisierungen.
+
+#### Installation
+
+Um Matplotlib zu installieren, kann man pip verwenden:
+
+```bash
+pip install matplotlib
+```
+
+#### Grundlegendes Beispiel
+
+Hier ist ein einfaches Beispiel, das zeigt, wie man mit Matplotlib ein Liniendiagramm erstellt:
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+x = [1, 2, 3, 4, 5]
+y = [2, 3, 5, 7, 11]
+
+# Liniendiagramm erstellen
+plt.plot(x, y)
+plt.xlabel('x-Achse')
+plt.ylabel('y-Achse')
+plt.title('Einfaches Liniendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/plot.png" alt="Liniendiagramm" style="max-width: 500px;">
+
+#### Histogramm
+
+Ein Histogramm ist nützlich, um die Verteilung einer Datenmenge darzustellen. Hier ist ein Beispiel:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = np.random.randn(1000)
+
+# Histogramm erstellen
+plt.hist(data, bins=30, edgecolor='black')
+plt.xlabel('Werte')
+plt.ylabel('Häufigkeit')
+plt.title('Histogramm der Zufallsdaten')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/hist.png" alt="Histogramm" style="max-width: 500px;">
+
+#### Punktwolkendiagramm (Scatter Plot)
+
+Ein Punktwolkendiagramm zeigt die Beziehung zwischen zwei Variablen. Im ersten Beispiel sieht man, dass wenig Korrelation besteht, während im zweiten Beispiel ein starker Zusammenhang zwischen den beiden Arrays besteht.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+x = np.random.rand(50)
+y = np.random.rand(50)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter.png" alt="Punktwolkendiagramm" style="max-width: 500px;">
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Funktion für linearen Zusammenhang
+def linear_function(x):
+    return 0.5 * x + 3  # Beispiel einer linearen Funktion: y = 0.5x + 3
+
+# x-Werte generieren
+x = np.linspace(0, 100, 30)  # 30 äquidistante Werte von 0 bis 100
+y = linear_function(x) + np.random.normal(0, 5, 30)  # Zufällige Abweichung mit Normalverteilung (Mittelwert 0, Standardabweichung 5)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter_2.png" alt="Punktwolkendiagramm" style="max-width: 500px;">
+
+#### Balkendiagramm
+
+Ein Balkendiagramm zeigt die Werte für verschiedene Kategorien.
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+categories = ['A', 'B', 'C', 'D']
+values = [3, 7, 8, 5]
+
+# Balkendiagramm erstellen
+plt.bar(categories, values, color='green')
+plt.xlabel('Kategorien')
+plt.ylabel('Werte')
+plt.title('Balkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/bar.png" alt="Balkendiagramm" style="max-width: 500px;">
+
+#### Boxplot
+
+Ein Boxplot zeigt die Verteilung einer Datenmenge und hebt Ausreißer hervor.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = [np.random.randn(100) for _ in range(4)]
+
+# Boxplot erstellen
+plt.boxplot(data, patch_artist=True)
+plt.xlabel('Gruppe')
+plt.ylabel('Werte')
+plt.title('Boxplot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/box.png" alt="Boxplot" style="max-width: 500px;">
+
+### Seaborn
+
+Seaborn ist eine auf Matplotlib basierende Bibliothek, die speziell für statistische Visualisierungen entwickelt wurde. Sie bietet eine einfachere API und schönere Standardstile.
+
+#### Installation
+
+Um Seaborn zu installieren, kann man pip verwenden:
+
+```bash
+pip install seaborn
+```
+
+#### Grundlegendes Beispiel
+
+Hier ist ein einfaches Beispiel, das zeigt, wie man mit Seaborn ein Histogramm erstellt:
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Daten
+data = np.random.randn(1000)
+
+# Histogramm erstellen
+sns.histplot(data, bins=30, kde=True)
+plt.xlabel('Werte')
+plt.ylabel('Häufigkeit')
+plt.title('Seaborn Histogramm mit KDE')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/histplot.png" alt="Histogramm und Liniendiagramm" style="max-width: 500px;">
+
+#### Paarplot (Pair Plot)
+
+Ein Paarplot ist nützlich, um die Beziehungen zwischen mehreren Variablen in einem Datensatz darzustellen.
+
+```python
+import seaborn as sns
+import pandas as pd
+
+# Beispieldatensatz laden
+df = sns.load_dataset('iris')
+
+# Paarplot erstellen
+sns.pairplot(df, hue='species')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/pairplot.png" alt="Paarplot" style="max-width: 700px;">
+
+#### Heatmap
+
+Eine Heatmap ist nützlich, um Korrelationen zwischen verschiedenen Variablen zu visualisieren.
+
+```python
+import seaborn as sns
+import numpy as np
+
+# Zufallsdaten generieren
+data = np.random.rand(10, 12)
+
+# Heatmap erstellen
+sns.heatmap(data, annot=True, fmt=".1f")
+plt.xlabel('Spalten')
+plt.ylabel('Zeilen')
+plt.title('Heatmap')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/heatmap.png" alt="Heatmap" style="max-width: 500px;">
+
+#### Violinplot
+
+Ein Violinplot kombiniert Aspekte von Boxplots und Dichteplots.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Beispieldatensatz laden
+df = sns.load_dataset('iris')
+
+# Violinplot erstellen
+sns.violinplot(x='species', y='sepal_length', data=df)
+plt.xlabel('Spezies')
+plt.ylabel('Sepal Länge')
+plt.title('Violinplot der Sepal Länge nach Spezies')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/violinplot.png" alt="Violinplot" style="max-width: 500px;">
+
+#### Relplot (für KI-Anwendungen)
+
+Ein Relplot (relationship plot) ist nützlich, um die Beziehung zwischen verschiedenen Variablen zu visualisieren, insbesondere in großen Datensätzen, die in KI-Anwendungen häufig vorkommen.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Beispieldatensatz laden
+df = sns.load_dataset('tips')
+
+# Relplot erstellen
+sns.relplot(x='total_bill', y='tip', hue='time', size='size', data=df)
+plt.xlabel('Rechnungsbetrag')
+plt.ylabel('Trinkgeld')
+plt.title('Relplot der Rechnungsbeträge und Trinkgelder')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/relplot.png" alt="Relplot" style="max-width: 500px;">
+
+## Machine Learning
+
+Maschinelles Lernen ist ein Bereich der Informatik, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Der große Unterschied zum herkömmlichen Programmieren besteht darin, dass beim maschinellen Lernen anhand von unglaublich vielen Datensätzen (mit zugehörigen richtigen Antworten) **Regeln** erlernt werden, die dann auf neue Daten angewendet werden können, während ein Algorithmus anhand von festgelegten Regeln die **Antworten** findet. Folgendes Bild veranschaulicht dieses Konzept:
+
+<img
+    src="/images/artificial_intelligence/machine_learning_concept_lm.png"
+    alt="ML Konzept"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/machine_learning_concept_dm.png"
+    alt="ML Konzept"
+    class="dark-only"
+/>
+
+#### Einordnung in die Kategorien
+
+Maschinelles Lernen unterteilt sich hierbei in die drei großen Kategorien `Supervised Learning`, `Unsupervised Learning`, `Reinforcement Learning`.
+
+-   **Supervised Learning**  
+    Das überwachte Lernen kategorisiert alle Aufgaben des Maschinellen Lernens, bei welchem das Trainieren mithilfe von Daten und zugehörigen richtigen bzw. gewollten Antworten stattfindet. Das Modell wird demnach auf eine Art „Soll-Zustand“ hintrainiert. Um die Datensätze möglichst effizient zu nutzen, werden meistens 70% der Ursprungsdaten für den Prozess des Trainierens verwendet und die restlichen 30% für das Testen der Genauigkeit des Modells.
+
+    Beispiele für das überwachte Lernen sind die Klassifizierung von Bildern, Texten, Sprache, Emotionen, die Erkennung von Spam-E-Mails, Empfehlungssysteme in Online-Shops oder gewissen Formen von Vorhersagen in bestimmten Bereichen.
+
+    Die größten Herausforderungen dieser Sparte sind das `Overfitting` und `Underfitting`. Aufgrund des Daseins der korrekten Antworten kann es geschehen, dass das Modell zu sehr and die Trainingsdaten trainiert wird und somit keine allgemein gültigen Regeln erstellen kann (`Overfitting`). Oder die Beschaffenheit der Daten, die falsch ausgewählte Architektur (Neuronales Netz) oder Algorithmus lässt keine allgemeinen Regeln erkennen (`Underfitting`).
+
+    Nichtsdestotrotz ist das überwachte Lernen das weit verbreitetste und am häufigsten genutzte Verfahren, da es sich als sehr effektiv erwiesen hat.
+
+-   **Unsupervised Learning**  
+    Beim unüberwachten Lernen versucht der Algorithmus im Trainingsprozess die Daten in Gruppen zu clustern, um gemeinsame oder unterschiedliche Eigenschaften festzustellen. Dabei sind als Datengrundlage keine Antworten vorhanden und das Modell muss selbständig die Muster in den Daten erkennen.
+
+    Diese Sparte ist vor allem in Bereichen des Clustern vorzufinden. Beispielsweise kann man unbeaufsichtigtes Lernen in Echtzeit nutzen, um Muster in Kundenmerkmalen (Marketingabteilung), Anomalien (Betrugserkennung), Empfehlungssystemen oder selten auf der Bildverarbeitung zu identifizieren.
+
+    Diese Art des maschinellen Lernens wird nicht so häufig verwendet, da die Interpretierbarkeit der Ergebnisse, die Skalierbarkeit und Komplexität oft zu großen Problemen führt. Erstaunlicherweise basiert unser Gehirn jedoch am ehesten auf dieser Methodik, da in unseren frühen Lebensjahren ausschließlich Rohdaten eingespeist werden (Hören, Sehen, Schmecken, ...).
+
+-   **Reinforcement Learning**  
+    Das verstärkende Lernen ist ein iterativer Prozess, bei welchem das Modell mithilfe des Belohnungssystems trainiert wird. Das Ziel des Modells ist die Maximierung der Belohnung, welches mit dem Ziel der Programmierer (Maximierung der Genauigkeit) stark korreliert. Außerdem werden schlechte Belohnungen bzw. Bestrafungen vom Modell vermieden, was bedeutet, dass die Bewerter des Modells bereits in der Trainingsphase die Robustheit und Fairness des Modells sicherstellen kann. Somit kann diese künstliche Intelligenz schwer manipuliert werden, schädliche Informationen preiszugeben, und hat keine Vorurteile.
+
+    Hierbei muss man bei der Implementierung des Learnprozesses jedoch aufpassen, nicht versehentlich das Belohnungssystem zu negieren. Dies ist nämlich wirklich einmal auch OpenAI passiert, weswegen [GPT-2 das unanständigste Modell](https://openai.com/index/fine-tuning-gpt-2/) in der Geschichte wurde ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).
+
+#### Deep Learning
+
+Eine weiter Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellen Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und Parameter in der `Backwards-Propagation` optimieren. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle **neuronalen Netzwerke** (Neural Networks) in die Kategorie „Deep Learning“ fallen.
+
+Das Gegenteil des „Deep Learning“ (tiefen Lernens) ist das „Shallow Learning“ (flaches Lernen), welches alle anderen Algorithmen des maschinellen Lernens umfasst, wie zum Beispiel die `Support Vector Machine` (SVM), den `Random Forest Classifier` (RFC) oder ganz allgemein die verschiedenen mathematischen Methoden der `Regression`.
+
+:::danger[Achtung]
+Deep Learning bedeutet allerdings nicht zwangsmäßig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning klassifiziert nur, dass das Modell aus mehreren Schichten (Layer) besteht.
+:::
+
+#### Umsetzung von KI-Projekten
+
+Der Prozess des maschinellen Lernens ist im folgenden Diagramm dargestellt:
+
+<img
+    src="/images/artificial_intelligence/machine_learning_process_lm.png"
+    alt="Prozess des maschinellen Lernens"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/machine_learning_process_dm.png"
+    alt="Prozess des maschinellen Lernens"
+    class="dark-only"
+/>
+
+Wie man sehen kann, beginnt dieser Prozess mit dem **Aggregieren** der Daten und **Bereinigung** dieser. Auch wenn man es nicht glaubt, machen diese Teilaufgaben **ca. 50-70%** des Arbeitsaufwandes vom gesamten Prozess aus. Hierbei muss besonders auf den Datenschutz der Kunden, die Datenqualität und die Datensicherheit geachtet werden. Die Daten selbst können im Internet gratis oder kostenlos gefunden werden. Saubere Daten sind Gold wert!
+
+Der eigentliche interessante Teil beginnt dann beim Aufbereitung und Trainieren des Modells mit den Daten und dem anschließenden Testen. Hierbei gibt es einige Methoden der deskriptiven Statistik, um die Qualität des Modells zu beurteilen. Sobald der Kunde mit dieser zufrieden ist, kann das Modell in der Produktionsumgebung eingesetzt werden.
+
+### Supervised Learning
+
+Supervised Learning ist ein zentraler Bereich in der maschinellen Lernpraxis, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Im Gegensatz zum unsupervised Learning, bei dem der Algorithmus versucht, selbständig Muster in den Daten zu identifizieren, erfolgt beim Supervised Learning das Training anhand von gelabelten Daten, die als Eingabe-Output-Paare vorliegen.
+
+In diesem Kontext bezeichnet „gelabelte Daten“ eine Menge von Eingabebeispielen, für die die zugehörigen Ausgaben bereits bekannt sind. Das Ziel besteht darin, ein Modell zu erstellen, das in der Lage ist, aus neuen, bisher ungesehenen Eingabebeispielen korrekte Vorhersagen oder Klassifikationen zu treffen.
+
+Es gibt verschiedene Arten von Modellen im Bereich des Supervised Learning, die jeweils für spezifische Aufgaben und Datenstrukturen entwickelt wurden. Dazu gehören lineare Modelle wie die logistische Regression für binäre Klassifikation, Support Vector Machines für marginale Klassifikation, Ensemble-Methoden wie Random Forests zur Kombination mehrerer Modelle, Naive Bayes für probabilistische Klassifikation und neuronale Netzwerke für komplexe Mustererkennung.
+
+Der Trainingsprozess besteht darin, das Modell mit den gelabelten Daten zu füttern und die Gewichtungen oder Parameter des Modells so anzupassen, dass es in der Lage ist, aus den gegebenen Eingaben genaue Vorhersagen zu machen. Das trainierte Modell kann dann auf neuen, nicht gelabelten Daten angewendet werden, um Vorhersagen zu treffen oder Muster zu identifizieren.
+
+Supervised Learning findet in einer Vielzahl von Anwendungen Anwendung, darunter Spracherkennung, Bildklassifikation, medizinische Diagnose, Finanzprognosen und vieles mehr. Die Wahl des geeigneten Modells hängt von der Art der Daten und der spezifischen Aufgabe ab, die gelöst werden soll.
+
+#### Vorbereitung
+
+:::note
+Bei vielen Modellen wird davon ausgegangen, dass die Daten bereits aufbereitet vorliegen.
+:::
+
+##### Train Test Split
+
+In der Welt des maschinellen Lernens ist der Train-Test-Split ein entscheidender Schritt, um die Leistung von Modellen objektiv zu bewerten. Diese Methode ist von grundlegender Bedeutung, um sicherzustellen, dass ein Modell nicht nur die Trainingsdaten auswendig gelernt hat, sondern auch in der Lage ist, auf neuen, bisher ungesehenen Daten präzise Vorhersagen zu treffen.
+
+```python
+
+## X und y erstellen
+## Kundenbewertungen (X)
+X = [
+    "Das Produkt ist wirklich großartig, ich bin sehr zufrieden!",
+    "Leider entspricht das Produkt nicht meinen Erwartungen.",
+    "Tolles Preis-Leistungs-Verhältnis.",
+    "Ich bin neutral, es ist okay, aber nichts Besonderes.",
+    "Schlechtestes Produkt, das ich je gekauft habe!"
+]
+
+## Dazugehörige Kategorien (y)
+y = ["positiv", "negativ", "positiv", "neutral", "negativ"]
+
+## DataFrame erstellen
+import pandas as pd
+df = pd.DataFrame({'Bewertung': X, 'Kategorie': y})
+
+## Daten in X und y aufteilen
+X = df['Bewertung']
+y = df['Kategorie']
+
+## Daten teilen für lernen und validieren
+from sklearn.model_selection import train_test_split
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = .3, random_state = 12)
+
+print("X_train:", X_train.shape) ## X_train: (3,)
+print("y_train:", y_train.shape) ## y_train: (3,)
+print("X_valid:", X_valid.shape) ## X_valid: (2,)
+print("y_valid:", y_valid.shape) ## y_valid: (2,)
+```
+
+##### Vektorisieren
+
+Beim maschinellen Lernens wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Form von Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](#bag-of-words-bow) vektorisiert.
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+vectorizer = CountVectorizer()
+
+vectorizer.fit(X)
+print("Token Count:", len(vectorizer.get_feature_names_out()))
+## <Anzahl unterschiedliche Wörter>
+
+X_train_vectorized = vectorizer.transform(X_train)
+print("X_train_vectorized:", X_train_vectorized.shape)
+## X_train_vectorized: (<Anzahl Trainingsbeispiele>, <Anzahl unterschiedliche Wörter>)
+
+print("Bag of Words\n", X_train_vectorized.toarray())
+## [Beispieloutput:]
+## Bag of Words
+## [[0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## ...
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]]
+```
+
+#### Lineare Modelle
+
+##### Logistic Regression
+
+##### Support Vector Machines
+
+#### Ensemble-Methoden
+
+##### Random Forest Classifier
+
+###### Besonderheiten des Random Forest Classifiers
+
+Der Random Forest Classifier (RFC) ist ein leistungsfähiger und vielseitiger Algorithmus für Klassifikationsaufgaben. Er kombiniert die Vorhersagen vieler Entscheidungsbäume, um die Genauigkeit und Robustheit zu erhöhen. Die wichtigsten Vorteile des RFC sind:
+
+1. **Robustheit gegen Überanpassung**: Da jeder Baum auf einer zufälligen Teilmenge der Daten trainiert wird, verringert sich die Wahrscheinlichkeit, dass der Algorithmus zu stark auf Trainingsdaten angepasst wird.
+2. **Stabilität und Genauigkeit**: Durch die Aggregation der Vorhersagen vieler Bäume liefert der RFC konsistentere und genauere Vorhersagen.
+3. **Geringere Varianz**: Der RFC reduziert die Varianz, die bei einzelnen Entscheidungsbäumen auftreten kann, indem er die Ergebnisse vieler Bäume kombiniert.
+4. **Automatische Merkmalsauswahl**: Während des Trainings wird für jeden Split nur eine zufällige Untermenge der Merkmale betrachtet, was die Bedeutung irrelevanter Merkmale verringert.
+
+###### Entscheidungsbaum
+
+Ein Entscheidungsbaum ist die grundlegende Komponente eines Random Forest. Er besteht aus Knoten, die Bedingungen auf Merkmale der Daten prüfen, und Blättern, die die Vorhersagen enthalten. Der Baum wird rekursiv aufgebaut, indem an jedem Knoten der beste Split gewählt wird, der die Daten am besten trennt. Dieser Prozess wird so lange fortgesetzt, bis bestimmte Kriterien erfüllt sind (z.B. maximale Tiefe des Baumes oder minimale Anzahl von Datenpunkten in einem Blatt).
+
+In der folgenden Abbildung sieht man ein Beispiel eines Entscheidungsbaums, welcher feststellen soll, ob eine Frucht `essbar` oder `nicht essbar` ist. Dieser Baum verfügt über einen Wurzelknoten, zwei innere Knoten und vier Blattknoten.
+
+<img
+    src="/images/artificial_intelligence/rfc_tree_lm.png"
+    alt="Entscheidungsbaum"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/rfc_tree_dm.png"
+    alt="Entscheidungsbaum"
+    class="dark-only"
+/>
+
+###### Ensemble-Lernen
+
+Der Random Forest ist ein Ensemble-Lernverfahren, das viele Entscheidungsbäume kombiniert. Jeder Baum wird auf einer zufälligen Teilmenge der Trainingsdaten (mit Zurücklegen) und einer zufälligen Teilmenge der Merkmale trainiert. Die Vorhersagen der einzelnen Bäume werden dann aggregiert, um die endgültige Vorhersage zu machen. Bei Klassifikationsproblemen erfolgt dies in der Regel durch Mehrheitsabstimmung.
+
+Im folgenden Bild sieht man anhand eines Beispiels, wie die Genauigkeit des gesamten Waldes aufgrund des unterschiedlichen Aufbaus der Bäume insgesamt steigt, da sich Fehler gegenseitig automatisch aufheben. Dieses Phänomen nennt sich `Weisheit der Crowd`.
+
+<img
+    src="/images/artificial_intelligence/rfc_ensemble_lm.png"
+    alt="Entscheidungsbaum"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/rfc_ensemble_dm.png"
+    alt="Entscheidungsbaum"
+    class="dark-only"
+/>
+
+###### Codebeispiel mit Datenaufbereitung und Anwendung des RFC
+
+Hier ist ein vollständiges Beispiel, das zeigt, wie man den `RandomForestClassifier` in Python mit `scikit-learn` verwendet. Das Beispiel umfasst Datenaufbereitung, Modelltraining und Vorhersage.
+
+```python
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Daten laden
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Daten in Trainings- und Testsets aufteilen
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Random Forest Classifier erstellen
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Modell trainieren
+clf.fit(X_train, y_train)
+
+# Vorhersagen auf dem Testset machen
+y_pred = clf.predict(X_test)
+
+# Genauigkeit berechnen
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Genauigkeit: {accuracy * 100:.2f}%')
+
+# Beispiel-Vorhersage für neue Daten
+new_data = np.array([[5.1, 3.5, 1.4, 0.2]])
+prediction = clf.predict(new_data)
+print(f'Vorhersage für neue Daten: {iris.target_names[prediction][0]}')
+```
+
+```
+//output.txt
+Genauigkeit: 100.00%
+Vorhersage für neue Daten: setosa
+```
+
+###### Erklärung des Codes
+
+1. **Daten laden**: Das Iris-Datenset wird mit `load_iris()` geladen.
+2. **Datenaufteilung**: Die Daten werden mit `train_test_split()` in Trainings- und Testsets aufgeteilt.
+3. **Modellerstellung**: Ein `RandomForestClassifier` wird mit 100 Entscheidungsbäumen (`n_estimators=100`) erstellt.
+4. **Training**: Der Klassifikator wird mit den Trainingsdaten trainiert.
+5. **Vorhersage**: Vorhersagen für das Testset werden gemacht.
+6. **Bewertung**: Die Genauigkeit des Modells auf dem Testset wird berechnet.
+7. **Beispiel-Vorhersage**: Eine Vorhersage für neue, unbekannte Daten wird durchgeführt.
+
+Dieses Beispiel zeigt die typischen Schritte zur Verwendung eines Random Forest Classifiers mit `scikit-learn`. Durch die Kombination vieler Entscheidungsbäume bietet der RFC robuste und genaue Vorhersagen und ist eine ausgezeichnete Wahl für viele Klassifikationsprobleme.
+
+##### Gradient Boosting Classifier
+
+#### Naive Bayes
+
+Naive-Bayes-Modelle sind eine Klasse von probabilistischen Klassifikationsalgorithmen im Bereich des Supervised Learning. Sie basieren auf dem Bayes'schen Theorem und gehen von der naiven Annahme aus, dass die Merkmale eines Datenpunkts unabhängig voneinander sind, obwohl dies in der Realität oft nicht der Fall ist. Trotz ihrer Einfachheit haben Naive-Bayes-Modelle sich als effektiv in vielen Anwendungen, insbesondere in der Textklassifikation, erwiesen. Diese Modelle sind schnell zu trainieren und zu implementieren, und sie bieten gute Leistung, wenn die Unabhängigkeitsannahme in der Praxis zumindest annähernd erfüllt ist.
+
+##### MultinomialNB
+
+Multinomial Naive Bayes (MultinomialNB) ist eine Textklassifikationsmethode, die auf dem Naive-Bayes-Algorithmus basiert. Sie eignet sich besonders gut für Aufgaben wie Spam-Erkennung oder Themenzuordnung. Mit Fokus auf Wortzählungen in Texten ist MultinomialNB für seine Einfachheit und Effizienz bekannt.
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+clf = MultinomialNB(alpha=0.2)
+clf.fit(X_train, y_train)
+
+predictions = clf.predict(X_valid)
+print(accuracy_score(predictions, y_valid)) ## [Beispieloutput:] 0.9772727272727273
+```
+
+#### K-nearest Neighbors (KNN)
+
+#### Neuronale Netze
+
+##### Tensorflow
+
+##### PyTorch
 
 ### Natural Language Processing
 
@@ -524,362 +1659,3 @@ print(labels) ## [1 0 0 0 1 1 0 1 0 1]
 ```
 
 #### Modeling
-
-## Pandas
-
-Pandas ist eine leistungsstarke und weit verbreitete Bibliothek für Datenanalyse und -manipulation in der Programmiersprache Python. Entwickelt auf Basis von NumPy bietet Pandas Datenstrukturen, die ideal für die Verarbeitung und Analyse von strukturierten Daten wie Tabellen oder CSV-Dateien geeignet sind. Diese Bibliothek erleichtert das Arbeiten mit großen Datensätzen und ermöglicht es, komplexe Operationen auf Daten schnell und effizient durchzuführen. Pandas wird in den Bereichen Datenwissenschaft, Finanzanalyse, Machine Learning und anderen datenintensiven Anwendungen eingesetzt. In dieser Einführung werden wir einen Blick auf die Schlüsselfunktionen und -konzepte von Pandas werfen, um ein Verständnis für die Vielseitigkeit dieser Bibliothek zu entwickeln.
-
-```bash title="Installing pandas"
-pip install pandas
-```
-
-```python
-import pandas as pd
-```
-
-### Theorie
-
-Pandas führt zwei grundlegende Datenstrukturen ein: Dataframes und Series. Ein Dataframe kann als eine zweidimensionale Datenstruktur betrachtet werden, die in Form einer Tabelle organisiert ist. Diese Tabelle besteht aus Zeilen und Spalten, wobei jede Spalte einen bestimmten Datentyp repräsentiert. Einzelne Spalten in einem Dataframe werden als Series bezeichnet. Series hingegen kann als eindimensionales Array oder eine Liste betrachtet werden und enthält Daten eines bestimmten Datentyps.
-
-![Series and Dataframe](/images/artificial_intelligence/series-and-dataframe.png)
-
-#### Dataframe
-
-Ein Dataframe ist die Hauptdatenstruktur in Pandas und kann als eine zweidimensionale, tabellenähnliche Datenstruktur betrachtet werden. Es organisiert Daten in Zeilen und Spalten, wobei jede Spalte eine Series darstellt. Dataframes sind äußerst vielseitig und ermöglichen die effiziente Verarbeitung und Analyse von strukturierten Daten. Sie können aus verschiedenen Datentypen bestehen und erleichtern den Zugriff, die Filterung und die Transformation von Daten. Dataframes werden häufig für die Darstellung von Tabellen in CSV-Dateien, Excel-Tabellen oder SQL-Abfragen verwendet. Die Operationen auf Dataframes können sowohl auf Zeilen als auch auf Spalten angewendet werden, was eine umfassende Datenmanipulation ermöglicht.
-
-#### Series
-
-Eine Series ist eine grundlegende Datenstruktur in Pandas und kann als eindimensionales Array oder Liste betrachtet werden. Jede Spalte in einem Dataframe ist eine Series. Series können Daten unterschiedlichen Datentyps enthalten, einschließlich numerischer Werte, Zeichenketten oder Zeitstempel. Sie ermöglichen den Zugriff auf Daten durch einen Index und unterstützen zahlreiche Funktionen zur Datenmanipulation. Durch die Verwendung von Series können bestimmte Datenpunkte in einem Dataframe isoliert und spezifische Operationen auf einzelnen Spalten durchgeführt werden. Dies macht Series zu einem wichtigen Baustein für die Arbeit mit strukturierten Daten in Pandas.
-
-### Code
-
-#### Dataframe erstellen
-
-Man kann ein Dataframe auf mehrere Arten erstellen:
-
--   aus einem Dictionary
-
-```python
-data = {
-    'apples': [3, 2, 0, 1],
-    'oranges': [0, 3, 7, 2]
-}
-```
-
-```python
-
-purchases = pd.DataFrame(data)
-```
-
--   aus einer CSV-Datei
-
-```csv
-// purchases.csv
-,apples,oranges
-June,3,0
-Robert,2,3
-Lily,0,7
-David,1,2
-```
-
-```python
-df = pd.read_csv('purchases.csv', index_col=0)
-```
-
--   aus einer JSON-Datei
-
-```json
-// purchases.json
-{
-    "apples": { "June": 3, "Robert": 2, "Lily": 0, "David": 1 },
-    "oranges": { "June": 0, "Robert": 3, "Lily": 7, "David": 2 }
-}
-```
-
-```python
-df = pd.read_json('purchases.json')
-```
-
--   oder auch einer SQL-Datenbank
-
-```bash title="Installing sqlite3"
-pip install pysqlite3
-```
-
-```python
-import sqlite3
-con = sqlite3.connect("database.db")
-
-df = pd.read_sql_query("SELECT * FROM purchases", con)
-```
-
-#### Daten in Datei persistieren
-
-Man kann ein Dataframe genauso wieder in eine Datei schreiben, wie es aus einer Datei gelesen wurde.
-
--   in eine CSV-Datei
-
-```python
-df.to_csv('new_purchases.csv')
-```
-
--   in eine JSON-Datei
-
-```python
-df.to_json('new_purchases.json')
-```
-
--   mittels SQL
-
-```python
-df.to_sql('new_purchases.sql', con)
-```
-
-#### Operation mit Dataframes
-
-##### Ausgaben
-
-Ein logisches Verständnis über die Konstellation der Daten zu haben ist besonders wichtig, wenn man mit Pandas arbeitet. Die Ausgabe von Dataframes kann auf verschiedene Arten erfolgen.
-
-```python
-df.head(5) ## fünf ersten Zeilen ausgeben
-df.tail(3) ## letzten drei Zeilen ausgeben
-```
-
-Zeilen und Spalten spezifisch ausgeben, jeweils mit Index und Namen:
-
-```python
-df['oranges'] ## Series 'oranges' ausgeben
-df[['oranges']] ## 'oranges' als Dataframe ausgeben
-df[['apples', 'oranges']] ## Dataframe ausgeben
-
-df.iloc[11] ## Zeile mit Index 11 ausgeben
-df.iloc[11:13] ## Zeilen 11 bis 13 ausgeben
-df.loc['December'] ## Zeile 'December' ausgeben
-df.loc['October':'December'] ## Zeilen von 'October' bis 'December' ausgeben
-```
-
-Metadaten der Tabelle herausfinden:
-
-```python
-df.shape ## Anzahl der Zeilen und Spalten (Beispiel: (1000, 11))
-df.columns ## Spaltennamen
-df.info()
-```
-
-```txt
-// df.info_output
-<class 'pandas.core.frame.DataFrame'>
-Index: 1000 entries, Guardians of the Galaxy to Nine Lives
-Data columns (total 11 columns):
- ##   Column              Non-Null Count  Dtype
----  ------              --------------  -----
- 0   Rank                1000 non-null   int64
- 1   Genre               1000 non-null   object
- 2   Description         1000 non-null   object
- 3   Director            1000 non-null   object
- 4   Actors              1000 non-null   object
- 5   Year                1000 non-null   int64
- 6   Runtime (Minutes)   1000 non-null   int64
- 7   Rating              1000 non-null   float64
- 8   Votes               1000 non-null   int64
- 9   Revenue (Millions)  872 non-null    float64
- 10  Metascore           936 non-null    float64
-dtypes: float64(3), int64(4), object(4)
-memory usage: 93.8+ KB
-```
-
-Nullwerte herausfinden:
-
-```python
-df.isnull() ## Gibt ein Dataframe zurück, wo alle Zellen True sind, falls die Werte null sind
-df.isnull().sum() ## Gibt die Anzahl der Nullwerte in jeder Series zurück
-df.isnull().sum().sum() ## Gibt die insgesamte Anzahl der Nullwerte zurück
-```
-
-Statistiken eines Dataframes herausfinden (Anzahl, Mittelwert, Standardabweichung, Minimum, Maximum, etc.).
-
-```python
-df.describe()
-df.corr() ## Korrelationen zwischen den Spalten
-```
-
-```python
-df['apples'].value_counts() ## Gruppierte Werte und Anzahl der Vorkommen
-```
-
-##### Datenmanipulationen
-
-Bei den meisten Veränderungen von Daten gibt es einen Parameter namens `inplace`, welcher angibt, ob die Änderungen direkt auf das Dataframe angewendet werden sollen oder ob die Änderungen in einem neuen Dataframe gespeichert werden sollen. Standardmäßig ist `inplace` auf `False` gesetzt, was bedeutet, dass die Änderungen in einem neuen Dataframe gespeichert werden.
-
-Die Methode `append()` wird verwendet, um zwei Dataframes (df und df2) zu verketten. Dies führt zu einem neuen Dataframe df3, das alle Zeilen von df und df2 enthält.
-
-```python
-df3 = df.append(df2)
-```
-
-Die Methode `rename()` wird verwendet, um bestimmte Spalten im Dataframe df umzubenennen, indem ein Dictionary mit den alten und neuen Spaltennamen bereitgestellt wird.
-
-```python
-df.columns = ['Amount of Fruits (Apple)', 'Amount of Fruits (Orange)']
-```
-
-```python
-df.rename(columns={
-    'Amount of Fruits (Apple)': 'apple_amount',
-    'Amount of Fruits (Orange)': 'orange_amount'
-}, inplace=True)
-```
-
-Aufgrund der Aneinanderreihung solcher Methoden können Spaltennamen auch automatisch bearbeitet werden. Die Methode `replace()` wird verwendet, um bestimmte Werte in einer Spalte zu ersetzen.
-
-```python
-df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
-```
-
-Mittels Methode `drop()` können spezifische Spalten auch gelöscht werden. Hierbei muss jedoch immer der Verlust der Daten vorher bedacht werden.
-
-```python
-df.drop(columns= { "Unnamed: 1", "Unnamed: 2", "Unnamed: 3" }, inplace=True)
-```
-
-Der Codeblock zeigt verschiedene Methoden zum Entfernen von Duplikaten aus einem Pandas-Dataframe. Die Funktion `drop_duplicates()` wird verwendet, um Duplikate zu entfernen.
-
-```python
-df = df.drop_duplicates()
-df.drop_duplicates(inplace=True)
-
-df.drop_duplicates(inplace=True, keep='first') ## nur erste Duplikate behalten
-df.drop_duplicates(inplace=True, keep='last') ## nur letzte Duplikate behalten
-df.drop_duplicates(inplace=True, keep='False') ## alle Duplikate löschen
-```
-
-Die Methode `dropna()` wird verwendet, um Zeilen oder Spalten mit NaN-Werten zu entfernen, während `fillna()` genutzt wird, um fehlende Werte durch einen bestimmten Wert, wie den Mittelwert, zu ersetzen.
-
-```python
-df.dropna() ## Löscht Zeilen, in denen alle Werte null sind
-df.dropna(axis=1) ## Löscht Spalten, in denen alle Werte null sind
-df['apples'].fillna(df['apples'].mean(), inplace=True) ## Füllt fehlende Werte mit dem Mittelwert der Spalte 'apples' aus
-```
-
-## Supervised Learning
-
-Supervised Learning ist ein zentraler Bereich in der maschinellen Lernpraxis, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Im Gegensatz zum unsupervised Learning, bei dem der Algorithmus versucht, selbständig Muster in den Daten zu identifizieren, erfolgt beim Supervised Learning das Training anhand von gelabelten Daten, die als Eingabe-Output-Paare vorliegen.
-
-In diesem Kontext bezeichnet "gelabelte Daten" eine Menge von Eingabebeispielen, für die die zugehörigen Ausgaben bereits bekannt sind. Das Ziel besteht darin, ein Modell zu erstellen, das in der Lage ist, aus neuen, bisher ungesehenen Eingabebeispielen korrekte Vorhersagen oder Klassifikationen zu treffen.
-
-Es gibt verschiedene Arten von Modellen im Bereich des Supervised Learning, die jeweils für spezifische Aufgaben und Datenstrukturen entwickelt wurden. Dazu gehören lineare Modelle wie die logistische Regression für binäre Klassifikation, Support Vector Machines für marginale Klassifikation, Ensemble-Methoden wie Random Forests zur Kombination mehrerer Modelle, Naive Bayes für probabilistische Klassifikation und neuronale Netzwerke für komplexe Mustererkennung.
-
-Der Trainingsprozess besteht darin, das Modell mit den gelabelten Daten zu füttern und die Gewichtungen oder Parameter des Modells so anzupassen, dass es in der Lage ist, aus den gegebenen Eingaben genaue Vorhersagen zu machen. Das trainierte Modell kann dann auf neuen, nicht gelabelten Daten angewendet werden, um Vorhersagen zu treffen oder Muster zu identifizieren.
-
-Supervised Learning findet in einer Vielzahl von Anwendungen Anwendung, darunter Spracherkennung, Bildklassifikation, medizinische Diagnose, Finanzprognosen und vieles mehr. Die Wahl des geeigneten Modells hängt von der Art der Daten und der spezifischen Aufgabe ab, die gelöst werden soll.
-
-### Vorbereitung
-
-:::note
-Bei vielen Modellen wird davon ausgegangen, dass die Daten bereits aufbereitet vorliegen.
-:::
-
-#### Train Test Split
-
-In der Welt des maschinellen Lernens ist der Train-Test-Split ein entscheidender Schritt, um die Leistung von Modellen objektiv zu bewerten. Diese Methode ist von grundlegender Bedeutung, um sicherzustellen, dass ein Modell nicht nur die Trainingsdaten auswendig gelernt hat, sondern auch in der Lage ist, auf neuen, bisher ungesehenen Daten präzise Vorhersagen zu treffen.
-
-```python
-
-## X und y erstellen
-## Kundenbewertungen (X)
-X = [
-    "Das Produkt ist wirklich großartig, ich bin sehr zufrieden!",
-    "Leider entspricht das Produkt nicht meinen Erwartungen.",
-    "Tolles Preis-Leistungs-Verhältnis.",
-    "Ich bin neutral, es ist okay, aber nichts Besonderes.",
-    "Schlechtestes Produkt, das ich je gekauft habe!"
-]
-
-## Dazugehörige Kategorien (y)
-y = ["positiv", "negativ", "positiv", "neutral", "negativ"]
-
-## DataFrame erstellen
-import pandas as pd
-df = pd.DataFrame({'Bewertung': X, 'Kategorie': y})
-
-## Daten in X und y aufteilen
-X = df['Bewertung']
-y = df['Kategorie']
-
-## Daten teilen für lernen und validieren
-from sklearn.model_selection import train_test_split
-X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = .3, random_state = 12)
-
-print("X_train:", X_train.shape) ## X_train: (3,)
-print("y_train:", y_train.shape) ## y_train: (3,)
-print("X_valid:", X_valid.shape) ## X_valid: (2,)
-print("y_valid:", y_valid.shape) ## y_valid: (2,)
-```
-
-#### Vektorisieren
-
-Beim maschinellen Lernens wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Form von Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](#bag-of-words-bow) vektorisiert.
-
-```python
-from sklearn.feature_extraction.text import CountVectorizer
-vectorizer = CountVectorizer()
-
-vectorizer.fit(X)
-print("Token Count:", len(vectorizer.get_feature_names_out()))
-## <Anzahl unterschiedliche Wörter>
-
-X_train_vectorized = vectorizer.transform(X_train)
-print("X_train_vectorized:", X_train_vectorized.shape)
-## X_train_vectorized: (<Anzahl Trainingsbeispiele>, <Anzahl unterschiedliche Wörter>)
-
-print("Bag of Words\n", X_train_vectorized.toarray())
-## [Beispieloutput:]
-## Bag of Words
-## [[0 0 0 ... 0 0 0]
-## [0 0 0 ... 0 0 0]
-## [0 0 0 ... 0 0 0]
-## ...
-## [0 0 0 ... 0 0 0]
-## [0 0 0 ... 0 0 0]
-## [0 0 0 ... 0 0 0]]
-```
-
-### Lineare Modelle
-
-#### Logistic Regression
-
-#### Support Vector Machines
-
-### Ensemble-Methoden
-
-#### Random Forest Classifier
-
-#### Gradient Boosting Classifier
-
-### Naive Bayes
-
-Naive-Bayes-Modelle sind eine Klasse von probabilistischen Klassifikationsalgorithmen im Bereich des Supervised Learning. Sie basieren auf dem Bayes'schen Theorem und gehen von der naiven Annahme aus, dass die Merkmale eines Datenpunkts unabhängig voneinander sind, obwohl dies in der Realität oft nicht der Fall ist. Trotz ihrer Einfachheit haben Naive-Bayes-Modelle sich als effektiv in vielen Anwendungen, insbesondere in der Textklassifikation, erwiesen. Diese Modelle sind schnell zu trainieren und zu implementieren, und sie bieten gute Leistung, wenn die Unabhängigkeitsannahme in der Praxis zumindest annähernd erfüllt ist.
-
-#### MultinomialNB
-
-Multinomial Naive Bayes (MultinomialNB) ist eine Textklassifikationsmethode, die auf dem Naive-Bayes-Algorithmus basiert. Sie eignet sich besonders gut für Aufgaben wie Spam-Erkennung oder Themenzuordnung. Mit Fokus auf Wortzählungen in Texten ist MultinomialNB für seine Einfachheit und Effizienz bekannt.
-
-```python
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
-
-clf = MultinomialNB(alpha=0.2)
-clf.fit(X_train, y_train)
-
-predictions = clf.predict(X_valid)
-print(accuracy_score(predictions, y_valid)) ## [Beispieloutput:] 0.9772727272727273
-```
-
-### K-nearest Neighbors (KNN)
-
-### Neuronale Netze
-
-#### Tensorflow
-
-#### PyTorch
