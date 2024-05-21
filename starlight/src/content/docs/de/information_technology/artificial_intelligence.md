@@ -133,7 +133,7 @@ NumPy ist eine grundlegende Bibliothek für numerische Berechnungen in Python. S
 
 #### Installation
 
-Um NumPy zu installieren, kannst du pip verwenden:
+Um NumPy zu installieren, kann man pip verwenden:
 
 ```bash
 pip install numpy
@@ -706,7 +706,7 @@ Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter u
 
 #### Installation
 
-Um Matplotlib zu installieren, kannst du pip verwenden:
+Um Matplotlib zu installieren, kann man pip verwenden:
 
 ```bash
 pip install matplotlib
@@ -756,7 +756,7 @@ plt.show()
 
 #### Punktwolkendiagramm (Scatter Plot)
 
-Ein Punktwolkendiagramm zeigt die Beziehung zwischen zwei Variablen.
+Ein Punktwolkendiagramm zeigt die Beziehung zwischen zwei Variablen. Im ersten Beispiel sieht man, dass wenig Korrelation besteht, während im zweiten Beispiel ein starker Zusammenhang zwischen den beiden Arrays besteht.
 
 ```python
 import matplotlib.pyplot as plt
@@ -775,6 +775,28 @@ plt.show()
 ```
 
 <img src="/images/artificial_intelligence/diagrams/scatter.png" alt="Punktwolkendiagramm" style="max-width: 500px;">
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Funktion für linearen Zusammenhang
+def linear_function(x):
+    return 0.5 * x + 3  # Beispiel einer linearen Funktion: y = 0.5x + 3
+
+# x-Werte generieren
+x = np.linspace(0, 100, 30)  # 30 äquidistante Werte von 0 bis 100
+y = linear_function(x) + np.random.normal(0, 5, 30)  # Zufällige Abweichung mit Normalverteilung (Mittelwert 0, Standardabweichung 5)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter_2.png" alt="Punktwolkendiagramm" style="max-width: 500px;">
 
 #### Balkendiagramm
 
@@ -824,7 +846,7 @@ Seaborn ist eine auf Matplotlib basierende Bibliothek, die speziell für statist
 
 #### Installation
 
-Um Seaborn zu installieren, kannst du pip verwenden:
+Um Seaborn zu installieren, kann man pip verwenden:
 
 ```bash
 pip install seaborn
