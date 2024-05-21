@@ -6,11 +6,22 @@ sidebar:
 
 Künstliche Intelligenz (KI) bezeichnet die Fähigkeit von Maschinen, menschliche Intelligenz nachzuahmen, indem sie Aufgaben wie Lernen, Problemlösen und Entscheidungsfindung durchführen. Die Entwicklung der KI hat in der Vergangenheit drei bedeutende Hype-Phasen erlebt: in den 1960er, 1980er und 2010er Jahren.
 
+## Geschichte & Entwicklung
+
 In den 1960er Jahren erlebte die KI ihre erste Blütezeit, angetrieben durch frühe Fortschritte in der symbolischen KI und die Entwicklung der ersten neuronalen Netzwerke. Der zweite Hype in den 1980er Jahren wurde durch die Einführung von Expertensystemen und verbesserten Algorithmen beflügelt. Der jüngste und bislang bedeutendste Hype begann in den 2010er Jahren, als Fortschritte in der Hardware, wie leistungsfähigere und erschwinglichere GPUs, die Demokratisierung der KI ermöglichten. Gleichzeitig führte die Verfügbarkeit großer Datenmengen (Big Data) dazu, dass maschinelles Lernen und insbesondere Deep Learning enorme Fortschritte machten.
 
 In den letzten Jahren hat die Entwicklung von KI einen weiteren Schub erhalten. Modelle wie ChatGPT, das öffentlich zugänglich gemacht wurde, demonstrieren die Leistungsfähigkeit moderner Sprachmodelle, die in der Lage sind, menschenähnliche Texte zu generieren und komplexe Anfragen zu beantworten. Heutzutage wird KI in vielen Bereichen inkludiert, darunter Gesundheitswesen, Finanzwesen, Bildung, Automobilindustrie und Kundenservice. Diese Anwendungen revolutionieren die Art und Weise, wie wir leben und arbeiten, und machen KI zu einem integralen Bestandteil unseres Alltags.
 
-Bevor wir jedoch gleich mit KI starten, müssen wir zuerst die Grundlagen der Programmiersprache Python kennenlernen. Python ist eine beliebte und benutzerfreundliche Sprache, insbesondere im Bereich der Datenwissenschaft und künstlichen Intelligenz. Mit einer klaren Syntax und einer reichhaltigen Standardbibliothek ist Python ideal für Anfänger und Experten gleichermaßen. Spezialisierte Module wie NumPy für numerische Operationen, Pandas für Datenanalyse und Matplotlib für Visualisierung haben dazu beigetragen, Python zur bevorzugten Sprache für Datenanalysten und KI-Entwickler zu machen.
+## Anwendungsbereiche
+
+Künstliche Intelligenz (KI) hat in den letzten Jahren eine Vielzahl von Anwendungsbereichen gefunden, die unser tägliches Leben und verschiedene Industrien revolutionieren. Von der Medizin bis zum Verkehr bietet KI Lösungen, die Effizienz und Genauigkeit erhöhen. Hier sind einige der wichtigsten Anwendungsbereiche von KI:
+
+-   **Medizin**: Erkennung von Krankheiten und Unterstützung bei Diagnosen.
+-   **Finanzen**: Analyse von Finanzmärkten und Betrugserkennung.
+-   **Generierung** von Medien: Erstellen von Texten, Bildern und Videos.
+-   **Gesichtserkennung**: Sicherheitsanwendungen wie Überwachung und Zugangskontrolle.
+-   **Verkehr**: Autonomes Fahren und Verkehrssteuerung.
+-   **Chatbots**: Kundenservice und automatisierte Kommunikation.
 
 ## Python & Data Science Module
 
@@ -115,6 +126,343 @@ class SpaceShip(Vehicle):
 ## Ein Objekt der Klasse "Car" wird erstellt.
 tesla_model_s = Car(4, 300)
 ```
+
+### NumPy
+
+NumPy ist eine grundlegende Bibliothek für numerische Berechnungen in Python. Sie bietet Unterstützung für große, mehrdimensionale Arrays und Matrizen sowie eine Sammlung von mathematischen Funktionen, um diese effizient zu bearbeiten. Viele andere Module in der Python-Community basieren auf NumPy.
+
+#### Installation
+
+Um NumPy zu installieren, kannst du pip verwenden:
+
+```bash
+pip install numpy
+```
+
+#### Theorie
+
+##### Mathematische Strukturen
+
+In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit verschiedenen Dimensionen:
+
+-   **Skalar** : Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
+-   **Vektor** : Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
+-   **Matrix** : Eine zweidimensionale Sammlung von Werten, zum Beispiel
+    $\mathbf{M} = \begin{bmatrix}
+    1 & 2 \\
+    3 & 4
+    \end{bmatrix}$.
+-   **Tensore** : Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+
+#### Erstellen von Arrays
+
+NumPy-Arrays können auf verschiedene Weisen erstellt werden:
+
+```python
+import numpy as np
+
+# Array aus einer Liste
+array1 = np.array([1, 2, 3])
+print("Array aus einer Liste:\n", array1)
+
+# Zweidimensionales Array (Matrix)
+array2 = np.array([[1, 2], [3, 4]])
+print("Zweidimensionales Array:\n", array2)
+
+# Array aus einem Bereich
+array3 = np.arange(10)
+print("Array aus einem Bereich:\n", array3)
+
+# Array mit gleichmäßig verteilten Werten
+array4 = np.linspace(0, 1, 5)
+print("Array mit gleichmäßig verteilten Werten:\n", array4)
+
+# Zufalls-Array
+array5 = np.random.rand(3, 3)
+print("Zufalls-Array:\n", array5)
+```
+
+```
+//output.txt
+Array aus einer Liste:
+ [1 2 3]
+Zweidimensionales Array:
+ [[1 2]
+ [3 4]]
+Array aus einem Bereich:
+ [0 1 2 3 4 5 6 7 8 9]
+Array mit gleichmäßig verteilten Werten:
+ [0.   0.25 0.5  0.75 1.  ]
+Zufalls-Array:
+ [[0.3599989  0.00788199 0.28990732]
+ [0.52026756 0.65163794 0.53505392]
+ [0.75076473 0.36474315 0.30692188]]
+```
+
+#### Grundlegende Operationen
+
+##### Addition und Subtraktion
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Addition
+c = a + b
+print("Addition:", c)
+
+# Subtraktion
+d = a - b
+print("Subtraktion:", d)
+```
+
+```
+//output.txt
+Addition: [5 7 9]
+Subtraktion: [-3 -3 -3]
+```
+
+##### Multiplikation und Division
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Multiplikation
+e = a * b
+print("Multiplikation:", e)
+
+# Division
+f = a / b
+print("Division:", f)
+```
+
+```
+//output.txt
+Multiplikation: [ 4 10 18]
+Division: [0.25 0.4  0.5 ]
+```
+
+##### Matrixmultiplikation
+
+```python
+import numpy as np
+
+# Matrizen erstellen
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+# Matrixmultiplikation
+C = np.dot(A, B)
+print("Matrixmultiplikation:\n", C)
+```
+
+```
+//output.txt
+Matrixmultiplikation:
+ [[19 22]
+ [43 50]]
+```
+
+#### Funktionen und Methoden
+
+##### Aggregationsfunktionen
+
+NumPy bietet eine Vielzahl von Funktionen zur Berechnung von Aggregaten:
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Summe
+sum_a = np.sum(a)
+print("Summe:", sum_a)
+
+# Mittelwert
+mean_a = np.mean(a)
+print("Mittelwert:", mean_a)
+
+# Standardabweichung
+std_a = np.std(a)
+print("Standardabweichung:", std_a)
+
+# Minimum und Maximum
+min_a = np.min(a)
+max_a = np.max(a)
+print("Minimum:", min_a)
+print("Maximum:", max_a)
+```
+
+```
+//output.txt
+Summe: 15
+Mittelwert: 3.0
+Standardabweichung: 1.4142135623730951
+Minimum: 1
+Maximum: 5
+```
+
+##### Reshape und Transponieren
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([[1, 2, 3], [4, 5, 6]])
+print("Array:\n", a)
+
+# Reshape
+b = a.reshape((3, 2))
+print("Reshaped Array:\n", b)
+
+# Transponieren
+c = a.T
+print("Transponiertes Array:\n", c)
+```
+
+```
+//output.txt
+Array:
+ [[1 2 3]
+ [4 5 6]]
+Reshaped Array:
+ [[1 2]
+ [3 4]
+ [5 6]]
+Transponiertes Array:
+ [[1 4]
+ [2 5]
+ [3 6]]
+```
+
+##### Broadcasting
+
+Broadcasting ermöglicht das Durchführen von Operationen auf Arrays unterschiedlicher Formen:
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([[1], [2], [3]])
+
+# Broadcasting
+c = a + b
+print("Broadcasting Ergebnis:\n", c)
+```
+
+```
+//output.txt
+Broadcasting Ergebnis:
+ [[2 3 4]
+ [3 4 5]
+ [4 5 6]]
+```
+
+#### Weitere Funktionen
+
+##### Erzeugen von speziellen Arrays
+
+```python
+import numpy as np
+
+# Null-Array
+zero_array = np.zeros((2, 3))
+print("Null-Array:\n", zero_array)
+
+# Einsen-Array
+ones_array = np.ones((2, 3))
+print("Einsen-Array:\n", ones_array)
+
+# Identitätsmatrix
+identity_matrix = np.eye(3)
+print("Identitätsmatrix:\n", identity_matrix)
+```
+
+```
+//output.txt
+Null-Array:
+ [[0. 0. 0.]
+ [0. 0. 0.]]
+Einsen-Array:
+ [[1. 1. 1.]
+ [1. 1. 1.]]
+Identitätsmatrix:
+ [[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+```
+
+##### Slicing und Indexierung
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Slicing
+slice_a = a[1:4]
+print("Slicing:", slice_a)
+
+# Boolean Indexing
+bool_idx = (a > 3)
+print("Boolean Indexing:", a[bool_idx])
+```
+
+```
+//output.txt
+Slicing: [2 3 4]
+Boolean Indexing: [4 5]
+```
+
+##### Lineare Algebra
+
+```python
+import numpy as np
+
+# Matrix erstellen
+A = np.array([[1, 2], [3, 4]])
+print("Array:\n", A)
+
+# Inverse der Matrix
+A_inv = np.linalg.inv(A)
+print("Inverse der Matrix:\n", A_inv)
+
+# Determinante der Matrix
+det_A = np.linalg.det(A)
+print("Determinante der Matrix:", det_A)
+
+# Eigenwerte und Eigenvektoren
+eigvals, eigvecs = np.linalg.eig(A)
+print("Eigenwerte:", eigvals)
+print("Eigenvektoren:\n", eigvecs)
+```
+
+```
+//output.txt
+Array:
+ [[1 2]
+ [3 4]]
+Inverse der Matrix:
+ [[-2.   1. ]
+ [ 1.5 -0.5]]
+Determinante der Matrix: -2.0000000000000004
+Eigenwerte: [-0.37228132  5.37228132]
+Eigenvektoren:
+ [[-0.82456484 -0.41597356]
+ [ 0.56576746 -0.90937671]]
+```
+
+NumPy ist eine äußerst mächtige Bibliothek, die in vielen wissenschaftlichen und technischen Anwendungen verwendet wird. Die oben genannten Beispiele decken einige der grundlegendsten Funktionen ab, aber NumPy bietet noch viele weitere fortgeschrittene Features, die das Arbeiten mit numerischen Daten in Python effizient und bequem machen.
 
 ### Pandas
 
@@ -352,6 +700,238 @@ df.dropna(axis=1) ## Löscht Spalten, in denen alle Werte null sind
 df['apples'].fillna(df['apples'].mean(), inplace=True) ## Füllt fehlende Werte mit dem Mittelwert der Spalte 'apples' aus
 ```
 
+### Matplotlib
+
+Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter und interaktiver Visualisierungen in Python. Es ist besonders nützlich für wissenschaftliche und datenbezogene Visualisierungen.
+
+#### Installation
+
+Um Matplotlib zu installieren, kannst du pip verwenden:
+
+```bash
+pip install matplotlib
+```
+
+#### Grundlegendes Beispiel
+
+Hier ist ein einfaches Beispiel, das zeigt, wie man mit Matplotlib ein Liniendiagramm erstellt:
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+x = [1, 2, 3, 4, 5]
+y = [2, 3, 5, 7, 11]
+
+# Liniendiagramm erstellen
+plt.plot(x, y)
+plt.xlabel('x-Achse')
+plt.ylabel('y-Achse')
+plt.title('Einfaches Liniendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/plot.png" alt="Liniendiagramm" style="max-width: 500px;">
+
+#### Histogramm
+
+Ein Histogramm ist nützlich, um die Verteilung einer Datenmenge darzustellen. Hier ist ein Beispiel:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = np.random.randn(1000)
+
+# Histogramm erstellen
+plt.hist(data, bins=30, edgecolor='black')
+plt.xlabel('Werte')
+plt.ylabel('Häufigkeit')
+plt.title('Histogramm der Zufallsdaten')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/hist.png" alt="Histogramm" style="max-width: 500px;">
+
+#### Punktwolkendiagramm (Scatter Plot)
+
+Ein Punktwolkendiagramm zeigt die Beziehung zwischen zwei Variablen.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+x = np.random.rand(50)
+y = np.random.rand(50)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter.png" alt="Punktwolkendiagramm" style="max-width: 500px;">
+
+#### Balkendiagramm
+
+Ein Balkendiagramm zeigt die Werte für verschiedene Kategorien.
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+categories = ['A', 'B', 'C', 'D']
+values = [3, 7, 8, 5]
+
+# Balkendiagramm erstellen
+plt.bar(categories, values, color='green')
+plt.xlabel('Kategorien')
+plt.ylabel('Werte')
+plt.title('Balkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/bar.png" alt="Balkendiagramm" style="max-width: 500px;">
+
+#### Boxplot
+
+Ein Boxplot zeigt die Verteilung einer Datenmenge und hebt Ausreißer hervor.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = [np.random.randn(100) for _ in range(4)]
+
+# Boxplot erstellen
+plt.boxplot(data, patch_artist=True)
+plt.xlabel('Gruppe')
+plt.ylabel('Werte')
+plt.title('Boxplot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/box.png" alt="Boxplot" style="max-width: 500px;">
+
+### Seaborn
+
+Seaborn ist eine auf Matplotlib basierende Bibliothek, die speziell für statistische Visualisierungen entwickelt wurde. Sie bietet eine einfachere API und schönere Standardstile.
+
+#### Installation
+
+Um Seaborn zu installieren, kannst du pip verwenden:
+
+```bash
+pip install seaborn
+```
+
+#### Grundlegendes Beispiel
+
+Hier ist ein einfaches Beispiel, das zeigt, wie man mit Seaborn ein Histogramm erstellt:
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Daten
+data = np.random.randn(1000)
+
+# Histogramm erstellen
+sns.histplot(data, bins=30, kde=True)
+plt.xlabel('Werte')
+plt.ylabel('Häufigkeit')
+plt.title('Seaborn Histogramm mit KDE')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/histplot.png" alt="Histogramm und Liniendiagramm" style="max-width: 500px;">
+
+#### Paarplot (Pair Plot)
+
+Ein Paarplot ist nützlich, um die Beziehungen zwischen mehreren Variablen in einem Datensatz darzustellen.
+
+```python
+import seaborn as sns
+import pandas as pd
+
+# Beispieldatensatz laden
+df = sns.load_dataset('iris')
+
+# Paarplot erstellen
+sns.pairplot(df, hue='species')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/pairplot.png" alt="Paarplot" style="max-width: 700px;">
+
+#### Heatmap
+
+Eine Heatmap ist nützlich, um Korrelationen zwischen verschiedenen Variablen zu visualisieren.
+
+```python
+import seaborn as sns
+import numpy as np
+
+# Zufallsdaten generieren
+data = np.random.rand(10, 12)
+
+# Heatmap erstellen
+sns.heatmap(data, annot=True, fmt=".1f")
+plt.xlabel('Spalten')
+plt.ylabel('Zeilen')
+plt.title('Heatmap')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/heatmap.png" alt="Heatmap" style="max-width: 500px;">
+
+#### Violinplot
+
+Ein Violinplot kombiniert Aspekte von Boxplots und Dichteplots.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Beispieldatensatz laden
+df = sns.load_dataset('iris')
+
+# Violinplot erstellen
+sns.violinplot(x='species', y='sepal_length', data=df)
+plt.xlabel('Spezies')
+plt.ylabel('Sepal Länge')
+plt.title('Violinplot der Sepal Länge nach Spezies')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/violinplot.png" alt="Violinplot" style="max-width: 500px;">
+
+#### Relplot (für KI-Anwendungen)
+
+Ein Relplot (relationship plot) ist nützlich, um die Beziehung zwischen verschiedenen Variablen zu visualisieren, insbesondere in großen Datensätzen, die in KI-Anwendungen häufig vorkommen.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Beispieldatensatz laden
+df = sns.load_dataset('tips')
+
+# Relplot erstellen
+sns.relplot(x='total_bill', y='tip', hue='time', size='size', data=df)
+plt.xlabel('Rechnungsbetrag')
+plt.ylabel('Trinkgeld')
+plt.title('Relplot der Rechnungsbeträge und Trinkgelder')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/relplot.png" alt="Relplot" style="max-width: 500px;">
+
 ## Machine Learning
 
 Maschinelles Lernen ist ein Bereich der Informatik, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Der große Unterschied zum herkömmlichen Programmieren besteht darin, dass beim maschinellen Lernen anhand von unglaublich vielen Datensätzen (mit zugehörigen richtigen Antworten) **Regeln** erlernt werden, die dann auf neue Daten angewendet werden können, während ein Algorithmus anhand von festgelegten Regeln die **Antworten** findet. Folgendes Bild veranschaulicht dieses Konzept:
@@ -392,7 +972,15 @@ Maschinelles Lernen unterteilt sich hierbei in die drei großen Kategorien `Supe
 
     Hierbei muss man bei der Implementierung des Learnprozesses jedoch aufpassen, nicht versehentlich das Belohnungssystem zu negieren. Dies ist nämlich wirklich einmal auch OpenAI passiert, weswegen [GPT-2 das unanständigste Modell](https://openai.com/index/fine-tuning-gpt-2/) in der Geschichte wurde ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).
 
-Eine weiter Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellen Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und Parameter in der `Backwards-Propagation` optimieren. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen und die Ergebnisse werden schneller und genauer.
+#### Deep Learning
+
+Eine weiter Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellen Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und Parameter in der `Backwards-Propagation` optimieren. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle **neuronalen Netzwerke** (Neural Networks) in die Kategorie „Deep Learning“ fallen.
+
+Das Gegenteil des „Deep Learning“ (tiefen Lernens) ist das „Shallow Learning“ (flaches Lernen), welches alle anderen Algorithmen des maschinellen Lernens umfasst, wie zum Beispiel die `Support Vector Machine` (SVM), den `Random Forest Classifier` (RFC) oder ganz allgemein die verschiedenen mathematischen Methoden der `Regression`.
+
+:::danger[Achtung]
+Deep Learning bedeutet allerdings nicht zwangsmäßig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning klassifiziert nur, dass das Modell aus mehreren Schichten (Layer) besteht.
+:::
 
 #### Umsetzung von KI-Projekten
 
