@@ -145,14 +145,14 @@ pip install numpy
 
 In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit verschiedenen Dimensionen:
 
--   **Skalar** : Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
--   **Vektor** : Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
--   **Matrix** : Eine zweidimensionale Sammlung von Werten, zum Beispiel
+-   **Skalar**: Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
+-   **Vektor**: Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
+-   **Matrix**: Eine zweidimensionale Sammlung von Werten, zum Beispiel
     $\mathbf{M} = \begin{bmatrix}
     1 & 2 \\
     3 & 4
     \end{bmatrix}$.
--   **Tensore** : Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+-   **Tensore**: Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
 
 #### Erstellen von Arrays
 
@@ -960,12 +960,12 @@ Maschinelles Lernen ist ein Bereich der Informatik, der es ermöglicht, Modelle 
 
 <img
     src="/images/artificial_intelligence/machine_learning_concept_lm.png"
-    alt="Data Transfer"
+    alt="ML Konzept"
     class="light-only"
 />
 <img
     src="/images/artificial_intelligence/machine_learning_concept_dm.png"
-    alt="Data Transfer"
+    alt="ML Konzept"
     class="dark-only"
 />
 
@@ -1010,12 +1010,12 @@ Der Prozess des maschinellen Lernens ist im folgenden Diagramm dargestellt:
 
 <img
     src="/images/artificial_intelligence/machine_learning_process_lm.png"
-    alt="Data Transfer"
+    alt="Prozess des maschinellen Lernens"
     class="light-only"
 />
 <img
     src="/images/artificial_intelligence/machine_learning_process_dm.png"
-    alt="Data Transfer"
+    alt="Prozess des maschinellen Lernens"
     class="dark-only"
 />
 
@@ -1115,6 +1115,104 @@ print("Bag of Words\n", X_train_vectorized.toarray())
 #### Ensemble-Methoden
 
 ##### Random Forest Classifier
+
+###### Besonderheiten des Random Forest Classifiers
+
+Der Random Forest Classifier (RFC) ist ein leistungsfähiger und vielseitiger Algorithmus für Klassifikationsaufgaben. Er kombiniert die Vorhersagen vieler Entscheidungsbäume, um die Genauigkeit und Robustheit zu erhöhen. Die wichtigsten Vorteile des RFC sind:
+
+1. **Robustheit gegen Überanpassung**: Da jeder Baum auf einer zufälligen Teilmenge der Daten trainiert wird, verringert sich die Wahrscheinlichkeit, dass der Algorithmus zu stark auf Trainingsdaten angepasst wird.
+2. **Stabilität und Genauigkeit**: Durch die Aggregation der Vorhersagen vieler Bäume liefert der RFC konsistentere und genauere Vorhersagen.
+3. **Geringere Varianz**: Der RFC reduziert die Varianz, die bei einzelnen Entscheidungsbäumen auftreten kann, indem er die Ergebnisse vieler Bäume kombiniert.
+4. **Automatische Merkmalsauswahl**: Während des Trainings wird für jeden Split nur eine zufällige Untermenge der Merkmale betrachtet, was die Bedeutung irrelevanter Merkmale verringert.
+
+###### Entscheidungsbaum
+
+Ein Entscheidungsbaum ist die grundlegende Komponente eines Random Forest. Er besteht aus Knoten, die Bedingungen auf Merkmale der Daten prüfen, und Blättern, die die Vorhersagen enthalten. Der Baum wird rekursiv aufgebaut, indem an jedem Knoten der beste Split gewählt wird, der die Daten am besten trennt. Dieser Prozess wird so lange fortgesetzt, bis bestimmte Kriterien erfüllt sind (z.B. maximale Tiefe des Baumes oder minimale Anzahl von Datenpunkten in einem Blatt).
+
+In der folgenden Abbildung sieht man ein Beispiel eines Entscheidungsbaums, welcher feststellen soll, ob eine Frucht `essbar` oder `nicht essbar` ist. Dieser Baum verfügt über einen Wurzelknoten, zwei innere Knoten und vier Blattknoten.
+
+<img
+    src="/images/artificial_intelligence/rfc_tree_lm.png"
+    alt="Entscheidungsbaum"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/rfc_tree_dm.png"
+    alt="Entscheidungsbaum"
+    class="dark-only"
+/>
+
+###### Ensemble-Lernen
+
+Der Random Forest ist ein Ensemble-Lernverfahren, das viele Entscheidungsbäume kombiniert. Jeder Baum wird auf einer zufälligen Teilmenge der Trainingsdaten (mit Zurücklegen) und einer zufälligen Teilmenge der Merkmale trainiert. Die Vorhersagen der einzelnen Bäume werden dann aggregiert, um die endgültige Vorhersage zu machen. Bei Klassifikationsproblemen erfolgt dies in der Regel durch Mehrheitsabstimmung.
+
+Im folgenden Bild sieht man anhand eines Beispiels, wie die Genauigkeit des gesamten Waldes aufgrund des unterschiedlichen Aufbaus der Bäume insgesamt steigt, da sich Fehler gegenseitig automatisch aufheben. Dieses Phänomen nennt sich `Weisheit der Crowd`.
+
+<img
+    src="/images/artificial_intelligence/rfc_ensemble_lm.png"
+    alt="Entscheidungsbaum"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/rfc_ensemble_dm.png"
+    alt="Entscheidungsbaum"
+    class="dark-only"
+/>
+
+###### Codebeispiel mit Datenaufbereitung und Anwendung des RFC
+
+Hier ist ein vollständiges Beispiel, das zeigt, wie man den `RandomForestClassifier` in Python mit `scikit-learn` verwendet. Das Beispiel umfasst Datenaufbereitung, Modelltraining und Vorhersage.
+
+```python
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Daten laden
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Daten in Trainings- und Testsets aufteilen
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Random Forest Classifier erstellen
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Modell trainieren
+clf.fit(X_train, y_train)
+
+# Vorhersagen auf dem Testset machen
+y_pred = clf.predict(X_test)
+
+# Genauigkeit berechnen
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Genauigkeit: {accuracy * 100:.2f}%')
+
+# Beispiel-Vorhersage für neue Daten
+new_data = np.array([[5.1, 3.5, 1.4, 0.2]])
+prediction = clf.predict(new_data)
+print(f'Vorhersage für neue Daten: {iris.target_names[prediction][0]}')
+```
+
+```
+//output.txt
+Genauigkeit: 100.00%
+Vorhersage für neue Daten: setosa
+```
+
+###### Erklärung des Codes
+
+1. **Daten laden**: Das Iris-Datenset wird mit `load_iris()` geladen.
+2. **Datenaufteilung**: Die Daten werden mit `train_test_split()` in Trainings- und Testsets aufgeteilt.
+3. **Modellerstellung**: Ein `RandomForestClassifier` wird mit 100 Entscheidungsbäumen (`n_estimators=100`) erstellt.
+4. **Training**: Der Klassifikator wird mit den Trainingsdaten trainiert.
+5. **Vorhersage**: Vorhersagen für das Testset werden gemacht.
+6. **Bewertung**: Die Genauigkeit des Modells auf dem Testset wird berechnet.
+7. **Beispiel-Vorhersage**: Eine Vorhersage für neue, unbekannte Daten wird durchgeführt.
+
+Dieses Beispiel zeigt die typischen Schritte zur Verwendung eines Random Forest Classifiers mit `scikit-learn`. Durch die Kombination vieler Entscheidungsbäume bietet der RFC robuste und genaue Vorhersagen und ist eine ausgezeichnete Wahl für viele Klassifikationsprobleme.
 
 ##### Gradient Boosting Classifier
 
