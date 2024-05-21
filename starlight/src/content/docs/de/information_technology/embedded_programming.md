@@ -129,7 +129,7 @@ if (PIND & (1<<PIND1))
 }
 ```
 
-Meistens verwendet man bei der Abfrage von Tasteneingaben die `Interne Pull-Up Widerstand`-Methode. Hierbei liegen 0V an, wenn die Taste gedrückt ist, was bedeutet, dass die Bedinung negiert werden muss. Um diese dann noch zu entprellen (auf Softwareebene) macht man ein Delay.
+Meistens verwendet man bei der Abfrage von Tasteneingaben die [`Interne Pull-Up Widerstand`-Methode](#active-low--pull-up). Hierbei liegen 0V an, wenn die Taste gedrückt ist, was bedeutet, dass die Bedinung negiert werden muss. Um diese dann noch zu entprellen (auf Softwareebene) macht man ein Delay.
 
 ```c del="!"
 if (!(PIND & (1<<PIND1)))
