@@ -138,6 +138,9 @@ else:
 for i in range(5):
     print(i)
 
+# List Comprehension (Kurzschreibweise For-Schleife)
+[print(i) for i in range(5)]
+
 # While-Schleife
 count = 0
 while count < 5:
@@ -765,159 +768,8 @@ import pandas as pd
 
 <!--
 
-##### DataFrame erstellen
 
-Man kann ein DataFrame auf mehrere Arten erstellen:
 
--   aus einem Dictionary
-
-    ```python
-    data = {
-        'apples': [3, 2, 0, 1],
-        'oranges': [0, 3, 7, 2]
-    }
-    ```
-
-    ```python
-    purchases = pd.DataFrame(data)
-    ```
-
--   aus einer CSV-Datei
-
-    ```csv
-    // purchases.csv
-    ,apples,oranges
-    June,3,0
-    Robert,2,3
-    Lily,0,7
-    David,1,2
-    ```
-
-    ```python
-    df = pd.read_csv('purchases.csv', index_col=0)
-    ```
-
--   aus einer JSON-Datei
-
-    ```json
-    // purchases.json
-    {
-        "apples": { "June": 3, "Robert": 2, "Lily": 0, "David": 1 },
-        "oranges": { "June": 0, "Robert": 3, "Lily": 7, "David": 2 }
-    }
-    ```
-
-    ```python
-    df = pd.read_json('purchases.json')
-    ```
-
--   oder auch einer SQL-Datenbank
-
-    ```bash title="Installing sqlite3"
-    pip install pysqlite3
-    ```
-
-    ```python
-    import sqlite3
-    con = sqlite3.connect("database.db")
-
-    df = pd.read_sql_query("SELECT * FROM purchases", con)
-    ```
-
-##### Daten in Datei persistieren
-
-Man kann ein DataFrame genauso wieder in eine Datei schreiben, wie es aus einer Datei gelesen wurde.
-
--   in eine CSV-Datei
-
-    ```python
-    df.to_csv('new_purchases.csv')
-    ```
-
--   in eine JSON-Datei
-
-    ```python
-    df.to_json('new_purchases.json')
-    ```
-
--   mittels SQL
-
-    ```python
-    df.to_sql('new_purchases.sql', con)
-    ```
-
-##### Operation mit DataFrames
-
-###### Ausgaben
-
-Ein logisches Verständnis über die Konstellation der Daten zu haben ist besonders wichtig, wenn man mit Pandas arbeitet. Die Ausgabe von DataFrames kann auf verschiedene Arten erfolgen.
-
-```python
-df.head(5) ## fünf ersten Zeilen ausgeben
-df.tail(3) ## letzten drei Zeilen ausgeben
-```
-
-Zeilen und Spalten spezifisch ausgeben, jeweils mit Index und Namen:
-
-```python
-df['oranges'] ## Series 'oranges' ausgeben
-df[['oranges']] ## 'oranges' als DataFrame ausgeben
-df[['apples', 'oranges']] ## DataFrame ausgeben
-
-df.iloc[11] ## Zeile mit Index 11 ausgeben
-df.iloc[11:13] ## Zeilen 11 bis 13 ausgeben
-df.loc['December'] ## Zeile 'December' ausgeben
-df.loc['October':'December'] ## Zeilen von 'October' bis 'December' ausgeben
-```
-
-Metadaten der Tabelle herausfinden:
-
-```python
-df.shape ## Anzahl der Zeilen und Spalten (Beispiel: (1000, 11))
-df.columns ## Spaltennamen
-df.info()
-```
-
-```txt
-// df.info_output
-<class 'pandas.core.frame.DataFrame'>
-Index: 1000 entries, Guardians of the Galaxy to Nine Lives
-Data columns (total 11 columns):
- ##   Column              Non-Null Count  Dtype
----  ------              --------------  -----
- 0   Rank                1000 non-null   int64
- 1   Genre               1000 non-null   object
- 2   Description         1000 non-null   object
- 3   Director            1000 non-null   object
- 4   Actors              1000 non-null   object
- 5   Year                1000 non-null   int64
- 6   Runtime (Minutes)   1000 non-null   int64
- 7   Rating              1000 non-null   float64
- 8   Votes               1000 non-null   int64
- 9   Revenue (Millions)  872 non-null    float64
- 10  Metascore           936 non-null    float64
-dtypes: float64(3), int64(4), object(4)
-memory usage: 93.8+ KB
-```
-
-Nullwerte herausfinden:
-
-```python
-df.isnull() ## Gibt ein DataFrame zurück, wo alle Zellen True sind, falls die Werte null sind
-df.isnull().sum() ## Gibt die Anzahl der Nullwerte in jeder Series zurück
-df.isnull().sum().sum() ## Gibt die insgesamte Anzahl der Nullwerte zurück
-```
-
-Statistiken eines DataFrames herausfinden (Anzahl, Mittelwert, Standardabweichung, Minimum, Maximum, etc.).
-
-```python
-df.describe()
-df.corr() ## Korrelationen zwischen den Spalten
-```
-
-```python
-df['apples'].value_counts() ## Gruppierte Werte und Anzahl der Vorkommen
-```
 
 ###### Datenmanipulationen
 
@@ -927,19 +779,6 @@ Die Methode `append()` wird verwendet, um zwei DataFrames (df und df2) zu verket
 
 ```python
 df3 = df.append(df2)
-```
-
-Die Methode `rename()` wird verwendet, um bestimmte Spalten im DataFrame df umzubenennen, indem ein Dictionary mit den alten und neuen Spaltennamen bereitgestellt wird.
-
-```python
-df.columns = ['Amount of Fruits (Apple)', 'Amount of Fruits (Orange)']
-```
-
-```python
-df.rename(columns={
-    'Amount of Fruits (Apple)': 'apple_amount',
-    'Amount of Fruits (Orange)': 'orange_amount'
-}, inplace=True)
 ```
 
 Aufgrund der Aneinanderreihung solcher Methoden können Spaltennamen auch automatisch bearbeitet werden. Die Methode `replace()` wird verwendet, um bestimmte Werte in einer Spalte zu ersetzen.
@@ -1019,6 +858,8 @@ print(s.iloc[0])  # Zugriff auf Element an erster Stelle (0)
 ##### DataFrame
 
 Ein `DataFrame` ist eine zweidimensionale, tabellarische Datenstruktur mit beschrifteten Achsen (Zeilen und Spalten), die die Hauptdatenstruktur in Pandas darstellt. Diese Struktur organisiert Daten in Zeilen und Spalten, wobei jede Spalte eine Series darstellt. DataFrames sind äußerst vielseitig und ermöglichen die effiziente Verarbeitung sowie Analyse von strukturierten Daten unterschiedlicher Datentypen. Sie erleichtern den Zugriff, die Filterung und Transformation von Daten, und werden häufig zur Darstellung von Tabellen in verschiedenen Formaten wie CSV-Dateien, Excel-Tabellen oder SQL-Abfragen verwendet. Operationen auf DataFrames können sowohl auf Zeilen als auch auf Spalten angewendet werden, was eine umfassende Datenmanipulation ermöglicht.
+
+###### Erstellen eines DataFrames
 
 Ein DataFrame kann ähnlich wie eine Series erstellt werden. Dabei kann man eine Vielzahl an verschiedenen Objekttypen übergeben.
 
@@ -1125,6 +966,27 @@ III  3   7  11
 IV   4   8  12
 ```
 
+###### Speichern eines DataFrames
+
+Um ein DataFrame persistieren zu können, kann man die Daten in eine Datei oder Datenbank speichern. Dabei werden die Formate `CSV` und `JSON` am häufigsten verwendet, weswegen die Integration mit Pandas einfacher denn je ist.
+
+-   **CSV**
+
+    ```python
+    df.to_csv('example.csv')
+    ```
+
+-   **JSON**
+
+    ```python
+    df.to_json('example.json')
+    ```
+
+-   **SQL**
+    ```python
+    df.to_sql('example.sql', con)
+    ```
+
 ###### Zugriff auf Daten
 
 Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein DataFrame quasi eine Liste von Series ist.
@@ -1226,7 +1088,29 @@ Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein D
 
 #### Operationen und Methoden
 
-Pandas bietet eine Vielzahl von Methoden und Operationen zur Datenanalyse und -manipulation.
+Pandas bietet eine Vielzahl von Methoden und Operationen zur Datenanalyse und -manipulation. Alle Methoden, welche die Daten des DataFrames verändern, verfügen über zwei Möglichkeiten, die Änderungen zu speichern:
+
+-   **Überschreiben**  
+    Einerseits kann man die alten Daten einfach überschreiben, indem man das DataFrame auf die neuen Daten setzt:
+
+    ```python
+    df = df.dropna()
+    ```
+
+    Im Hintergrund wird der Parameter `inplace` der Methode auf `False` gesetzt und die neuen Daten werden einfach returniert.
+
+    ```python
+    df.dropna(inplace=False) # dieser Aufruf gibt das DataFrame zurück
+    ```
+
+-   **Inplace**  
+    Die elegantere Variante ist jedoch die Verwendung der `inplace`-Option, welche die Änderungen direkt in dem DataFrame speichert:
+
+    ```python
+    df.dropna(inplace=True)
+    ```
+
+    Wichtig zu beachten ist, dass beim positiven Setzen des `inplace`-Parameters kein DataFrame mehr zurückgegeben wird. Stattdessen returniert dieser Aufruf nun `None`.
 
 ##### `head()`
 
@@ -1444,6 +1328,8 @@ df.isnull().sum().sum()
 
 Die Methode `dropna` entfernt Zeilen (oder Spalten) mit fehlenden Werten (`NaN` -- Not a Number) aus dem DataFrame.
 
+`dropna` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+
 ```python ins="‎NaN"
 """
        A  B     C
@@ -1479,6 +1365,8 @@ IV   8
 ##### `fillna()`
 
 Die Methode `fillna` ersetzt Zellen mit fehlenden Werten (`NaN` -- Not a Number).
+
+`fillna` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
 
 ```python ins="‎NaN"
 """
@@ -1654,20 +1542,104 @@ A
 """
 ```
 
+##### `rename()`
+
+Mithilfe der manipulativen Methode `rename` kann man jegliche Eigenschaften eines DataFrames umbenennen. Meistens will man die Spaltennamen oder Indexes umbenennen.
+
+`rename` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+
+```python
+df.rename(columns={'A':'X', 'B':'Y', 'C':'Z'})
+
+"""
+     X  Y   Z
+I    1  5   9
+II   2  6  10
+III  3  7  11
+IV   4  8  12
+"""
+```
+
+```python
+df.rename(index=str.lower)
+
+"""
+     A  B   C
+i    1  5   9
+ii   2  6  10
+iii  3  7  11
+iv   4  8  12
+"""
+```
+
+##### `replace()`
+
+Mithilfe der manipulativen Methode `replace` kann man beliebige alphanumerische Werte mit statischen oder dynamischen Werten ersetzen. Allerdings können diese Werte nur in den Daten, also nicht in den Spaltennamen und Indizes, vorkommen. Deswegen ist das `replace` quasi das `rename` für die Werte.
+
+`replace` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+
+```python
+df.replace(1, 2)
+
+"""
+     A  B   C
+I    2  5   9
+II   2  6  10
+III  3  7  11
+IV   4  8  12
+"""
+```
+
 #### Anwendungsbeispiele
 
 ##### Bereinigen von Nullwerten
 
+Im Bereich der künstlichen Intelligenz sind Nullwerte oft unerwünscht, weshalb man diese meistens mit Werte ersetzen möchte, welche das Trainieren des Modells nicht behindern. Eine einfache Möglichkeit, Nullwerte nicht ganz so störend zu machen, ist das spaltenweise Ersetzen der Nullwerte durch den Durchschnitt der Werte in der Spalte.
+
 ```python
-# Ersetzen von Nullwerten in jeder Spalte durch den Mittelwert der jeweiligen Spalte
 for col in df.columns:
     df[col].fillna(df[col].mean(), inplace=True)
 ```
 
-##### Berechnen der Anzahl von Nullwerten pro Zeile
+Meistens ist es auch noch sinnvoll, die Nullwerte nicht einfach mit dem Median aller Datensätze zu ersetzen, sondern nur mit dem Median der Datensätze, die beim Supervised Learning auch die gleichen Antworten haben. Somit sind die fehlenden Daten am wenigsten störend für das Trainieren.
+
+```python del="‎NaN" ins="‎18.0" ins="‎30.5"
+"""
+      A     B     C  Outcome
+I    31  34.0  32.0        0
+II   17   ‎NaN  10.0        1
+III  13   ‎NaN  11.0        1
+IV   14  18.0  12.0        1
+V    29  26.0  29.0        0
+VI   31  35.0   ‎NaN        0
+"""
+
+# Replace all NaN with median + watch out for Outcome value
+sensible_col = ['A', 'B', 'C']
+masks = [ df['Outcome'] == 0, df['Outcome'] == 1 ]
+
+for mask in masks:
+    df.loc[mask, sensible_col] = df.loc[mask, sensible_col].replace(np.nan, df[df[mask] != np.nan].mean())
+
+"""
+      A     B     C  Outcome
+I    31  34.0  32.0        0
+II   17  ‎18.0  10.0        1
+III  13  ‎18.0  11.0        1
+IV   14  18.0  12.0        1
+V    29  26.0  29.0        0
+VI   31  35.0  ‎30.5        0
+"""
+```
+
+##### Standardisierung der Spaltennamen
+
+In Python gilt meistens `snake_case`. Das bedeutet, dass alles klein geschrieben und Wörter mit Unterstrichen (`_`) getrennt werden. Da viele Datensätze oft nicht diesen Konventionen folgen, ist es sinnvoll, die Spaltennamen zu standardisieren.
+
+In diesem Beispiel werden alle Spaltennamen automatisch in Kleinbuchstaben konvertiert, Klammern entfernt und Leerzeichen durch Unterstriche ersetzt.
 
 ```python
-null_counts_per_row = df.isnull().sum(axis=1)
+df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
 ```
 
 ### Matplotlib
