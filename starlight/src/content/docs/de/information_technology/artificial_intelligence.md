@@ -1926,6 +1926,10 @@ Der Prozess des maschinellen Lernens ist im folgenden Diagramm dargestellt:
     class="dark-only"
 />
 
+Wie man sehen kann, beginnt dieser Prozess mit dem **Aggregieren** der Daten und **Bereinigung** dieser. Auch wenn man es nicht glaubt, machen diese Teilaufgaben **ca. 50-70%** des Arbeitsaufwandes vom gesamten Prozess aus. Hierbei muss besonders auf den Datenschutz der Kunden, die Datenqualität und die Datensicherheit geachtet werden. Die Daten selbst können im Internet gratis oder kostenlos gefunden werden. Saubere Daten sind Gold wert!
+
+Der eigentliche interessante Teil beginnt dann beim Aufbereitung und Trainieren des Modells mit den Daten und dem anschließenden Testen. Hierbei gibt es einige Methoden der deskriptiven Statistik, um die Qualität des Modells zu beurteilen. Sobald der Kunde mit dieser zufrieden ist, kann das Modell in der Produktionsumgebung eingesetzt werden.
+
 #### Einordnung in die Kategorien
 
 Maschinelles Lernen unterteilt sich hierbei in die drei großen Kategorien `Supervised Learning`, `Unsupervised Learning`, `Reinforcement Learning`.
@@ -1962,10 +1966,6 @@ Das Gegenteil des „Deep Learning“ (tiefen Lernens) ist das „Shallow Learni
 :::danger[Achtung]
 Deep Learning bedeutet allerdings nicht zwangsmäßig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning klassifiziert nur, dass das Modell aus mehreren Schichten (Layer) besteht.
 :::
-
-Wie man sehen kann, beginnt dieser Prozess mit dem **Aggregieren** der Daten und **Bereinigung** dieser. Auch wenn man es nicht glaubt, machen diese Teilaufgaben **ca. 50-70%** des Arbeitsaufwandes vom gesamten Prozess aus. Hierbei muss besonders auf den Datenschutz der Kunden, die Datenqualität und die Datensicherheit geachtet werden. Die Daten selbst können im Internet gratis oder kostenlos gefunden werden. Saubere Daten sind Gold wert!
-
-Der eigentliche interessante Teil beginnt dann beim Aufbereitung und Trainieren des Modells mit den Daten und dem anschließenden Testen. Hierbei gibt es einige Methoden der deskriptiven Statistik, um die Qualität des Modells zu beurteilen. Sobald der Kunde mit dieser zufrieden ist, kann das Modell in der Produktionsumgebung eingesetzt werden.
 
 ### Supervised Learning
 
@@ -2059,8 +2059,6 @@ print("Bag of Words\n", X_train_vectorized.toarray())
 #### Ensemble-Methoden
 
 ##### Random Forest Classifier
-
-###### Besonderheiten des Random Forest Classifiers
 
 Der Random Forest Classifier (RFC) ist ein leistungsfähiger und vielseitiger Algorithmus für Klassifikationsaufgaben. Er kombiniert die Vorhersagen vieler Entscheidungsbäume, um die Genauigkeit und Robustheit zu erhöhen. Die wichtigsten Vorteile des RFC sind:
 
@@ -2183,9 +2181,169 @@ print(accuracy_score(predictions, y_valid)) ## [Beispieloutput:] 0.9772727272727
 
 #### Neuronale Netze
 
-##### Tensorflow
+Neuronale Netzwerke sind eine Klasse von Modellen im Bereich des maschinellen Lernens, die auf der Struktur und Funktion des menschlichen Gehirns basieren. Sie bestehen aus miteinander verbundenen Knoten (Neuronen), die in Schichten organisiert sind. Diese Netzwerke lernen durch Anpassung der Verbindungen zwischen den Neuronen (Gewichte), um Aufgaben wie Klassifikation, Regression und Mustererkennung durchzuführen.
+
+##### Neuronale Netzwerke (NN)
+
+Neuronale Netzwerke bestehen aus einer Reihe von Schichten:
+
+-   **Eingabeschicht:** Die erste Schicht, die die Eingabedaten empfängt.
+-   **Versteckte Schichten:** Eine oder mehrere Schichten, die die Eingabedaten transformieren und komplexe Merkmale extrahieren.
+-   **Ausgabeschicht:** Die letzte Schicht, die das Ergebnis der Verarbeitung liefert.
+
+Jedes Neuron berechnet eine gewichtete Summe seiner Eingaben, wendet eine Aktivierungsfunktion an und gibt das Ergebnis an die nächste Schicht weiter. Häufig verwendete Aktivierungsfunktionen sind die Sigmoid-Funktion, die Tanh-Funktion und die ReLU-Funktion (Rectified Linear Unit).
+
+Neuronale Netzwerke lernen durch einen Prozess namens Backpropagation, der in Kombination mit einem Optimierungsalgorithmus wie dem Gradientenabstieg verwendet wird. Backpropagation berechnet den Gradienten des Fehlers bezüglich der Gewichte und Biases und aktualisiert diese, um den Fehler zu minimieren.
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+```
+
+##### Convolutional Neural Networks (CNN)
+
+Convolutional Neural Networks sind eine spezielle Art von neuronalen Netzwerken, die besonders gut für die Verarbeitung von Bildern und anderen grid-basierten Daten geeignet sind. Sie bestehen aus:
+
+-   **Convolutional Layers:** Diese Schichten verwenden Filter (oder Kernel), die über das Eingabebild gleiten und lokale Merkmale extrahieren.
+-   **Pooling Layers:** Diese Schichten reduzieren die Dimensionalität der Daten, indem sie lokale Bereiche zusammenfassen, z.B. durch Max-Pooling oder Average-Pooling.
+-   **Fully Connected Layers:** Diese Schichten sind ähnlich wie in herkömmlichen neuronalen Netzwerken und verbinden alle Neuronen miteinander.
+
+CNNs werden häufig in der Bild- und Videoverarbeitung, Mustererkennung und der Verarbeitung von mehrdimensionalen Daten eingesetzt.
+
+```python
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10, activation='softmax'))
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+```
+
+##### Recurrent Neural Networks (RNN)
+
+Recurrent Neural Networks sind eine Klasse von neuronalen Netzwerken, die speziell für die Verarbeitung von sequenziellen Daten entwickelt wurden. Sie haben interne Speicherzustände, die Informationen über frühere Eingaben speichern. Diese Netzwerke sind besonders gut für Aufgaben wie Zeitreihenanalyse, Sprachverarbeitung und andere sequentielle Daten geeignet.
+
+Varianten von RNNs sind:
+
+-   **Long Short-Term Memory (LSTM):** Eine spezielle RNN-Architektur, die entwickelt wurde, um das Problem des verschwindenden Gradienten zu lösen und langfristige Abhängigkeiten besser zu modellieren.
+-   **Gated Recurrent Unit (GRU):** Eine vereinfachte Version von LSTM, die ähnliche Leistungsmerkmale aufweist.
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleRNN, self).__init__()
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        out, _ = self.rnn(x)
+        out = self.fc(out[:, -1, :])
+        return out
+
+model = SimpleRNN(input_size=10, hidden_size=20, output_size=1)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+```
+
+##### Transformer-Netzwerke
+
+Transformer sind eine neuere Architektur, die insbesondere in der Verarbeitung natürlicher Sprache (NLP) verwendet wird. Sie basieren auf einem Mechanismus namens Selbstaufmerksamkeit, der es ermöglicht, Abhängigkeiten über große Entfernungen in der Sequenz zu modellieren. Im Gegensatz zu RNNs verarbeiten Transformer alle Eingaben gleichzeitig und nutzen Mechanismen, die die Bedeutung jeder Position in der Eingabesequenz gewichten.
+
+Die bekannteste Anwendung von Transformern ist das Modell BERT (Bidirectional Encoder Representations from Transformers), das Spitzenleistungen in einer Vielzahl von NLP-Aufgaben erzielt hat.
+
+```python
+import torch
+import torch.nn as nn
+from torch.nn import Transformer
+
+model = Transformer(nhead=8, num_encoder_layers=3)
+src = torch.rand((10, 32, 512))  # (sequence_length, batch_size, feature_size)
+tgt = torch.rand((20, 32, 512))
+out = model(src, tgt)
+```
+
+##### TensorFlow
+
+TensorFlow ist ein Open-Source-Framework für maschinelles Lernen, das von Google entwickelt wurde. Es bietet eine umfangreiche Bibliothek für die Erstellung und das Training von neuronalen Netzwerken und ist besonders bekannt für seine Flexibilität und Skalierbarkeit.
+
+Hauptmerkmale von TensorFlow sind:
+
+-   **Tensors:** Grundlegende Datenstrukturen, die n-dimensionalen Arrays ähneln.
+-   **Graphen:** Modelle werden als gerichtete Graphen dargestellt, wobei Knoten Operationen und Kanten Datenströme darstellen.
+-   **Keras API:** Eine hochstufige API, die das Erstellen und Trainieren von Modellen vereinfacht.
+
+TensorFlow bietet Unterstützung für verteiltes Training, ermöglicht den Einsatz auf verschiedenen Plattformen (CPUs, GPUs, TPUs) und hat eine große Community sowie umfangreiche Dokumentation.
+
+```python
+import tensorflow as tf
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(784,)),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+```
 
 ##### PyTorch
+
+PyTorch ist ein Open-Source-Framework für maschinelles Lernen, das von Facebook entwickelt wurde. Es ist besonders beliebt wegen seiner Einfachheit und Flexibilität sowie seiner dynamischen Computational Graphen.
+
+Hauptmerkmale von PyTorch sind:
+
+-   **Tensors:** Ähnlich wie in TensorFlow, aber mit einer einfacheren Syntax.
+-   **Autograd:** Automatische Differenzierung zur Berechnung von Gradienten.
+-   **TorchScript:** Ermöglicht die Konvertierung von PyTorch-Modellen in eine Form, die in einer Produktionsumgebung ausgeführt werden kann.
+
+PyTorch ist besonders bei Forschern und Entwicklern beliebt, da es intuitive und pythonische APIs bietet, die das Experimentieren und Debuggen erleichtern.
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+```
 
 ### Natural Language Processing
 
