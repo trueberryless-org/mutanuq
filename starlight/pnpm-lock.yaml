@@ -38,6 +38,9 @@ dependencies:
   sharp:
     specifier: ^0.33.3
     version: 0.33.3
+  starlight-image-zoom:
+    specifier: ^0.5.0
+    version: 0.5.0(@astrojs/starlight@0.21.5)
   starlight-links-validator:
     specifier: ^0.7.1
     version: 0.7.1(@astrojs/starlight@0.21.5)(astro@4.6.1)
@@ -4719,6 +4722,18 @@ packages:
 
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+    dev: false
+
+  /starlight-image-zoom@0.5.0(@astrojs/starlight@0.21.5):
+    resolution: {integrity: sha512-qlyYq0N+15H6qe1wouK1HWCnHSjoyzad4TsufilDHvsk6d3t+TSxpvAk6rYONPu4AMe4aMn7HQPGCridwZZhfw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.22.0'
+    dependencies:
+      '@astrojs/starlight': 0.21.5(astro@4.6.1)
+      rehype-raw: 7.0.0
+      unist-util-visit: 5.0.0
+      unist-util-visit-parents: 6.0.1
     dev: false
 
   /starlight-links-validator@0.7.1(@astrojs/starlight@0.21.5)(astro@4.6.1):
