@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
+import starlightImageZoom from "starlight-image-zoom";
 
 import starlightLinksValidator from "starlight-links-validator";
 
@@ -82,6 +83,7 @@ export default defineConfig({
             components: {
                 Pagination: "./src/components/CustomPagination.astro",
             },
+            plugins: [starlightImageZoom()],
         }),
         starlightLinksValidator(),
     ],
