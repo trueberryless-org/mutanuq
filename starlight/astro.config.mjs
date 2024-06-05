@@ -93,6 +93,7 @@ export default defineConfig({
                     presentationModeControlButtonPosition: "middle-right", // not supported yet
                 }),
             ],
+            credits: true,
         }),
     ],
     markdown: {
