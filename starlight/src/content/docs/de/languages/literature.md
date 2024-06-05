@@ -69,7 +69,7 @@ Karl Kraus war ein österreichischer Schriftsteller, Kritiker und Satiriker, der
 
 #### Also sprach Zarathustra (1883)
 
-[Friedrich Nietzsche](#friedrich-nietzsche-1844-1900) legt mit diesem und ein paar anderen Werken die philosophische Grundlage für die Kritik an der Zeit im [Expressionismus](../expressionism). In diesem Werk stellt Nietzsche dem nur auf seinen kleinlichen Profit achtenden „letzten Menschen“, der eigentlich das Leben verneint und zerstört, den „Übermenschen“ gegenüber. Er verachtet die herrschende Moral, das Denken, die Gesellschaft und wächst über seine persönliche Kleinlichkeit hinaus.
+[Friedrich Nietzsche](#friedrich-nietzsche-1844-1900) legt mit diesem und ein paar anderen Werken die philosophische Grundlage für die Kritik an der Zeit im [Expressionismus](#expressionismus). In diesem Werk stellt Nietzsche dem nur auf seinen kleinlichen Profit achtenden „letzten Menschen“, der eigentlich das Leben verneint und zerstört, den „Übermenschen“ gegenüber. Er verachtet die herrschende Moral, das Denken, die Gesellschaft und wächst über seine persönliche Kleinlichkeit hinaus.
 
 > _„Ich lehre euch den Übermenschen.“_
 
@@ -228,7 +228,7 @@ Der Begriff Dadaismus ist in der Epoche des Expressionismus entstanden und besch
 
 ### Künstler
 
-Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](../impressionism#friedrich-nietzsche-1844-1900)s [Also sprach Zarathustra](../impressionism/#also-sprach-zarathustra-1883) und Sören Kierkegaards „Freiheit ist zentral“, welcher die Freiheit in den Mittelpunkt des Denken stellt. Im Gegensatz zum Tier kann der Mensch sich für eine bestimmte Lebensweise entscheiden. Er kann in einem oberflächlichen Genussleben verharren, der von Kierkegaard so genannten „ästhetischen“ Existenz. Er kann aber auch in einer „ethischen“ Existenz solidarisch am Aufbau einer humanen Gesellschaft mitarbeiten.
+Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](#friedrich-nietzsche-1844-1900)s [Also sprach Zarathustra](#also-sprach-zarathustra-1883) und Sören Kierkegaards „Freiheit ist zentral“, welcher die Freiheit in den Mittelpunkt des Denken stellt. Im Gegensatz zum Tier kann der Mensch sich für eine bestimmte Lebensweise entscheiden. Er kann in einem oberflächlichen Genussleben verharren, der von Kierkegaard so genannten „ästhetischen“ Existenz. Er kann aber auch in einer „ethischen“ Existenz solidarisch am Aufbau einer humanen Gesellschaft mitarbeiten.
 
 Auch die Expressionisten stellen dem oberflächlichen alten einen kommenden neuen Menschen gegenüber, der sich vom alten grundlegend unterscheidet und gegenüber den Mitmenschen solidarisch ist. Der „alte“ Mensch ist dabei herzensträge, hart, böse, den Mitmenschen fremd und getrennt durch Grenzpfähle. Außerdem werden die Begriffe **Gesellschaft** und **Gemeinschaft** gegenübergestellt, wobei ersteres ein Konstrukt mit Regeln definiert, in welchem man seine Mitmenschen nicht kennt, und zweiteres eine harmonischere, kleinere Gruppe von sich einander bewusst kennenden Menschen beschreibt.
 
