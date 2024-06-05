@@ -3,7 +3,7 @@ import starlight from "@astrojs/starlight";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
 import starlightImageZoom from "starlight-image-zoom";
-
+import starlightViewModes from "starlight-view-modes";
 import starlightLinksValidator from "starlight-links-validator";
 
 // https://astro.build/config
@@ -83,9 +83,17 @@ export default defineConfig({
             components: {
                 Pagination: "./src/components/CustomPagination.astro",
             },
-            plugins: [starlightImageZoom()],
+            plugins: [
+                // starlightImageZoom(),
+                starlightLinksValidator(),
+                starlightViewModes({
+                    zenModeEnabled: true,
+                    zenModeCloseButtonPosition: "top-right",
+                    presentationModeEnabled: false, // not supported yet
+                    presentationModeControlButtonPosition: "middle-right", // not supported yet
+                }),
+            ],
         }),
-        starlightLinksValidator(),
     ],
     markdown: {
         remarkPlugins: [remarkMath],

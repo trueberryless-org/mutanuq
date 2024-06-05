@@ -13,10 +13,10 @@
     },
     "dependencies": {
         "@11ty/eleventy-fetch": "^4.0.1",
-        "@astrojs/starlight": "^0.21.5",
+        "@astrojs/starlight": "^0.23.4",
         "@fontsource-variable/jetbrains-mono": "^5.0.20",
         "@zachleat/table-saw": "^1.0.6",
-        "astro": "^4.6.1",
+        "astro": "^4.9.3",
         "astro-expressive-code": "^0.34.1",
         "astro-feelback": "^0.3.4",
         "rehype-mathjax": "^6.0.0",
@@ -24,6 +24,7 @@
         "remark-math": "^6.0.0",
         "sharp": "^0.33.3",
         "starlight-image-zoom": "^0.5.0",
-        "starlight-links-validator": "^0.7.1"
+        "starlight-links-validator": "^0.7.1",
+        "starlight-view-modes": "^0.1.0"
     }
 }
