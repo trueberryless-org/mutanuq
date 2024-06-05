@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@11ty/eleventy-fetch": "^4.0.1",
-        "@astrojs/starlight": "^0.23.4",
+        "@astrojs/starlight": "^0.24.0",
         "@fontsource-variable/jetbrains-mono": "^5.0.20",
         "@zachleat/table-saw": "^1.0.6",
         "astro": "^4.9.3",
