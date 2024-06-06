@@ -84,11 +84,12 @@ export default defineConfig({
                 Pagination: "./src/components/CustomPagination.astro",
             },
             plugins: [
-                // starlightImageZoom(),
+                starlightImageZoom(),
                 starlightLinksValidator(),
                 starlightViewModes({
                     zenModeEnabled: true,
                     zenModeCloseButtonPosition: "top-right",
+                    zenModeShowFooter: false,
                     presentationModeEnabled: false, // not supported yet
                     presentationModeControlButtonPosition: "middle-right", // not supported yet
                 }),
