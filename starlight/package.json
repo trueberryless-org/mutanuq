@@ -13,10 +13,10 @@
     },
     "dependencies": {
         "@11ty/eleventy-fetch": "^4.0.1",
-        "@astrojs/starlight": "^0.24.0",
+        "@astrojs/starlight": "^0.24.1",
         "@fontsource-variable/jetbrains-mono": "^5.0.21",
         "@zachleat/table-saw": "^1.0.6",
-        "astro": "^4.10.0",
+        "astro": "^4.10.1",
         "astro-expressive-code": "^0.34.2",
         "astro-feelback": "^0.3.4",
         "rehype-mathjax": "^6.0.0",
@@ -27,6 +27,6 @@
         "starlight-links-validator": "^0.7.1"
     },
     "devDependencies": {
-        "starlight-view-modes": "^0.4.0"
+        "starlight-view-modes": "^0.5.1"
     }
 }
