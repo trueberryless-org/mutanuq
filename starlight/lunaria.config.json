@@ -1,0 +1,54 @@
+{
+    "$schema": "./node_modules/@lunariajs/core/config.schema.json",
+    "repository": {
+        "name": "trueberryless-org/mutanuq",
+        "rootDir": "starlight"
+    },
+    "files": [
+        {
+            "location": "src/content/docs/**/*.{md,mdx}",
+            "pattern": "src/content/docs/@lang/@path",
+            "type": "universal"
+        }
+    ],
+    "defaultLocale": {
+        "label": "Deutsch",
+        "lang": "de"
+    },
+    "locales": [
+        {
+            "label": "English",
+            "lang": "en"
+        }
+    ],
+    "dashboard": {
+        "title": "Mutanuq Translation Status",
+        "description": "Translation progress tracker for the Mutanuq site. See how much has been translated in your language and get involved!",
+        "favicon": {
+            "external": [
+                {
+                    "link": "https://mutanuq.trueberryless.org/favicon.svg",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        "customCss": ["./lunaria/styles.css"],
+        "basesToHide": ["src/content/docs/"],
+        "ui": {
+            "statusByLocale.heading": "Translation progress by locale",
+            "statusByLocale.incompleteLocalizationLink": "incomplete translation",
+            "statusByLocale.outdatedLocalizationLink": "outdated translation",
+            "statusByLocale.completeLocalization": "This translation is complete, amazing job! 🎉",
+            "statusByFile.heading": "Translation status by file"
+        }
+    },
+    "ignoreKeywords": [
+        "lunaria-ignore",
+        "typo",
+        "en-only",
+        "broken link",
+        "i18nReady",
+        "i18nIgnore"
+    ],
+    "renderer": "./lunaria/renderer.config.ts"
+}
