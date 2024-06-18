@@ -89,6 +89,25 @@ jobs:
                   echo "New patch version"
                   echo "PATCH=$((${{ env.PATCH }}+1))" >> $GITHUB_ENV
 
+            - name: Setup PNPM
+              uses: pnpm/action-setup@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install
+              shell: bash
+              working-directory: ./starlight
+
+            - name: Build Lunaria Website
+              run: pnpm run lunaria:build
+              shell: bash
+              working-directory: ./starlight
+
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v2
 
@@ -107,7 +126,7 @@ jobs:
             - name: Build and push Docker image
               uses: docker/build-push-action@v5
               with:
-                  context: ./starlight
+                  context: .
                   file: ./starlight/lunaria/Dockerfile
                   push: true
                   tags: |
