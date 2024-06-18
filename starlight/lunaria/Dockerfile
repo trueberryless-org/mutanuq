@@ -3,9 +3,9 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 WORKDIR /app
-COPY /starlight/package.json .
+COPY ./package.json .
 RUN pnpm i
-COPY /starlight .
+COPY . .
 RUN pnpm run lunaria:build
 
 FROM httpd:2.4 AS runtime
