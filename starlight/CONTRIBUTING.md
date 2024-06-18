@@ -47,7 +47,7 @@ Help out by:
 -   Updating out-of-date translated pages
 -   Adding an untranslated page
 
-Visit **<https://i18n.mutanuq.trueberryless.org>** to track translation progress for the currently supported languages.
+Visit **<https://i18n-mutanuq.trueberryless.org>** to track translation progress for the currently supported languages.
 
 #### Adding a new language to Mutanuq’s docs
 
@@ -59,3 +59,11 @@ To add a language, you will need its BCP-47 tag and a label. See [“Adding a ne
 -   Create the first translated page for your language.
     This must be the Mutanuq landing page: `starlight/src/content/docs/{language}/index.mdx`.
 -   Open a pull request on GitHub to add your changes to Mutanuq!
+
+[issues]: https://github.com/trueberryless-org/mutanuq/issues
+[pulls]: https://github.com/trueberryless-org/mutanuq/pulls
+[new-issue]: https://github.com/trueberryless-org/mutanuq/issues/new/choose
+[pr-docs]: https://docs.github.com/en/get-started/quickstart/contributing-to-projects#making-a-pull-request
+[gfi]: https://github.com/trueberryless-org/mutanuq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+
+[vitest]: https://vitest.dev/
+[playwright]: https://playwright.dev/
