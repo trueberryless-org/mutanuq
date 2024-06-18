@@ -15,7 +15,7 @@ This document focuses on contributing only to the content of Mutanuq itself, not
 
 There are lots of ways to contribute to Mutanuq.
 
-Maintaining Mutanuq requires writting new content, fixing existing typos and addressing accessibility.
+Maintaining Mutanuq requires writing new content, fixing existing typos and addressing accessibility.
 Help writing docs, catching typos and errors, as well as translating docs into other languages is always welcome.
 
 You can also get involved by leaving feedback on [issues][issues] or reviewing [pull requests][pulls] by other contributors.
