@@ -33,7 +33,7 @@ jobs:
 
             - name: Check if file exists
               run: |
-                  if [ -f .github/artifacts/version.json ]; then
+                  if [ -f .github/artifacts/version-lunaria.json ]; then
                     echo "File exists"
                     echo "FILE_EXISTS=true" >> $GITHUB_ENV
                   else
@@ -46,7 +46,7 @@ jobs:
               id: version
               uses: zoexx/github-action-json-file-properties@release
               with:
-                  file_path: ".github/artifacts/version.json"
+                  file_path: ".github/artifacts/version-lunaria.json"
 
             - name: save environment variables
               if: ${{ env.FILE_EXISTS == 'true' }}
@@ -128,10 +128,10 @@ jobs:
               id: create-json
               uses: jsdaniell/create-json@v1.2.2
               with:
-                  name: "version.json"
+                  name: "version-lunaria.json"
                   json: '{ "major": ${{ env.MAJOR }}, "minor": ${{ env.MINOR }}, "patch": ${{ env.PATCH }} }'
                   dir: ".github/artifacts/"
 
             - uses: stefanzweifel/git-auto-commit-action@v4
               with:
-                  commit_message: update version.json (automated)
+                  commit_message: update version-lunaria.json (automated)
