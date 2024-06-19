@@ -6,10 +6,17 @@ on:
     merge_group:
     pull_request:
         branches: [main]
-    # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
+        inputs:
+            version:
+                required: true
+                type: choice
+                description: version
+                options:
+                    - patch
+                    - minor
+                    - major
 
-# Automatically cancel in-progress actions on the same branch
 concurrency:
     group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
     cancel-in-progress: true
@@ -69,7 +76,7 @@ jobs:
                   echo ${{ env.MINOR }}
 
             - name: Major version
-              if: contains(github.event.head_commit.message, 'major')
+              if: contains(github.event.head_commit.message, 'major') || ${{ github.event.inputs.version }} == 'major'
               run: |
                   echo "New major version"
                   echo "MAJOR=$((${{ env.MAJOR }}+1))" >> $GITHUB_ENV
@@ -77,14 +84,14 @@ jobs:
                   echo "PATCH=0" >> $GITHUB_ENV
 
             - name: Minor version
-              if: contains(github.event.head_commit.message, 'minor')
+              if: contains(github.event.head_commit.message, 'minor') || ${{ github.event.inputs.version }} == 'minor'
               run: |
                   echo "New minor version"
                   echo "MINOR=$((${{ env.MINOR }}+1))" >> $GITHUB_ENV
                   echo "PATCH=0" >> $GITHUB_ENV
 
             - name: Patch version
-              if: contains(github.event.head_commit.message, 'patch') || github.event_name == 'workflow_dispatch'
+              if: contains(github.event.head_commit.message, 'patch')|| ${{ github.event.inputs.version }} == 'patch'
               run: |
                   echo "New patch version"
                   echo "PATCH=$((${{ env.PATCH }}+1))" >> $GITHUB_ENV
