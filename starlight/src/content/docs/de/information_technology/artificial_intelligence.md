@@ -538,6 +538,40 @@ Multiplikation: [ 4 10 18]
 Division: [0.25 0.4  0.5 ]
 ```
 
+##### Zusammenfassen von Arrays
+
+Die `concatenate` Funktion in NumPy verbindet zwei oder mehr Arrays entlang einer angegebenen Achse. Dies ist nützlich zum Zusammenführen von Daten. Die Syntax lautet `numpy.concatenate((a1, a2, ...), axis=0)`, wobei `axis` die Achse ist, entlang der verbunden wird (Standard ist 0, d.h. zeilenweise).
+
+```python
+import numpy as np
+
+# Zwei 2D-Arrays erstellen
+array1 = np.array([[1, 2], [3, 4]])
+array2 = np.array([[5, 6], [7, 8]])
+
+# Arrays vertikal (zeilenweise) verbinden
+result1 = np.concatenate((array1, array2), axis=0)
+print("Vertikal verbunden:\n", result1)
+
+# Arrays horizontal (spaltenweise) verbinden
+result2 = np.concatenate((array1, array2), axis=1)
+print("Horizontal verbunden:\n", result2)
+```
+
+```
+//output.txt
+Vertikal verbunden:
+ [[1 2]
+ [3 4]
+ [5 6]
+ [7 8]]
+Horizontal verbunden:
+ [[1 2 5 6]
+ [3 4 7 8]]
+```
+
+In diesem Beispiel werden `array1` und `array2` zuerst vertikal und dann horizontal verbunden.
+
 ##### Matrixmultiplikation
 
 ```python
