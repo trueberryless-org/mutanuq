@@ -35,7 +35,7 @@ Im Schluss können entweder die Informationen generell zusammengefasst werden od
 
 ### Phrasen
 
-| LeserInnen miteinschließen             |
+| LeserInnen einbeziehen                 |
 | -------------------------------------- |
 | Haben Sie jemals...?                   |
 | Was würden Sie tun, wenn...?           |
