@@ -6,43 +6,54 @@ sidebar:
 
 ## Artikel
 
-### Zusammenfassung
+Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibweise benötigt wird, da es sehr wenige Vorgaben gibt.
 
-Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibweise benötigt wird, da es sehr wenige Vorgaben gibt. Wichtig ist:
+### Merkmale
 
-1. Der Artikel braucht eine **kreative Überschrift**, die den Leser anregt, den Rest zu lesen. Ein schlechtes Beispiel ist „Schuluniformen“, ein positiveres Beispiel wäre in diesem Fall „Warum Schuluniformen veraltet sind“. Mit einer Frage fängt man Leser sehr einfach.
-   :::note
-   Auch wenn man den Leser „fangen“ soll, so sollte man nicht zu sehr in den Clickbait-Stil verfallen.
-   :::
-2. **Sprich den Leser an.** Am einfachsten geht das mit rhetorischen Fragen und direkter Anrede, wie beispielsweise „Kennen Sie den Moment, wenn ...?“
-3. **Schreibe in einem lebhaften Stil.** Der Leser soll den Text flüssig lesen können und nicht während des Textes das Interesse verlieren. Wird meistens erreicht indem man wie in Schritt 2 rhetorische Fragen verwendet. Die Art der Sprache (formal, informal, neutral) hängt davon ab, wer den Text lesen soll, steht meistens in der Angabe.
-4. **Teile die Informationen in klare Absätze ein.** Am besten ist es für jeden Bulletpoint einen Absatz zu rechnen. Im Normalfall besteht der Text aus einer Einleitung, den Absätzen für die Bulletpoints und einem Abschluss, der teilweise auch einer der Points sein kann.
-5. **Schreibe einen Gedanken anregenden Abschluss** Entweder man fasst alle Argumente zusammen oder man kann auch seine eigene Meinung kund geben, sollte diese gefragt sein. Der Schluss darf nur nicht langweilig sein.
+-   LeserIn direkt ansprechen
+-   lebhafter Stil
+-   inhaltliche Absätze
+-   Schluss soll Gedanken anregen
+
+### Aufbau
+
+#### kreative Überschrift
+
+Geben Sie Ihrem Artikel eine kreative und einprägsame Überschrift, da dies _den Leser / die Leserin_ zum Lesen motivieren muss.
+
+#### Einleitung
+
+Schreiben Sie eine kreative Einleitung, welche direkte Fragen an _den Leser / die Leserin_ richtet.
+
+#### Hauptteil
+
+Im Hauptteil des Artikels sollen die objektiven Vor- und Nachteile des Themas beschrieben werden. Dabei soll dieser in inhaltliche Abschnitte gegliedert werden, um eine logische Struktur zu garantieren. Geben Sie zur Verdeutlichung der Argumente Beispiel an.
+
+#### Schluss
+
+Im Schluss können entweder die Informationen generell zusammengefasst werden oder die persönliche Meinung zum Ausdruck gebracht werden. Wichtig ist ein Gedanken-anregender Schreibstil, sodass das Thema _dem Leser / der Leserin_ möglichst lange im Kopf hängen bleibt.
 
 ### Phrasen
 
-#### Involving the reader
+| LeserInnen miteinschließen             |
+| -------------------------------------- |
+| Haben Sie jemals...?                   |
+| Was würden Sie tun, wenn...?           |
+| Können Sie sich vorstellen...?         |
+| Du denkst vielleicht, dass..., aber... |
+| Gehörst du zu den Menschen, die...     |
 
--   Have you ever...?
--   What would you do if...?
--   Can you imagine...?
--   You might think that..., but...
--   Are you one of those people that...
-
-#### Giving opinions
-
--   In my opinion...
--   As I see it, ...
--   In my view, ...
--   I think/believe that ...
--   To my mind, ...
--   Personally, I think ...
--   As far as I am concerned, ...
--   It seems to me that ...
--   I am strongly in favour of ...
--   i am firmly opposed to the idea of ...
--   I am totally against the idea that ...
--   It is a shame/disgusting/terrible that ...
+| Persönliche Meinung ausdrücken                              |
+| ----------------------------------------------------------- |
+| Meiner Meinung nach ...                                     |
+| Meiner Ansicht nach ...                                     |
+| Ich _denke / glaube_, dass ...                              |
+| Persönlich denke ich, ...                                   |
+| Was mich betrifft, ...                                      |
+| Ich bin der Meinung, dass ...                               |
+| Ich bin entschieden für ...                                 |
+| Ich bin gegen die Idee, ...                                 |
+| Es ist _eine Schande / abscheulich / schrecklich_, dass ... |
 
 ## Blog
 
@@ -341,7 +352,81 @@ Schließen Sie Ihre E-Mail mit einem Floskel.
 
 ### Bewerbungs-E-Mail
 
+#### Inhalt
+
+Sagen Sie in der Einleitung, wie Sie von der Stelle erfahren haben. Im Hauptteil müssen Sie die folgenden Informationen wiedergeben:
+
+-   Fassen Sie Ihre Erfahrungen, Fähigkeiten und Qualifikationen zusammen.
+-   Zeigen Sie, dass Sie über die in der Stellenausschreibung geforderten Fähigkeiten verfügen.
+-   Sagen Sie, was **Sie für das Unternehmen** tun können, _nicht_ was das Unternehmen für Sie tun kann.
+-   Stellen Sie dar, was Sie von anderen Bewerbern unterscheidet.
+
+Beenden Sie den Text Ihrer E-Mail, indem Sie dem Leser weitere Informationen anbieten und um ein Vorstellungsgespräch bitten.
+
+:::tip[Tipp]
+Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein Vorstellungsgespräch**. Fragen Sie also einfach am Schluss.
+:::
+
+#### Phrasen
+
+| Einleitung                                                                                  |
+| ------------------------------------------------------------------------------------------- |
+| Ich bewerbe mich hiermit um _die Stelle / die Position von ..._, wie in ... ausgeschrieben. |
+| Ich bin sehr interessiert an ..., weil ...                                                  |
+| Ich bewerbe mich auf Ihre Anzeige für die Stelle des ...                                    |
+
+| Hauptteil                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------- |
+| Ich studiere derzeit an der ...                                                                                  |
+| Ich habe seit ... Jahren als ... gearbeitet.                                                                     |
+| Als Studentin einer Fachhochschule mit der Fachrichtung Informationstechnik bin ich eine gute Kandidatin für ... |
+| Sie geben an, dass Sie jemanden suchen, der ...                                                                  |
+| Ich kann Ihnen insbesondere ...                                                                                  |
+| Ich bin vertraut mit ...                                                                                         |
+
+| Fazit                                                                                                     |
+| --------------------------------------------------------------------------------------------------------- |
+| Ich habe meinen Lebenslauf beigefügt und freue mich darauf, Sie zu einem Vorstellungsgespräch zu treffen. |
+| Sollten Sie weitere Informationen benötigen, zögern Sie nicht, mich zu kontaktieren.                      |
+| Ich würde Sie sehr gerne persönlich kennenlernen, um meine Bewerbung weiter zu besprechen.                |
+| Ich freue mich darauf, von Ihnen zu hören.                                                                |
+
 ### Beschwerde-E-Mail
+
+#### Inhalt
+
+Geben Sie in der Einleitung den Grund für Ihre Beschwerde an. Erklären Sie im ersten Absatz des Hauptteils deutlich, was schief gelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor. Zweitens: Geben Sie gegebenenfalls eine Warnung aus.
+
+#### Phrasen
+
+| Einleitung                                                                    |
+| ----------------------------------------------------------------------------- |
+| Ich schreibe, um meine tiefe Unzufriedenheit mit ... zum Ausdruck zu bringen. |
+| Ich schreibe, um mich zu beschweren über ...                                  |
+| Ich muss sagen, dass ich überhaupt nicht zufrieden war mit ...                |
+| Ich muss leider sagen, dass ich sehr enttäuscht war von ...                   |
+
+| Hauptteil                                                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Obwohl Sie mit „Spitzenqualität“ werben, hatte ich das Gefühl, dass das Produkt, das ich erhielt, weit unter dem Standard lag, den ich erwartet hatte ...                                                     |
+| Die Ware war in _schlechtem Zustand / beschädigt / fehlerhaft_.                                                                                                                                               |
+| Zu allem Überfluss waren Ihre Mitarbeiter sehr wenig hilfsbereit, als ich anrief. Vor allem übernahm niemand die Verantwortung, das Problem zu lösen - ich wurde einfach von Person zu Person weitergereicht. |
+| Es scheint _ein Fehler in der Rechnung / ein Missverständnis_ vorzuliegen.                                                                                                                                    |
+
+| Bitte um Maßnahmen                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------ |
+| Könnten Sie bitte dafür sorgen, dass ich ein neues Produkt erhalte oder mein Geld vollständig zurückerstattet wird?            |
+| Bitte halten Sie mich über alle weiteren Entwicklungen auf dem Laufenden.                                                      |
+| Ich muss auf _einem sofortigen Ersatz / einer vollständigen Rückerstattung_ bestehen.                                          |
+| Wenn ich die Ware nicht bis Ende dieser Woche erhalte, habe ich keine andere Wahl als meine Bestellung zu stornieren.          |
+| Ich befürchte, dass wir, wenn diese Bedingungen nicht erfüllt werden, gezwungen sein könnten, rechtliche Schritte einzuleiten. |
+| Ich bitte Sie, diese Angelegenheit zu prüfen und mir Ihre Entscheidung mitzuteilen.                                            |
+
+| Fazit                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------------- |
+| Ich freue mich auf Ihre Erklärung zu diesen Angelegenheiten.                                                           |
+| Ich hoffe, dass diese Angelegenheit geklärt werden kann ...                                                            |
+| Ich hoffe, dass Sie diese Angelegenheit umgehend bearbeiten werden, da sie mir erhebliche Unannehmlichkeiten bereitet. |
 
 ## Broschüre
 
