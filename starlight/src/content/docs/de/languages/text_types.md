@@ -395,7 +395,9 @@ Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein
 
 #### Inhalt
 
-Geben Sie in der Einleitung den Grund für Ihre Beschwerde an. Erklären Sie im ersten Absatz des Hauptteils deutlich, was schief gelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor. Zweitens: Geben Sie gegebenenfalls eine Warnung aus.
+Geben Sie in der Einleitung den Grund für Ihre Beschwerde an. 
+
+Erklären Sie im ersten Absatz des Hauptteils deutlich, was schief gelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor oder drohen Sie mit einer Warnung -- meistens legalen Aktionen einleiten.
 
 #### Phrasen
 
