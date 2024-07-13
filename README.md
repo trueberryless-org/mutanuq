@@ -2,6 +2,16 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L3QTFWA)
 
+## Star History
+
+<a href="https://star-history.com/#trueberryless-org/mutanuq&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=trueberryless-org/mutanuq&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=trueberryless-org/mutanuq&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=trueberryless-org/mutanuq&type=Date" />
+ </picture>
+</a>
+
 ## Installation
 
 Please install [PnPm](https://pnpm.io/) beforehand.
