@@ -77,3 +77,11 @@ jobs:
                   tags: |
                       ${{ env.IMAGE_NAME }}:latest
                   labels: ${{ steps.meta.outputs.labels }}
+
+            - name: Update manifest-lunaria/deployment.yaml file
+              run: |
+                  yq eval '.spec.template.spec.containers[0].image = "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"' -i manifest-lunaria/deployment.yaml
+
+            - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: update manifest-lunaria/deployment.json container image (automated)
