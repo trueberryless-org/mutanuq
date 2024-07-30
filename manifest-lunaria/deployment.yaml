@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: i18n-mutanuq
+    namespace: mutanuq
+    labels:
+        app: i18n-mutanuq
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: i18n-mutanuq
+    template:
+        metadata:
+            labels:
+                app: i18n-mutanuq
+        spec:
+            containers:
+                - name: i18n-mutanuq
+                  image: "trueberryless/i18n-mutanuq"
+                  imagePullPolicy: Always

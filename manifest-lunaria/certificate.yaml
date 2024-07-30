@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: i18n-mutanuq
+    namespace: mutanuq
+spec:
+    secretName: i18n-mutanuq
+    issuerRef:
+        name: acme-issuer
+        kind: ClusterIssuer
+    dnsNames:
+        - "i18n-mutanuq.trueberryless.org"
