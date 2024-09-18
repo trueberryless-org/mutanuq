@@ -17,5 +17,5 @@ spec:
     spec:
       containers:
         - name: mutanuq
-          image: 'trueberryless/mutanuq:main-3c0d0e5f2393c5a09089851ec7b601d5077f128e'
+          image: 'trueberryless/mutanuq:main-9c134afb68657532c7c2d5d4b7588484e80c7f28'
           imagePullPolicy: Always
