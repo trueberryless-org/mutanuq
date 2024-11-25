@@ -12,6 +12,8 @@
  </picture>
 </a>
 
+## Project structure
+
 ## Installation
 
 Please install [PnPm](https://pnpm.io/) beforehand.
