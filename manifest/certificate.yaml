@@ -9,4 +9,4 @@ spec:
     name: acme-issuer
     kind: ClusterIssuer
   dnsNames:
-    - 'mutanuq.trueberryless.org'
+    - "mutanuq.trueberryless.org"
