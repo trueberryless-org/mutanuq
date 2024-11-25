@@ -66,6 +66,6 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
 
 ## License
 
-Licensed under the MIT license, Copyright © trueberryless-org.
+Licensed under the MIT license, Copyright © trueberryless.
 
 See [LICENSE](/LICENSE) for more information.
