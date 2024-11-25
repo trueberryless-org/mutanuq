@@ -17,6 +17,6 @@ spec:
                   number: 80
 
   tls:
-  - hosts:
-    - mutanuq.trueberryless.org
-    secretName: mutanuq
+    - hosts:
+        - mutanuq.trueberryless.org
+      secretName: mutanuq
