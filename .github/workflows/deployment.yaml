@@ -149,14 +149,6 @@ jobs:
             ${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Update deployment.yaml file
-        run: |
-          yq eval '.spec.template.spec.containers[0].image = "${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:${{ needs.image-tag.outputs.IMAGE_TAG }}"' -i manifest/deployment.yaml
-
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: update deployment.json container image (automated)
-
   release:
     name: Release
     needs: [image-tag, deployment]
