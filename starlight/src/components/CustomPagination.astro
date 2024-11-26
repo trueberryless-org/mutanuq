@@ -1,9 +1,11 @@
 ---
 import Pagination from "@astrojs/starlight/components/Pagination.astro";
 import FeedbackComponent from "./FeedbackComponent.astro";
+
+const { entry } = Astro.props;
 ---
 
 <>
-    <FeedbackComponent />
+    { !entry.data.hero && <FeedbackComponent /> }    
     <Pagination {...Astro.props as any} />
 </>
