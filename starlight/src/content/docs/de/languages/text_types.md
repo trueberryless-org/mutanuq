@@ -2,6 +2,9 @@
 title: Textsorten Englisch
 sidebar:
     order: 0
+tableOfContents:
+    minHeadingLevel: 2
+    maxHeadingLevel: 3
 ---
 
 ## Artikel
@@ -35,13 +38,13 @@ Im Schluss können entweder die Informationen generell zusammengefasst werden od
 
 ### Phrasen
 
-| LeserInnen einbeziehen                 |
-| -------------------------------------- |
-| Haben Sie jemals...?                   |
-| Was würden Sie tun, wenn...?           |
-| Können Sie sich vorstellen...?         |
-| Du denkst vielleicht, dass..., aber... |
-| Gehörst du zu den Menschen, die...     |
+| LeserInnen einbeziehen                   |
+| ---------------------------------------- |
+| Haben Sie jemals ...?                    |
+| Was würden Sie tun, wenn ...?            |
+| Können Sie sich vorstellen ...?          |
+| Du denkst vielleicht, dass ..., aber ... |
+| Gehörst du zu den Menschen, die ...      |
 
 | Persönliche Meinung ausdrücken                              |
 | ----------------------------------------------------------- |
@@ -57,7 +60,9 @@ Im Schluss können entweder die Informationen generell zusammengefasst werden od
 
 ## Blog
 
-Ein Blog ist meistens eine Diskussion, welche auf einer Webseite durchgeführt wird. Die Beiträge behandeln verschiedenste Themen und Menschen diskutieren in den Kommentaren über das Thema und teilen ihre eigene Meinung.
+Ein Blog ist eine regelmäßig aktualisierte Website, die normalerweise von einer Einzelperson oder einer kleinen Gruppe betrieben wird. Der neueste Eintrag, **Blogpost** genannt, wird normalerweise oben auf der Hauptseite angezeigt. Ein Blog ist ein dynamisches und interaktives Medium; er kann aktualisiert werden und ermöglicht es dem Besucher, mit dem Autor zu kommunizieren, indem er einen **Blog-Kommentar** zu jedem einzelnen Beitrag hinterlässt.
+
+Das Ziel vieler Blogger/innen ist es, ihre Leser/innen mit Informationen zu versorgen, Diskussionen zu eröffnen oder Meinungen, Emotionen und Erfahrungen zu teilen. Man Institutionen und Unternehmen nutzen Blogs auch, um ihre Aktivitäten und Produkte zu bewerben.
 
 ### Blogbeitrag
 
