@@ -1,5 +1,11 @@
 # starlight
 
+## 0.1.1
+
+### Patch Changes
+
+- [`a5b04d6`](https://github.com/trueberryless-org/mutanuq/commit/a5b04d6bbe1786850302746418ee6bcf5db6a115) Thanks [@trueberryless](https://github.com/trueberryless)! - Update index to use informal recipient
+
 ## 0.1.0
 
 ### Minor Changes

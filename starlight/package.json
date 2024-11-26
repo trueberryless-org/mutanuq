@@ -1,7 +1,7 @@
 {
     "name": "starlight",
     "type": "module",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "scripts": {
         "dev": "astro dev",
         "devo": "npm run open-browser && astro dev",
