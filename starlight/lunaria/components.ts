@@ -1,18 +1,19 @@
 import { html } from "@lunariajs/core";
 
 export const TitleParagraph = () => html`
-    <p>
-        If you're interested in helping us translate
-        <a href="https://mutanuq.trueberryless.org/">mutanuq.trueberryless.org</a> into one of the
-        languages listed below, you've come to the right place! This auto-updating page always lists
-        all the content that could use your help right now.
-    </p>
-    <p>
-        Before starting a new translation, please read our
-        <a
-            href="https://github.com/trueberryless-org/mutanuq/blob/main/CONTRIBUTING.md#translating-mutanuqs-docs"
-            >translation guide</a
-        >
-        to learn about our translation process and how you can get involved.
-    </p>
+  <p>
+    If you're interested in helping us translate
+    <a href="https://mutanuq.trueberryless.org/">mutanuq.trueberryless.org</a>
+    into one of the languages listed below, you've come to the right place! This
+    auto-updating page always lists all the content that could use your help
+    right now.
+  </p>
+  <p>
+    Before starting a new translation, please read our
+    <a
+      href="https://github.com/trueberryless-org/mutanuq/blob/main/CONTRIBUTING.md#translating-mutanuqs-docs"
+      >translation guide</a
+    >
+    to learn about our translation process and how you can get involved.
+  </p>
 `;
