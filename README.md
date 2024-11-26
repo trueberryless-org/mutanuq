@@ -30,6 +30,7 @@
 │   ├── certificate.yaml
 │   ├── deployment.yaml
 │   ├── ingress.yaml
+│   ├── namespace.yaml
 │   └── service.yaml
 ├── package.json
 ├── pnpm-lock.yaml
@@ -178,7 +179,7 @@
     │   │       │   │   ├── embedded_programming.md
     │   │       │   │   ├── information_systems.md
     │   │       │   │   ├── software_development.md
-    │   │       │   │    ── system_integration_and_infrastructure.md
+    │   │       │   │   └── system_integration_and_infrastructure.md
     │   │       │   ├── languages
     │   │       │   │   ├── german_text_types.md
     │   │       │   │   ├── literature.md
