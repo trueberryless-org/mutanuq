@@ -1,5 +1,5 @@
 .MathJax svg {
-    display: inline;
+  display: inline;
 }
 
 /* svg.inline {
@@ -8,13 +8,13 @@
 } */
 
 html[data-theme="light"] .dark-only {
-    display: none;
+  display: none;
 }
 
 html[data-theme="dark"] .light-only {
-    display: none;
+  display: none;
 }
 
 :is(code, code *) {
-    font-family: "JetBrains Mono Variable", sans-serif !important;
+  font-family: "JetBrains Mono Variable", sans-serif !important;
 }
