@@ -1,30 +1,30 @@
 @media print {
-    :is(
-            .header,
-            #starlight__sidebar,
-            .right-sidebar-container,
-            footer,
-            starlight-menu-button,
-            .content-panel > div > p.sl-flex
-        ) {
-        display: none;
-    }
+  :is(
+      .header,
+      #starlight__sidebar,
+      .right-sidebar-container,
+      footer,
+      starlight-menu-button,
+      .content-panel > div > p.sl-flex
+    ) {
+    display: none;
+  }
 
-    .main-frame {
-        padding-inline-start: 0;
-        padding-top: 0;
-    }
+  .main-frame {
+    padding-inline-start: 0;
+    padding-top: 0;
+  }
 
-    .main-pane {
-        width: 100%;
-        --sl-content-margin-inline: unset;
-    }
+  .main-pane {
+    width: 100%;
+    --sl-content-margin-inline: unset;
+  }
 
-    .sl-container {
-        --sl-content-width: 100%;
-    }
+  .sl-container {
+    --sl-content-width: 100%;
+  }
 
-    :is(h1, h2, h3, h4, h5, h6) {
-        color: black !important;
-    }
+  :is(h1, h2, h3, h4, h5, h6) {
+    color: black !important;
+  }
 }
