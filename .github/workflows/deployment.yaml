@@ -13,6 +13,7 @@ env:
   REGISTRY: docker.io
   IMAGE_OWNER: trueberryless
   IMAGE_NAME: mutanuq
+  LUNARIA_IMAGE_NAME: i18n-mutanuq
   NODE_VERSION: 20
 
 jobs:
@@ -184,9 +185,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: ./starlight/pnpm-lock.yaml
+          cache-dependency-path: ./pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install
@@ -211,7 +212,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.LUNARIA_IMAGE_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -220,13 +221,13 @@ jobs:
           file: ./starlight/lunaria/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:${{ needs.image-tag.outputs.IMAGE_TAG }}
-            ${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_OWNER }}/${{ env.LUNARIA_IMAGE_NAME }}:${{ needs.image-tag.outputs.IMAGE_TAG }}
+            ${{ env.IMAGE_OWNER }}/${{ env.LUNARIA_IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Update manifest-lunaria/deployment.yaml file
         run: |
-          yq eval '.spec.template.spec.containers[0].image = "${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:${{ needs.image-tag.outputs.IMAGE_TAG }}"' -i manifest-lunaria/deployment.yaml
+          yq eval '.spec.template.spec.containers[0].image = "${{ env.IMAGE_OWNER }}/${{ env.LUNARIA_IMAGE_NAME }}:${{ needs.image-tag.outputs.IMAGE_TAG }}"' -i manifest-lunaria/deployment.yaml
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

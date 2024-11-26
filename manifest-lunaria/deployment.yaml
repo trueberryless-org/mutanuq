@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: i18n-mutanuq
-  namespace: mutanuq
+  namespace: i18n-mutanuq
   labels:
     app: i18n-mutanuq
 spec:
@@ -17,5 +17,5 @@ spec:
     spec:
       containers:
         - name: i18n-mutanuq
-          image: "trueberryless/i18n-mutanuq:main-462b8ab8a3c052bae1fda038477973ad5581e43f"
+          image: "trueberryless/i18n-mutanuq"
           imagePullPolicy: Always
