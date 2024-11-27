@@ -16,6 +16,27 @@
 
 ```
 .
+├── .changeset
+│   ├── README.md
+│   └── config.json
+├── .dockerignore
+├── .github
+│   ├── FUNDING.yaml
+│   ├── ISSUE_TEMPLATE
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   ├── labeler.yml
+│   ├── readmetreerc.yaml
+│   └── workflows
+│       ├── deployment.yaml
+│       ├── format.yaml
+│       ├── generate-readme-tree.yaml
+│       ├── labeler.yaml
+│       ├── release.yaml
+│       └── welcome-bot.yaml
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
 ├── CONTRIBUTING.md
 ├── Dockerfile
 ├── LICENSE
@@ -36,6 +57,8 @@
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 └── starlight
+    ├── .dockerignore
+    ├── .gitignore
     ├── CHANGELOG.md
     ├── README.md
     ├── astro.config.mjs
