@@ -47,8 +47,6 @@ export default defineConfig({
       ],
       components: {
         DownloadFile: "./src/components/DownloadFile.astro",
-      },
-      components: {
         Pagination: "./src/components/CustomPagination.astro",
       },
       plugins: [
@@ -56,6 +54,23 @@ export default defineConfig({
         starlightLinksValidator(),
         starlightViewModes(),
         starlightSidebarTopicsDropdown([
+          {
+            label: {
+              de: "Überblick",
+              en: "Overview",
+            },
+            icon: "magnifier",
+            link: "/overview/",
+            items: [
+              {
+                label: "Überblick",
+                translations: {
+                  en: "Overview",
+                },
+                items: ["overview"],
+              },
+            ],
+          },
           {
             label: {
               de: "Softwareentwicklung",
