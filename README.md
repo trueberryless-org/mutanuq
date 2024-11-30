@@ -75,7 +75,7 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
 │   ├── ISSUE_TEMPLATE
 │   │   ├── bug_report.md
 │   │   └── feature_request.md
-│   ├── labeler.yml
+│   ├── labeler.yaml
 │   ├── readmetreerc.yaml
 │   └── workflows
 │       ├── deployment.yaml
