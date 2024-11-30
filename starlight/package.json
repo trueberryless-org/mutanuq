@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "@11ty/eleventy-fetch": "^4.0.1",
-    "@astrojs/starlight": "^0.24.2",
+    "@astrojs/starlight": "^0.29.2",
     "@fontsource-variable/jetbrains-mono": "^5.0.21",
     "@lunariajs/core": "^0.1.0",
     "@zachleat/table-saw": "^1.0.6",
-    "astro": "^4.10.2",
+    "astro": "^4.16.15",
     "astro-expressive-code": "^0.34.2",
     "astro-feelback": "^0.3.4",
     "rehype-mathjax": "^6.0.0",
