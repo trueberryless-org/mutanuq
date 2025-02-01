@@ -1,0 +1,392 @@
+---
+title: Python
+---
+
+Python ist eine weit verbreitete, benutzerfreundliche Programmiersprache, entwickelt von Guido van Rossum. Mit klarer Syntax und hoher Lesbarkeit ist sie für Anfänger und erfahrene Entwickler gleichermaßen attraktiv. Python wird in Webentwicklung, Datenanalyse, künstlicher Intelligenz und anderen Bereichen eingesetzt. Die Sprache zeichnet sich durch Einfachheit und Flexibilität aus. Ein charakteristisches Merkmal ist, dass Python eine interpretierte Sprache ist, was bedeutet, dass ein Interpreter verwendet wird, um den Code direkt auszuführen, ohne ihn vorher zu kompilieren. Mit einer umfangreichen Standardbibliothek und einer aktiven Entwicklergemeinschaft bietet Python eine robuste Plattform für verschiedene Projekte.
+
+Python ist eine interpretierte, hochgradige und dynamische Programmiersprache, die von Guido van Rossum in den späten 1980er Jahren entwickelt wurde. Sie ist bekannt für ihre klare und lesbare Syntax, die das Schreiben und Verstehen von Code erleichtert.
+
+## Installation und Setup
+
+Um Python zu installieren, besuche die [offizielle Python-Website](https://www.python.org/) und lade die neueste Version herunter. Python enthält auch `pip`, ein Paketverwaltungssystem, das die Installation von Bibliotheken und Abhängigkeiten erleichtert.
+
+```bash
+# Installation überprüfen
+python --version
+pip --version
+```
+
+## Grundlegende Syntax und Datentypen
+
+### Kommentare
+
+```python
+# Dies ist ein einzeiliger Kommentar
+"""
+Dies ist ein
+mehrzeiliger Kommentar
+"""
+```
+
+### Datentypen
+
+Python unterstützt mehrere eingebaute Datentypen:
+
+```python
+# Zahlen
+integer = 10
+float_num = 10.5
+
+# Strings
+single_quote_str = 'Hallo'
+double_quote_str = "Welt"
+
+# Listen
+my_list = [1, 2, 3, 'a', 'b']
+
+# Tupel
+my_tuple = (1, 2, 3, 'a', 'b')
+
+# Wörterbücher
+my_dict = {'key1': 'value1', 'key2': 'value2'}
+
+# Mengen
+my_set = {1, 2, 3, 4, 5}
+```
+
+## Variablen und Operatoren
+
+### Variablen
+
+Variablen sind Speicherorte für Daten. In Python erfolgt die Zuweisung einfach durch das `=` Zeichen.
+
+```python
+x = 10
+name = "John"
+```
+
+### Operatoren
+
+Python unterstützt verschiedene Operatoren:
+
+```python
+# Arithmetische Operatoren
+addition = 5 + 3
+subtraction = 5 - 3
+multiplication = 5 * 3
+exponentiation = 5 ** 3
+division = 5 / 3
+square_root = 5 ** 0.5
+modulus = 5 % 3
+
+# Vergleichsoperatoren
+equal = (5 == 3)
+not_equal = (5 != 3)
+greater_than = (5 > 3)
+greater_than_equal = (5 >= 3)
+less_than = (5 < 3)
+less_than_equal = (5 <= 3)
+
+# Logische Operatoren
+and_operator = (5 > 3 and 5 < 10)
+or_operator = (5 > 3 or 5 > 10)
+not_operator = not(5 > 3)
+```
+
+## Kontrollstrukturen
+
+### Bedingte Anweisungen
+
+```python
+if x > 0:
+    print("x ist positiv")
+elif x == 0:
+    print("x ist null")
+else:
+    print("x ist negativ")
+```
+
+### Schleifen
+
+```python
+# For-Schleife
+for i in range(5):
+    print(i)
+
+# List Comprehension (Kurzschreibweise For-Schleife)
+[print(i) for i in range(5)]
+
+# While-Schleife
+count = 0
+while count < 5:
+    print(count)
+    count += 1
+```
+
+## Funktionen und Module
+
+### Funktionen
+
+Funktionen werden mit dem Schlüsselwort `def` definiert.
+
+```python
+def greet(name):
+    return f"Hallo, {name}"
+
+print(greet("Alice"))
+```
+
+### Module
+
+Ein Modul ist eine Datei, die Python-Code enthält. Sie können Module importieren, um Funktionen und Klassen zu verwenden.
+
+```python
+# Import eines Moduls
+import math
+print(math.sqrt(16))
+
+# Import bestimmter Funktionen aus einem Modul
+from math import sqrt
+print(sqrt(16))
+```
+
+## Objektorientierte Programmierung (OOP)
+
+OOP ist ein Paradigma, das auf der Verwendung von "Objekten" basiert – Datenstrukturen, die sowohl Daten als auch Funktionen enthalten, die auf diese Daten arbeiten. In Python kann OOP durch die Definition von Klassen und das Erstellen von Instanzen dieser Klassen (Objekten) realisiert werden.
+
+### Klassen und Objekte
+
+Eine Klasse ist eine Blaupause für Objekte. Sie definiert eine Menge von Attributen und Methoden, die die Objekte dieser Klasse haben.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def greet(self):
+        return f"Hallo, mein Name ist {self.name} und ich bin {self.age} Jahre alt."
+
+# Objektinstanziierung
+person1 = Person("Alice", 30)
+print(person1.greet())
+```
+
+### Vererbung
+
+Vererbung ist ein Prinzip, bei dem eine Klasse (die Kindklasse oder Unterklasse) Eigenschaften und Methoden von einer anderen Klasse (der Elternklasse oder Oberklasse) erbt. Dies fördert die Wiederverwendbarkeit und Modularität des Codes.
+
+```python
+class Employee(Person):
+    def __init__(self, name, age, employee_id):
+        self.name = name
+        self.age = age
+        self.employee_id = employee_id
+
+    def work(self):
+        return f"{self.name} arbeitet mit der ID {self.employee_id}."
+
+# Objektinstanziierung
+employee1 = Employee("Bob", 25, "E123")
+print(employee1.greet())  # Methode der Elternklasse
+print(employee1.work())   # Methode der Kindklasse
+```
+
+### Die `super()`-Funktion
+
+Die `super()`-Funktion wird verwendet, um auf Methoden und Eigenschaften der Elternklasse zuzugreifen. Sie ist besonders nützlich, wenn Sie die Implementierung der Elternklasse erweitern möchten.
+
+```python
+class Manager(Employee):
+    def __init__(self, name, age, employee_id, department):
+        super().__init__(name, age, employee_id)
+        self.department = department
+
+    def work(self):
+        parent_work = super().work()
+        return f"{parent_work} Sie leitet die Abteilung {self.department}."
+
+# Objektinstanziierung
+manager1 = Manager("Carol", 40, "M456", "IT")
+print(manager1.greet())   # Methode der Elternklasse (Person)
+print(manager1.work())    # Überschriebene Methode der Kindklasse (Manager)
+```
+
+### Method Overriding (Methodenüberschreibung)
+
+Kindklassen können Methoden der Elternklasse überschreiben, um spezielles Verhalten zu implementieren.
+
+```python
+class Animal:
+    def speak(self):
+        return "Ein Tier macht ein Geräusch"
+
+class Dog(Animal):
+    def speak(self):
+        return "Wuff!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Miau!"
+
+# Objektinstanziierung
+animal = Animal()
+dog = Dog()
+cat = Cat()
+print(animal.speak())  # Ausgabe: Ein Tier macht ein Geräusch
+print(dog.speak())     # Ausgabe: Wuff!
+print(cat.speak())     # Ausgabe: Miau!
+```
+
+### Mehrfachvererbung
+
+Python unterstützt Mehrfachvererbung, bei der eine Klasse von mehreren Elternklassen erben kann. Dies kann jedoch zu Komplexität und Mehrdeutigkeiten führen, die durch den Method Resolution Order (MRO) Algorithmus gelöst werden.
+
+```python
+class A:
+    def greet(self):
+        return "Hallo von A"
+
+class B:
+    def greet(self):
+        return "Hallo von B"
+
+class C(A, B):
+    pass
+
+# Objektinstanziierung
+c = C()
+print(c.greet())  # Ausgabe: Hallo von A (nach MRO)
+
+# Reihenfolge der Auflösung anzeigen
+print(C.__mro__)  # Ausgabe: (<class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>, <class 'object'>)
+```
+
+### Abstrakte Klassen und Methoden
+
+Abstrakte Klassen dienen als Blaupausen für andere Klassen und können nicht instanziiert werden. Sie enthalten eine oder mehrere abstrakte Methoden, die in den Unterklassen implementiert werden müssen.
+
+```python
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return "Wuff!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Miau!"
+
+# Objektinstanziierung
+dog = Dog()
+cat = Cat()
+print(dog.speak())  # Ausgabe: Wuff!
+print(cat.speak())  # Ausgabe: Miau!
+```
+
+### Properties (Eigenschaften)
+
+Properties ermöglichen den Zugriff auf Methoden als wären sie Attribute. Dies erlaubt die Kapselung von internen Zuständen und die Definition von getter und setter Methoden.
+
+```python
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        if value < 0:
+            raise ValueError("Der Radius muss positiv sein.")
+        self._radius = value
+
+    @property
+    def area(self):
+        return 3.1416 * (self._radius ** 2)
+
+# Objektinstanziierung
+circle = Circle(5)
+print(circle.radius)  # Ausgabe: 5
+print(circle.area)    # Ausgabe: 78.54
+circle.radius = 10
+print(circle.area)    # Ausgabe: 314.16
+```
+
+### Klassenmethoden und statische Methoden
+
+Klassenmethoden (`@classmethod`) haben Zugriff auf die Klasse selbst und nicht auf die Instanz. Statische Methoden (`@staticmethod`) haben keinen Zugriff auf die Instanz oder die Klasse.
+
+```python
+class MyClass:
+    class_variable = 0
+
+    def __init__(self, instance_variable):
+        self.instance_variable = instance_variable
+
+    @classmethod
+    def increment_class_variable(cls):
+        cls.class_variable += 1
+
+    @staticmethod
+    def static_method():
+        return "Dies ist eine statische Methode."
+
+# Klassenmethoden aufrufen
+MyClass.increment_class_variable()
+print(MyClass.class_variable)  # Ausgabe: 1
+
+# Statische Methoden aufrufen
+print(MyClass.static_method())  # Ausgabe: Dies ist eine statische Methode.
+```
+
+## Fehler- und Ausnahmebehandlung
+
+Fehler können mit `try`, `except` und `finally` gehandhabt werden.
+
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Division durch Null ist nicht erlaubt.")
+finally:
+    print("Dieser Block wird immer ausgeführt.")
+```
+
+## Ein- und Ausgabe
+
+### Eingabe
+
+```python
+name = input("Gib deinen Namen ein: ")
+print(f"Hallo, {name}")
+```
+
+### Ausgabe
+
+```python
+print("Hallo, Welt!")
+```
+
+## Bibliotheken und Frameworks
+
+Python verfügt über eine Vielzahl von Bibliotheken und Frameworks, darunter:
+
+-   **NumPy** und **Pandas** für Datenanalyse
+-   **Matplotlib** und **Seaborn** für Datenvisualisierung
+-   **TensorFlow** und **PyTorch** für maschinelles Lernen
+-   **Flask** und **Django** für Webentwicklung
+
+## Best Practices
+
+-   **Lesbarkeit** : Schreibe klaren und verständlichen Code.
+-   **Dokumentation** : Kommentiere deinen Code und verwende Docstrings.
+-   **Modularität** : Teile deinen Code in wiederverwendbare Module und Funktionen auf.
+-   **Fehlerbehandlung** : Implementiere robuste Fehler- und Ausnahmebehandlung.
