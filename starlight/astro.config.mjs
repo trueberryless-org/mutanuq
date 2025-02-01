@@ -28,13 +28,13 @@ export default defineConfig({
           "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
       },
       lastUpdated: true,
-      defaultLocale: "de",
+      defaultLocale: "en",
       locales: {
-        de: {
-          label: "Deutsch",
-        },
         en: {
           label: "English",
+        },
+        de: {
+          label: "Deutsch",
         },
       },
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
@@ -46,97 +46,159 @@ export default defineConfig({
         "@fontsource-variable/jetbrains-mono/wght.css",
       ],
       components: {
-        DownloadFile: "./src/components/DownloadFile.astro",
+        // DownloadFile: "./src/components/DownloadFile.astro",
         Pagination: "./src/components/CustomPagination.astro",
       },
       plugins: [
         starlightImageZoom(),
         starlightLinksValidator(),
-        starlightViewModes(),
+        // starlightViewModes(),
         starlightSidebarTopicsDropdown([
           {
             label: {
-              de: "Überblick",
-              en: "Overview",
+              en: "Software Development",
+              de: "Softwareentwicklung",
             },
-            icon: "magnifier",
-            link: "/overview/",
+            icon: "puzzle",
+            link: "/software-development/object-oriented-programming",
             items: [
               {
-                label: "Überblick",
-                translations: {
-                  en: "Overview",
-                },
-                items: ["overview"],
+                label: "",
+                items: [
+                  "software-development/object-oriented-programming",
+                  "software-development/software-metrics",
+                  "software-development/design-patterns/behavioral-design-patterns/command",
+                  "software-development/design-patterns/behavioral-design-patterns/strategy",
+                  "software-development/design-patterns/creational-design-patterns/singleton",
+                  "software-development/design-patterns/structural-design-patterns/adapter",
+                  "software-development/design-patterns/structural-design-patterns/decorator",
+                ],
               },
             ],
           },
           {
             label: {
-              de: "Softwareentwicklung",
-              en: "Software Development",
+              en: "Databases",
+              de: "Datenbanken",
             },
-            icon: "rocket",
-            link: "/software-development/",
+            icon: "document",
+            link: "/databases/relational-databases/",
             items: [
               {
-                label: "Softwareentwicklung",
-                translations: {
-                  en: "Software Development",
-                },
+                label: "",
                 items: [
-                  "software-development/object-oriented-programming",
-                  "software-development/software-metrics",
-                ],
-              },
-              {
-                label: "Design Patterns",
-                translations: {
-                  en: "Design Patterns",
-                },
-                collapsed: true,
-                items: [
-                  {
-                    label: "Behavioral Design Patterns",
-                    translations: {
-                      en: "Behavioral Design Patterns",
-                    },
-                    items: [
-                      "software-development/design-patterns/behavioral-design-patterns/command",
-                      "software-development/design-patterns/behavioral-design-patterns/strategy",
-                    ],
-                  },
-                  {
-                    label: "Structural Design Patterns",
-                    translations: {
-                      en: "Structural Design Patterns",
-                    },
-                    items: [
-                      "software-development/design-patterns/structural-design-patterns/adapter",
-                      "software-development/design-patterns/structural-design-patterns/decorator",
-                    ],
-                  },
-                  {
-                    label: "Creational Design Patterns",
-                    translations: {
-                      en: "Creational Design Patterns",
-                    },
-                    items: [
-                      "software-development/design-patterns/creational-design-patterns/singleton",
-                    ],
-                  },
+                  "databases/relational-databases",
+                  "databases/document-oriented-databases",
+                  "databases/schema",
+                  "databases/cap-theorem",
                 ],
               },
             ],
           },
           {
-            label: "Dezentrale Systeme",
-            translations: {
-              en: "Decentralized Systems",
+            label: {
+              en: "Artificial Intelligence",
+              de: "Künstliche Intelligenz",
             },
-            link: "/decentralised-systems/",
-            items: ["information_technology/decentralised_systems"],
+            icon: "star",
+            link: "/artificial-intelligence/",
+            items: [
+              {
+                label: "",
+                items: [
+                  "artificial-intelligence",
+                  "artificial-intelligence/python",
+                  "artificial-intelligence/numpy",
+                  "artificial-intelligence/pandas",
+                  "artificial-intelligence/matplotlib",
+                  "artificial-intelligence/seaborn",
+                  "artificial-intelligence/machine-learning",
+                  "artificial-intelligence/deep-learning",
+                  "artificial-intelligence/supervised-learning",
+                  "artificial-intelligence/natural-language-processing",
+                ],
+              },
+            ],
           },
+          {
+            label: {
+              en: "Decentralised Systems",
+              de: "Dezentrale Systeme",
+            },
+            icon: "cloud-download",
+            link: "/decentralised-systems/cloud-computing/",
+            items: [
+              {
+                label: "",
+                items: [
+                  "decentralised-systems/cloud-computing",
+                  "decentralised-systems/storage-account",
+                  "decentralised-systems/azure-functions",
+                  "decentralised-systems/durable-functions",
+                ],
+              },
+            ],
+          },
+          {
+            label: {
+              en: "Embedded Systems",
+              de: "Hardwarenahe Programmierung",
+            },
+            icon: "laptop",
+            link: "/embedded-programming/",
+            items: [
+              {
+                label: "",
+                items: [
+                  "embedded-programming",
+                  "embedded-programming/basic-programm",
+                  "embedded-programming/special-function-register",
+                  "embedded-programming/light-emitting-diode",
+                  "embedded-programming/button",
+                  "embedded-programming/liquid-crystal-display",
+                  "embedded-programming/interrupts",
+                  "embedded-programming/analogue-digital-converter",
+                  "embedded-programming/timer",
+                  "embedded-programming/pointer",
+                  "embedded-programming/usart",
+                  "embedded-programming/spi",
+                  "embedded-programming/eeprom",
+                ],
+              },
+            ],
+          },
+          {
+            label: {
+              en: "Deployment",
+              de: "Bereitstellung",
+            },
+            icon: "rocket",
+            link: "/deployment/virtualisation/",
+            items: [
+              {
+                label: "",
+                items: [
+                  "deployment/virtualisation",
+                  "deployment/storage-systems",
+                  "deployment/security-strategies",
+                ],
+              },
+            ],
+          },
+          // {
+          //   label: {
+          //     de: "Überblick",
+          //     en: "Overview",
+          //   },
+          //   icon: "magnifier",
+          //   link: "/overview/",
+          //   items: [
+          //     {
+          //       label: "",
+          //       items: ["overview"],
+          //     },
+          //   ],
+          // },
         ]),
       ],
       credits: true,
@@ -147,6 +209,6 @@ export default defineConfig({
     rehypePlugins: [rehypeMathjax],
   },
   redirects: {
-    "/": "/de/",
+    "/": "/en/",
   },
 });
