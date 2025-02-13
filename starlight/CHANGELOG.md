@@ -1,5 +1,11 @@
 # starlight
 
+## 0.1.2
+
+### Patch Changes
+
+- [#123](https://github.com/trueberryless-org/mutanuq/pull/123) [`89871f4`](https://github.com/trueberryless-org/mutanuq/commit/89871f4e9ba9b7fcf03749e5674d402e6b3413c2) Thanks [@trueberryless](https://github.com/trueberryless)! - Refactor site structure with Sidebar Topics Dropdown Plugin
+
 ## 0.1.1
 
 ### Patch Changes
