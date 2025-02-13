@@ -1,0 +1,141 @@
+---
+title: Matplotlib
+---
+
+Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter und interaktiver Visualisierungen in Python. Es ist besonders nützlich für wissenschaftliche und datenbezogene Visualisierungen.
+
+## Installation
+
+Um Matplotlib zu installieren, kann man pip verwenden:
+
+```bash
+pip install matplotlib
+```
+
+## Grundlegendes Beispiel
+
+Hier ist ein einfaches Beispiel, das zeigt, wie man mit Matplotlib ein Liniendiagramm erstellt:
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+x = [1, 2, 3, 4, 5]
+y = [2, 3, 5, 7, 11]
+
+# Liniendiagramm erstellen
+plt.plot(x, y)
+plt.xlabel('x-Achse')
+plt.ylabel('y-Achse')
+plt.title('Einfaches Liniendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/plot.png" alt="Liniendiagramm" style="max-width: 500px;" />
+
+## Histogramm
+
+Ein Histogramm ist nützlich, um die Verteilung einer Datenmenge darzustellen. Hier ist ein Beispiel:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = np.random.randn(1000)
+
+# Histogramm erstellen
+plt.hist(data, bins=30, edgecolor='black')
+plt.xlabel('Werte')
+plt.ylabel('Häufigkeit')
+plt.title('Histogramm der Zufallsdaten')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/hist.png" alt="Histogramm" style="max-width: 500px;" />
+
+## Punktwolkendiagramm (Scatter Plot)
+
+Ein Punktwolkendiagramm zeigt die Beziehung zwischen zwei Variablen. Im ersten Beispiel sieht man, dass wenig Korrelation besteht, während im zweiten Beispiel ein starker Zusammenhang zwischen den beiden Arrays besteht.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+x = np.random.rand(50)
+y = np.random.rand(50)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter.png" alt="Punktwolkendiagramm" style="max-width: 500px;" />
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Funktion für linearen Zusammenhang
+def linear_function(x):
+    return 0.5 * x + 3  # Beispiel einer linearen Funktion: y = 0.5x + 3
+
+# x-Werte generieren
+x = np.linspace(0, 100, 30)  # 30 äquidistante Werte von 0 bis 100
+y = linear_function(x) + np.random.normal(0, 5, 30)  # Zufällige Abweichung mit Normalverteilung (Mittelwert 0, Standardabweichung 5)
+
+# Scatter Plot erstellen
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x-Werte')
+plt.ylabel('y-Werte')
+plt.title('Punktwolkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter_2.png" alt="Punktwolkendiagramm" style="max-width: 500px;" />
+
+## Balkendiagramm
+
+Ein Balkendiagramm zeigt die Werte für verschiedene Kategorien.
+
+```python
+import matplotlib.pyplot as plt
+
+# Daten
+categories = ['A', 'B', 'C', 'D']
+values = [3, 7, 8, 5]
+
+# Balkendiagramm erstellen
+plt.bar(categories, values, color='green')
+plt.xlabel('Kategorien')
+plt.ylabel('Werte')
+plt.title('Balkendiagramm')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/bar.png" alt="Balkendiagramm" style="max-width: 500px;" />
+
+## Boxplot
+
+Ein Boxplot zeigt die Verteilung einer Datenmenge und hebt Ausreißer hervor.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Zufallsdaten generieren
+data = [np.random.randn(100) for _ in range(4)]
+
+# Boxplot erstellen
+plt.boxplot(data, patch_artist=True)
+plt.xlabel('Gruppe')
+plt.ylabel('Werte')
+plt.title('Boxplot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/box.png" alt="Boxplot" style="max-width: 500px;" />

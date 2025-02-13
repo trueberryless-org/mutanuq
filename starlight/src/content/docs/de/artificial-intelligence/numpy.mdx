@@ -1,0 +1,373 @@
+---
+title: NumPy
+---
+
+NumPy ist eine grundlegende Bibliothek für numerische Berechnungen in Python. Sie bietet Unterstützung für große, mehrdimensionale Arrays und Matrizen sowie eine Sammlung von mathematischen Funktionen, um diese effizient zu bearbeiten. Viele andere Module in der Python-Community basieren auf NumPy.
+
+## Installation
+
+Um NumPy zu installieren, kann man pip verwenden:
+
+```bash
+pip install numpy
+```
+
+## Theorie
+
+### Mathematische Strukturen
+
+In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit verschiedenen Dimensionen:
+
+-   **Skalar**: Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
+-   **Vektor**: Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
+-   **Matrix**: Eine zweidimensionale Sammlung von Werten, zum Beispiel
+    $\mathbf{M} = \begin{bmatrix}
+    1 & 2 \\
+    3 & 4
+    \end{bmatrix}$.
+-   **Tensore**: Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+
+## Erstellen von Arrays
+
+NumPy-Arrays können auf verschiedene Weisen erstellt werden:
+
+```python
+import numpy as np
+
+# Array aus einer Liste
+array1 = np.array([1, 2, 3])
+print("Array aus einer Liste:\n", array1)
+
+# Zweidimensionales Array (Matrix)
+array2 = np.array([[1, 2], [3, 4]])
+print("Zweidimensionales Array:\n", array2)
+
+# Array aus einem Bereich
+array3 = np.arange(10) # np.arange([start,] stop[, step,])
+print("Array aus einem Bereich:\n", array3)
+
+# Array mit gleichmäßig verteilten Werten
+array4 = np.linspace(0, 1, 5) # np.linspace(start,stop,num=50)
+print("Array mit gleichmäßig verteilten Werten:\n", array4)
+
+# Zufalls-Array
+array5 = np.random.rand(3, 3)
+print("Zufalls-Array:\n", array5)
+```
+
+```
+//output.txt
+Array aus einer Liste:
+ [1 2 3]
+Zweidimensionales Array:
+ [[1 2]
+ [3 4]]
+Array aus einem Bereich:
+ [0 1 2 3 4 5 6 7 8 9]
+Array mit gleichmäßig verteilten Werten:
+ [0.   0.25 0.5  0.75 1.  ]
+Zufalls-Array:
+ [[0.3599989  0.00788199 0.28990732]
+ [0.52026756 0.65163794 0.53505392]
+ [0.75076473 0.36474315 0.30692188]]
+```
+
+## Grundlegende Operationen
+
+### Addition und Subtraktion
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Addition
+c = a + b
+print("Addition:", c)
+
+# Subtraktion
+d = a - b
+print("Subtraktion:", d)
+```
+
+```
+//output.txt
+Addition: [5 7 9]
+Subtraktion: [-3 -3 -3]
+```
+
+### Multiplikation und Division
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Multiplikation
+e = a * b
+print("Multiplikation:", e)
+
+# Division
+f = a / b
+print("Division:", f)
+```
+
+```
+//output.txt
+Multiplikation: [ 4 10 18]
+Division: [0.25 0.4  0.5 ]
+```
+
+### Zusammenfassen von Arrays
+
+Die `concatenate` Funktion in NumPy verbindet zwei oder mehr Arrays entlang einer angegebenen Achse. Dies ist nützlich zum Zusammenführen von Daten. Die Syntax lautet `numpy.concatenate((a1, a2, ...), axis=0)`, wobei `axis` die Achse ist, entlang der verbunden wird (Standard ist 0, d.h. zeilenweise).
+
+```python
+import numpy as np
+
+# Zwei 2D-Arrays erstellen
+array1 = np.array([[1, 2], [3, 4]])
+array2 = np.array([[5, 6], [7, 8]])
+
+# Arrays vertikal (zeilenweise) verbinden
+result1 = np.concatenate((array1, array2), axis=0)
+print("Vertikal verbunden:\n", result1)
+
+# Arrays horizontal (spaltenweise) verbinden
+result2 = np.concatenate((array1, array2), axis=1)
+print("Horizontal verbunden:\n", result2)
+```
+
+```
+//output.txt
+Vertikal verbunden:
+ [[1 2]
+ [3 4]
+ [5 6]
+ [7 8]]
+Horizontal verbunden:
+ [[1 2 5 6]
+ [3 4 7 8]]
+```
+
+In diesem Beispiel werden `array1` und `array2` zuerst vertikal und dann horizontal verbunden.
+
+### Matrixmultiplikation
+
+```python
+import numpy as np
+
+# Matrizen erstellen
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+# Matrixmultiplikation
+C = np.dot(A, B)
+print("Matrixmultiplikation:\n", C)
+```
+
+```
+//output.txt
+Matrixmultiplikation:
+ [[19 22]
+ [43 50]]
+```
+
+## Funktionen und Methoden
+
+### Aggregationsfunktionen
+
+NumPy bietet eine Vielzahl von Funktionen zur Berechnung von Aggregaten:
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Summe
+sum_a = np.sum(a)
+print("Summe:", sum_a)
+
+# Mittelwert
+mean_a = np.mean(a)
+print("Mittelwert:", mean_a)
+
+# Standardabweichung
+std_a = np.std(a)
+print("Standardabweichung:", std_a)
+
+# Minimum und Maximum
+min_a = np.min(a)
+max_a = np.max(a)
+print("Minimum:", min_a)
+print("Maximum:", max_a)
+```
+
+```
+//output.txt
+Summe: 15
+Mittelwert: 3.0
+Standardabweichung: 1.4142135623730951
+Minimum: 1
+Maximum: 5
+```
+
+### Reshape und Transponieren
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([[1, 2, 3], [4, 5, 6]])
+print("Array:\n", a)
+
+# Reshape
+b = a.reshape((3, 2))
+# a.reshape((3, -1))
+print("Reshaped Array:\n", b)
+
+# Transponieren
+c = a.T
+print("Transponiertes Array:\n", c)
+```
+
+```
+//output.txt
+Array:
+ [[1 2 3]
+ [4 5 6]]
+Reshaped Array:
+ [[1 2]
+ [3 4]
+ [5 6]]
+Transponiertes Array:
+ [[1 4]
+ [2 5]
+ [3 6]]
+```
+
+### Broadcasting
+
+Broadcasting ermöglicht das Durchführen von Operationen auf Arrays unterschiedlicher Formen:
+
+```python
+import numpy as np
+
+# Arrays erstellen
+a = np.array([1, 2, 3])
+b = np.array([[1], [2], [3]])
+
+# Broadcasting
+c = a + b
+print("Broadcasting Ergebnis:\n", c)
+```
+
+```
+//output.txt
+Broadcasting Ergebnis:
+ [[2 3 4]
+ [3 4 5]
+ [4 5 6]]
+```
+
+## Weitere Funktionen
+
+### Erzeugen von speziellen Arrays
+
+```python
+import numpy as np
+
+# Null-Array
+zero_array = np.zeros((2, 3))
+print("Null-Array:\n", zero_array)
+
+# Einsen-Array
+ones_array = np.ones((2, 3))
+print("Einsen-Array:\n", ones_array)
+
+# Identitätsmatrix
+identity_matrix = np.eye(3)
+print("Identitätsmatrix:\n", identity_matrix)
+```
+
+```
+//output.txt
+Null-Array:
+ [[0. 0. 0.]
+ [0. 0. 0.]]
+Einsen-Array:
+ [[1. 1. 1.]
+ [1. 1. 1.]]
+Identitätsmatrix:
+ [[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+```
+
+### Slicing und Indexierung
+
+```python
+import numpy as np
+
+# Array erstellen
+a = np.array([1, 2, 3, 4, 5])
+
+# Slicing
+slice_a = a[1:4]
+print("Slicing:", slice_a)
+
+# Boolean Indexing
+bool_idx = (a > 3)
+print("Boolean Indexing:", a[bool_idx])
+```
+
+```
+//output.txt
+Slicing: [2 3 4]
+Boolean Indexing: [4 5]
+```
+
+### Lineare Algebra
+
+```python
+import numpy as np
+
+# Matrix erstellen
+A = np.array([[1, 2], [3, 4]])
+print("Array:\n", A)
+
+# Inverse der Matrix
+A_inv = np.linalg.inv(A)
+print("Inverse der Matrix:\n", A_inv)
+
+# Determinante der Matrix
+det_A = np.linalg.det(A)
+print("Determinante der Matrix:", det_A)
+
+# Eigenwerte und Eigenvektoren
+eigvals, eigvecs = np.linalg.eig(A)
+print("Eigenwerte:", eigvals)
+print("Eigenvektoren:\n", eigvecs)
+```
+
+```
+//output.txt
+Array:
+ [[1 2]
+ [3 4]]
+Inverse der Matrix:
+ [[-2.   1. ]
+ [ 1.5 -0.5]]
+Determinante der Matrix: -2.0000000000000004
+Eigenwerte: [-0.37228132  5.37228132]
+Eigenvektoren:
+ [[-0.82456484 -0.41597356]
+ [ 0.56576746 -0.90937671]]
+```
+
+NumPy ist eine äußerst mächtige Bibliothek, die in vielen wissenschaftlichen und technischen Anwendungen verwendet wird. Die oben genannten Beispiele decken einige der grundlegendsten Funktionen ab, aber NumPy bietet noch viele weitere fortgeschrittene Features, die das Arbeiten mit numerischen Daten in Python effizient und bequem machen.
