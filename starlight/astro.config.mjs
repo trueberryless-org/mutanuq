@@ -28,7 +28,7 @@ export default defineConfig({
           "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
       },
       lastUpdated: true,
-      defaultLocale: "en",
+      defaultLocale: "de",
       locales: {
         en: {
           label: "English",
