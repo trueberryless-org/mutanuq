@@ -12,13 +12,13 @@
     }
   ],
   "defaultLocale": {
-    "label": "Deutsch",
-    "lang": "de"
+    "label": "English",
+    "lang": "en"
   },
   "locales": [
     {
-      "label": "English",
-      "lang": "en"
+      "label": "Deutsch",
+      "lang": "de"
     }
   ],
   "dashboard": {
