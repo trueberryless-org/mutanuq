@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
+import starlightThemeRapide from "starlight-theme-rapide";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightViewModes from "starlight-view-modes";
 import starlightLinksValidator from "starlight-links-validator";
@@ -50,6 +51,7 @@ export default defineConfig({
         Pagination: "./src/components/CustomPagination.astro",
       },
       plugins: [
+        starlightThemeRapide(),
         starlightImageZoom(),
         starlightLinksValidator(),
         // starlightViewModes(),
