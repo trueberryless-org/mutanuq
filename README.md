@@ -71,10 +71,6 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
 │   └── config.json
 ├── .dockerignore
 ├── .github
-│   ├── FUNDING.yaml
-│   ├── ISSUE_TEMPLATE
-│   │   ├── bug_report.md
-│   │   └── feature_request.md
 │   ├── labeler.yaml
 │   ├── readmetreerc.yaml
 │   └── workflows
@@ -82,7 +78,6 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
 │       ├── format.yaml
 │       ├── generate-readme-tree.yaml
 │       ├── labeler.yaml
-│       ├── release.yaml
 │       └── welcome-bot.yaml
 ├── .gitignore
 ├── .prettierignore
@@ -241,27 +236,74 @@ More information about contribution can be found unter [CONTRIBUTING.md](https:/
     │   │       ├── 404.md
     │   │       ├── de
     │   │       │   ├── 404.md
+    │   │       │   ├── artificial-intelligence
+    │   │       │   │   ├── deep-learning.mdx
+    │   │       │   │   ├── index.mdx
+    │   │       │   │   ├── machine-learning.mdx
+    │   │       │   │   ├── matplotlib.mdx
+    │   │       │   │   ├── natural-language-processing.mdx
+    │   │       │   │   ├── numpy.mdx
+    │   │       │   │   ├── pandas.mdx
+    │   │       │   │   ├── python.mdx
+    │   │       │   │   ├── seaborn.mdx
+    │   │       │   │   └── supervised-learning.mdx
+    │   │       │   ├── databases
+    │   │       │   │   ├── cap-theorem.mdx
+    │   │       │   │   ├── document-oriented-databases.mdx
+    │   │       │   │   ├── relational-databases.mdx
+    │   │       │   │   └── schema.mdx
+    │   │       │   ├── decentralised-systems
+    │   │       │   │   ├── azure-functions.mdx
+    │   │       │   │   ├── cloud-computing.mdx
+    │   │       │   │   ├── durable-functions.mdx
+    │   │       │   │   └── storage-account.mdx
+    │   │       │   ├── deployment
+    │   │       │   │   ├── security-strategies.mdx
+    │   │       │   │   ├── storage-systems.mdx
+    │   │       │   │   └── virtualisation.mdx
     │   │       │   ├── economy_and_law
     │   │       │   │   ├── company_foundation.md
     │   │       │   │   └── marketing.md
+    │   │       │   ├── embedded-programming
+    │   │       │   │   ├── analogue-digital-converter.mdx
+    │   │       │   │   ├── basic-programm.mdx
+    │   │       │   │   ├── button.mdx
+    │   │       │   │   ├── eeprom.mdx
+    │   │       │   │   ├── index.mdx
+    │   │       │   │   ├── interrupts.mdx
+    │   │       │   │   ├── light-emitting-diode.mdx
+    │   │       │   │   ├── liquid-crystal-display.mdx
+    │   │       │   │   ├── pointer.mdx
+    │   │       │   │   ├── special-function-register.mdx
+    │   │       │   │   ├── spi.mdx
+    │   │       │   │   ├── timer.mdx
+    │   │       │   │   └── usart.mdx
     │   │       │   ├── imprint.md
     │   │       │   ├── index.mdx
-    │   │       │   ├── information_technology
-    │   │       │   │   ├── artificial_intelligence.md
-    │   │       │   │   ├── decentralised_systems.md
-    │   │       │   │   ├── embedded_programming.md
-    │   │       │   │   ├── information_systems.md
-    │   │       │   │   ├── software_development.md
-    │   │       │   │   └── system_integration_and_infrastructure.md
     │   │       │   ├── languages
     │   │       │   │   ├── german_text_types.md
     │   │       │   │   ├── literature.md
     │   │       │   │   └── text_types.md
-    │   │       │   └── project_management
-    │   │       │       ├── magic_triangle.md
-    │   │       │       └── project_controlling.md
+    │   │       │   ├── project_management
+    │   │       │   │   ├── magic_triangle.md
+    │   │       │   │   └── project_controlling.md
+    │   │       │   └── software-development
+    │   │       │       ├── design-patterns
+    │   │       │       │   ├── behavioral-design-patterns
+    │   │       │       │   │   ├── command.md
+    │   │       │       │   │   └── strategy.md
+    │   │       │       │   ├── creational-design-patterns
+    │   │       │       │   │   └── singleton.md
+    │   │       │       │   ├── index.mdx
+    │   │       │       │   └── structural-design-patterns
+    │   │       │       │       ├── adapter.md
+    │   │       │       │       └── decorator.md
+    │   │       │       ├── object-oriented-programming.md
+    │   │       │       └── software-metrics.md
     │   │       └── en
     │   │           ├── 404.md
+    │   │           ├── artificial-intelligence
+    │   │           │   └── index.mdx
     │   │           ├── imprint.md
     │   │           ├── index.mdx
     │   │           └── languages
