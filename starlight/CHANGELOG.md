@@ -1,5 +1,11 @@
 # starlight
 
+## 0.2.0
+
+### Minor Changes
+
+- [`2f84080`](https://github.com/trueberryless-org/mutanuq/commit/2f840805b2da0209a65ca1655ea38e30b2b8597e) Thanks [@trueberryless](https://github.com/trueberryless)! - Publish first topics dropdown release.
+
 ## 0.1.2
 
 ### Patch Changes
