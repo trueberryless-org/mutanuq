@@ -56,6 +56,9 @@ importers:
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
+      starlight-cooler-credit:
+        specifier: ^0.3.1
+        version: 0.3.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-image-zoom:
         specifier: ^0.11.1
         version: 0.11.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
@@ -922,6 +925,9 @@ packages:
   chalk@5.3.0:
     resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  change-case@5.4.4:
+    resolution: {integrity: sha512-HRQyTk2/YPEkt9TnUPbOpr64Uw3KOicFWPVBb+xiHvd6eBx/qPr9xqfBFDT8P2vWsvvz4jbEkfDe71W3VyNu2w==}
 
   character-entities-html4@2.1.0:
     resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==}
@@ -2139,6 +2145,12 @@ packages:
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  starlight-cooler-credit@0.3.1:
+    resolution: {integrity: sha512-HIWP9YWnM26roiroTzLUgBK8IiyMuYyhdLjfk1OGv2609YbRvHoa1BoRYmS4YJpXg8S6ljqlw+b+nNI4m1u9tg==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.32'
 
   starlight-image-zoom@0.11.1:
     resolution: {integrity: sha512-TmnAyS+MWWV6h1fjuezrMFA36REd+7QzcjDFFFyC4ws5FDMoHsjQn0MlHM0cUaHEKfQ9y1PpL9LijCvRFuGbuw==}
@@ -3560,6 +3572,8 @@ snapshots:
   ccount@2.0.1: {}
 
   chalk@5.3.0: {}
+
+  change-case@5.4.4: {}
 
   character-entities-html4@2.1.0: {}
 
@@ -5324,6 +5338,11 @@ snapshots:
       xmldom-sre: 0.1.31
 
   sprintf-js@1.0.3: {}
+
+  starlight-cooler-credit@0.3.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+    dependencies:
+      '@astrojs/starlight': 0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
+      change-case: 5.4.4
 
   starlight-image-zoom@0.11.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
