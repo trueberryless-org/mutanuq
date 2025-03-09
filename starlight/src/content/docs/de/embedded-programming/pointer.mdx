@@ -35,57 +35,61 @@ Der finale Zustand des Programms im Arbeitsspeicher (Stack) ist hier visualisier
 Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
 
 <table>
-    <thead>
-        <tr>
-            <th>Symbol</th>
-            <th>Funktion</th>
-            <th style="min-width: 200px;">Beispiel</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan="2">
-                <code>*</code>
-            </td>
-            <td>
-                Pointer erstellen
-                <blockquote>
-                    <strong><a href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration">Anmerkung</a></strong>: 
-                    Die Position des Sternchens relativ zum
-                    Variablennamen macht keinen Unterschied. Jedoch gilt das Sternchen immer nur für
-                    die folgende Variable! In Beispiel 4 wird demnach genau wie in Beispiel 3 nur
-                    ein Pointer und eine normale Variable erstellt.                    
-                </blockquote>
-            </td>
-            <td>
-                <code>int *p;</code>
-                <br />
-                <code>int* p;</code>
-                <br />
-                <code>int *p, q;</code>
-                <br />
-                <code>int* p, q;</code>
-            </td>
-        </tr>
-        <tr>
-            <td>den Wert des Pointers auslesen (Dereferenzierung)</td>
-            <td>
-                <code>int i = *p;</code>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <code>&</code>
-            </td>
-            <td>
-                Mit dem Adressoperator kann man einen Wert zu einem Pointer konvertieren (die
-                Adresse des Wertes auslesen).
-            </td>
-            <td>
-                <code>int *p = &i;</code>
-            </td>
-        </tr>
-    </tbody>
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Funktion</th>
+      <th style="min-width: 200px;">Beispiel</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2">
+        <code>*</code>
+      </td>
+      <td>
+        Pointer erstellen
+        <blockquote>
+          <strong>
+            <a href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration">
+              Anmerkung
+            </a>
+          </strong>
+          : Die Position des Sternchens relativ zum Variablennamen macht keinen
+          Unterschied. Jedoch gilt das Sternchen immer nur für die folgende
+          Variable! In Beispiel 4 wird demnach genau wie in Beispiel 3 nur ein
+          Pointer und eine normale Variable erstellt.
+        </blockquote>
+      </td>
+      <td>
+        <code>int *p;</code>
+        <br />
+        <code>int* p;</code>
+        <br />
+        <code>int *p, q;</code>
+        <br />
+        <code>int* p, q;</code>
+      </td>
+    </tr>
+    <tr>
+      <td>den Wert des Pointers auslesen (Dereferenzierung)</td>
+      <td>
+        <code>int i = *p;</code>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>&</code>
+      </td>
+      <td>
+        Mit dem Adressoperator kann man einen Wert zu einem Pointer konvertieren
+        (die Adresse des Wertes auslesen).
+      </td>
+      <td>
+        <code>int *p = &i;</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ## mit Arrays arbeiten
@@ -134,7 +138,7 @@ for(int i = 0; i < sizeof(numbers); i++) {
 }
 ```
 
-Bei Strings, sprich Array von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem Array gespeichert, sodass man untige `while`-Schleife zum Ausgeben verwenden kann. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](#daten-senden) die Zeichen einzeln hintereinander versendet.
+Bei Strings, sprich Array von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem Array gespeichert, sodass man untige `while`-Schleife zum Ausgeben verwenden kann. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](/de/embedded-programming/usart#daten-senden) die Zeichen einzeln hintereinander versendet.
 
 ```c
 char buffer[10] = "Hallo";

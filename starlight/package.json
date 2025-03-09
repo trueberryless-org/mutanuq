@@ -15,22 +15,18 @@
   },
   "dependencies": {
     "@11ty/eleventy-fetch": "^4.0.1",
-    "@astrojs/starlight": "^0.31.1",
+    "@astrojs/starlight": "^0.32.2",
     "@fontsource-variable/jetbrains-mono": "^5.0.21",
     "@lunariajs/core": "^0.1.0",
     "@zachleat/table-saw": "^1.0.6",
-    "astro": "^5.1.10",
-    "astro-expressive-code": "^0.34.2",
+    "astro": "^5.4.2",
     "astro-feelback": "^0.3.4",
-    "rehype-mathjax": "^6.0.0",
-    "remark-expressive-code": "^0.34.2",
+    "rehype-mathjax": "^7.1.0",
     "remark-math": "^6.0.0",
-    "sharp": "^0.33.4",
-    "starlight-image-zoom": "^0.5.0",
-    "starlight-links-validator": "^0.7.1",
-    "starlight-sidebar-topics-dropdown": "^0.3.0"
-  },
-  "devDependencies": {
+    "sharp": "^0.33.5",
+    "starlight-image-zoom": "^0.11.1",
+    "starlight-links-validator": "^0.14.3",
+    "starlight-sidebar-topics-dropdown": "^0.4.1",
     "starlight-view-modes": "^0.5.3"
   },
   "packageManager": "pnpm@9.6.0"

@@ -57,7 +57,7 @@ print("y_valid:", y_valid.shape) ## y_valid: (2,)
 
 ### Vektorisieren
 
-Beim maschinellen Lernens wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Form von Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](#bag-of-words-bow) vektorisiert.
+Beim maschinellen Lernens wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Form von Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](/de/artificial-intelligence/natural-language-processing#bag-of-words-bow) vektorisiert.
 
 ```python
 from sklearn.feature_extraction.text import CountVectorizer
@@ -107,14 +107,14 @@ Ein Entscheidungsbaum ist die grundlegende Komponente eines Random Forest. Er be
 In der folgenden Abbildung sieht man ein Beispiel eines Entscheidungsbaums, welcher feststellen soll, ob eine Frucht `essbar` oder `nicht essbar` ist. Dieser Baum verfügt über einen Wurzelknoten, zwei innere Knoten und vier Blattknoten.
 
 <img
-    src="/images/artificial_intelligence/rfc_tree_lm.png"
-    alt="Entscheidungsbaum"
-    class="light-only"
+  src="/images/artificial_intelligence/rfc_tree_lm.png"
+  alt="Entscheidungsbaum"
+  class="light-only"
 />
 <img
-    src="/images/artificial_intelligence/rfc_tree_dm.png"
-    alt="Entscheidungsbaum"
-    class="dark-only"
+  src="/images/artificial_intelligence/rfc_tree_dm.png"
+  alt="Entscheidungsbaum"
+  class="dark-only"
 />
 
 #### Ensemble-Lernen
@@ -124,14 +124,14 @@ Der Random Forest ist ein Ensemble-Lernverfahren, das viele Entscheidungsbäume 
 Im folgenden Bild sieht man anhand eines Beispiels, wie die Genauigkeit des gesamten Waldes aufgrund des unterschiedlichen Aufbaus der Bäume insgesamt steigt, da sich Fehler gegenseitig automatisch aufheben. Dieses Phänomen nennt sich `Weisheit der Crowd`.
 
 <img
-    src="/images/artificial_intelligence/rfc_ensemble_lm.png"
-    alt="Entscheidungsbaum"
-    class="light-only"
+  src="/images/artificial_intelligence/rfc_ensemble_lm.png"
+  alt="Entscheidungsbaum"
+  class="light-only"
 />
 <img
-    src="/images/artificial_intelligence/rfc_ensemble_dm.png"
-    alt="Entscheidungsbaum"
-    class="dark-only"
+  src="/images/artificial_intelligence/rfc_ensemble_dm.png"
+  alt="Entscheidungsbaum"
+  class="dark-only"
 />
 
 #### Codebeispiel mit Datenaufbereitung und Anwendung des RFC
@@ -220,9 +220,9 @@ Neuronale Netzwerke sind eine Klasse von Modellen im Bereich des maschinellen Le
 
 Neuronale Netzwerke bestehen aus einer Reihe von Schichten:
 
--   **Eingabeschicht:** Die erste Schicht, die die Eingabedaten empfängt.
--   **Versteckte Schichten:** Eine oder mehrere Schichten, die die Eingabedaten transformieren und komplexe Merkmale extrahieren.
--   **Ausgabeschicht:** Die letzte Schicht, die das Ergebnis der Verarbeitung liefert.
+- **Eingabeschicht:** Die erste Schicht, die die Eingabedaten empfängt.
+- **Versteckte Schichten:** Eine oder mehrere Schichten, die die Eingabedaten transformieren und komplexe Merkmale extrahieren.
+- **Ausgabeschicht:** Die letzte Schicht, die das Ergebnis der Verarbeitung liefert.
 
 Jedes Neuron berechnet eine gewichtete Summe seiner Eingaben, wendet eine Aktivierungsfunktion an und gibt das Ergebnis an die nächste Schicht weiter. Häufig verwendete Aktivierungsfunktionen sind die Sigmoid-Funktion, die Tanh-Funktion und die ReLU-Funktion (Rectified Linear Unit).
 
@@ -253,9 +253,9 @@ optimizer = optim.SGD(model.parameters(), lr=0.01)
 
 Convolutional Neural Networks sind eine spezielle Art von neuronalen Netzwerken, die besonders gut für die Verarbeitung von Bildern und anderen grid-basierten Daten geeignet sind. Sie bestehen aus:
 
--   **Convolutional Layers:** Diese Schichten verwenden Filter (oder Kernel), die über das Eingabebild gleiten und lokale Merkmale extrahieren.
--   **Pooling Layers:** Diese Schichten reduzieren die Dimensionalität der Daten, indem sie lokale Bereiche zusammenfassen, z.B. durch Max-Pooling oder Average-Pooling.
--   **Fully Connected Layers:** Diese Schichten sind ähnlich wie in herkömmlichen neuronalen Netzwerken und verbinden alle Neuronen miteinander.
+- **Convolutional Layers:** Diese Schichten verwenden Filter (oder Kernel), die über das Eingabebild gleiten und lokale Merkmale extrahieren.
+- **Pooling Layers:** Diese Schichten reduzieren die Dimensionalität der Daten, indem sie lokale Bereiche zusammenfassen, z.B. durch Max-Pooling oder Average-Pooling.
+- **Fully Connected Layers:** Diese Schichten sind ähnlich wie in herkömmlichen neuronalen Netzwerken und verbinden alle Neuronen miteinander.
 
 CNNs werden häufig in der Bild- und Videoverarbeitung, Mustererkennung und der Verarbeitung von mehrdimensionalen Daten eingesetzt.
 
@@ -282,8 +282,8 @@ Recurrent Neural Networks sind eine Klasse von neuronalen Netzwerken, die spezie
 
 Varianten von RNNs sind:
 
--   **Long Short-Term Memory (LSTM):** Eine spezielle RNN-Architektur, die entwickelt wurde, um das Problem des verschwindenden Gradienten zu lösen und langfristige Abhängigkeiten besser zu modellieren.
--   **Gated Recurrent Unit (GRU):** Eine vereinfachte Version von LSTM, die ähnliche Leistungsmerkmale aufweist.
+- **Long Short-Term Memory (LSTM):** Eine spezielle RNN-Architektur, die entwickelt wurde, um das Problem des verschwindenden Gradienten zu lösen und langfristige Abhängigkeiten besser zu modellieren.
+- **Gated Recurrent Unit (GRU):** Eine vereinfachte Version von LSTM, die ähnliche Leistungsmerkmale aufweist.
 
 ```python
 import torch
@@ -328,9 +328,9 @@ TensorFlow ist ein Open-Source-Framework für maschinelles Lernen, das von Googl
 
 Hauptmerkmale von TensorFlow sind:
 
--   **Tensors:** Grundlegende Datenstrukturen, die n-dimensionalen Arrays ähneln.
--   **Graphen:** Modelle werden als gerichtete Graphen dargestellt, wobei Knoten Operationen und Kanten Datenströme darstellen.
--   **Keras API:** Eine hochstufige API, die das Erstellen und Trainieren von Modellen vereinfacht.
+- **Tensors:** Grundlegende Datenstrukturen, die n-dimensionalen Arrays ähneln.
+- **Graphen:** Modelle werden als gerichtete Graphen dargestellt, wobei Knoten Operationen und Kanten Datenströme darstellen.
+- **Keras API:** Eine hochstufige API, die das Erstellen und Trainieren von Modellen vereinfacht.
 
 TensorFlow bietet Unterstützung für verteiltes Training, ermöglicht den Einsatz auf verschiedenen Plattformen (CPUs, GPUs, TPUs) und hat eine große Community sowie umfangreiche Dokumentation.
 
@@ -351,9 +351,9 @@ PyTorch ist ein Open-Source-Framework für maschinelles Lernen, das von Facebook
 
 Hauptmerkmale von PyTorch sind:
 
--   **Tensors:** Ähnlich wie in TensorFlow, aber mit einer einfacheren Syntax.
--   **Autograd:** Automatische Differenzierung zur Berechnung von Gradienten.
--   **TorchScript:** Ermöglicht die Konvertierung von PyTorch-Modellen in eine Form, die in einer Produktionsumgebung ausgeführt werden kann.
+- **Tensors:** Ähnlich wie in TensorFlow, aber mit einer einfacheren Syntax.
+- **Autograd:** Automatische Differenzierung zur Berechnung von Gradienten.
+- **TorchScript:** Ermöglicht die Konvertierung von PyTorch-Modellen in eine Form, die in einer Produktionsumgebung ausgeführt werden kann.
 
 PyTorch ist besonders bei Forschern und Entwicklern beliebt, da es intuitive und pythonische APIs bietet, die das Experimentieren und Debuggen erleichtern.
 

@@ -62,16 +62,56 @@ export default defineConfig({
             icon: "puzzle",
             link: "/software-development/object-oriented-programming",
             items: [
+              { slug: "software-development/object-oriented-programming" },
+              { slug: "software-development/software-metrics" },
               {
-                label: "",
+                label: "Entwurfsmuster",
+                translations: {
+                  en: "Design Patterns",
+                },
                 items: [
-                  "software-development/object-oriented-programming",
-                  "software-development/software-metrics",
-                  "software-development/design-patterns/behavioral-design-patterns/command",
-                  "software-development/design-patterns/behavioral-design-patterns/strategy",
-                  "software-development/design-patterns/creational-design-patterns/singleton",
-                  "software-development/design-patterns/structural-design-patterns/adapter",
-                  "software-development/design-patterns/structural-design-patterns/decorator",
+                  {
+                    slug: "software-development/design-patterns",
+                  },
+                  {
+                    label: "Verhaltensbasierte Entwurfsmuster",
+                    translations: {
+                      en: "Behavioral Design Patterns",
+                    },
+                    items: [
+                      {
+                        slug: "software-development/design-patterns/behavioral-design-patterns/command",
+                      },
+                      {
+                        slug: "software-development/design-patterns/behavioral-design-patterns/strategy",
+                      },
+                    ],
+                  },
+                  {
+                    label: "Schöpferische Entwurfsmuster",
+                    translations: {
+                      en: "Creational Design Patterns",
+                    },
+                    items: [
+                      {
+                        slug: "software-development/design-patterns/creational-design-patterns/singleton",
+                      },
+                    ],
+                  },
+                  {
+                    label: "Strukturelle Entwurfsmuster",
+                    translations: {
+                      en: "Structural Design Patterns",
+                    },
+                    items: [
+                      {
+                        slug: "software-development/design-patterns/structural-design-patterns/adapter",
+                      },
+                      {
+                        slug: "software-development/design-patterns/structural-design-patterns/decorator",
+                      },
+                    ],
+                  },
                 ],
               },
             ],
@@ -84,15 +124,10 @@ export default defineConfig({
             icon: "document",
             link: "/databases/relational-databases/",
             items: [
-              {
-                label: "",
-                items: [
-                  "databases/relational-databases",
-                  "databases/document-oriented-databases",
-                  "databases/schema",
-                  "databases/cap-theorem",
-                ],
-              },
+              { slug: "databases/relational-databases" },
+              { slug: "databases/document-oriented-databases" },
+              { slug: "databases/schema" },
+              { slug: "databases/cap-theorem" },
             ],
           },
           {
@@ -103,21 +138,16 @@ export default defineConfig({
             icon: "star",
             link: "/artificial-intelligence/",
             items: [
-              {
-                label: "",
-                items: [
-                  "artificial-intelligence",
-                  "artificial-intelligence/python",
-                  "artificial-intelligence/numpy",
-                  "artificial-intelligence/pandas",
-                  "artificial-intelligence/matplotlib",
-                  "artificial-intelligence/seaborn",
-                  "artificial-intelligence/machine-learning",
-                  "artificial-intelligence/deep-learning",
-                  "artificial-intelligence/supervised-learning",
-                  "artificial-intelligence/natural-language-processing",
-                ],
-              },
+              { slug: "artificial-intelligence" },
+              { slug: "artificial-intelligence/python" },
+              { slug: "artificial-intelligence/numpy" },
+              { slug: "artificial-intelligence/pandas" },
+              { slug: "artificial-intelligence/matplotlib" },
+              { slug: "artificial-intelligence/seaborn" },
+              { slug: "artificial-intelligence/machine-learning" },
+              { slug: "artificial-intelligence/deep-learning" },
+              { slug: "artificial-intelligence/supervised-learning" },
+              { slug: "artificial-intelligence/natural-language-processing" },
             ],
           },
           {
@@ -128,15 +158,10 @@ export default defineConfig({
             icon: "cloud-download",
             link: "/decentralised-systems/cloud-computing/",
             items: [
-              {
-                label: "",
-                items: [
-                  "decentralised-systems/cloud-computing",
-                  "decentralised-systems/storage-account",
-                  "decentralised-systems/azure-functions",
-                  "decentralised-systems/durable-functions",
-                ],
-              },
+              { slug: "decentralised-systems/cloud-computing" },
+              { slug: "decentralised-systems/storage-account" },
+              { slug: "decentralised-systems/azure-functions" },
+              { slug: "decentralised-systems/durable-functions" },
             ],
           },
           {
@@ -147,24 +172,19 @@ export default defineConfig({
             icon: "laptop",
             link: "/embedded-programming/",
             items: [
-              {
-                label: "",
-                items: [
-                  "embedded-programming",
-                  "embedded-programming/basic-programm",
-                  "embedded-programming/special-function-register",
-                  "embedded-programming/light-emitting-diode",
-                  "embedded-programming/button",
-                  "embedded-programming/liquid-crystal-display",
-                  "embedded-programming/interrupts",
-                  "embedded-programming/analogue-digital-converter",
-                  "embedded-programming/timer",
-                  "embedded-programming/pointer",
-                  "embedded-programming/usart",
-                  "embedded-programming/spi",
-                  "embedded-programming/eeprom",
-                ],
-              },
+              { slug: "embedded-programming" },
+              { slug: "embedded-programming/basic-programm" },
+              { slug: "embedded-programming/special-function-register" },
+              { slug: "embedded-programming/light-emitting-diode" },
+              { slug: "embedded-programming/button" },
+              { slug: "embedded-programming/liquid-crystal-display" },
+              { slug: "embedded-programming/interrupts" },
+              { slug: "embedded-programming/analogue-digital-converter" },
+              { slug: "embedded-programming/timer" },
+              { slug: "embedded-programming/pointer" },
+              { slug: "embedded-programming/usart" },
+              { slug: "embedded-programming/spi" },
+              { slug: "embedded-programming/eeprom" },
             ],
           },
           {
@@ -175,30 +195,48 @@ export default defineConfig({
             icon: "rocket",
             link: "/deployment/virtualisation/",
             items: [
-              {
-                label: "",
-                items: [
-                  "deployment/virtualisation",
-                  "deployment/storage-systems",
-                  "deployment/security-strategies",
-                ],
-              },
+              { slug: "deployment/virtualisation" },
+              { slug: "deployment/storage-systems" },
+              { slug: "deployment/security-strategies" },
             ],
           },
-          // {
-          //   label: {
-          //     de: "Überblick",
-          //     en: "Overview",
-          //   },
-          //   icon: "magnifier",
-          //   link: "/overview/",
-          //   items: [
-          //     {
-          //       label: "",
-          //       items: ["overview"],
-          //     },
-          //   ],
-          // },
+          {
+            label: {
+              en: "Languages",
+              de: "Sprachen",
+            },
+            icon: "translate",
+            link: "/languages/german_text_types/",
+            items: [
+              { slug: "languages/german_text_types" },
+              { slug: "languages/literature" },
+              { slug: "languages/text_types" },
+            ],
+          },
+          {
+            label: {
+              en: "Economy and Law",
+              de: "Wirtschaft und Recht",
+            },
+            icon: "approve-check-circle",
+            link: "/economy_and_law/company_foundation/",
+            items: [
+              { slug: "economy_and_law/company_foundation" },
+              { slug: "economy_and_law/marketing" },
+            ],
+          },
+          {
+            label: {
+              en: "Project Management",
+              de: "Projektmanagement",
+            },
+            icon: "list-format",
+            link: "/project_management/magic_triangle/",
+            items: [
+              { slug: "project_management/magic_triangle" },
+              { slug: "project_management/project_controlling" },
+            ],
+          },
         ]),
       ],
       credits: true,
