@@ -1,12 +1,12 @@
 @media print {
   :is(
-      .header,
-      #starlight__sidebar,
-      .right-sidebar-container,
-      footer,
-      starlight-menu-button,
-      .content-panel > div > p.sl-flex
-    ) {
+    .header,
+    #starlight__sidebar,
+    .right-sidebar-container,
+    footer,
+    starlight-menu-button,
+    .content-panel > div > p.sl-flex
+  ) {
     display: none;
   }
 

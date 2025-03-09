@@ -1,11 +1,11 @@
-import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import remarkMath from "remark-math";
+import { defineConfig } from "astro/config";
 import rehypeMathjax from "rehype-mathjax";
+import remarkMath from "remark-math";
 import starlightImageZoom from "starlight-image-zoom";
-import starlightViewModes from "starlight-view-modes";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightSidebarTopicsDropdown from "starlight-sidebar-topics-dropdown";
+import starlightViewModes from "starlight-view-modes";
 
 // https://astro.build/config
 // https://starlight.astro.build/reference/configuration/

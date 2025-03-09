@@ -6,66 +6,64 @@ const CONTENT_SET_ID = "7ce5e4a0-b624-4ade-a92d-9f87652b1635";
 ---
 
 <FeelbackTaggedMessage
-    contentSetId={CONTENT_SET_ID}
-    preset="evaluation"
-    title="Was this page useful?"
-    layout="reveal-message"
-    style={["bordered", "align-center"]}
-    withEmail
+  contentSetId={CONTENT_SET_ID}
+  preset="evaluation"
+  title="Was this page useful?"
+  layout="reveal-message"
+  style={["bordered", "align-center"]}
+  withEmail
 />
 
 <style is:global>
-    .feelback-container {
-        margin: 0 auto 2rem;
-        --max-width: 400px !important;
-    }
+  .feelback-container {
+    margin: 0 auto 2rem;
+    --max-width: 400px !important;
+  }
 
-    .feelback-container [data-feelback-type="button-group"] .feelback-btn {
-        border-radius: 100%;
-    }
+  .feelback-container [data-feelback-type="button-group"] .feelback-btn {
+    border-radius: 100%;
+  }
 
-    .feelback-container
-        [data-feelback-type="button-group"]
-        .feelback-btn.active {
-        color: var(--sl-color-text-invert);
-        background-color: var(--sl-color-text-accent);
-    }
+  .feelback-container [data-feelback-type="button-group"] .feelback-btn.active {
+    color: var(--sl-color-text-invert);
+    background-color: var(--sl-color-text-accent);
+  }
 
-    .feelback-container textarea,
-    .feelback-container input[type="text"],
-    .feelback-container input[type="email"] {
-        resize: none;
-        border-radius: 0.5rem;
-        border: 1px solid var(--sl-color-gray-5);
-        background-color: var(--sl-color-gray-6);
-    }
+  .feelback-container textarea,
+  .feelback-container input[type="text"],
+  .feelback-container input[type="email"] {
+    resize: none;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    background-color: var(--sl-color-gray-6);
+  }
 
-    .feelback-container textarea:hover,
-    .feelback-container input[type="text"]:hover,
-    .feelback-container input[type="email"]:hover {
-        border: 1px solid var(--sl-color-gray-2);
-    }
+  .feelback-container textarea:hover,
+  .feelback-container input[type="text"]:hover,
+  .feelback-container input[type="email"]:hover {
+    border: 1px solid var(--sl-color-gray-2);
+  }
 
-    .feelback-container .feelback-btn[type="submit"] {
-        border-radius: 10000px;
-        padding: 1.25rem 2rem;
-        color: var(--sl-color-text-invert);
-        background-color: var(--sl-color-text-accent);
-        font-weight: bold;
-    }
+  .feelback-container .feelback-btn[type="submit"] {
+    border-radius: 10000px;
+    padding: 1.25rem 2rem;
+    color: var(--sl-color-text-invert);
+    background-color: var(--sl-color-text-accent);
+    font-weight: bold;
+  }
 
-    .feelback-container .feelback-btn[type="submit"]:hover {
-        background-color: var(--sl-color-gray-6);
-        color: var(--sl-color-gray-2);
-    }
+  .feelback-container .feelback-btn[type="submit"]:hover {
+    background-color: var(--sl-color-gray-6);
+    color: var(--sl-color-gray-2);
+  }
 
-    .feelback-a {
-        text-align: center;
-    }
+  .feelback-a {
+    text-align: center;
+  }
 
-    .feelback-a::after {
-        content: "!";
-        display: inline-block;
-        transform: translateX(-100%);
-    }
+  .feelback-a::after {
+    content: "!";
+    display: inline-block;
+    transform: translateX(-100%);
+  }
 </style>
