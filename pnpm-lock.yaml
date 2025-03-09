@@ -65,6 +65,9 @@ importers:
       starlight-sidebar-topics-dropdown:
         specifier: ^0.4.1
         version: 0.4.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
+      starlight-theme-rapide:
+        specifier: ^0.4.0
+        version: 0.4.0(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-view-modes:
         specifier: ^0.5.3
         version: 0.5.3(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
@@ -2154,6 +2157,12 @@ packages:
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       '@astrojs/starlight': '>=0.30'
+
+  starlight-theme-rapide@0.4.0:
+    resolution: {integrity: sha512-go2JEA3p1CNo3zqhS1pDkhCXAJNG8O7sX7KdIebae+ogaAndFRKXFtXhmw+9O/CWM785Vje6mGIXlwLer0faLQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.32.0'
 
   starlight-view-modes@0.5.3:
     resolution: {integrity: sha512-d34w7E+wA8GIVPRcHkxJ11OPgORxVm3KQHWQkYwQh6N5S4YCjuoNDY5mHlRvxbob/i6ZXxCB5ZJdWneFltVKJQ==}
@@ -5343,6 +5352,10 @@ snapshots:
       - supports-color
 
   starlight-sidebar-topics-dropdown@0.4.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+    dependencies:
+      '@astrojs/starlight': 0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
+
+  starlight-theme-rapide@0.4.0(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
       '@astrojs/starlight': 0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
 

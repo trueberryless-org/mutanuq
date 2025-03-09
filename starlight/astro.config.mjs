@@ -5,6 +5,7 @@ import remarkMath from "remark-math";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightSidebarTopicsDropdown from "starlight-sidebar-topics-dropdown";
+import starlightThemeRapide from "starlight-theme-rapide";
 import starlightViewModes from "starlight-view-modes";
 
 // https://astro.build/config
@@ -238,6 +239,7 @@ export default defineConfig({
             ],
           },
         ]),
+        starlightThemeRapide(),
       ],
       credits: true,
     }),
