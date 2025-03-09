@@ -18,3 +18,15 @@ html[data-theme="dark"] .light-only {
 :is(code, code *) {
   font-family: "JetBrains Mono Variable", sans-serif !important;
 }
+
+div.sidebar-pane ul.top-level > li + li {
+  margin-top: 0rem !important;
+}
+
+div.sidebar-pane ul.top-level > li:has(details) {
+  margin-block: 0.5rem !important;
+}
+
+div.sidebar-pane ul.top-level > li > a {
+  font-size: var(--sl-text-sm) !important;
+}
