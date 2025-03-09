@@ -1,5 +1,15 @@
 # starlight
 
+## 0.3.0
+
+### Minor Changes
+
+- [#2](https://github.com/trueberryless-org/mutanuq/pull/2) [`fb0bd89`](https://github.com/trueberryless-org/mutanuq/commit/fb0bd8939636e3b4f287f424c18f9f6a0fbd55f0) Thanks [@trueberryless](https://github.com/trueberryless)! - Add rapide theme
+
+### Patch Changes
+
+- [#4](https://github.com/trueberryless-org/mutanuq/pull/4) [`3a023b0`](https://github.com/trueberryless-org/mutanuq/commit/3a023b02266e0a271b6abaefd56c212ad16f7b87) Thanks [@trueberryless](https://github.com/trueberryless)! - Add cooler credit
+
 ## 0.2.0
 
 ### Minor Changes
