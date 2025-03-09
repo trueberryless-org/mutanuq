@@ -2,6 +2,7 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import rehypeMathjax from "rehype-mathjax";
 import remarkMath from "remark-math";
+import starlightCoolerCredit from "starlight-cooler-credit";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightSidebarTopicsDropdown from "starlight-sidebar-topics-dropdown";
@@ -240,6 +241,10 @@ export default defineConfig({
           },
         ]),
         starlightThemeRapide(),
+        starlightCoolerCredit({
+          customImage: "./src/assets/starlight-hero-star.png",
+          customImageAlt: "Mutant Logo",
+        }),
       ],
       credits: true,
     }),

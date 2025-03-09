@@ -30,3 +30,11 @@ div.sidebar-pane ul.top-level > li:has(details) {
 div.sidebar-pane ul.top-level > li > a {
   font-size: var(--sl-text-sm) !important;
 }
+
+.sl-markdown-content :is(th, td):first-of-type:not(:where(.not-content *)) {
+  padding-left: 0.5rem !important;
+}
+
+.sl-markdown-content :is(th, td):last-of-type:not(:where(.not-content *)) {
+  padding-right: 0.5rem !important;
+}
