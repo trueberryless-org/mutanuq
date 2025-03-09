@@ -8,10 +8,10 @@ Tasten sind eine Eingabe des Benutzers auf einfachster Hardware-Ebene. Die Taste
 
 Grundsätzlich gibt es zwei verschiedene Arten, Tasten zu verwenden:
 
--   Active Low Beschaltung => Pull-Up Widerstand
--   Active High Beschaltung => Pull-Down Widerstand
+- Active Low Beschaltung => Pull-Up Widerstand
+- Active High Beschaltung => Pull-Down Widerstand
 
-Diese beiden Arten müssen auf [Code-Ebene](#code-1) unterschiedlich verarbeitet werden.
+Diese beiden Arten müssen auf [Code-Ebene](#code) unterschiedlich verarbeitet werden.
 
 ### Active Low / Pull-Up
 
@@ -152,7 +152,7 @@ void checkButton(void) {
 
 ### Mit Interrupts
 
-Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](#interrupts) noch besser erklärt.
+Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](/de/embedded-programming/interrupts) noch besser erklärt.
 
 #### Direkt externe Interrupts
 

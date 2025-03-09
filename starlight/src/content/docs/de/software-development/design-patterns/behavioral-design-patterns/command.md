@@ -2,7 +2,7 @@
 title: Command
 ---
 
-Das Command Design Pattern ist auch als Action und Transaction Pattern bekannt.
+Das Command Entwurfsmuster ist auch als Action und Transaction Pattern bekannt.
 
 ## Problem
 

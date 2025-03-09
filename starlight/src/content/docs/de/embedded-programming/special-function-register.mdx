@@ -7,14 +7,67 @@ Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten 
 Nachstehende Tabelle fasst die SFR für die drei Ports jeweils zusammen.
 
 <table>
-<tr><th></th><th>Data Direction Register</th><th>Ausgangsregister</th><th>Eingangsregister</th></tr>
-<tr><td>B</td><td><code>DDRB</code></td><td><code>PORTB</code></td><td><code>PINB</code></td></tr>
-<tr><td>C</td><td><code>DDRC</code></td><td><code>PORTC</code></td><td><code>PINC</code></td></tr>
-<tr><td>D</td><td><code>DDRD</code></td><td><code>PORTD</code></td><td><code>PIND</code></td></tr>
-<tr><td>Beschreibung</td>
-<td>Jedes Pin kann entweder ein Eingang oder ein Ausgang sein. Diese Flussrichtung der Daten, kann mittels Data Direction Register eingestellt werden. Da standardmäßig alle <code>DDR</code> auf <code>0</code> gesetzt sind, ist auch <strong>standardmäßig alles ein Eingang</strong>. Mit dem Code unten kann man die jeweilgen Pins auf Ausgänge setzen (für LED zB).</td>
-<td>Will man intern bei dem jeweiligen Pin <code>5V</code> anlegen, so kann man dies tun, indem man das korrespondierende Ausgangsregister auf <code>1</code> setzt.</td>
-<td>Die Eingangsregister erlauben Konfigurationen, welche beim Arbeiten mit Tasten von Entscheidung sind.</td></tr>
+  <tr>
+    <th></th>
+    <th>Data Direction Register</th>
+    <th>Ausgangsregister</th>
+    <th>Eingangsregister</th>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td>
+      <code>DDRB</code>
+    </td>
+    <td>
+      <code>PORTB</code>
+    </td>
+    <td>
+      <code>PINB</code>
+    </td>
+  </tr>
+  <tr>
+    <td>C</td>
+    <td>
+      <code>DDRC</code>
+    </td>
+    <td>
+      <code>PORTC</code>
+    </td>
+    <td>
+      <code>PINC</code>
+    </td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td>
+      <code>DDRD</code>
+    </td>
+    <td>
+      <code>PORTD</code>
+    </td>
+    <td>
+      <code>PIND</code>
+    </td>
+  </tr>
+  <tr>
+    <td>Beschreibung</td>
+    <td>
+      Jedes Pin kann entweder ein Eingang oder ein Ausgang sein. Diese
+      Flussrichtung der Daten, kann mittels Data Direction Register eingestellt
+      werden. Da standardmäßig alle <code>DDR</code> auf <code>0</code> gesetzt
+      sind, ist auch <strong>standardmäßig alles ein Eingang</strong>. Mit dem
+      Code unten kann man die jeweilgen Pins auf Ausgänge setzen (für LED zB).
+    </td>
+    <td>
+      Will man intern bei dem jeweiligen Pin <code>5V</code> anlegen, so kann
+      man dies tun, indem man das korrespondierende Ausgangsregister auf{" "}
+      <code>1</code> setzt.
+    </td>
+    <td>
+      Die Eingangsregister erlauben Konfigurationen, welche beim Arbeiten mit
+      Tasten von Entscheidung sind.
+    </td>
+  </tr>
 </table>
 
 ## Beispiele
@@ -58,7 +111,7 @@ if (PIND & (1<<PIND1))
 }
 ```
 
-Meistens verwendet man bei der Abfrage von Tasteneingaben die [`Interne Pull-Up Widerstand`-Methode](#active-low--pull-up). Hierbei liegen 0V an, wenn die Taste gedrückt ist, was bedeutet, dass die Bedinung negiert werden muss. Um diese dann noch zu entprellen (auf Softwareebene) macht man ein Delay.
+Meistens verwendet man bei der Abfrage von Tasteneingaben die [`Interne Pull-Up Widerstand`-Methode](/de/embedded-programming/button#active-low--pull-up). Hierbei liegen 0V an, wenn die Taste gedrückt ist, was bedeutet, dass die Bedinung negiert werden muss. Um diese dann noch zu entprellen (auf Softwareebene) macht man ein Delay.
 
 ```c del="!"
 if (!(PIND & (1<<PIND1)))

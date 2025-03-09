@@ -63,97 +63,97 @@ Ein `DataFrame` ist eine zweidimensionale, tabellarische Datenstruktur mit besch
 
 Ein DataFrame kann ähnlich wie eine Series erstellt werden. Dabei kann man eine Vielzahl an verschiedenen Objekttypen übergeben.
 
--   **Dictionary**  
-    In diesem Fall hat der Input für das DataFrame den Typen `Dictionary`, dessen Schlüssel ein String und dessen Wert eine Liste ist.
+- **Dictionary**  
+  In diesem Fall hat der Input für das DataFrame den Typen `Dictionary`, dessen Schlüssel ein String und dessen Wert eine Liste ist.
 
-    ```python
-    data = {
-        'A': [1, 2, 3, 4],
-        'B': [5, 6, 7, 8],
-        'C': [9, 10, 11, 12]
-    }
-    df = pd.DataFrame(data, index=["I","II","III","IV"])
-    ```
+  ```python
+  data = {
+      'A': [1, 2, 3, 4],
+      'B': [5, 6, 7, 8],
+      'C': [9, 10, 11, 12]
+  }
+  df = pd.DataFrame(data, index=["I","II","III","IV"])
+  ```
 
--   **Liste**  
-    In diesem Fall hat der Input für das DataFrame den Typen einer Liste, in welcher sich mehrere Dictionaries befinden.
+- **Liste**  
+  In diesem Fall hat der Input für das DataFrame den Typen einer Liste, in welcher sich mehrere Dictionaries befinden.
 
-    ```python
-    data = [{'A': 1, 'B': 5, 'C': 9},
-            {'A': 2, 'B': 6, 'C': 10},
-            {'A': 3, 'B': 7, 'C': 11},
-            {'A': 4, 'B': 8, 'C': 12}]
-    df = pd.DataFrame(data, index=["I","II","III","IV"])
-    ```
+  ```python
+  data = [{'A': 1, 'B': 5, 'C': 9},
+          {'A': 2, 'B': 6, 'C': 10},
+          {'A': 3, 'B': 7, 'C': 11},
+          {'A': 4, 'B': 8, 'C': 12}]
+  df = pd.DataFrame(data, index=["I","II","III","IV"])
+  ```
 
--   **Tuple**  
-    In diesem Fall hat der Input für das DataFrame den Typen einer Liste, mit mehreren Tuples darin. Man beachte, dass die Spaltennamen beim instantiieren des DataFrames angegeben werden müssen, da `data` selbst keine Informationen darüber enthält.
+- **Tuple**  
+  In diesem Fall hat der Input für das DataFrame den Typen einer Liste, mit mehreren Tuples darin. Man beachte, dass die Spaltennamen beim instantiieren des DataFrames angegeben werden müssen, da `data` selbst keine Informationen darüber enthält.
 
-    ```python
-    data = [(1, 5, 9),
-            (2, 6, 10),
-            (3, 7, 11),
-            (4, 8, 12)]
-    df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
-    ```
+  ```python
+  data = [(1, 5, 9),
+          (2, 6, 10),
+          (3, 7, 11),
+          (4, 8, 12)]
+  df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
+  ```
 
--   **NumPy**  
-    Man kann ein DataFrame auch mithilfe von einem Numpy-`Array` erstellen.
+- **NumPy**  
+  Man kann ein DataFrame auch mithilfe von einem Numpy-`Array` erstellen.
 
-    ```python
-    import numpy as np
-    data = np.array([[1, 5, 9],
-                    [2, 6, 10],
-                    [3, 7, 11],
-                    [4, 8, 12]])
-    df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
-    ```
+  ```python
+  import numpy as np
+  data = np.array([[1, 5, 9],
+                  [2, 6, 10],
+                  [3, 7, 11],
+                  [4, 8, 12]])
+  df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
+  ```
 
--   **CSV**  
-    Man kann ein DataFrame auch mithilfe einer CSV-Datei erstellen. Dies kommt in der Praxis sehr häufig vor, da CSV-Dateien häufig als Eingabe für Analyseprogramme verwendet werden. Hierbei kann man auch angeben, dass eine Bestimmte Spalte Informationen bezüglich der Indizes enthält.
+- **CSV**  
+  Man kann ein DataFrame auch mithilfe einer CSV-Datei erstellen. Dies kommt in der Praxis sehr häufig vor, da CSV-Dateien häufig als Eingabe für Analyseprogramme verwendet werden. Hierbei kann man auch angeben, dass eine Bestimmte Spalte Informationen bezüglich der Indizes enthält.
 
-    ```csv
-    //file.csv
-    ,A,B,C
-    I,1,5,9
-    II,2,6,10
-    III,3,7,11
-    IV,4,8,12
-    ```
+  ```csv
+  //file.csv
+  ,A,B,C
+  I,1,5,9
+  II,2,6,10
+  III,3,7,11
+  IV,4,8,12
+  ```
 
-    ```python
-    df = pd.read_csv('file.csv', index_col=0)  # Beispiel für das Lesen aus einer CSV-Datei
-    ```
+  ```python
+  df = pd.read_csv('file.csv', index_col=0)  # Beispiel für das Lesen aus einer CSV-Datei
+  ```
 
--   **JSON**  
-    Natürlich kann das Datenformat auch JSON sein:
+- **JSON**  
+  Natürlich kann das Datenformat auch JSON sein:
 
-    ```json
-    //file.json
-    {
-        "A": { "I": 1, "II": 2, "III": 3, "IV": 4 },
-        "B": { "I": 5, "II": 6, "III": 7, "IV": 8 },
-        "C": { "I": 9, "II": 10, "III": 11, "IV": 12 }
-    }
-    ```
+  ```json
+  //file.json
+  {
+    "A": { "I": 1, "II": 2, "III": 3, "IV": 4 },
+    "B": { "I": 5, "II": 6, "III": 7, "IV": 8 },
+    "C": { "I": 9, "II": 10, "III": 11, "IV": 12 }
+  }
+  ```
 
-    ```python
-    df = pd.read_json('file.json')  # Beispiel für das Lesen aus einer JSON-Datei
-    ```
+  ```python
+  df = pd.read_json('file.json')  # Beispiel für das Lesen aus einer JSON-Datei
+  ```
 
--   **SQL-Datenbank**  
-    Man kann auch direkt aus einer SQL-Datenbank lesen. In diesem Fall muss man zunächst eine Verbindung mit der Datenbank herstellen.
+- **SQL-Datenbank**  
+  Man kann auch direkt aus einer SQL-Datenbank lesen. In diesem Fall muss man zunächst eine Verbindung mit der Datenbank herstellen.
 
-    ```bash title="Installing sqlite3"
-    pip install pysqlite3
-    ```
+  ```bash title="Installing sqlite3"
+  pip install pysqlite3
+  ```
 
-    ```python
-    import sqlite3
-    con = sqlite3.connect("database.db")
+  ```python
+  import sqlite3
+  con = sqlite3.connect("database.db")
 
-    df = pd.read_sql_query("SELECT * FROM examples", con)
-    ```
+  df = pd.read_sql_query("SELECT * FROM examples", con)
+  ```
 
 In allen Fällen sieht das DataFrame in diesem Beispiel zum Schluss so aus:
 
@@ -170,147 +170,147 @@ IV   4   8  12
 
 Um ein DataFrame persistieren zu können, kann man die Daten in eine Datei oder Datenbank speichern. Dabei werden die Formate `CSV` und `JSON` am häufigsten verwendet, weswegen die Integration mit Pandas einfacher denn je ist.
 
--   **CSV**
+- **CSV**
 
-    ```python
-    df.to_csv('example.csv')
-    ```
+  ```python
+  df.to_csv('example.csv')
+  ```
 
--   **JSON**
+- **JSON**
 
-    ```python
-    df.to_json('example.json')
-    ```
+  ```python
+  df.to_json('example.json')
+  ```
 
--   **SQL**
-    ```python
-    df.to_sql('example.sql', con)
-    ```
+- **SQL**
+  ```python
+  df.to_sql('example.sql', con)
+  ```
 
 #### Zugriff auf Daten
 
 Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein DataFrame quasi eine Liste von Series ist.
 
--   Zugriff auf bestimmte **Spalten**  
-    Um auf eine Spalte zuzugreifen, können diese Möglichkeiten verwendet werden:
+- Zugriff auf bestimmte **Spalten**  
+  Um auf eine Spalte zuzugreifen, können diese Möglichkeiten verwendet werden:
 
-    ```python
-    print(df.A) # Property A
-    print(df['A']) # Spalte A
-    print(df.loc[:, 'A']) # Spalte A; alle Zeilen
-    print(df.iloc[:, 0]) # Spalte Index 0; alle Zeilen
-    ```
+  ```python
+  print(df.A) # Property A
+  print(df['A']) # Spalte A
+  print(df.loc[:, 'A']) # Spalte A; alle Zeilen
+  print(df.iloc[:, 0]) # Spalte Index 0; alle Zeilen
+  ```
 
-    Um auf mehrere Spalten zuzugreifen, können diese Möglichkeiten verwendet werden:
+  Um auf mehrere Spalten zuzugreifen, können diese Möglichkeiten verwendet werden:
 
-    ```python
-    print(df[['A', 'B']]) # Spalten A & B
-    print(df.loc[:, ['A', 'B']]) # Spalten A & B; alle Zeilen
-    print(df.iloc[:, [0, 1]]) # Spalten Indizes 0 & 1; alle Zeilen
-    print(df.iloc[:, 0:2]) # Spalten Indizes 0 bis 1; alle Zeilen
-    print(df.iloc[:, :2]) # Spalten Indizes bis 1; alle Zeilen
-    print(df.iloc[:, :-1]) # Spalten Indizes bis vorletzte Spalte; alle Zeilen
-    ```
+  ```python
+  print(df[['A', 'B']]) # Spalten A & B
+  print(df.loc[:, ['A', 'B']]) # Spalten A & B; alle Zeilen
+  print(df.iloc[:, [0, 1]]) # Spalten Indizes 0 & 1; alle Zeilen
+  print(df.iloc[:, 0:2]) # Spalten Indizes 0 bis 1; alle Zeilen
+  print(df.iloc[:, :2]) # Spalten Indizes bis 1; alle Zeilen
+  print(df.iloc[:, :-1]) # Spalten Indizes bis vorletzte Spalte; alle Zeilen
+  ```
 
--   Zugriff auf bestimmte **Zeilen**  
-    Um auf eine Zeile zuzugreifen, können diese Möglichkeiten verwendet werden:
+- Zugriff auf bestimmte **Zeilen**  
+  Um auf eine Zeile zuzugreifen, können diese Möglichkeiten verwendet werden:
 
-    ```python
-    print(df.loc["I"]) # Zeile I
-    print(df.iloc[0]) # Zeile Index 0
-    ```
+  ```python
+  print(df.loc["I"]) # Zeile I
+  print(df.iloc[0]) # Zeile Index 0
+  ```
 
-    Um auf mehrere Zeilen zuzugreifen, können diese Möglichkeiten verwendet werden:
+  Um auf mehrere Zeilen zuzugreifen, können diese Möglichkeiten verwendet werden:
 
-    ```python
-    print(df.loc[["I", "II"]]) # Zeilen I & II
-    print(df.iloc[[0, 1]]) # Zeilen Indizes 0 & 1
-    print(df.iloc[0:2]) # Zeilen Indizes 0 bis 1
-    print(df.iloc[:2]) # Zeilen Indizes bis 1
-    print(df.iloc[:-2]) # Zeilen Indizes bis vorvorletzte Zeile
-    ```
+  ```python
+  print(df.loc[["I", "II"]]) # Zeilen I & II
+  print(df.iloc[[0, 1]]) # Zeilen Indizes 0 & 1
+  print(df.iloc[0:2]) # Zeilen Indizes 0 bis 1
+  print(df.iloc[:2]) # Zeilen Indizes bis 1
+  print(df.iloc[:-2]) # Zeilen Indizes bis vorvorletzte Zeile
+  ```
 
--   Zugriff auf bestimmte **Zellen**  
-    Um auf eine Zelle zuzugreifen, können diese Möglichkeiten verwendet werden:
+- Zugriff auf bestimmte **Zellen**  
+  Um auf eine Zelle zuzugreifen, können diese Möglichkeiten verwendet werden:
 
-    ```python
-    print(df.loc["I", 'A']) # Zeile I; Spalte A
-    print(df.iloc[0, 0]) # Zeile Index 0; Spalte Index 0
-    ```
+  ```python
+  print(df.loc["I", 'A']) # Zeile I; Spalte A
+  print(df.iloc[0, 0]) # Zeile Index 0; Spalte Index 0
+  ```
 
-    Um auf mehrere Zellen zuzugreifen, können diese Möglichkeiten verwendet werden (bei `iloc()` sind die Angaben jeweils `inklusiv:exklusiv`):
+  Um auf mehrere Zellen zuzugreifen, können diese Möglichkeiten verwendet werden (bei `iloc()` sind die Angaben jeweils `inklusiv:exklusiv`):
 
-    ```python
-    print(df.loc[["I","II","III"], ['A','B']]) # Zeilen I, II & III; Spalten A & B
-    print(df.loc["I":"III", 'A':'B']) # Zeilen I bis III; Spalten A bis B
-    print(df.iloc[0:3, 0:2]) # Zeilen Indizes 0 bis 2; Spalten Indizes 0 bis 1
-    print(df.iloc[:3, :2]) # Zeilen Indizes bis 2; Spalten Indizes bis 1
-    print(df.iloc[:-1, :-1]) # Zeilen Indizes bis vorletzte Zeile; Spalten Indizes bis vorletzte Spalte
-    ```
+  ```python
+  print(df.loc[["I","II","III"], ['A','B']]) # Zeilen I, II & III; Spalten A & B
+  print(df.loc["I":"III", 'A':'B']) # Zeilen I bis III; Spalten A bis B
+  print(df.iloc[0:3, 0:2]) # Zeilen Indizes 0 bis 2; Spalten Indizes 0 bis 1
+  print(df.iloc[:3, :2]) # Zeilen Indizes bis 2; Spalten Indizes bis 1
+  print(df.iloc[:-1, :-1]) # Zeilen Indizes bis vorletzte Zeile; Spalten Indizes bis vorletzte Spalte
+  ```
 
--   Zugriff mittels **Bedingungen**  
-    Die Daten eines DataFrames können mithilfe von Bedingungen auch gefiltert werden:
+- Zugriff mittels **Bedingungen**  
+  Die Daten eines DataFrames können mithilfe von Bedingungen auch gefiltert werden:
 
-    ```python
-    # Alle Zeilen, dessen Wert in Spalte 'A' größer 2 ist
-    print(df[df['A'] > 2])
+  ```python
+  # Alle Zeilen, dessen Wert in Spalte 'A' größer 2 ist
+  print(df[df['A'] > 2])
 
-    """
-         A  B   C
-    III  3  7  11
-    IV   4  8  12
-    """
-    ```
+  """
+       A  B   C
+  III  3  7  11
+  IV   4  8  12
+  """
+  ```
 
-    ```python
-    # Alle Series 'A', dessen Wert größer 2 ist
-    print(df.loc[df['A'] > 2, 'A'])
+  ```python
+  # Alle Series 'A', dessen Wert größer 2 ist
+  print(df.loc[df['A'] > 2, 'A'])
 
-    """
-    III    3
-    IV     4
-    """
-    ```
+  """
+  III    3
+  IV     4
+  """
+  ```
 
-    Diese Bedingungen funktieren nur, weil die Bedingung eine Series selbst ist und somit die Berechnung pro Zeile durchgeführt werden.
+  Diese Bedingungen funktieren nur, weil die Bedingung eine Series selbst ist und somit die Berechnung pro Zeile durchgeführt werden.
 
-    ```python
-    df['A'] > 2
+  ```python
+  df['A'] > 2
 
-    """
-    I      False
-    II     False
-    III     True
-    IV      True
-    Name: A, dtype: bool
-    """
-    ```
+  """
+  I      False
+  II     False
+  III     True
+  IV      True
+  Name: A, dtype: bool
+  """
+  ```
 
 ## Operationen und Methoden
 
 Pandas bietet eine Vielzahl von Methoden und Operationen zur Datenanalyse und -manipulation. Alle Methoden, welche die Daten des DataFrames verändern, verfügen über zwei Möglichkeiten, die Änderungen zu speichern:
 
--   **Überschreiben**  
-    Einerseits kann man die alten Daten einfach überschreiben, indem man das DataFrame auf die neuen Daten setzt:
+- **Überschreiben**  
+  Einerseits kann man die alten Daten einfach überschreiben, indem man das DataFrame auf die neuen Daten setzt:
 
-    ```python
-    df = df.dropna()
-    ```
+  ```python
+  df = df.dropna()
+  ```
 
-    Im Hintergrund wird der Parameter `inplace` der Methode auf `False` gesetzt und die neuen Daten werden einfach returniert.
+  Im Hintergrund wird der Parameter `inplace` der Methode auf `False` gesetzt und die neuen Daten werden einfach returniert.
 
-    ```python
-    df.dropna(inplace=False) # dieser Aufruf gibt das DataFrame zurück
-    ```
+  ```python
+  df.dropna(inplace=False) # dieser Aufruf gibt das DataFrame zurück
+  ```
 
--   **Inplace**  
-    Die elegantere Variante ist jedoch die Verwendung der `inplace`-Option, welche die Änderungen direkt in dem DataFrame speichert:
+- **Inplace**  
+  Die elegantere Variante ist jedoch die Verwendung der `inplace`-Option, welche die Änderungen direkt in dem DataFrame speichert:
 
-    ```python
-    df.dropna(inplace=True)
-    ```
+  ```python
+  df.dropna(inplace=True)
+  ```
 
-    Wichtig zu beachten ist, dass beim positiven Setzen des `inplace`-Parameters kein DataFrame mehr zurückgegeben wird. Stattdessen returniert dieser Aufruf nun `None`.
+  Wichtig zu beachten ist, dass beim positiven Setzen des `inplace`-Parameters kein DataFrame mehr zurückgegeben wird. Stattdessen returniert dieser Aufruf nun `None`.
 
 ### `head()`
 
@@ -356,7 +356,7 @@ df.shape
 
 Dabei ist die Reihenfolge der Anzahl an Dimensionen gleich der aufsteigenden Achsenzahl. In unserem Beispiel bedeutet das, wir haben vier Zeilen und drei Spalten, weil Achse 0 die Zeilen sind und Achse 1 die Spalten.
 
-Die erste Zahl ist in den meisten Fällen der künstlichen Intelligenz die Anzahl an Beispielen. In unserem Fall gibt uns die zweite Zahl Auskunft über die Anzahl an Features (Eigenschaften) jedes Beispiels. Beim [`Supervised Learning`](#supervised-learning) ist die letzte Spalte meistens die Antwort des Beispiels, weshalb es auch nur zwei Features sein könnten.
+Die erste Zahl ist in den meisten Fällen der künstlichen Intelligenz die Anzahl an Beispielen. In unserem Fall gibt uns die zweite Zahl Auskunft über die Anzahl an Features (Eigenschaften) jedes Beispiels. Beim [`Supervised Learning`](/de/artificial-intelligence/supervised-learning) ist die letzte Spalte meistens die Antwort des Beispiels, weshalb es auch nur zwei Features sein könnten.
 
 ### `columns`
 
@@ -469,7 +469,7 @@ C -0.959166 -0.916515  1.000000
 
 ### `isnull()`
 
-Die Methode `isnull` gibt ein DataFrame mit boolischen Werte zurück, welche Auskunft über die fehlenden Werte eines DataFrames geben. Mithilfe der [`sum`-Methode](#aggregationsfunktionen) kann man dadurch wichtige Informationen des DataFrames extrahieren.
+Die Methode `isnull` gibt ein DataFrame mit boolischen Werte zurück, welche Auskunft über die fehlenden Werte eines DataFrames geben. Mithilfe der [`sum`-Methode](/de/artificial-intelligence/numpy#aggregationsfunktionen) kann man dadurch wichtige Informationen des DataFrames extrahieren.
 
 ```python ins="‎NaN"
 """

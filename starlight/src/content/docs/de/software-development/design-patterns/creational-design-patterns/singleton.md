@@ -4,7 +4,7 @@ title: Singleton
 
 ## Problem
 
-Das Singleton Design Patterns sorgt dafür, dass eine Klasse nur eine einzige Instanz haben kann. Außerdem kann auf diese eine Instanz global - im gesamten Programm - zugegriffen werden.
+Das Singleton Entwurfsmuster sorgt dafür, dass eine Klasse nur eine einzige Instanz haben kann. Außerdem kann auf diese eine Instanz global - im gesamten Programm - zugegriffen werden.
 
 ## Lösung
 
@@ -14,7 +14,7 @@ Um dieses Verhalten auch bei Multi-Thread-Anwendungen zu garantieren, kann die `
 
 ## Code
 
-Einfaches Singleton Design Pattern:
+Einfaches Singleton Entwurfsmuster:
 
 ```csharp
 public class Singleton
@@ -27,7 +27,7 @@ public class Singleton
 }
 ```
 
-Threadsicheres Singleton Design Pattern mittels Double-Checked-Locking-Pattern:
+Threadsicheres Singleton Entwurfsmuster mittels Double-Checked-Locking-Pattern:
 
 ```csharp
 public class Singleton
