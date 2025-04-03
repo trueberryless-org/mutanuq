@@ -48,13 +48,17 @@ export default defineConfig({
         "@fontsource-variable/jetbrains-mono/wght.css",
       ],
       components: {
-        // DownloadFile: "./src/components/DownloadFile.astro",
         Pagination: "./src/components/CustomPagination.astro",
+        TableOfContents: "./src/components/TableOfContents.astro",
       },
       plugins: [
+        starlightViewModes({
+          zenModeSettings: {
+            keyboardShortcut: "Ctrl+Shift+Z",
+          },
+        }),
         starlightImageZoom(),
         starlightLinksValidator(),
-        // starlightViewModes(),
         starlightSidebarTopicsDropdown([
           {
             label: {
@@ -246,7 +250,6 @@ export default defineConfig({
           customImageAlt: "Mutant Logo",
         }),
       ],
-      credits: true,
     }),
   ],
   markdown: {

@@ -1,8 +1,6 @@
 ---
 title: Imprint
 template: splash
-sidebar:
-  hidden: true
 ---
 
 Information according to § 5 of the Austrian E-Commerce Act (ECG)
