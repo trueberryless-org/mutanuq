@@ -1,8 +1,6 @@
 ---
 title: Impressum
 template: splash
-sidebar:
-  hidden: true
 ---
 
 Angaben gemäß § 5 E-Commerce-Gesetz (ECG)
