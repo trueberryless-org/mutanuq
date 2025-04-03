@@ -35,9 +35,9 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.0.21
         version: 5.1.1
-      '@lunariajs/core':
-        specifier: ^0.1.0
-        version: 0.1.1
+      '@lunariajs/starlight':
+        specifier: ^0.1.1
+        version: 0.1.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
       '@zachleat/table-saw':
         specifier: ^1.0.6
         version: 1.0.6
@@ -533,6 +533,13 @@ packages:
     resolution: {integrity: sha512-sAqM9+DVsLe3xHM9wu2pEnKGYMs/bWS9qpR+CGHol3RihOELnOQTzHddXbdB1MtgesbI8dnQuG64Ocd8KkWsng==}
     engines: {node: '>=18.17.0'}
     hasBin: true
+
+  '@lunariajs/starlight@0.1.1':
+    resolution: {integrity: sha512-tpkqv8TCGUvz0z5nVk1ACb/2bT3seqDx+CHimNQugcpAFSip9BqDPOiWqaCujzZFajfR/L4mUsPAnavnnE8KVw==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.14.0'
+      astro: '>=4.0.0'
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -3099,6 +3106,14 @@ snapshots:
       simple-git: 3.27.0
       ultramatter: 0.0.4
       zod: 3.23.8
+    transitivePeerDependencies:
+      - supports-color
+
+  '@lunariajs/starlight@0.1.1(@astrojs/starlight@0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))':
+    dependencies:
+      '@astrojs/starlight': 0.32.2(astro@5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
+      '@lunariajs/core': 0.1.1
+      astro: 5.4.2(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)
     transitivePeerDependencies:
       - supports-color
 
