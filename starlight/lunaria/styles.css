@@ -34,6 +34,10 @@ h6 {
   color: var(--theme-text-bright);
 }
 
+h1 {
+  margin-top: 5rem;
+}
+
 p a {
   text-decoration: underline;
 }

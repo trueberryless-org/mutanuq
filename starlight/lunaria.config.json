@@ -4,23 +4,6 @@
     "name": "trueberryless-org/mutanuq",
     "rootDir": "starlight"
   },
-  "files": [
-    {
-      "location": "src/content/docs/**/*.{md,mdx}",
-      "pattern": "src/content/docs/@lang/@path",
-      "type": "universal"
-    }
-  ],
-  "defaultLocale": {
-    "label": "English",
-    "lang": "en"
-  },
-  "locales": [
-    {
-      "label": "Deutsch",
-      "lang": "de"
-    }
-  ],
   "dashboard": {
     "title": "Mutanuq Translation Status",
     "description": "Translation progress tracker for the Mutanuq site. See how much has been translated in your language and get involved!",
@@ -50,5 +33,22 @@
     "i18nReady",
     "i18nIgnore"
   ],
-  "renderer": "./lunaria/renderer.config.ts"
+  "renderer": "./lunaria/renderer.config.ts",
+  "files": [
+    {
+      "location": "src/content/docs/**/*.{md,mdx}",
+      "pattern": "src/content/docs/@lang/@path",
+      "type": "universal"
+    }
+  ],
+  "locales": [
+    {
+      "label": "English",
+      "lang": "en"
+    }
+  ],
+  "defaultLocale": {
+    "label": "Deutsch",
+    "lang": "de"
+  }
 }

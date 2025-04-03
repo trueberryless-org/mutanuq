@@ -1,6 +1,5 @@
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/medium.svg)](https://starlight.astro.build)
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L3QTFWA)
+[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ba3e3f10-7014-4900-91ba-5d40bc8df650/deploy-status)](https://app.netlify.com/sites/mutanuq/deploys)
 
 ## Installation
 

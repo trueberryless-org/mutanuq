@@ -86,7 +86,7 @@ Help out by:
 -   Updating out-of-date translated pages
 -   Adding an untranslated page
 
-Visit **<https://i18n-mutanuq.trueberryless.org>** to track translation progress for the currently supported languages.
+Visit **<https://mutanuq.trueberryless.org/lunaria>** to track translation progress for the currently supported languages.
 
 #### Adding a new language to Mutanuq’s docs
 
