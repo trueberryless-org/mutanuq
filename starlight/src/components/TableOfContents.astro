@@ -1,0 +1,12 @@
+---
+import Default from "@astrojs/starlight/components/TableOfContents.astro";
+import StarlightViewModesTableOfContents from "starlight-view-modes/components/TableOfContents.astro";
+import BottomTableOfContentsWrapper from "starlight-cooler-credit/components/BottomTableOfContentsWrapper.astro";
+import CreditReferenceCard from "starlight-cooler-credit/components/CreditReferenceCard.astro";
+---
+
+<Default><slot /></Default>
+<StarlightViewModesTableOfContents />
+<BottomTableOfContentsWrapper>
+  <CreditReferenceCard />
+</BottomTableOfContentsWrapper>

@@ -2,9 +2,6 @@
 title: Welcome to Mutanuq
 description: Explore knowledge.
 template: splash
-banner:
-  content: |
-    Hey there! 😊 Just a heads-up: The default language is German 🇩🇪, but you’re seeing the English version 🌍 — so some pages might be missing. Thanks for understanding!
 hero:
   tagline: Explore the Mutanuq universe.
   image:
@@ -17,8 +14,9 @@ hero:
     - text: Contribute on
       link: https://github.com/trueberryless-org/mutanuq
       icon: seti:github
-sidebar:
-  hidden: true
+banner:
+  content: |
+    Hey there! 😊 Just a heads-up: The default language is German 🇩🇪, but you’re seeing the English 🇬🇧 version — so some pages might be missing. Thanks for understanding! 🌍
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
@@ -48,13 +46,9 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 We would like to sincerely thank all the volunteer contributors to our open source project. Without your contributions, this project would not be possible. You work tirelessly to improve the site, add new content, and fix bugs. You donate your time and expertise so that everyone can benefit from this website.
 
-import ContributorList from "../../../assets/components/ContributorList.astro";
+import { ContributorList } from "starlight-contributor-list";
 
-<ContributorList githubRepo="trueberryless-org/mutanuq" />
-
-<br />
-<br />
-<br />
+<ContributorList githubRepo="trueberryless-org/mutanuq" ignore={["autofix-ci[bot]", "github-actions[bot]", "renovate[bot]"]} />
 
 ---
 
