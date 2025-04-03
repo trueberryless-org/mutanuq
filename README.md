@@ -1,7 +1,5 @@
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/medium.svg)](https://starlight.astro.build)
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L3QTFWA)
-
 ## Installation
 
 Please install [PnPm](https://pnpm.io/) beforehand.
