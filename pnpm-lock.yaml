@@ -29,6 +29,9 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.0.21
         version: 5.1.1
+      '@lunariajs/core':
+        specifier: ^0.1.1
+        version: 0.1.1
       '@lunariajs/starlight':
         specifier: ^0.1.1
         version: 0.1.1(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
@@ -2198,9 +2201,6 @@ packages:
       typescript: ^4.9.4 || ^5.0.2
       zod: ^3
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
@@ -2623,7 +2623,7 @@ snapshots:
       picocolors: 1.1.1
       simple-git: 3.27.0
       ultramatter: 0.0.4
-      zod: 3.23.8
+      zod: 3.24.2
     transitivePeerDependencies:
       - supports-color
 
@@ -4930,8 +4930,6 @@ snapshots:
     dependencies:
       typescript: 5.7.2
       zod: 3.24.2
-
-  zod@3.23.8: {}
 
   zod@3.24.2: {}
 

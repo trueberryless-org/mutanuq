@@ -1,4 +1,5 @@
 import starlight from "@astrojs/starlight";
+import lunaria from "@lunariajs/starlight";
 import { defineConfig } from "astro/config";
 import rehypeMathjax from "rehype-mathjax";
 import remarkMath from "remark-math";
@@ -52,6 +53,9 @@ export default defineConfig({
         TableOfContents: "./src/components/TableOfContents.astro",
       },
       plugins: [
+        lunaria({
+          sync: true,
+        }),
         starlightViewModes({
           zenModeSettings: {
             keyboardShortcut: "Ctrl+Shift+Z",
