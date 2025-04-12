@@ -65,12 +65,12 @@ importers:
       starlight-links-validator:
         specifier: ^0.14.3
         version: 0.14.3(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
+      starlight-nextjs-theme:
+        specifier: ^0.1.2
+        version: 0.1.2(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-sidebar-topics-dropdown:
         specifier: ^0.4.1
         version: 0.4.1(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
-      starlight-theme-rapide:
-        specifier: ^0.4.0
-        version: 0.4.0(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-view-modes:
         specifier: ^0.10.1
         version: 0.10.1(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
@@ -1885,17 +1885,17 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.15.0'
 
+  starlight-nextjs-theme@0.1.2:
+    resolution: {integrity: sha512-b1BJjYaEmvzwfM6Wwi9YkiE2txbDX+QDx17bricL4I3BWxSTO3BeTNwLWE5V8RV4K5jXyVKJd9xtuLbDjEGO/A==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.30'
+
   starlight-sidebar-topics-dropdown@0.4.1:
     resolution: {integrity: sha512-T5hv24mP6/lWZR4IU4ppLYY0V1iWsff9TiHJov3eVSV2TmXPUweKyK0QXRGdTGl9XHNbpwDhlor1MjhwgjVOFw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       '@astrojs/starlight': '>=0.30'
-
-  starlight-theme-rapide@0.4.0:
-    resolution: {integrity: sha512-go2JEA3p1CNo3zqhS1pDkhCXAJNG8O7sX7KdIebae+ogaAndFRKXFtXhmw+9O/CWM785Vje6mGIXlwLer0faLQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@astrojs/starlight': '>=0.32.0'
 
   starlight-view-modes@0.10.1:
     resolution: {integrity: sha512-uRb8DpTtz5ygTvE8s5RTJjXRWqC9Ic/MMuT1d/6YYIWIU3gz1NyA67HiA24HsC+T5LzmT9SRy+as+ImSdweqig==}
@@ -4691,11 +4691,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-sidebar-topics-dropdown@0.4.1(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+  starlight-nextjs-theme@0.1.2(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
       '@astrojs/starlight': 0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
 
-  starlight-theme-rapide@0.4.0(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+  starlight-sidebar-topics-dropdown@0.4.1(@astrojs/starlight@0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
       '@astrojs/starlight': 0.32.5(astro@5.5.6(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
 

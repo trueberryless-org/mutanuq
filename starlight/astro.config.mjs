@@ -6,8 +6,8 @@ import remarkMath from "remark-math";
 import starlightCoolerCredit from "starlight-cooler-credit";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
+import starlightNextjsTheme from "starlight-nextjs-theme";
 import starlightSidebarTopicsDropdown from "starlight-sidebar-topics-dropdown";
-import starlightThemeRapide from "starlight-theme-rapide";
 import starlightViewModes from "starlight-view-modes";
 
 // https://astro.build/config
@@ -248,11 +248,11 @@ export default defineConfig({
             ],
           },
         ]),
-        starlightThemeRapide(),
         starlightCoolerCredit({
           customImage: "./src/assets/starlight-hero-star.png",
           customImageAlt: "Mutant Logo",
         }),
+        starlightNextjsTheme(),
       ],
     }),
   ],
