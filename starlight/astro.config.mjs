@@ -22,10 +22,18 @@ export default defineConfig({
         dark: "./src/assets/dark-logo.png",
         replacesTitle: true,
       },
-      social: {
-        github: "https://github.com/trueberryless-org/mutanuq",
-        patreon: "https://www.patreon.com/trueberryless",
-      },
+      social: [
+        {
+          icon: "blueSky",
+          label: "BlueSky",
+          href: "https://bsky.app/profile/trueberryless.org",
+        },
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/trueberryless-org/mutanuq",
+        },
+      ],
       editLink: {
         baseUrl:
           "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
