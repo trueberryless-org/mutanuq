@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: i18n-mutanuq
+  namespace: i18n-mutanuq
+spec:
+  rules:
+    - host: i18n-mutanuq.trueberryless.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: i18n-mutanuq
+                port:
+                  number: 80
+
+  tls:
+    - hosts:
+        - i18n-mutanuq.trueberryless.org
+      secretName: i18n-mutanuq
