@@ -1,7 +1,7 @@
 ---
 import StarlightThemeRapidePagination from "starlight-theme-rapide/overrides/Pagination.astro";
 import FeedbackComponent from "./FeedbackComponent.astro";
-import StarlightCoolerCreditTableOfContents from "starlight-cooler-credit/components/TableOfContents.astro";
+import StarlightCoolerCreditPagination from "starlight-cooler-credit/components/Pagination.astro";
 
 const { entry } = Astro.locals.starlightRoute;
 ---
@@ -9,5 +9,5 @@ const { entry } = Astro.locals.starlightRoute;
 <>
   {!entry.data.hero && <FeedbackComponent />}
   <StarlightThemeRapidePagination />
-  <StarlightCoolerCreditTableOfContents />
+  <StarlightCoolerCreditPagination />
 </>
