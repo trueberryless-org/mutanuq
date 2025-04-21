@@ -6,7 +6,7 @@ import remarkMath from "remark-math";
 import starlightCoolerCredit from "starlight-cooler-credit";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
-import starlightSidebarTopicsDropdown from "starlight-sidebar-topics-dropdown";
+import starlightSidebarTopics from "starlight-sidebar-topics";
 import starlightThemeRapide from "starlight-theme-rapide";
 import starlightViewModes from "starlight-view-modes";
 
@@ -57,8 +57,9 @@ export default defineConfig({
         "@fontsource-variable/jetbrains-mono/wght.css",
       ],
       components: {
-        Pagination: "./src/components/CustomPagination.astro",
+        Pagination: "./src/components/Pagination.astro",
         TableOfContents: "./src/components/TableOfContents.astro",
+        Sidebar: './src/components/Sidebar.astro',
       },
       plugins: [
         lunaria({
@@ -71,7 +72,7 @@ export default defineConfig({
         }),
         starlightImageZoom(),
         starlightLinksValidator(),
-        starlightSidebarTopicsDropdown([
+        starlightSidebarTopics([
           {
             label: {
               en: "Software Development",
