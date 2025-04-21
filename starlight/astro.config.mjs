@@ -59,7 +59,7 @@ export default defineConfig({
       components: {
         Pagination: "./src/components/Pagination.astro",
         TableOfContents: "./src/components/TableOfContents.astro",
-        Sidebar: './src/components/Sidebar.astro',
+        Sidebar: "./src/components/Sidebar.astro",
       },
       plugins: [
         lunaria({
