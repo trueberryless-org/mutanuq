@@ -48,6 +48,16 @@ export default defineConfig({
           label: "Deutsch",
         },
       },
+      head: [
+        {
+          tag: "script",
+          attrs: {
+            src: "https://rybbit-be.lou.gg/api/script.js",
+            "data-site-id": "4",
+            defer: true,
+          },
+        },
+      ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       expressiveCode: {},
       customCss: [
