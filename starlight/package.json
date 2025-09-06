@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@11ty/eleventy-fetch": "^4.0.1",
-    "@astrojs/starlight": "^0.33.1",
+    "@astrojs/starlight": "^0.35.2",
     "@fontsource-variable/jetbrains-mono": "^5.0.21",
     "@lunariajs/core": "^0.1.1",
     "@lunariajs/starlight": "^0.1.1",
