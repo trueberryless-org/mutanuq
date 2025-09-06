@@ -28,7 +28,7 @@
     "starlight-links-validator": "^0.16.0",
     "starlight-sidebar-topics": "^0.6.0",
     "starlight-sidebar-topics-dropdown": "^0.5.1",
-    "starlight-theme-rapide": "^0.4.0",
+    "starlight-theme-rapide": "^0.5.1",
     "starlight-view-modes": "^0.10.2"
   },
   "packageManager": "pnpm@10.10.0"
