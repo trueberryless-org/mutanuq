@@ -60,8 +60,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-image-zoom:
-        specifier: ^0.12.0
-        version: 0.12.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
+        specifier: ^0.13.0
+        version: 0.13.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-links-validator:
         specifier: ^0.16.0
         version: 0.16.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
@@ -1865,8 +1865,8 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.32'
 
-  starlight-image-zoom@0.12.0:
-    resolution: {integrity: sha512-Zt9DuqXEw4JBBRc67wL9EP7DE9cSa+o2nyjQU6Xq+gRp388Wcu9C9FPROLuaYXbxpE93bbj5oyrhhMaiEWOZzg==}
+  starlight-image-zoom@0.13.0:
+    resolution: {integrity: sha512-7K/7gshnKooYd4ePy5vtyv1jFoFVNUb8IoXWDcnY69+nxvmLATNrmOzD2M4TJ/aKynPSBSM6j9ia4s/PPy/JGA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@astrojs/starlight': '>=0.32.0'
@@ -4649,7 +4649,7 @@ snapshots:
       '@astrojs/starlight': 0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
       change-case: 5.4.4
 
-  starlight-image-zoom@0.12.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+  starlight-image-zoom@0.13.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
       '@astrojs/starlight': 0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
       mdast-util-mdx-jsx: 3.2.0
