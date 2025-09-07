@@ -75,8 +75,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
       starlight-view-modes:
-        specifier: ^0.10.2
-        version: 0.10.2(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
+        specifier: ^0.11.0
+        version: 0.11.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2)))
 
 packages:
 
@@ -1896,8 +1896,8 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.32.0'
 
-  starlight-view-modes@0.10.2:
-    resolution: {integrity: sha512-BEfExA/kC8QsmagONiI8W40teuicXuO2UadWUAuVpGJhYlK0gck4gPFRfBRMfU2aeDL68fQPhFhrzHakYyrI6A==}
+  starlight-view-modes@0.11.0:
+    resolution: {integrity: sha512-U/QCdAS69pmZVakdropJIOTITQuLRlZWKaST2Pj3SFwhVnJX4mm9IOP8Ta765L18DMidY+JyKPXdoWkcuLl1vQ==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       '@astrojs/starlight': '>=0.32'
@@ -4689,7 +4689,7 @@ snapshots:
     dependencies:
       '@astrojs/starlight': 0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
 
-  starlight-view-modes@0.10.2(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
+  starlight-view-modes@0.11.0(@astrojs/starlight@0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))):
     dependencies:
       '@astrojs/starlight': 0.33.1(astro@5.6.1(jiti@1.21.6)(rollup@4.35.0)(typescript@5.7.2))
       '@pagefind/default-ui': 1.3.0
