@@ -1,6 +1,16 @@
 {
   "name": "mutanuq",
   "version": "0.3.0",
+  "homepage": "https://mutanuq.trueberryless.org",
+  "bugs": {
+    "url": "https://github.com/trueberryless-org/mutanuq/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trueberryless-org/mutanuq.git"
+  },
+  "license": "MIT",
+  "author": "trueberryless <trueberryless@gmail.com> (https://trueberryless.org)",
   "type": "module",
   "scripts": {
     "astro": "astro",
