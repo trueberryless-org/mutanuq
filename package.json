@@ -1,19 +1,33 @@
 {
   "name": "mutanuq-monorepo",
-  "homepage": "https://github.com/trueberryless-org/mutanuq",
-  "bugs": {
-    "url": "https://github.com/trueberryless-org/mutanuq/issues"
+  "version": "0.0.0",
+  "license": "MIT",
+  "description": "Knowledge platform for the HTL Krems.",
+  "author": "trueberryless <trueberryless@gmail.com> (https://felixs.dev)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter mutanuq build",
+    "check": "pnpm --filter mutanuq astro sync && astro check --noSync",
+    "dev": "pnpm --filter mutanuq dev",
+    "format": "prettier . --write --cache --ignore-unknown"
   },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "astro": "^7.3.5",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "typescript": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@11.28.0",
+  "homepage": "https://mutanuq.netlify.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/trueberryless-org/mutanuq.git"
+    "url": "git+https://github.com/trueberryless-org/mutanuq.git"
   },
-  "license": "MIT",
-  "author": "trueberryless <trueberryless@gmail.com> (https://trueberryless.org)",
-  "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "6.0.2",
-    "prettier": "3.8.1",
-    "prettier-plugin-astro": "0.14.1"
-  },
-  "packageManager": "pnpm@10.10.0"
+  "bugs": "https://github.com/trueberryless-org/mutanuq/issues"
 }
