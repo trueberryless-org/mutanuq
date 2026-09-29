@@ -1,0 +1,342 @@
+---
+title: Durable Functions
+description: Stateful workflows with orchestrators, activities, external events and entities as well as the typical Durable Functions patterns.
+sidebar:
+  order: 4
+---
+
+With more complex business logic, functions often have to interact with each other. Conventional Azure Functions do not offer this functionality. For this and a few other reasons, there are Durable Functions. They allow us to wait for user input during the execution of a function, to run complex logic that would exceed the execution limit of Azure Functions and to set up monitoring systems.
+
+:::note
+Like the [Azure Functions](/en/decentralised-systems/azure-functions/) page, the examples use the isolated worker model with the `Microsoft.Azure.Functions.Worker.Extensions.DurableTask` package.
+:::
+
+## Orchestrator
+
+The orchestrator is the organising function of a Durable Function. It is the core that makes long-running executions possible in the first place. The orchestrator can call other functions – so-called activities – and wait for external events.
+
+```csharp
+[Function("HelloCities")]
+public static async Task<List<string>> Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    var outputs = new List<string>();
+
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "Tokyo"));
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "Seattle"));
+    outputs.Add(await context
+        .CallActivityAsync<string>("SayHello", "London"));
+
+    return outputs;
+}
+```
+
+The input parameters and return values must match each other. In the example above, `"Tokyo"` must be of type `string` so that the [activity](#activity) can receive the name as a `string`. Likewise, the return value of the activity must be of type `string` so that the orchestrator can store the result in a string when calling `await context.CallActivityAsync<string>()`.
+
+An orchestrator is started by a normal Azure Function, the so-called **client**:
+
+```csharp
+[Function("HelloCities_HttpStart")]
+public static async Task<HttpResponseData> HttpStart(
+    [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
+    [DurableClient] DurableTaskClient client)
+{
+    string instanceId = await client.ScheduleNewOrchestrationInstanceAsync("HelloCities");
+
+    // Response with links to query the status of the orchestration
+    return await client.CreateCheckStatusResponseAsync(req, instanceId);
+}
+```
+
+### Flow
+
+Orchestrators have a very special execution process. Every time an activity is called or an external event is awaited, the orchestrator's previous history is stored in a storage account and the orchestrator is shut down. As a result, it no longer knows at which point / line in the code it stopped and has to start from the beginning again after the activity has finished or the external event has occurred! This process is called **replay**.
+
+As soon as it reaches the call of the previous activity again (which has now already been executed, since it was called in the previous run), the orchestrator checks the stored history to see whether the return value of the activity has already been stored. If so, the activity is not called again; instead, the result is read from the history and the orchestrator continues executing the rest of the program.
+
+This initially extremely unusual behavior of a program means that the orchestrator must not use any values that can change with every run – such as the current time, random numbers, new GUIDs or direct database and network access – since the orchestrator executes the same lines of code several times. For this reason, the following program would not measure the time correctly:
+
+:::danger[Caution!]
+The program below contains a logic error!
+:::
+
+```csharp
+[Function("HelloCities")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    ILogger log = context.CreateReplaySafeLogger("HelloCities");
+
+    // The orchestrator executes this line again on every replay
+    var startTime = DateTime.UtcNow;
+
+    // some activity
+    await context.CallActivityAsync("LogInfo", "London");
+
+    var elapsedTimeMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+    log.LogInformation($"The orchestrator took {elapsedTimeMs}ms to execute.");
+}
+```
+
+Instead, in such cases you would have to write a separate activity that returns the current UTC time. As soon as the functionality is moved into its own activity, the result is persisted in the history and not executed again. Since the current time is needed frequently, there is a special case for it: `context.CurrentUtcDateTime` returns the same point in time on every replay.
+
+```csharp
+[Function("HelloCities")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    ILogger log = context.CreateReplaySafeLogger("HelloCities");
+
+    var startTime = context.CurrentUtcDateTime;
+
+    // some activity
+    await context.CallActivityAsync("LogInfo", "London");
+
+    var elapsedTimeMs = (context.CurrentUtcDateTime - startTime).TotalMilliseconds;
+    log.LogInformation($"The orchestrator took {elapsedTimeMs}ms to execute.");
+}
+```
+
+The logger is also created with `CreateReplaySafeLogger` here, so that the message is not written again on every replay.
+
+:::tip[Conclusion]
+Orchestrator functions must be programmed **deterministically** so that they always produce the same result across multiple runs.
+:::
+
+## Activity
+
+An activity is a normal Azure Function that can be called one or more times by the orchestrator. The same rules apply to an activity as to an [Azure Function](/en/decentralised-systems/azure-functions/). Unlike the orchestrator, it may therefore also access databases, send HTTP requests or query the current time.
+
+```csharp
+[Function("SayHello")]
+public static string SayHello([ActivityTrigger] string name)
+{
+    return $"Hello {name}!";
+}
+```
+
+## External events
+
+Sometimes the orchestrator has to wait for an external event.
+
+```csharp
+[Function("BudgetApproval")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    bool approved = await context.WaitForExternalEvent<bool>("Approval");
+    if (approved)
+    {
+        // approval granted - do the approved action
+    }
+    else
+    {
+        // approval denied - send a notification
+    }
+}
+```
+
+Here, we have a simple Azure Function with a queue trigger that raises the external event. For this, the raising function must know the ID of the orchestrator instance.
+
+```csharp
+[Function("ApprovalQueueProcessor")]
+public static async Task Run(
+    [QueueTrigger("approval-queue")] string instanceId,
+    [DurableClient] DurableTaskClient client)
+{
+    await client.RaiseEventAsync(instanceId, "Approval", true);
+}
+```
+
+## Durable Functions patterns
+
+Using the principle of Durable Functions, several functionalities can now be implemented.
+
+### Function chaining
+
+Function chaining allows functions to be executed in a specific order, where the output of one function serves as the input for the next. With normal Azure Functions, you would have to use queues between the functions to ensure the scalability and robustness of the system.
+
+![Durable Function Chaining](/images/decentralised_systems/azure-function/durable-function-chaining.png)
+
+Durable Functions make it easy to implement this pattern concisely, as shown in the following example. You can control the sequence of functions using common imperative code structures, and logic for error handling and conditional statements can be integrated.
+
+```csharp
+[Function("Chaining")]
+public static async Task<object> Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    try
+    {
+        var x = await context.CallActivityAsync<object>("F1", null);
+        var y = await context.CallActivityAsync<object>("F2", x);
+        var z = await context.CallActivityAsync<object>("F3", y);
+        return await context.CallActivityAsync<object>("F4", z);
+    }
+    catch (Exception)
+    {
+        // Error handling or compensation goes here.
+        throw;
+    }
+}
+```
+
+### Fan-out / fan-in
+
+In the fan-out/fan-in pattern, several functions are executed in parallel, and then the orchestrator waits for all activities to complete. Often, the results returned by the functions are aggregated.
+
+![Durable Function Fan Out Fan In](/images/decentralised_systems/azure-function/durable-function-fan-out-fan-in.png)
+
+In normal functions, fanning out can be achieved by having the function send several messages to a queue. Fanning back in is more complex, because you have to track the status of the triggered functions and store their outputs.
+
+```csharp
+[Function("FanOutFanIn")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    var parallelTasks = new List<Task<int>>();
+
+    // Get a list of N work items to process in parallel.
+    object[] workBatch = await context.CallActivityAsync<object[]>("F1", null);
+    for (int i = 0; i < workBatch.Length; i++)
+    {
+        Task<int> task = context.CallActivityAsync<int>("F2", workBatch[i]);
+        parallelTasks.Add(task);
+    }
+
+    await Task.WhenAll(parallelTasks);
+
+    // Aggregate all N outputs and send the result to F3.
+    int sum = parallelTasks.Sum(t => t.Result);
+    await context.CallActivityAsync("F3", sum);
+}
+```
+
+### Asynchronous HTTP APIs
+
+The asynchronous HTTP API pattern coordinates the status tracking of long-running operations with external clients. Usually, the operation is started via an HTTP endpoint, and the client is redirected to a status endpoint to monitor the completion of the operation.
+
+![Durable Function Async HTTP API](/images/decentralised_systems/azure-function/durable-function-async-http-api.png)
+
+Durable Functions make implementing this pattern considerably easier by providing built-in support. You can use REST commands to start orchestrator functions and query their status. This offers simpler interaction with long-running function executions.
+
+```bash
+> curl -X POST https://myfunc.azurewebsites.net/api/orchestrators/DoWork -H "Content-Length: 0" -i
+HTTP/1.1 202 Accepted
+Content-Type: application/json
+Location: https://myfunc.azurewebsites.net/runtime/webhooks/durabletask/instances/b79baf67f717453ca9e86c5da21e03ec
+
+{"id":"b79baf67f717453ca9e86c5da21e03ec", ...}
+
+> curl https://myfunc.azurewebsites.net/runtime/webhooks/durabletask/instances/b79baf67f717453ca9e86c5da21e03ec -i
+HTTP/1.1 202 Accepted
+Content-Type: application/json
+Location: https://myfunc.azurewebsites.net/runtime/webhooks/durabletask/instances/b79baf67f717453ca9e86c5da21e03ec
+
+{"runtimeStatus":"Running","lastUpdatedTime":"2019-03-16T21:20:47Z", ...}
+
+> curl https://myfunc.azurewebsites.net/runtime/webhooks/durabletask/instances/b79baf67f717453ca9e86c5da21e03ec -i
+HTTP/1.1 200 OK
+Content-Length: 175
+Content-Type: application/json
+
+{"runtimeStatus":"Completed","lastUpdatedTime":"2019-03-16T21:20:57Z", ...}
+```
+
+### Monitor
+
+The monitor pattern repeats operations in a workflow, for example regularly checking whether a certain condition is met. With Durable Functions, flexible recurrence intervals can be set up and the lifetime of tasks can be managed. Instead of an external client constantly polling the state, a long-running orchestrator takes over the monitoring. This allows several monitors to be managed and variable wait intervals based on conditions such as exponential backoff.
+
+![Durable Function Monitor](/images/decentralised_systems/azure-function/durable-function-monitor.png)
+
+```csharp
+[Function("MonitorJobStatus")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    int jobId = context.GetInput<int>();
+    int pollingInterval = GetPollingInterval();
+    DateTime expiryTime = GetExpiryTime();
+
+    while (context.CurrentUtcDateTime < expiryTime)
+    {
+        var jobStatus = await context.CallActivityAsync<string>("GetJobStatus", jobId);
+        if (jobStatus == "Completed")
+        {
+            // Perform an action when a condition is met.
+            await context.CallActivityAsync("SendAlert", jobId);
+            break;
+        }
+
+        // Orchestration sleeps until this time.
+        var nextCheck = context.CurrentUtcDateTime.AddSeconds(pollingInterval);
+        await context.CreateTimer(nextCheck, CancellationToken.None);
+    }
+
+    // Perform more work here, or let the orchestration end.
+}
+```
+
+### Human interaction
+
+Automated processes often involve user interaction, which can be challenging, since people are not as available and responsive as cloud services. Timeouts and compensation logic can be used in automated processes to enable this interaction.
+
+![Durable Function Human Interaction](/images/decentralised_systems/azure-function/durable-function-approval.png)
+
+This pattern can be implemented with an orchestrator function that uses timers for approval and escalation and waits for external user interaction.
+
+An example is an approval process that requires user interaction, such as an expense report that requires approval above a certain amount. If approval does not happen within 72 hours, an escalation takes effect.
+
+```csharp
+[Function("ApprovalWorkflow")]
+public static async Task Run(
+    [OrchestrationTrigger] TaskOrchestrationContext context)
+{
+    await context.CallActivityAsync("RequestApproval", null);
+    using (var timeoutCts = new CancellationTokenSource())
+    {
+        DateTime dueTime = context.CurrentUtcDateTime.AddHours(72);
+        Task durableTimeout = context.CreateTimer(dueTime, timeoutCts.Token);
+
+        Task<bool> approvalEvent = context.WaitForExternalEvent<bool>("ApprovalEvent");
+        if (approvalEvent == await Task.WhenAny(approvalEvent, durableTimeout))
+        {
+            timeoutCts.Cancel();
+            await context.CallActivityAsync("ProcessApproval", approvalEvent.Result);
+        }
+        else
+        {
+            await context.CallActivityAsync("Escalate", null);
+        }
+    }
+}
+```
+
+### Aggregator
+
+In the aggregator pattern, event data is aggregated over a period of time, possibly from different sources and spread over longer periods. The challenge when implementing this with normal functions is to control concurrent access and to ensure that the state is only ever changed from one place. Using **durable entities** makes the implementation easier: an entity is a small object with state whose operations are guaranteed to be executed one after another.
+
+![Durable Function Aggregator](/images/decentralised_systems/azure-function/durable-function-aggregator.png)
+
+```csharp
+public class Counter : TaskEntity<int>
+{
+    public void Add(int amount) => this.State += amount;
+
+    public void Reset() => this.State = 0;
+
+    public int Get() => this.State;
+
+    [Function(nameof(Counter))]
+    public static Task Run([EntityTrigger] TaskEntityDispatcher dispatcher)
+        => dispatcher.DispatchAsync<Counter>();
+}
+```
+
+A client can then send operations to the entity:
+
+```csharp
+var entityId = new EntityInstanceId(nameof(Counter), "myCounter");
+await client.Entities.SignalEntityAsync(entityId, "Add", 5);
+```

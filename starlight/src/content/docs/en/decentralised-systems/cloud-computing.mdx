@@ -1,0 +1,90 @@
+---
+title: Cloud Computing
+description: Service models, advantages and disadvantages, pricing models, redundancy levels and scalability of cloud services.
+sidebar:
+  order: 1
+---
+
+Cloud computing refers to the provision of IT resources – such as computing power, storage, databases or entire applications – over the internet, which can be rented on demand and are billed according to actual usage. Large cloud providers such as Google (Google Cloud), Microsoft (Azure) and Amazon (AWS) operate huge data centres all over the world for this purpose and take care of hardware, maintenance and high availability. This allows programmers to focus more on the applications and the user data. This way of running software has become increasingly popular over the last two decades, as it brings a number of advantages for both the providers and the customers (programmers).
+
+## Overview
+
+Depending on how much the provider takes care of, different service models are distinguished:
+
+| Model                                    | The provider manages                                   | The customer manages                        | Examples                                  |
+| ---------------------------------------- | ------------------------------------------------------ | ------------------------------------------- | ----------------------------------------- |
+| **IaaS** (Infrastructure as a Service)   | Hardware, network, virtualisation                      | Operating system, runtime, application, data | Virtual machines, virtual networks       |
+| **PaaS** (Platform as a Service)         | additionally the operating system and runtime          | Application and data                        | Azure App Service, Azure Functions        |
+| **SaaS** (Software as a Service)         | the entire application                                 | only their own data and settings            | Microsoft 365, Gmail                      |
+
+In this chapter, we mainly deal with `PaaS` (Platform as a Service).
+
+![IaaS, PaaS, SaaS](/images/decentralised_systems/iaas-paas-saas.png)
+
+### Advantages
+
+- flexible payment (only pay for what you use)
+- easy scalability (up and down)
+- low entry price
+- **high** reliability (guaranteed by a service level agreement)
+
+### Disadvantages
+
+- often more expensive than self-hosting with a permanently high and constant load
+- dependency on the provider (_vendor lock-in_), since many services cannot easily be moved to another provider
+- data protection: personal data must comply with the GDPR, so you should pay attention to the location of the data centres
+- without budget limits and monitoring, costs can quickly rise unexpectedly
+
+## Resources / services
+
+There are different types of resources that you pay for flexibly:
+
+### Compute resources
+
+Here, you pay for the time a certain resource is running and for the equipment and hardware this resource has.
+
+| Examples                                                  |
+| --------------------------------------------------------- |
+| App Service                                               |
+| Azure Function                                            |
+| Virtual machines                                          |
+| Container Registry (for managing Docker images)           |
+| Container Instances (for running Docker containers)       |
+
+### Storage resources
+
+Here, you pay for the amount of data you want to store.
+
+| Examples          |
+| ----------------- |
+| Storage account   |
+| Azure Cosmos DB   |
+| Data Lake Storage |
+
+### Mixed resources
+
+This is a mix of the two resource types above. With an Azure SQL Database, for example, you pay both for the reserved computing power and for the storage space used. With Azure Cosmos DB, the consumed request units are also billed in addition to storage.
+
+## Redundancy
+
+For many services, you can specify the desired level of redundancy. It determines how well your data is protected against hardware failures, natural disasters and the like, and how well it can be restored.
+
+### Locally redundant storage (LRS)
+
+Here, your data is stored three times within a single physical location (data centre) in the primary region. This is the cheapest option, but the data is not very well protected against fire, flooding and other ways individual locations can be destroyed.
+
+### Zone-redundant storage (ZRS)
+
+ZRS copies your data synchronously across three Azure availability zones in the primary region. Availability zones are separate data centres with their own power, cooling and networking. This level of redundancy is therefore recommended for applications that require high availability.
+
+### Geo-redundant storage (GRS)
+
+As with LRS, the data is stored three times within a single physical location in the primary region. In addition, it is copied asynchronously to a secondary region that is hundreds of kilometres away from the primary region. This protects the data very well against natural disasters. At Azure, durability is at least `99.99999999999999%` (16 nines) per year.
+
+### Geo-zone-redundant storage (GZRS)
+
+The highest redundancy is offered by GZRS, a combination of ZRS and GRS: in the primary region, the data is distributed across three availability zones, and a copy is additionally stored in a secondary region. With the **RA-GRS** and **RA-GZRS** (_read access_) variants, you can also read the data in the secondary region while the primary region is down.
+
+## Scalability
+
+For most services, there is the option to configure `autoscaling`, so that several instances of your services can be started when there are many requests and shut down automatically again during quiet periods. This is [horizontal scaling](/en/software-development/software-metrics/#horizontal-scaling). If, on the other hand, you switch to a more powerful pricing tier with more CPU and memory, you scale vertically.

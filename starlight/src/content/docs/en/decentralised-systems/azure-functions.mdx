@@ -1,0 +1,157 @@
+---
+title: Azure Functions
+description: Serverless functions in Azure with HTTP, timer, blob and queue triggers as well as input and output bindings.
+sidebar:
+  order: 3
+---
+
+Azure Functions are serverless computing in Microsoft Azure. Serverless computing is a rather misleading term. In this context, serverless simply means that resources are switched on and off `on demand`. So if many requests are currently hitting your website, several instances are started in the background. Of course, servers are still used to receive these requests. However, the developer does not notice any of this, so that they can focus more on the application itself.
+
+In the **Consumption plan**, you only pay for the actual execution time of the functions. In return, the duration of a single execution is limited (5 minutes by default, 10 minutes at most), and after a longer period of inactivity the first call can take a little longer (_cold start_).
+
+:::note
+The examples on this page use the **isolated worker model**, in which the functions run in their own .NET process. Microsoft only supports the older in-process model until November 2026. Shorthands such as `AzureWebJobsStorage` are defined in the `local.settings.json` file or in the settings of the function app.
+:::
+
+An Azure Function that is triggered every 10 seconds using an [`NCRONTAB` expression](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-csharp#ncrontab-expressions) looks like this, for example:
+
+```csharp
+public class RecurringEvent(ILogger<RecurringEvent> logger)
+{
+    [Function("MyTimerTrigger")]
+    public void Run([TimerTrigger("*/10 * * * * *")] TimerInfo myTimer)
+    {
+        logger.LogInformation("Function executed at: {Time}", DateTime.Now);
+    }
+}
+```
+
+## Input triggers
+
+Every Azure Function is a simple function in C# or [other programming languages](https://learn.microsoft.com/en-us/azure/azure-functions/supported-languages?tabs=isolated-process%2Cv4&pivots=programming-language-csharp). Every AF (Azure Function) needs exactly one trigger that determines when it is executed. There are many different kinds of triggers:
+
+| Azure Function Trigger                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------- |
+| HTTP trigger (execution on an HTTP request)                                                                               |
+| Timer trigger (execution at intervals)                                                                                    |
+| Queue trigger (execution on a new message in [Queue Storage](/en/decentralised-systems/storage-account/#queue-storage))   |
+| Blob trigger (execution on a file upload to [Blob Storage](/en/decentralised-systems/storage-account/#blob-storage))       |
+| Cosmos DB trigger                                                                                                         |
+| Event Grid trigger                                                                                                        |
+| Event Hub trigger                                                                                                         |
+| Service Bus trigger                                                                                                       |
+
+The following examples are methods inside a class that – as above – receives an `ILogger` through its constructor.
+
+### Timer trigger
+
+If an AF should be executed every 5 minutes, for example, you can use this function. The format is `{second} {minute} {hour} {day} {month} {day of week}`:
+
+```csharp
+[Function("MyTimerTrigger")]
+public void Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
+{
+    logger.LogInformation("Function executed at: {Time}", DateTime.Now);
+}
+```
+
+### HTTP trigger
+
+If an AF should be executed on an HTTP request to the route `/api/trueberryless`, for example, you can use this function (with the `Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore` package):
+
+```csharp
+[Function("MyHttpTrigger")]
+public IActionResult Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req)
+{
+    logger.LogInformation("C# HTTP trigger function processed a request.");
+    return new OkObjectResult("Hello trueberryless!");
+}
+```
+
+With `AuthorizationLevel.Function`, a function key (`?code=...`) must be sent with the request; with `AuthorizationLevel.Anonymous`, the function is publicly accessible.
+
+### Blob trigger
+
+This AF is executed for every new file in the container:
+
+```csharp
+[Function("MyBlobTrigger")]
+public void Run(
+    [BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream stream,
+    string name)
+{
+    logger.LogInformation("C# Blob trigger function processed the file {Name}.", name);
+}
+```
+
+### Queue trigger
+
+The function is triggered for every new message in the queue. Each message is processed by exactly one receiver. If messages should be distributed to several receivers (publish/subscribe), you use Azure Service Bus **topics** instead – a message sent to a topic is delivered to all subscribers.
+
+```csharp
+[Function("MyQueueTrigger")]
+public void Run(
+    [QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string message)
+{
+    logger.LogInformation("C# Queue trigger function processed a message: {Message}", message);
+}
+```
+
+If processing a message fails several times (five times by default), it is moved to a separate queue with the suffix `-poison` so that it can be investigated later.
+
+## Input bindings
+
+If access to a storage account is needed in the Azure Function, this can be implemented relatively easily using input bindings. The following example reads all trees of the partition `tree` from the `TreeTable` table and returns them:
+
+```csharp
+[Function("MyInputBinding")]
+public IActionResult Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req,
+    [TableInput("TreeTable", "tree")] IEnumerable<TreeTable> trees)
+{
+    return new OkObjectResult(trees);
+}
+
+public class TreeTable : Azure.Data.Tables.ITableEntity
+{
+    public double TreeHeight { get; set; }
+    public string TreeType { get; set; }
+
+    public string PartitionKey { get; set; }
+    public string RowKey { get; set; }
+    public DateTimeOffset? Timestamp { get; set; }
+    public ETag ETag { get; set; }
+}
+```
+
+Instead of a ready-made list, you can also have a `TableClient` passed in (`[TableInput("TreeTable")] TableClient tableClient`) to perform arbitrary queries or changes yourself.
+
+## Output bindings
+
+If you want to write data to a storage account as a return value, output bindings are suitable for this. The following example automatically creates a thumbnail for every uploaded image using the ImageSharp library:
+
+```csharp
+[Function("MyOutputBinding")]
+[BlobOutput("thumbnails/{name}", Connection = "AzureWebJobsStorage")]
+public async Task<byte[]> Run(
+    [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
+    string name)
+{
+    using var image = await SixLabors.ImageSharp.Image.LoadAsync(imageStream);
+    var newWidth = 300;
+    var newHeight = 200;
+
+    image.Mutate(x => x.Resize(new ResizeOptions
+    {
+        Size = new Size(newWidth, newHeight),
+        Mode = ResizeMode.Max
+    }));
+
+    using var thumbnailStream = new MemoryStream();
+    await image.SaveAsync(thumbnailStream, new JpegEncoder());
+    return thumbnailStream.ToArray();
+}
+```
+
+In the same way, there are output bindings for tables (`[TableOutput]`) and queues (`[QueueOutput]`). If several outputs should be written at the same time, you return a custom class whose properties are each annotated with an output binding attribute.

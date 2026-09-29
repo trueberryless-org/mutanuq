@@ -1,10 +1,24 @@
 ---
 title: Storage Account
+description: Dateien, Tabellen und Nachrichten in Azure Blob, Table und Queue Storage speichern.
+sidebar:
+  order: 2
 ---
+
+Ein **Storage Account** (Speicherkonto) ist in Azure der Container für verschiedene Speicherdienste. Unter einem eindeutigen Namen (zum Beispiel `https://<name>.blob.core.windows.net`) stellt er folgende Dienste bereit:
+
+| Dienst            | Zweck                                                                  |
+| ----------------- | ---------------------------------------------------------------------- |
+| **Blob Storage**  | Unstrukturierte Daten wie Bilder, Videos, Backups oder Logdateien       |
+| **Table Storage** | Strukturierte, schemalose Daten als Key-Value-Speicher (NoSQL)          |
+| **Queue Storage** | Nachrichten, die zwischen Anwendungsteilen ausgetauscht werden          |
+| **File Storage**  | Dateifreigaben, die wie ein Netzlaufwerk über SMB eingebunden werden    |
+
+Für die lokale Entwicklung kann statt eines echten Storage Accounts der Emulator **Azurite** verwendet werden. Die Verbindungszeichenfolge `UseDevelopmentStorage=true` in den folgenden Beispielen verbindet sich mit diesem Emulator. In der Produktion wird stattdessen die Verbindungszeichenfolge des Storage Accounts oder – noch sicherer – eine Anmeldung über eine verwaltete Identität (_Managed Identity_) verwendet.
 
 ## Blob Storage
 
-Ein Blob Storage ist wie ein Dateisystem aufgebaut, in welchem man Dateien hochladen, herunterladen und löschen kann. Allerdings benötigt man einen **Container** - eine Art `root`-Verzeichnis -, in welchen man alle Dateien hinein speichern kann. Theoretisch gesehen, kann man unendlich viele Container anlegen.
+Ein Blob Storage ist wie ein Dateisystem aufgebaut, in welchem man Dateien hochladen, herunterladen und löschen kann. Allerdings benötigt man einen **Container** – eine Art `root`-Verzeichnis –, in welchen man alle Dateien hineinspeichern kann. Theoretisch gesehen kann man unendlich viele Container anlegen. BLOB steht übrigens für _Binary Large Object_.
 
 ```bash
 dotnet add package Azure.Storage.Blobs
@@ -13,11 +27,16 @@ dotnet add package Azure.Storage.Blobs
 ```csharp
 var blobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true");
 var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+await blobContainerClient.CreateIfNotExistsAsync();
 var blobClient = blobContainerClient.GetBlobClient(fileName);
 ```
 
 ```csharp
+// Datei hochladen (true = vorhandene Datei überschreiben)
 await blobClient.UploadAsync(localFilePath, true);
+
+// Datei herunterladen
+await blobClient.DownloadToAsync(downloadFilePath);
 ```
 
 ```csharp
@@ -30,7 +49,12 @@ await foreach (BlobItem blobItem in blobContainerClient.GetBlobsAsync())
 
 ## Table Storage
 
-Im Table Storage kann man prinzipiell jedes JSON Objekt hinein speichern. Wenn die JSON Objekte gleiche Felder haben, werden die Werte in gleichen Spalten gespeichert.
+Im Table Storage werden sogenannte **Entities** gespeichert. Das sind Datensätze aus Schlüssel-Wert-Paaren (Properties) mit einfachen Datentypen wie Zeichenketten, Zahlen, Datumswerten oder booleschen Werten. Verschachtelte Objekte werden nicht direkt unterstützt. Anders als bei einer relationalen Datenbank müssen die Entities einer Tabelle nicht dieselben Properties haben. Haben sie gleiche Properties, werden die Werte in gleichen Spalten angezeigt.
+
+Jede Entity wird eindeutig durch zwei Schlüssel identifiziert:
+
+- Der **PartitionKey** bestimmt, in welcher Partition die Entity gespeichert wird. Entities mit gleichem PartitionKey liegen zusammen und können besonders schnell gemeinsam abgefragt werden.
+- Der **RowKey** identifiziert die Entity innerhalb ihrer Partition eindeutig.
 
 ```bash
 dotnet add package Azure.Data.Tables
@@ -38,7 +62,8 @@ dotnet add package Azure.Data.Tables
 
 ```csharp
 var tableServiceClient = new TableServiceClient("UseDevelopmentStorage=true");
-var tableClient = new TableClient("UseDevelopmentStorage=true", tableName);
+var tableClient = tableServiceClient.GetTableClient(tableName);
+await tableClient.CreateIfNotExistsAsync();
 ```
 
 ```csharp
@@ -51,9 +76,17 @@ var tableEntity = new TableEntity(partitionKey, "trueberryless")
 await tableClient.AddEntityAsync(tableEntity);
 ```
 
+```csharp
+// Alle Entities einer Partition abfragen
+await foreach (TableEntity entity in tableClient.QueryAsync<TableEntity>(e => e.PartitionKey == partitionKey))
+{
+    Console.WriteLine(entity.GetString("Name"));
+}
+```
+
 ## Queue Storage
 
-Ein Queue Storage persistiert Messages bis diese ausgelesen wurden. Dadurch wird die Koppelung des Gesamtsystems reduziert, da zwei Microservices, die ständig miteinander kommunizieren, nicht gleichzeitig laufen müssen, um Nachrichten austauschen zu können. Diese Nachrichten werden einfach im Queue Storage zwischengespeichert. Man erstellt aus quasi einen dritten Service, um zwei andere Services zu entkoppeln.
+Ein Queue Storage persistiert Messages, bis diese ausgelesen wurden. Dadurch wird die [Kopplung](/de/software-development/software-metrics/#koppelung) des Gesamtsystems reduziert, da zwei Microservices, die ständig miteinander kommunizieren, nicht gleichzeitig laufen müssen, um Nachrichten austauschen zu können. Diese Nachrichten werden einfach im Queue Storage zwischengespeichert. Man erstellt also quasi einen dritten Service, um zwei andere Services zu entkoppeln.
 
 ```bash
 dotnet add package Azure.Storage.Queues
@@ -62,8 +95,23 @@ dotnet add package Azure.Storage.Queues
 ```csharp
 var queueServiceClient = new QueueServiceClient("UseDevelopmentStorage=true");
 var queueClient = queueServiceClient.GetQueueClient(queueName);
+await queueClient.CreateIfNotExistsAsync();
 ```
 
 ```csharp
 var sendReceipt = await queueClient.SendMessageAsync("Hello, World!");
 ```
+
+Beim Empfangen wird eine Nachricht nicht sofort gelöscht, sondern nur für eine gewisse Zeit für andere Empfänger unsichtbar. Erst nachdem sie erfolgreich verarbeitet wurde, muss sie explizit gelöscht werden. Stürzt der Empfänger vorher ab, wird die Nachricht nach Ablauf der Zeit wieder sichtbar und kann erneut verarbeitet werden.
+
+```csharp
+QueueMessage[] messages = await queueClient.ReceiveMessagesAsync(maxMessages: 10);
+
+foreach (QueueMessage message in messages)
+{
+    Console.WriteLine(message.Body.ToString());
+    await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+}
+```
+
+In der Praxis muss man die Queue meist nicht selbst abfragen: Eine [Azure Function mit Queue Trigger](/de/decentralised-systems/azure-functions/#queue-trigger) wird automatisch bei jeder neuen Nachricht ausgeführt.

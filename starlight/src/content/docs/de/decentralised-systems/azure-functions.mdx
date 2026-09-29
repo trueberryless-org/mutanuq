@@ -1,119 +1,116 @@
 ---
 title: Azure Functions
+description: Serverlose Funktionen in Azure mit HTTP-, Timer-, Blob- und Queue-Triggern sowie Input- und Output-Bindings.
+sidebar:
+  order: 3
 ---
 
-Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschaltet werden. Wenn also momentan viele Anfragen auf Ihre Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegen zu nehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
+Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschaltet werden. Wenn also momentan viele Anfragen auf Ihre Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegenzunehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
 
-Eine Azure Function, welche mittels [`NCRONTAB` expression](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-csharp#ncrontab-expressions) alle 10 Sekunden getriggert wird, sieht zum Beispiel so:
+Im **Verbrauchstarif** (_Consumption Plan_) bezahlt man nur für die tatsächliche Ausführungszeit der Funktionen. Dafür ist die Laufzeit einer einzelnen Ausführung begrenzt (standardmäßig 5, maximal 10 Minuten) und nach längerer Inaktivität kann der erste Aufruf etwas länger dauern (_Cold Start_).
+
+:::note
+Die Beispiele auf dieser Seite verwenden das **isolierte Workermodell** (_isolated worker model_), bei dem die Funktionen in einem eigenen .NET-Prozess laufen. Das ältere In-Process-Modell wird von Microsoft nur noch bis November 2026 unterstützt. Kurzschreibweisen, wie zum Beispiel `AzureWebJobsStorage`, sind in der Datei `local.settings.json` bzw. in den Einstellungen der Function App definiert.
+:::
+
+Eine Azure Function, welche mittels [`NCRONTAB` expression](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-csharp#ncrontab-expressions) alle 10 Sekunden getriggert wird, sieht zum Beispiel so aus:
 
 ```csharp
-[Function("MyTimerTrigger")]
-public static string Run(
-    [TimerTrigger("*/10 * * * * *")] MyInfo myTimer,
-    FunctionContext context)
+public class RecurringEvent(ILogger<RecurringEvent> logger)
 {
-    var logger = context.GetLogger("RecurringEvent");
-    logger.LogInformation(
-        $"Function executed at: {DateTime.Now}");
+    [Function("MyTimerTrigger")]
+    public void Run([TimerTrigger("*/10 * * * * *")] TimerInfo myTimer)
+    {
+        logger.LogInformation("Function executed at: {Time}", DateTime.Now);
+    }
 }
 ```
 
-:::note
-Kurzschreibweisen, wie zum Beispiel `AzureWebJobsStorage` oder `UseDevelopmentStorage=true` sind in `local.settings.json` definiert.
-:::
-
 ## Input Trigger
 
-Jede Azure Function ist eine einfache Funktion in C## oder [anderen Programmiersprachen](https://learn.microsoft.com/de-de/azure/azure-functions/supported-languages?tabs=isolated-process%2Cv4&pivots=programming-language-csharp). Dabei benötigt jede AF (Azure Function) einen Trigger, bei welchen sie ausgeführt werden soll. Es gibt viele verschiedene Arten von Triggern:
+Jede Azure Function ist eine einfache Funktion in C# oder [anderen Programmiersprachen](https://learn.microsoft.com/de-de/azure/azure-functions/supported-languages?tabs=isolated-process%2Cv4&pivots=programming-language-csharp). Dabei benötigt jede AF (Azure Function) genau einen Trigger, der festlegt, wann sie ausgeführt werden soll. Es gibt viele verschiedene Arten von Triggern:
 
-| Azure Function Trigger                                                                                                   |
-| ------------------------------------------------------------------------------------------------------------------------ |
-| HTTP Trigger (Ausführung bei HTTP Request)                                                                               |
-| Timer Trigger (Ausführung in Intervallen)                                                                                |
-| Queue Trigger (Ausführung bei neuer Message in [Queue Storage](/de/decentralised-systems/storage-account#queue-storage)) |
-| Blob Trigger (Ausführung bei Dateiupload in [Blob Storage](/de/decentralised-systems/storage-account#blob-storage))      |
-| Cosmos DB Trigger                                                                                                        |
-| Event Grid Trigger                                                                                                       |
-| Event Hub Trigger                                                                                                        |
-| Custom Bindings (.NET)                                                                                                   |
+| Azure Function Trigger                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------- |
+| HTTP Trigger (Ausführung bei HTTP Request)                                                                                |
+| Timer Trigger (Ausführung in Intervallen)                                                                                 |
+| Queue Trigger (Ausführung bei neuer Message in [Queue Storage](/de/decentralised-systems/storage-account/#queue-storage)) |
+| Blob Trigger (Ausführung bei Dateiupload in [Blob Storage](/de/decentralised-systems/storage-account/#blob-storage))      |
+| Cosmos DB Trigger                                                                                                         |
+| Event Grid Trigger                                                                                                        |
+| Event Hub Trigger                                                                                                         |
+| Service Bus Trigger                                                                                                       |
+
+Die folgenden Beispiele sind Methoden innerhalb einer Klasse, die – wie oben – einen `ILogger` über den Konstruktor erhält.
 
 ### Timer Trigger
 
-Wenn eine AF zum Beispiel alle 5 Minuten ausgeführt werden soll, kann man diese Function verwenden:
+Wenn eine AF zum Beispiel alle 5 Minuten ausgeführt werden soll, kann man diese Function verwenden. Das Format lautet `{Sekunde} {Minute} {Stunde} {Tag} {Monat} {Wochentag}`:
 
 ```csharp
 [Function("MyTimerTrigger")]
-public static string Run(
-    [TimerTrigger("* */5 * * * *")] MyInfo myTimer,
-    ILogger log)
+public void Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
 {
-    log.LogInformation(
-        $"Function executed at: {DateTime.Now}");
+    logger.LogInformation("Function executed at: {Time}", DateTime.Now);
 }
 ```
 
 ### HTTP Trigger
 
-Wenn eine AF zum Beispiel bei einem HTTP Request auf die Route `/trueberryless` ausgeführt werden soll, kann man diese Function verwenden:
+Wenn eine AF zum Beispiel bei einem HTTP Request auf die Route `/api/trueberryless` ausgeführt werden soll, kann man diese Function verwenden (mit dem Paket `Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore`):
 
 ```csharp
-[Function("MyHTTPTrigger")]
-public static string Run(
-    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req,
-    ILogger log)
+[Function("MyHttpTrigger")]
+public IActionResult Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "trueberryless")] HttpRequest req)
 {
-    log.LogInformation($"C## HTTP trigger function processed a request.");
+    logger.LogInformation("C# HTTP trigger function processed a request.");
+    return new OkObjectResult("Hallo trueberryless!");
 }
 ```
 
+Mit `AuthorizationLevel.Function` muss beim Aufruf ein Funktionsschlüssel (`?code=...`) mitgeschickt werden, mit `AuthorizationLevel.Anonymous` ist die Funktion öffentlich erreichbar.
+
 ### Blob Trigger
 
-Bei jeder neuen Datei im Container, wird diese AF durchgeführt:
+Bei jeder neuen Datei im Container wird diese AF ausgeführt:
 
 ```csharp
 [Function("MyBlobTrigger")]
-public static string Run(
-    [BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
-    ILogger log)
+public void Run(
+    [BlobTrigger("blobs/{name}", Connection = "AzureWebJobsStorage")] Stream stream,
+    string name)
 {
-    log.LogInformation($"C## Blob trigger function processed a file.");
+    logger.LogInformation("C# Blob trigger function processed the file {Name}.", name);
 }
 ```
 
 ### Queue Trigger
 
-Bei jeder neuen Message in der Queue wird die Function getriggert. Dabei muss man zwischen Topics und Queue unterscheiden, denn ein Topic kann an mehrere Empfänger gesendet werden, während eine Queue immer nur einen Empfänger hat.
+Bei jeder neuen Message in der Queue wird die Function getriggert. Jede Message wird dabei genau von einem Empfänger verarbeitet. Sollen Nachrichten an mehrere Empfänger verteilt werden (Publish/Subscribe), verwendet man stattdessen die **Topics** von Azure Service Bus – eine Nachricht an ein Topic wird an alle Abonnenten zugestellt.
 
 ```csharp
 [Function("MyQueueTrigger")]
-public static string Run(
-    [QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string jsonString
-    ILogger log)
+public void Run(
+    [QueueTrigger("messages", Connection = "AzureWebJobsStorage")] string message)
 {
-    log.LogInformation($"C## Queue trigger function processed a message.");
+    logger.LogInformation("C# Queue trigger function processed a message: {Message}", message);
 }
 ```
 
+Schlägt die Verarbeitung einer Nachricht mehrmals fehl (standardmäßig fünfmal), wird sie in eine eigene Queue mit der Endung `-poison` verschoben, damit sie später untersucht werden kann.
+
 ## Input Binding
 
-Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kann dies relativ einfach mittels Input Bindings umgesetzt werden.
+Wenn in der Azure Function Zugriff auf einen Storage Account benötigt wird, kann dies relativ einfach mittels Input Bindings umgesetzt werden. Das folgende Beispiel liest alle Bäume der Partition `tree` aus der Tabelle `TreeTable` und gibt sie zurück:
 
 ```csharp
 [Function("MyInputBinding")]
-public static string Run(
-    [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
-    [Table("TreeTable")] TableClient tableClient,
-    ILogger log)
+public IActionResult Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req,
+    [TableInput("TreeTable", "tree")] IEnumerable<TreeTable> trees)
 {
-    var tableEntity = new TreeTable()
-    {
-        PartitionKey = "tree",
-        RowKey = Guid.NewGuid().ToString(),
-        TreeType = "Fichte",
-        TreeHeight = 13.3
-    };
-
-    tableClient.AddEntity(tableEntity);
+    return new OkObjectResult(trees);
 }
 
 public class TreeTable : Azure.Data.Tables.ITableEntity
@@ -128,16 +125,18 @@ public class TreeTable : Azure.Data.Tables.ITableEntity
 }
 ```
 
+Statt einer fertigen Liste kann man sich auch einen `TableClient` übergeben lassen (`[TableInput("TreeTable")] TableClient tableClient`), um beliebige Abfragen oder Änderungen selbst durchzuführen.
+
 ## Output Binding
 
-Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding.
+Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding. Das folgende Beispiel erzeugt für jedes hochgeladene Bild automatisch ein Vorschaubild mit der Bibliothek ImageSharp:
 
 ```csharp
 [Function("MyOutputBinding")]
-public static string Run(
+[BlobOutput("thumbnails/{name}", Connection = "AzureWebJobsStorage")]
+public async Task<byte[]> Run(
     [BlobTrigger("images/{name}", Connection = "AzureWebJobsStorage")] Stream imageStream,
-    [Blob("thumbnails/{name}", FileAccess.Write)] Stream thumbnails,
-    ILogger log)
+    string name)
 {
     using var image = await SixLabors.ImageSharp.Image.LoadAsync(imageStream);
     var newWidth = 300;
@@ -149,6 +148,10 @@ public static string Run(
         Mode = ResizeMode.Max
     }));
 
+    using var thumbnailStream = new MemoryStream();
     await image.SaveAsync(thumbnailStream, new JpegEncoder());
+    return thumbnailStream.ToArray();
 }
 ```
+
+Auf dieselbe Weise gibt es Output Bindings für Tabellen (`[TableOutput]`) und Queues (`[QueueOutput]`). Sollen mehrere Ausgaben gleichzeitig geschrieben werden, gibt man eine eigene Klasse zurück, deren Properties jeweils mit einem Output-Binding-Attribut versehen sind.
