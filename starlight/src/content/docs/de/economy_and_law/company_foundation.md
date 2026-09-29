@@ -1,8 +1,11 @@
 ---
 title: Unternehmensgründung
+description: Geschäftsidee, persönliche und gewerberechtliche Voraussetzungen, Rechtsformen, Gründungsschritte und Businessplan für die Unternehmensgründung in Österreich.
+sidebar:
+  order: 1
 ---
 
-Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründerin oder den Gründer eine interessante Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen unbedingt die Wirtschaftskammer zur Unterstützung bei der Phase der Gründung heranzuziehen.
+Für eine erfolgreiche Unternehmensgründung ist es für die Gründerin oder den Gründer essenziell, eine interessante Geschäfts**idee** und einen starken **Willen** zu haben. Außerdem benötigt man **persönliche** und **gewerbliche Voraussetzungen**, damit man ein Unternehmen gründen kann. Es wird außerdem empfohlen, unbedingt die Wirtschaftskammer (z. B. das [Gründerservice der WKO](https://www.gruenderservice.at/)) zur Unterstützung in der Phase der Gründung heranzuziehen.
 
 ## Vorteile
 
@@ -22,7 +25,7 @@ Für eine erfolgreiche Unternehmensgründung ist es essenziell für die Gründer
 
 ## Geschäftsidee
 
-Ohne eine eigene Geschäftsidee kann sich das Unternehmen nicht von der Konkurrenz abheben. Es gibt verschiedene Möglichkeiten eine Geschäftsidee zu bekommen.
+Ohne eine eigene Geschäftsidee kann sich das Unternehmen nicht von der Konkurrenz abheben. Es gibt verschiedene Möglichkeiten, eine Geschäftsidee zu bekommen.
 
 ### Finden einer eigenen Geschäftsidee
 
@@ -59,13 +62,12 @@ Unternehmensübernahme bedeutet, dass man ein bereits bestehendes Unternehmen ü
 -   möglicherweise schlechte Reputation
 -   Prozessänderung meist unerwünscht (bestehende Strukturen / Hierarchien)  
     _„Das hamma imma schon so gmacht“_
--   Mängel oder Lasten werden ebenfalls übernommen
+-   Mängel oder Lasten (z. B. Schulden) werden ebenfalls übernommen
 -   veraltete Ressourcen
--   Mängel und Lasten
 
 #### Franchising
 
-Als Franchising bezeichnet man das Übernehmen eines bereits erprobten Unternehmenskonzeptes
+Als Franchising bezeichnet man das Übernehmen eines bereits erprobten Unternehmenskonzeptes. Der Franchisenehmer ist rechtlich ein selbstständiges Unternehmen, darf aber gegen eine Gebühr den Namen, das Know-how und die Marketingmaßnahmen des Franchisegebers nutzen.
 
 ##### Vorteile
 
@@ -148,17 +150,17 @@ Für eine gewerbliche Tätigkeit ist eine **Gewerbeberechtigung** notwendig. Die
 
 Eine unternehmerische Tätigkeit ist dann eine gewerbliche Tätigkeit, wenn sie
 
--   erlaubt (nicht gegen Gesetze oder gutte Sitten)
+-   erlaubt (nicht gegen Gesetze oder gute Sitten)
 -   selbstständig (auf eigene Rechnung und Haftung)
--   regelmäßig (als wiederholende Handlungen ausgeübt)
+-   regelmäßig (als sich wiederholende Handlungen ausgeübt)
 -   entgeltlich (Absicht, etwas zu verdienen)
 
 betrieben wird.
 
 #### Allgemeine Voraussetzungen
 
--   Eigenberechtigung
--   Staatsbürgerschaft (EWR oder Schweiz)
+-   Eigenberechtigung (volljährig und geschäftsfähig)
+-   Staatsbürgerschaft eines EWR-Staates oder der Schweiz bzw. ein Aufenthaltstitel, der eine selbstständige Tätigkeit erlaubt
 -   Kein Ausschlussgrund (Verurteilung vor Gericht, Strafdelikte, Konkurs, Insolvenz)
 
 #### Befähigungsnachweis
@@ -198,13 +200,39 @@ Es gibt verschiedene Gewerbearten, welche jeweils wiederum verschiedene Vorausse
 
 #### Tätigkeiten außerhalb der Gewerbeordnung
 
-Unternehmerische Tätigkeiten, welche außerhalb jeglicher Gewerbeordnung fallen, unterliegen anderen Gesetzen und ihre Tätigkeit erfordert **keine** Gewerbeberechtigung.
+Unternehmerische Tätigkeiten, welche nicht unter die Gewerbeordnung fallen, unterliegen anderen Gesetzen und ihre Tätigkeit erfordert **keine** Gewerbeberechtigung.
 
 > freie Berufe (Ärzte, Notare, Physiotherapeuten), neue Selbständige (Vortragende)
 
+## Rechtsformen
+
+Bei der Gründung muss man sich für eine Rechtsform entscheiden. Sie bestimmt unter anderem, wer haftet, wie viel Kapital nötig ist und wie die Gewinne besteuert werden.
+
+| Rechtsform                         | Gründer              | Mindestkapital | Haftung                                                             |
+| ---------------------------------- | -------------------- | -------------- | ------------------------------------------------------------------- |
+| **Einzelunternehmen (e. U.)**      | 1 Person             | keines         | unbeschränkt mit dem gesamten Privatvermögen                        |
+| **Offene Gesellschaft (OG)**       | mind. 2 Personen     | keines         | alle Gesellschafter unbeschränkt und solidarisch                    |
+| **Kommanditgesellschaft (KG)**     | mind. 2 Personen     | keines         | Komplementär unbeschränkt, Kommanditist nur bis zur Höhe seiner Einlage |
+| **GmbH**                           | 1 oder mehr Personen | 10.000 €       | nur mit dem Gesellschaftsvermögen                                   |
+| **Flexible Kapitalgesellschaft (FlexCo)** | 1 oder mehr Personen | 10.000 € | nur mit dem Gesellschaftsvermögen; erleichterte Beteiligung von Mitarbeitern |
+| **Aktiengesellschaft (AG)**        | 1 oder mehr Personen | 70.000 €       | nur mit dem Gesellschaftsvermögen                                   |
+
+Einzelunternehmen, OG und KG sind **Personengesellschaften**, bei denen die Gründer persönlich haften. GmbH, FlexCo und AG sind **Kapitalgesellschaften**, die als eigene juristische Person selbst haften. Ein Einzelunternehmen muss erst ab einem Jahresumsatz von mehr als 700.000 € ins Firmenbuch eingetragen werden, kann dies aber freiwillig tun (dann mit dem Zusatz „e. U.“).
+
+## Gründungsschritte
+
+In Österreich läuft eine Gründung typischerweise so ab:
+
+1. **Beratung** beim Gründerservice der Wirtschaftskammer und Erstellen des Businessplans.
+2. **NeuFöG-Bestätigung** einholen: Mit der Bestätigung nach dem Neugründungs-Förderungsgesetz entfallen bestimmte Gebühren und Abgaben bei der Gründung.
+3. **Gewerbeanmeldung** bei der Bezirksverwaltungsbehörde bzw. online über das Gewerbeinformationssystem Austria (GISA). Damit wird man automatisch Mitglied der Wirtschaftskammer.
+4. **Sozialversicherung**: Selbstständige sind bei der Sozialversicherungsanstalt der Selbständigen (SVS) versichert.
+5. **Finanzamt**: Meldung der Aufnahme der Tätigkeit und Vergabe einer Steuernummer, bei Bedarf auch einer UID-Nummer.
+6. Bei Kapitalgesellschaften: Gesellschaftsvertrag (bei GmbH durch einen Notar) und **Eintragung ins Firmenbuch**.
+
 ## Businessplan
 
-Der Businessplan hilft dem Unternehmensgründer / der -gründerin, die Idee des Unternehmens schriftlich, verständlich zu machen. Er soll Ziele, Erwartungen, den Unterschied zu Konkurrenten und alles andere, was den Leser interessieren könnte, enthalten.
+Der Businessplan hilft dem Unternehmensgründer / der -gründerin, die Idee des Unternehmens schriftlich und verständlich festzuhalten. Er wird außerdem von Banken, Investoren und Förderstellen verlangt. Er soll Ziele, Erwartungen, den Unterschied zu Konkurrenten und alles andere, was den Leser interessieren könnte, enthalten.
 
 Außerdem können Sie aufgrund der Planung und Steuerung im Businessplan eine bessere und einfachere Durchführung erwarten.
 
@@ -220,9 +248,9 @@ Außerdem können Sie aufgrund der Planung und Steuerung im Businessplan eine be
 
 -   Marketing: Beschreiben Sie einen kostengünstigen Weg, um den Kunden Informationen zu übermitteln.
 
--   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen Sie dabei in das Geschehen involviert? Vielleicht haben Sie bereits einen Businessangel engagiert, welcher die Kontakte zu anderen Unternehmen herstellen kann.
+-   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen beziehen Sie dabei ein? Vielleicht haben Sie bereits einen Business Angel gewonnen, welcher nicht nur Kapital, sondern auch Erfahrung und Kontakte zu anderen Unternehmen einbringt.
 
--   **Umsetzungsfahrplan**, **Meilensteinplan**: Je detailierter Sie planen, desto einfacher wird die Durchführung. Außerdem sind Kapitalgeber umso mehr von dem Unternehmen überzeugt, wenn eine genaue effiziente und möglichst realistische Planung vorliegt.
+-   **Umsetzungsfahrplan**, **Meilensteinplan**: Je detaillierter Sie planen, desto einfacher wird die Durchführung. Außerdem sind Kapitalgeber umso mehr von dem Unternehmen überzeugt, wenn eine genaue effiziente und möglichst realistische Planung vorliegt.
 
 -   Chancen und Risiken: Analysieren Sie wirtschaftliche Risiken und Chancen, welche den Erfolg des Unternehmens beeinflussen könnten.
 
