@@ -1,6 +1,6 @@
 # mutanuq
 
-The Starlight site of [Mutanuq](https://mutanuq.netlify.app), the open knowledge platform for students of the HTL Krems.
+The Starlight site of [Mutanuq](https://mutanuq.felixs.dev), the open knowledge platform for students of the HTL Krems.
 
 ## Development
 

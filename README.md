@@ -5,7 +5,7 @@
 
 The open knowledge platform for students of the HTL Krems, available in German and English.
 
-Visit the website at [mutanuq.netlify.app](https://mutanuq.netlify.app).
+Visit the website at [mutanuq.felixs.dev](https://mutanuq.felixs.dev).
 
 ## Project structure
 

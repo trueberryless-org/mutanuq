@@ -56,7 +56,7 @@ To create new pages, go to the [docs folder](https://github.com/trueberryless-or
 5. When you have finished creating the content of the new page, click `Commit changes...` at the top right of the page, choose a commit message and confirm your action again.
 6. Press the `Create Pull Request` button and there you go.
 
-Once a maintainer has reviewed your changes, you will be one of the contributors on the [Main Page](https://mutanuq.netlify.app/en/#our-contributors).
+Once a maintainer has reviewed your changes, you will be one of the contributors on the [Main Page](https://mutanuq.felixs.dev/en/#our-contributors).
 
 ## Fixing errors
 
@@ -86,7 +86,7 @@ Help out by:
 -   Updating out-of-date translated pages
 -   Adding an untranslated page
 
-Visit **<https://mutanuq.netlify.app/lunaria>** to track translation progress for the currently supported languages.
+Visit **<https://mutanuq.felixs.dev/lunaria>** to track translation progress for the currently supported languages.
 
 #### Adding a new language to Mutanuq’s docs
 

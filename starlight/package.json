@@ -36,7 +36,7 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "homepage": "https://mutanuq.netlify.app",
+  "homepage": "https://mutanuq.felixs.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/trueberryless-org/mutanuq.git",

@@ -14,7 +14,7 @@ import starlightViewModes from "starlight-view-modes";
 // https://astro.build/config
 // https://starlight.astro.build/reference/configuration/
 export default defineConfig({
-  site: "https://mutanuq.netlify.app",
+  site: "https://mutanuq.felixs.dev",
   integrations: [
     starlight({
       title: "Mutanuq",
