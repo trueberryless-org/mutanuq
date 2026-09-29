@@ -1,9 +1,12 @@
 ---
 title: Projektcontrolling
+description: Planung, Kontrolle, Analyse und Steuerung von Projekten mit Werkzeugen wie Soll-Ist-Vergleich, ABC-Analyse, Termin- und Kostenkontrolle und Earned-Value-Analyse.
+sidebar:
+  order: 2
 ---
 
 :::note
-Projektcontrolling ist ein in der Literatur nicht klar definierter Begriff, jedoch lässt sich folgendes dazu sagen.
+Projektcontrolling ist ein in der Literatur nicht klar definierter Begriff, jedoch lässt sich Folgendes dazu sagen.
 :::
 
 Projektcontrolling ist ein funktionsübergreifendes Steuerungsinstrument, das den unternehmerischen Entscheidungs- und Steuerungsprozess in Bezug auf Projekte durch zielgerichtete Informationserarbeitung und -verarbeitung unterstützt. Dieses Controlling-Konzept zielt darauf ab, relevante Informationen über Projekte zu sammeln, zu verarbeiten und an die Entscheidungsträger im Unternehmen zu kommunizieren, um die Effizienz und den Erfolg von Projekten sicherzustellen.
@@ -28,7 +31,7 @@ Die Kernbereiche des Controllings sind die Qualitätssicherung, die Dokumentatio
 
 ## Notwendigkeit
 
-Laut einer Studie in Deutschland liegt der Prozentsatz der technisch gelungenen Projekten nur bei 57%. Einen wirtschaftlichen Vorteil erzielen allerdings nur 12% von allen Projekten. Nun fragen Sie sich vielleicht, warum scheitern eigentlich so viele Projekte. Hier sind einige Gründe:
+Laut einer Studie in Deutschland liegt der Prozentsatz der technisch gelungenen Projekte nur bei 57%. Einen wirtschaftlichen Vorteil erzielen allerdings nur 12% von allen Projekten. Nun fragen Sie sich vielleicht, warum scheitern eigentlich so viele Projekte. Hier sind einige Gründe:
 
 -   mangelnde Kommunikation (70%)
 -   schlechte Planung (56%)
@@ -45,17 +48,17 @@ Laut einer Studie in Deutschland liegt der Prozentsatz der technisch gelungenen 
 -   komplexes Thema (10%)
 -   Sonstiges (6%)
 
-Ein weiterer Grund, warum Projektcontrolling bei großen Projekten empfohlen wird ist die Tatsache, dass der zusätzliche Aufwand, die zusätzliche Kontrolle langfristig Geld einspart, wie in dieser Grafik gesehen werden kann:
+Ein weiterer Grund, warum Projektcontrolling bei großen Projekten empfohlen wird, ist die Tatsache, dass der zusätzliche Aufwand, die zusätzliche Kontrolle langfristig Geld einspart, wie in dieser Grafik gesehen werden kann:
 
 ![Necessity Project Controlling](/images/project_management/project_controlling_necessity.png)
 
-Außerdem sinkt der Kostenanteil des Projektcontrollings indirekt proportional zur Budgetgröße des Projektes:
+Außerdem sinkt der prozentuale Kostenanteil des Projektcontrollings mit zunehmender Budgetgröße des Projektes:
 
 ![Necessity Project Controlling](/images/project_management/project_controlling_necessity-2.png)
 
-## Vier Aspekte - Kubanetischer Kreislauf
+## Vier Aspekte - Kybernetischer Regelkreis
 
-Projektcontrolling behandelt diese vier Aspekte:
+Projektcontrolling behandelt diese vier Aspekte, die – ähnlich wie ein Regelkreis in der Technik – immer wieder durchlaufen werden:
 
 -   **Planung**: Vorbereitung von benötigten Ressourcen für die Erfüllung von Zielen
 -   **Kontrolle**: Überwachen und Vergleichen des IST-Standes eines Projekts mit dem in der Planung festgelegten SOLL-Stand
@@ -68,7 +71,7 @@ Es gibt hierbei viele [Methoden](#instrumente--methoden), welche den Controllern
 
 ## ProjektcontrollerIn Rolle
 
-Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Reporting sind, müssen die ControllerInnen hauptsächlich analytische Aufgaben tätigen. Darunter fallen diese Tätigkeiten:
+Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Reporting sind, müssen die ControllerInnen hauptsächlich analytische Aufgaben erledigen. Darunter fallen diese Tätigkeiten:
 
 -   die Buchhaltung für das Management brauchbar / nutzbar aufbereiten
 -   Sicherung des Erreichens der Ziele mithilfe
@@ -78,11 +81,11 @@ Da die Hauptaufgaben des Controllings Qualitätssicherung, Dokumentation und Rep
     -   Maßnahmen vorschlagen
     -   Durchführung kontrollieren
 
-> Der Controller ist die finanzielle Führungskraft eines großen oder mittelgroßen Unternehmens der die Verantwortlichkeiten kombiniert. _- Goodman_
+> Der Controller ist die finanzielle Führungskraft eines großen oder mittelgroßen Unternehmens, die die Verantwortlichkeiten kombiniert. _- Goodman_
 
 ## Instrumente / Methoden
 
-Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte---kubanetischer-kreislauf) bieten.
+Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektcontrolling Unterstützung bei den [vier Aspekten](#vier-aspekte---kybernetischer-regelkreis) bieten.
 
 #### Kosten- und Leistungskontrolle
 
@@ -106,7 +109,7 @@ Mit der Zeit haben sich viele Hilfsmittel entwickelt, welche im Bereich Projektc
 
 > _Durch welche Kunden erzielt unser Unternehmen den größten Umsatz?_
 
-Ein bekannter Leitsatz lautet: „20% der Kunden machen 80% des Umsatzes aus“ (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Bei Kundenunzufriedenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste einspielt.
+Ein bekannter Leitsatz lautet: „20% der Kunden machen 80% des Umsatzes aus“ (Pareto-Prinzip). Es ist wichtig für das Unternehmen zu wissen, welche Kunden eine hohe Priorität in Bereichen Kundensupport, Dienstleistungen usw. bekommen. Die Kunden werden deshalb nach ihrem Umsatzanteil in A-, B- und C-Kunden eingeteilt. Bei Kundenunzufriedenheiten ist es wichtig, dass das Unternehmen Anfragen von den A-Kunden (die wichtigsten Kunden, welche ca. 80% des Umsatzes ausmachen) schneller löst als zum Beispiel von C-Kunden, weil sonst der A-Kunde eventuell nicht mehr Kunde ist und dem Unternehmen enorme Umsatzverluste beschert. Im Projektcontrolling wird die ABC-Analyse genauso auf Arbeitspakete oder Kostenpositionen angewandt: Die wenigen A-Positionen, die den Großteil der Kosten verursachen, werden besonders genau überwacht.
 
 ### Terminkontrolle
 
@@ -118,7 +121,7 @@ Die regelmäßige und rechtzeitige Rückmeldung der „Ist-Termine“ an den Pro
 -   unvorhersehbare Probleme
 -   unrealistische Schätzung des Aufwands
 -   Personalengpässe durch Krankheit oder Ausscheiden von Teammitgliedern
--   geringe Produktivität durch schlechte Koordination, mangelnder Erfahrung oder geringer Sachkenntnis
+-   geringe Produktivität durch schlechte Koordination, mangelnde Erfahrung oder geringe Sachkenntnis
 
 #### Maßnahmen
 
@@ -146,10 +149,10 @@ Man kann die Kosten pro Monat auflisten (Bild links), um einen schnellen Überbl
 
 Bei der Sachfortschrittskontrolle (auch Leistungskontrolle) geht es um die Bestimmung des erledigten Anteils eines Arbeitspaketes. Hierfür gibt es einige Vorgehensweisen:
 
--   **Statusschritt-Technik**
+-   **Statusschritt-Technik**: Das Arbeitspaket wird in festgelegte Schritte (z. B. Entwurf, Umsetzung, Test, Abnahme) unterteilt, denen jeweils ein Fortschrittsgrad zugeordnet ist.
 -   **50-50-Technik**: 50% erledigt, sobald das Arbeitspaket gestartet; 100%, wenn fertig
 -   **0-100-Technik**: 0%, solange nicht fertig; 100%, wenn fertig; macht nur Sinn bei kleinen Arbeitspaketen
--   **Mengen-Proportionalität**: Anwendbar, wenn mess- oder zählbare Ergebniseinheiten vorliegen. Eine abgearbeitet Einheit (z. B. assemblierter PC) repräsentiert einen bestimmten Zuwachs von Fortschrittsgrad bzw. Fertigstellungswert (Earned Value, s.u.).
+-   **Mengen-Proportionalität**: Anwendbar, wenn mess- oder zählbare Ergebniseinheiten vorliegen. Eine abgearbeitete Einheit (z. B. assemblierter PC) repräsentiert einen bestimmten Zuwachs von Fortschrittsgrad bzw. Fertigstellungswert (Earned Value, s.u.).
 -   **Zeit-Proportionalität**: Für bestimmte Projekttätigkeiten, wie z. B. das Projektmanagement, für die eine „gleichmäßige Verteilung“ über den gesamten Projektverlauf angenommen wird. Der Fortschrittsgrad ergibt sich aus der abgelaufenen Zeitdauer.
 
 ### Earned-Value Analyse
@@ -178,7 +181,17 @@ In diesem Bild sind alle vier möglichen Szenarien übersichtlich dargestellt:
 
 ![Earned-Value-Analyse Examples](/images/project_management/earned_value_analysis-2.png)
 
-Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechnen, die dem Controller Auskunft über den Projektstatus geben.
+Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechnen, die dem Controller Auskunft über den Projektstatus geben. Die wichtigsten sind:
+
+| Kennzahl                               | Formel      | Bedeutung                                                 |
+| -------------------------------------- | ----------- | --------------------------------------------------------- |
+| Planwert (_Planned Value_, PV)         | –           | geplante Kosten der bis zum Stichtag geplanten Arbeit     |
+| Fertigstellungswert (_Earned Value_, EV) | Fertigstellungsgrad · Gesamtbudget | Wert der tatsächlich erledigten Arbeit  |
+| Istkosten (_Actual Cost_, AC)          | –           | tatsächlich angefallene Kosten                            |
+| Planabweichung (_Schedule Variance_, SV) | EV − PV   | negativ: Projekt ist hinter dem Zeitplan                  |
+| Kostenabweichung (_Cost Variance_, CV) | EV − AC     | negativ: Projekt ist teurer als geplant                   |
+| Terminindex (SPI)                      | EV / PV     | kleiner 1: Verzug                                         |
+| Kostenindex (CPI)                      | EV / AC     | kleiner 1: Budgetüberschreitung                           |
 
 ![Earned-Value-Analyse Key Figures](/images/project_management/earned_value_analysis_key_figures.png)
 
@@ -186,7 +199,7 @@ Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechn
 
 Die meisten Projekte beginnen damit, dass ein Kunde in einem Meeting die Idee des Produktes erklärt und nun von dem Unternehmen haben möchte, dass diese Anforderungen schnell, billig und qualitativ umgesetzt werden. Das Unternehmen beginnt zu planen, indem zuerst die Ziele definiert werden. Das Projektcontrolling kann die planenden Mitarbeiter mit reichlichen Informationen ausstatten, welche nützlich sein könnten. Nach einem häufigen Austausch zwischen Lasten- und Pflichtenheft kann das Projekt dann offiziell gestartet werden.
 
-Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig einen Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung einfließen werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
+Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss nun regelmäßig eine Statusprobe entnehmen, welche auf Abweichungen untersucht wird (zum Beispiel mittels Soll-Ist-Vergleich). Falls Abweichungen auftreten, muss das Controlling Maßnahmen definieren, welche direkt in die Durchführung einfließen werden. Außerdem müssen wahrscheinlich einige Termine in der Planung verändert und dem Kunden mitgeteilt werden. Dieser Prozess wiederholt sich bis zur Fertigstellung des Produktes.
 
 ![Ablauf](/images/project_management/project_controlling_process.png)
 
@@ -204,9 +217,12 @@ Ab der Durchführung wird die Aufgabe des Controllings noch wichtiger. Es muss n
 
 -   neue Anforderungen während der Durchführung
 -   technische Probleme
--   Ausscheidung von Mitarbeitern
+-   Ausscheiden von Mitarbeitern
 -   Konkurs von Lieferanten
 
 ### Ausführungsfehler
 
 -   mangelnde Mitarbeiterqualifikationen
+-   unzureichende Kommunikation und Abstimmung im Team
+-   Nichteinhalten von Vorgaben und Standards
+-   mangelnde Motivation
