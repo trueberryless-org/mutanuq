@@ -2,12 +2,12 @@
 title: Literatur
 description: Die literarischen Epochen Impressionismus und Expressionismus sowie Dadaismus und Wiener Gruppe – mit ihren wichtigsten Autorinnen, Autoren und Werken.
 sidebar:
-    order: 2
+    order: 1
 ---
 
 ## Impressionismus
 
-In der Epoche Impressionismus fokussieren sich Künstler nicht auf eine konkrete Weltanschauung, sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Örtlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft, sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. In der Malerei, aus der der Begriff stammt, bevorzugten die Impressionisten statt scharfer Konturen, detailliertem Realismus und akribischer Genauigkeit eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.
+In der Epoche Impressionismus fokussieren sich Künstler nicht auf eine konkrete Weltanschauung, sondern behandeln eine Vielfalt von literarischen Stilen. Diese werden vom Realismus, dem Naturalismus, der „Arbeiterdichtung“ und Arthur Schnitzler beeinflusst. Örtlich sind Wien, Berlin und München die großen Zentren. Der Impressionismus distanziert sich nicht nur von der Politik und der Gesellschaft, sondern weigert sich auch, die Realität realistisch oder kritisch-naturalistisch abzubilden. Im Kontext des Impressionismus bedeutet dies, dass die Künstler sich bewusst dafür entschieden, die Realität nicht auf die traditionelle Weise darzustellen, wie es in der vorherigen Kunst üblich war. Statt scharfer Konturen, detaillierten Realismus und akribischer Genauigkeit bevorzugten die Impressionisten eine lockere Pinseltechnik, helle Farben und die Wiedergabe von flüchtigen Eindrücken.
 
 ### Eckdaten
 
@@ -21,7 +21,7 @@ Ursprünglich beschrieb der Begriff **Impressionismus** eine Malerei. Im Kontext
 
 Der Begriff **Symbolismus** beschreibt hingegen eine Dichtung, welche keinen „Zweck“, jedoch eine magische Sprache hat. Symbolismus ist die Kunst des „Andeutens“.
 
-Weitere Begriffe im Zusammenhang mit Impressionismus sind **Fin de Siècle** und die **Wiener Moderne**, wobei Ersteres wortwörtlich aus dem Französischen übersetzt „Jahrhundertende“ heißt und die Stimmung dieser Zeit zwischen Untergangsgefühl, Dekadenz und Aufbruch beschreibt. Damit verbunden ist der Grundsatz _l’art pour l’art_: Kunst soll um ihrer selbst willen existieren und für sich selbst stehen. In der Wiener Moderne steht - wie der Name bereits sagt - Wien im Mittelpunkt der Literatur, Architektur, Malerei, usw.
+Weitere Begriffe im Zusammenhang mit Impressionismus sind **Fin de Siècle** und die **Wiener Moderne**, wobei Ersteres wortwörtlich aus dem Französischen übersetzt „Jahrhundertende“ heißt und aussagt, dass Kunst für sich selbst stehen soll. In der Wiener Moderne steht - wie der Name bereits sagt - Wien im Mittelpunkt der Literatur, Architektur, Malerei, usw.
 
 ### Künstler
 
@@ -36,31 +36,31 @@ In [Also sprach Zarathustra](#also-sprach-zarathustra-1883) wird diese Kritik sp
 
 #### Charles Baudelaire (1821-1867)
 
-Laut dem französischen Dichter Charles Baudelaire sei die Kultur der „Sieg“ über die Natur. Außerdem schafft die Sprache eine eigene Wirklichkeit. Mit seinem Gedichtband „Die Blumen des Bösen“ (1857) gilt Baudelaire als Wegbereiter der von allen Zwecken befreiten Poesie (_reine Poesie_). In „Die künstlichen Paradiese“ (1860) beschäftigte er sich außerdem mit Rauschzuständen durch Alkohol und Drogen.
+Laut dem Dichter Charles Baudelaire sei die Kultur der „Sieg“ über die Natur. Außerdem schafft die Sprache eine eigene Wirklichkeit. Charles schuf die von allen Zwecken befreite Poesie (_reine Poesie_). Seine Inspirationen bekam Charles im Alkohol- und Drogenrausch.
 
 #### Ernst Mach (1838-1916)
 
-Der Physiker und Philosoph Ernst Mach meinte, die Realität und die Persönlichkeit seien ein Wechsel aus „Farben, Tönen, Wärmen, Drücken und Räumen“. Berühmt wurde sein Satz „Das Ich ist unrettbar“. Er war einer der zentralen Denker des Impressionismus.
+Ernst Mach meinte, die Realität und die Persönlichkeit seien ein Wechsel aus „Farben, Tönen, Wärmen, Drücken und Räumen“. Er war einer der zentralen Philosophen des Impressionismus.
 
 #### Sigmund Freud (1856-1939)
 
-Sigmund Freud war ein Neurologe und der Begründer der Psychoanalyse. Er beschrieb die **dreischichtige menschliche Persönlichkeit** (Instanzenmodell). Diese teilt die Denk- und Handlungsweise jedes Menschen in drei Teilbereiche auf: **ICH**, **ÜBER-ICH**, **ES**. Während letzteres vollkommen unbewusst passiert und die eigene Verwirklichung, Sexualität und Aggression leitet, ist das ÜBER-ICH der Gegenspieler zu diesem ES. ÜBER-ICH hat moralisches Gewissen, Instanzen, Werte und Normen. Das ICH findet den Mittelweg zwischen dem ÜBER-ICH und ES und liegt großteils im bewussten Denken. Auseinandersetzungen zwischen diesen drei Schichten bestimmen uns.
+Sigmund Freud war ein Psychoanalytiker, welcher die **dreischichtige menschliche Persönlichkeit** deklarierte. Diese teilt die Denk- und Handlungsweise jedes Menschen in drei Teilbereiche auf: **ICH**, **ÜBER-ICH**, **ES**. Während letzteres vollkommen unbewusst passiert und die eigene Verwirklichung, Sexualität und Aggression leitet, ist das ÜBER-ICH der Gegenspieler zu diesem ES. ÜBER-ICH hat moralisches Gewissen, Instanzen, Werte und Normen. Das ICH findet den Mittelweg zwischen dem ÜBER-ICH und ES und liegt großteils im bewussten Denkwesen. Freud sah zum Beispiel Kultur als ÜBER-ICH. Auseinandersetzungen mit diesen drei Schichten bestimmen uns.
 
 ![Dreischichtige menschliche Persönlichkeit](/images/languages/dreischichtige_menschliche_persoenlichkeit.png)
 
-Freud ging davon aus, dass ein Großteil unseres Denkens und Handelns unbewusst gesteuert wird – ähnlich wie bei einem Eisberg, von dem nur die Spitze sichtbar ist. Außerdem schätzte Freud [Schnitzler](#arthur-schnitzler-1862-1931) sehr und bezeichnete ihn in einem Brief sogar als seinen „Doppelgänger“, weil dieser in seinen Werken ähnliche Erkenntnisse über die menschliche Psyche beschrieb.
+Freud ging davon aus, dass ein Großteil unserer Entscheidungen unbewusst getroffen wird. Außerdem schätzte Freud [Schnitzler](#arthur-schnitzler-1862-1931) sehr und bezeichnete ihn als seinen „Doppelgänger“.
 
 #### Arthur Schnitzler (1862-1931)
 
-Arthur Schnitzler war ein Wiener Arzt und Schriftsteller. Er war der erste Autor der deutschsprachigen Literatur, welcher in seinem Werk [Leutnant Gustl (1900)](#leutnant-gustl-1900) durchgehend einen inneren Monolog verwendete. Das Vorbild dafür war der Roman „Die Lorbeeren sind geschnitten“ (1887) des Franzosen Édouard Dujardin.
+Arthur Schnitzler war der erste Autor der deutschsprachigen Literatur, welcher in seinem Werk [Leutnant Gustl (1900)](#leutnant-gustl-1900) einen inneren Monolog verwendete.
 
 #### Hugo von Hofmannsthal (1874-1929)
 
-Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Moderne, aber auch zu den oft am schwierigsten deutbaren. Eines der schwierigsten ist [Terzinen über Vergänglichkeit (1894)](#terzinen-über-vergänglichkeit-1894), neben vielen anderen Werken, wie zum Beispiel dem [Chandos-Brief (1902)](#chandos-brief-1902), dem Libretto zum „Rosenkavalier“ (1911) und dem Mysterienspiel „Jedermann“ (1911), das seit 1920 bei den Salzburger Festspielen aufgeführt wird.
+Die Gedichte Hugo von Hofmannsthals zählen zu den berühmtesten der Wiener Moderne, aber auch zu den oft am schwierigsten deutbaren. Eines der schwierigsten ist [Terzinen über Vergänglichkeit (1894)](#terzinen-über-vergänglichkeit-1894), neben vielen anderen, wie zum Beispiel dem [Chandos-Brief (1902)](#chandos-brief-1902), Jedermann (1911) und dem Rosenkavalier (1911).
 
 #### Rainer Maria Rilke (1875-1926)
 
-Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (entstanden 1899, erschienen 1906). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Dazu zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Die Erblindende (1906)](#die-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
+Der erste große Erfolg Rilkes ist die lyrische Erzählung „Die Weise von Liebe und Tod des Cornets Christoph Rilke“ (1899). Außerdem schrieb Rilke viele „Neue Gedichte“, welche sich nicht auf Gefühle oder Empfindungen fokussieren, sondern auf genaue Beobachtungen von Menschen, Tieren, Gegenständen des Alltags in und um Paris. Deshalb nennt man sie auch „Dinggedichte“. Dazu zählen zum Beispiel Gedichte wie [Der Panther (1903)](#der-panther-1903) und [Die Erblindende (1906)](#die-erblindende-1906). Mit Sensibilität filtert Rilke das für diese „Dinge“ Wesentliche heraus, um ihr „wahres Wesen“ zu ergründen.
 
 #### Karl Kraus (1874-1936)
 
@@ -84,7 +84,7 @@ Die Fackel kann als eine kritische Stimme in einer Zeit des Umbruchs und der pol
 
 #### Terzinen über Vergänglichkeit (1894)
 
-Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist in 5-hebigen Jamben verfasst und folgt, wie für Terzinen typisch, dem Schema des Kettenreims (`ABA CBC DCD ...`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den fünf Strophen (die letzte besteht nur aus einem einzigen Vers) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
+Insgesamt besteht dieses Werk aus drei Teilen. Der erste dieser drei ist ein 5-hebiger Jambus mit Kettenreim-Schema (`ABA CBC`). [Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) beschreibt in dieser Reihenfolge in den fünf Strophen (letztere eine Waise) die Erinnerung, den Schock, die Einsicht und die Fremdheit.
 
 <blockquote>
 
@@ -110,15 +110,15 @@ So eins mit mir als wie mein eignes Haar.
 
 #### Leutnant Gustl (1900)
 
-Ende 1900 erschien Leutnant Gustl in der Wiener „Neuen Freien Presse“. Dieses Werk wurde von [Arthur Schnitzler](#arthur-schnitzler-1862-1931) in nur fünf Tagen geschrieben. Daraufhin wurde ein Ehrengerichtsverfahren gegen Schnitzler eingeleitet, der als Oberarzt der Reserve selbst Offizier war. 1901 wurde ihm sein Offiziersrang aberkannt, weil er mit dem Werk die Ehre der Armee verletzt habe. Das Werk ist das erste Beispiel eines durchgehenden [inneren Monologs](#der-innere-monolog) in der deutschsprachigen Literatur. Die schonungslose Darstellung eines feigen, oberflächlichen Offiziers wurde als Provokation und Schande der Armee gesehen.
+Ende 1900 erschien Leutnant Gustl in der Wiener „Neuen Freien Presse“. Dieses Werk wurde von [Arthur Schnitzler](#arthur-schnitzler-1862-1931) in nur fünf Tagen geschrieben. Daraufhin wurde ein Ehrengerichtsverfahren gegen Schnitzler eingeleitet, woraufhin Schnitzler seines Offizierscharakters für verlustig erklärt wurde. Das Werk ist das erste Exemplar eines [inneren Monologs](#der-innere-monolog). Diese Form wurde aufgrund der Neuheit als Provokation und Schande der Armee gesehen.
 
 ##### Handlung
 
-Der Leutnant langweilt sich während des Konzertes, zu welchem er die Karten geschenkt bekommen hat. Beim Verlassen gibt es ein Gedränge an der Garderobe, weshalb Gustl in Streit mit einem Bäckermeister kommt. Dieser packt Gustls Säbel, eine Schande für jeden Offizier. Doch niemand bekommt dies mit. Nichtsdestotrotz hat Gustl Angst, dass der Bäckermeister es weitererzählt, und denkt sich Auswege (z.B. nach Amerika ziehen) und Reaktionen seiner Angehörigen aus, will sich fast schon selbst erschießen, bis er schließlich auf einer Parkbank einschläft. Am nächsten Morgen im Kaffeehaus erfährt er, dass der Bäckermeister in der Nacht an einem Schlaganfall gestorben ist – und Gustl ist erleichtert.
+Der Leutnant langweilt sich während des Konzertes, zu welchem er die Karten geschenkt bekommen hat. Beim Verlassen gibt es ein Gedränge an der Garderobe, weshalb Gustl in Streit mit einem Bäckermeister kommt. Dieser packt Gustls Säbel, eine Schande für jeden Offizier. Doch niemand bekommt dies mit. Nichtsdestotrotz hat Gustl Angst, dass der Bäckermeister es weitererzählt, und denkt sich Auswege (z.B. nach Amerika ziehen) und Reaktionen seiner Angehörigen aus, will sich fast schon selbst erschießen, bis er schließlich auf einer Parkbank einschläft. Am nächsten Morgen im Kaffeehaus erfährt er, dass der Bäckermeister mitternachts gestorben ist.
 
 #### Chandos-Brief (1902)
 
-[Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) ist sensibel gegenüber der Sprache und kann ihr Scheitern in der Kommunikation leichter spüren als andere. Um diese Sprachkrise auszudrücken, veröffentlicht er 1902 eine kleine Schrift, den Chandos-Brief.
+[Hofmannsthal](#hugo-von-hofmannsthal-1874-1929) ist sensibel gegenüber der Sprache und kann ihr Scheitern in der Kommunikation leichter spüren als andere. Um diesen Missbrauch der Sprache auszudrücken, veröffentlicht er 1902 eine kleine Schrift, den Chandos-Brief.
 
 ##### Handlung
 
@@ -128,7 +128,7 @@ Lord Chandos - fiktiver englischer Autor - versucht sein literarisches Verstumme
 
 #### Der Panther (1903)
 
-Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne frei sein würde. Das Paradoxon des Textes ist die natürliche Stärke des Panthers, doch auch seine Schwäche aufgrund der tausenden, ihn umgebenden Gitterstäbe. Im allerletzten Vers betont [Rilke](#rainer-maria-rilke-1875-1926) noch einmal den verengten Lebensraum des Panthers, indem er den Vers um eine Hebung verkürzt (vier statt fünf Hebungen).
+Der Panther beschäftigt sich mit einem eingesperrten Panther, welcher gerne frei sein würde. Das Paradoxon des Textes ist die natürliche Stärke des Panthers, doch auch seine Schwäche aufgrund der tausenden, ihn umgebenden Gitterstäbe. Im allerletzten Vers betont [Rilke](#rainer-maria-rilke-1875-1926) noch einmal den verengten Lebensraum des Panthers mit einer Verkürzung des Versfußes.
 
 ##### Handlung
 
@@ -195,27 +195,27 @@ Im Impressionismus dominieren kurze Formen, die Stimmungen und flüchtige Eindr�
 
 ### Wien
 
-Um die Jahrhundertwende ist Wien stark gewachsen: Zwischen 1850 und 1910 stieg die Einwohnerzahl von rund 400.000 auf über zwei Millionen, darunter viele jüdische Bürgerinnen und Bürger. Zeitgleich nahm der politische Antisemitismus zu, etwa unter dem christlichsozialen Bürgermeister Karl Lueger (ab 1897). Hermann Bahr bezeichnete den Antisemitismus als „Morphium der kleinen Leute“, da dieser den Demagogen als Mittel, nationale und soziale Spannungen auf jüdische Menschen als Sündenbock zu kanalisieren, diente.
+Während des Impressionismus ist Wien stark gewachsen. Von 400.000 Einwohnern waren es auf einmal zwei Millionen Einwohner, viele davon jüdische Bürger. Zeitgleich war der Beginn des politischen Antisemitismus. Hermann Bahr bezeichnete den Antisemitismus als „Morphium der kleinen Leute“, da dieser den Demagogen als Mittel, nationale und soziale Spannungen auf jüdische Menschen als Sündenbock zu kanalisieren, diente.
 
 ### Literatur
 
-Schriftsteller und Autoren im Impressionismus stammen meist aus kultivierten, wohlhabenden bürgerlichen Verhältnissen (gesicherte Existenz), unabhängig vom Verkauf. Denn erst mit diesem Wohlstand konnte man – so die damalige Haltung – den Sinn fürs Schöne entwickeln. Es gab in der Literatur allerdings eine Naivität in sozialen und politischen Fragen.
+Schriftsteller und Autoren im Impressionismus stammen aus kultivierten, wohlhabenden bürgerlichen Verhältnissen (gesicherte Existenz), unabhängig vom Verkauf. Denn erst mit diesem Wohlstand kann man Sinn fürs Schöne trainieren. Es gab in der Literatur allerdings eine Naivität in sozialen und politischen Fragen.
 
 #### Der innere Monolog
 
-[Arthur Schnitzler](#arthur-schnitzler-1862-1931) führt den inneren Monolog in die deutschsprachige Literatur ein, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Paradebeispiele für diese Technik sind die Novellen [Leutnant Gustl](#leutnant-gustl-1900) und „Fräulein Else“ (1924) von Arthur Schnitzler. Schnitzler stellt das Innenleben seiner Figuren oft auch sexuell oder erotisch dar – besonders deutlich im Drama „Reigen“, das bei seiner Aufführung 1921 einen Skandal auslöste. Auch in der Lyrik dieser Zeit stehen subjektive Eindrücke und Stimmungen im Vordergrund, doch der Sinn dieser Texte bleibt oft unklar. Es obliegt dem Leser, dem Gedicht eine Bedeutung zu geben.
+[Arthur Schnitzler](#arthur-schnitzler-1862-1931) führt den inneren Monolog in die deutschsprachige Literatur ein, bei welchem Gedanken, Assoziationen und Eindrücke wiedergegeben werden. Es gibt keinen Erzähler. Paradebeispiel für diese Technik ist die Novelle [Leutnant Gustl](#leutnant-gustl-1900) von Arthur Schnitzler. In solchen inneren Monologen wird das Innenleben eines Menschen auch oft sexuell oder erotisch dargestellt, wie zum Beispiel in „Reigen“. Die Lyrik eignet sich perfekt für die Schaffung eines inneren Monologs, doch der Sinn dieser Texte bleibt oft unklar. Es obliegt dem Leser, dem Gedicht eine Bedeutung zu geben.
 
 > [Rainer Maria Rilke](#rainer-maria-rilke-1875-1926), [Hugo von Hofmannsthal](#hugo-von-hofmannsthal-1874-1929)
 
 #### Kaffeehaus
 
-Das Kaffeehaus wurde zur Tradition als literarischer Treffpunkt. Bis heute bleibt diese Tradition erhalten, nur nicht unbedingt mit dem literarischen Faktor. Der Dichter Peter Altenberg, der quasi im Café Central wohnte und es als seine Postadresse angab, prägte mit seinen kurzen Prosaskizzen die sogenannte Kaffeehausliteratur.
+Das Kaffeehaus wurde zur Tradition als literarischer Treffpunkt. Bis heute bleibt diese Tradition erhalten, nur nicht unbedingt mit dem literarischen Faktor. Peter Altenberg schreibt ein Gedicht, „Kaffeehaus“, welches diese literarische Kurzform sehr exquisit symbolisiert.
 
 > Café Griensteidl, Café Central
 
 ## Expressionismus
 
-In der Epoche Expressionismus äußern die Künstler starke Kritik an einigen Themen, wie zum Beispiel Großstadt, Massengesellschaft, Industrialisierung, Militarisierung, Manipulation und dem Ersten Weltkrieg. Diese Epoche ist eine Opposition zum Realismus und Naturalismus, welche nur die Realität abgebildet haben. Außerdem wendet man sich vom Fin de Siècle (Flucht in die Ästhetik) und von der als bürgerlich empfundenen Klassik Goethes ab.
+In der Epoche Expressionismus äußern die Künstler starke Kritik an einigen Themen, wie zum Beispiel Großstadt, Massengesellschaft, Industrialisierung, Militarisierung, Manipulation und dem Ersten Weltkrieg. Diese Epoche ist eine Opposition zum Realismus und Naturalismus, welche nur die Realität abgebildet haben. Außerdem wendet man sich vom Fin de Siècle (Flucht in Ästhetik) und Goethe ab.
 
 > _[...] Weg überhaupt mit den sogenannten Dichtern! Schluss! Unsere Kultur ist Gerümpel. [...] Der junge Dichter muss demolieren. [...]_
 
@@ -223,33 +223,33 @@ Vorbilder des Expressionismus sind Sturm und Drang, Barock, die Kunst der Kinder
 
 ### Eckdaten
 
--   Beginn 20. Jahrhundert (ca. 1910 bis 1925)
+-   Beginn 20. Jahrhundert
 -   Sprachzertrümmerung
 -   nicht interpretierbare Gedichte
 
 ### Expressionismus und Co.
 
-Der Begriff Expressionismus (lat. _expressio_ = Ausdruck) kommt ursprünglich aus der bildenden Kunst, wie sie etwa Egon Schiele, Oskar Kokoschka oder die Künstlergruppen „Die Brücke“ und „Der Blaue Reiter“ ausführen. Die Bilder sollen ausdrücken, wie der Künstler die Welt erlebt.
+Der Begriff Expressionismus kommt ursprünglich aus der bildenden Kunst, wie sie Egon Schiele oder Oskar Kokoschka ausführen. Die Bilder sollen ausdrücken, wie der Künstler die Welt erlebt.
 
 Der Begriff Dadaismus ist in der Epoche des Expressionismus entstanden und beschreibt eine Zerstörung der Sprache. Er umfasst Gedichte, welche nicht interpretierbar sind und keinen Sinn haben.
 
 ### Künstler
 
-Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](#friedrich-nietzsche-1844-1900)s [Also sprach Zarathustra](#also-sprach-zarathustra-1883) und die Philosophie Søren Kierkegaards, welcher die Freiheit in den Mittelpunkt des Denkens stellt. Im Gegensatz zum Tier kann der Mensch sich für eine bestimmte Lebensweise entscheiden. Er kann in einem oberflächlichen Genussleben verharren, der von Kierkegaard so genannten „ästhetischen“ Existenz. Er kann aber auch in einer „ethischen“ Existenz solidarisch am Aufbau einer humanen Gesellschaft mitarbeiten.
+Als Grundlage dieser Epoche dienen [Friedrich Nietzsche](#friedrich-nietzsche-1844-1900)s [Also sprach Zarathustra](#also-sprach-zarathustra-1883) und Sören Kierkegaards „Freiheit ist zentral“, welcher die Freiheit in den Mittelpunkt des Denkens stellt. Im Gegensatz zum Tier kann der Mensch sich für eine bestimmte Lebensweise entscheiden. Er kann in einem oberflächlichen Genussleben verharren, der von Kierkegaard so genannten „ästhetischen“ Existenz. Er kann aber auch in einer „ethischen“ Existenz solidarisch am Aufbau einer humanen Gesellschaft mitarbeiten.
 
 Auch die Expressionisten stellen dem oberflächlichen alten einen kommenden neuen Menschen gegenüber, der sich vom alten grundlegend unterscheidet und gegenüber den Mitmenschen solidarisch ist. Der „alte“ Mensch ist dabei herzensträge, hart, böse, den Mitmenschen fremd und getrennt durch Grenzpfähle. Außerdem werden die Begriffe **Gesellschaft** und **Gemeinschaft** gegenübergestellt, wobei ersteres ein Konstrukt mit Regeln definiert, in welchem man seine Mitmenschen nicht kennt, und zweiteres eine harmonischere, kleinere Gruppe von sich einander bewusst kennenden Menschen beschreibt.
 
 #### Hermann Bahr (1863-1934)
 
-Hermann Bahr war ein österreichischer Schriftsteller und Kritiker und gilt als Wortführer der Wiener Moderne. 1916 veröffentlichte er den Essay „Expressionismus“, in dem er die neue Kunstrichtung als Aufschrei der Kunst gegen eine Zeit deutete, die den Menschen zur bloßen Maschine mache.
+Hermann Bahr war ein Kritiker mit dem Wunsch der Zerstörung. Er sah den Expressionismus als Epoche der Zerstörung und dachte, Kunst soll dabei helfen.
 
 #### August Stramm (1874-1915)
 
-August Stramm war ein deutscher expressionistischer Dichter und Dramatiker. Er starb im Ersten Weltkrieg. Bekannt für innovative Sprache und experimentellen Stil, hinterließ er Gedichtsammlungen wie „Du“ (1915) und „Tropfblut“ (1919, nach seinem Tod erschienen). Stramms radikale Herangehensweise an Literatur beeinflusste den Expressionismus maßgeblich. Einige seiner bekannten Werke sind [„Zwist“ (1914)](#zwist-1914) und [„Patrouille“ (1915)](#patrouille-1915).
+August Stramm war ein deutscher expressionistischer Dichter und Dramatiker. Er starb im Ersten Weltkrieg. Bekannt für innovative Sprache und experimentellen Stil, hinterließ er Gedichtsammlungen wie „Du“ und „Tropfblut“. Stramms radikale Herangehensweise an Literatur beeinflusste den Expressionismus maßgeblich. Einige seiner bekannten Werke sind [„Zwist“ (1914)](#zwist-1914) und [„Patrouille“ (1915)](#patrouille-1915).
 
 #### Franz Kafka (1883-1924)
 
-Franz Kafka war ein einflussreicher deutschsprachiger Schriftsteller des 20. Jahrhunderts. Bekannt für seine einzigartige literarische Welt, schuf er Werke wie [„Die Verwandlung“ (1915)](#die-verwandlung-1915), in dem der Protagonist zu einem „ungeheueren Ungeziefer“ wird, und [„Der Prozess“ (1914)](#der-prozess-1914) (entstanden 1914/15, erst 1925 nach seinem Tod veröffentlicht), der die Absurditäten eines undurchsichtigen Gerichtssystems thematisiert. In seinem [„Brief an den Vater“ (1919)](#brief-an-den-vater-1919) reflektiert Kafka über seine Beziehung zu seinem autoritären Vater.
+Franz Kafka war ein einflussreicher deutschsprachiger Schriftsteller des 20. Jahrhunderts. Bekannt für seine einzigartige literarische Welt, schuf er Werke wie [„Die Verwandlung“ (1915)](#die-verwandlung-1915), in dem der Protagonist zu einem Käfer wird, und [„Der Prozess“ (1914)](#der-prozess-1914), der die Absurditäten eines undurchsichtigen Gerichtssystems thematisiert. In seinem [„Brief an den Vater“ (1919)](#brief-an-den-vater-1919) reflektiert Kafka über seine Beziehung zu seinem autoritären Vater.
 
 Obwohl er zur Zeit des Expressionismus lebte, entzogen sich Kafkas Werke einer einfachen Einordnung in diese Epoche. Seine Werke zeichnen sich durch existenzielle Themen, Isolation und den Ausbruch aus der Realität aus. In fast jedem seiner Werke geschieht ein Zwischenfall, welcher den Lebensalltag unterbricht.
 
@@ -261,29 +261,29 @@ Kafka baut in vielen Werken seinen eigenen Namen mit Ähnlichkeiten zum Hauptcha
 
 #### Gottfried Benn (1886-1956)
 
-Gottfried Benn war Arzt und Dichter. In seinem ersten Gedichtband „Morgue“ (1912) verarbeitete er seine Erfahrungen aus der Leichenhalle und schockierte die Leser mit einer nüchternen, kalten Darstellung von Tod und Verfall. Außerdem übte er Kritik an einem Fortschrittsglauben, der auch die Militarisierung vorantrieb: Er sehe keinen Fortschritt, wenn aus der mörderischen Gewehrkugel eine noch mörderischere Granate wird. Zu seinen bekanntesten Werken zählen [Kleine Aster](#kleine-aster-1912) und [Schöne Jugend](#schöne-jugend-1912).
+Gottfried Benn übte starke Kritik am Fortschritt der Militarisierung aus. Er meinte, er sehe keinen Fortschritt, wenn aus der mörderischen Gewehrkugel eine noch mörderischere Granate wird. Zu seinen bekanntesten Werken zählen [Kleine Aster](#kleine-aster-1912) und [Schöne Jugend](#schöne-jugend-1912).
 
 #### Georg Heym (1887-1912)
 
-Georg Heym war ein deutscher Dichter und Schriftsteller des Expressionismus. Geboren in Hirschberg in Schlesien, studierte er Rechtswissenschaften, unter anderem in Berlin. Dort schloss er sich der expressionistischen Dichtergruppe „Der Neue Club“ an.
+Georg Heym war ein deutscher Dichter und Schriftsteller des Expressionismus. Geboren in Hirschberg, studierte er Jura, Kunstgeschichte und Philosophie in Berlin. Dort schloss er sich der expressionistischen Künstler- und Schriftstellerbewegung an.
 
-Heyms literarisches Schaffen zeichnet sich durch eine düstere, oft apokalyptische Atmosphäre aus. Bekannte Werke sind die Gedichtsammlung „Der ewige Tag“ (1911), die einzige, die zu seinen Lebzeiten erschien, und das darin enthaltene Gedicht [„Der Gott der Stadt“ (1910)](#der-gott-der-stadt-1910). Sein Schreibstil reflektiert die Unruhe und Unzufriedenheit der Zeit vor dem Ersten Weltkrieg.
+Heyms literarisches Schaffen zeichnet sich durch eine düstere, oft apokalyptische Atmosphäre aus. Bekannte Werke sind die Gedichtsammlung „Der ewige Tag“ (1911) und das Gedicht [„Der Gott der Stadt“ (1910)](#der-gott-der-stadt-1910), letzteres wollte er lange nicht veröffentlichen, obwohl wenig Kritik geäußert wurde. Sein Schreibstil reflektiert die Unruhe und Unzufriedenheit der Zeit vor dem Ersten Weltkrieg.
 
-Der Dichter fand tragischerweise früh seinen Tod: Im Jänner 1912 ertrank er im Alter von nur 24 Jahren beim Eislaufen in der Havel, als er einem eingebrochenen Freund helfen wollte. Trotz seiner kurzen Lebensspanne hinterließ Georg Heym einen bleibenden Einfluss auf die deutsche expressionistische Literatur.
+Der Dichter fand tragischerweise früh seinen Tod im Alter von nur 24 Jahren durch Ertrinken in der Havel. Trotz seiner kurzen Lebensspanne hinterließ Georg Heym einen bleibenden Einfluss auf die deutsche expressionistische Literatur.
 
 #### Jakob van Hoddis (1887-1942)
 
-Jakob van Hoddis war ein deutscher Dichter des Expressionismus. Geboren als Hans Davidsohn in Berlin, änderte er seinen Namen später in Jakob van Hoddis, ein Anagramm seines Nachnamens. Sein Leben war geprägt von psychischer Instabilität, und er verbrachte einige Zeit in psychiatrischen Einrichtungen.
+Jakob van Hoddis war ein deutscher Dichter des Expressionismus. Geboren als Hans Davidsohn in Berlin, änderte er seinen Namen später in Jakob van Hoddis. Sein Leben war geprägt von psychischer Instabilität, und er verbrachte einige Zeit in psychiatrischen Einrichtungen.
 
 Van Hoddis war ein Mitglied der expressionistischen Bewegung und ein Teil der Dichtergruppe „Der Neue Club“. Sein bekanntestes Werk ist das Gedicht [„Weltende“ (1911)](#weltende-1911), das als eines der bedeutendsten expressionistischen Gedichte gilt. Dieses Werk spiegelt die Unruhe und Verunsicherung der Zeit vor dem Ersten Weltkrieg wider.
 
-Jakob van Hoddis' literarische Karriere war kurz, und er geriet wegen seiner Erkrankung ab dem Ersten Weltkrieg in Vergessenheit. Als psychisch kranker Jude wurde er Opfer des nationalsozialistischen Regimes: 1942 wurde er aus einer Heilanstalt in Bendorf-Sayn deportiert und im Vernichtungslager Sobibor ermordet.
+Jakob van Hoddis' literarische Karriere war kurz, und er geriet nach dem Ausbruch des Ersten Weltkriegs in Vergessenheit. Er wurde Opfer des nationalsozialistischen Regimes und 1942 im Vernichtungslager Sobibor ermordet.
 
 Trotz seiner kurzen Schaffenszeit hatte van Hoddis einen nachhaltigen Einfluss auf die expressionistische Dichtung und wird als wichtiger Vertreter dieser literarischen Strömung betrachtet.
 
 #### Alfred Lichtenstein (1889-1914)
 
-Alfred Lichtenstein war ein deutscher expressionistischer Dichter. Geboren in Berlin, wurde er bekannt für seine sarkastischen und sozialkritischen Gedichte. Lichtenstein war Teil der literarischen Bewegung des Expressionismus und veröffentlichte vor allem in der Zeitschrift „Die Aktion“. Sein Werk spiegelt die Unruhe und Spannungen der Zeit vor dem Ersten Weltkrieg wider. Er fiel im Krieg 1914 im Alter von 25 Jahren. Lichtensteins Gedichte, darunter [„Abschied“ (1914)](#abschied-1914) und „Die Dämmerung“, zeigen einen einzigartigen Stil, der von einer düsteren Weltsicht und einer ausgeprägten Sprachkunst geprägt ist.
+Alfred Lichtenstein war ein deutscher expressionistischer Dichter. Geboren in Berlin, wurde er bekannt für seine sarkastischen und sozialkritischen Gedichte. Lichtenstein war Teil der literarischen Bewegung des Expressionismus und gehörte zur Dichtergruppe „Der Neue Club“. Sein Werk spiegelt die Unruhe und Spannungen der Zeit vor dem Ersten Weltkrieg wider. Er fiel im Krieg 1914 im Alter von 25 Jahren. Lichtensteins Gedichte, darunter [„Abschied“ (1914)](#abschied-1914) und „Die Dämmerung“, zeigen einen einzigartigen Stil, der von einer düsteren Weltsicht und einer ausgeprägten Sprachkunst geprägt ist.
 
 ### Werke
 
@@ -322,7 +322,7 @@ Und frißt sie auf, bis spät der Morgen tagt.
 
 #### Weltende (1911)
 
-In dem Gedicht „Weltende“ beschreibt der Sturm eine Zerstörung, da die Wellen zu Tsunamis werden, Häuser einstürzen und die Welt zusammenbricht. Der vorletzte Vers („Die meisten Menschen haben einen Schnupfen“) sticht besonders hervor, da er ein vergleichsweise kleines Problem im Gegensatz zum Weltuntergang beschreibt. [Jakob van Hoddis](#jakob-van-hoddis-1887-1942) will damit aussagen, dass dem Menschen alles egal ist, was er nur in der Zeitung liest.
+In dem Gedicht Weltende, beschreibt der Sturm eine Zerstörung, da die Wellen zu Tsunamis werden, Häuser einstürzen und die Welt zusammenbricht. Der vorletzte Vers sticht besonders hervor, da er ein vergleichsweise kleines Problem im Gegensatz zum Weltuntergang ist. [Jakob van Hoddis](#jakob-van-hoddis-1887-1942) will damit aussagen, dass dem Menschen alles egal ist, was er nur in der Zeitung liest.
 
 <blockquote>
 
@@ -340,7 +340,7 @@ Die Eisenbahnen fallen von den Brücken.
 
 #### Schöne Jugend (1912)
 
-Der Titel mag irreführend sein, da es sich in diesem Gedicht aus dem Zyklus „Morgue“ nicht um junge Menschen, sondern um **Ratten** handelt, die im Körper eines ertrunkenen Mädchens eine „schöne Jugend“ verlebt haben.
+Der Titel mag irreführend sein, da es sich in diesem Gedicht nicht um Menschen, sondern **Ratten** handelt.
 
 <blockquote>
 
@@ -361,7 +361,7 @@ Ach, wie die kleinen Schnauzen quietschten!
 
 #### Kleine Aster (1912)
 
-Der Titel lässt ein idyllisches Blumengedicht erwarten. Tatsächlich geht es jedoch um die Obduktion eines ertrunkenen Bierfahrers, in dessen Brusthöhle eine Aster gesteckt wird, sodass genau wie bei [Schöne Jugend](#schöne-jugend-1912) eine Lesertäuschung vorliegt.
+In diesem Gedicht symbolisiert die Aster eine Blume und _keinen_ Vogel, sodass genau wie bei [Schöne Jugend](#schöne-jugend-1912) eine Lesertäuschung vorliegt.
 
 <blockquote>
 
@@ -382,7 +382,7 @@ Kleine Aster!
 
 #### Der Prozess (1914)
 
-Ein Roman, in welchem Josef K. verhaftet wird, obwohl er nichts Falsches getan hat. Während der gesamten Handlung wird eine Schuld von Josef K. nicht erkennbar. Aus diesem Grund endet „Der Prozess“ auch nicht mit einer Verhandlung. So wie am Beginn des Romans zwei Männer in K.s Zimmer auftauchen und ihn aus seinem gewohnten Leben werfen, so tauchen im Schlusskapitel zwei Männer auf, um den „Prozess“ zu beenden. Josef K. weiß, dass es seine Pflicht wäre, sich mit dem Messer selbst umzubringen, jedoch tut er dies nicht. Stattdessen führen die beiden Männer ihn zu einem kleinen Steinbruch am Stadtrand, wo sie ihn erstechen – „Wie ein Hund!“, sind seine letzten Worte.
+Eine Geschichte, in welcher Josef K. verhaftet wird, obwohl er nichts Falsches getan hat. Während der gesamten Handlung wird eine Schuld von Josef K. nicht erkennbar. Aus diesem Grund endet „Der Prozess“ auch nicht mit einer Verhandlung. So wie am Beginn des Romans zwei Männer in K.s Zimmer auftauchen und ihn aus seinem gewohnten Leben werfen, so tauchen im Schlusskapitel zwei Männer auf, um den „Prozess“ zu beenden. Josef K. weiß, dass es seine Pflicht wäre, sich mit dem Messer selbst umzubringen, jedoch tut er dies nicht. Stattdessen bringen die beiden Männer ihn zu einem Steinbruch, wo sie ihn erstechen.
 
 #### Zwist (1914)
 
@@ -440,23 +440,23 @@ Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in 
 
 </blockquote>
 
-Die Erzählung ist in drei Teile geteilt, wobei der erste die ersten Stunden nach der Verwandlung behandelt. Der zweite Teil beginnt am Abend des Tages der Verwandlung und beschreibt die folgenden Wochen. Der letzte Teil erzählt von langfristigen Folgen, welche erst Monate nach der Verwandlung passierten.
+Die Erzählung ist in drei Teile geteilt, wobei der erste die ersten Stunden nach der Verwandlung behandelt. Der zweite Teil beschreibt den Abend des Tages der Verwandlung. Der letzte Teil erzählt von langfristigen Folgen, welche erst Monate nach der Verwandlung passierten.
 
 ##### Teil 1
 
-Gregor Samsa wacht morgens auf und merkt, dass er sich in ein riesiges Ungeziefer verwandelt hat, das man sich meist als Käfer vorstellt. Er denkt über seinen Beruf als reisender Vertreter für Tuchwaren nach. Dieser ist ihm verhasst, jedoch notwendig, um die Familie zu versorgen. Mutter, Vater und Schwester Grete klopfen an der Tür, weil sie sich besorgt erkundigen wollen. Es dauert so lange, bis Gregor aus dem Bett kommt, dass in der Zwischenzeit bereits ein Prokurist von Gregors Arbeitgeber aufgetaucht ist, um nach ihm zu fragen. Außerdem werden seine beruflichen Leistungen bemängelt. Gregor will daraufhin versichern, dass er den nächsten Zug nehmen wird, jedoch hören die Anwesenden nur tierische Laute. Es werden ein Arzt und ein Schlosser gerufen, um die Tür zu öffnen. Doch Gregor öffnet mit seinem Kiefer die Tür, damit seine Familie ihm helfen kann. Auf seinen Anblick reagieren Vater, Mutter und Prokurist entsetzt. Gregor wird mittels Stock zurückgedrängt und am linken Bein verletzt.
+Gregor Samsa wacht morgens auf und merkt, dass er ein Käfer in der Größe eines Menschen ist. Er denkt über seinen Beruf als reisender Vertreter für Tuchwaren nach. Dieser ist ihm verhasst, jedoch notwendig, um die Familie zu versorgen. Mutter, Vater und Schwester Grete klopfen an der Tür, weil sie sich besorgt erkundigen wollen. Es dauert so lange, bis Gregor aus dem Bett kommt, dass in der Zwischenzeit bereits ein Prokurist von Gregors Arbeitgeber aufgetaucht ist, um nach ihm zu fragen. Außerdem werden seine beruflichen Leistungen bemängelt. Gregor will daraufhin versichern, dass er den nächsten Zug nehmen wird, jedoch hören die Anwesenden nur tierische Laute. Es werden ein Arzt und ein Schlosser gerufen, um die Tür zu öffnen. Doch Gregor öffnet mit seinem Kiefer die Tür, damit seine Familie ihm helfen kann. Auf seinen Anblick reagieren Vater, Mutter und Prokurist entsetzt. Gregor wird mittels Stock zurückgedrängt und am linken Bein verletzt.
 
 ##### Teil 2
 
 Abends erwacht Gregor aufgrund des Geruches von leckerem Essen. Seine Schwester hat ihm sein Lieblingsgetränk an die Tür gestellt, doch er empfindet Widerwillen gegen die Milch. Er kraxelt unter das Kanapee und fühlt sich endlich behaglich. Am frühen Morgen bekommt er von Grete eine große Auswahl an Speisen, wovon er nur die halb verfaulten mit Genuss verzehrt.
 
-In den kommenden Tagen macht sich die Familie Gedanken ums Geld. Grete übernimmt die Versorgung von Gregor, dabei fällt ihr auf, dass er gerne an den Wänden emporkriecht. Daraufhin wollen Mutter und Schwester die Möbel aus seinem Zimmer räumen, doch Gregor klammert sich an ein Bild mit einer Dame in Pelz. Die Mutter fällt in Ohnmacht und Gregor möchte ihr helfen. Die Schwester meint, der Käfer sei ausgebrochen, und der Vater bewirft ihn mit Äpfeln.
+In den kommenden Tagen macht sich die Familie Gedanken ums Geld. Es wird entschieden, dass Grete den Käfer versorgen soll, weshalb ihr auffällt, dass Gregor gerne an Wänden emporkriecht. Daraufhin werden alle Möbel außer einem Bild mit einer Dame entfernt. Die Mutter fällt in Ohnmacht und Gregor möchte ihr helfen. Die Schwester meint, der Käfer sei ausgebrochen, und der Vater bewirft ihn mit Äpfeln.
 
 ##### Teil 3
 
-Einer der Äpfel bleibt monatelang in seinem Körper stecken, sodass sich die Stelle entzündet. Gregor wird immer mehr vernachlässigt und das Zimmer wird zur Abstellkammer. Die Familie vermietet als weitere Einnahmequelle ein Zimmer der Wohnung an drei Zimmerherren, weshalb Gregors Tür beim Abendessen geschlossen bleibt. Als die Schwester jedoch Violine spielt, öffnet Gregor die Tür und die Herren drohen mit der Kündigung. Grete fordert, man müsse versuchen, **es** (Gregor) loszuwerden. In dieser Nacht stirbt Gregor, geschwächt von der Verletzung durch den Apfel und vom Hunger. Die neue Bedienerin - die Einzige, welche Gregor nicht verabscheut - informiert die Familie und entsorgt ihn.
+Einer der Äpfel bleibt monatelang in seinem Körper stecken, sodass sich die Stelle entzündet. Gregor wird immer mehr vernachlässigt und das Zimmer wird zur Abstellkammer. Die Familie vermietet als weitere Einnahmequelle Zimmer der Wohnung an drei Herren, weshalb Gregors Tür beim Abendessen geschlossen bleibt. Als die Schwester jedoch Violine spielt, öffnet Gregor die Tür und die Herren drohen mit der Kündigung. Grete meint, man müsse **es** (Gregor) loswerden. In dieser Nacht stirbt Gregor aufgrund der Anstrengung des Kriechens mit dem Apfel im Körper. Die neue Bedienerin - die Einzige, welche Gregor nicht verabscheut - informiert die Familie und entsorgt ihn.
 
-Die Familie ist erleichtert: Sie wirft die Zimmerherren hinaus, kündigt der Bedienerin und macht einen Ausflug ins Grüne. Dabei bemerken die Eltern, dass Grete zu einem schönen Mädchen herangewachsen ist, für das es bald Zeit sein wird, einen Mann zu finden.
+Die Familie freut sich, sie kündigen die drei Herren und die Bedienerin und hoffen, dass Grete bald einen Mann bekommt.
 
 #### Patrouille (1915)
 
@@ -493,23 +493,23 @@ Die Gedichte in der Lyrik sollen nicht „rühren“, sondern „aufrühren“ u
 
 Dabei ist die Form der Gedichte sehr unterschiedlich: Manche zeigen metaphernreiche und pathetische Sprache, während andere den Satzbau zertrümmern und die Logik negieren.
 
-1919 erscheint die repräsentativste Sammlung expressionistischer Gedichte, herausgegeben von Kurt Pinthus. Sie trägt den Titel „Menschheitsdämmerung“. Die vier Abschnitte zeigen die Thematik der expressionistischen Lyrik: „Sturz und Schrei“, „Erweckung des Herzens“, „Aufruf und Empörung“ und „Liebe den Menschen“.
+1919 erscheint die repräsentativste Sammlung expressionistischer Gedichte. Sie trägt den Titel „Menschheitsdämmerung“. Die vier Abschnitte zeigen die Thematik der expressionistischen Lyrik: „Sturz und Schrei“, „Erweckung des Herzens“, „Aufruf und Empörung“ und „Liebe den Menschen“.
 
 #### Dramatik
 
-In der Dramatik gibt es einen Kampf zwischen dem „alten“ und dem „neuen“ Menschen, beispielsweise den Generationenkonflikt, und den Kampf der Söhne gegen die Väter. Elternmord bzw. Vatermord ist das Symbol für den Untergang der Autoritäten. Des Weiteren gibt es einen Konflikt der Geschlechter. Hierbei gilt das Drama „Frühlings Erwachen“ (1891) von Frank Wedekind aufgrund der Kritik an Sexualmoral und Schule als Vorbild.
+In der Dramatik gibt es einen Kampf zwischen dem „alten“ und dem „neuen“ Menschen, beispielsweise den Generationenkonflikt, und den Kampf der Söhne gegen die Väter. Elternmord bzw. Vatermord ist das Symbol für den Untergang der Autoritäten. Des Weiteren gibt es einen Konflikt der Geschlechter. Hierbei gilt das „Frühlings Erwachen“ von Frank Wedekind aufgrund der Kritik an Sexualmoral und Schule als Vorbild.
 
 #### Epik
 
-Im Expressionismus sind wenige Werke der Epik gewidmet. Die Sprachzertrümmerung, der Enthusiasmus und Pathos lassen sich in Lyrik und Dramatik viel besser anwenden. Ein Epiker aus dieser Zeit ist jedoch sehr berühmt: Franz Kafka. Jedoch kann er nicht eindeutig dem Expressionismus zugeordnet werden. Er berichtet von der Fremdheit des Menschen in einer Welt, die er nicht versteht. Einige seiner bedeutendsten Werke sind „Die Verwandlung“, „Der Prozess“ und „Eine alltägliche Verwirrung“. Außerdem schreibt er einen „Brief an den Vater“, welcher über 100 Seiten umfasst und viel über den Charakter Franz Kafkas verrät.
+Im Expressionismus sind wenige Werke der Epik gewidmet. Die Sprachzertrümmerung, der Enthusiasmus und Pathos lassen sich in Lyrik und Dramatik viel besser anwenden. Ein Epiker aus dieser Zeit ist jedoch sehr berühmt: Franz Kafka. Jedoch kann er nicht eindeutig dem Expressionismus zugeordnet werden. Er berichtet von der Fremdheit des Menschen in einer Welt, die er nicht versteht. Einige seiner bedeutendsten Werke sind „Die Verwandlung“, „Der Prozess“ und „Eine alltägliche Verwirrung“. Außerdem schreibt er einen „Brief an den Vater“, welcher über 100 Seiten umfasst und den Charakter Franz Kafkas beschreibt
 
 ### Zeitschriften
 
-In dieser Epoche wurden viele literarische Zeitschriften herausgegeben, wie zum Beispiel „Die Aktion“ (ab 1911) oder „Der Sturm“ (ab 1910). Sie boten jungen, noch unbekannten Autorinnen und Autoren eine Plattform.
+In dieser Epoche wurden viele literarische Zeitschriften verfasst, wie zum Beispiel „Die Aktion“ oder „Der Sturm“.
 
 ### Dadaismus
 
-Der Dadaismus entstand, als sich 1916 Hugo Ball, Richard Huelsenbeck, Hans Arp und Tristan Tzara im Zürcher „Cabaret Voltaire“ trafen und das Wort „Dada“ für die eigene Kunst im Wörterbuch entdeckten. Diese „Anti-Kunst“ richtete sich gegen alles Bisherige. Im „dadaistischen Manifest“ von 1918 wird festgeschrieben, dass die Sprache die „Explosion“ der Zeit ausdrücken soll.
+Der Dadaismus entstand, als sich 1916 Hugo Ball, Huelsenbeck, Hans Arp und Tristan Tzara in Zürich trafen und das Wort „Dada“ für die eigene Kunst im Wörterbuch entdeckten. Diese „Anti-Kunst“ richtete sich gegen alles Bisherige. Im „dadaistischen Manifest“ von 1918 wird festgeschrieben, dass die Sprache die „Explosion“ der Zeit ausdrücken soll.
 
 Um diese Sprachzerstörung zu demonstrieren, nutzen die vier Gründer verschiedene Methoden, wie zum Beispiel die „Unvernunft“ (keine Logik in Texten), Lautgedichte (keine Wörter sondern einzelne Laute), Buchstabengedichte (Konzentration auf ein Wort) und den Zufall. Ganz besonders hervorstechende Gedichte sind erstens das **bruitistische** Gedicht - auch lärmendes Gedicht -, welches um Töne und Schauspiel ergänzt wird, und zweitens das **simultanistische** Gedicht, wobei hier mehrere Gedichte gleichzeitig gelesen werden.
 
@@ -593,7 +593,7 @@ zwitschitschitschitschitschitschitschitschERN
 
 ##### med ana schwoazzn dintn - H. C. Artmann
 
-„med ana schwoazzn dintn“ (1958) ist ein bekannter Gedichtband von H. C. Artmann, der zum Beispiel das Gedicht „frog me ned“ enthält:
+„med ana schwoazzn dintn“ ist ein bekannter Gedichtband von H. C. Artmann, welcher zum Beispiel das Gedicht „frog me ned“ miteinschließt:
 
 <blockquote>
 
@@ -624,8 +624,6 @@ no wiaklech...
 </blockquote>
 
 ##### Fisches Nachtgesang
-
-„Fisches Nachtgesang“ aus den „Galgenliedern“ (1905) von Christian Morgenstern besteht nur aus metrischen Zeichen für betonte und unbetonte Silben. Es gilt als Vorläufer der visuellen Poesie, an die die Wiener Gruppe anknüpfte.
 
 ![Fisches Nachtgesang](/images/languages/fisches_nachtgesang.jpg)
 
