@@ -294,7 +294,11 @@ export default defineConfig({
               items: [
                 { slug: "languages" },
                 { slug: "languages/german_text_types" },
-                { slug: "languages/literature" },
+                {
+                  label: "Literatur",
+                  translations: { en: "Literature" },
+                  items: [{ autogenerate: { directory: "languages/literature" } }],
+                },
                 { slug: "languages/text_types" },
               ],
             },
@@ -331,6 +335,7 @@ export default defineConfig({
             topics: {
               "software-development": ["/*/software-development/**"],
               mathematics: ["/*/mathematics/**"],
+              languages: ["/*/languages/**"],
             },
           }
         ),

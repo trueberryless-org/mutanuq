@@ -14,14 +14,14 @@ Stylistic devices and rhetorical devices are linguistic elements that make texts
 
 | Term                        | Description                                                                                                    | Example (German)                                                                                                                                    |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Allegorie** (allegory)    | representation of an abstract concept as a person                                                             | Frau Sonne, die Gerechtigkeit als Frau mit Waage und Augenbinde                                                                                     |
+| **Allegorie** (allegory)    | representation of an abstract concept as a person                                                             | Frau Sonne, Gerechtigkeit tritt im Theaterstück auf                                                                                     |
 | **Alliteration** (Stabreim) | identical initial sounds of the stem syllables of successive words                                             | Zimt und Zucker, über Stock und Stein                                                                                                               |
 | Anadiplose (anadiplosis)    | repetition of the last word(s) at the end of a sentence at the beginning of the following sentence            | Die Nacht ist dunkel. Dunkel ist der Wald. Wald voller Geheimnisse.                                                                                 |
 | **Anapher** (anaphora)      | repetition of words or phrases at the beginning                                                                | Tatsache ist, ich habe verloren. Tatsache ist, ich werde daraus Konsequenzen ziehen.                                                                |
 | **Antithese** (antithesis)  | juxtaposition of opposites                                                                                     | Groß und Klein, Arm und Reich                                                                                                                       |
 | **Assonanz** (assonance)    | the same or a similar vowel occurs frequently in successive words or sentences                                 | Der Mond thront ober dem Wolkenhügel.                                                                                                               |
 | **Chiasmus**                | crosswise arrangement of sentence elements                                                                     | Die Kunst ist lang und kurz ist unser Leben.                                                                                                        |
-| Dysphemismus (dysphemism)   | derogatory, drastic term instead of a neutral expression (opposite of a euphemism)                             | Glotze (für Fernseher), Karre (für Auto), abkratzen (für sterben)                                                                                   |
+| Dysphemismus (dysphemism)   | derogatory term instead of a neutral expression                             | Glotze (für Fernseher), abkratzen (für sterben)                                                                                   |
 | **Ellipse** (ellipsis)      | incomplete sentence                                                                                            | Was nun?                                                                                                                                            |
 | **Epipher** (epiphora)      | repetition at the end of a sentence                                                                            | Ich fordere mehr Mut. Ich lebe mehr Mut.                                                                                                            |
 | **Euphemismus** (euphemism) | veiling, glossing over of a negative expression                                                                | die Radieschen von unten ansehen, das Zeitliche segnen, Raumpflegerin                                                                               |
@@ -32,22 +32,22 @@ Stylistic devices and rhetorical devices are linguistic elements that make texts
 | **Klimax** (climax)         | gradual intensification within a sentence                                                                      | Ich kam, sah und siegte. (Cäsar)                                                                                                                    |
 | Litotes                     | affirmation through negation                                                                                   | Nicht schlecht!                                                                                                                                     |
 | **Metapher** (metaphor)     | figurative expression                                                                                          | Du bist meine Rose. Die Wüstenschiffe ziehen weiter. Füll den Tiger in den Tank.                                                                    |
-| Metonymie (metonymy)        | replacing a term with another one that is related to it                                                        | Die Krone hat entschieden. (the crown stands for royal authority), ein Glas trinken, Goethe lesen                                                   |
+| Metonymie (metonymy)        | replacing a term with another one that is related to it                                                        | Die Krone hat entschieden. (the crown stands for royal authority)                                                   |
 | **Neologismus** (neologism) | newly coined word                                                                                              | downloaden                                                                                                                                          |
-| Onomatopoesie (onomatopoeia) | imitation of natural sounds through language                                                                  | Der Wind zischte, pfiff, blies. Kikeriki! Die Vögel zwitscherten im Baum.                                                                           |
+| Onomatopoesie (onomatopoeia) | imitation of natural sounds through language                                                                  | Der Hund bellte laut. Die Vögel zwitscherten im Baum. Der Wind zischte, pfiff, blies.                                                                           |
 | **Oxymoron**                | combination of two parts that logically exclude each other                                                     | Minuswachstum, schwarze Milch                                                                                                                       |
 | **Parallelismus** (parallelism) | repeated word order / sentence construction                                                                | Sie hören weit, sie sehen fern.                                                                                                                     |
 | **Parataxe** (parataxis)    | sequence of main clauses                                                                                       | Er sah, er reagierte.                                                                                                                               |
 | **Parenthese** (parenthesis) | insertion                                                                                                     | Er ist – wie gesagt – nicht dumm.                                                                                                                   |
 | Paronomasie (paronomasia)   | play on words through similar sounds with different meanings                                                   | Wer rastet, der rostet.                                                                                                                             |
 | **Personifikation** (personification) | attributing human qualities                                                                          | Die Sonne lacht. Die Finsternis sieht mit hundert schwarzen Augen.                                                                                  |
-| Pleonasmus (pleonasm)       | unnecessary use of words whose meaning is already contained in the context                                     | Der nasse Regen, ein weißer Schimmel                                                                                                                |
+| Pleonasmus (pleonasm)       | unnecessary use of words whose meaning is already contained in the context                                     | Der nasse Regen.                                                                                                                |
 | **Rhetorische Frage** (rhetorical question) | pseudo-question that answers itself                                                            | Das ist doch nicht dein Ernst? Bin ich deine Putzfrau?                                                                                              |
 | **Symbol**                  | figurative expression that points beyond itself                                                                | Wasser (für Leben), Herz (für Liebe), Feuer (für Leidenschaft)                                                                                      |
 | Synekdoche (synecdoche)     | a part stands for the whole or vice versa                                                                      | Alle Hände an Deck! (hands stand for the people)                                                                                                    |
 | **Vergleich** (simile)      | equating two things with the comparison word "wie" (like)                                                     | Er kämpft wie ein Löwe.                                                                                                                             |
 | **Wiederholung** (repetition) | repetition of identical words                                                                                | Geliebte, o meine Geliebte!                                                                                                                         |
-| Zeugma                      | one word refers to two others, but in different meanings                                                       | Er hob den Blick und ein Bein. Sie nahm ihren Hut und Abschied.                                                                                     |
+| Zeugma                      | one word refers to two others, but in different meanings                                                       | Er schlug die Tür zu und sein Herz in Angst.                                                                                     |
 
 ## Summary (Zusammenfassung)
 
@@ -190,7 +190,7 @@ In the conclusion of a discussion essay, you briefly summarise the most importan
 
 ## Commentary (Kommentar)
 
-The commentary is an opinion-based, critical, often satirical, coherent, subjective text type with sophisticated, linguistically excellent argumentation, written in the present tense and the present perfect. All arguments must support your own opinion. Counter-arguments must be worded weakly and presented as unconvincing.
+The commentary is an opinion-based, critical, satirical, internally coherent, subjective text type with sophisticated, linguistically excellent argumentation, written in the present tense and the present perfect. All arguments must support your own opinion. Counter-arguments must be worded weakly and presented as unconvincing.
 
 ### Characteristics
 
@@ -220,7 +220,7 @@ A commentary has a creative introduction that should at least mention the author
 
 In the main part, several paragraphs follow one another, each of which refers to an argument that supports your own opinion. If a counter-argument is to be included, your linguistic skill must convey to the reader that this point carries little weight compared to your own opinion.
 
-Avoid using `Ich` (I). Some impersonal constructions can help with this:
+Avoid using `Ich` (I). Some passive constructions can help with this:
 
 > ~Ich finde, dass ...~
 
@@ -376,7 +376,7 @@ Since interpreting an epic, lyric or dramatic text is not always the easiest thi
     Interpret the actions of the characters and analyse their motives. Why did _the author_ think that the characters would act in a certain way in certain situations?
 
 -   **Communication theory**  
-    In some texts, the characters talk past each other. Analyse whether _the author_ has also built such features into your source text!
+    In some poems, the characters talk past each other. Analyse whether _the author_ has also built such features into your source text!
 
 -   **Text types**  
     _The author_ chose to write the story as a gloss, song, ballad, poem, tragedy, novel, legend, imagery, etc. for a particular reason. This choice is unlikely to have been made without reason. Many authors are aware of the effects, strengths and weaknesses of these text types and use them to (un)consciously convey their intentions to the reader. Here, too, the connection with the context has to be made, since at some times in history publishing certain content was forbidden and authors used text types to get around these bans. Why?
@@ -427,7 +427,7 @@ The narrator is invented by the author and has a mediating function between what
 
         Here are two examples (first a personal narrator and then the `first-person narrator`):
 
-        > Hans greift langsam zur Schere. Hoffentlich geht das gut, denkt er, während seine Hand zittert. Schließlich fasst er das Objekt.
+        > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
 
         > Ist der Tod mir nahe? Ich spüre die Kälte des Objekts, als ich langsam zur Schere greife.
 
@@ -569,7 +569,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
     The stanza form can be determined by the length and number of stanzas in the poem.
 
     -   _Sonnet_  
-        The sonnet consists of two quatrains (four-line stanzas) and two tercets (three-line stanzas). The quatrains usually have the rhyme scheme `ABBA ABBA`, the tercets, on the other hand, for example `CDE CDE`, `CDC DCD` or `CCD EED`. The sonnet is common in the Baroque period, but was also popular in Romanticism and Expressionism.
+        The sonnet consists of two quatrains (four-line stanzas) and two tercets (three-line stanzas). The quatrains have the rhyme scheme `ABBA`, the tercets, on the other hand, `CDC CDC` or `CCD EED`. The sonnet is common in the Baroque period.
 
         <blockquote>
 
@@ -597,7 +597,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
         </blockquote>
 
     -   _Ode_  
-        The ode is a solemn, stanzaic and rather long poem with a fixed metre. Following ancient models, it is often unrhymed (e.g. by Klopstock or Hölderlin), but there are also rhymed odes such as Schiller's "An die Freude" (Ode to Joy).
+        The ode is a solemn, stanzaic and rather long poem with a fixed metre. It is often unrhymed, but there are also rhymed odes such as Schiller's "An die Freude" (Ode to Joy).
 
         <blockquote>
 
@@ -618,7 +618,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
         </blockquote>
 
     -   _Hymn_  
-        The hymn is a solemn song of praise, for example to God, nature or the fatherland. Literary hymns such as Goethe's "Prometheus" often do without regular stanzas, a fixed metre and rhymes (free rhythms). National and church hymns, on the other hand, are usually rhymed songs with stanzas, as the following example shows.
+        A hymn is a solemn song of praise. Literary hymns often have no formal regularities and do without structure, metre and rhymes. National and church hymns such as the following, on the other hand, are usually rhymed and divided into stanzas.
 
         <blockquote>
 
@@ -743,13 +743,13 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
             | eisige                 |
 
     -   _Number of stresses_  
-        To determine the length of a verse, there is the analytical unit of stresses. Here, you simply count the stressed syllables in a verse. To illustrate this, let's take this beautiful verse by Schiller from "Das Mädchen aus der Fremde":
+        To determine the length of a verse, there is the analytical unit of stresses. Here, you simply count the occurrences of the respective metre in a verse. To illustrate this, let's take this beautiful verse by Schiller from "Das Mädchen aus der Fremde":
 
         > Doch nahte sich ein liebend Paar
 
         Try to say the verse out loud and recognise the metre from the stressed and unstressed syllables. Small spoiler: it is the `iamb`, since the stresses are on `nah`, `sich`, `lie` and `Paar`. These stresses can be symbolised like this: `x` `x́` `x` `x́` `x` `x́` `x` `x́`. Normal `x`s stand for unstressed syllables; a stressed syllable is marked with an acute accent (`x́`).
 
-        From this sequence, you can easily see that the verse has **four stresses**. We therefore call the verse a `four-stress iamb` (iambic tetrameter). Since the verse ends with a stressed syllable, we speak of a masculine (blunt) cadence. If, on the other hand, an iambic verse ends with an additional unstressed syllable, we speak of a feminine (sounding) cadence; the verse is then _hypercatalectic_ (extended by one syllable). Conversely, if a syllable of the last foot is missing at the end of the verse, the verse is called _catalectic_. The following example is a three-stress iamb with a feminine cadence:
+        From this sequence, you can easily see that the verse has **four stresses**. We therefore call the verse a `four-stress iamb` (iambic tetrameter). Since the verse also ends with a stressed syllable, we speak of a complete iamb. If an iambic verse has an additional unstressed syllable at the end, it is called hypercatalectic. If, on the other hand, a syllable is missing at the end, it is called incomplete or catalectic. The following example is a three-stress hypercatalectic iamb:
 
         > Da ist in meinem Herzen  
         > `x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x`
@@ -762,7 +762,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
             (`x` `x́` `x` `x́` `x` `x́` `x` `x́` `x` `x́`)
         -   **Alexandrine**: six-stress iamb with a caesura (`/`), usually in the middle  
             (`x` `x́` `x` `x́` `x` `x́` `/` `x` `x́` `x` `x́` `x` `x́`)
-        -   **Hexameter**: six-foot dactyl whose last foot consists of only two syllables  
+        -   **Hexameter**: six-foot dactyl (the last syllable of the last dactyl is dropped)  
             (`x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x`)
         -   **Free rhythm**: no uniform rhythm
 
@@ -881,7 +881,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
             </blockquote>
 
         -   **Chain rhyme (Kettenreim)**  
-            The chain rhyme has the scheme `ABA BCB CDC`. This rhyme therefore always links three-line stanzas (terza rima).
+            The chain rhyme has the scheme `ABA BCB CDC`. This rhyme therefore always links three-line stanzas.
 
             <blockquote>
 
@@ -1005,12 +1005,12 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
             > Die myriadenmal hundert **tausend**?
 
         -   **Equivocal rhyme**  
-            Here, words are rhymed that sound the same but have different meanings (homonyms or homophones).
+            Here, words are rhymed that sound the same but have different meanings and are often spelled differently – so-called homophones.
 
             | Examples of equivocal rhymes |
             | ---------------------------- |
             | Waise -- weise               |
-            | Geld -- Welt                 |
+            | Geld -- gellt                |
 
         -   **Assonance**  
             In this case, only the vowels of the rhyming words match, but not the consonants. Another name is vocalic half-rhyme. It is one of the most popular kinds of rhyme in rap.
@@ -1168,7 +1168,7 @@ If the source text is a dramatic text type, the following features must be analy
 ##### Dramatic genre
 
 -   **Text type**  
-    Is the source text a tragedy, a comedy or a tragicomedy? The first has a very negative mood, the second is meant to entertain the audience and the last is sad on the one hand, but also has a funny side to it.
+    Is the source text a tragedy, a comedy or a tragicomedy? The first has a very negative mood, the second is meant to entertain the audience and the last is sad on the one hand, but also has a funny side to it. Above all, stories of rogues are set in tragicomedy.
 
     -   _Comedy_  
         At the centre of the comedy are people of lower social standing, norms and institutions that are exposed to ridicule. The comedy is characterised from the start by a loose and light structure. Prevailing conditions are turned upside down, public figures and political grievances are exposed to biting mockery. The focus is on portraying the inadequacies and weaknesses of people and of human life. Amusement comes from situational and verbal comedy. The language is on a low level so that the language use of lower social classes is represented appropriately. The protagonists of a comedy are also exposed to a conflict, which, however, is overcome.
@@ -1177,7 +1177,7 @@ If the source text is a dramatic text type, the following features must be analy
         Besides the comedy, the tragedy is the second main form of drama. At the centre of the tragedy is a person of higher social standing who faces a tragic, irresolvable conflict that leads to the inevitable downfall of the hero, either in the form of death or another miserable state. The tragedy is meant to show the audience that the human scope for action and decision-making is limited and that people cannot escape their destiny through their own actions. According to Aristotle's ancient poetics, the fate of the tragic hero should above all arouse fear and pity in the audience, so that their emotional purification (catharsis) is brought about. The audience should learn to pity those who deserve it and to fear the things they themselves must fear. The language of the tragedy can be characterised as high, dignified, elevated, precise and to the point.
 
     -   _Tragicomedy_  
-        A mixture of tragedy and comedy is the tragicomedy. The term goes back to the Roman poet Plautus. In German literature, the form gained importance above all from the "Sturm und Drang" onwards (e.g. "Der Hofmeister" by Jakob Michael Reinhold Lenz). Tragedy and comedy are inseparably linked and reinforce each other. Comic moments increase the effect of tragic contexts.
+        A mixture of tragedy and comedy is the tragicomedy. The term goes back to the Roman poet Plautus; in German literature, the form gained importance above all from the "Sturm und Drang" onwards. Tragedy and comedy are inseparably linked and reinforce each other. Comic moments increase the effect of tragic contexts.
 
 -   **Analysis vs synthesis**  
     Is the drama analytical or synthetic?
@@ -1208,14 +1208,14 @@ If the source text is a dramatic text type, the following features must be analy
 
         In a closed drama, the hero and the opponent often face each other. A triangular situation in which three protagonists interact is also possible. The closed drama is characterised by clarifying the backstory in the exposition, an introductory beginning, the emergence of a conflict and a clear resolution at the end.
 
-        The drama is usually written in verse. However, the protagonists can be individualised through their use of language. The action takes place within a short period of time and is limited to a few locations. It is not reality that is brought to the stage, but an idealised image of it.
+        The drama is written in verse. However, the protagonists can be individualised through their use of language. The action takes place within a short period of time and is limited to a few locations. It is not reality that is brought to the stage, but an idealised image of it.
 
         A very well-known closed drama is "Don Carlos, Infant von Spanien", written by Friedrich Schiller in 1787.
 
     -   _Open dramas_  
         The open drama usually contains several equally important plots; overall, the individual scenes are loosely structured. Connections in content are shown through characters and leitmotifs. The protagonists are anti-heroes who cannot act autonomously but are influenced by their social environment. They have little scope for action and decisions. The constellation of characters in the open drama is rather confusing, since many characters from different social classes are involved.
 
-        The backstory is not explained in detail, and the ending often remains unclear. This kind of drama is written in everyday language; stylistic devices such as parataxis (sequence of main clauses), enumeration, broken sentences and ellipses (omission of parts of a sentence) are often used. The action usually spans several years in total, and many different locations are shown, which can also be far apart. The drama "Dantons Tod" by Georg Büchner (1835) is one of the best-known open dramas.
+        The backstory is not explained in detail, and the ending often remains unclear. This kind of drama is written in everyday language; stylistic devices such as parataxis (sequence of main clauses), enumeration, broken sentences and ellipses (omission of parts of a sentence) are often used. The action usually spans several years in total, and many different locations are shown, which can also be far apart. The work "Dantons Tod" by Georg Büchner (1835) is one of the best-known open dramas.
 
 ##### The three Aristotelian unities
 
@@ -1238,7 +1238,7 @@ The three Aristotelian unities describe the unity of place, time and action. For
 -   **Characterisation of the characters**  
     The audience learns in some way which characters appear in the play. Analyse these ways and also describe what characteristics the different characters have. Only refer to the most important characters in the drama. The development of the main character is particularly interesting. Answer whether the events change this character's way of thinking over time and what effect this in turn has on the drama.
 
-    Also discuss the feelings, intentions and thoughts of the most important characters. They usually play an essential role in the ending of the plot.
+    Also discuss the feelings, intentions and thoughts of the most important characters. They usually play an essential role with regard to the ending of all plot lines.
 
 -   **Sociogram**  
     How do the characters relate to each other? Analyse and interpret the connections and relationships of all important characters.
@@ -1255,7 +1255,7 @@ In dramas, authors have no limits. Some authors therefore describe scenes in as 
 
 ##### Stage directions
 
-Stage directions (also _secondary text_) are instructions by _the author_ that are not spoken, but describe how characters act, speak or look and how the stage should be designed. They are usually in italics or brackets between the dialogues. Explain why _the author_ designed these instructions the way they did: are they brief or very detailed, factual or perhaps even humorously commenting?
+Sometimes dramas contain instructions from "off stage" to describe certain actions or to interact directly with the characters. Explain why _the author_ chose this way of narrating. Is it more humorous this way?
 
 There can be instructions for several elements of the drama:
 
@@ -1273,7 +1273,7 @@ There can be instructions for several elements of the drama:
 
 Is the play mostly written as a dialogue or predominantly as a monologue? If the characters have dialogues, do they talk past each other or rather with each other? Are the dialogues realistic or absurd? Can you put yourself in the character's shoes psychologically?
 
-What language do the characters speak (dialect, vernacular, standard stage German)? Do the characters speak according to their social position? Is the drama written in verse or in prose? Is there a special "artificial language" in the drama or for individual characters? If monologues occur, when and how are they used (conflict monologue, "messenger report monologue", ...)?
+What language do the characters speak (dialect, vernacular, standard stage German)? Do the characters speak according to their social position? Is the drama written in verse or in prose? Is there a special "artificial language" in the drama or for individual characters? If monologues occur, when and how are they used (conflict monologues, "messenger report monologue", ...)?
 
 Does a chorus appear? What function does it have? How does it speak? Does the chorus summarise the events, foresee them or only comment on the action?
 
@@ -1373,7 +1373,7 @@ With the plus-minus formula, you contrast the advantages and disadvantages using
 
 #### Conclusion
 
-Summarise your opinion briefly once more and formulate an appeal with suggested solutions that should apply to all arguments.
+Summarise your opinion briefly once more and appeal with suggested solutions that should apply to all arguments.
 
 #### Closing
 
