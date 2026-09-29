@@ -11,13 +11,13 @@ Felix Schneider (trueberryless)
 Ketz 13  
 3541 Senftenberg
 
-Webseite: [trueberryless.org](https://trueberryless.org)
+Webseite: [felixs.dev](https://felixs.dev)
 
 ## Haftungshinweis
 
 ### Inhalte
 
-Die Inhalte dieser Webseite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Als Diensteanbieter ist gemäß § 7 Abs.1 ECG für eigene Inhalte auf dieser Webseite nach den allgemeinen Gesetzen verantwortlich. Gemäß §§ 8 bis 10 ECG besteht jedoch keine Verpflichtung, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden die betreffenden Inhalte umgehend entfernt.
+Die Inhalte dieser Webseite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Als Diensteanbieter ist der Betreiber für eigene Inhalte auf dieser Webseite nach den allgemeinen Gesetzen verantwortlich. Gemäß § 18 ECG besteht jedoch keine Verpflichtung, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden die betreffenden Inhalte umgehend entfernt.
 
 ### Externe Links
 

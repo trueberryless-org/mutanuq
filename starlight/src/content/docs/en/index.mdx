@@ -1,9 +1,9 @@
 ---
 title: Welcome to Mutanuq
-description: Explore knowledge.
+description: The open knowledge platform for students of the HTL Krems – from software development and electronics to economics and languages.
 template: splash
 hero:
-  tagline: Explore the Mutanuq universe.
+  tagline: The open knowledge platform for the HTL Krems. Explore the Mutanuq universe!
   image:
     file: ../../../assets/start_logo.svg
   actions:
@@ -11,15 +11,30 @@ hero:
       link: /en/artificial-intelligence/
       icon: right-arrow
       variant: primary
-    - text: Contribute on
+    - text: Contribute on GitHub
       link: https://github.com/trueberryless-org/mutanuq
       icon: seti:github
-banner:
-  content: |
-    Hey there! 😊 Just a heads-up: The default language is German 🇩🇪, but you’re seeing the English 🇬🇧 version — so some pages might be missing. Thanks for understanding! 🌍
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
+
+Mutanuq brings together the knowledge from the lessons at the Höhere Technische Lehranstalt (HTL) Krems, a technical college in Austria – explained clearly, with examples, and in both German and English. The content is created by students for students and can be improved by anyone.
+
+## Topics
+
+import { LinkCard } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <LinkCard title="Software Development" href="/en/software-development/" description="Object-oriented programming, software metrics and design patterns." />
+  <LinkCard title="Databases" href="/en/databases/" description="Relational and document-oriented databases, schemas and the CAP theorem." />
+  <LinkCard title="Artificial Intelligence" href="/en/artificial-intelligence/" description="Python, data analysis, machine learning, deep learning and NLP." />
+  <LinkCard title="Decentralised Systems" href="/en/decentralised-systems/" description="Cloud computing, storage accounts, Azure Functions and Durable Functions." />
+  <LinkCard title="Embedded Systems" href="/en/embedded-programming/" description="AVR microcontrollers in C: ports, timers, ADC, USART, SPI and EEPROM." />
+  <LinkCard title="Deployment" href="/en/deployment/" description="Virtualisation and containers, storage systems and backup strategies." />
+  <LinkCard title="Languages" href="/en/languages/" description="Text types for German and English as well as literary epochs." />
+  <LinkCard title="Economy and Law" href="/en/economy_and_law/" description="Founding a company in Austria and marketing." />
+  <LinkCard title="Project Management" href="/en/project_management/" description="The magic triangle and project controlling." />
+</CardGrid>
 
 ## Help or explore the universe
 
@@ -32,7 +47,7 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
     Check out the project on <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a> and create pull requests.
   </Card>
   <Card title="Support my work" icon="rocket">
-    I would really appreciate if you support my work, either on <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>, <a href="https://www.patreon.com/trueberryless">Patreon</a> or <a href="https://ko-fi.com/trueberryless">Ko-fi</a>.
+    I would really appreciate it if you supported my work, either on <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>, <a href="https://www.patreon.com/trueberryless">Patreon</a> or <a href="https://ko-fi.com/trueberryless">Ko-fi</a>.
   </Card>
   <Card title="Correct my mistakes" icon="pencil">
     If you notice any errors in content or spelling mistakes, click on `Edit page` at the bottom to correct them!
