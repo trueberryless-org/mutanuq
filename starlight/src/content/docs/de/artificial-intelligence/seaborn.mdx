@@ -1,5 +1,8 @@
 ---
 title: Seaborn
+description: Statistische Visualisierungen wie Pair Plots, Heatmaps und Violinplots mit Seaborn.
+sidebar:
+  order: 5
 ---
 
 Seaborn ist eine auf Matplotlib basierende Bibliothek, die speziell für statistische Visualisierungen entwickelt wurde. Sie bietet eine einfachere API und schönere Standardstile.
@@ -19,6 +22,7 @@ Hier ist ein einfaches Beispiel, das zeigt, wie man mit Seaborn ein Histogramm e
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Daten
 data = np.random.randn(1000)
@@ -39,7 +43,7 @@ Ein Paarplot ist nützlich, um die Beziehungen zwischen mehreren Variablen in ei
 
 ```python
 import seaborn as sns
-import pandas as pd
+import matplotlib.pyplot as plt
 
 # Beispieldatensatz laden
 df = sns.load_dataset('iris')
@@ -57,6 +61,7 @@ Eine Heatmap ist nützlich, um Korrelationen zwischen verschiedenen Variablen zu
 
 ```python
 import seaborn as sns
+import matplotlib.pyplot as plt
 import numpy as np
 
 # Zufallsdaten generieren
@@ -71,6 +76,8 @@ plt.show()
 ```
 
 <img src="/images/artificial_intelligence/diagrams/heatmap.png" alt="Heatmap" style="max-width: 500px;" />
+
+Um tatsächlich die Korrelationen eines Datensatzes darzustellen, übergibt man der Heatmap die Korrelationsmatrix, zum Beispiel `sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')`.
 
 ## Violinplot
 

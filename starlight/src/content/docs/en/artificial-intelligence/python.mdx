@@ -1,0 +1,416 @@
+---
+title: Python
+description: Syntax, data types, control structures, functions and object-oriented programming with Python.
+sidebar:
+  order: 1
+---
+
+Python is a widely used, user-friendly programming language developed by Guido van Rossum. With its clear syntax and high readability, it is equally attractive to beginners and experienced developers. Python is used in web development, data analysis, artificial intelligence and other fields. The language is characterised by simplicity and flexibility. A characteristic feature is that Python is an interpreted language, which means that an interpreter is used to execute the code directly without compiling it to machine code beforehand. With an extensive standard library and an active developer community, Python offers a robust platform for all kinds of projects.
+
+Python is an interpreted, high-level and dynamic programming language developed by Guido van Rossum in the late 1980s. It is known for its clear and readable syntax, which makes writing and understanding code easier.
+
+## Installation and setup
+
+To install Python, visit the [official Python website](https://www.python.org/) and download the latest version. Python also includes `pip`, a package management system that makes it easy to install libraries and dependencies.
+
+```bash
+# Check the installation (on macOS and Linux often python3 or pip3)
+python --version
+pip --version
+```
+
+It is recommended to create a separate **virtual environment** for every project. This way, the installed libraries of different projects do not get mixed up.
+
+```bash
+python -m venv .venv
+# Activate on Windows
+.venv\Scripts\activate
+# Activate on macOS and Linux
+source .venv/bin/activate
+```
+
+## Basic syntax and data types
+
+### Comments
+
+```python
+# This is a single-line comment
+"""
+This is a
+multi-line comment
+(strictly speaking a string that is not assigned to a variable)
+"""
+```
+
+### Data types
+
+Python supports several built-in data types:
+
+```python
+# Numbers
+integer = 10
+float_num = 10.5
+
+# Booleans
+is_valid = True
+
+# No value
+nothing = None
+
+# Strings
+single_quote_str = 'Hello'
+double_quote_str = "World"
+
+# Lists
+my_list = [1, 2, 3, 'a', 'b']
+
+# Tuples
+my_tuple = (1, 2, 3, 'a', 'b')
+
+# Dictionaries
+my_dict = {'key1': 'value1', 'key2': 'value2'}
+
+# Sets
+my_set = {1, 2, 3, 4, 5}
+```
+
+## Variables and operators
+
+### Variables
+
+Variables are storage locations for data. In Python, assignment is simply done with the `=` sign.
+
+```python
+x = 10
+name = "John"
+```
+
+### Operators
+
+Python supports various operators:
+
+```python
+# Arithmetic operators
+addition = 5 + 3
+subtraction = 5 - 3
+multiplication = 5 * 3
+exponentiation = 5 ** 3
+division = 5 / 3          # 1.666...
+floor_division = 5 // 3   # 1 (integer division)
+square_root = 5 ** 0.5
+modulus = 5 % 3
+
+# Comparison operators
+equal = (5 == 3)
+not_equal = (5 != 3)
+greater_than = (5 > 3)
+greater_than_equal = (5 >= 3)
+less_than = (5 < 3)
+less_than_equal = (5 <= 3)
+
+# Logical operators
+and_operator = (5 > 3 and 5 < 10)
+or_operator = (5 > 3 or 5 > 10)
+not_operator = not(5 > 3)
+```
+
+## Control structures
+
+### Conditional statements
+
+```python
+if x > 0:
+    print("x is positive")
+elif x == 0:
+    print("x is zero")
+else:
+    print("x is negative")
+```
+
+### Loops
+
+```python
+# For loop
+for i in range(5):
+    print(i)
+
+# List comprehension (short notation to create a list with a for loop)
+squares = [i ** 2 for i in range(5)]  # [0, 1, 4, 9, 16]
+
+# While loop
+count = 0
+while count < 5:
+    print(count)
+    count += 1
+```
+
+## Functions and modules
+
+### Functions
+
+Functions are defined with the keyword `def`.
+
+```python
+def greet(name):
+    return f"Hello, {name}"
+
+print(greet("Alice"))
+```
+
+### Modules
+
+A module is a file that contains Python code. You can import modules to use their functions and classes.
+
+```python
+# Import a module
+import math
+print(math.sqrt(16))
+
+# Import specific functions from a module
+from math import sqrt
+print(sqrt(16))
+```
+
+## Object-oriented programming (OOP)
+
+OOP is a paradigm based on the use of "objects" – data structures that contain both data and functions that operate on this data. In Python, OOP is implemented by defining classes and creating instances of these classes (objects).
+
+### Classes and objects
+
+A class is a blueprint for objects. It defines a set of attributes and methods that the objects of this class have.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def greet(self):
+        return f"Hello, my name is {self.name} and I am {self.age} years old."
+
+# Object instantiation
+person1 = Person("Alice", 30)
+print(person1.greet())
+```
+
+### Inheritance
+
+Inheritance is a principle in which one class (the child class or subclass) inherits properties and methods from another class (the parent class or superclass). This promotes reusability and modularity of the code.
+
+```python
+class Employee(Person):
+    def __init__(self, name, age, employee_id):
+        self.name = name
+        self.age = age
+        self.employee_id = employee_id
+
+    def work(self):
+        return f"{self.name} works with the ID {self.employee_id}."
+
+# Object instantiation
+employee1 = Employee("Bob", 25, "E123")
+print(employee1.greet())  # Method of the parent class
+print(employee1.work())   # Method of the child class
+```
+
+### The `super()` function
+
+The `super()` function is used to access methods and properties of the parent class. It is particularly useful when you want to extend the implementation of the parent class.
+
+```python
+class Manager(Employee):
+    def __init__(self, name, age, employee_id, department):
+        super().__init__(name, age, employee_id)
+        self.department = department
+
+    def work(self):
+        parent_work = super().work()
+        return f"{parent_work} She manages the {self.department} department."
+
+# Object instantiation
+manager1 = Manager("Carol", 40, "M456", "IT")
+print(manager1.greet())   # Method of the parent class (Person)
+print(manager1.work())    # Overridden method of the child class (Manager)
+```
+
+### Method overriding
+
+Child classes can override methods of the parent class to implement specific behavior.
+
+```python
+class Animal:
+    def speak(self):
+        return "An animal makes a sound"
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+# Object instantiation
+animal = Animal()
+dog = Dog()
+cat = Cat()
+print(animal.speak())  # Output: An animal makes a sound
+print(dog.speak())     # Output: Woof!
+print(cat.speak())     # Output: Meow!
+```
+
+### Multiple inheritance
+
+Python supports multiple inheritance, where a class can inherit from several parent classes. However, this can lead to complexity and ambiguities, which are resolved by the method resolution order (MRO) algorithm.
+
+```python
+class A:
+    def greet(self):
+        return "Hello from A"
+
+class B:
+    def greet(self):
+        return "Hello from B"
+
+class C(A, B):
+    pass
+
+# Object instantiation
+c = C()
+print(c.greet())  # Output: Hello from A (according to the MRO)
+
+# Show the resolution order
+print(C.__mro__)  # Output: (<class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>, <class 'object'>)
+```
+
+### Abstract classes and methods
+
+Abstract classes serve as blueprints for other classes and cannot be instantiated. They contain one or more abstract methods that must be implemented in the subclasses.
+
+```python
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+# Object instantiation
+dog = Dog()
+cat = Cat()
+print(dog.speak())  # Output: Woof!
+print(cat.speak())  # Output: Meow!
+```
+
+### Properties
+
+Properties allow methods to be accessed as if they were attributes. This allows the encapsulation of internal state and the definition of getter and setter methods.
+
+```python
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        if value < 0:
+            raise ValueError("The radius must not be negative.")
+        self._radius = value
+
+    @property
+    def area(self):
+        return 3.1416 * (self._radius ** 2)
+
+# Object instantiation
+circle = Circle(5)
+print(circle.radius)  # Output: 5
+print(circle.area)    # Output: 78.54
+circle.radius = 10
+print(circle.area)    # Output: 314.16
+```
+
+### Class methods and static methods
+
+Class methods (`@classmethod`) have access to the class itself and not to the instance. Static methods (`@staticmethod`) have access to neither the instance nor the class.
+
+```python
+class MyClass:
+    class_variable = 0
+
+    def __init__(self, instance_variable):
+        self.instance_variable = instance_variable
+
+    @classmethod
+    def increment_class_variable(cls):
+        cls.class_variable += 1
+
+    @staticmethod
+    def static_method():
+        return "This is a static method."
+
+# Call class methods
+MyClass.increment_class_variable()
+print(MyClass.class_variable)  # Output: 1
+
+# Call static methods
+print(MyClass.static_method())  # Output: This is a static method.
+```
+
+## Error and exception handling
+
+Errors can be handled with `try`, `except`, `else` and `finally`. The `else` block is only executed if no exception occurred.
+
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Division by zero is not allowed.")
+else:
+    print(f"Result: {result}")
+finally:
+    print("This block is always executed.")
+```
+
+## Input and output
+
+### Input
+
+```python
+name = input("Enter your name: ")
+print(f"Hello, {name}")
+```
+
+### Output
+
+```python
+print("Hello, World!")
+```
+
+## Libraries and frameworks
+
+Python has a large number of libraries and frameworks, including:
+
+- **NumPy** and **Pandas** for data analysis
+- **Matplotlib** and **Seaborn** for data visualisation
+- **TensorFlow** and **PyTorch** for machine learning
+- **Flask** and **Django** for web development
+
+## Best practices
+
+- **Readability**: Write clear and understandable code and follow the style guide [PEP 8](https://peps.python.org/pep-0008/).
+- **Documentation**: Comment your code and use docstrings.
+- **Modularity**: Split your code into reusable modules and functions.
+- **Error handling**: Implement robust error and exception handling.
+- **Type hints**: Specify data types (`def greet(name: str) -> str:`) so that editors and tools like mypy can detect errors early.

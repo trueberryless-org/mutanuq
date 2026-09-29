@@ -1,0 +1,448 @@
+---
+title: Supervised Learning
+description: Classification with labelled data – from logistic regression and random forests to neural networks with scikit-learn, TensorFlow and PyTorch.
+sidebar:
+  order: 8
+---
+
+Supervised learning is a central area of machine learning practice that makes it possible to train models to recognise patterns and relationships in data. Unlike unsupervised learning, where the algorithm tries to identify patterns in the data on its own, supervised learning trains on labelled data available as input-output pairs.
+
+In this context, "labelled data" refers to a set of input examples for which the corresponding outputs are already known. The goal is to create a model that is able to make correct predictions or classifications for new, previously unseen input examples.
+
+There are different kinds of models in supervised learning, each developed for specific tasks and data structures. These include linear models such as logistic regression for binary classification, support vector machines for classification with the maximum margin between classes, ensemble methods such as random forests for combining several models, naive Bayes for probabilistic classification and neural networks for complex pattern recognition.
+
+The training process consists of feeding the model with the labelled data and adjusting the weights or parameters of the model so that it is able to make accurate predictions from the given inputs. The trained model can then be applied to new, unlabelled data to make predictions or identify patterns.
+
+Supervised learning is used in a wide range of applications, including speech recognition, image classification, medical diagnosis, financial forecasting and much more. The choice of a suitable model depends on the type of data and the specific task to be solved.
+
+## Preparation
+
+:::note
+Many models assume that the data has already been prepared.
+:::
+
+### Train-test split
+
+In the world of machine learning, the train-test split is a crucial step for evaluating the performance of models objectively. This method is fundamental to ensure that a model has not just memorised the training data, but is also able to make accurate predictions on new, previously unseen data.
+
+```python
+
+## Create X and y
+## Customer reviews (X)
+X = [
+    "The product is really great, I am very satisfied!",
+    "Unfortunately, the product does not meet my expectations.",
+    "Great value for money.",
+    "I am neutral, it is okay, but nothing special.",
+    "Worst product I have ever bought!"
+]
+
+## Corresponding categories (y)
+y = ["positive", "negative", "positive", "neutral", "negative"]
+
+## Create a DataFrame
+import pandas as pd
+df = pd.DataFrame({'Review': X, 'Category': y})
+
+## Split the data into X and y
+X = df['Review']
+y = df['Category']
+
+## Split the data for training and validation
+from sklearn.model_selection import train_test_split
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size = .3, random_state = 12)
+
+print("X_train:", X_train.shape) ## X_train: (3,)
+print("y_train:", y_train.shape) ## y_train: (3,)
+print("X_valid:", X_valid.shape) ## X_valid: (2,)
+print("y_valid:", y_valid.shape) ## y_valid: (2,)
+```
+
+### Vectorising
+
+In machine learning, vectorising the data is considered an important step. Vectorisation is a process in which the data is converted into vectors. In this example, the text data is vectorised using [BoW](/en/artificial-intelligence/natural-language-processing/#bag-of-words-bow).
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+vectorizer = CountVectorizer()
+
+## Learn the vocabulary only from the training data so that no information
+## from the validation data flows into the training (data leakage)
+vectorizer.fit(X_train)
+print("Token Count:", len(vectorizer.get_feature_names_out()))
+## <number of different words>
+
+X_train_vectorized = vectorizer.transform(X_train)
+X_valid_vectorized = vectorizer.transform(X_valid)
+print("X_train_vectorized:", X_train_vectorized.shape)
+## X_train_vectorized: (<number of training examples>, <number of different words>)
+
+print("Bag of Words\n", X_train_vectorized.toarray())
+## [Example output:]
+## Bag of Words
+## [[0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## ...
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]
+## [0 0 0 ... 0 0 0]]
+```
+
+## Linear models
+
+### Logistic Regression
+
+Despite its name, **logistic regression** is a classification method. Like linear regression, it first calculates a weighted sum of the features $z = w_1 x_1 + \dots + w_n x_n + b$. This is then converted into a probability between 0 and 1 by the **sigmoid function** $\sigma(z) = \frac{1}{1 + e^{-z}}$. If the probability is above a threshold (usually 0.5), the positive class is predicted.
+
+Logistic regression is fast, easy to interpret (the weights show which features are important for a decision) and a good first reference value (_baseline_) for any classification problem. It also works with more than two classes (multinomial logistic regression).
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+clf = LogisticRegression(max_iter=1000)
+clf.fit(X_train_vectorized, y_train)
+
+predictions = clf.predict(X_valid_vectorized)
+print(accuracy_score(y_valid, predictions))
+print(clf.predict_proba(X_valid_vectorized))  # Probability per class
+```
+
+### Support Vector Machines
+
+A **support vector machine** (SVM) looks for the dividing line – or, in higher dimensions, the hyperplane – that separates the classes with the **largest possible margin**. The data points closest to the dividing line, which determine its position, are called **support vectors**.
+
+If the data cannot be separated by a straight line, the so-called **kernel trick** helps: the data is (implicitly) mapped into a higher-dimensional space in which it is linearly separable. Common kernels are `linear`, `poly` and `rbf`. The parameter `C` determines how strongly misclassifications are penalised during training.
+
+SVMs work very well with data that has many features, for example in text classification, but become slow with very large data sets.
+
+```python
+from sklearn.svm import SVC
+
+clf = SVC(kernel='rbf', C=1.0)
+clf.fit(X_train_vectorized, y_train)
+predictions = clf.predict(X_valid_vectorized)
+```
+
+## Ensemble methods
+
+### Random Forest Classifier
+
+The random forest classifier (RFC) is a powerful and versatile algorithm for classification tasks. It combines the predictions of many decision trees to increase accuracy and robustness. The most important advantages of the RFC are:
+
+1. **Robustness against overfitting**: Since each tree is trained on a random subset of the data, the probability that the algorithm is fitted too closely to the training data decreases.
+2. **Stability and accuracy**: By aggregating the predictions of many trees, the RFC delivers more consistent and more accurate predictions.
+3. **Lower variance**: The RFC reduces the variance that can occur with individual decision trees by combining the results of many trees.
+4. **Automatic feature selection**: During training, only a random subset of the features is considered for each split, which reduces the importance of irrelevant features.
+
+#### Decision tree
+
+A decision tree is the basic component of a random forest. It consists of nodes that check conditions on features of the data and leaves that contain the predictions. The tree is built recursively by choosing the best split at each node, i.e. the one that separates the data best. This process continues until certain criteria are met (e.g. maximum depth of the tree or minimum number of data points in a leaf).
+
+The following figure shows an example of a decision tree that is supposed to determine whether a fruit is `edible` or `not edible`. This tree has a root node, two inner nodes and four leaf nodes.
+
+<img
+  src="/images/artificial_intelligence/rfc_tree_lm.png"
+  alt="Decision tree"
+  class="light-only"
+/>
+<img
+  src="/images/artificial_intelligence/rfc_tree_dm.png"
+  alt="Decision tree"
+  class="dark-only"
+/>
+
+#### Ensemble learning
+
+The random forest is an ensemble learning method that combines many decision trees. Each tree is trained on a random subset of the training data (with replacement) and a random subset of the features. The predictions of the individual trees are then aggregated to make the final prediction. For classification problems, this is usually done by majority vote.
+
+The following image shows an example of how the accuracy of the entire forest increases due to the different structure of the trees, since the errors of individual trees largely cancel each other out. This phenomenon is called the `wisdom of the crowd`.
+
+<img
+  src="/images/artificial_intelligence/rfc_ensemble_lm.png"
+  alt="Ensemble of decision trees"
+  class="light-only"
+/>
+<img
+  src="/images/artificial_intelligence/rfc_ensemble_dm.png"
+  alt="Ensemble of decision trees"
+  class="dark-only"
+/>
+
+#### Code example with data preparation and application of the RFC
+
+Here is a complete example that shows how to use the `RandomForestClassifier` in Python with `scikit-learn`. The example covers data preparation, model training and prediction.
+
+```python
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Load the data
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create a random forest classifier
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy * 100:.2f}%')
+
+# Example prediction for new data
+new_data = np.array([[5.1, 3.5, 1.4, 0.2]])
+prediction = clf.predict(new_data)
+print(f'Prediction for new data: {iris.target_names[prediction][0]}')
+```
+
+```
+//output.txt
+Accuracy: 100.00%
+Prediction for new data: setosa
+```
+
+#### Explanation of the code
+
+1. **Loading data**: The iris data set is loaded with `load_iris()`.
+2. **Splitting data**: The data is split into training and test sets with `train_test_split()`.
+3. **Creating the model**: A `RandomForestClassifier` is created with 100 decision trees (`n_estimators=100`).
+4. **Training**: The classifier is trained with the training data.
+5. **Prediction**: Predictions are made for the test set.
+6. **Evaluation**: The accuracy of the model on the test set is calculated.
+7. **Example prediction**: A prediction is made for new, unknown data.
+
+This example shows the typical steps for using a random forest classifier with `scikit-learn`. By combining many decision trees, the RFC offers robust and accurate predictions and is an excellent choice for many classification problems.
+
+### Gradient Boosting Classifier
+
+**Gradient boosting** also combines many decision trees, but proceeds differently from a random forest. The trees are not trained independently of each other, but **one after another**: each new, usually very small tree tries to correct the errors of the previous trees. The prediction is the weighted sum of all trees.
+
+- The **learning rate** (`learning_rate`) determines how strongly each tree influences the result. Smaller values require more trees but usually generalise better.
+- Since each tree builds on the previous ones, gradient boosting can overfit faster than a random forest and has to be tuned more carefully.
+
+For tabular data, gradient boosting is one of the most powerful methods of all. Particularly well-known, optimised implementations are **XGBoost**, **LightGBM** and **CatBoost**.
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+# X_train, X_test, ... from the random forest example (iris data set)
+clf = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
+clf.fit(X_train, y_train)
+print(f'Accuracy: {clf.score(X_test, y_test) * 100:.2f}%')
+```
+
+## Naive Bayes
+
+Naive Bayes models are a class of probabilistic classification algorithms in supervised learning. They are based on Bayes' theorem and make the naive assumption that the features of a data point are independent of each other, even though this is often not the case in reality. Despite their simplicity, naive Bayes models have proven effective in many applications, especially in text classification. These models are quick to train and implement, and they perform well if the independence assumption is at least approximately met in practice.
+
+### MultinomialNB
+
+Multinomial naive Bayes (MultinomialNB) is a text classification method based on the naive Bayes algorithm. It is particularly well suited for tasks such as spam detection or topic classification. With its focus on word counts in texts, MultinomialNB is known for its simplicity and efficiency.
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+clf = MultinomialNB(alpha=0.2)
+clf.fit(X_train_vectorized, y_train)
+
+predictions = clf.predict(X_valid_vectorized)
+print(accuracy_score(y_valid, predictions)) ## [Example output with a larger data set:] 0.9772727272727273
+```
+
+## K-nearest neighbors (KNN)
+
+The **k-nearest neighbors algorithm** is one of the simplest classification methods. During "training", the data is merely stored. If a new data point is to be classified, the algorithm looks for the $k$ training points that are most similar to it – usually measured by the Euclidean distance – and chooses the class that occurs most frequently among these neighbors.
+
+- A small $k$ (e.g. 1) reacts strongly to outliers and tends to overfit; a large $k$ smooths the decision too much (underfitting). With two classes, $k$ is usually chosen to be odd to avoid ties.
+- Since distances are calculated, the features must be **scaled** beforehand (e.g. with the `StandardScaler`); otherwise, features with large numerical values dominate.
+- Since all training data is searched for every prediction, KNN is slow with large data sets.
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+# X_train, X_test, ... from the random forest example (iris data set)
+clf = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))
+clf.fit(X_train, y_train)
+print(f'Accuracy: {clf.score(X_test, y_test) * 100:.2f}%')
+```
+
+## Neural networks
+
+Neural networks are a class of machine learning models inspired by the structure and function of the human brain. They consist of interconnected nodes (neurons) organised in layers. These networks learn by adjusting the connections between the neurons (weights) in order to perform tasks such as classification, regression and pattern recognition.
+
+### Neural networks (NN)
+
+Neural networks consist of a series of layers:
+
+- **Input layer:** The first layer, which receives the input data.
+- **Hidden layers:** One or more layers that transform the input data and extract complex features.
+- **Output layer:** The last layer, which delivers the result of the processing.
+
+Each neuron calculates a weighted sum of its inputs, applies an activation function and passes the result on to the next layer. Commonly used activation functions are the sigmoid function, the tanh function and the ReLU function (rectified linear unit).
+
+Neural networks learn through a process called backpropagation, which is used in combination with an optimisation algorithm such as gradient descent. Backpropagation calculates the gradient of the error with respect to the weights and biases, which are then updated to minimise the error.
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+```
+
+### Convolutional Neural Networks (CNN)
+
+Convolutional neural networks are a special kind of neural network that is particularly well suited for processing images and other grid-based data. They consist of:
+
+- **Convolutional layers:** These layers use filters (or kernels) that slide over the input image and extract local features.
+- **Pooling layers:** These layers reduce the dimensionality of the data by summarising local areas, e.g. through max pooling or average pooling.
+- **Fully connected layers:** These layers are similar to those in conventional neural networks and connect all neurons with each other.
+
+CNNs are often used in image and video processing, pattern recognition and the processing of multidimensional data.
+
+```python
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10, activation='softmax'))
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+```
+
+### Recurrent Neural Networks (RNN)
+
+Recurrent neural networks are a class of neural networks developed specifically for processing sequential data. They have internal memory states that store information about previous inputs. These networks are particularly well suited for tasks such as time series analysis, language processing and other sequential data.
+
+Variants of RNNs are:
+
+- **Long short-term memory (LSTM):** A special RNN architecture developed to solve the vanishing gradient problem and to model long-term dependencies better.
+- **Gated recurrent unit (GRU):** A simplified version of LSTM with similar performance characteristics.
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleRNN, self).__init__()
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        out, _ = self.rnn(x)
+        out = self.fc(out[:, -1, :])
+        return out
+
+model = SimpleRNN(input_size=10, hidden_size=20, output_size=1)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+```
+
+### Transformer networks
+
+Transformers are a more recent architecture that is used especially in natural language processing (NLP). They are based on a mechanism called self-attention, which makes it possible to model dependencies over long distances in the sequence. Unlike RNNs, transformers process all inputs simultaneously and use mechanisms that weight the importance of each position in the input sequence.
+
+Well-known applications of transformers are the BERT model (Bidirectional Encoder Representations from Transformers), which has achieved top performance in a variety of NLP tasks, and the GPT models (Generative Pre-trained Transformer), on which ChatGPT, among others, is based.
+
+```python
+import torch
+import torch.nn as nn
+from torch.nn import Transformer
+
+model = Transformer(nhead=8, num_encoder_layers=3)
+src = torch.rand((10, 32, 512))  # (sequence_length, batch_size, feature_size)
+tgt = torch.rand((20, 32, 512))
+out = model(src, tgt)
+```
+
+### TensorFlow
+
+TensorFlow is an open-source machine learning framework developed by Google. It offers an extensive library for building and training neural networks and is particularly known for its flexibility and scalability.
+
+Main features of TensorFlow are:
+
+- **Tensors:** Basic data structures similar to n-dimensional arrays.
+- **Graphs:** Models can be represented as directed graphs, where nodes represent operations and edges represent data flows. Since TensorFlow 2, code is executed directly (_eagerly_) by default; graphs are created when needed via `tf.function`.
+- **Keras API:** A high-level API that simplifies building and training models.
+
+TensorFlow supports distributed training, can be deployed on various platforms (CPUs, GPUs, TPUs) and has a large community as well as extensive documentation.
+
+```python
+import tensorflow as tf
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(784,)),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+```
+
+### PyTorch
+
+PyTorch is an open-source machine learning framework originally developed by Facebook (now Meta) and now maintained by the PyTorch Foundation. It is particularly popular for its simplicity and flexibility as well as its dynamic computational graphs.
+
+Main features of PyTorch are:
+
+- **Tensors:** Similar to TensorFlow, but with a simpler syntax.
+- **Autograd:** Automatic differentiation for calculating gradients.
+- **Export:** With `torch.export` (formerly TorchScript) or the ONNX exchange format, models can be converted into a form that can be run in a production environment without Python.
+
+PyTorch is particularly popular with researchers and developers because it offers intuitive and pythonic APIs that make experimenting and debugging easier.
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+```

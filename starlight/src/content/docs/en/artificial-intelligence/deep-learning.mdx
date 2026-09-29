@@ -1,0 +1,96 @@
+---
+title: Deep Learning
+description: Deep neural networks, how they are trained with backpropagation and important architectures such as CNNs, RNNs and transformers.
+sidebar:
+  order: 7
+---
+
+A further subdivision of machine learning is **deep learning** (DL). The special feature of this type of machine learning is the stacking of several layers that process the data from front to back and whose parameters are optimised using `backpropagation`. This allows the model to recognise very complex patterns and relationships. In general, all deep neural networks – that is, neural networks with several hidden layers – fall into the "deep learning" category.
+
+Besides classic **multi-layer neural networks**, **transformers** are also an important concept in deep learning. They are neural networks as well and consist of many `layers`. Each architecture has particular strengths in certain fields of application – transformers especially in the generative sector (text, image and video generation).
+
+The opposite of deep learning is "shallow learning", which covers all other machine learning algorithms, such as the `support vector machine` (SVM), the `random forest classifier` (RFC) or, more generally, the various mathematical methods of `regression`.
+
+:::danger[Caution]
+However, deep learning does not necessarily mean that the model will be better than shallow learning algorithms. Deep learning only means that the model consists of several layers. Especially with small, tabular data sets, classic methods such as random forests or gradient boosting are often just as good or even better – while being faster to train and easier to explain.
+:::
+
+## The artificial neuron
+
+The smallest unit of a neural network is the **artificial neuron**. It calculates a weighted sum of its inputs $x_i$, adds a bias $b$ and then applies an **activation function** $f$:
+
+$$
+y = f\left(\sum_{i=1}^{n} w_i \cdot x_i + b\right)
+$$
+
+The weights $w_i$ and the bias $b$ are the parameters learned during training. The activation function ensures that the network can also learn non-linear relationships – without it, even a very deep network would just be a single linear function.
+
+| Activation function | Formula                                    | Typical use                                        |
+| ------------------- | ------------------------------------------ | -------------------------------------------------- |
+| **ReLU**            | $f(x) = \max(0, x)$                        | Default for hidden layers                          |
+| **Sigmoid**         | $f(x) = \frac{1}{1 + e^{-x}}$              | Outputting a probability (binary classification)   |
+| **Tanh**            | $f(x) = \tanh(x)$                          | Hidden layers, especially in RNNs                  |
+| **Softmax**         | $f(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$  | Output layer for several classes                   |
+
+## Structure of a network
+
+Neurons are arranged in layers:
+
+- The **input layer** receives the data, for example the 784 pixels of a 28 × 28 pixel image.
+- The **hidden layers** extract increasingly abstract features step by step – for images, first edges, then shapes and finally whole objects.
+- The **output layer** delivers the result, for example a probability per class.
+
+## Training
+
+A neural network is trained in many repetitions (**epochs**):
+
+1. **Forward pass:** The training data is sent through the network and a prediction is calculated.
+2. **Loss function:** A loss function measures how far the prediction is from the correct answer, for example the mean squared error for regression or cross-entropy for classification.
+3. **Backpropagation:** Using the chain rule, it is calculated how much each weight contributed to the error (the **gradient**).
+4. **Gradient descent:** All weights are adjusted a small step in the direction in which the error becomes smaller. The size of this step is determined by the **learning rate**. Common optimisers are SGD and Adam.
+
+The data is usually not processed all at once, but in small packages (**batches**).
+
+### Avoiding overfitting
+
+Deep networks often have millions of parameters and therefore tend to memorise the training data. Common countermeasures are:
+
+- **Validation data** and **early stopping**: Training is stopped as soon as the error on the validation data starts rising again.
+- **Dropout**: During training, neurons are randomly deactivated so that the network does not rely on individual neurons.
+- **Regularisation**: Large weights are penalised in the loss function.
+- **Data augmentation**: Training data is artificially multiplied, for example by rotating or mirroring images.
+
+## Important architectures
+
+| Architecture                              | Idea                                                                  | Typical applications                            |
+| ----------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------- |
+| **Multilayer perceptron (MLP)**           | Fully connected layers                                                | Tabular data, simple classification             |
+| **Convolutional neural network (CNN)**    | Filters that slide over the input and detect local patterns           | Image recognition, medical image analysis       |
+| **Recurrent neural network (RNN, LSTM)**  | Internal state that stores information about previous inputs          | Time series, speech recognition                 |
+| **Transformer**                           | _Self-attention_: every element of a sequence weights all the others  | Language models (GPT, BERT), translation, image generation |
+
+You can find code examples for these architectures under [Supervised Learning](/en/artificial-intelligence/supervised-learning/#neural-networks).
+
+## Example with Keras
+
+The following example trains a simple network that recognises handwritten digits from the MNIST data set:
+
+```python
+import tensorflow as tf
+
+# Load the data set and scale the pixel values to 0 to 1
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(28, 28)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10, activation='softmax'),
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5, validation_split=0.1)
+model.evaluate(x_test, y_test)  # approx. 98% accuracy
+```

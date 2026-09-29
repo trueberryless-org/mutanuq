@@ -1,0 +1,78 @@
+---
+title: Machine Learning
+description: How models learn rules from data – the process of AI projects as well as supervised, unsupervised and reinforcement learning.
+sidebar:
+  order: 6
+---
+
+Machine learning is a field of computer science that makes it possible to train models to recognise patterns and relationships in data. The big difference from conventional programming is that in machine learning, **rules** are learned from an enormous number of data records (with the corresponding correct answers), which can then be applied to new data, whereas an algorithm finds the **answers** based on fixed rules. The following image illustrates this concept:
+
+<img
+    src="/images/artificial_intelligence/machine_learning_concept_lm.png"
+    alt="ML concept"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/machine_learning_concept_dm.png"
+    alt="ML concept"
+    class="dark-only"
+/>
+
+## Implementing AI projects
+
+The machine learning process is shown in the following diagram:
+
+<img
+    src="/images/artificial_intelligence/machine_learning_process_lm.png"
+    alt="Machine learning process"
+    class="light-only"
+/>
+<img
+    src="/images/artificial_intelligence/machine_learning_process_dm.png"
+    alt="Machine learning process"
+    class="dark-only"
+/>
+
+As you can see, this process starts with **aggregating** the data and **cleaning** it. Believe it or not, these subtasks make up **about 50-70%** of the workload of the entire process. Particular attention must be paid to customer data protection, data quality and data security. The data itself can be found on the internet for free or for a fee, for example on [Kaggle](https://www.kaggle.com/datasets). Clean data is worth its weight in gold!
+
+The actually interesting part then begins with preparing and training the model with the data and the subsequent testing. There are several metrics and statistical methods to assess the quality of the model. As soon as the customer is satisfied with it, the model can be deployed in the production environment.
+
+### Evaluating the quality of a model
+
+For classification tasks, the model's predictions on the test data are compared with the correct answers. This results in the **confusion matrix** with true positive (TP), false positive (FP), true negative (TN) and false negative (FN) predictions. The most important metrics are calculated from it:
+
+| Metric        | Formula                                                    | Meaning                                                        |
+| ------------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
+| **Accuracy**  | $\frac{TP + TN}{TP + TN + FP + FN}$                        | Share of all correct predictions                               |
+| **Precision** | $\frac{TP}{TP + FP}$                                       | How many of the cases predicted as positive are really positive |
+| **Recall**    | $\frac{TP}{TP + FN}$                                       | How many of the actually positive cases were found             |
+| **F1 score**  | $2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}$ | Harmonic mean of precision and recall                          |
+
+With imbalanced data sets, accuracy is deceptive: if 99% of all e-mails are not spam, a model that never predicts "spam" already reaches 99% accuracy – but is completely useless. For regression tasks, error measures such as the mean squared error (MSE) or the coefficient of determination $R^2$ are used instead.
+
+## Categories
+
+Machine learning is divided into the three major categories `Supervised Learning`, `Unsupervised Learning` and `Reinforcement Learning`.
+
+- **Supervised learning**  
+  Supervised learning covers all machine learning tasks in which training takes place using data and the corresponding correct or desired answers. The model is thus trained towards a kind of "target state". To use the data sets as efficiently as possible, usually 70% of the original data is used for training and the remaining 30% for testing the accuracy of the model.
+
+  Examples of supervised learning are the classification of images, texts, speech and emotions, the detection of spam e-mails, recommendation systems in online shops or certain kinds of predictions in specific fields.
+
+  The biggest challenges in this area are `overfitting` and `underfitting`. Since the correct answers are known, the model may be fitted too closely to the training data and therefore be unable to derive generally valid rules (`overfitting`). Or the nature of the data, the wrongly chosen architecture (neural network) or the algorithm does not allow any general rules to be recognised (`underfitting`).
+
+  Nevertheless, supervised learning is the most widespread and most frequently used approach, as it has proven to be very effective. Learn more under [Supervised Learning](/en/artificial-intelligence/supervised-learning/).
+
+- **Unsupervised learning**  
+  In unsupervised learning, the algorithm tries to cluster the data into groups during training in order to identify common or different properties. No answers are available in the data, and the model has to recognise the patterns in the data on its own. A well-known algorithm is **k-means**, which divides the data into $k$ groups whose points are each as close as possible to the centre of their group. Besides clustering, **dimensionality reduction** (for example with principal component analysis, PCA) is also part of unsupervised learning.
+
+  This area is mainly found in clustering. For example, unsupervised learning can be used in real time to identify patterns in customer characteristics (marketing department), anomalies (fraud detection), recommendation systems or, less frequently, in image processing.
+
+  This type of machine learning is not used as often, because the interpretability of the results, scalability and complexity often lead to major problems. Interestingly, the way we humans learn in our early years resembles this methodology, since we initially take in mostly unlabelled raw data (hearing, seeing, tasting, ...).
+
+- **Reinforcement learning**  
+  Reinforcement learning is an iterative process in which a so-called **agent** learns by trial and error. The agent performs actions in an **environment** and receives a **reward** (or penalty) for them. The agent's goal is to find a strategy that maximises the sum of rewards in the long run. Typical applications are games (for example AlphaGo), controlling robots or autonomous driving.
+
+  Large language models such as ChatGPT are also fine-tuned with a variant of it: in **reinforcement learning from human feedback** (RLHF), humans rate the model's answers, and these ratings serve as the reward. This makes the answers more helpful and harmful output less frequent. However, this method does not guarantee that the model cannot be manipulated or has no biases – the model only learns what is represented in the reward system.
+
+  When implementing the learning process, you therefore have to be particularly careful not to accidentally negate the reward system. This actually happened to OpenAI once: due to a sign error, a version of [GPT-2](https://openai.com/index/fine-tuning-gpt-2/) was optimised to produce texts that were as offensive as possible ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).

@@ -1,0 +1,169 @@
+---
+title: Matplotlib
+description: Creating line, bar and scatter plots, histograms and box plots with Matplotlib.
+sidebar:
+  order: 4
+---
+
+Matplotlib is a comprehensive library for creating static, animated and interactive visualisations in Python. It is particularly useful for scientific and data-related visualisations.
+
+## Installation
+
+To install Matplotlib, you can use pip:
+
+```bash
+pip install matplotlib
+```
+
+## Basic example
+
+Here is a simple example that shows how to create a line chart with Matplotlib:
+
+```python
+import matplotlib.pyplot as plt
+
+# Data
+x = [1, 2, 3, 4, 5]
+y = [2, 3, 5, 7, 11]
+
+# Create a line chart
+plt.plot(x, y)
+plt.xlabel('x-axis')
+plt.ylabel('y-axis')
+plt.title('Simple line chart')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/plot.png" alt="Line chart" style="max-width: 500px;" />
+
+## Histogram
+
+A histogram is useful for showing the distribution of a data set. Here is an example:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate random data
+data = np.random.randn(1000)
+
+# Create a histogram
+plt.hist(data, bins=30, edgecolor='black')
+plt.xlabel('Values')
+plt.ylabel('Frequency')
+plt.title('Histogram of the random data')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/hist.png" alt="Histogram" style="max-width: 500px;" />
+
+## Scatter plot
+
+A scatter plot shows the relationship between two variables. In the first example, you can see that there is little correlation, while in the second example there is a strong relationship between the two arrays.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate random data
+x = np.random.rand(50)
+y = np.random.rand(50)
+
+# Create a scatter plot
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x values')
+plt.ylabel('y values')
+plt.title('Scatter plot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter.png" alt="Scatter plot" style="max-width: 500px;" />
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Function for a linear relationship
+def linear_function(x):
+    return 0.5 * x + 3  # Example of a linear function: y = 0.5x + 3
+
+# Generate x values
+x = np.linspace(0, 100, 30)  # 30 evenly spaced values from 0 to 100
+y = linear_function(x) + np.random.normal(0, 5, 30)  # Random deviation with a normal distribution (mean 0, standard deviation 5)
+
+# Create a scatter plot
+plt.scatter(x, y, c='blue', alpha=0.5)
+plt.xlabel('x values')
+plt.ylabel('y values')
+plt.title('Scatter plot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/scatter_2.png" alt="Scatter plot" style="max-width: 500px;" />
+
+## Bar chart
+
+A bar chart shows the values for different categories.
+
+```python
+import matplotlib.pyplot as plt
+
+# Data
+categories = ['A', 'B', 'C', 'D']
+values = [3, 7, 8, 5]
+
+# Create a bar chart
+plt.bar(categories, values, color='green')
+plt.xlabel('Categories')
+plt.ylabel('Values')
+plt.title('Bar chart')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/bar.png" alt="Bar chart" style="max-width: 500px;" />
+
+## Box plot
+
+A box plot shows the distribution of a data set and highlights outliers.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate random data
+data = [np.random.randn(100) for _ in range(4)]
+
+# Create a box plot
+plt.boxplot(data, patch_artist=True)
+plt.xlabel('Group')
+plt.ylabel('Values')
+plt.title('Box plot')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/box.png" alt="Box plot" style="max-width: 500px;" />
+
+## Multiple charts (subplots)
+
+Besides the simple `plt` interface, Matplotlib offers an object-oriented interface. With `plt.subplots()`, you get a figure (`Figure`) and one or more coordinate systems (`Axes`) on which you can draw specifically. This way, several charts can be displayed side by side:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 2 * np.pi, 100)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+
+ax1.plot(x, np.sin(x), label='sin(x)')
+ax1.set_title('Sine')
+ax1.legend()
+
+ax2.plot(x, np.cos(x), color='orange', label='cos(x)')
+ax2.set_title('Cosine')
+ax2.legend()
+
+fig.tight_layout()
+fig.savefig('trigonometry.png', dpi=150)  # Save the figure as an image
+plt.show()
+```

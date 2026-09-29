@@ -1,13 +1,96 @@
 ---
 title: Deep Learning
+description: Tiefe neuronale Netze, ihr Training mit Backpropagation und wichtige Architekturen wie CNNs, RNNs und Transformer.
+sidebar:
+  order: 7
 ---
 
-Eine weiter Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellen Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und Parameter in der `Backwards-Propagation` optimieren. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle Neuronalen Netzwerke (Neural Networks) in die Kategorie „Deep Learning“ fallen.
+Eine weitere Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellem Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und deren Parameter mittels `Backpropagation` optimiert werden. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle tiefen neuronalen Netze (Deep Neural Networks) – also neuronale Netze mit mehreren verborgenen Schichten – in die Kategorie „Deep Learning“ fallen.
 
-Neben **Neuronalen Netzwerken** sind auch **Transformatoren** ein wichtiges Konzept im Deep Learning Bereich, da auch diese aus vielen `Layers` bestehen. Jede Architektur hat besondere Stärken in bestimmten Einsatzgebieten -- Transformatoren vor allem im generativen Sektor (Text-, Bild-, Videoerstellung).
+Neben klassischen **mehrschichtigen neuronalen Netzen** sind auch **Transformer** ein wichtiges Konzept im Deep-Learning-Bereich. Auch sie sind neuronale Netze, die aus vielen `Layers` bestehen. Jede Architektur hat besondere Stärken in bestimmten Einsatzgebieten – Transformer vor allem im generativen Sektor (Text-, Bild-, Videoerstellung).
 
 Das Gegenteil des „Deep Learning“ (tiefen Lernens) ist das „Shallow Learning“ (flaches Lernen), welches alle anderen Algorithmen des maschinellen Lernens umfasst, wie zum Beispiel die `Support Vector Machine` (SVM), den `Random Forest Classifier` (RFC) oder ganz allgemein die verschiedenen mathematischen Methoden der `Regression`.
 
 :::danger[Achtung]
-Deep Learning bedeutet allerdings nicht zwangsmäßig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning klassifiziert nur, dass das Modell aus mehreren Schichten (Layer) besteht.
+Deep Learning bedeutet allerdings nicht zwangsläufig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning bezeichnet nur, dass das Modell aus mehreren Schichten (Layer) besteht. Gerade bei kleinen, tabellarischen Datensätzen sind klassische Verfahren wie Random Forests oder Gradient Boosting oft genauso gut oder sogar besser – und dabei schneller zu trainieren und leichter zu erklären.
 :::
+
+## Das künstliche Neuron
+
+Die kleinste Einheit eines neuronalen Netzes ist das **künstliche Neuron**. Es berechnet eine gewichtete Summe seiner Eingaben $x_i$, addiert einen Bias $b$ und wendet anschließend eine **Aktivierungsfunktion** $f$ an:
+
+$$
+y = f\left(\sum_{i=1}^{n} w_i \cdot x_i + b\right)
+$$
+
+Die Gewichte $w_i$ und der Bias $b$ sind die Parameter, die beim Training gelernt werden. Die Aktivierungsfunktion sorgt dafür, dass das Netz auch nichtlineare Zusammenhänge lernen kann – ohne sie wäre ein noch so tiefes Netz nur eine einzige lineare Funktion.
+
+| Aktivierungsfunktion | Formel                              | Typischer Einsatz                                   |
+| -------------------- | ----------------------------------- | --------------------------------------------------- |
+| **ReLU**             | $f(x) = \max(0, x)$                 | Standard für verborgene Schichten                   |
+| **Sigmoid**          | $f(x) = \frac{1}{1 + e^{-x}}$       | Ausgabe einer Wahrscheinlichkeit (binäre Klassifikation) |
+| **Tanh**             | $f(x) = \tanh(x)$                   | Verborgene Schichten, v. a. in RNNs                 |
+| **Softmax**          | $f(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$ | Ausgabeschicht bei mehreren Klassen            |
+
+## Aufbau eines Netzes
+
+Neuronen werden in Schichten angeordnet:
+
+- Die **Eingabeschicht** nimmt die Daten entgegen, zum Beispiel die 784 Pixel eines 28 × 28 Pixel großen Bildes.
+- Die **verborgenen Schichten** (_Hidden Layers_) extrahieren schrittweise immer abstraktere Merkmale – bei Bildern etwa zuerst Kanten, dann Formen und schließlich ganze Objekte.
+- Die **Ausgabeschicht** liefert das Ergebnis, zum Beispiel eine Wahrscheinlichkeit pro Klasse.
+
+## Training
+
+Das Training eines neuronalen Netzes läuft in vielen Wiederholungen (**Epochen**) ab:
+
+1. **Forward Pass:** Die Trainingsdaten werden durch das Netz geschickt und eine Vorhersage berechnet.
+2. **Verlustfunktion:** Eine _Loss Function_ misst, wie weit die Vorhersage von der richtigen Antwort entfernt ist, etwa der mittlere quadratische Fehler bei Regression oder die Kreuzentropie bei Klassifikation.
+3. **Backpropagation:** Mithilfe der Kettenregel wird berechnet, wie stark jedes Gewicht zum Fehler beigetragen hat (der **Gradient**).
+4. **Gradientenabstieg:** Alle Gewichte werden ein kleines Stück in die Richtung angepasst, in der der Fehler kleiner wird. Wie groß dieser Schritt ist, bestimmt die **Lernrate**. Verbreitete Optimierer sind SGD und Adam.
+
+Meist werden die Daten dabei nicht alle auf einmal, sondern in kleinen Paketen (**Batches**) verarbeitet.
+
+### Overfitting vermeiden
+
+Tiefe Netze haben oft Millionen Parameter und neigen daher zum Auswendiglernen der Trainingsdaten. Gängige Gegenmaßnahmen sind:
+
+- **Validierungsdaten** und **Early Stopping**: Das Training wird beendet, sobald der Fehler auf den Validierungsdaten wieder steigt.
+- **Dropout**: Während des Trainings werden zufällig Neuronen deaktiviert, damit sich das Netz nicht auf einzelne Neuronen verlässt.
+- **Regularisierung**: Große Gewichte werden in der Verlustfunktion bestraft.
+- **Data Augmentation**: Trainingsdaten werden künstlich vermehrt, etwa durch Drehen oder Spiegeln von Bildern.
+
+## Wichtige Architekturen
+
+| Architektur                               | Idee                                                                 | Typische Anwendungen                          |
+| ----------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------- |
+| **Multilayer Perceptron (MLP)**           | Vollständig verbundene Schichten                                     | Tabellarische Daten, einfache Klassifikation  |
+| **Convolutional Neural Network (CNN)**    | Filter, die über die Eingabe gleiten und lokale Muster erkennen      | Bilderkennung, medizinische Bildanalyse       |
+| **Recurrent Neural Network (RNN, LSTM)**  | Interner Zustand, der Informationen über frühere Eingaben speichert  | Zeitreihen, Spracherkennung                   |
+| **Transformer**                           | _Self-Attention_: Jedes Element einer Sequenz gewichtet alle anderen | Sprachmodelle (GPT, BERT), Übersetzung, Bildgenerierung |
+
+Codebeispiele zu diesen Architekturen finden Sie unter [Supervised Learning](/de/artificial-intelligence/supervised-learning/#neuronale-netze).
+
+## Beispiel mit Keras
+
+Das folgende Beispiel trainiert ein einfaches Netz, das handgeschriebene Ziffern aus dem MNIST-Datensatz erkennt:
+
+```python
+import tensorflow as tf
+
+# Datensatz laden und Pixelwerte auf 0 bis 1 skalieren
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(28, 28)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10, activation='softmax'),
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5, validation_split=0.1)
+model.evaluate(x_test, y_test)  # ca. 98 % Genauigkeit
+```

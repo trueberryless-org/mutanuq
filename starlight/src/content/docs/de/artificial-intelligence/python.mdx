@@ -1,8 +1,11 @@
 ---
 title: Python
+description: Syntax, Datentypen, Kontrollstrukturen, Funktionen und objektorientierte Programmierung mit Python.
+sidebar:
+  order: 1
 ---
 
-Python ist eine weit verbreitete, benutzerfreundliche Programmiersprache, entwickelt von Guido van Rossum. Mit klarer Syntax und hoher Lesbarkeit ist sie für Anfänger und erfahrene Entwickler gleichermaßen attraktiv. Python wird in Webentwicklung, Datenanalyse, künstlicher Intelligenz und anderen Bereichen eingesetzt. Die Sprache zeichnet sich durch Einfachheit und Flexibilität aus. Ein charakteristisches Merkmal ist, dass Python eine interpretierte Sprache ist, was bedeutet, dass ein Interpreter verwendet wird, um den Code direkt auszuführen, ohne ihn vorher zu kompilieren. Mit einer umfangreichen Standardbibliothek und einer aktiven Entwicklergemeinschaft bietet Python eine robuste Plattform für verschiedene Projekte.
+Python ist eine weit verbreitete, benutzerfreundliche Programmiersprache, entwickelt von Guido van Rossum. Mit klarer Syntax und hoher Lesbarkeit ist sie für Anfänger und erfahrene Entwickler gleichermaßen attraktiv. Python wird in Webentwicklung, Datenanalyse, künstlicher Intelligenz und anderen Bereichen eingesetzt. Die Sprache zeichnet sich durch Einfachheit und Flexibilität aus. Ein charakteristisches Merkmal ist, dass Python eine interpretierte Sprache ist, was bedeutet, dass ein Interpreter verwendet wird, um den Code direkt auszuführen, ohne ihn vorher in Maschinencode zu kompilieren. Mit einer umfangreichen Standardbibliothek und einer aktiven Entwicklergemeinschaft bietet Python eine robuste Plattform für verschiedene Projekte.
 
 Python ist eine interpretierte, hochgradige und dynamische Programmiersprache, die von Guido van Rossum in den späten 1980er Jahren entwickelt wurde. Sie ist bekannt für ihre klare und lesbare Syntax, die das Schreiben und Verstehen von Code erleichtert.
 
@@ -11,9 +14,19 @@ Python ist eine interpretierte, hochgradige und dynamische Programmiersprache, d
 Um Python zu installieren, besuche die [offizielle Python-Website](https://www.python.org/) und lade die neueste Version herunter. Python enthält auch `pip`, ein Paketverwaltungssystem, das die Installation von Bibliotheken und Abhängigkeiten erleichtert.
 
 ```bash
-# Installation überprüfen
+# Installation überprüfen (unter macOS und Linux oft python3 bzw. pip3)
 python --version
 pip --version
+```
+
+Für jedes Projekt empfiehlt es sich, eine eigene **virtuelle Umgebung** anzulegen. So werden die installierten Bibliotheken verschiedener Projekte nicht vermischt.
+
+```bash
+python -m venv .venv
+# Aktivieren unter Windows
+.venv\Scripts\activate
+# Aktivieren unter macOS und Linux
+source .venv/bin/activate
 ```
 
 ## Grundlegende Syntax und Datentypen
@@ -25,6 +38,7 @@ pip --version
 """
 Dies ist ein
 mehrzeiliger Kommentar
+(genau genommen ein String, der keiner Variable zugewiesen wird)
 """
 ```
 
@@ -36,6 +50,12 @@ Python unterstützt mehrere eingebaute Datentypen:
 # Zahlen
 integer = 10
 float_num = 10.5
+
+# Wahrheitswerte
+is_valid = True
+
+# Kein Wert
+nothing = None
 
 # Strings
 single_quote_str = 'Hallo'
@@ -75,7 +95,8 @@ addition = 5 + 3
 subtraction = 5 - 3
 multiplication = 5 * 3
 exponentiation = 5 ** 3
-division = 5 / 3
+division = 5 / 3          # 1.666...
+floor_division = 5 // 3   # 1 (ganzzahlige Division)
 square_root = 5 ** 0.5
 modulus = 5 % 3
 
@@ -113,8 +134,8 @@ else:
 for i in range(5):
     print(i)
 
-# List Comprehension (Kurzschreibweise For-Schleife)
-[print(i) for i in range(5)]
+# List Comprehension (Kurzschreibweise, um mit einer For-Schleife eine Liste zu erzeugen)
+squares = [i ** 2 for i in range(5)]  # [0, 1, 4, 9, 16]
 
 # While-Schleife
 count = 0
@@ -138,7 +159,7 @@ print(greet("Alice"))
 
 ### Module
 
-Ein Modul ist eine Datei, die Python-Code enthält. Sie können Module importieren, um Funktionen und Klassen zu verwenden.
+Ein Modul ist eine Datei, die Python-Code enthält. Du kannst Module importieren, um Funktionen und Klassen zu verwenden.
 
 ```python
 # Import eines Moduls
@@ -194,7 +215,7 @@ print(employee1.work())   # Methode der Kindklasse
 
 ### Die `super()`-Funktion
 
-Die `super()`-Funktion wird verwendet, um auf Methoden und Eigenschaften der Elternklasse zuzugreifen. Sie ist besonders nützlich, wenn Sie die Implementierung der Elternklasse erweitern möchten.
+Die `super()`-Funktion wird verwendet, um auf Methoden und Eigenschaften der Elternklasse zuzugreifen. Sie ist besonders nützlich, wenn du die Implementierung der Elternklasse erweitern möchtest.
 
 ```python
 class Manager(Employee):
@@ -305,7 +326,7 @@ class Circle:
     @radius.setter
     def radius(self, value):
         if value < 0:
-            raise ValueError("Der Radius muss positiv sein.")
+            raise ValueError("Der Radius darf nicht negativ sein.")
         self._radius = value
 
     @property
@@ -349,13 +370,15 @@ print(MyClass.static_method())  # Ausgabe: Dies ist eine statische Methode.
 
 ## Fehler- und Ausnahmebehandlung
 
-Fehler können mit `try`, `except` und `finally` gehandhabt werden.
+Fehler können mit `try`, `except`, `else` und `finally` gehandhabt werden. Der `else`-Block wird nur ausgeführt, wenn keine Ausnahme aufgetreten ist.
 
 ```python
 try:
     result = 10 / 0
 except ZeroDivisionError:
     print("Division durch Null ist nicht erlaubt.")
+else:
+    print(f"Ergebnis: {result}")
 finally:
     print("Dieser Block wird immer ausgeführt.")
 ```
@@ -386,7 +409,8 @@ Python verfügt über eine Vielzahl von Bibliotheken und Frameworks, darunter:
 
 ## Best Practices
 
--   **Lesbarkeit** : Schreibe klaren und verständlichen Code.
--   **Dokumentation** : Kommentiere deinen Code und verwende Docstrings.
--   **Modularität** : Teile deinen Code in wiederverwendbare Module und Funktionen auf.
--   **Fehlerbehandlung** : Implementiere robuste Fehler- und Ausnahmebehandlung.
+-   **Lesbarkeit**: Schreibe klaren und verständlichen Code und halte dich an den Styleguide [PEP 8](https://peps.python.org/pep-0008/).
+-   **Dokumentation**: Kommentiere deinen Code und verwende Docstrings.
+-   **Modularität**: Teile deinen Code in wiederverwendbare Module und Funktionen auf.
+-   **Fehlerbehandlung**: Implementiere robuste Fehler- und Ausnahmebehandlung.
+-   **Type Hints**: Gib Datentypen an (`def greet(name: str) -> str:`), damit Editoren und Werkzeuge wie mypy Fehler früh erkennen.
