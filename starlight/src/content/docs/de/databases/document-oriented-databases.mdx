@@ -1,30 +1,92 @@
 ---
 title: Dokumentenorientierte Datenbanken
+description: NoSQL-Datenbanken, die Daten als flexible JSON-Dokumente speichern – Konzepte, BASE-Modell, MongoDB und CouchDB.
+sidebar:
+  order: 2
 ---
+
+Dokumentenorientierte Datenbanken gehören zu den sogenannten **NoSQL-Datenbanken** („Not only SQL“). Anstatt Daten auf mehrere Tabellen mit festen Spalten zu verteilen, speichern sie zusammengehörige Informationen als **Dokumente** – meist im JSON-Format oder in einer binären Variante davon (BSON bei MongoDB). Ein Dokument kann verschachtelte Objekte und Listen enthalten und muss keinem festen Schema folgen.
+
+```json
+{
+  "_id": "65f1c2a9e4b0a1b2c3d4e5f6",
+  "vorname": "Anna",
+  "nachname": "Huber",
+  "klasse": { "name": "3AHIT", "klassenvorstand": "Mayer" },
+  "kurse": ["Robotik", "Spanisch"]
+}
+```
+
+Was in einer [relationalen Datenbank](/de/databases/relational-databases/) auf die Tabellen `Schueler`, `Klasse` und `Kursbuchung` verteilt wäre, steckt hier in einem einzigen Dokument.
 
 ## Vorteile
 
+- **Flexibles Schema**  
+  Dokumente derselben Collection dürfen unterschiedliche Felder besitzen. Neue Felder können jederzeit hinzugefügt werden, ohne die bestehende Datenbank zu migrieren. Das beschleunigt vor allem die Entwicklung in frühen Projektphasen.
+
+- **Natürliche Abbildung von Objekten**  
+  Dokumente entsprechen weitgehend den Objekten im Programmcode. Eine aufwändige Übersetzung zwischen Objekten und Tabellen (_Object-Relational Mapping_) entfällt.
+
+- **Schnelle Lesezugriffe**  
+  Da zusammengehörige Daten in einem Dokument gespeichert sind, können sie mit einem einzigen Zugriff gelesen werden, ohne teure [JOIN-Operationen](/de/databases/relational-databases/#join-operationen).
+
+- **Horizontale Skalierbarkeit**  
+  Dokumente sind voneinander unabhängig und lassen sich daher gut auf viele Server verteilen (_Sharding_). So können sehr große Datenmengen und hohe Lasten bewältigt werden.
+
 ## Nachteile
+
+- **Redundanz**  
+  Daten werden häufig bewusst mehrfach gespeichert (zum Beispiel der Klassenvorstand in jedem Schülerdokument). Ändert sich eine solche Information, müssen viele Dokumente aktualisiert werden.
+
+- **Schwächere Konsistenzgarantien**  
+  Viele dokumentenorientierte Datenbanken setzen auf [Eventual Consistency](#base). Transaktionen über mehrere Dokumente werden gar nicht oder nur eingeschränkt unterstützt und sind langsamer als in relationalen Systemen.
+
+- **Komplexe Beziehungen**  
+  Stark vernetzte Daten mit vielen n:m-Beziehungen lassen sich schlechter abbilden und abfragen als in relationalen Datenbanken.
+
+- **Keine einheitliche Abfragesprache**  
+  Jedes System verwendet eine eigene Abfrage-API. Wissen lässt sich daher weniger gut von einem Produkt auf ein anderes übertragen als bei SQL.
 
 ## Konzepte
 
 ### Collections
 
-### BASE-Transaktionen
+Dokumente werden in **Collections** gruppiert, die grob den Tabellen einer relationalen Datenbank entsprechen. Eine Collection enthält typischerweise gleichartige Dokumente, etwa alle Schüler oder alle Bestellungen. Jedes Dokument besitzt einen eindeutigen Schlüssel (bei MongoDB das Feld `_id`).
 
-Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Sprich, Transaktionen sind atomar. Das Akronym BASE steht für folgende Eigenschaften bei dokumentenorientierte Datenbanken:
+Beim Entwurf muss man entscheiden, ob zusammengehörige Daten **eingebettet** (_Embedding_) oder über eine ID **referenziert** (_Referencing_) werden:
+
+- **Einbetten** eignet sich, wenn Daten gemeinsam gelesen werden und die eingebetteten Daten nicht unbegrenzt wachsen, zum Beispiel die Adresse einer Person.
+- **Referenzieren** eignet sich, wenn Daten von vielen Dokumenten verwendet werden oder sehr groß werden können, zum Beispiel alle Bestellungen eines Kunden.
+
+### BASE
+
+Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Verteilte NoSQL-Datenbanken lockern die strengen [ACID-Garantien](/de/databases/relational-databases/#acid-transaktionen) jedoch zugunsten von Verfügbarkeit und Skalierbarkeit. Garantiert ist oft nur, dass Änderungen an einem **einzelnen** Dokument atomar sind. Das Akronym BASE steht für folgende Eigenschaften bei dokumentenorientierten Datenbanken:
 
 - **B**asically **A**vailable  
-  Die Daten sind jederzeit zugänglich und erreichbar.
+  Die Daten sind jederzeit zugänglich und erreichbar, auch wenn einzelne Knoten ausfallen.
 
 - **S**oft State  
-  Es ist erlaubt, dass es Zustände im System geben kann, in welchem Daten falsch sind.
+  Der Zustand des Systems kann sich auch ohne neue Eingaben ändern, weil Änderungen erst nach und nach an alle Knoten verteilt werden. Es ist also erlaubt, dass es Zustände im System geben kann, in welchen Daten (noch) nicht aktuell sind.
 
 - **E**ventual Consistency  
-  Es wird garantiert, dass die Daten zu irgendeinem Zeitpunkt in der Zukunft richtig sein werden. Dies muss jedoch nicht jetzt sein. Das Gegenteil wäre _Strong Consistency_, wie es bei [relationalen Datenbanken](/de/databases/relational-databases) der Fall ist.
+  Es wird garantiert, dass die Daten zu irgendeinem Zeitpunkt in der Zukunft richtig sein werden. Dies muss jedoch nicht jetzt sein. Das Gegenteil wäre _Strong Consistency_, wie es bei [relationalen Datenbanken](/de/databases/relational-databases/) der Fall ist.
+
+Welche dieser Eigenschaften ein verteiltes System überhaupt gleichzeitig erfüllen kann, beschreibt das [CAP-Theorem](/de/databases/cap-theorem/).
 
 ## Realisierungen
 
 ### MongoDB
 
+MongoDB ist die am weitesten verbreitete dokumentenorientierte Datenbank. Dokumente werden im binären JSON-Format **BSON** gespeichert und mit einer eigenen Abfragesprache bzw. über Treiber für alle gängigen Programmiersprachen abgefragt. MongoDB unterstützt Indizes, eine mächtige **Aggregation Pipeline** für Auswertungen, Replikation über _Replica Sets_ sowie Sharding. Seit Version 4.0 sind auch ACID-Transaktionen über mehrere Dokumente möglich.
+
+```js
+// Alle Schüler der 3AHIT, die den Kurs Robotik besuchen
+db.schueler.find({ "klasse.name": "3AHIT", kurse: "Robotik" });
+
+// Neuen Kurs zu einem Schüler hinzufügen
+db.schueler.updateOne({ vorname: "Ben" }, { $push: { kurse: "Spanisch" } });
+```
+
 ### CouchDB
+
+Apache CouchDB speichert JSON-Dokumente und ist vollständig über eine **HTTP/REST-Schnittstelle** ansprechbar. Abfragen werden über sogenannte _Views_ (MapReduce-Funktionen in JavaScript) oder die deklarative Abfragesprache Mango formuliert. Eine besondere Stärke ist die **Multi-Master-Replikation**: Mehrere Datenbanken – auch offline arbeitende Geräte – können ihre Daten später wieder synchronisieren. Konflikte werden über Dokumentrevisionen (`_rev`) erkannt. Mit PouchDB gibt es sogar eine kompatible Datenbank, die direkt im Browser läuft.

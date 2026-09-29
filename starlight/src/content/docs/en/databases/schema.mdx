@@ -1,0 +1,67 @@
+---
+title: Schema
+description: How a database schema defines the structure, data types and integrity constraints of a database.
+sidebar:
+  label: Database Schema
+  order: 3
+---
+
+A **database schema** describes the structure of a database: which tables (entities) exist, which columns and data types they have, how the tables are connected via keys and which rules apply to the stored data. The schema is the blueprint, so to speak; the actual data is the content.
+
+## Goals of a good schema
+
+- Working with the data must not lead to data inconsistencies.
+- Where a value is mandatory, no `NULL` values may be entered.
+- Data redundancy should be avoided through [normalisation](/en/databases/relational-databases/#normalisation).
+- Column values must be atomic (see [first normal form](/en/databases/relational-databases/#first-normal-form-1nf)).
+- Every entity is represented in its own table.
+
+## Schema levels
+
+According to the **ANSI/SPARC architecture**, a database schema is divided into three levels:
+
+| Level                  | Description                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| **External schema**    | The view of individual users or applications on the data, for example through views.     |
+| **Conceptual schema**  | The overall logical structure of all data: tables, columns, relationships and constraints. |
+| **Internal schema**    | The physical storage: files, indexes and storage structures.                             |
+
+Thanks to this separation, an index can be added, for example, without applications having to change (**physical data independence**).
+
+## Consistency through constraints
+
+The consistency of the data is ensured by **constraints** (integrity constraints), which the database system checks automatically on every change. If a change violates a constraint, it is rejected.
+
+### Attribute constraints
+
+Attribute constraints apply to individual columns:
+
+- **Data type:** A column `DateOfBirth DATE` only accepts valid dates.
+- **`NOT NULL`:** The column must always contain a value.
+- **`UNIQUE`:** Each value may only occur once in the column.
+- **`DEFAULT`:** Defines a default value if no value is given on insertion.
+
+### Relational constraints
+
+Relational constraints (key constraints) secure the relationships between tables:
+
+- **`PRIMARY KEY`:** Uniquely identifies each record (equivalent to `NOT NULL` + `UNIQUE`).
+- **`FOREIGN KEY`:** Ensures referential integrity. `ON DELETE CASCADE` or `ON DELETE SET NULL` defines what happens to dependent records when the referenced record is deleted.
+
+### CHECK constraints
+
+`CHECK` is used to formulate arbitrary conditions that every record must fulfil.
+
+```sql
+CREATE TABLE Grade (
+    StudentId INT NOT NULL REFERENCES Student(Id) ON DELETE CASCADE,
+    Subject   VARCHAR(20) NOT NULL,
+    Value     INT NOT NULL CHECK (Value BETWEEN 1 AND 5),
+    Date      DATE NOT NULL DEFAULT CURRENT_DATE,
+    PRIMARY KEY (StudentId, Subject, Date)
+);
+```
+
+## Schemas in NoSQL databases
+
+[Document-oriented databases](/en/databases/document-oriented-databases/) are often considered "schemaless". More precisely, they use **schema-on-read**: the structure is not interpreted when storing, but only when the application reads the data. Relational databases, on the other hand, use **schema-on-write**. Many NoSQL systems nevertheless allow optional schema validation, for example MongoDB with JSON Schema.

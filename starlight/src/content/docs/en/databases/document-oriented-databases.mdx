@@ -1,0 +1,92 @@
+---
+title: Document-Oriented Databases
+description: NoSQL databases that store data as flexible JSON documents – concepts, the BASE model, MongoDB and CouchDB.
+sidebar:
+  order: 2
+---
+
+Document-oriented databases belong to the so-called **NoSQL databases** ("not only SQL"). Instead of distributing data across several tables with fixed columns, they store related information as **documents** – usually in JSON format or a binary variant of it (BSON in MongoDB). A document can contain nested objects and lists and does not have to follow a fixed schema.
+
+```json
+{
+  "_id": "65f1c2a9e4b0a1b2c3d4e5f6",
+  "firstName": "Anna",
+  "lastName": "Huber",
+  "class": { "name": "3AHIT", "formTeacher": "Mayer" },
+  "courses": ["Robotics", "Spanish"]
+}
+```
+
+What would be spread across the tables `Student`, `Class` and `CourseBooking` in a [relational database](/en/databases/relational-databases/) is contained in a single document here.
+
+## Advantages
+
+- **Flexible schema**  
+  Documents in the same collection may have different fields. New fields can be added at any time without migrating the existing database. This speeds up development, especially in early project phases.
+
+- **Natural representation of objects**  
+  Documents largely correspond to the objects in the program code. There is no need for a complex translation between objects and tables (_object-relational mapping_).
+
+- **Fast reads**  
+  Since related data is stored in one document, it can be read with a single access, without expensive [JOIN operations](/en/databases/relational-databases/#join-operations).
+
+- **Horizontal scalability**  
+  Documents are independent of each other and can therefore be distributed well across many servers (_sharding_). This makes it possible to handle very large amounts of data and high loads.
+
+## Disadvantages
+
+- **Redundancy**  
+  Data is often deliberately stored several times (for example the form teacher in every student document). If such information changes, many documents have to be updated.
+
+- **Weaker consistency guarantees**  
+  Many document-oriented databases rely on [eventual consistency](#base). Transactions across several documents are not supported at all or only to a limited extent, and they are slower than in relational systems.
+
+- **Complex relationships**  
+  Highly interconnected data with many n:m relationships is harder to represent and query than in relational databases.
+
+- **No uniform query language**  
+  Every system uses its own query API. Knowledge can therefore be transferred from one product to another less easily than with SQL.
+
+## Concepts
+
+### Collections
+
+Documents are grouped into **collections**, which roughly correspond to the tables of a relational database. A collection typically contains documents of the same kind, such as all students or all orders. Every document has a unique key (the `_id` field in MongoDB).
+
+When designing the data model, you have to decide whether related data is **embedded** or **referenced** via an ID:
+
+- **Embedding** is suitable when data is read together and the embedded data does not grow without bounds, for example a person's address.
+- **Referencing** is suitable when data is used by many documents or can become very large, for example all orders of a customer.
+
+### BASE
+
+Transactions are several operations combined into one unit in such a way that either all or none of the steps are executed. Distributed NoSQL databases, however, relax the strict [ACID guarantees](/en/databases/relational-databases/#acid-transactions) in favour of availability and scalability. Often, only changes to a **single** document are guaranteed to be atomic. The acronym BASE stands for the following properties of document-oriented databases:
+
+- **B**asically **A**vailable  
+  The data is accessible and reachable at all times, even if individual nodes fail.
+
+- **S**oft State  
+  The state of the system can change even without new input, because changes are only gradually propagated to all nodes. It is therefore allowed that there are states in the system in which data is not (yet) up to date.
+
+- **E**ventual Consistency  
+  It is guaranteed that the data will be correct at some point in the future. However, this does not have to be right now. The opposite would be _strong consistency_, as is the case with [relational databases](/en/databases/relational-databases/).
+
+Which of these properties a distributed system can fulfil at the same time is described by the [CAP theorem](/en/databases/cap-theorem/).
+
+## Implementations
+
+### MongoDB
+
+MongoDB is the most widely used document-oriented database. Documents are stored in the binary JSON format **BSON** and queried with its own query language or through drivers for all common programming languages. MongoDB supports indexes, a powerful **aggregation pipeline** for analyses, replication via _replica sets_ and sharding. Since version 4.0, ACID transactions across several documents are also possible.
+
+```js
+// All students of 3AHIT who attend the Robotics course
+db.students.find({ "class.name": "3AHIT", courses: "Robotics" });
+
+// Add a new course to a student
+db.students.updateOne({ firstName: "Ben" }, { $push: { courses: "Spanish" } });
+```
+
+### CouchDB
+
+Apache CouchDB stores JSON documents and can be accessed entirely through an **HTTP/REST interface**. Queries are written using so-called _views_ (MapReduce functions in JavaScript) or the declarative query language Mango. A particular strength is **multi-master replication**: several databases – even devices working offline – can synchronise their data again later. Conflicts are detected through document revisions (`_rev`). With PouchDB, there is even a compatible database that runs directly in the browser.

@@ -1,0 +1,216 @@
+---
+title: Relational Databases
+description: Tables, keys, JOINs, ACID transactions and normal forms – the fundamentals of relational database systems.
+sidebar:
+  order: 1
+---
+
+Relational databases form the backbone of many modern information systems and applications. Their concept is based on organising data in table-like structures in which relationships between different records are defined by keys. This structure enables efficient management and querying of data. In this context, advantages such as high data consistency, flexibility and a simple data model play a central role. Nevertheless, there are also challenges and disadvantages to consider, including scalability problems and limitations when handling complex data structures.
+
+## Advantages
+
+- **Simple data model**  
+  The relational database model is based on a data model that is comparatively easy to implement. Information that companies want to store long-term, such as customer data, order lists or account transactions, can be represented ideally with the table structure underlying the relational database model.
+
+- **Low data redundancy**  
+  The relational database model defines clear rules for avoiding redundancy through various [normal forms](#normalisation). If applied consistently, relational database systems enable almost redundancy-free data storage. This makes maintaining data much easier, since changes only have to be made in one single place.
+
+- **High data consistency**  
+  Normalised relational databases enable consistent data storage and thus contribute to data consistency. Relational database systems also offer features to define integrity constraints and check them automatically. Transactions that could endanger data consistency are rejected.
+
+- **Set-oriented data processing**  
+  The relational database system is based on set-oriented data processing, in which every entity is broken down into atomic values. This allows different entities to be linked via their content as well as complex database queries such as JOINs.
+
+- **Uniform query language**  
+  For querying relational databases, the database language SQL, standardised by a joint committee of ISO and IEC, has become established. This standardisation makes it possible to develop and run applications largely independently of the underlying database management system. However, SQL support still varies considerably between DBMSs.
+
+## Disadvantages
+
+- **Big data**  
+  With enormous amounts of data, relational databases reach their limits, especially regarding the efficiency of [JOIN operations](#join-operations). In environments where big data is processed, relational databases often turn out to be less advisable due to the performance cost of JOINs.
+
+- **Tables do not fit**  
+  The seemingly simple table-based data model and the linking of data in relational database systems can be challenging in certain contexts. In particular, the rigid structure of two-dimensional tables reaches its limits when it comes to representing complex data types, as in multimedia applications and big data scenarios.
+
+- **Lack of hierarchy in the database structures**  
+  A central shortcoming of relational databases compared to object databases is the inability to implement hierarchically structured classes in database schemas. Since subordinate entities cannot be given the properties of their parent entities, there is only a single hierarchy level and sub-tuples cannot be created.
+
+- **Segmentation of data and complex queries**  
+  The fundamental practice of segmenting data through normalisation in relational database systems can lead to fragmented data storage. Combining thematically related data becomes more difficult, which can lead to complex queries across several tables and thus potentially impair performance at the application level.
+
+## Concepts
+
+### Entities
+
+An **entity** is a uniquely identifiable object of the real world about which information is to be stored, for example a particular student, a book or an order. Entities of the same kind are grouped into an **entity type**, which is represented as a table in the database.
+
+- Each **row** (tuple, record) of the table corresponds to one entity.
+- Each **column** (attribute) describes a property, such as `FirstName` or `DateOfBirth`, and has a defined data type.
+
+When designing a database, entity types, their attributes and relationships are usually first drawn in an **entity-relationship model** (ER model) and then translated into tables.
+
+### Relations
+
+In the relational model, a **relation** is formally nothing more than a table: a set of tuples with the same attributes. Colloquially, "relations" often refers to the **relationships** between entity types. These are distinguished by their cardinality:
+
+| Cardinality | Example                                                   | Implementation in tables                                              |
+| ----------- | --------------------------------------------------------- | --------------------------------------------------------------------- |
+| **1:1**     | A person has exactly one passport.                        | Foreign key with a `UNIQUE` constraint in one of the two tables.      |
+| **1:n**     | A class has many students.                                | Foreign key on the "n" side (`Student.ClassId`).                      |
+| **n:m**     | Students attend many courses, courses have many students. | Separate junction table with two foreign keys (`CourseAttendance`).   |
+
+### Keys
+
+Keys identify records and link tables with each other.
+
+- **Super key:** Any set of attributes that uniquely identifies a record.
+- **Candidate key:** A minimal super key – no attribute can be removed without losing uniqueness.
+- **Primary key** (`PRIMARY KEY`): The chosen candidate key that uniquely identifies a record. It must not be `NULL` and should never change.
+- **Surrogate key:** A key introduced specifically for this purpose without any business meaning, for example a sequential number or a GUID.
+- **Composite key:** A primary key consisting of several columns, typical for junction tables.
+- **Foreign key** (`FOREIGN KEY`): A column that references the primary key of another table. The database ensures that only existing records are referenced (**referential integrity**).
+
+```sql
+CREATE TABLE Class (
+    Id   INT PRIMARY KEY,
+    Name VARCHAR(10) NOT NULL UNIQUE
+);
+
+CREATE TABLE Student (
+    Id        INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    ClassId   INT REFERENCES Class(Id)
+);
+```
+
+### JOIN operations
+
+A **JOIN** combines records from several tables into one result table based on a condition – usually foreign key = primary key.
+
+| JOIN type            | Result                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `INNER JOIN`         | Only records for which a matching partner exists in both tables.                              |
+| `LEFT (OUTER) JOIN`  | All records of the left table; missing partners from the right table are filled with `NULL`.  |
+| `RIGHT (OUTER) JOIN` | Like `LEFT JOIN`, just with swapped roles.                                                    |
+| `FULL (OUTER) JOIN`  | All records of both tables; missing partners are filled with `NULL`.                          |
+| `CROSS JOIN`         | Cartesian product: every record of one table combined with every record of the other.        |
+
+```sql
+-- All students with the name of their class, including students without a class
+SELECT s.FirstName, s.LastName, c.Name AS Class
+FROM Student s
+LEFT JOIN Class c ON s.ClassId = c.Id;
+```
+
+Joining a table with itself is called a **self join**, for example to link employees with their managers from the same table.
+
+### ACID transactions
+
+Transactions are several operations combined into one unit in such a way that either all or none of the steps are executed. In other words, transactions are atomic. This becomes evident once again in the ACID transaction model (acronym):
+
+- **A**tomic  
+  Transactions cannot be split. If one step fails, all previous changes of the transaction are rolled back (`ROLLBACK`).
+
+- **C**onsistent  
+  A transaction moves the database from one valid state to another valid state. All defined integrity constraints must be satisfied after the transaction has completed. Relational databases therefore have high data consistency (_strong consistency_). This means that all data must be correct at all times. [_Eventual consistency_](/en/databases/document-oriented-databases/#base), on the other hand, means that the data will be correct at some point (not necessarily right now).
+
+  In SQL databases, this high data consistency is ensured by constraints (`NOT NULL`, `PRIMARY KEY` / `FOREIGN KEY`, `UNIQUE`, `CHECK`, `DEFAULT`).
+
+- **I**solated  
+  Concurrent transactions do not affect each other: the result is as if they had been executed one after another. A common implementation is to lock the data a transaction is working on so that no other transaction can overwrite it.
+
+- **D**urable  
+  Once a transaction has been completed successfully (`COMMIT`), its changes are stored permanently – even in the event of a power failure or system crash. To achieve this, database systems first write changes to a transaction log (_write-ahead log_).
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Account SET Balance = Balance - 100 WHERE Id = 1;
+UPDATE Account SET Balance = Balance + 100 WHERE Id = 2;
+
+COMMIT; -- or ROLLBACK if an error occurred
+```
+
+#### Improving isolation
+
+Locking data for every transaction is a critical point in databases, because you want to be able to accept as many requests per second as possible. For this reason, techniques have been developed to improve isolation and thus speed up or avoid transaction locks.
+
+##### Multiple servers (sharding)
+
+A simple way to handle more transactions is to distribute the entities across different servers. For example, you can store all usernames starting with _A_ to _C_ on one server and all usernames from _D_ to _F_ on another server.
+
+##### Optimistic concurrency control
+
+**Optimistic concurrency control** suggests storing an additional column with an incrementing version of the entity for data that rarely changes. Before a transaction writes the updated values back to the database, it must check whether the version numbers match. Only if they do have no other changes happened during the operations, and the record can be saved with an increased version number. Otherwise, the change is rejected and has to be retried.
+
+This approach is faster than locking the record, since locks are expensive, i.e. they take up a lot of computing time. Entity Framework, for example, supports this approach through a `RowVersion` column.
+
+##### MVCC
+
+**Multiversion concurrency control** goes one step further: with every change, the database stores a new version of the record instead of overwriting the old value immediately. Each transaction sees a consistent snapshot of the data as of its start. As a result, reading transactions never have to wait for writing transactions and vice versa. Outdated versions are cleaned up automatically later (in PostgreSQL, for example, by `VACUUM`). MVCC is used by PostgreSQL, Oracle, MySQL (InnoDB) and optionally by Microsoft SQL Server, among others.
+
+## Normalisation
+
+Different levels of normalisation ensure low data redundancy so that no data has to be stored twice. Redundant data leads to so-called **anomalies**: when inserting, updating or deleting, the same information would have to be adjusted in several places, which easily leads to contradictions. From the third normal form onwards, databases are considered well normalised.
+
+Each normal form requires the previous one. An unnormalised table with course bookings serves as an example:
+
+| StudentNo | Name       | Class | FormTeacher | Courses           |
+| --------- | ---------- | ----- | ----------- | ----------------- |
+| 1         | Anna Huber | 3AHIT | Mayer       | Robotics, Spanish |
+| 2         | Ben Wolf   | 3AHIT | Mayer       | Robotics          |
+
+### First normal form (1NF)
+
+A table is in first normal form if all attribute values are **atomic**, i.e. cannot be broken down any further, and there are no repeating groups. In the example, `Name` (first and last name) and `Courses` (several values) violate 1NF. The solution: `Name` is split into `FirstName` and `LastName`, and a separate row is created for each course.
+
+### Second normal form (2NF)
+
+A table is in second normal form if it is in 1NF and every non-key attribute depends on the **entire primary key**, not just on a part of it. After 1NF, the key is `(StudentNo, Course)`, but `FirstName`, `Class` and `FormTeacher` depend only on `StudentNo`. The data is therefore split into a `Student` table and a `CourseBooking (StudentNo, Course)` table.
+
+### Third normal form (3NF)
+
+A table is in third normal form if it is in 2NF and there are **no transitive dependencies**, i.e. no non-key attribute depends on another non-key attribute. The `FormTeacher` depends on the `Class` and not directly on the student. It is therefore moved into a separate table `Class (Class, FormTeacher)`.
+
+### Boyce-Codd normal form (BCNF)
+
+BCNF tightens 3NF: every determinant – that is, every attribute on which other attributes functionally depend – must be a candidate key. Differences from 3NF only occur in tables with several overlapping candidate keys.
+
+### Fourth normal form (4NF)
+
+A table is in fourth normal form if it is in BCNF and contains no **multi-valued dependencies**. If, for example, a table stores which languages and which hobbies a student has, all combinations have to be stored, even though languages and hobbies have nothing to do with each other. The solution is to split it into two tables.
+
+### Fifth normal form (5NF)
+
+A table is in fifth normal form if it cannot be decomposed losslessly into smaller tables any further without creating incorrect records when joining them again (**join dependencies**). In practice, 4NF and 5NF rarely play a role.
+
+:::tip[Denormalisation]
+In practice, full normalisation is sometimes deliberately avoided to speed up frequent queries without many JOINs, for example in data warehouses.
+:::
+
+## Implementations
+
+### Oracle
+
+Oracle Database is a commercial database system by Oracle Corporation and has been one of the most widely used DBMSs in large companies since the 1980s. It is considered very powerful and highly available and offers PL/SQL, its own procedural extension of SQL.
+
+### MySQL
+
+MySQL is probably the best-known open-source database system and today also belongs to Oracle. It is part of the classic LAMP stack (Linux, Apache, MySQL, PHP) and is used by many web applications such as WordPress.
+
+### Microsoft SQL Server
+
+Microsoft SQL Server is Microsoft's relational database system. It works particularly well with .NET and Entity Framework, uses the SQL dialect T-SQL and is also available for school projects in the free Express and Developer editions.
+
+### PostgreSQL
+
+PostgreSQL is a highly standards-compliant, object-relational open-source database system. It supports many advanced data types (for example JSON, arrays or geodata with PostGIS) and is very flexible thanks to extensions.
+
+### SQLite
+
+SQLite is an embedded database that does not need its own server and stores the entire database in a single file. It is used in smartphones, browsers and desktop applications and is ideal for small projects and tests.
+
+### MariaDB
+
+MariaDB is a fork of MySQL that was started in 2009 by MySQL founder Michael "Monty" Widenius after Oracle had taken over MySQL. MariaDB is largely compatible with MySQL and is the default in many Linux distributions.

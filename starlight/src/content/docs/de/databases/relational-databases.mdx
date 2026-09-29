@@ -1,5 +1,8 @@
 ---
 title: Relationale Datenbanken
+description: Tabellen, Schlüssel, JOINs, ACID-Transaktionen und Normalformen – die Grundlagen relationaler Datenbanksysteme.
+sidebar:
+  order: 1
 ---
 
 Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme und Anwendungen. Ihr Konzept basiert auf der Organisation von Daten in tabellenähnlichen Strukturen, in denen Beziehungen zwischen verschiedenen Datensätzen durch Schlüssel definiert werden. Diese Struktur ermöglicht eine effiziente Verwaltung und Abfrage von Daten. In diesem Kontext spielen Vorteile wie hohe Datenkonsistenz, Flexibilität und einfaches Datenmodell eine zentrale Rolle. Dennoch sind auch Herausforderungen und Nachteile zu berücksichtigen, darunter Skalierbarkeitsprobleme und Einschränkungen bei der Handhabung von komplexen Datenstrukturen.
@@ -13,7 +16,7 @@ Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme
   Das relationale Datenbankmodell legt klare Vorschriften zur Vermeidung von Redundanz durch verschiedene [Normalformen](#normalisierung) fest. Bei konsequenter Umsetzung ermöglichen relationale Datenbanksysteme eine nahezu redundanzfreie Datenhaltung. Dies erleichtert insbesondere die Pflege und Wartung von Datenbeständen, da Änderungen lediglich an einer einzigen Stelle vorgenommen werden müssen.
 
 - **Hohe Datenkonsistenz**  
-  Normalisierte relationale Datenbanken ermöglichen eine konsistente Datenhaltung und tragen somit zur Datenkonsistenz bei. Relationale Datenbanksysteme bieten auch Funktionen, um Integritätsbedingungen zu definieren und automatisch zu überprüfen. Transaktionen, die die Datenkonsistenz gefährden könnten, sind ausgeschlossen.
+  Normalisierte relationale Datenbanken ermöglichen eine konsistente Datenhaltung und tragen somit zur Datenkonsistenz bei. Relationale Datenbanksysteme bieten auch Funktionen, um Integritätsbedingungen zu definieren und automatisch zu überprüfen. Transaktionen, die die Datenkonsistenz gefährden könnten, werden abgewiesen.
 
 - **Mengenorientierte Datenverarbeitung**  
   Das relationale Datenbanksystem basiert auf einer mengenorientierten Datenverarbeitung, bei der jede Entität in atomare Werte zerlegt wird. Dies ermöglicht die Verknüpfung verschiedener Entitäten über den Inhalt sowie komplexe Datenbankabfragen wie JOINs.
@@ -39,70 +42,175 @@ Relationale Datenbanken bilden das Rückgrat vieler moderner Informationssysteme
 
 ### Entitäten
 
+Eine **Entität** ist ein eindeutig identifizierbares Objekt der realen Welt, über das Informationen gespeichert werden sollen, zum Beispiel ein bestimmter Schüler, ein Buch oder eine Bestellung. Gleichartige Entitäten werden zu einem **Entitätstyp** zusammengefasst, der in der Datenbank als Tabelle abgebildet wird.
+
+- Jede **Zeile** (Tupel, Datensatz) der Tabelle entspricht einer Entität.
+- Jede **Spalte** (Attribut) beschreibt eine Eigenschaft, zum Beispiel `Vorname` oder `Geburtsdatum`, und besitzt einen festgelegten Datentyp.
+
+Beim Datenbankentwurf werden Entitätstypen, ihre Attribute und Beziehungen meist zuerst in einem **Entity-Relationship-Modell** (ER-Modell) grafisch dargestellt und anschließend in Tabellen übersetzt.
+
 ### Relationen
+
+Im relationalen Modell ist eine **Relation** formal nichts anderes als eine Tabelle: eine Menge von Tupeln mit denselben Attributen. Umgangssprachlich meint man mit „Relationen“ häufig die **Beziehungen** zwischen Entitätstypen. Diese werden nach ihrer Kardinalität unterschieden:
+
+| Kardinalität | Beispiel                                          | Umsetzung in Tabellen                                                            |
+| ------------ | ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **1:1**      | Eine Person hat genau einen Reisepass.            | Fremdschlüssel mit `UNIQUE`-Constraint in einer der beiden Tabellen.             |
+| **1:n**      | Eine Klasse hat viele Schüler.                    | Fremdschlüssel auf der „n“-Seite (`Schueler.KlasseId`).                          |
+| **n:m**      | Schüler besuchen viele Kurse, Kurse haben viele Schüler. | Eigene Zwischentabelle mit zwei Fremdschlüsseln (`Kursbesuch`).           |
 
 ### Schlüssel
 
+Schlüssel identifizieren Datensätze und verknüpfen Tabellen miteinander.
+
+- **Superschlüssel:** Jede Menge von Attributen, die einen Datensatz eindeutig identifiziert.
+- **Schlüsselkandidat:** Ein minimaler Superschlüssel – man kann kein Attribut weglassen, ohne die Eindeutigkeit zu verlieren.
+- **Primärschlüssel** (`PRIMARY KEY`): Der ausgewählte Schlüsselkandidat, der einen Datensatz eindeutig identifiziert. Er darf nicht `NULL` sein und sollte sich nie ändern.
+- **Künstlicher Schlüssel** (Surrogatschlüssel): Ein eigens eingeführter Schlüssel ohne fachliche Bedeutung, zum Beispiel eine fortlaufende Nummer oder eine GUID.
+- **Zusammengesetzter Schlüssel:** Ein Primärschlüssel, der aus mehreren Spalten besteht, typisch für Zwischentabellen.
+- **Fremdschlüssel** (`FOREIGN KEY`): Eine Spalte, die auf den Primärschlüssel einer anderen Tabelle verweist. Die Datenbank stellt sicher, dass nur existierende Datensätze referenziert werden (**referentielle Integrität**).
+
+```sql
+CREATE TABLE Klasse (
+    Id   INT PRIMARY KEY,
+    Name VARCHAR(10) NOT NULL UNIQUE
+);
+
+CREATE TABLE Schueler (
+    Id       INT PRIMARY KEY,
+    Vorname  VARCHAR(50) NOT NULL,
+    Nachname VARCHAR(50) NOT NULL,
+    KlasseId INT REFERENCES Klasse(Id)
+);
+```
+
 ### JOIN-Operationen
+
+Mit einem **JOIN** werden Datensätze aus mehreren Tabellen anhand einer Bedingung – meist Fremdschlüssel = Primärschlüssel – zu einer Ergebnistabelle verbunden.
+
+| JOIN-Art             | Ergebnis                                                                                      |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `INNER JOIN`         | Nur Datensätze, für die in beiden Tabellen ein passender Partner existiert.                   |
+| `LEFT (OUTER) JOIN`  | Alle Datensätze der linken Tabelle, fehlende Partner der rechten Tabelle werden mit `NULL` aufgefüllt. |
+| `RIGHT (OUTER) JOIN` | Wie `LEFT JOIN`, nur mit vertauschten Rollen.                                                 |
+| `FULL (OUTER) JOIN`  | Alle Datensätze beider Tabellen, fehlende Partner werden mit `NULL` aufgefüllt.               |
+| `CROSS JOIN`         | Kartesisches Produkt: jeder Datensatz der einen Tabelle mit jedem Datensatz der anderen.      |
+
+```sql
+-- Alle Schüler mit dem Namen ihrer Klasse, auch Schüler ohne Klasse
+SELECT s.Vorname, s.Nachname, k.Name AS Klasse
+FROM Schueler s
+LEFT JOIN Klasse k ON s.KlasseId = k.Id;
+```
+
+Ein JOIN einer Tabelle mit sich selbst heißt **Self Join**, etwa um Mitarbeiter mit ihren Vorgesetzten aus derselben Tabelle zu verbinden.
 
 ### ACID-Transaktionen
 
-Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Sprich, Transaktionen sind atomar. Dies wird beim ACID-Transaktionsmodell (Akronym) erneuert ersichtlich:
+Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Sprich, Transaktionen sind atomar. Dies wird beim ACID-Transaktionsmodell (Akronym) erneut ersichtlich:
 
-- **A**tomar  
-  Transaktionen sind nicht aufspaltbar.
+- **A**tomic  
+  Transaktionen sind nicht aufspaltbar. Schlägt ein Schritt fehl, werden alle bisherigen Änderungen der Transaktion zurückgerollt (`ROLLBACK`).
 
 - **C**onsistent  
-  Relationale Datenbanken haben eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](/de/databases/document-oriented-databases#base-transaktionen) bedeutet, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht gezwungenermaßen jetzt sofort).
+  Eine Transaktion überführt die Datenbank von einem gültigen Zustand in einen anderen gültigen Zustand. Alle definierten Integritätsbedingungen müssen nach dem Abschluss der Transaktion erfüllt sein. Relationale Datenbanken haben daher eine hohe Datenkonsistenz (_Strong Consistency_). Das bedeutet, dass zu jedem Zeitpunkt alle Daten richtig sein müssen. [_Eventual Consistency_](/de/databases/document-oriented-databases/#base) bedeutet hingegen, dass die Datenrichtigkeit irgendwann gegeben sein wird (nicht gezwungenermaßen jetzt sofort).
 
   Bei SQL-Datenbanken wird diese hohe Datenkonsistenz mittels Constraints (`NOT NULL`, `PRIMARY KEY` / `FOREIGN KEY`, `UNIQUE`, `CHECK`, `DEFAULT`) gewährleistet.
 
 - **I**solated  
-  Sobald eine Transaktion Daten bearbeitet, werden diese Daten gesperrt, damit keine anderen Transaktionen die Daten überschreiben können.
+  Gleichzeitig laufende Transaktionen beeinflussen sich nicht gegenseitig: Das Ergebnis ist so, als wären sie nacheinander ausgeführt worden. Eine gängige Umsetzung ist, dass Daten, die eine Transaktion bearbeitet, gesperrt werden, damit keine anderen Transaktionen die Daten überschreiben können.
 
 - **D**urable  
-  Die Daten werden selbst bei einem Ausfall gespeichert. Somit werden die Ergebnisse im Rahmen einer Transaktion sogar bei Ausfallzeiten fortlaufend geliefert.
+  Sobald eine Transaktion erfolgreich abgeschlossen (`COMMIT`) wurde, bleiben ihre Änderungen dauerhaft gespeichert – selbst bei einem Stromausfall oder Absturz des Systems. Dafür schreiben Datenbanksysteme Änderungen zuerst in ein Transaktionsprotokoll (_Write-Ahead-Log_).
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Konto SET Saldo = Saldo - 100 WHERE Id = 1;
+UPDATE Konto SET Saldo = Saldo + 100 WHERE Id = 2;
+
+COMMIT; -- oder ROLLBACK, falls ein Fehler aufgetreten ist
+```
 
 #### Isolation verbessern
 
-Die Datensperre bei jeder Transaktion ist ein kritischer Punkt bei Datenbanken, denn man möchte so viele Anfragen wie möglich pro Sekunde entgegen nehmen können. Aus diesem Grund wurden Techniken entwickelt, um die Isolation zu verbessern und somit Transaktionssperren zu verschnellern.
+Die Datensperre bei jeder Transaktion ist ein kritischer Punkt bei Datenbanken, denn man möchte so viele Anfragen wie möglich pro Sekunde entgegennehmen können. Aus diesem Grund wurden Techniken entwickelt, um die Isolation zu verbessern und somit Transaktionssperren zu beschleunigen oder zu vermeiden.
 
-##### mehrere Server
+##### Mehrere Server (Sharding)
 
-Eine einfache Möglichkeit, mehr Transaktionen entgegennehmen zu können, ist die Aufteilung der Entitäten auf verschiedene Server. Beispielsweise kann man alle Benutzernamen, dessen Anfangsbuchstabe zwischen _A_ und _C_ liegt, auf einem Server und alle _D_ bis _F_ Benutzernamen auf einem weiteren Server speichern.
+Eine einfache Möglichkeit, mehr Transaktionen entgegennehmen zu können, ist die Aufteilung der Entitäten auf verschiedene Server. Beispielsweise kann man alle Benutzernamen, deren Anfangsbuchstabe zwischen _A_ und _C_ liegt, auf einem Server und alle _D_ bis _F_ Benutzernamen auf einem weiteren Server speichern.
+
+##### Optimistische Nebenläufigkeitskontrolle
+
+Die **optimistische Nebenläufigkeitskontrolle** (_Optimistic Concurrency Control_) schlägt vor, bei Daten, welche sich selten ändern, eine zusätzliche Spalte mit einer inkrementierenden Version der Entität zu speichern. Bevor eine Transaktion die aktualisierten Werte in die Datenbank zurückspeichert, muss überprüft werden, ob die Versionsnummern übereinstimmen. Erst wenn dies zutrifft, sind während der Operationen keine anderen Änderungen geschehen und der Datensatz kann mit einer erhöhten Versionsnummer gespeichert werden. Andernfalls wird die Änderung abgelehnt und muss wiederholt werden.
+
+Dieses Verfahren ist schneller als die Sperre (_Lock_) des Datensatzes, da Locks teuer sind, sprich viel Rechenzeit in Anspruch nehmen. Entity Framework unterstützt dieses Verfahren zum Beispiel über eine `RowVersion`-Spalte.
 
 ##### MVCC
 
-**Multiversion Concurrency Control** schlägt vor, bei Daten, welche sich selten ändern, eine zusätzliche Spalte mit einer inkrementierenden Version der Entität zu speichern. Bevor eine Transaktion die aktualisierten Werte in die Datenbank zurückspeichert, muss überprüft werden, ob die Versionsnummern übereinstimmen. Erst wenn dies zutrifft, sind während der Operationen keine anderen Änderungen geschehen und der Datensatz kann mit einer erhöhten Versionsnummer gespeichert werden.
-
-Dieses Verfahren ist schneller als die Sperre (_Lock_) des Datensatzes, da Locks teuer sind, sprich viel Rechenzeit in Anspruch nehmen.
+**Multiversion Concurrency Control** geht noch einen Schritt weiter: Die Datenbank speichert bei jeder Änderung eine neue Version des Datensatzes, anstatt den alten Wert sofort zu überschreiben. Jede Transaktion sieht einen konsistenten Schnappschuss der Daten zum Zeitpunkt ihres Starts. Dadurch müssen lesende Transaktionen niemals auf schreibende warten und umgekehrt. Veraltete Versionen werden später automatisch aufgeräumt (bei PostgreSQL etwa durch `VACUUM`). MVCC wird unter anderem von PostgreSQL, Oracle, MySQL (InnoDB) und optional von Microsoft SQL Server verwendet.
 
 ## Normalisierung
 
-Verschiedene Stufen der Normalisierung sorgen für eine geringe Datenredundanz, sodass keine Daten doppelt gespeichert werden müssen. Ab Normalform 3 gelten Datenbanken als gut normalisiert.
+Verschiedene Stufen der Normalisierung sorgen für eine geringe Datenredundanz, sodass keine Daten doppelt gespeichert werden müssen. Redundante Daten führen zu sogenannten **Anomalien**: Beim Einfügen, Ändern oder Löschen müsste dieselbe Information an mehreren Stellen angepasst werden, was leicht zu Widersprüchen führt. Ab Normalform 3 gelten Datenbanken als gut normalisiert.
+
+Jede Normalform setzt die vorherige voraus. Als Beispiel dient eine unnormalisierte Tabelle mit Kursbuchungen:
+
+| SchuelerNr | Name       | Klasse | Klassenvorstand | Kurse              |
+| ---------- | ---------- | ------ | --------------- | ------------------ |
+| 1          | Anna Huber | 3AHIT  | Mayer           | Robotik, Spanisch  |
+| 2          | Ben Wolf   | 3AHIT  | Mayer           | Robotik            |
 
 ### 1. Normalform (1NF)
 
+Eine Tabelle ist in der 1. Normalform, wenn alle Attributwerte **atomar** sind, also nicht weiter zerlegt werden können, und es keine Wiederholungsgruppen gibt. Im Beispiel verletzen `Name` (Vor- und Nachname) und `Kurse` (mehrere Werte) die 1NF. Die Lösung: `Name` wird in `Vorname` und `Nachname` aufgeteilt und für jeden Kurs wird eine eigene Zeile angelegt.
+
 ### 2. Normalform (2NF)
+
+Eine Tabelle ist in der 2. Normalform, wenn sie in 1NF ist und jedes Nicht-Schlüsselattribut **vom gesamten Primärschlüssel** abhängt, nicht nur von einem Teil davon. Nach der 1NF lautet der Schlüssel `(SchuelerNr, Kurs)`, aber `Vorname`, `Klasse` und `Klassenvorstand` hängen nur von der `SchuelerNr` ab. Deshalb werden die Daten in eine Tabelle `Schueler` und eine Tabelle `Kursbuchung (SchuelerNr, Kurs)` aufgeteilt.
 
 ### 3. Normalform (3NF)
 
+Eine Tabelle ist in der 3. Normalform, wenn sie in 2NF ist und es **keine transitiven Abhängigkeiten** gibt, also kein Nicht-Schlüsselattribut von einem anderen Nicht-Schlüsselattribut abhängt. Der `Klassenvorstand` hängt von der `Klasse` ab und nicht direkt vom Schüler. Er wird deshalb in eine eigene Tabelle `Klasse (Klasse, Klassenvorstand)` ausgelagert.
+
 ### Boyce-Codd-Normalform (BCNF)
+
+Die BCNF verschärft die 3NF: Jede Determinante – also jedes Attribut, von dem andere Attribute funktional abhängen – muss ein Schlüsselkandidat sein. Unterschiede zur 3NF treten nur bei Tabellen mit mehreren, sich überlappenden Schlüsselkandidaten auf.
 
 ### 4. Normalform (4NF)
 
+Eine Tabelle ist in der 4. Normalform, wenn sie in BCNF ist und keine **mehrwertigen Abhängigkeiten** enthält. Speichert man etwa in einer Tabelle, welche Sprachen und welche Hobbys ein Schüler hat, müssen alle Kombinationen gespeichert werden, obwohl Sprachen und Hobbys nichts miteinander zu tun haben. Die Lösung ist eine Aufteilung in zwei Tabellen.
+
 ### 5. Normalform (5NF)
+
+Eine Tabelle ist in der 5. Normalform, wenn sie sich nicht weiter verlustfrei in kleinere Tabellen zerlegen lässt, ohne dass beim erneuten Verbinden (JOIN) falsche Datensätze entstehen (**Verbundabhängigkeiten**). In der Praxis spielen 4NF und 5NF nur selten eine Rolle.
+
+:::tip[Denormalisierung]
+In der Praxis wird manchmal bewusst auf eine vollständige Normalisierung verzichtet, um häufige Abfragen ohne viele JOINs zu beschleunigen, zum Beispiel in Data Warehouses.
+:::
 
 ## Realisierungen
 
 ### Oracle
 
+Oracle Database ist ein kommerzielles Datenbanksystem der Oracle Corporation und seit den 1980er-Jahren eines der meistgenutzten DBMS in großen Unternehmen. Es gilt als sehr leistungsfähig und ausfallsicher und bietet mit PL/SQL eine eigene prozedurale Erweiterung von SQL.
+
 ### MySQL
+
+MySQL ist das wohl bekannteste Open-Source-Datenbanksystem und gehört heute ebenfalls zu Oracle. Es ist Teil des klassischen LAMP-Stacks (Linux, Apache, MySQL, PHP) und wird von vielen Webanwendungen wie WordPress verwendet.
 
 ### Microsoft SQL Server
 
+Microsoft SQL Server ist das relationale Datenbanksystem von Microsoft. Es arbeitet besonders gut mit .NET und Entity Framework zusammen, verwendet den SQL-Dialekt T-SQL und ist in der kostenlosen Express- und Developer-Edition auch für Schulprojekte verfügbar.
+
 ### PostgreSQL
+
+PostgreSQL ist ein sehr standardkonformes, objektrelationales Open-Source-Datenbanksystem. Es unterstützt viele erweiterte Datentypen (zum Beispiel JSON, Arrays oder Geodaten mit PostGIS) und ist durch Erweiterungen sehr flexibel.
 
 ### SQLite
 
+SQLite ist eine eingebettete Datenbank, die ohne eigenen Server auskommt und die gesamte Datenbank in einer einzigen Datei speichert. Sie wird in Smartphones, Browsern und Desktop-Anwendungen verwendet und eignet sich ideal für kleine Projekte und Tests.
+
 ### MariaDB
+
+MariaDB ist ein Fork von MySQL, der 2009 von MySQL-Gründer Michael „Monty“ Widenius ins Leben gerufen wurde, nachdem Oracle MySQL übernommen hatte. MariaDB ist weitgehend kompatibel zu MySQL und bei vielen Linux-Distributionen der Standard.

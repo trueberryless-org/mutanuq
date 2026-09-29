@@ -1,15 +1,67 @@
 ---
 title: Schema
+description: Wie ein Datenbankschema Struktur, Datentypen und Integritätsbedingungen (Constraints) einer Datenbank festlegt.
 sidebar:
   label: Datenbankschema
+  order: 3
 ---
 
--   Beim Arbeiten mit den Daten dürfen keine Dateninkonsistenzen entstehen
--   keine Null-Werte eintragen
--   Datenredundanzen vermeiden
--   atomare Spaltenwerte
--   Entitäten (Datenbanken Tabellen)
--   Konsistenz \<-\> Constrains
-    -   AttributConstrain
-    -   RelationalConstrain
-    -   CHECK Constrain
+Ein **Datenbankschema** beschreibt die Struktur einer Datenbank: welche Tabellen (Entitäten) es gibt, welche Spalten und Datentypen diese besitzen, wie die Tabellen über Schlüssel miteinander verbunden sind und welche Regeln für die gespeicherten Daten gelten. Das Schema ist sozusagen der Bauplan, die eigentlichen Daten sind der Inhalt.
+
+## Ziele eines guten Schemas
+
+- Beim Arbeiten mit den Daten dürfen keine Dateninkonsistenzen entstehen.
+- Wo ein Wert zwingend erforderlich ist, dürfen keine `NULL`-Werte eingetragen werden.
+- Datenredundanzen sollen durch [Normalisierung](/de/databases/relational-databases/#normalisierung) vermieden werden.
+- Spaltenwerte müssen atomar sein (siehe [1. Normalform](/de/databases/relational-databases/#1-normalform-1nf)).
+- Jede Entität wird in einer eigenen Tabelle abgebildet.
+
+## Schemaebenen
+
+Nach der **ANSI/SPARC-Architektur** wird ein Datenbankschema in drei Ebenen unterteilt:
+
+| Ebene              | Beschreibung                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| **Externes Schema**   | Die Sicht einzelner Benutzer oder Anwendungen auf die Daten, zum Beispiel über Views.          |
+| **Konzeptionelles Schema** | Die logische Gesamtstruktur aller Daten: Tabellen, Spalten, Beziehungen und Constraints.   |
+| **Internes Schema**   | Die physische Speicherung: Dateien, Indizes und Speicherstrukturen.                            |
+
+Durch diese Trennung kann zum Beispiel ein Index hinzugefügt werden, ohne dass sich Anwendungen ändern müssen (**physische Datenunabhängigkeit**).
+
+## Konsistenz durch Constraints
+
+Die Konsistenz der Daten wird durch **Constraints** (Integritätsbedingungen) sichergestellt, die das Datenbanksystem bei jeder Änderung automatisch überprüft. Verletzt eine Änderung einen Constraint, wird sie abgewiesen.
+
+### Attribut-Constraints
+
+Attribut-Constraints gelten für einzelne Spalten:
+
+- **Datentyp:** Eine Spalte `Geburtsdatum DATE` akzeptiert nur gültige Datumswerte.
+- **`NOT NULL`:** Die Spalte muss immer einen Wert enthalten.
+- **`UNIQUE`:** Jeder Wert darf in der Spalte nur einmal vorkommen.
+- **`DEFAULT`:** Legt einen Standardwert fest, wenn beim Einfügen kein Wert angegeben wird.
+
+### Relationale Constraints
+
+Relationale Constraints (Schlüssel-Constraints) sichern die Beziehungen zwischen Tabellen:
+
+- **`PRIMARY KEY`:** Identifiziert jeden Datensatz eindeutig (entspricht `NOT NULL` + `UNIQUE`).
+- **`FOREIGN KEY`:** Stellt die referentielle Integrität sicher. Mit `ON DELETE CASCADE` bzw. `ON DELETE SET NULL` wird festgelegt, was mit abhängigen Datensätzen passiert, wenn der referenzierte Datensatz gelöscht wird.
+
+### CHECK-Constraints
+
+Mit `CHECK` werden beliebige Bedingungen formuliert, die jeder Datensatz erfüllen muss.
+
+```sql
+CREATE TABLE Note (
+    SchuelerId INT NOT NULL REFERENCES Schueler(Id) ON DELETE CASCADE,
+    Fach       VARCHAR(20) NOT NULL,
+    Wert       INT NOT NULL CHECK (Wert BETWEEN 1 AND 5),
+    Datum      DATE NOT NULL DEFAULT CURRENT_DATE,
+    PRIMARY KEY (SchuelerId, Fach, Datum)
+);
+```
+
+## Schema bei NoSQL-Datenbanken
+
+[Dokumentenorientierte Datenbanken](/de/databases/document-oriented-databases/) gelten oft als „schemalos“. Genauer gesagt verwenden sie ein **Schema-on-Read**: Die Struktur wird nicht beim Speichern, sondern erst beim Lesen durch die Anwendung interpretiert. Relationale Datenbanken verwenden dagegen **Schema-on-Write**. Viele NoSQL-Systeme erlauben trotzdem eine optionale Schemavalidierung, etwa MongoDB mit JSON Schema.
