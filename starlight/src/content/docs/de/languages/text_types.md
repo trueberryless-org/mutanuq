@@ -1,7 +1,8 @@
 ---
 title: Textsorten Englisch
+description: Aufbau, Merkmale und nützliche Phrasen der Textsorten für den Englischunterricht und die Matura – Artikel, Blog, E-Mail, Broschüre und Bericht.
 sidebar:
-    order: 0
+    order: 3
 tableOfContents:
     minHeadingLevel: 2
     maxHeadingLevel: 3
@@ -30,11 +31,11 @@ Schreiben Sie eine kreative Einleitung, welche direkte Fragen an _den Leser / di
 
 #### Hauptteil
 
-Im Hauptteil des Artikels sollen die objektiven Vor- und Nachteile des Themas beschrieben werden. Dabei soll dieser in inhaltliche Abschnitte gegliedert werden, um eine logische Struktur zu garantieren. Geben Sie zur Verdeutlichung der Argumente Beispiel an.
+Im Hauptteil des Artikels sollen die objektiven Vor- und Nachteile des Themas beschrieben werden. Dabei soll dieser in inhaltliche Abschnitte gegliedert werden, um eine logische Struktur zu garantieren. Geben Sie zur Verdeutlichung der Argumente Beispiele an.
 
 #### Schluss
 
-Im Schluss können entweder die Informationen generell zusammengefasst werden oder die persönliche Meinung zum Ausdruck gebracht werden. Wichtig ist ein Gedanken-anregender Schreibstil, sodass das Thema _dem Leser / der Leserin_ möglichst lange im Kopf hängen bleibt.
+Im Schluss können entweder die Informationen generell zusammengefasst werden oder die persönliche Meinung zum Ausdruck gebracht werden. Wichtig ist ein gedankenanregender Schreibstil, sodass das Thema _dem Leser / der Leserin_ möglichst lange im Kopf hängen bleibt.
 
 ### Phrasen
 
@@ -62,7 +63,7 @@ Im Schluss können entweder die Informationen generell zusammengefasst werden od
 
 Ein Blog ist eine regelmäßig aktualisierte Website, die normalerweise von einer Einzelperson oder einer kleinen Gruppe betrieben wird. Der neueste Eintrag, **Blogpost** genannt, wird normalerweise oben auf der Hauptseite angezeigt. Ein Blog ist ein dynamisches und interaktives Medium; er kann aktualisiert werden und ermöglicht es dem Besucher, mit dem Autor zu kommunizieren, indem er einen **Blog-Kommentar** zu jedem einzelnen Beitrag hinterlässt.
 
-Das Ziel vieler Blogger/innen ist es, ihre Leser/innen mit Informationen zu versorgen, Diskussionen zu eröffnen oder Meinungen, Emotionen und Erfahrungen zu teilen. Man Institutionen und Unternehmen nutzen Blogs auch, um ihre Aktivitäten und Produkte zu bewerben.
+Das Ziel vieler Blogger/innen ist es, ihre Leser/innen mit Informationen zu versorgen, Diskussionen zu eröffnen oder Meinungen, Emotionen und Erfahrungen zu teilen. Manche Institutionen und Unternehmen nutzen Blogs auch, um ihre Aktivitäten und Produkte zu bewerben.
 
 ### Blogbeitrag
 
@@ -84,22 +85,22 @@ Bei einem Blogbeitrag gibt man seinen Namen und das Datum an. Beim Datum darf ma
 
 ##### Überschrift
 
-Für den Blogbeitrag ist es wichtig die Aufmerksamkeit des Lesers zu erlangen, darum ist es essenziell eine fesselnde Überschrift zu benutzen. Da kann man, wenn man will, auch schon eine Frage in den Raum werfen.
+Für den Blogbeitrag ist es wichtig, die Aufmerksamkeit des Lesers zu erlangen, darum ist es essenziell, eine fesselnde Überschrift zu benutzen. Da kann man, wenn man will, auch schon eine Frage in den Raum werfen.
 
 > Bargeld - bald Vergangenheit?
 
 ##### Einleitung
 
-Bei einem Blogbeitrag übermittelt man in der Einleitung dem Leser worum es geht und welche Meinung man zu diesem Thema vertritt.
+Bei einem Blogbeitrag übermittelt man in der Einleitung dem Leser, worum es geht, und welche Meinung man zu diesem Thema vertritt.
 
-> Öfter frage ich mich warum noch so viele Menschen mit Bargeld zahlen. Für mich Persönlich macht das keinen Sinn, mit der Karte zu zahlen ist doch viel einfacher.
+> Öfter frage ich mich, warum noch so viele Menschen mit Bargeld zahlen. Für mich persönlich macht das keinen Sinn, mit der Karte zu zahlen ist doch viel einfacher.
 
 | Phrasen                                                              |
 | -------------------------------------------------------------------- |
 | Wusstest du, dass ...                                                |
 | Öfters frage ich mich, ob ...                                        |
 | Ich bin letztens auf ... gestoßen und konnte nicht glauben, dass ... |
-| Warum ist es, dass ...                                               |
+| Woran liegt es, dass ...                                             |
 
 ##### Hauptteil
 
@@ -123,7 +124,7 @@ Wenn man Argumente gegen seinen eigenen Standpunkt verwendet, dann formuliert ma
 
 ##### Schluss
 
-Ein Blogbeitrag endet damit, dass man den Leser noch eine Frage stellt und somit animiert, noch einen Blogkommentar zu verfassen.
+Ein Blogbeitrag endet damit, dass man dem Leser noch eine Frage stellt und ihn somit animiert, noch einen Blogkommentar zu verfassen.
 
 | Phrasen                                                          |
 | ---------------------------------------------------------------- |
@@ -135,15 +136,15 @@ Ein Blogbeitrag endet damit, dass man den Leser noch eine Frage stellt und somit
 
 #### Merkmale
 
--   Versuche den selben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blogbeitrag))
--   Direkt den Author und andere Leser ansprechen
+-   Versuchen Sie, denselben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blogbeitrag))
+-   Direkt den Autor und andere Leser ansprechen
 -   Keine Zwischenüberschriften
 
 #### Aufbau
 
 ##### Allgemeine Informationen
 
-Beim Blogkommentar gibt man seinen Namen und das Datum an. Beim Datum nicht darauf vergessen auch die Uhrzeit mit anzugeben
+Beim Blogkommentar gibt man seinen Namen und das Datum an. Beim Datum nicht darauf vergessen, auch die Uhrzeit mit anzugeben.
 
 > Harald Hilfinger  
 > 20. Jänner, 11:29 Uhr
@@ -154,7 +155,7 @@ Bei einem Blogkommentar gibt es keine Überschrift!
 
 ##### Einleitung
 
-Bei einem Blogkommentar bezieht man sich auf den Ausgangstext und erzählt, warum man sich entschieden hat, mit einen Kommentar zu antworten.
+Bei einem Blogkommentar bezieht man sich auf den Ausgangstext und erzählt, warum man sich entschieden hat, mit einem Kommentar zu antworten.
 
 > Ich habe gerade deinen Post über Bargeld gelesen und würde gerne meine Meinung dazu teilen.
 
@@ -169,7 +170,7 @@ Bei einem Blogkommentar bezieht man sich auf den Ausgangstext und erzählt, waru
 Das Ziel im Hauptteil ist es, den Leser von der eigenen Meinung zu überzeugen. Dafür gibt man Argumente, welche die eigene Seite unterstützen.
 
 :::note
-Die Argumente müssen nicht sachlich sein. Da ein Blogbeitrag sehr subjektiv ist, können die Argumente auch emotionsbasiert sein.
+Die Argumente müssen nicht sachlich sein. Da ein Blogkommentar sehr subjektiv ist, können die Argumente auch emotionsbasiert sein.
 :::
 
 | Phrasen                                                  |
@@ -178,20 +179,20 @@ Die Argumente müssen nicht sachlich sein. Da ein Blogbeitrag sehr subjektiv ist
 | Wie du dir vorstellen kannst ...                         |
 | Wenn man mich fragt ...                                  |
 | Was man vielleicht in Betracht ziehen sollte ...         |
-| Sowie ich das es sehe, ...                               |
+| So wie ich das sehe, ...                                 |
 
 ##### Schluss
 
-Ein Blogbeitrag endet damit, dass man den Leser noch eine Frage stellt und damit animiert noch einen Blogkommentar zu verfassen.
+Ein Blogkommentar endet damit, dass man sich für den Beitrag bedankt oder die anderen Leser dazu auffordert, ebenfalls ihre Meinung zu teilen.
 
 | Phrasen                                                                           |
 | --------------------------------------------------------------------------------- |
 | Teile auch du deine Meinung mit uns.                                              |
-| Hoffen wir auf viele andere Meinung und Kommentare zu diesem interessanten Thema. |
+| Hoffen wir auf viele andere Meinungen und Kommentare zu diesem interessanten Thema. |
 
 ## E-Mail
 
-Es gibt viele verschiedene Arten von E-Mails. Man differenziert grob die beiden Typen: **formell** und **informell**, wobei es noch viele weiter Untertypen bei formellen E-Mails gibt, wie zum Beispiel eine Bewerbungs-E-Mail oder eine Beschwerde-E-Mail. Ob eine E-Mail nun formell oder informell geschrieben wird, kommt immer auf die Situation und Personen, an welche man schreibt, an.
+Es gibt viele verschiedene Arten von E-Mails. Man differenziert grob die beiden Typen: **formell** und **informell**, wobei es noch viele weitere Untertypen bei formellen E-Mails gibt, wie zum Beispiel eine Bewerbungs-E-Mail oder eine Beschwerde-E-Mail. Ob eine E-Mail nun formell oder informell geschrieben wird, kommt immer auf die Situation und Personen, an welche man schreibt, an.
 
 ### Informelle E-Mail
 
@@ -226,7 +227,7 @@ Schreiben Sie eine nette Anrede und am besten den Vornamen des Empfängers. Lass
 Sie können die Anrede mit Rufzeichen oder Beistrich beenden. Falls Sie ein Rufzeichen machen, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
 
 :::caution
-Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen.
+Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Hi Tom,“).
 :::
 
 | Phrasen         |
@@ -238,7 +239,7 @@ Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den 
 
 ##### Einleitung
 
-Schreibe Sie eine nette Einleitung. Diese sollte erklären, warum Sie die E-Mail schreiben (Also eigentlich eine längere Version der Betreffzeile).
+Schreiben Sie eine nette Einleitung. Diese sollte erklären, warum Sie die E-Mail schreiben (Also eigentlich eine längere Version der Betreffzeile).
 
 | Phrasen                                                                                                                                                           |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -257,13 +258,13 @@ Schreiben Sie den eigentlichen Text der E-Mail. Hierbei können Sie die inhaltli
 
 ##### Schlussteil
 
-Schließen Sie Ihren Brief mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
+Schließen Sie Ihre E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
 
 > Es wäre super, von dir zu hören und zu erfahren, was in deinem Leben gerade passiert. Lass mich wissen, wie es dir geht, und erzähl mir von deinen Abenteuern.
 
 ##### Schlussfloskel
 
-Schließen Sie Ihre E-Mail mit einem Floskel.
+Schließen Sie Ihre E-Mail mit einer Grußformel.
 
 > Liebe Grüße,  
 > Felix
@@ -277,7 +278,7 @@ Schließen Sie Ihre E-Mail mit einem Floskel.
 
 ### Formelle E-Mail
 
-Im beruflichen Leben werden E-Mails meistens formell geschrieben, da man somit Respekt gegenüber Mitarbeiter und Kollegen und die Hierarchie des Unternehmens beachtet.
+Im beruflichen Leben werden E-Mails meistens formell geschrieben, da man somit Respekt gegenüber Mitarbeitern und Kollegen zeigt und die Hierarchie des Unternehmens beachtet.
 
 #### Merkmale
 
@@ -302,20 +303,20 @@ Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datu
 
 Schreiben Sie eine höfliche und angebrachte Anrede. Lassen Sie anschließend eine Leerzeile Platz, um die eigentliche Nachricht zu schreiben.
 
-> Sehr geehrte Herr Professor Hauleitner!
+> Sehr geehrter Herr Professor Hauleitner!
 
 Sie können die Anrede mit Rufzeichen oder Beistrich beenden. Falls Sie ein Rufzeichen machen, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
 
 :::caution
-Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen.
+Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Dear Mr Hauleitner,“ bzw. „Dear Sir or Madam,“, wenn man den Namen nicht kennt).
 :::
 
 | Phrasen                                           |
 | ------------------------------------------------- |
 | _Sehr geehrter / Sehr geehrte_ \<Name>,           |
 | _Verehrter / Verehrte_ \<Name>!                   |
-| _Hochachtungsvoller / Hochachtungsvolle_ \<Name>, |
-| _Wertgeschätzter / Wertgeschätzte_ \<Name>!       |
+| Sehr geehrte Damen und Herren,                    |
+| Guten Tag _Frau / Herr_ \<Name>,                  |
 
 ##### Einleitung
 
@@ -337,13 +338,13 @@ Schreiben Sie den eigentlichen Text der E-Mail. Hierbei können Sie die inhaltli
 
 ##### Schlussteil
 
-Schließen Sie Ihren Brief mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
+Schließen Sie Ihre E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
 
 > Es wäre mir eine große Freude, von Ihnen zu hören und mehr darüber zu erfahren, wie meine Anfrage bezüglich einer Gehaltserhöhung bearbeitet wird. Bitte teilen Sie mir mit, sobald Sie Informationen zu diesem Thema haben. Vielen Dank für Ihre Aufmerksamkeit und Mühe in dieser Angelegenheit.
 
 ##### Schlussfloskel
 
-Schließen Sie Ihre E-Mail mit einem Floskel.
+Schließen Sie Ihre E-Mail mit einer Grußformel. Im Englischen schreibt man `Yours sincerely,`, wenn man den Namen des Empfängers kennt, und `Yours faithfully,`, wenn man ihn nicht kennt.
 
 > Mit freundlichen Grüßen  
 > Felix
@@ -402,7 +403,7 @@ Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein
 
 Geben Sie in der Einleitung den Grund für Ihre Beschwerde an. 
 
-Erklären Sie im ersten Absatz des Hauptteils deutlich, was schief gelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor oder drohen Sie mit einer Warnung -- meistens legalen Aktionen einleiten.
+Erklären Sie im ersten Absatz des Hauptteils deutlich, was schiefgelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor. Falls angebracht, drohen Sie anschließend mit Konsequenzen – meistens mit rechtlichen Schritten.
 
 #### Phrasen
 
@@ -437,6 +438,44 @@ Erklären Sie im ersten Absatz des Hauptteils deutlich, was schief gelaufen ist.
 
 ## Broschüre
 
+Eine Broschüre (engl. _leaflet_) informiert eine bestimmte Zielgruppe kurz und übersichtlich über ein Thema, etwa über ein Angebot, eine Veranstaltung oder ein Gesundheitsthema. Da Leserinnen und Leser eine Broschüre meist nur überfliegen, muss die Information auf einen Blick erfassbar sein.
+
+### Merkmale
+
+-   formell oder informell, je nach Zielgruppe
+-   Leser direkt ansprechen (`you`)
+-   kurze Absätze mit aussagekräftigen Zwischenüberschriften
+-   Aufzählungspunkte, um Informationen übersichtlich darzustellen
+-   Imperative und Fragen, um die Leser einzubeziehen („Find out more ...“, „Did you know ...?“)
+
+### Aufbau
+
+#### Überschrift
+
+Eine kurze, einprägsame Überschrift, die das Thema nennt und neugierig macht.
+
+#### Einleitung
+
+Sprechen Sie die Zielgruppe direkt an und stellen Sie in ein bis zwei Sätzen das Thema vor, zum Beispiel mit einer Frage.
+
+#### Hauptteil
+
+Gliedern Sie die Informationen in mehrere kurze Abschnitte mit Zwischenüberschriften, zum Beispiel „Was ist ...?“, „Warum ...?“ und „Wie ...?“. Verwenden Sie Aufzählungspunkte für Tipps oder Angebote.
+
+#### Schluss
+
+Beenden Sie die Broschüre mit einem Aufruf zum Handeln (_call to action_) und nennen Sie Kontaktdaten oder weiterführende Informationen.
+
+### Phrasen
+
+| Phrasen                                    |
+| ------------------------------------------ |
+| Haben Sie sich jemals gefragt, ...?        |
+| Alles, was Sie über ... wissen müssen      |
+| Hier sind einige Tipps, wie ...            |
+| Zögern Sie nicht, uns zu kontaktieren.     |
+| Weitere Informationen finden Sie unter ... |
+
 ## Bericht
 
 Ein Bericht fasst die wichtigsten Informationen einer Präsentation, einer Umfrage, einer Sitzung oder eines Ereignisses wie eines Unfalls zusammen. Er wird in der Regel für eine Autoritätsperson geschrieben (Ihren Chef, den Leiter einer Schule, ...).
@@ -459,7 +498,7 @@ Schreiben Sie zuerst den Namen des Absenders, den Namen des Empfängers und das 
 
 > An: Stevie Wonder  
 > Von: Felix Schneider  
-> Datum: 15. November, 2023
+> Datum: 15. November 2023
 
 Geben Sie dem Bericht dann einen aussagekräftigen Betreff, der das Thema des Berichts kurz und prägnant zusammenfasst.
 
@@ -496,9 +535,9 @@ Der nächste Schritt besteht darin, die wichtigsten numerischen Daten aus der St
 
 | Phrasen                                                                                            |
 | -------------------------------------------------------------------------------------------------- |
-| Die Statistik über ... _suggestiert / sagt aus_, dass ...                                          |
+| Die Statistik über ... _legt nahe / sagt aus_, dass ...                                            |
 | Die wichtigste Tatsache ist, dass ...                                                              |
-| Die Daten _zeigen / suggerieren_, dass ...                                                         |
+| Die Daten _zeigen / legen nahe_, dass ...                                                          |
 | Die wichtigsten Ergebnisse _waren / sind_ ...                                                      |
 | Eine von ... durchgeführte Umfrage ergab, dass die große Mehrheit (98 %) der Meinung ist, dass ... |
 | Die Zahl der ... ist eher _hoch / niedrig_.                                                        |
@@ -507,7 +546,7 @@ Der nächste Schritt besteht darin, die wichtigsten numerischen Daten aus der St
 | Es gibt erhebliche _Unterschiede / Gemeinsamkeiten_ zwischen ...                                   |
 | Bei der Betrachtung von ... ist zu beobachten, dass ...                                            |
 | Wenn man ... und ... vergleicht, kann man sagen, dass ...                                          |
-| Im Vergleich zu ..., gab es ... _mehr als / weniger als_ ...                                       |
+| Im Vergleich zu ... gab es ... _mehr als / weniger als_ ...                                        |
 
 | Perspektive    | Umfragegruppe            | Meinungsäußerung                   |
 | -------------- | ------------------------ | ---------------------------------- |

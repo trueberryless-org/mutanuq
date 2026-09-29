@@ -1,7 +1,8 @@
 ---
-title: Text types (English)
+title: Text Types (English)
+description: Structure, characteristics and useful phrases of the text types for English lessons and the Matura – article, blog, email, leaflet and report.
 sidebar:
-    order: 0
+    order: 3
 tableOfContents:
     minHeadingLevel: 2
     maxHeadingLevel: 3
@@ -36,7 +37,7 @@ The main body of the article should describe the objective advantages and disadv
 
 The conclusion can either summarize the information in general or express a personal opinion. It is important to write in a thought-provoking style so that the topic remains in the reader's mind for as long as possible.
 
-### Phrase
+### Phrases
 
 | Involving the reader                   |
 | -------------------------------------- |
@@ -51,7 +52,7 @@ The conclusion can either summarize the information in general or express a pers
 | In my opinion ...                                |
 | As I see it, ...                                 |
 | In my view, ...                                  |
-| I _think / believe that ...                      |
+| I _think / believe_ that ...                     |
 | To my mind, ...                                  |
 | Personally, I think ...                          |
 | As far as I am concerned,  ...                   |
@@ -65,7 +66,7 @@ The conclusion can either summarize the information in general or express a pers
 
 A blog is a regularly updated website typically run by an individual or a small group. The latest entry, called a **blog post**, is usually displayed at the top of the main page. A blog is a dynamic and interactive medium; it can be updated and it allows the visitor to communicate with the author by leaving a **blog comment** attached to each individual post.
 
-The goal of many bloggers is to provide their readers with information, to open discussions or share opinions, emotions and experiences. Man institutions and businesses also use blogs to promote their activities and products.
+The goal of many bloggers is to provide their readers with information, to open discussions or share opinions, emotions and experiences. Many institutions and businesses also use blogs to promote their activities and products.
 
 ### Blog post
 
@@ -74,7 +75,7 @@ The goal of many bloggers is to provide their readers with information, to open 
 -   formal or **informal** (depending on the readership and purpose)
 -   use the first-person `I` and `you`
 -   use direct questions to engage the readers and invite them to leave a comment
--   devide the post in paragraphs (without headlines)
+-   divide the post into paragraphs (without headlines)
 
 #### Layout
 
@@ -93,7 +94,7 @@ A blog post requires a **captivating title** because for most readers the decisi
 
 ##### Introduction
 
-Fill the introduction with the main topic of the blog post and information which are necessary to know in order to understand the topic properly.
+Fill the introduction with the main topic of the blog post and the information that is necessary to understand the topic properly.
 
 > It's really amazing how many people have started reading e-books recently. Even my dad - who doesn't think I need a smartphone - has decided to get one. Now he's considering getting rid of his book collection because it takes up too much space. In its place, my parents say they could put a modern wall-mounted television.
 
@@ -110,7 +111,7 @@ Write two to three paragraphs about the actual topic and try to convince your re
 
 | Phrases                                                                              |
 | ------------------------------------------------------------------------------------ |
-| On the one hand ..., one the other hand ...                                          |
+| On the one hand ..., on the other hand ...                                           |
 | As you can imagine ...                                                               |
 | I wholeheartedly _support / agree with / disagree with_ your view on ... because ... |
 | As far as ... is concerned, I feel that ...                                          |
@@ -127,7 +128,7 @@ Sum up the information in one short paragraph or ask the reader to share their o
 
 > Aren't you worried about this too?
 
-| Phrasen                                                                                                            |
+| Phrases                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------ |
 | What would you _do / suggest_?                                                                                     |
 | What's it like _in your country / at your school / in your family_?                                                |
@@ -148,7 +149,7 @@ Sum up the information in one short paragraph or ask the reader to share their o
 
 ##### Overall information
 
-A blog post starts with the name of the author and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
+A blog comment starts with the name of the author and date of publication. Do not forget to add the current time in the same line as the date because some commenters share their opinion immediately and you want to be able to recreate the order of publications.
 
 > Brad Cruise  
 > 2 June, 3:54 pm
@@ -161,7 +162,7 @@ In contrast to a blog post, a blog comment must not have a heading!
 
 Reference the blog post and explain why you decided to write a blog comment.
 
-| Phrasen Einleitung                                                      |
+| Phrases                                                                 |
 | ----------------------------------------------------------------------- |
 | I have read your blog post and would like to share my opinion with you. |
 | I stumbled across your blog only recently and ...                       |
@@ -173,7 +174,7 @@ Write two to three paragraphs about the actual topic and try to convince your re
 
 | Phrases                                                                              |
 | ------------------------------------------------------------------------------------ |
-| On the one hand ..., one the other hand ...                                          |
+| On the one hand ..., on the other hand ...                                           |
 | As you can imagine ...                                                               |
 | I wholeheartedly _support / agree with / disagree with_ your view on ... because ... |
 | As far as ... is concerned, I feel that ...                                          |
@@ -181,14 +182,14 @@ Write two to three paragraphs about the actual topic and try to convince your re
 | Something you might want to consider is ...                                          |
 
 :::caution
-If you want to use arguments against your own opinion, display them weak because this makes your point of view far more convincing.
+If you want to use arguments against your own opinion, present them weakly because this makes your point of view far more convincing.
 :::
 
 ##### Conclusion
 
 Sum up the information in one short paragraph or ask the reader to share their opinion in the comments.
 
-| Phrasen                                                          |
+| Phrases                                                          |
 | ---------------------------------------------------------------- |
 | Thanks for getting everyone to think about this important topic. |
 | Keep on writing ...                                              |
@@ -199,14 +200,14 @@ There are many different types of emails. You can distinguish them roughly into 
 
 ### Informal email
 
-A informal email is mostly written to friends, colleagues or other people outside the work life.
+An informal email is mostly written to friends, colleagues or other people outside of working life.
 
 #### Characteristics
 
 -   informal (personal)
 -   use `I` and `you`
 -   write about private matters (if you write to a friend)
--   use words from the language of the conversation (“Nice!”, “xD”, “OMG”, ...)
+-   colloquial language and short forms can be used (“Nice!”, “I’m”, “OMG”, ...)
 -   not necessarily about something factual or objective; more subjective topics
 
 #### Layout
@@ -217,27 +218,20 @@ Always start with the metadata, like your own email, the recipient's email, the 
 
 > From: trueberryless@email.com  
 > To: tom.cruise@email.com  
-> Date: 20th January, 2024
+> Date: 20 January 2024
 
 > Subject: What's up?
 
 ##### Salutation
 
-Depending on the recipient, you must write a salutation in two different ways. If the recipient is known, you can address them directly, like so:
+In an informal email, you address the recipient by their first name, like so:
 
-> Dear Mr Cruise!
+> Hi Tom,
 
-If the recipient is unknown, you address them indirectly, like so:
-
-> Dear Sir or Madam!
-
-There are also two options if it comes to punctuation after the salutation:
-
--   Exclamation mark: `Dear Sir or Madam!`
--   Comma: `Dear Sir or Madam,`
+Other common options are `Dear Tom,`, `Hello Tom,` or `Hey Tom,`. In English, the salutation is followed by a comma, not by an exclamation mark as is common in German.
 
 :::caution[Caution]
-No matter whether you end the salutation with exclamation mark or comma, the first letter of the introduction must always be **UPPERCASE**.
+Even though the salutation ends with a comma, the first letter of the introduction must always be **UPPERCASE**.
 :::
 
 ##### Introduction
@@ -246,7 +240,7 @@ Write a nice introduction where you explain why you are writing the email (kinda
 
 | Phrases                                                                            |
 | ---------------------------------------------------------------------------------- |
-| Haven't heart from you for a while. What's up?                                     |
+| Haven't heard from you for a while. What's up?                                     |
 | I'm sorry to hear that something terrible happened. Can you tell me more about it? |
 
 Depending on the topic or reason of the email, you should also add a personalized introduction.
@@ -280,13 +274,13 @@ The last element of the email is the closing.
 
 ### Formal email
 
-A formal email is mostly written to people inside the company. The topic is mostly business-related and the main purpose is to get a response from the company or a colleague.
+A formal email is written in a professional context, for example to a company, a colleague, a teacher or an authority. The topic is mostly business-related and the main purpose is often to get a response or a specific action from the recipient.
 
 #### Characteristics
 
 -   formal, polite
 -   use `I` and `you`
--   no colloquial expressions ()
+-   no colloquial expressions (e.g. "Catch you later", "Hang in there", "OMG", ...)
 -   no short forms (“I'm”, “wasn't”, “You've”, ...)
 
 #### Layout
@@ -297,7 +291,7 @@ Always start with the metadata, like your own email, the recipient's email, the 
 
 > From: f.schneider@email.com  
 > To: a.hauleitner@email.com  
-> Date: 20th January, 2024
+> Date: 20 January 2024
 
 > Subject: Increase in salary
 
@@ -305,26 +299,23 @@ Always start with the metadata, like your own email, the recipient's email, the 
 
 Depending on the recipient, you must write a salutation in two different ways. If the recipient is known, you can address them directly, like so:
 
-> Dear Mr Hauleitner!
+> Dear Mr Hauleitner,
 
 If the recipient is unknown, you address them indirectly, like so:
 
-> Dear Sir or Madam!
+> Dear Sir or Madam,
 
-There are also two options if it comes to punctuation after the salutation:
-
--   Exclamation mark: `Dear Sir or Madam!`
--   Comma: `Dear Sir or Madam,`
+In English, the salutation is followed by a comma, not by an exclamation mark as is common in German.
 
 :::caution[Caution]
-No matter whether you end the salutation with exclamation mark or comma, the first letter of the introduction must always be **UPPERCASE**.
+Even though the salutation ends with a comma, the first letter of the introduction must always be **UPPERCASE**.
 :::
 
 ##### Introduction
 
 Write a nice introduction where you explain why you are writing the email (kinda like a longer version of the subject line).
 
-> I am writing to
+> I am writing to enquire about the possibility of an increase in my salary.
 
 Depending on the topic or reason of the email, you should explain this shortly in the introduction.
 
@@ -359,7 +350,7 @@ Say how you heard about the job in the introduction. In the main part you need t
 Finish the body of your email by offering the reader more information and ask for an interview.
 
 :::tip[Tip]
-The main reason for writing an email of application is the **ask for an interview**. So just ask in the conclusion.
+The main reason for writing an email of application is the **request for an interview**. So just ask in the conclusion.
 :::
 
 #### Phrases
@@ -375,7 +366,7 @@ The main reason for writing an email of application is the **ask for an intervie
 | I am currently studying at ...                                                                                        |
 | I have worked as ... for ... years.                                                                                   |
 | As a student at a technical college specialising in information technology, I believe I am a strong candidate for ... |
-| You specify that your are looking for someone who ...                                                                 |
+| You specify that you are looking for someone who ...                                                                  |
 | In particular, I can offer ...                                                                                        |
 | I am familiar with ...                                                                                                |
 
@@ -425,6 +416,44 @@ State the reason for your complaint in the introduction. In the first paragraph 
 
 ## Leaflet
 
+A leaflet informs a specific target group briefly and clearly about a topic, for example an offer, an event or a health issue. Since readers usually only skim a leaflet, the information has to be graspable at a glance.
+
+### Characteristics
+
+-   formal or informal, depending on the target group
+-   address the reader directly (`you`)
+-   short paragraphs with meaningful subheadings
+-   bullet points to present information clearly
+-   imperatives and questions to involve the reader ("Find out more ...", "Did you know ...?")
+
+### Layout
+
+#### Headline
+
+A short, catchy headline that names the topic and arouses curiosity.
+
+#### Introduction
+
+Address the target group directly and introduce the topic in one or two sentences, for example with a question.
+
+#### Main part
+
+Divide the information into several short sections with subheadings, for example "What is ...?", "Why ...?" and "How ...?". Use bullet points for tips or offers.
+
+#### Conclusion
+
+End the leaflet with a call to action and give contact details or further information.
+
+### Phrases
+
+| Phrases                               |
+| ------------------------------------- |
+| Have you ever wondered ...?           |
+| Everything you need to know about ... |
+| Here are some tips on how to ...      |
+| Don't hesitate to contact us.         |
+| For more information, visit ...       |
+
 ## Report
 
 A report sums up the main information from a presentation, a survey, a meeting or perhaps some kind of incident such as an accident. It is usually written for somebody in authority (your boss, the head of a school, ...).
@@ -448,7 +477,7 @@ First write the name of the sender, the name of the recipient and the date of se
 
 > To: Stevie Wonder  
 > From: Simon O'Neill  
-> Date: 15 November, 2023
+> Date: 15 November 2023
 
 Then give the report a meaningful subject that briefly and succinctly summarises the topic of the report.
 
@@ -458,7 +487,7 @@ Then give the report a meaningful subject that briefly and succinctly summarises
 
 After the basic information, a short introduction is written, in which the metadata of the survey, presentation or accident are mentioned. This includes, for example, the source of the survey, when and with which participants it was carried out, and also the location of the survey if it was only carried out in one country. It is also important to mention the reason for writing the report in the first place.
 
-> The purpose of this report is to provide an overall picture of working abroad. It is based among a survey among around 3000 students at the ages of 18 to 29 years from Germany and was conducted in 2020.
+> The purpose of this report is to provide an overall picture of working abroad. It is based on a survey of around 3,000 students aged 18 to 29 from Germany, which was conducted in 2020.
 
 | Phrases                                            |
 | -------------------------------------------------- |
@@ -479,7 +508,7 @@ After the basic information, a short introduction is written, in which the metad
 |                                  | discuss ...                       |
 
 :::note
-These phrases use the word `report` very heavily. Once you used one phrase you can substitute `report` with `it`.
+These phrases use the word `report` very heavily. Once you have used one phrase, you can replace `report` with `it`.
 :::
 
 #### Findings

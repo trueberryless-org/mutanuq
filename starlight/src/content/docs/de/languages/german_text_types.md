@@ -1,7 +1,8 @@
 ---
 title: Textsorten Deutsch
+description: Stilfiguren sowie Aufbau und Merkmale der Textsorten für den Deutschunterricht und die Matura – von der Zusammenfassung bis zur Textinterpretation und Meinungsrede.
 sidebar:
-    order: 0
+    order: 1
 tableOfContents:
     minHeadingLevel: 2
     maxHeadingLevel: 4
@@ -13,40 +14,40 @@ Stilfiguren und rhetorische Mittel sind sprachliche Elemente, die Texte wirkungs
 
 | Begriff                     | Beschreibung                                                                                                   | Beispiel                                                                                                                                            |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Allegorie**               | Darstellung eines abstrakten Begriffes als Person                                                              | Frau Sonne, Gerechtigkeit tritt in Theaterstück auf                                                                                                 |
+| **Allegorie**               | Darstellung eines abstrakten Begriffes als Person                                                              | Frau Sonne, die Gerechtigkeit als Frau mit Waage und Augenbinde                                                                                                |
 | **Alliteration** (Stabreim) | gleiche Anlautung der Stammsilben von aufeinander folgenden Wörtern                                            | Zimt und Zucker, über Stock und Stein                                                                                                               |
 | Anadiplose                  | Wiederholung des letzten Wortes oder der letzten Wörter am Satzende am Satzanfang des folgenden Satzes         | Die Nacht ist dunkel. Dunkel ist der Wald. Wald voller Geheimnisse.                                                                                 |
 | **Anapher**                 | Wiederholung von Wörtern oder Satzteilen am Beginn                                                             | Tatsache ist, ich habe verloren. Tatsache ist, ich werde daraus Konsequenzen ziehen.                                                                |
 | **Antithese**               | Gegenüberstellung                                                                                              | Groß und Klein, Arm und Reich                                                                                                                       |
-| **Assonanz** (Klangmalerei) | gleicher/ähnlicher Vokal kommt in aufeinander folgenden Wörtern oder Sätzen gehäuft vor = Häufung eines Vokals | Der Wind zischte, pfiff, blies. Der Mond thront ober dem Wolkenhügel.                                                                               |
+| **Assonanz** (Vokalreim)    | gleicher/ähnlicher Vokal kommt in aufeinander folgenden Wörtern oder Sätzen gehäuft vor = Häufung eines Vokals | Der Mond thront ober dem Wolkenhügel.                                                                                                               |
 | **Chiasmus**                | Überkreuzstellung von Satzgliedern                                                                             | Die Kunst ist lang und kurz ist unser Leben.                                                                                                        |
-| Dysphemismus                | Verschleiernde Verschlimmerung eines Ausdrucks                                                                 | Diese Mahlzeit ist wirklich eine Geschmacksexplosion. (ironisch für "schmeckt nicht gut")                                                           |
+| Dysphemismus                | abwertende, drastische Bezeichnung anstelle eines neutralen Ausdrucks (Gegenteil des Euphemismus)               | Glotze (für Fernseher), Karre (für Auto), abkratzen (für sterben)                                                                                   |
 | **Ellipse**                 | unvollständiger Satz                                                                                           | Was nun?                                                                                                                                            |
 | **Epipher**                 | Wiederholung am Satzende                                                                                       | Ich fordere mehr Mut. Ich lebe mehr Mut.                                                                                                            |
 | **Euphemismus**             | verschleiernde Beschönigung eines negativen Ausdruckes                                                         | die Radieschen von unten ansehen, das Zeitliche segnen, Raumpflegerin                                                                               |
 | **Häufung**                 | Aufzählung / Wiederholung derselben Wortart                                                                    | Amsel, Drossel, Fink und Star                                                                                                                       |
 | **Hyperbel**                | Übertreibung                                                                                                   | Hundertmal hab‘ ich es dir gesagt.                                                                                                                  |
-| **Hypotaxe**                | Satzgefüge                                                                                                     | Um zu beweisen, dass er unschuldig war, legte er seine Handyrechnung vor, aus der hervorging, wen er zum fraglichen Zeitpunkt angerufen hatte. Star |
+| **Hypotaxe**                | Satzgefüge                                                                                                     | Um zu beweisen, dass er unschuldig war, legte er seine Handyrechnung vor, aus der hervorging, wen er zum fraglichen Zeitpunkt angerufen hatte.      |
 | Ironie                      | Gegenteil dessen, was ausgedrückt wird, wird gemeint                                                           | Das hast du ja mal wieder toll gemacht!                                                                                                             |
 | **Klimax**                  | stufenweise Steigerung in einem Satz                                                                           | Ich kam, sah und siegte. (Cäsar)                                                                                                                    |
 | Litotes                     | Bejahung durch Verneinung                                                                                      | Nicht schlecht!                                                                                                                                     |
 | **Metapher**                | sprachliches Bild                                                                                              | Du bist meine Rose. Die Wüstenschiffe ziehen weiter. Füll den Tiger in den Tank.                                                                    |
-| Metonymie                   | Ersetzen eines Begriffs durch einen anderen, der in Beziehung steht                                            | Die Königin trägt die Krone. (Die Krone steht für die königliche Autorität)                                                                         |
+| Metonymie                   | Ersetzen eines Begriffs durch einen anderen, der in Beziehung steht                                            | Die Krone hat entschieden. (Die Krone steht für die königliche Autorität), ein Glas trinken, Goethe lesen                                          |
 | **Neologismus**             | Wortneuschöpfung                                                                                               | downloaden                                                                                                                                          |
-| Onomatopoesie               | Nachahmung natürlicher Klänge durch sprachlichen Ausdruck                                                      | Der Hund bellte laut. Die Vögel zwitscherten im Baum.                                                                                               |
-| **Oxymoron**                | Zusammenfügung zweier Teile, die sich logisch                                                                  | Minuswachstum, schwarze Milch                                                                                                                       |
+| Onomatopoesie               | Nachahmung natürlicher Klänge durch sprachlichen Ausdruck                                                      | Der Wind zischte, pfiff, blies. Kikeriki! Die Vögel zwitscherten im Baum.                                                                           |
+| **Oxymoron**                | Zusammenfügung zweier Teile, die sich logisch ausschließen                                                     | Minuswachstum, schwarze Milch                                                                                                                       |
 | **Parallelismus**           | sich wiederholende Wortfolge/Satzkonstruktion                                                                  | Sie hören weit, sie sehen fern.                                                                                                                     |
 | **Parataxe**                | Aneinanderreihung von Hauptsätzen                                                                              | Er sah, er reagierte.                                                                                                                               |
 | **Parenthese**              | Einschub                                                                                                       | Er ist – wie gesagt – nicht dumm.                                                                                                                   |
 | Paronomasie                 | Wortspiel durch Klangähnlichkeit bei unterschiedlicher Bedeutung                                               | Wer rastet, der rostet.                                                                                                                             |
 | **Personifikation**         | Vermenschlichung                                                                                               | Die Sonne lacht. Die Finsternis sieht mit hundert schwarzen Augen.                                                                                  |
-| Pleonasmus                  | Überflüssige Verwendung von Wörtern, die bereits im Kontext enthalten sind                                     | Der nasse Regen.                                                                                                                                    |
+| Pleonasmus                  | Überflüssige Verwendung von Wörtern, die bereits im Kontext enthalten sind                                     | Der nasse Regen, ein weißer Schimmel                                                                                                                |
 | **Rhetorische Frage**       | Scheinfrage, beantwortet sich selbst                                                                           | Das ist doch nicht dein Ernst? Bin ich deine Putzfrau?                                                                                              |
 | **Symbol**                  | sprachliches Bild, das über sich selbst hinausweist                                                            | Wasser (für Leben), Herz (für Liebe), Feuer (für Leidenschaft)                                                                                      |
 | Synekdoche                  | Ein Teil steht für das Ganze oder umgekehrt                                                                    | Alle Hände an Deck! (Hände stehen für die Menschen)                                                                                                 |
 | **Vergleich**               | Gleichsetzung von zwei Dingen, Vergleichswort „wie“                                                            | Er kämpft wie ein Löwe.                                                                                                                             |
 | **Wiederholung**            | Wiederholung identischer Wörter                                                                                | Geliebte, o meine Geliebte!                                                                                                                         |
-| Zeugma                      | Ein Wort bezieht sich auf zwei andere, aber in unterschiedlichen Bedeutungen                                   | Er schlug die Tür zu und sein Herz in Angst.                                                                                                        |
+| Zeugma                      | Ein Wort bezieht sich auf zwei andere, aber in unterschiedlichen Bedeutungen                                   | Er hob den Blick und ein Bein. Sie nahm ihren Hut und Abschied.                                                                                     |
 
 ## Zusammenfassung
 
@@ -106,7 +107,7 @@ Ein Leserbrief weist folgende Eigenschaften auf:
 
 Damit der Leserbrief strukturell wie ein Brief aussieht, gehört ganz _oben rechts_ der Ort und das Datum, wo und an welchem Tag der Brief geschrieben worden ist.
 
-> Stockholm, 26 Oktober 2023
+> Stockholm, 26. Oktober 2023
 
 #### Anrede
 
@@ -146,7 +147,7 @@ Beenden Sie Ihren Brief mit einer Grußformel.
 
 #### Unterschrift
 
-Falls Sie den Text digital verschicken, reicht Ihre Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
+Falls Sie den Text digital verschicken, reicht Ihr Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
 
 ![Signature](/images/languages/Signature_white.png)
 
@@ -189,7 +190,7 @@ Im Schlussteil einer Erörterung fassen Sie die wichtigsten Hauptaussagen noch e
 
 ## Kommentar
 
-Der Kommentar ist eine meinungsbasierte, kritische, satirische, ineinander kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenter Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigenen Meinung unterstützen. Gegenargumente müssen schwach formuliert sein und als nicht stichhaltig angesehen werden.
+Der Kommentar ist eine meinungsbasierte, kritische, oft satirische, in sich kohärente, subjektive Textsorte mit ausgeklügelter, sprachlich exzellenter Argumentation, welche in Präsens und Perfekt geschrieben wird. Alle Argumente müssen die eigene Meinung unterstützen. Gegenargumente müssen schwach formuliert sein und als nicht stichhaltig angesehen werden.
 
 ### Eigenschaften
 
@@ -198,7 +199,7 @@ Ein Kommentar weist folgende Eigenschaften auf:
 -   kein `Ich` verwenden
 -   in eigenen Worten formulieren oder richtig zitieren (nur indirekte Zitate)
 -   Adressaten ansprechen
--   kreative Einleitung, worin Titel und Autor vorkommt
+-   kreative Einleitung, worin Titel und Autor vorkommen
 -   Hauptteil ist in sich flüssig argumentiert (viele [Stilfiguren](#stilfiguren) verwenden)
 -   meinungsorientierter Schlussteil mit Lösungsvorschlägen
 -   max. 50 Wörter mehr schreiben
@@ -217,15 +218,15 @@ Ein Kommentar hat eine kreative Einleitung, welche zumindest den Autor und den T
 
 #### Hauptteil
 
-Im Hauptteil reihen sich mehrere Paragraphen aneinander, welche sich jeweils auf ein die eigene Meinung unterstützendes Argument beziehen. Falls ein Kontra-Argument eingebaut werden will, muss die Sprachgewandtheit dem Leser übermitteln, dass dieser Punkt im Vergleich zu der eigenen Meinung wenig Präsenz hat.
+Im Hauptteil reihen sich mehrere Paragraphen aneinander, welche sich jeweils auf ein die eigene Meinung unterstützendes Argument beziehen. Falls ein Kontra-Argument eingebaut werden soll, muss die Sprachgewandtheit dem Leser übermitteln, dass dieser Punkt im Vergleich zu der eigenen Meinung wenig Präsenz hat.
 
-Vermeiden Sie, `Ich` zu verwenden. Einige passive Konstruktionen können dabei behilflich sein:
+Vermeiden Sie, `Ich` zu verwenden. Einige unpersönliche Konstruktionen können dabei behilflich sein:
 
-> ~Ich finde dass, ...~
+> ~Ich finde, dass ...~
 
 > Für viele steht außer Debatte, dass ...
 
-Betonen Sie außerdem mittels besonderen, ansonsten eher selten verwendeten Stilfiguren die Wichtigkeit von Zitaten, Argumenten oder Behauptungen im Allgemeinen.
+Betonen Sie außerdem mittels besonderer, ansonsten eher selten verwendeter Stilfiguren die Wichtigkeit von Zitaten, Argumenten oder Behauptungen im Allgemeinen.
 
 > **Keine Frage:** Die Matura ist kein Honiglecken.
 
@@ -237,7 +238,7 @@ Sie sollen in Ihrem Text die Phrasen **nicht** fett markieren. Hier sind die Sti
 
 #### Schluss
 
-Im Schlussteil soll der wichtigste Ihrer argumentativen Standpunkte noch einmal auf den Punkt gebracht werden **ohne `Ich` zu verwenden**. Wenn Sie einmal das Wort `Ich` einbauen, ist das vollkommen okay. Setzen Sie sich allerdings immer als Ziel, subjektiv zu schreiben, ohne subjektive Wörter zu verwenden.
+Im Schlussteil soll der wichtigste Ihrer argumentativen Standpunkte noch einmal auf den Punkt gebracht werden, **ohne `Ich` zu verwenden**. Wenn Sie einmal das Wort `Ich` einbauen, ist das vollkommen okay. Setzen Sie sich allerdings immer als Ziel, subjektiv zu schreiben, ohne subjektive Wörter zu verwenden.
 
 ## Textanalyse
 
@@ -274,9 +275,9 @@ Der Hauptteil fasst innerhalb von zwei bis drei Sätzen den Inhalt des Ausgangst
 | Inhalt                                       | den Inhalt des Ausgangstextes in ca. 75 Wörtern in eigenen Worten wiedergeben                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Sinnabschnitte / Gliederung                  | Auflistung der inhaltlich getrennten Abschnitte mittels Zeilennummern                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Satzstrukturen (+ Beispiele)                 | <ul style="margin-top: 1rem"><li><p><strong>parataktisch</strong><br>mehrheitlich Hauptsätze (Parataxe)</p></li><li><p><strong>hypotaktisch</strong><br>viele Nebensätze und Satzgefüge (Hypotaxe); viele Beistriche</p></li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Sprache + Beispiele                          | Standardsprache, Bildungssprache, Umgangssprache, Jungendsprache                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Argumentation + Beispiele                    | <ul style="margin-top: 1rem"><li><p><strong>Faktenargumente</strong><br>Begründung mittels wissenschaftlichen Fakten</p></li><li><p><strong>Werteargumente</strong> / normative Argumente<br>Begründung mittels gesellschaftlichen <em>Normen / Werten / Regeln</em></p></li><li><p><strong>Vergleichsargumente</strong> / Analogieargumente<br>Nachvollziehbarkeit durch Vergleich mit anderem Bereich</p></li><li><p><strong>Autoritätsargumente</strong><br>Begründung mittels Aussagen von Experten oder anerkannten Organisationen</p></li><li><p><strong>indirekte Argumente</strong><br>Widerlegung von alternative Standpunkten</p></li><li><p><strong>Plausibilitätsargument</strong><br>logische Schlussfolgerungen</p></li></ul> |
-| Wortfelder / Wortschatz                      | verwendet der Autor / die Autorin das Fachtermini des Themas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Sprache + Beispiele                          | Standardsprache, Bildungssprache, Umgangssprache, Jugendsprache                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Argumentation + Beispiele                    | <ul style="margin-top: 1rem"><li><p><strong>Faktenargumente</strong><br>Begründung mittels wissenschaftlichen Fakten</p></li><li><p><strong>Werteargumente</strong> / normative Argumente<br>Begründung mittels gesellschaftlichen <em>Normen / Werten / Regeln</em></p></li><li><p><strong>Vergleichsargumente</strong> / Analogieargumente<br>Nachvollziehbarkeit durch Vergleich mit anderem Bereich</p></li><li><p><strong>Autoritätsargumente</strong><br>Begründung mittels Aussagen von Experten oder anerkannten Organisationen</p></li><li><p><strong>indirekte Argumente</strong><br>Widerlegung von alternativen Standpunkten</p></li><li><p><strong>Plausibilitätsargument</strong><br>logische Schlussfolgerungen</p></li></ul> |
+| Wortfelder / Wortschatz                      | verwendet der Autor / die Autorin die Fachtermini des Themas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Wortarten + Beispiele                        | viele Nomen (Nominalstil), Verben, Adjektive                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [Stilmittel](#stilfiguren) + viele Beispiele | Welche Stilmittel werden verwendet? Nennen Sie immer die Art des rhetorischen Mittels mit möglichst vielen Beispielen. Sie können auch aufzählen, welche Stilfiguren nicht verwendet werden im gesamten Ausgangstext.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Intention                                    | Analyse von Aufmerksamkeit, Information und Appell + gelungen / nicht gelungen?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -340,9 +341,7 @@ Eine Textinterpretation weist folgende Eigenschaften auf:
 
 ### Aufbau
 
-Am Beginn der Textinterpratation muss man alle Aufgaben der Textanalyse etwas kürzer durchführen (siehe [Textanalyse](#hauptteil-4)). Zusätzlich muss man interpretieren, warum welche Stilfiguren verwendet worden sind, und einige gattungsspezifische -- Epik, Lyrik, Dramatik -- Merkmale herausfinden.
-
-<!-- klarer aufbau, man weiß was erwartet wird (ähnlich textanalyse), alles was bei textanalyse auch bei interpretaion, aufbau, wortfelder, (gedicht = strohphe), sprache( stilfirugren), interpretiere, warum welche stilfigur verwendet worden ist. -->
+Am Beginn der Textinterpretation muss man alle Aufgaben der Textanalyse etwas kürzer durchführen (siehe [Textanalyse](#hauptteil-4)). Zusätzlich muss man interpretieren, warum welche Stilfiguren verwendet worden sind, und einige gattungsspezifische -- Epik, Lyrik, Dramatik -- Merkmale herausfinden.
 
 #### Überschrift
 
@@ -352,7 +351,7 @@ Die Überschrift einer Textinterpretation ist optional. Wenn eine Überschrift v
 
 #### Einleitung
 
-Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entwender erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Kurzgeschichte, Novelle, Gedicht, Tragödie, ...) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
+Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Einleitung schreiben. Entweder erwähnt man nur kurz den Autor, den Titel, den Erscheinungsort und -datum und die Sorte (Kurzgeschichte, Novelle, Gedicht, Tragödie, ...) des Ausgangstextes, oder man lässt sich einen kreativen Einstieg einfallen. Für erstere Möglichkeit kann man eine Basiseinleitung hernehmen:
 
 > Die Glosse „Online einkaufen war gestern - heute gehen wir Echtzeitshoppen“ von Sybille Hamann aus „der Presse“ beschäftigt sich auf satirische Weise mit dem Thema Onlineshopping und dem damit verbundenen Riesenaufwand.
 
@@ -365,22 +364,22 @@ In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch b
 Da die Interpretation eines epischen, lyrischen und dramatischen Textes nicht immer das Einfachste ist, gibt es ein paar Ansätze, damit Sie auf die Sprünge kommen.
 
 -   **Kontextualisierung**  
-    Überlegen Sie anhander der Analyse der Zeit und des Ortes, in welchen historischen Kontext der Text eingeordnet werden kann. Zu welcher Epoche / Literaturgeschichte zählt der Text?
+    Überlegen Sie anhand der Analyse der Zeit und des Ortes, in welchen historischen Kontext der Text eingeordnet werden kann. Zu welcher Epoche / Literaturgeschichte zählt der Text?
 
 -   **Auswirkung auf den Leser**  
-    Welche Auswirkungen hat der Text auf den Leser? Welche Eindrücke und Gefühle werden erzeugt? _Der Autor / Die Autorin_ hat den Text zu dieser Zeit sicherlich nicht unnötig verfasst, sondern wollte viel mehr, dass es den Leser dazu bewirkt, über etwas nachzudenken. Vielleicht hängt diese Intention auch mit den historischen Ereignissen zusammen.
+    Welche Auswirkungen hat der Text auf den Leser? Welche Eindrücke und Gefühle werden erzeugt? _Der Autor / Die Autorin_ hat den Text zu dieser Zeit sicherlich nicht unnötig verfasst, sondern wollte vielmehr den Leser dazu bewegen, über etwas nachzudenken. Vielleicht hängt diese Intention auch mit den historischen Ereignissen zusammen.
 
 -   **Soziologie**  
-    Hat _der Autor / die Autorin_ Kritik an gesellschaftlichen Zuständen genommen? Wenn ja, welche Auswirkungen hatte die gesellschaftliche Wirklichkeit auf _den Autor / die Autorin_?
+    Hat _der Autor / die Autorin_ Kritik an gesellschaftlichen Zuständen geübt? Wenn ja, welche Auswirkungen hatte die gesellschaftliche Wirklichkeit auf _den Autor / die Autorin_?
 
 -   **Psychologie**  
     Deuten Sie die Handlungen der Figuren und analysieren Sie ihre Motive. Warum hat sich _der Autor / die Autorin_ gedacht, dass die Figuren in den bestimmten Situationen so und so handeln werden?
 
--   **Kommunikationtheorie**  
-    In einigen Gedichten reden die Figuren aneinander vorbei. Analysieren Sie, ob _der Autor / die Autorin_ solche Merkmale auch in Ihren Ausgangstext eingebaut hat!
+-   **Kommunikationstheorie**  
+    In einigen Texten reden die Figuren aneinander vorbei. Analysieren Sie, ob _der Autor / die Autorin_ solche Merkmale auch in Ihren Ausgangstext eingebaut hat!
 
 -   **Textsorten**  
-    _Der Autor / Die Autorin_ hat aus einem bestimmten Grund die Handlung mittels Glosse, Lied, Ballade, Gedicht, Tragödie, Roman, Sage, Bildsprache, usw. verfasst. Diese Auswahl muss nicht grundlos geschehen sein. Viele Autoren sind sich über die Auswirkungen, Stärken und Schwächen jener Textsorten bewusst und nutzen diese, um ihre Intentionen (un)bewusst an den Leser zu übertragen. Auch hier ist wieder die Verbindungen mit dem Kontext herzustellen, da zu manchen historischen Zeiten das Veröffentlichen bestimmter Inhalte verboten war und Autoren Textarten genutzt haben, um diese Verbote zu umgehen. Warum?
+    _Der Autor / Die Autorin_ hat aus einem bestimmten Grund die Handlung mittels Glosse, Lied, Ballade, Gedicht, Tragödie, Roman, Sage, Bildsprache, usw. verfasst. Diese Auswahl muss nicht grundlos geschehen sein. Viele Autoren sind sich über die Auswirkungen, Stärken und Schwächen jener Textsorten bewusst und nutzen diese, um ihre Intentionen (un)bewusst an den Leser zu übertragen. Auch hier ist wieder die Verbindung mit dem Kontext herzustellen, da zu manchen historischen Zeiten das Veröffentlichen bestimmter Inhalte verboten war und Autoren Textarten genutzt haben, um diese Verbote zu umgehen. Warum?
 
 #### Schluss
 
@@ -403,7 +402,7 @@ Recherchieren Sie Daten bezüglich _des Autors / der Autorin_ und stellen Sie ev
 Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittelnde Funktion zwischen dem Erzählten und den Lesern/Leserinnen. Der Erzähler ist in den meisten Fällen nicht identisch mit _dem Autor / der Autorin_ eines erzählenden Textes, jedoch kann dies auch möglich sein.
 
 -   **Erzählperspektive**  
-    Den Blickwinkel, aus dem eine Geschichte erzählt wird, nennt man Erzählperspektive. Geschichten aus zwei verschiedenen Perspektiven erzählt werden:
+    Den Blickwinkel, aus dem eine Geschichte erzählt wird, nennt man Erzählperspektive. Geschichten können aus zwei verschiedenen Perspektiven erzählt werden:
 
     -   _Außenperspektive_  
         Man schaut von außen auf ein Geschehen und erzählt dieses.
@@ -423,14 +422,14 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
 
         > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
 
-    -   _peronale Erzählhaltung_  
-        Dieser Erzähler kennt die Gefühle und Gedanken einer Person, jedoch nicht die Gedanken und Gefühle anderer Personen. Hierbei kann die Perspektive der Geschichte von der Person im dritten Fall oder mithilfe des `Ich-Erzählers` übermittelt werden.
+    -   _personale Erzählhaltung_  
+        Dieser Erzähler kennt die Gefühle und Gedanken einer Person, jedoch nicht die Gedanken und Gefühle anderer Personen. Hierbei kann die Geschichte in der dritten Person oder mithilfe des `Ich-Erzählers` übermittelt werden.
 
         Hier sind zwei Beispiele (zuerst ein personaler Erzähler und anschließend der `Ich-Erzähler`):
 
-        > Hans greift langsam zur Schere. Er zögert bei dieser Bewegung, jedoch fasst er schlussendlich das Objekt in seine Hand.
+        > Hans greift langsam zur Schere. Hoffentlich geht das gut, denkt er, während seine Hand zittert. Schließlich fasst er das Objekt.
 
-        > Ist der Tod mir Nahe? Ich spüre die Kälte des Objekts als ich langsam zur Schere greife.
+        > Ist der Tod mir nahe? Ich spüre die Kälte des Objekts, als ich langsam zur Schere greife.
 
 ##### Raum und Zeit
 
@@ -445,7 +444,7 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
     Die Zeit, in der eine Erzählung stattfindet.
 
     -   _Epoche_  
-        Analysieren Sie, in welche Epoche der Text einzuordnet ist (Zweiter Weltkrieg, Römische Reich, Jetztzeit).
+        Analysieren Sie, in welche Zeit der Text einzuordnen ist (Zweiter Weltkrieg, Römisches Reich, Jetztzeit).
 
     -   _Erzählzeit_  
         Die Zeit, die man zum Erzählen einer Geschichte benötigt (Vorlesezeit).
@@ -465,7 +464,7 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
             Wenn gilt: $Erzählzeit\;\approx\;erzählte\;Zeit$, dann spricht man von einer deckenden Zeit. Die Ereignisse geschehen so, wie wenn man sie durchleben würde.
 
         -   **Zeit raffend**  
-            Wenn gilt: $Erzählzeit\;<\;erzählte\;Zeit$, dann spricht man von einer raffenden Zeit. Die Ereignisse geschehen sehr schnell hintereinander, teilweise beschreiben nur wenige Wörte eine Szene.
+            Wenn gilt: $Erzählzeit\;<\;erzählte\;Zeit$, dann spricht man von einer raffenden Zeit. Die Ereignisse geschehen sehr schnell hintereinander, teilweise beschreiben nur wenige Wörter eine Szene.
 
     -   _Zeitablauf_  
         Die Reihenfolge, in welcher die Geschehnisse auftreten.
@@ -474,10 +473,10 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
             Die Geschichte startet mit den Ereignissen, welche am frühesten geschehen sind, und endet mit denen, welche am spätesten geschehen sind.
 
         -   **mit Rückblenden und Vorausblicken**  
-            Momente, welche entwender vor oder nach dem Haupthandlungszeitablauf auftreten, werden mitten im Fluss der Zeit eingebaut, um Erinnerungen oder Visionen zu symbolisieren.
+            Momente, welche entweder vor oder nach dem Haupthandlungszeitablauf auftreten, werden mitten im Fluss der Zeit eingebaut, um Erinnerungen oder Visionen zu symbolisieren.
 
         -   **unter völliger Auflösung des üblichen Zeitbegriffs**  
-            Vergangenes, Gegenwärtiges und Zukünftiges rinnen ineinander („stürtzende Zeit“).
+            Vergangenes, Gegenwärtiges und Zukünftiges rinnen ineinander („stürzende Zeit“).
 
 ##### Personen
 
@@ -486,10 +485,10 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
 
     -   _direkt charakterisiert_
 
-        > brav, einfällig, vorlaut, muskulös, ...
+        > brav, einfältig, vorlaut, muskulös, ...
 
     -   _indirekt charakterisiert_  
-        Der Leser erschließt seinen eigenen Charakter aus dem Verhalten und Aussagen der Figur.
+        Der Leser erschließt den Charakter aus dem Verhalten und den Aussagen der Figur.
 
 -   **Figurenkonstellation**  
     Die Beziehung zwischen den Figuren
@@ -513,9 +512,9 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
         -   indirekte Rede
         -   erlebte Rede: Wiedergabe der Gedanken, Empfindungen, usw. einer Figur in der 3. Person Singular, Präteritum:
             > Medina musterte den Mann misstrauisch. Sollte das wirklich ihr Bruder sein? Hatte der nicht eine kantigere Nase und eine Narbe am Hals?
-        -   innere Monolog: stummes Selbstgespräch in der `Ich-Form` und im Präsens
+        -   innerer Monolog: stummes Selbstgespräch in der `Ich-Form` und im Präsens
             > [...] Zum wievielten Mal lauf' ich jetzt eigentlich um das Hotel herum? Also was jetzt? Da steh' ich vor dem Tor. In der Halle ist noch niemand. Natürlich -- sie sitzen ja noch alle beim Diner. Seltsam sieht die Halle aus so ganz ohne Menschen. Auf dem Sessel dort liegt ein Hut, ein Touristenhut, ganz fest. Hübscher Gemsbart. [...] (Arthur Schnitzler: Fräulein Else)
-        -   Bewusstseinsstrom: assoziative Reihung von Bewusstseinsinhalten (Empfindungen, Erinnerungen, Gedanken, Wahrnehmungen, uws.) einer Figur
+        -   Bewusstseinsstrom: assoziative Reihung von Bewusstseinsinhalten (Empfindungen, Erinnerungen, Gedanken, Wahrnehmungen, usw.) einer Figur
             > [...] Eine Kugel kam geflogen, gilt sie mir oder gilt sie dir. Sie hat ihn weggerissen, er liegt mir zu den Füßen, als wärs ein Stück von mir. Da steht er: Franz Biberkopf, Arm hat er ab, Kriegsinvalide, der Kerl ist besoffen, oder nicht. Macht er eine Bewegung, knall ich ihn ab. [...] (Alfred Döblin: Berlin Alexanderplatz)
 
 ##### Formen und besondere Verfahrensweisen
@@ -559,7 +558,7 @@ Der Götter herbei!
 
 </blockquote>
 
-Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer Einschnitt innerhalb eines Verses. Du hältst an dieser Stelle etwas inne. Zäsuren kommen etwa in Sonetten sehr häufig vor.
+Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer Einschnitt innerhalb eines Verses. Man hält an dieser Stelle etwas inne. Zäsuren kommen etwa in Sonetten sehr häufig vor.
 
 ##### Formale Analyse
 
@@ -570,7 +569,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
     Die Bestimmung der Strophenform kann mittels Länge und Anzahl der Strophen im Gedicht erfolgen.
 
     -   _Sonett_  
-        Die Sonett besteht aus zwei Quartetten (Vierzeilern) und zwei Terzetten (Dreizeilern). Die Quartette weisen das Reimschema `ABBA` auf, die Terzette hingegen `CDC CDC` oder `CCD EED`. Die Sonett kommt häufig in der Epoche Barock vor.
+        Das Sonett besteht aus zwei Quartetten (Vierzeilern) und zwei Terzetten (Dreizeilern). Die Quartette weisen meist das Reimschema `ABBA ABBA` auf, die Terzette hingegen zum Beispiel `CDE CDE`, `CDC DCD` oder `CCD EED`. Das Sonett kommt häufig in der Epoche Barock vor, war aber auch in der Romantik und im Expressionismus beliebt.
 
         <blockquote>
 
@@ -598,7 +597,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         </blockquote>
 
     -   _Ode_  
-        Die Ode ist ein reimloses, strophisch gegliedertes und eher langes Gedicht mit festem Metrum.
+        Die Ode ist ein feierliches, strophisch gegliedertes und eher langes Gedicht mit festem Metrum. Nach antikem Vorbild ist sie oft reimlos (z. B. bei Klopstock oder Hölderlin), es gibt aber auch gereimte Oden wie Schillers „An die Freude“.
 
         <blockquote>
 
@@ -619,7 +618,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         </blockquote>
 
     -   _Hymne_  
-        Eine Hymne hat keine formalen Regelmäßigkeiten und verzichtet auf eine Gliederung, das Metrum und Reime.
+        Die Hymne ist ein feierlicher Lob- und Preisgesang, etwa auf Gott, die Natur oder das Vaterland. Literarische Hymnen wie Goethes „Prometheus“ verzichten häufig auf regelmäßige Strophen, ein festes Metrum und Reime (freie Rhythmen). National- und Kirchenhymnen sind hingegen meist gereimte Lieder mit Strophen, wie das folgende Beispiel zeigt.
 
         <blockquote>
 
@@ -668,7 +667,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         Mein Sohn, was birgst du so bang dein Gesicht? -  
         Siehst, Vater, du den Erlkönig nicht?  
         Den Erlenkönig, mit Kron' und Schweif! -  
-        Mein Sohn, es ist ein Nebelstreif. -!
+        Mein Sohn, es ist ein Nebelstreif. -
 
         Du liebes Kind, komm geh mit mir!  
         Gar schöne Spiele spiel' ich mit dir,  
@@ -744,13 +743,13 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             | eisige                 |
 
     -   _Anzahl der Hebungen_  
-        Um die Länge eines Verses bestimmten zu können, gibt es die analytische Einheit der Hebungen. Hierbei werden einfach die Vorkommnisse des jeweiligen Metrums in einem Vers gezählt. Um dies zu verdeutlichen nehmen wir nun diesen schönen Vers von Schiller aus „Das Mädchen aus der Fremde“ her:
+        Um die Länge eines Verses bestimmen zu können, gibt es die analytische Einheit der Hebungen. Hierbei werden einfach die betonten Silben (Hebungen) in einem Vers gezählt. Um dies zu verdeutlichen nehmen wir nun diesen schönen Vers von Schiller aus „Das Mädchen aus der Fremde“ her:
 
         > Doch nahte sich ein liebend Paar
 
         Versuchen Sie den Vers laut auszusprechen und die Metrik anhand der Hebungen und Senkungen zu erkennen. Kleiner Spoiler, es ist der `Jambus`, da die Betonungen bei `nah`, `sich`, `lie` und `Paar` liegen. Diese Betonungen kann man so symbolisieren: `x` `x́` `x` `x́` `x` `x́` `x` `x́`. Normale `x`e stehen für Senkungen, eine Hebung wird mittels Akut (`x́`) markiert.
 
-        An dieser Folge kann man gut erkennen, dass der Vers **vier Hebungen** hat. Deshalb bezeichnen wir den Vers als `4-hebigen Jambus`. Da der Vers auch mit einer Hebung endet, sprich man von einem vollständigen Jambus. Das Gegenteil eines vollständigen Jambus nennt man unvollständigen Jambus oder auch katalektischen Jambus. Folgendes Beispiel ist ein 3-hebiger katalektischer Jambus:
+        An dieser Folge kann man gut erkennen, dass der Vers **vier Hebungen** hat. Deshalb bezeichnen wir den Vers als `4-hebigen Jambus`. Da der Vers mit einer Hebung endet, spricht man von einer männlichen (stumpfen) Kadenz. Endet ein jambischer Vers hingegen mit einer zusätzlichen unbetonten Silbe, spricht man von einer weiblichen (klingenden) Kadenz; der Vers ist dann _hyperkatalektisch_ (um eine Silbe verlängert). Fehlt umgekehrt am Versende eine Silbe des letzten Versfußes, nennt man den Vers _katalektisch_. Folgendes Beispiel ist ein 3-hebiger Jambus mit weiblicher Kadenz:
 
         > Da ist in meinem Herzen  
         > `x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x` `x́`&nbsp;&nbsp;`x`
@@ -763,7 +762,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             (`x` `x́` `x` `x́` `x` `x́` `x` `x́` `x` `x́`)
         -   **Alexandriner**: 6-hebiger Jambus mit Zäsur (`/`) meistens in der Mitte  
             (`x` `x́` `x` `x́` `x` `x́` `/` `x` `x́` `x` `x́` `x` `x́`)
-        -   **Hexameter**: 6-füßiger Daktylus (die letzte Silbe des letzten Daktylus fällt weg)  
+        -   **Hexameter**: 6-füßiger Daktylus, dessen letzter Versfuß nur aus zwei Silben besteht  
             (`x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x` `x` `x́` `x`)
         -   **freier Rhythmus**: kein einheitlicher Rhythmus
 
@@ -799,7 +798,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             `a` Zwei Segel erhellend  
             `b` Die tiefblaue Bucht!  
             `a` Zwei Segel sich schwellend  
-            `b` Zur ruhiger Flucht!
+            `b` Zu ruhiger Flucht!
 
             `c` Wie eins in den Winden  
             `d` Sich wölbt und bewegt,  
@@ -867,7 +866,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             </blockquote>
 
         -   **Schweifreim**  
-            Der Schweifreim hat das Muster `AA B CC B` und wird immer aus sechst Versen gebildet. Er ist eine Zusammensetzung auf Paarreim und umarmender Reim.
+            Der Schweifreim hat das Muster `AA B CC B` und wird immer aus sechs Versen gebildet. Er ist eine Zusammensetzung aus Paarreim und umarmendem Reim.
 
             <blockquote>
 
@@ -882,11 +881,11 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             </blockquote>
 
         -   **Kettenreim**  
-            Der Kettenreim hat das Schema `ABA BCB CDC`. Dieser Reim verbientet also immer dreizeilige Strophen miteinander.
+            Der Kettenreim hat das Schema `ABA BCB CDC`. Dieser Reim verbindet also immer dreizeilige Strophen miteinander (Terzinen).
 
             <blockquote>
 
-            **Im ernsten Beinhaus war's** -- Johann Wolfgang von Goehte  
+            **Im ernsten Beinhaus war's** -- Johann Wolfgang von Goethe  
             `a` Im ernsten Beinhaus wars, wo ich beschaute,  
             `b` &nbsp;&nbsp;&nbsp;&nbsp;Wie Schädel Schädeln angeordnet paßten;  
             `a` &nbsp;&nbsp;&nbsp;&nbsp;Die alte Zeit gedacht ich, die ergraute.  
@@ -903,22 +902,24 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             </blockquote>
 
         -   **Waise**  
-            Die Waise ist kein Reimschema im eigentlich Sinn. Man versteht darunter einen reimlosen Vers innerhalb einer Strophe oder als eigene Strophe, die ansonsten gereimt ist. Dadurch bekommt dieser Vers eine besondere Hervorhebung. Manchmal sieht man als Reimschema diese Anschrift: `AABBX`.
+            Die Waise ist kein Reimschema im eigentlichen Sinn. Man versteht darunter einen reimlosen Vers innerhalb einer Strophe oder als eigene Strophe, die ansonsten gereimt ist. Dadurch bekommt dieser Vers eine besondere Hervorhebung. Manchmal sieht man als Reimschema diese Anschrift: `AABBX`.
 
             <blockquote>
 
-            **Allgemeinen Deutschen Kommersbuch** -- Joseph Victor von Scheffel  
+            **Die Teutoburger Schlacht** -- Joseph Victor von Scheffel  
             `a` Als die Römer frech geworden,  
             `a` zogen sie nach Deutschlands Norden.  
             `b` Vorne mit Trompetenschall  
             `b` ritt der Generalfeldmarschall,  
             `x` Herr Quinctilius Varus.
 
+            </blockquote>
+
     -   _Reimstellung_  
         Die Reimstellung beschreibt, welche Silben der Verse sich miteinander reimen.
 
         -   **Endreim**  
-            Die typischte Stellung ist der Endreim, da sich die letzte(n) Silbe(n) miteinander reimen.
+            Die typischste Stellung ist der Endreim, da sich die letzte(n) Silbe(n) miteinander reimen.
 
             > Max und Moritz, gar nicht tr**äge**,  
             > Sägen heimlich mit der S**äge**.
@@ -935,7 +936,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             > Ritzeratze! voller T**ücke**,  
             > In die Br**ücke** eine L**ücke**.
 
-            Eine Sonderform des Binnenreims ist der _Mittelreim_: zwei Wörter im Inneren zweier aufeinanderfolgender Reime reimen sich.
+            Eine Sonderform des Binnenreims ist der _Mittelreim_: zwei Wörter im Inneren zweier aufeinanderfolgender Verse reimen sich.
 
             > Mit Entz**ücken** stellt sie fest,  
             > Dass das Obst sich Pfl**ücken** lässt.
@@ -967,7 +968,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
 
                 > Kommt her und sch**aut** / was wurde geb**aut**.
 
-            -   Die Wörter vor der Zäsur in zwei Versen (Langzeile) reimmen sich.
+            -   Die Wörter vor der Zäsur in zwei Versen (Langzeile) reimen sich.
 
                 > Uns ist in alten m**æren** / wunders vil geseit  
                 > von Helden lobeb**æren**, / von grôzer arebeit.
@@ -1004,7 +1005,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             > Die myriadenmal hundert **tausend**?
 
         -   **äquivoker Reim**  
-            Hier werden Wörter gereimt, die gleich klingen, aber unterschiedlich geschrieben werden –- sogenannte Homonyme.
+            Hier werden Wörter gereimt, die gleich klingen, aber eine unterschiedliche Bedeutung haben (Homonyme bzw. Homophone).
 
             | Beispiele für äquivoke Reime |
             | ---------------------------- |
@@ -1079,7 +1080,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
         Manche Reime weisen bestimmte Besonderheiten in der Wortebene auf. Das betrifft etwa die Wortbildung (Morphologie) oder den Wortschatz (Lexik), woraus sich weitere Reimarten ableiten lassen.
 
         -   **Augenreim**  
-            Der Augenreim stimmt zwar das Schriftbild überein, ausgesprochen reimen sich die Wörter aber nicht.
+            Beim Augenreim stimmt zwar das Schriftbild überein, ausgesprochen reimen sich die Wörter aber nicht.
 
             > Lage -- Garage
 
@@ -1156,7 +1157,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
     Welche Figuren kommen vor? Wer ist der Sprecher? Wer wird angesprochen? Was erfährt das Publikum über die Figuren?
 
 -   **Ort und Zeit**  
-    An welchem Ort und zu welcher Zeit spielt die Handlung? Sind die Ortsangaben (falls in den Strophen welche vorkommen) real oder haben diese nur eine symbolische Bedeutung? Interpretieren Sie über den Ort und dessen Bedeutung.
+    An welchem Ort und zu welcher Zeit spielt die Handlung? Sind die Ortsangaben (falls in den Strophen welche vorkommen) real oder haben diese nur eine symbolische Bedeutung? Interpretieren Sie den Ort und dessen Bedeutung.
 
     Zu welcher Epoche spielt die lyrische Erzählung? Auch die Zeit kann eine symbolische Bedeutung haben, welche von Ihnen interpretiert werden muss. Zum Beispiel hat der Herbst in Rainer Maria Rilkes Gedicht „Herbsttag“ einen großen Einfluss auf die Einsamkeit der Menschen und symbolisiert allgemein das Ende des Sommers.
 
@@ -1167,7 +1168,7 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
 ##### Dramengattung
 
 -   **Textsorte**  
-    Handelt es sich bei dem Ausgangstext um eine Tragödie, Komödie oder auch Tragikomödie. Ersteres ist sehr negativ gestimmt, zweiteres soll das Publikum unterhalten und letzteres ist einerseits traurig, jedoch hat es auch einen lustigen Faktor an sich. Vor allem Handlungen von Schelmen sind in der Tragikomödie angesiedelt.
+    Handelt es sich bei dem Ausgangstext um eine Tragödie, Komödie oder auch Tragikomödie? Erstere ist sehr negativ gestimmt, die zweite soll das Publikum unterhalten und letzteres ist einerseits traurig, jedoch hat es auch einen lustigen Faktor an sich.
 
     -   _Komödie_  
         Mittelpunkt der Komödie sind Personen niedrigeren Standes, Normen und Institutionen, die dem Gelächter preisgegeben werden. Die Komödie zeichnet sich von Anfang an durch einen lockeren und leichten Aufbau aus. Herrschende Verhältnisse werden in der Komödie auf den Kopf gestellt, öffentliche Personen und politische Missstände ätzendem Spott ausgesetzt. Im Fokus steht die Darstellung der Unzulänglichkeiten und Schwächen des Menschen und des menschlichen Lebens. Erheiterung findet durch Situations- und Sprachkomik statt. Der Sprachstil befindet sich auf einem niedrigen Level, sodass der Sprachgebrauch niedriger Schichten passend abgebildet wird. Auch die Protagonisten der Komödie sind einem Konflikt ausgesetzt, der allerdings überwunden wird.
@@ -1176,13 +1177,13 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
         Neben der Komödie ist die Tragödie die zweite Hauptform des Dramas. Die Tragödie ist auch unter dem Namen Trauerspiel bekannt. Mittelpunkt der Tragödie ist eine Person höheren Standes, die vor einem tragischen, unauflösbaren Konflikt steht, der zum unausweichlichen Untergang des Helden führt, entweder in Form seines Todes oder eines anderes elendigen Zustands. Dem Zuschauer soll mittels der Tragödie vor Augen geführt werden, dass der menschliche Handlungs- und Entscheidungsspielraum begrenzt ist und dass der Mensch seinem bestimmten Schicksal mit eigener Handlung nicht entgehen kann. Nach der antiken Poetik des Aristoteles soll das Schicksal des tragischen Helden vor allem Furcht und Mitleid beim Zuschauer erregen, sodass seine seelische Reinigung (Katharsis) bewirkt wird. Der Zuschauer soll lernen, dass man mit denjenigen Menschen Mitleid haben soll, die es verdienen, und er sich vor den Dingen zu fürchten hat, die er auch selbst fürchten muss. Der Sprachstil in der Tragödie ist als hoch, würdevoll, gehoben, exakt und treffsicher zu charakterisieren.
 
     -   _Tragikomödie_  
-        Eine Mischform von Tragödie und Komödie ist die Tragikomödie. Sie war erstmals in der Epoche „Sturm und Drang“ vorzufinden. Tragik und Komik sind hierbei unauflösbar miteinander verbunden und verstärken sich gegenseitig. Komische Momente steigern hierbei die Wirkung tragischer Zusammenhänge.
+        Eine Mischform von Tragödie und Komödie ist die Tragikomödie. Der Begriff geht auf den römischen Dichter Plautus zurück. In der deutschen Literatur gewann die Form vor allem ab dem „Sturm und Drang“ (z. B. „Der Hofmeister“ von Jakob Michael Reinhold Lenz) an Bedeutung. Tragik und Komik sind hierbei unauflösbar miteinander verbunden und verstärken sich gegenseitig. Komische Momente steigern hierbei die Wirkung tragischer Zusammenhänge.
 
 -   **Analyse vs Synthese**  
     Ist das Drama analytisch oder synthetisch?
 
     -   _analytische Dramen_  
-        Ein analytisches Drama, Entdeckungs- oder Enthüllungsdrama bezeichnet man ein Drama, welches auf einen bestimmten Vorfall inder Vorgeschichte des dargestellten Geschehens aufbaut. Von dieser Begebenheit sind zunächst nur Auswirkungen erkennbar, deren Ursache erst im Verlauf der Handlung sukzessive, Schritt für Schritt entdeckt bzw. enthüllt wird.
+        Als analytisches Drama, Entdeckungs- oder Enthüllungsdrama bezeichnet man ein Drama, welches auf einem bestimmten Vorfall in der Vorgeschichte des dargestellten Geschehens aufbaut. Von dieser Begebenheit sind zunächst nur Auswirkungen erkennbar, deren Ursache erst im Verlauf der Handlung sukzessive, Schritt für Schritt entdeckt bzw. enthüllt wird.
 
         Somit lassen sich zwei Handlungsebenen eines analytischen Dramas ausmachen:
 
@@ -1192,12 +1193,12 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
         <br/>
 
     -   _synthetische Dramen_  
-        Ein synthetisches Drama, Entfaltungs-, Konflikt- oder Zieldrama bezeichnet man ein Drama, welches mit einem bestimmten Vorfall oder Vorgang beginnt. Dieser fungiert als Auslöser für das weitere Geschehen und entfaltet somit die Handlung. Auch wenn eine Vorgeschichte eine gewisse Rolle spielen kann, richtet sich der Handlungsablauf auf ein in der Zukunft liegendes Ereignis, das namensgebende Ziel, aus.
+        Als synthetisches Drama, Entfaltungs-, Konflikt- oder Zieldrama bezeichnet man ein Drama, welches mit einem bestimmten Vorfall oder Vorgang beginnt. Dieser fungiert als Auslöser für das weitere Geschehen und entfaltet somit die Handlung. Auch wenn eine Vorgeschichte eine gewisse Rolle spielen kann, richtet sich der Handlungsablauf auf ein in der Zukunft liegendes Ereignis, das namensgebende Ziel, aus.
 
         Im Mittelpunkt des Geschehens steht meist ein innerer oder äußerer Konflikt:
 
         -   Ein innerer Konflikt existiert im Inneren des Helden, der zwischen zwei Entscheidungen hin- und hergerissen ist.
-        -   Ein äußerer Konflikt hingegen besteht zwischen dem Protagonist und einem Antagonist, einem Gegenspieler, der ein den Intentionen des Helden entgegengesetztes Ziel verfolgt.
+        -   Ein äußerer Konflikt hingegen besteht zwischen dem Protagonisten und einem Antagonisten, einem Gegenspieler, der ein den Intentionen des Helden entgegengesetztes Ziel verfolgt.
 
 -   **Offenheit**
     Man unterscheidet geschlossene und offene Dramen.
@@ -1207,18 +1208,18 @@ Wenn der Ausgangstext eine dramatische Textsorte ist, müssen folgende Merkmale 
 
         Häufig stehen sich im geschlossenen Drama Held und Gegenspieler gegenüber. Eine Dreieckssituation ist auch möglich, in der drei Protagonisten miteinander interagieren. Das geschlossene Drama zeichnet sich durch eine Klärung der Vorgeschichte in der Exposition, einem einleitenden Anfang, dem Eintreten eines Konflikts und einer eindeutigen Lösung zum Schluss aus.
 
-        Das Drama ist in Verssprache verfasst. Eine Individualisierung der Protagonisten ist aber mittels Sprachgebrauch möglich. Die dargestellte Handlung findet innerhalb eines kurzen Zeitraums statt und beschränkt sich auf wenige Schauplätze. Es wird nicht die Realität, sondern ein idealisiertes Abbild der Wirklichkeit auf die Bühne gebracht.
+        Das Drama ist meist in Verssprache verfasst. Eine Individualisierung der Protagonisten ist aber mittels Sprachgebrauch möglich. Die dargestellte Handlung findet innerhalb eines kurzen Zeitraums statt und beschränkt sich auf wenige Schauplätze. Es wird nicht die Realität, sondern ein idealisiertes Abbild der Wirklichkeit auf die Bühne gebracht.
 
         Ein sehr bekanntes geschlossenes Drama ist das Werk „Don Carlos, Infant von Spanien“, 1787 von Friedrich Schiller verfasst.
 
     -   _offene Dramen_  
         Das offene Drama beinhaltet zumeist mehrere gleichwertige Handlungen, insgesamt ist eine lockere Struktur der einzelnen Szenen vorzufinden. Inhaltliche Zusammenhänge werden über Figuren und Leitmotive aufgezeigt. Die Protagonisten sind Antihelden, die nicht selbstbestimmt handeln können, sondern durch ihr soziales Umfeld beeinflusst werden. Sie haben wenig Handlungs- und Entscheidungsspielraum. Die Figurenkonstellation ist im offenen Drama eher unübersichtlich, da viele Figuren aus unterschiedlichen Schichten beteiligt sind.
 
-        Die Vorgeschichte wird nicht genauer erklärt, auch der Schluss bleibt häufig unklar. Jenes Drama ist in Alltagssprache verfasst, oft werden Stilmittel wie die Parataxe (Aneinanderreihung von Hauptsätzen), Reihung, Satzbrüche und Ellipsen (Auslassung von Satzteilen) verwendet. Die Handlung umfasst insgesamt meist mehrere Jahre, viele verschiedene Handlungsorte werden dargestellt, die auch weit voneinander entfernt liegen können. Die Schrift „Dantons Tod“ von Georg Büchner (1835) ist eines der bekanntesten offenen Dramen.
+        Die Vorgeschichte wird nicht genauer erklärt, auch der Schluss bleibt häufig unklar. Jenes Drama ist in Alltagssprache verfasst, oft werden Stilmittel wie die Parataxe (Aneinanderreihung von Hauptsätzen), Reihung, Satzbrüche und Ellipsen (Auslassung von Satzteilen) verwendet. Die Handlung umfasst insgesamt meist mehrere Jahre, viele verschiedene Handlungsorte werden dargestellt, die auch weit voneinander entfernt liegen können. Das Drama „Dantons Tod“ von Georg Büchner (1835) ist eines der bekanntesten offenen Dramen.
 
 ##### Drei aristotelische Einheiten
 
-Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren ob und wie dieses Einheiten eingehalten worde sind.
+Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit und der Handlung. Bei dramatischen Texten muss man analysieren, ob und wie diese Einheiten eingehalten worden sind.
 
 -   **Raum**  
     An welchem Ort spielt das Drama?
@@ -1232,12 +1233,12 @@ Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit u
 ##### Figuren
 
 -   **Figurenverzeichnis**  
-    In einigen Dramen gibt es ein Figurenverzeichnis, welches die Figuren und ihre Rollen im Drama erklärt. Nutzen Sie dieses Verzeichnis, um die Figuren zu analysieren und zu beschreiben. Listen Sie dich wichtigsten Figuren auf und interpretieren Sie, warum jene Figuren in gewissen Situationen so und so handeln!
+    In einigen Dramen gibt es ein Figurenverzeichnis, welches die Figuren und ihre Rollen im Drama erklärt. Nutzen Sie dieses Verzeichnis, um die Figuren zu analysieren und zu beschreiben. Listen Sie die wichtigsten Figuren auf und interpretieren Sie, warum jene Figuren in gewissen Situationen so und so handeln!
 
 -   **Charakteristik der Figuren**  
-    Das Publikum erfährt auf irgendeine Art und Weise, welche Charaktere in dem Stück mitspielen. Analysieren Sie diese Wege und beschreiben Sie außerdem, welche Charakteristik die verschiedenen Figuren haben. Beziehen Sie sich nur auf die notwenigsten Figuren im Drama. Vor allem die Entwicklung der Hauptfigur ist äußerst interessant. Beantworten Sie, ob die Geschehnisse die Denkweise dieser Figur mit dem Laufe der Zeit verändert und welche Auswirkung dies widerum auf das Drama hat.
+    Das Publikum erfährt auf irgendeine Art und Weise, welche Charaktere in dem Stück mitspielen. Analysieren Sie diese Wege und beschreiben Sie außerdem, welche Charakteristik die verschiedenen Figuren haben. Beziehen Sie sich nur auf die wichtigsten Figuren im Drama. Vor allem die Entwicklung der Hauptfigur ist äußerst interessant. Beantworten Sie, ob die Geschehnisse die Denkweise dieser Figur im Laufe der Zeit verändern und welche Auswirkung dies wiederum auf das Drama hat.
 
-    Gehen Sie auch auf die Gefühle, Absichten und Gedanken der wichtigsten Figuren ein. Diese spielen meistens eine wesentliche Rolle bezüglich dem Ende aller Handlungen.
+    Gehen Sie auch auf die Gefühle, Absichten und Gedanken der wichtigsten Figuren ein. Diese spielen meistens eine wesentliche Rolle für das Ende der Handlung.
 
 -   **Soziogramm**  
     Wie stehen die Figuren zueinander? Analysieren und interpretieren Sie die Verbindungen und Beziehungen aller wichtigen Figuren.
@@ -1250,11 +1251,11 @@ Beschreiben Sie, ob das Bühnenbild realistisch, symbolisch oder antiillusionist
 
 ##### Struktur des Dramas
 
-In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailiert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet und expositioniert sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesslt in den Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
+In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailliert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesselt im Sessel sitzt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
 
 ##### Regieanweisungen
 
-Teilweise kommen in Dramen Anweisungen aus „dem Off“ vor, um gewisse Handlungen zu beschreiben oder direkt mit den Figuren zu interagieren. Erklären Sie, warum _der Autor / die Autorin_ sich für diese Art der Erzählung entschieden hat. Hat es auf diese Art mehr Humor?
+Regieanweisungen (auch _Nebentext_) sind Anweisungen _des Autors / der Autorin_, die nicht gesprochen werden, sondern beschreiben, wie Figuren handeln, sprechen oder aussehen und wie die Bühne gestaltet sein soll. Sie stehen meist kursiv oder in Klammern zwischen den Dialogen. Erklären Sie, warum _der Autor / die Autorin_ diese Anweisungen so gestaltet hat: Sind sie knapp gehalten oder sehr ausführlich, sachlich oder vielleicht sogar humorvoll kommentierend?
 
 Anweisungen kann es für mehrere Elemente des Dramas geben:
 
@@ -1272,16 +1273,10 @@ Anweisungen kann es für mehrere Elemente des Dramas geben:
 
 Ist das Stück großteils in einem Dialog oder vorwiegend als Monolog verfasst? Falls die Figuren Dialoge führen, sprechen diese aneinander vorbei oder viel eher miteinander? Sind die Dialoge realistisch oder absurd? Kann man sich psychologisch in die Figur hineinversetzen?
 
-Welche Sprache sprechen die Figuren (Dialekt, Mundart, Bühnendeutsch)? Sprechen die Figuren gemäß ihrer sozialen Stellung? Ist das Drama in Versen oder in Prosa verfasst? Gibt es eine eigene „Kunstsprache“ im Drama oder bei einzelnen Figuren? Falls Monologe vorkommen, wann und wie werden diese verwendet (Konflikmonologe, „Botenbericht-Monolog“, ...)?
+Welche Sprache sprechen die Figuren (Dialekt, Mundart, Bühnendeutsch)? Sprechen die Figuren gemäß ihrer sozialen Stellung? Ist das Drama in Versen oder in Prosa verfasst? Gibt es eine eigene „Kunstsprache“ im Drama oder bei einzelnen Figuren? Falls Monologe vorkommen, wann und wie werden diese verwendet (Konfliktmonolog, „Botenbericht-Monolog“, ...)?
 
-Tritt ein Chor auf? Welche Funktion hat dieser? Wie spricht er? Fasst der Chor die Geschehnisse zusammen, sieht er diese vorraus oder kommentiert er die Handlung nur?
+Tritt ein Chor auf? Welche Funktion hat dieser? Wie spricht er? Fasst der Chor die Geschehnisse zusammen, sieht er diese voraus oder kommentiert er die Handlung nur?
 
-<!-- beispiel microdrama
-
-sorache: dialog oder monolog, köre die was zusammenfassen
-
-dialog: aneinander vorbeisprechen; miteinander
-monolog: wie geht es dieser figur? -->
 
 ## Meinungsrede
 
@@ -1293,7 +1288,7 @@ Der Sinn hinter der Meinungsrede ist die Überzeugung des Publikums für die eig
 
 -   `Ich` soll verwendet werden
 -   Publikum von meiner Meinung überzeugen (Publikum ansprechen)
--   kreative Einleitung, worin Titel und Autor vorkommt
+-   kreative Einleitung, worin Titel und Autor vorkommen
 -   Hauptteil ist in sich flüssig argumentiert
 -   zusammenfassender Schlussteil mit Appell
 -   [Stilfiguren](#stilfiguren) verwenden
@@ -1378,7 +1373,7 @@ Bei der Plusminus Formel stellt man die Vor- und Nachteile mittels Pro- und Kont
 
 #### Schluss
 
-Fassen Sie Ihre Meinung nochmals kurz zusammen und appellieren Sie Lösungsvorschläge, welche für alle Argumente gelten sollen.
+Fassen Sie Ihre Meinung nochmals kurz zusammen und formulieren Sie einen Appell mit Lösungsvorschlägen, welche für alle Argumente gelten sollen.
 
 #### Schlussfloskel
 
