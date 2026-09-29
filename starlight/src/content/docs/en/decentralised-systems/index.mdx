@@ -5,15 +5,12 @@ sidebar:
   label: Overview
 ---
 
+import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+
 Modern applications rarely run on a single server. Instead, they are distributed across many services that communicate with each other over the network, scale independently of each other and keep working even if individual parts fail. Such **decentralised** or **distributed systems** are nowadays mostly operated in the cloud.
 
 This section uses **Microsoft Azure** as an example to show how such systems are built. However, the concepts can also be applied to other cloud providers such as AWS or Google Cloud.
 
 ## What to expect
 
-- **Cloud computing:** Service models (IaaS, PaaS, SaaS), pricing models, redundancy and scalability.
-- **Storage account:** Storing data in Blob, Table and Queue Storage.
-- **Azure Functions:** Serverless functions with triggers and bindings.
-- **Durable Functions:** Stateful workflows with orchestrators, activities and entities.
-
-For development on your own computer, you need the [.NET SDK](https://dotnet.microsoft.com/), the [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local) and the storage emulator [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite), which can be used to simulate storage accounts locally.
+<GroupPageCards directory="decentralised-systems" />

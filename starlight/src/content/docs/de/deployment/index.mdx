@@ -5,10 +5,10 @@ sidebar:
   label: Überblick
 ---
 
+import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+
 Eine Anwendung ist erst dann wirklich fertig, wenn sie zuverlässig **bereitgestellt** (_deployed_) und betrieben werden kann. Dazu gehört mehr als nur der Programmcode: Server müssen bereitgestellt, Daten sicher gespeichert und regelmäßig gesichert werden. Dieser Bereich behandelt die Infrastruktur, auf der moderne Anwendungen laufen.
 
 ## Was Sie erwartet
 
-- **Virtualisierung:** Hypervisoren vom Typ 1 und Typ 2, Paravirtualisierung und Containervirtualisierung mit Docker.
-- **Speichersysteme:** Unterschiede zwischen DAS, NAS und SAN sowie RAID.
-- **Sicherungsstrategien:** Voll-, differentielle und inkrementelle Sicherungen, das Generationenprinzip, die 3-2-1-Regel und Bandlaufwerke (LTO).
+<GroupPageCards directory="deployment" />

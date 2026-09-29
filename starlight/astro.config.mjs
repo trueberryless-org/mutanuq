@@ -80,6 +80,7 @@ export default defineConfig({
         starlightViewModes(),
         starlightImageZoom(),
         starlightGroupPages({
+          extendIndexPages: false,
           sidebarLink: "label",
         }),
         starlightLinksValidator(),
