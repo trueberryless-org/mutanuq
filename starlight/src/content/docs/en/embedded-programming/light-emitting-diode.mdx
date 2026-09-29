@@ -1,0 +1,81 @@
+---
+title: Light-Emitting Diode
+description: Connecting an LED with a series resistor to a pin, calculating the resistor and switching the LED on, off and making it blink.
+sidebar:
+  order: 3
+---
+
+An LED is a diode that emits light as soon as current flows through it in the forward direction. For it to light up, the pin it is connected to is set to 5V (high). If it should not light up, 0V (low) is applied.
+
+## Setup
+
+The LED can be connected to any pin. This pin must be configured as an output at [code level](#code) so that either 5V or 0V is applied. Since only the so-called **forward voltage** drops across the LED itself (about 1.8V to 3.3V depending on the colour) and it would otherwise draw far too much current, a **series resistor** must be built into the circuit to limit the current. Without it, the LED and the pin of the microcontroller would be destroyed. Like every diode, the LED is polarised, which means it has an anode and a cathode.
+
+:::tip[Anode]
+The anode is the **positive** end of a diode: **+**. In hardware, it is marked by the **longer** leg of the diode.
+:::
+:::tip[Cathode]
+The cathode is the **negative** end of a diode: **-**. In hardware, it is marked by the **shorter** leg of the diode and the flattened side of the housing.
+:::
+
+For the LED to work correctly, the pin is connected to the anode via the series resistor, and the cathode is connected to ground (GND).
+
+### Calculating the series resistor
+
+The series resistor is calculated from the supply voltage $U$, the forward voltage $U_F$ of the LED and the desired current $I$:
+
+$$
+R = \frac{U - U_F}{I}
+$$
+
+For a red LED ($U_F \approx 2\;V$) and a current of $10\;mA$, this gives:
+
+$$
+R = \frac{5\;V - 2\;V}{0.01\;A} = 300\;\Omega
+$$
+
+You choose the next higher standard value, for example $330\;\Omega$. A pin of the ATmega328P may be loaded with at most $40\;mA$, but much less is recommended. Modern LEDs are often bright enough with just a few milliamperes, which is why larger resistors such as $1\;k\Omega$ or $3.3\;k\Omega$ are also used.
+
+## Code
+
+```c
+int main(void)
+{
+    // LED on port B, pin 0
+    //  Configure port B, pin 0 as an output
+    DDRB |= (1<<DDB0);
+
+    //  Port B, pin 0 voltage: 0V
+    PORTB &= ~(1<<PORTB0);
+
+    //  Port B, pin 0 voltage: 5V
+    PORTB |= (1<<PORTB0);
+
+    while (1)
+    {
+
+    }
+}
+```
+
+### Making the LED blink
+
+With the XOR operator `^`, you can toggle a bit. This makes the LED blink every half second:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+    DDRB |= (1<<DDB0);
+
+    while (1)
+    {
+        PORTB ^= (1<<PORTB0);
+        _delay_ms(500);
+    }
+}
+```

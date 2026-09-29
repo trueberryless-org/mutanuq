@@ -1,19 +1,24 @@
 ---
 title: Flüssigkristallanzeige
+description: Ein HD44780-kompatibles 16×2-Zeichen-LCD ansteuern, Text schreiben, positionieren und verschieben.
+sidebar:
+  order: 5
 ---
 
-Das Liquid Crystal Display besteht aus 16 Zeichen in einer Reihe und 2 Zeilen insgesamt. Es unterstützt die gesamten lateinischen, chinesischen und weiter Zeichensätze plus einige Emoji.
+Das verwendete Liquid Crystal Display (LCD) ist ein sogenanntes Zeichendisplay mit 16 Zeichen pro Zeile und 2 Zeilen insgesamt. Solche Displays verwenden fast immer den Controller **HD44780** (oder einen kompatiblen Nachbau). Dieser enthält einen fest eingebauten Zeichensatz mit den ASCII-Zeichen sowie – je nach Variante – japanischen Katakana-Zeichen oder europäischen Sonderzeichen. Zusätzlich kann man bis zu acht eigene Zeichen (5 × 8 Pixel) definieren, etwa für Umlaute oder kleine Symbole.
 
-Für die Verwendung des Display empfiehlt sich <a href="/embedded_programming/lcd/lcd.c" download>lcd.c</a> und <a href="/embedded_programming/lcd/lcd.h" download>lcd.h</a>.
+Für die Verwendung des Displays empfiehlt sich die Bibliothek von Peter Fleury mit den Dateien <a href="/embedded_programming/lcd/lcd.c" download>lcd.c</a> und <a href="/embedded_programming/lcd/lcd.h" download>lcd.h</a>. In der `lcd.h` wird eingestellt, an welchen Pins das Display angeschlossen ist.
 
 ## Aufbau
+
+Das Display wird meistens im **4-Bit-Modus** betrieben. Dabei werden nur die Datenleitungen D4 bis D7 sowie die Steuerleitungen RS (Register Select) und E (Enable) mit dem Mikrocontroller verbunden. Die Leitung RW kann fest mit GND verbunden werden, wenn man nur auf das Display schreibt. Über ein Potentiometer am Pin V0 wird der Kontrast eingestellt.
 
 ![Aufbau eines LCDs am ATmega 328p](/images/embedded_programming/lcd/lcd_composition.png)
 ![Grid eines LCDs](/images/embedded_programming/lcd/lcd_grid.png)
 
 ## Code
 
-Das LCD hat einige Möglichkeiten, Zeichen zu verändern, zu löschen und hinzuzufügen.
+Das LCD hat einige Möglichkeiten, Zeichen zu verändern, zu löschen und hinzuzufügen. Vor der ersten Verwendung muss es mit `lcd_init(LCD_DISP_ON);` initialisiert werden.
 
 ### Schreibe Zeichen
 
@@ -21,6 +26,15 @@ Man kann einzelne Zeichen mit `lcd_putc('s')` aufs Display schreiben oder einen 
 
 ```c
 lcd_puts("trueberryless");
+```
+
+### Cursor positionieren
+
+Mit `lcd_gotoxy(x, y)` setzt man den Cursor an eine bestimmte Stelle. `x` ist die Spalte (0 bis 15) und `y` die Zeile (0 oder 1):
+
+```c
+lcd_gotoxy(0, 1);   // Anfang der zweiten Zeile
+lcd_puts("Zeile 2");
 ```
 
 ### Display leeren
@@ -33,7 +47,7 @@ lcd_clrscr();
 
 ### Bewege Zeichen
 
-Wenn man alle Zeichen um eins nach links bewegen möchte, kann man das machen:
+Wenn man alle Zeichen um eins nach links bewegen möchte, kann man das so machen:
 
 ```c
 lcd_command(LCD_MOVE_DISP_LEFT);
@@ -41,13 +55,16 @@ lcd_command(LCD_MOVE_DISP_LEFT);
 
 Dies ist äußerst hilfreich, wenn ein Text übers Display laufen soll.
 
-### Example Project
+### Beispielprojekt
+
+Das folgende Programm liest alle zwei Sekunden Temperatur und Luftfeuchtigkeit von einem DHT11-Sensor (mit einer passenden Bibliothek `dht.h`) und zeigt die Werte am Display an:
 
 ```c
 #define F_CPU 16000000
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 #define __DELAY_BACKWARD_COMPATIBLE__
 #include <util/delay.h>
@@ -57,7 +74,7 @@ Dies ist äußerst hilfreich, wenn ein Text übers Display laufen soll.
 
 int main(void)
 {
-    char buffer[16];
+    char buffer[17]; // 16 Zeichen + abschließendes '\0'
 
     int8_t temperature = 0;
     int8_t humidity = 0;
@@ -66,9 +83,8 @@ int main(void)
 
     while(1) {
         if (dht_gettemperaturehumidity(&temperature, &humidity) != -1) {
-            sprintf(buffer, "T: %u C, H: %u", temperature, humidity);
+            snprintf(buffer, sizeof(buffer), "T: %d C, H: %d%%", temperature, humidity);
             lcd_puts(buffer);
-            lcd_puts("%");
         }
         else {
             lcd_puts("Error");
@@ -79,7 +95,9 @@ int main(void)
 }
 ```
 
+`snprintf` schreibt dabei höchstens so viele Zeichen in den Puffer, wie dieser groß ist, und verhindert so einen Pufferüberlauf. Das Prozentzeichen muss im Formatstring als `%%` geschrieben werden.
+
 ## Downloads
 
-<a href="/embedded_programming/lcd/lcd.c">lcd.c</a>
-<a href="/embedded_programming/lcd/lcd.h">lcd.h</a>
+- <a href="/embedded_programming/lcd/lcd.c">lcd.c</a>
+- <a href="/embedded_programming/lcd/lcd.h">lcd.h</a>

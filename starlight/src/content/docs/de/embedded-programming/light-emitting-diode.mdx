@@ -1,21 +1,40 @@
 ---
 title: Lichtemittierende Diode
+description: Eine LED mit Vorwiderstand an einem Pin anschließen, den Vorwiderstand berechnen und die LED ein-, aus- und blinken lassen.
+sidebar:
+  order: 3
 ---
 
-Eine LED ist eine simple Diode, welche Licht emittiert. Damit diese leuchtet, müssen 5V Spannung an der Diode anliegen. Wenn sie nicht leuchten soll, legt man 0V Spannung an.
+Eine LED ist eine Diode, welche Licht emittiert, sobald Strom in Durchlassrichtung durch sie fließt. Damit sie leuchtet, wird der Pin, an dem sie angeschlossen ist, auf 5V (high) gesetzt. Wenn sie nicht leuchten soll, legt man 0V (low) an.
 
 ## Aufbau
 
-Die LED kann an jedem beliebigen PIN angeschlossen werden. Dieses PIN muss auf [Code-Ebene](#code) als Ausgang konfiguriert werden, damit entweder 5V oder 0V anliegen. Damit kein Kurzschluss auftreten kann, muss in dem Stromkreis ein Widerstand mit 3.3K eingebaut werden. Außerdem befindet sich in diesem Kreis eine Diode. Diese ist polarisiert, was bedeutet, sie hat eine Anode und eine Kathode.
+Die LED kann an jedem beliebigen Pin angeschlossen werden. Dieser Pin muss auf [Code-Ebene](#code) als Ausgang konfiguriert werden, damit entweder 5V oder 0V anliegen. Da an der LED selbst nur ihre sogenannte **Flussspannung** abfällt (je nach Farbe etwa 1,8V bis 3,3V) und sie sonst einen viel zu hohen Strom ziehen würde, muss in dem Stromkreis ein **Vorwiderstand** zur Strombegrenzung eingebaut werden. Ohne ihn würden die LED und der Pin des Mikrocontrollers zerstört. Die LED ist – wie jede Diode – polarisiert, was bedeutet, sie hat eine Anode und eine Kathode.
 
 :::tip[Anode]
-Die Anode ist das **positive** Ende einer Diode: **+**. Hardware-technisch wird sie gekennzeichnet durch das **längere** Ende der Diode.
+Die Anode ist das **positive** Ende einer Diode: **+**. Hardware-technisch wird sie gekennzeichnet durch das **längere** Beinchen der Diode.
 :::
-:::tip[Kathode]  
-Die Kathode ist das **negative** Ende einer Diode: **-**. Hardware-technisch wird sie gekennzeichnet durch das **kürzere** Ende der Diode.
+:::tip[Kathode]
+Die Kathode ist das **negative** Ende einer Diode: **-**. Hardware-technisch wird sie gekennzeichnet durch das **kürzere** Beinchen der Diode und die abgeflachte Seite des Gehäuses.
 :::
 
-Damit die LED korrekt funktioniert muss die Anode mit dem Ende des Widerstandes verbunden sein und die Kathode wird an den Ground (GND) angeschlossen.
+Damit die LED korrekt funktioniert, wird der Pin über den Vorwiderstand mit der Anode verbunden, und die Kathode wird an den Ground (GND) angeschlossen.
+
+### Vorwiderstand berechnen
+
+Der Vorwiderstand ergibt sich aus der Versorgungsspannung $U$, der Flussspannung $U_F$ der LED und dem gewünschten Strom $I$:
+
+$$
+R = \frac{U - U_F}{I}
+$$
+
+Für eine rote LED ($U_F \approx 2\;V$) und einen Strom von $10\;mA$ ergibt sich:
+
+$$
+R = \frac{5\;V - 2\;V}{0{,}01\;A} = 300\;\Omega
+$$
+
+Man wählt den nächstgrößeren Normwert, also zum Beispiel $330\;\Omega$. Ein Pin des ATmega328P darf mit maximal $40\;mA$ belastet werden, empfohlen sind aber deutlich weniger. Moderne LEDs leuchten oft schon bei wenigen Milliampere ausreichend hell, weshalb auch größere Widerstände wie $1\;k\Omega$ oder $3{,}3\;k\Omega$ verwendet werden.
 
 ## Code
 
@@ -35,6 +54,28 @@ int main(void)
     while (1)
     {
 
+    }
+}
+```
+
+### LED blinken lassen
+
+Mit dem XOR-Operator `^` kann man ein Bit umschalten (_toggeln_). So blinkt die LED jede halbe Sekunde:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+    DDRB |= (1<<DDB0);
+
+    while (1)
+    {
+        PORTB ^= (1<<PORTB0);
+        _delay_ms(500);
     }
 }
 ```

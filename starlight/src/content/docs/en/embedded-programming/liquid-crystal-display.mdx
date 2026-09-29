@@ -1,0 +1,103 @@
+---
+title: Liquid Crystal Display
+description: Driving an HD44780-compatible 16×2 character LCD, writing, positioning and shifting text.
+sidebar:
+  order: 5
+---
+
+The liquid crystal display (LCD) used is a so-called character display with 16 characters per line and 2 lines in total. Such displays almost always use the **HD44780** controller (or a compatible clone). It contains a built-in character set with the ASCII characters and – depending on the variant – Japanese katakana characters or European special characters. In addition, you can define up to eight custom characters (5 × 8 pixels), for example for umlauts or small symbols.
+
+To use the display, the library by Peter Fleury with the files <a href="/embedded_programming/lcd/lcd.c" download>lcd.c</a> and <a href="/embedded_programming/lcd/lcd.h" download>lcd.h</a> is recommended. The `lcd.h` file defines which pins the display is connected to.
+
+## Setup
+
+The display is usually operated in **4-bit mode**. Only the data lines D4 to D7 as well as the control lines RS (register select) and E (enable) are connected to the microcontroller. The RW line can be connected permanently to GND if you only write to the display. The contrast is adjusted with a potentiometer at pin V0.
+
+![Setup of an LCD on the ATmega328P](/images/embedded_programming/lcd/lcd_composition.png)
+![Grid of an LCD](/images/embedded_programming/lcd/lcd_grid.png)
+
+## Code
+
+The LCD offers several ways to change, delete and add characters. Before first use, it must be initialised with `lcd_init(LCD_DISP_ON);`.
+
+### Writing characters
+
+You can write single characters to the display with `lcd_putc('s')` or a whole string:
+
+```c
+lcd_puts("trueberryless");
+```
+
+### Positioning the cursor
+
+`lcd_gotoxy(x, y)` moves the cursor to a specific position. `x` is the column (0 to 15) and `y` the line (0 or 1):
+
+```c
+lcd_gotoxy(0, 1);   // beginning of the second line
+lcd_puts("Line 2");
+```
+
+### Clearing the display
+
+To delete all characters from the display again:
+
+```c
+lcd_clrscr();
+```
+
+### Shifting characters
+
+If you want to shift all characters one position to the left, you can do it like this:
+
+```c
+lcd_command(LCD_MOVE_DISP_LEFT);
+```
+
+This is extremely helpful if a text should scroll across the display.
+
+### Example project
+
+The following program reads the temperature and humidity from a DHT11 sensor (using a suitable `dht.h` library) every two seconds and shows the values on the display:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdio.h>
+
+#define __DELAY_BACKWARD_COMPATIBLE__
+#include <util/delay.h>
+
+#include "lcd.h"
+#include "dht.h"
+
+int main(void)
+{
+    char buffer[17]; // 16 characters + terminating '\0'
+
+    int8_t temperature = 0;
+    int8_t humidity = 0;
+
+    lcd_init(LCD_DISP_ON);
+
+    while(1) {
+        if (dht_gettemperaturehumidity(&temperature, &humidity) != -1) {
+            snprintf(buffer, sizeof(buffer), "T: %d C, H: %d%%", temperature, humidity);
+            lcd_puts(buffer);
+        }
+        else {
+            lcd_puts("Error");
+        }
+        _delay_ms(2000);
+        lcd_clrscr();
+    }
+}
+```
+
+`snprintf` writes at most as many characters into the buffer as it can hold and thus prevents a buffer overflow. The percent sign must be written as `%%` in the format string.
+
+## Downloads
+
+- <a href="/embedded_programming/lcd/lcd.c">lcd.c</a>
+- <a href="/embedded_programming/lcd/lcd.h">lcd.h</a>

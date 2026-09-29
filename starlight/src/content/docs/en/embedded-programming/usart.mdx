@@ -1,0 +1,138 @@
+---
+title: USART - Universal Synchronous and Asynchronous Receiver Transmitter
+description: Serial communication between the ATmega328P and a PC – baud rate, data format, sending and receiving characters and strings.
+sidebar:
+  label: USART
+  order: 10
+---
+
+In data processing programs, it is often, if not always, necessary to exchange data between computers. To establish this connection between our ATmega328P board and our development machine, there is the USART (universal synchronous/asynchronous receiver transmitter). On the PC, the received data can be displayed with a terminal program (for example the serial monitor of the Arduino IDE, PuTTY or HTerm).
+
+## Theory
+
+### Data transmission
+
+Data transmission requires two pins, one pin for sending (TX, _transmit_) and one pin for receiving (RX, _receive_) data. On the ATmega328P, the pins `PD0` (RXD) and `PD1` (TXD) are reserved for this. If you want to use the USART, make sure not to use these two pins for other purposes at the same time. When connecting two devices, the TX of one is always connected to the RX of the other (and vice versa), and both devices must share a common ground (GND).
+
+In asynchronous mode, there is no shared clock line. Each character is therefore packed into a **frame**:
+
+1. **Start bit** (always low), so that the receiver recognises the beginning of a character,
+2. **5 to 9 data bits**, starting with the least significant bit,
+3. optionally a **parity bit** for error detection,
+4. **1 or 2 stop bits** (always high).
+
+The most common setting is called **8N1**: 8 data bits, no parity, 1 stop bit.
+
+### Configuration
+
+#### Baud rate
+
+The baud rate specifies how many bits per second are transmitted. It is important that our Arduino board and the other communication partner use the same baud rate. A very commonly used baud rate is 9600. The value for the `UBRR0` register is calculated in normal asynchronous mode with the following formula:
+
+$$
+UBRR = \frac{f_{CPU}}{16 \cdot baud\;rate} - 1 = \frac{16{,}000{,}000}{16 \cdot 9600} - 1 \approx 103
+$$
+
+```c
+UBRR0 = 103;
+```
+
+For other baud rate configurations, please read [chapter 19-11 of the datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163).
+
+#### Enabling transmission
+
+If you want to send data, you have to enable it.
+
+```c
+UCSR0B |= (1<<TXEN0);
+```
+
+#### Enabling reception
+
+To receive data, the interrupt must also be enabled so that it is triggered for every incoming character.
+
+```c
+UCSR0B |= (1<<RXEN0) | (1<<RXCIE0);
+```
+
+#### Setting the character size
+
+Sender and receiver must define how many data bits are used per transmitted character. 8 data bits, i.e. exactly one byte, are common. This allows all `ASCII` characters to be transmitted. Characters from encodings such as `UTF-8` or `UTF-16` that require more than one byte are simply sent as several bytes one after another.
+
+This is how to set 8 data bits (this is already the default setting after a reset):
+
+```c
+UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
+```
+
+For other configurations, use [table 19-7 of the datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
+
+## Code
+
+### Configuration
+
+Usually, you use this configuration to set up everything related to the `USART` correctly:
+
+```c
+UBRR0 = 103;
+UCSR0B |= (1<<TXEN0) | (1<<RXEN0) | (1<<RXCIE0);
+UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
+sei(); // for the receive interrupt
+```
+
+### Sending data
+
+This is the method for single [ASCII characters](https://www.torsten-horn.de/techdocs/ascii.htm). Before a new character is written to the data register `UDR0`, you have to wait until the `UDRE0` flag (_data register empty_) indicates that the previous character has been transmitted completely.
+
+```c
+void write_char(char str) {
+    while (!(UCSR0A & (1<<UDRE0)));
+    UDR0=str;
+}
+```
+
+For whole strings, there is this simple method, which uses a [pointer](/en/embedded-programming/pointer/) to send character by character up to the terminating `\0`:
+
+```c
+void write_string(char *arr) {
+    while(*arr) {
+        while (!(UCSR0A & (1<<UDRE0)));
+        UDR0=*arr++;
+    }
+}
+```
+
+### Receiving data
+
+While you can send whole strings, you can only ever receive single characters. The ISR is called for every received character.
+
+```c
+ISR(USART_RX_vect) {
+    uint8_t tmp;
+    tmp = UDR0;
+}
+```
+
+To receive whole strings, you would have to define / use a protocol so that the communication between the computers is uniform. The protocol would define, for example, which overhead has to be sent before / after the actual raw data so that all components know exactly which characters belong to which string.
+
+A simple example of such a protocol is to end every message with a line break (`\n`). The ISR collects the characters in a buffer until the line break has been received:
+
+```c
+#define BUFFER_SIZE 32
+
+volatile char rxBuffer[BUFFER_SIZE];
+volatile uint8_t rxIndex = 0;
+volatile uint8_t messageComplete = 0;
+
+ISR(USART_RX_vect) {
+    char c = UDR0;
+
+    if (c == '\n' || rxIndex == BUFFER_SIZE - 1) {
+        rxBuffer[rxIndex] = '\0';  // terminate the string
+        rxIndex = 0;
+        messageComplete = 1;       // evaluated in the main loop
+    } else {
+        rxBuffer[rxIndex++] = c;
+    }
+}
+```

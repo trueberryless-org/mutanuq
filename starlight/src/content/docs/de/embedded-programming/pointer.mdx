@@ -1,8 +1,11 @@
 ---
 title: Pointer
+description: Zeiger in C – Adress- und Dereferenzierungsoperator, Zeigerarithmetik sowie der Umgang mit Arrays und Strings.
+sidebar:
+  order: 9
 ---
 
-Pointer sind Variablen, welche Speicheradressen aufnehmen und somit zu anderen Daten zeigen. Pointer bieten ein umfangsreiches und mächtiges Tool, um mit Datentypen zu interagieren, welche mehr als ein Byte Speicherplatz benötigen. Vor allem für den Umgang mit Arrays sind Pointer in `C` überaus wichtig.
+Pointer sind Variablen, welche Speicheradressen aufnehmen und somit zu anderen Daten zeigen. Pointer bieten ein umfangreiches und mächtiges Tool, um mit Datentypen zu interagieren, welche mehr als ein Byte Speicherplatz benötigen. Vor allem für den Umgang mit Arrays sind Pointer in `C` überaus wichtig.
 
 Wie man im nachfolgenden Code sehen kann, gibt es die beiden Operatoren `*` und `&` in Bezug auf Pointer.
 
@@ -13,13 +16,13 @@ int i = 12;
 // Pointer-Variable p
 int *p = NULL;
 
-// Pointer auf val
+// Pointer auf i
 p = &i;
 
 // Ausgabe von p (Adresse)
 printf("Adresse: %p", p); // zB: Adresse: 0x00000008
 
-// Ausgabe von p (Wert)
+// Ausgabe des Wertes, auf den p zeigt
 printf("Wert: %d", *p); // Wert: 12
 ```
 
@@ -82,8 +85,8 @@ Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
         <code>&</code>
       </td>
       <td>
-        Mit dem Adressoperator kann man einen Wert zu einem Pointer konvertieren
-        (die Adresse des Wertes auslesen).
+        Mit dem Adressoperator kann man die Adresse einer Variable ermitteln
+        und damit einen Pointer auf sie erstellen.
       </td>
       <td>
         <code>int *p = &i;</code>
@@ -92,9 +95,9 @@ Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
   </tbody>
 </table>
 
-## mit Arrays arbeiten
+## Mit Arrays arbeiten
 
-Häufig müssen wir mit Arrays, sprich Listen von Werte, arbeiten. Arrays werden in `C` mittels Pointern realisiert, da es in `C` keine Referenzen, sondern nur Pointer gibt. Das bedeutet, dass beim Deklarieren ein Pointer auf das erste Element zeigt und die Daten im Stack gespeichert werden. Aus diesem Grund ist es auch nicht möglich, außerhalb des Scopes die Größe eines Arrays herauszufinden. Hierbei soll vorab angemerkt werden, dass beim Deklarieren des Pointers automatisch die Liste referenziert wird. Somit machen diese Code-Beispiele das gleiche:
+Häufig müssen wir mit Arrays, sprich Listen von Werten, arbeiten. Ein Array ist ein zusammenhängender Speicherbereich, in dem alle Elemente direkt hintereinander liegen. Ein Array ist selbst kein Pointer, wird aber in fast allen Ausdrücken automatisch in einen Pointer auf sein erstes Element umgewandelt (_Array-to-Pointer Decay_). Da es in `C` keine Referenzen gibt, wird auch beim Übergeben eines Arrays an eine Funktion nur dieser Pointer übergeben. Aus diesem Grund ist es nicht möglich, innerhalb der aufgerufenen Funktion die Größe des Arrays herauszufinden – man muss sie als zusätzlichen Parameter mitgeben. Somit zeigen die Pointer in diesen Code-Beispielen auf dieselbe Adresse:
 
 ```c del="&"
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
@@ -103,22 +106,23 @@ uint8_t *p = &numbers;
 
 ```c
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
-uint8_t *p = numbers; // Automatische Dereferenzierung
+uint8_t *p = numbers; // Automatische Umwandlung in einen Pointer auf numbers[0]
 ```
 
-Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Somit sieht ein Teil des Arbeitsspeichers (Stack) folgendermaßen aus (Adressen frei erfunden).
+Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Die erste Variante mit `&` liefert allerdings genau genommen einen Pointer auf das gesamte Array (Typ `uint8_t (*)[5]`), weshalb der Compiler eine Warnung ausgibt – richtig ist die zweite Variante. Ein Teil des Arbeitsspeichers (Stack) sieht folgendermaßen aus (Adressen frei erfunden):
 
 | Variablenname | Adresse    | Wert       |
 | ------------- | ---------- | ---------- |
-| `numbers`     | `00000F00` | `00000F01` |
-|               | `00000F01` | 1          |
-|               | `00000F02` | 2          |
-|               | `00000F03` | 3          |
-|               | `00000F04` | 4          |
-|               | `00000F05` | 5          |
-| `p`           | `00000F42` | `00000F01` |
+| `numbers[0]`  | `00000F00` | 1          |
+| `numbers[1]`  | `00000F01` | 2          |
+| `numbers[2]`  | `00000F02` | 3          |
+| `numbers[3]`  | `00000F03` | 4          |
+| `numbers[4]`  | `00000F04` | 5          |
+| `p`           | `00000F42` | `00000F00` |
 
-Nun kann man auf die einzelnen Werte des Arrays zugreifen, indem man entweder den `[]`-Operator nutzt oder den Index und den Pointer addiert und anschließend dereferenziert.
+Für das Array selbst wird also keine zusätzliche Adresse gespeichert. Der Name `numbers` steht direkt für den Speicherbereich ab `00000F00`.
+
+Nun kann man auf die einzelnen Werte des Arrays zugreifen, indem man entweder den `[]`-Operator nutzt oder den Index und den Pointer addiert und anschließend dereferenziert. Bei der Addition wird der Index automatisch mit der Größe des Datentyps multipliziert (_Zeigerarithmetik_): Bei einem `uint16_t`-Array würde `numbers + 2` also 4 Bytes weiter zeigen.
 
 ```c
 // []-Operator
@@ -128,7 +132,7 @@ uint8_t three = numbers[2];
 three = *(numbers + 2);
 ```
 
-Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Die Methode `sizeof` ist hierbei nur in diesem Scope verfügbar, da hier auch die Varibale numbers deklariert ist.
+Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Der Operator `sizeof` liefert hier die Größe des gesamten Arrays in Bytes. Das funktioniert nur in diesem Scope, da hier auch die Variable `numbers` deklariert ist – in einer Funktion, der das Array übergeben wurde, würde `sizeof` nur die Größe des Pointers liefern. Da `uint8_t` genau ein Byte groß ist, entspricht die Größe hier der Anzahl der Elemente. Allgemein berechnet man die Anzahl mit `sizeof(numbers) / sizeof(numbers[0])`.
 
 ```c
 uint8_t numbers[5] = { 1, 2, 3, 4, 5 };
@@ -138,7 +142,7 @@ for(int i = 0; i < sizeof(numbers); i++) {
 }
 ```
 
-Bei Strings, sprich Array von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem Array gespeichert, sodass man untige `while`-Schleife zum Ausgeben verwenden kann. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](/de/embedded-programming/usart#daten-senden) die Zeichen einzeln hintereinander versendet.
+Bei Strings, sprich Arrays von Zeichen, wird beim Erstellen automatisch ein Terminierungssymbol (`\0`) nach dem letzten Zeichen gespeichert, sodass man die folgende `while`-Schleife zum Ausgeben verwenden kann. Das Array muss deshalb immer mindestens ein Zeichen größer sein als der eigentliche Text. Die `while`-Schleife hört automatisch am Ende der Zeichenkette auf, da das Terminierungszeichen `\0` einer falschen Bedingung entspricht. Genau auf diese Art und Weise werden beim [USART](/de/embedded-programming/usart#daten-senden) die Zeichen einzeln hintereinander versendet.
 
 ```c
 char buffer[10] = "Hallo";

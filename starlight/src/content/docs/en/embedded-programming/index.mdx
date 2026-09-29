@@ -1,0 +1,47 @@
+---
+title: Overview
+description: Fundamentals of low-level programming of AVR microcontrollers (ATmega328P) in C – from ports and buttons to timers, the ADC, USART, SPI and EEPROM.
+---
+
+In this section, you will learn how to program a microcontroller directly in C. The example used is the **ATmega328P**, which is found on the Arduino Uno, among others, and runs at a clock speed of 16 MHz. However, the concepts can be transferred to other microcontrollers.
+
+## Evaluation kit/board
+
+An evaluation board (also development board) is a circuit board built around a specific component – such as a microcontroller – that contains everything you need to try it out and develop with it. You can build such boards yourself, but usually you buy them ready-made. For a microcontroller, this includes, for example, the power supply, a crystal as a clock source, a programming interface (e.g. via USB) as well as pin headers, LEDs and buttons. An evaluation board for a larger CPU would additionally need RAM, an SD card and so on.
+
+## Low-level programming
+
+Low-level (hardware-near) programming primarily allows the programmer to access `lower` elements of the hardware (i.e. closer to the hardware). A distinction is made between `high-level` programming languages (clearly removed from the level of machine language in terms of abstraction and complexity), such as C, JavaScript etc., and "low-level" languages such as assembly. The latter already allows access to CPU registers, which many other high-level programming languages do not support.
+
+However, some complex programs are unfortunately hard to implement in assembly. For this reason, at the beginning of the 1970s Dennis Ritchie developed the programming language C – building on Ken Thompson's language B – and used it to rewrite the Unix operating system, which had previously been written in assembly. C combines the advantages of both worlds: it is a high-level language, but still allows direct access to memory addresses and registers.
+
+## Assembly and "C"
+
+As already mentioned in the paragraph above, assembly and C are rather hardware-near programming languages. The important difference, however, is that C is a high-level language and assembly is not. In return, assembly gives you full control over every single instruction the processor core executes. However, complex programs can only be developed in assembly with great effort, because it does not offer the "comfort" a programmer expects (it is simply far too complicated...).
+
+As this [article](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") (in German) explains in detail, every programming language has its justification. However, not every programming language is equally good at everything, as this quote (translated) illustrates (Z3-11):
+
+> With time- and processor-optimised assembly programs, many more adaptations have to be made than with high-level languages. For typical applications for AVR, 8051 or PIC, this is usually still possible without too many problems, since the code size and structural variety are limited. [...] With an ARM7 and its three-stage pipeline, this becomes more difficult [...]. The designer of the compiler [...] can do this better, since firstly they know the architecture very well and secondly they deal with nothing other than code generation.
+
+## Compiler
+
+The compiler translates the program code we have written (for example: .c, .h, ... files) into machine code that the microcontroller can execute. The process the compiler performs is logically called compiling. Strictly speaking, it consists of several steps that are carried out by the so-called **toolchain** (for AVR: `avr-gcc`):
+
+1. **Preprocessor:** Replaces `#include` and `#define` directives.
+2. **Compiler:** Translates each `.c` file into an object file (`.o`).
+3. **Linker:** Combines all object files and libraries into a finished program (`.elf`).
+4. **Conversion:** A `.hex` file is created from the program and loaded into the flash memory of the microcontroller using a programmer or bootloader.
+
+## Platform dependency
+
+As this [article](https://www.mikrocontroller.net/articles/Plattformunabh%C3%A4ngige_Programmierung_in_C "Platform-independent programming in C") (in German) describes in great detail, program code by definition always remains platform-dependent. However, a certain degree of platform independence can be achieved by cleverly using different data types. For example, an `int` on the ATmega328P is only 16 bits, whereas on a PC it is usually 32 bits. With data types from `<stdint.h>` such as `uint8_t` or `int16_t`, you therefore specify the size explicitly. This does not mean, however, that you can compile an application for an AVR µC unchanged for a PC, since the PC does not have the same peripherals (timers, I/O ports, data buses, ...), among other things.
+
+For this reason, platform-dependent and platform-independent code should always be separated and written separately. If you program the platform-dependent part in isolation, you only have to rewrite this part to compile the code for other devices.
+
+## AVR
+
+AVR is a family of 8-bit microcontrollers that are widely used because they are simply built but also easy to program. We also use an AVR chip (the ATmega328P). The AVR family originally comes from Atmel, which was acquired by Microchip in 2016. **Microchip Studio** (formerly Atmel Studio) is therefore a suitable development environment, or alternatively Visual Studio Code with the `avr-gcc` toolchain.
+
+## Port
+
+On AVR, a port is a group of up to eight digital inputs and outputs (pins) that are controlled together via [registers](/en/embedded-programming/special-function-register/). The ATmega328P has the ports B, C and D. Each pin represents a bit state: it is either _high_ (approximately the supply voltage, i.e. 5 V) or _low_ (0 V). Ports are mainly used for reading and outputting digital signals. Many pins also have special functions, for example as an input for the [analogue-digital converter](/en/embedded-programming/analogue-digital-converter/) or for serial communication.

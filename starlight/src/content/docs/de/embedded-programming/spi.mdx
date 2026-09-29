@@ -2,6 +2,8 @@
 title: SPI - Serial Peripheral Interface
 sidebar:
   label: SPI
+  order: 11
+description: Synchrone serielle Kommunikation mit Peripheriegeräten über SPI – Taktleitung, Chip Select, gleichzeitiges Senden und Empfangen.
 ---
 
 ## Theorie
@@ -13,14 +15,14 @@ Dabei muss die Kommunikation immer vom Controller aus gestartet werden. Ein Peri
 Das SPI verwendet separate Takt- und Datenleitungen sowie eine Auswahlleitung, um das Gerät auszuwählen, mit dem Sie sprechen möchten. Dies ist auch einer der Unterschiede zum [USART](/de/embedded-programming/usart), welches keine synchrone Schnittstelle ist, da es keine Garantie gibt, dass beide Seiten mit der gleichen Taktrate laufen. Beim USART müssen sich die beiden Seiten im Vorhinein einigen, mit welcher Übertragungsgeschwindigkeit ([Baudrate](/de/embedded-programming/usart#baud-rate)) sie kommunizieren und es müssen zusätzliche Start- und Stoppbits übertragen werden.
 
 :::note
-Einige Dokumentationen verwenden noch die veralteten Begriffe, wie `Master` oder `Slave`. Aufgrund ihrer historischen Verbindung mit Rassismus werden diese Begriffe heutzutage durch neutralere Alternativen ersetzt. Folgende Tabelle zeigt die Änderungen diesbezüglich:
+Einige Dokumentationen (auch das Datenblatt des ATmega328P) verwenden noch die veralteten Begriffe `Master` und `Slave`. Wegen ihres Bezugs zur Sklaverei werden diese Begriffe heutzutage durch neutralere Alternativen ersetzt, etwa auf Empfehlung der Open Source Hardware Association. Folgende Tabelle zeigt die Änderungen diesbezüglich:
 
 | Veralteter Begriff         | Neuer Name                          |
 | -------------------------- | ----------------------------------- |
 | Master                     | Controller                          |
 | Slave                      | Peripheral                          |
-| MISO (Master In Slave Out) | POCI (Peripheral Out Controller In) |
-| MOSI (Master Out Slave In) | PICO (Peripheral In Controller Out) |
+| MISO (Master In Slave Out) | CIPO (Controller In Peripheral Out), auch POCI |
+| MOSI (Master Out Slave In) | COPI (Controller Out Peripheral In), auch PICO |
 | SS (Slave Select)          | CS (Chip Select)                    |
 
 Für weitere Informationen siehe [Wikipedia](<https://en.wikipedia.org/wiki/Master%E2%80%93slave_(technology)#Terminology_concerns>).
@@ -50,9 +52,9 @@ SPSR |= (1<<SPI2X);
 
 ### Chip Select
 
-Vor jedem Senden und Empfangen der Daten wird empfohlen das Peripheral zu selektieren, indem das jeweilige PIN auf 0V gesetzt wird und anschließend die interne Spannung wieder auf 5V gesetzt wird. Anders gesagt, ist der Chip Select `active low`.
+Vor jedem Senden und Empfangen der Daten muss das Peripheral selektiert werden, indem der jeweilige Chip-Select-PIN auf 0V gesetzt wird. Nach der Übertragung wird der PIN wieder auf 5V gesetzt. Anders gesagt, ist der Chip Select `active low`. Peripherals, die nicht selektiert sind, ignorieren die Daten auf dem Bus.
 
-Beispielsweise kann man mittels dieser Konfiguration den `RFID` (ein Kartenlesegerät) selektieren:
+Beispielsweise kann man mittels dieser Konfiguration das `RFID`-Modul (ein Kartenlesegerät, z. B. mit dem Chip MFRC522) selektieren:
 
 ```c
 #define RFID PORTB2
@@ -71,11 +73,11 @@ Für jedes Peripheral muss man einen eigenen Chip Select PIN verwenden. Diese Ar
 
 ### Read und Write
 
-Das Prinzip bei SPI ist immer: Der Controller sendet Daten an das Peripheral und der Peripheral sendet Daten zurück. Allerdings werden immer alle Bits gleichzeitig verschoben (also eigentlich ein Schieberegister). Während der Controller Bits von rechts nach links (Controller beginnt mit dem MSB) sendet, sendet der Peripheral die Bits, die aus seinem Byte hinausgeschoben werden zurück an den Controller.
+Das Prinzip bei SPI ist immer: Der Controller sendet Daten an das Peripheral und das Peripheral sendet gleichzeitig Daten zurück. Controller und Peripheral bilden dabei gemeinsam einen Ring aus zwei Schieberegistern: Bei jedem Takt wird ein Bit vom Controller zum Peripheral und ein Bit vom Peripheral zum Controller geschoben. Während der Controller sein Byte beginnend mit dem höchstwertigen Bit (MSB) sendet, sendet das Peripheral die Bits, die aus seinem Byte hinausgeschoben werden, zurück an den Controller.
 
-Das bedeutet, dass in den ersten **acht Zyklen** die Daten von Controller an den Peripheral gesendet werden. Gleichzeit erhält der Controller nutzlose Daten vom Peripheral, welche noch im Byte vom Peripheral enthalten waren. Und anschließend kann der Controller mithilfe von `Dummy Daten` die eigentlichen Daten vom Peripheral auslesen.
+Das bedeutet, dass in den ersten **acht Zyklen** die Daten vom Controller an das Peripheral gesendet werden. Gleichzeitig erhält der Controller nutzlose Daten vom Peripheral, welche noch im Byte des Peripherals enthalten waren. Und anschließend kann der Controller mithilfe von `Dummy Daten` die eigentlichen Daten vom Peripheral auslesen.
 
-In diesem Beispiel werden die Daten zuerst vom Controller zum Peripheral gesendet:
+In diesem Beispiel wird beim MFRC522 das Register `VersionReg` (Adresse `0x37`) gelesen. Das oberste Bit `1` bedeutet „lesen“, die Registeradresse wird um eine Stelle nach links verschoben. Zuerst wird dieser Befehl vom Controller zum Peripheral gesendet:
 
 ```c
 uint8_t data = ((1<<7) | (0x37<<1));
@@ -99,7 +101,7 @@ Der Prozess dieses Ablaufs ist in diesem Diagramm nochmal dargestellt:
   class="dark-only"
 />
 
-Und anschließend werden die berechneten Daten vom Peripheral zum Controller gesendet:
+Und anschließend werden die angeforderten Daten vom Peripheral zum Controller gesendet:
 
 ```c
 uint8_t dummyData = 0x00;
@@ -130,8 +132,13 @@ uint8_t versionNumber = SPDR;
 
 void SPI_init(void)
 {
+    // PB2 (SS/CS), PB3 (MOSI/COPI) und PB5 (SCK) als Ausgänge
+    // PB2 muss im Controller-Modus ein Ausgang sein, sonst kann der
+    // ATmega328P ungewollt in den Peripheral-Modus wechseln
     DDRB |= (1<<DDB2) | (1<<DDB3) | (1<<DDB5);
+    // Peripheral zunächst nicht selektieren
     PORTB |= (1<<CS_PIN);
+    // Controller-Modus, SPI aktivieren, Takt f_OSC / 16
     SPCR |= (1<<MSTR) | (1<<SPE) | (1<<SPR0);
 }
 ```
@@ -146,4 +153,34 @@ uint8_t ReadCommand(uint8_t command) {
 uint8_t WriteCommand(uint8_t command) {
 	return (command<<1);
 }
+```
+
+Mit einer Hilfsfunktion für die eigentliche Übertragung lassen sich damit Register lesen und schreiben:
+
+```c
+uint8_t SPI_transfer(uint8_t data) {
+    SPDR = data;
+    while(!(SPSR & (1<<SPIF)));
+    return SPDR;
+}
+
+uint8_t ReadRegister(uint8_t reg) {
+    PORTB &= ~(1<<CS_PIN);          // Peripheral selektieren
+    SPI_transfer(ReadCommand(reg)); // Befehl senden
+    uint8_t value = SPI_transfer(0x00); // Dummy-Byte senden, Antwort empfangen
+    PORTB |= (1<<CS_PIN);           // Peripheral deselektieren
+    return value;
+}
+
+void WriteRegister(uint8_t reg, uint8_t value) {
+    PORTB &= ~(1<<CS_PIN);
+    SPI_transfer(WriteCommand(reg));
+    SPI_transfer(value);
+    PORTB |= (1<<CS_PIN);
+}
+```
+
+```c
+SPI_init();
+uint8_t version = ReadRegister(0x37); // z. B. 0x92 für MFRC522 Version 2.0
 ```

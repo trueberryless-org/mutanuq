@@ -1,0 +1,107 @@
+---
+title: EEPROM - Non-Volatile Memory
+description: Storing data with avr-libc in the EEPROM of the ATmega328P so that it persists after power-off.
+sidebar:
+  label: EEPROM
+  order: 12
+---
+
+Sometimes it is necessary to store data in non-volatile memory. This means that the data is still stored after disconnecting and then restoring the power supply. Today, every computer has such memory, for example in the form of a hard disk (HDD) or SSD.
+
+The opposite of such memory is volatile memory, the main memory, known as RAM.
+
+## Theory
+
+The ATmega328P has three different memories:
+
+| Memory     | Size  | Volatile | Use                                            |
+| ---------- | ----- | -------- | ---------------------------------------------- |
+| **Flash**  | 32 KB | no       | Program code                                   |
+| **SRAM**   | 2 KB  | yes      | Variables during program execution             |
+| **EEPROM** | 1 KB  | no       | Data the program wants to store permanently    |
+
+EEPROM stands for _electrically erasable programmable read-only memory_. With [this](https://www.nongnu.org/avr-libc/user-manual/group__avr__eeprom.html) library from avr-libc, reading and writing is a breeze.
+
+There are many different functions that store / read a different number of bytes:
+
+| Function              | Bits | Bytes |
+| --------------------- | ---- | ----- |
+| `eeprom_read_byte()`  | 8    | 1     |
+| `eeprom_read_word()`  | 16   | 2     |
+| `eeprom_read_dword()` | 32   | 4     |
+| `eeprom_read_float()` | 32   | 4     |
+| `eeprom_read_block()` | any  | any   |
+
+For every read function, there is a corresponding write function (`eeprom_write_...`) and an update function (`eeprom_update_...`). The update functions only write if the value has actually changed and thus preserve the memory.
+
+:::tip
+Use `eeprom_read_word()` for `int` values! On the ATmega328P, an `int` is only 16 bits.
+:::
+
+You always have to choose yourself at which address the bytes are stored. The ATmega328P has a memory size of 1 KB, i.e. from address `0x000` to `0x3FF`. The address is passed to the functions as a pointer.
+
+## Code
+
+### Reading
+
+To read data – this operation can theoretically be performed an unlimited number of times – this simple code is sufficient:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/eeprom.h>
+
+int main(void)
+{
+    uint16_t value = eeprom_read_word((uint16_t*)0x00);
+
+    while (1);
+}
+```
+
+An EEPROM that has never been written contains the value `0xFF` at every position.
+
+### Writing
+
+To write data – according to the [datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), this operation can be performed at least 100,000 times per memory cell – this simple code is sufficient. A write operation takes about 3.3 ms.
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/eeprom.h>
+
+int main(void)
+{
+    uint32_t nice = 69420; // does not fit into a 16-bit int, hence 32 bits
+    eeprom_update_dword((uint32_t*)0x00, nice);
+
+    while (1);
+}
+```
+
+:::caution
+Since the number of write operations is limited, you should never write to the EEPROM unconditionally in the main loop – at 1000 iterations per second, the memory would otherwise be worn out after a few minutes.
+:::
+
+### Variables with `EEMEM`
+
+Instead of managing addresses yourself, you can let the compiler assign them by marking variables with the `EEMEM` attribute:
+
+```c
+#include <avr/eeprom.h>
+
+uint16_t EEMEM savedCounter;
+
+int main(void)
+{
+    uint16_t counter = eeprom_read_word(&savedCounter);
+    counter++;
+    eeprom_update_word(&savedCounter, counter);
+
+    while (1);
+}
+```
+
+This program counts, for example, how often the microcontroller has already been started.

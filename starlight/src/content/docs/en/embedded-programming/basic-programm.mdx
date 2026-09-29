@@ -1,0 +1,47 @@
+---
+title: Basic Program
+description: Structure of a typical C program for the AVR microcontroller with initialisation and main loop.
+sidebar:
+  order: 1
+---
+
+A typical C program has a `main` function that is called when the program starts. It is important that this function contains an infinite loop, the so-called main loop; otherwise, the program would stop running. Unlike on a PC, there is no operating system on the microcontroller that the program could return to after `main` has finished.
+
+```c
+/*
+ * Basic_Program.c
+ *
+ * Created: 06.09.2069 06:09:00
+ * Author : trueberryless
+ */
+
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+#define __DELAY_BACKWARD_COMPATIBLE__
+#include <util/delay.h>
+
+int main(void)
+{
+    // one-time actions
+
+    while (1)
+    {
+        // main loop - repeated actions
+    }
+}
+```
+
+## Explanation
+
+| Line                                    | Meaning                                                                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `#define F_CPU 16000000`                | Tells the libraries that the microcontroller runs at 16 MHz. Mainly needed by `_delay_ms()` to calculate the waiting time correctly.            |
+| `#include <avr/io.h>`                   | Contains the names of all registers (e.g. `PORTB`, `DDRB`) and bits of the microcontroller used.                                                |
+| `#include <avr/interrupt.h>`            | Required for [interrupts](/en/embedded-programming/interrupts/) (`sei()`, `cli()`, `ISR()`).                                                    |
+| `#define __DELAY_BACKWARD_COMPATIBLE__` | Allows `_delay_ms()` to be called with variables instead of only constant numbers.                                                              |
+| `#include <util/delay.h>`               | Provides the delay functions `_delay_ms()` and `_delay_us()`.                                                                                   |
+
+Before the main loop, all configurations are typically made, for example which pins are [inputs or outputs](/en/embedded-programming/special-function-register/) or how a [timer](/en/embedded-programming/timer/) should work. The actual logic of the program then runs in the main loop.

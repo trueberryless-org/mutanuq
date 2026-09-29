@@ -1,18 +1,28 @@
 ---
 title: EEPROM - Nicht flüchtiger Speicher
+description: Daten mit der avr-libc im EEPROM des ATmega328P speichern, damit sie auch nach dem Ausschalten erhalten bleiben.
 sidebar:
   label: EEPROM
+  order: 12
 ---
 
-Manchmal ist es notwendig, Daten auf einen nicht flüchtigen Speicher zu speichern. Dies bedeutet, dass die Daten auch nach dem Trennen vom Strom und anschließenden Hinzufügen des Stromes immer noch gespeichert sind. Heutzutage hat jeder Computer so einen Speicher, bekannt als Festplattenspeicher, ROM bzw. SSD. Letzteres ist bereits eine spezifische Speicherart.
+Manchmal ist es notwendig, Daten auf einem nicht flüchtigen Speicher zu speichern. Dies bedeutet, dass die Daten auch nach dem Trennen vom Strom und anschließenden Wiederherstellen der Stromversorgung immer noch gespeichert sind. Heutzutage hat jeder Computer so einen Speicher, zum Beispiel in Form einer Festplatte (HDD) oder SSD.
 
 Das Gegenteil eines solchen Speichers ist der flüchtige Speicher, der Arbeitsspeicher, bekannt als RAM.
 
 ## Theorie
 
-Der ATmega328p verfügt bereits über einen nicht flüchtigen Speicher, dem EEPROM. Mithilfe [dieser](https://www.nongnu.org/avr-libc/user-manual/group__avr__eeprom.html) Bibliothek ist das Lesen und Schreiben eine Leichtigkeit.
+Der ATmega328p verfügt über drei verschiedene Speicher:
 
-Hierbei gibt es viele verschiedene Funktionen, welche unterschiedliche Anzahl an Bytes speichern / lesen:
+| Speicher   | Größe | Flüchtig | Verwendung                                          |
+| ---------- | ----- | -------- | --------------------------------------------------- |
+| **Flash**  | 32 KB | nein     | Programmcode                                        |
+| **SRAM**   | 2 KB  | ja       | Variablen während der Programmausführung            |
+| **EEPROM** | 1 KB  | nein     | Daten, die das Programm dauerhaft speichern möchte  |
+
+EEPROM steht für _Electrically Erasable Programmable Read-Only Memory_. Mithilfe [dieser](https://www.nongnu.org/avr-libc/user-manual/group__avr__eeprom.html) Bibliothek aus der avr-libc ist das Lesen und Schreiben eine Leichtigkeit.
+
+Hierbei gibt es viele verschiedene Funktionen, welche eine unterschiedliche Anzahl an Bytes speichern / lesen:
 
 | Funktion              | Bit | Byte |
 | --------------------- | --- | ---- |
@@ -20,18 +30,21 @@ Hierbei gibt es viele verschiedene Funktionen, welche unterschiedliche Anzahl an
 | `eeprom_read_word()`  | 16  | 2    |
 | `eeprom_read_dword()` | 32  | 4    |
 | `eeprom_read_float()` | 32  | 4    |
+| `eeprom_read_block()` | beliebig | beliebig |
+
+Zu jeder Lesefunktion gibt es eine entsprechende Schreibfunktion (`eeprom_write_...`) sowie eine Update-Funktion (`eeprom_update_...`). Die Update-Funktionen schreiben nur dann, wenn sich der Wert tatsächlich geändert hat, und schonen dadurch den Speicher.
 
 :::tip
-Verwenden Sie für `int`-Werte `eeprom_read_word()`!
+Verwenden Sie für `int`-Werte `eeprom_read_word()`! Beim ATmega328p ist ein `int` nämlich nur 16 Bit groß.
 :::
 
-Dabei muss man immer selbst auswählen, unter welcher Adresse die Bytes gespeichert werden. Der ATmega328p verfügt über eine Speichergröße von 1kB, also von Adresse `0x000` bis `0x3FF`.
+Dabei muss man immer selbst auswählen, unter welcher Adresse die Bytes gespeichert werden. Der ATmega328p verfügt über eine Speichergröße von 1 KB, also von Adresse `0x000` bis `0x3FF`. Die Adresse wird den Funktionen als Pointer übergeben.
 
 ## Code
 
 ### Lesen
 
-Um Daten zu lesen - diese Operation ist theoretisch unlimitiert durchführbar - reicht dieser simple Code aus:
+Um Daten zu lesen – diese Operation ist theoretisch unlimitiert durchführbar – reicht dieser simple Code aus:
 
 ```c
 #define F_CPU 16000000
@@ -41,15 +54,17 @@ Um Daten zu lesen - diese Operation ist theoretisch unlimitiert durchführbar - 
 
 int main(void)
 {
-    uint16_t value = eeprom_read_word(0x00);
+    uint16_t value = eeprom_read_word((uint16_t*)0x00);
 
     while (1);
 }
 ```
+
+Ein noch nie beschriebenes EEPROM enthält an jeder Stelle den Wert `0xFF`.
 
 ### Schreiben
 
-Um Daten zu schreiben - diese Operation ist laut [Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf) 100.000 Mal durchführbar - reicht dieser simple Code aus:
+Um Daten zu schreiben – diese Operation ist laut [Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf) pro Speicherzelle mindestens 100.000 Mal durchführbar – reicht dieser simple Code aus. Ein Schreibvorgang dauert etwa 3,3 ms.
 
 ```c
 #define F_CPU 16000000
@@ -59,9 +74,34 @@ Um Daten zu schreiben - diese Operation ist laut [Datenblatt](https://ww1.microc
 
 int main(void)
 {
-    int nice = 69420;
-    eeprom_write_word(0x00, nice);
+    uint32_t nice = 69420; // passt nicht in einen 16-bit int, daher 32 Bit
+    eeprom_update_dword((uint32_t*)0x00, nice);
 
     while (1);
 }
 ```
+
+:::caution
+Da die Anzahl der Schreibvorgänge begrenzt ist, sollte man niemals in der Arbeitsschleife ohne Bedingung auf das EEPROM schreiben – bei 1000 Durchläufen pro Sekunde wäre der Speicher sonst nach wenigen Minuten verschlissen.
+:::
+
+### Variablen mit `EEMEM`
+
+Anstatt Adressen selbst zu verwalten, kann man den Compiler die Adressen vergeben lassen, indem man Variablen mit dem Attribut `EEMEM` kennzeichnet:
+
+```c
+#include <avr/eeprom.h>
+
+uint16_t EEMEM savedCounter;
+
+int main(void)
+{
+    uint16_t counter = eeprom_read_word(&savedCounter);
+    counter++;
+    eeprom_update_word(&savedCounter, counter);
+
+    while (1);
+}
+```
+
+Dieses Programm zählt zum Beispiel, wie oft der Mikrocontroller schon gestartet wurde.
