@@ -243,6 +243,47 @@ export default defineConfig({
               ],
             },
             {
+              id: "mathematics",
+              label: {
+                en: "Mathematics",
+                de: "Mathematik",
+              },
+              icon: "pencil",
+              link: "/mathematics/",
+              items: [
+                { slug: "mathematics" },
+                {
+                  label: "Zahlen und Algebra",
+                  translations: { en: "Numbers and Algebra" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/algebra" } },
+                  ],
+                },
+                {
+                  label: "Geometrie",
+                  translations: { en: "Geometry" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/geometry" } },
+                  ],
+                },
+                {
+                  label: "Funktionen",
+                  translations: { en: "Functions" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/functions" } },
+                  ],
+                },
+                { slug: "mathematics/descriptive-statistics" },
+                {
+                  label: "Analysis",
+                  translations: { en: "Calculus" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/analysis" } },
+                  ],
+                },
+              ],
+            },
+            {
               id: "languages",
               label: {
                 en: "Languages",
@@ -289,6 +330,7 @@ export default defineConfig({
           {
             topics: {
               "software-development": ["/*/software-development/**"],
+              mathematics: ["/*/mathematics/**"],
             },
           }
         ),
