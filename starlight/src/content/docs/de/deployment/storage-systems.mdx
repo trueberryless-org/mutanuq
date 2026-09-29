@@ -1,26 +1,57 @@
 ---
 title: Speichersysteme
+description: Direkt angeschlossener Speicher (DAS), Network Attached Storage (NAS) und Storage Area Networks (SAN) sowie RAID im Vergleich.
+sidebar:
+  order: 2
 ---
 
-Professionelle Speichersysteme sind meistens eine zentrale Speicherlösung, damit alle Nutzer in einem Netzwerk auf diesen Speicher zugreifen können. Bei solchen Speichersystemen liegt am Host kein Speichersystem, sondern alles nur auf Virtuellen Maschinen.
+Professionelle Speichersysteme sind meistens eine zentrale Speicherlösung, damit alle Nutzer und Server in einem Netzwerk auf diesen Speicher zugreifen können. Die Server (Hosts) speichern ihre Daten dann nicht mehr ausschließlich auf lokalen Festplatten, sondern auf dem zentralen Speicher. Das ist zum Beispiel die Voraussetzung dafür, dass virtuelle Maschinen im laufenden Betrieb von einem Host auf einen anderen verschoben werden können.
+
+| Merkmal          | DAS                            | NAS                                | SAN                                         |
+| ---------------- | ------------------------------ | ---------------------------------- | ------------------------------------------- |
+| Anbindung        | Direkt am Rechner (SATA, SAS, USB) | Über das normale LAN            | Über ein eigenes Speichernetzwerk            |
+| Zugriffsebene    | Block                          | Datei                              | Block                                       |
+| Protokolle       | SATA, SAS, NVMe                | SMB, NFS                           | Fibre Channel, iSCSI                        |
+| Gemeinsame Nutzung | Nein                         | Ja                                 | Ja (pro Server eigene Speicherbereiche)     |
+| Kosten           | Gering                         | Mittel                             | Hoch                                        |
+
+## RAID
+
+Die meisten Speichersysteme fassen mehrere Festplatten zu einem **RAID** (_Redundant Array of Independent Disks_) zusammen. Dadurch kann der Ausfall einzelner Platten überstanden und/oder die Geschwindigkeit erhöht werden. RAID kann per Software (durch das Betriebssystem) oder per Hardware (durch einen eigenen RAID-Controller) umgesetzt werden.
+
+| RAID-Level  | Funktionsweise                                           | Mind. Platten | Nutzbare Kapazität | Verträgt Ausfall von      |
+| ----------- | -------------------------------------------------------- | ------------- | ------------------ | ------------------------- |
+| **RAID 0**  | Striping: Daten werden auf alle Platten verteilt         | 2             | 100 %              | keiner Platte             |
+| **RAID 1**  | Mirroring: Daten werden auf jede Platte gespiegelt       | 2             | 50 % (bei 2 Platten) | allen bis auf eine Platte |
+| **RAID 5**  | Striping mit verteilter Parität                          | 3             | (n − 1) Platten    | einer Platte              |
+| **RAID 6**  | Striping mit doppelter Parität                           | 4             | (n − 2) Platten    | zwei Platten              |
+| **RAID 10** | Kombination aus Spiegelung (1) und Striping (0)          | 4             | 50 %               | einer Platte pro Spiegelpaar |
+
+:::caution
+Ein RAID ersetzt **keine** Datensicherung! Versehentlich gelöschte Dateien, Viren oder Verschlüsselungstrojaner betreffen alle Platten des RAIDs gleichzeitig. Mehr dazu unter [Sicherungsstrategien](/de/deployment/security-strategies/).
+:::
 
 ## NAS
 
-NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in Netzwerken einen zentralen Speicherplatz für alle Nutzer aufzubauen. Dabei ist das NAS ein eigener Rechner mit Betriebssystem, wobei dieses Betriebssystem die Speicherverwaltung übernimmt und die Dateifreigabe verwaltet.
+NAS steht für Network Attached Storage und ist eine einfache Möglichkeit, in Netzwerken einen zentralen Speicherplatz für alle Nutzer aufzubauen. Dabei ist das NAS ein eigener Rechner mit Betriebssystem, wobei dieses Betriebssystem die Speicherverwaltung übernimmt und die Dateifreigabe verwaltet. Die Clients greifen auf **Dateiebene** über Protokolle wie **SMB** (Windows-Freigaben) oder **NFS** (Linux/Unix) auf die Daten zu.
 
 ### Funktionalitäten
 
 -   **RAID**  
-    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits RAID. Dieses kann sowohl auf Softwareebene, also auch auf Hardwareebene umgesetzt werden. Bei letzterem unterstützt NAS sogar das Speichern auf unterschiedlichen physischen Platten (NAT-Boxen).
+    Damit die Daten redundant gespeichert sind, unterstützt NAS out of the box bereits [RAID](#raid). Dieses kann sowohl auf Softwareebene als auch auf Hardwareebene umgesetzt werden.
 
 -   **Berechtigungsverwaltung**  
-    NAS hat zusätzlich auch noch direkt eine Verwaltung für verschiedene Benutzer integriert.
+    NAS hat zusätzlich auch noch direkt eine Verwaltung für verschiedene Benutzer integriert, die oft auch an ein Active Directory angebunden werden kann.
+
+-   **Zusatzdienste**  
+    Viele NAS-Systeme bieten außerdem Snapshots, Backups in die Cloud, Medienserver oder sogar virtuelle Maschinen und Container.
 
 ### Anbieter
 
+-   TrueNAS (Software)
 -   OpenMediaVault (Software)
 -   XigmaNAS (Software)
--   Synology (Hardware): stellt eigene Server speziell für die Speicherung von Daten her
+-   Synology und QNAP (Hardware): stellen eigene Geräte speziell für die Speicherung von Daten her
 
 ### Vorteile
 
@@ -45,15 +76,20 @@ NAS steht für Network Attatched Storage und ist eine einfache Möglichkeit in N
     NAS kann bei wachsendem Bedarf an Speicherplatz und Leistung an seine Grenzen stoßen. Die Skalierbarkeit kann durch die begrenzte Anzahl unterstützter Festplatten beeinträchtigt werden.
 
 -   **Belastung des LAN**  
-    Da alle Daten über das Unternehmensnetzwerk gesendet werden und diese Dateien meistens große Daten sind, entstehen viele Pakete, welche das Unternehmensnetzwerk sehr belasten. Außerdem haben diese Pakete aufgrund der Fragmentiertung viel Overhead.
+    Da alle Daten über das Unternehmensnetzwerk gesendet werden und es sich dabei meistens um große Dateien handelt, entstehen viele Pakete, welche das Unternehmensnetzwerk sehr belasten. Außerdem entsteht durch die Aufteilung in viele Pakete und die Dateiprotokolle zusätzlicher Overhead.
 
 ## SAN
 
-SAN steht für Storage Area Network und ist die High-End Variante von zentralen Speichersystemen. Im Gegensatz zu NAS gibt es nämlich bei SAN ein eigenes Netzwerk, in welchem auf verschiedenen Servern die Daten abgelegt werden. Dies hat den Vorteil, dass bei einer Synchronisation der Sicherungsinstanzen kein zusätzlicher Netzverkehr anfällt, da dieser Verkehr vom Unternehmensnetzwerk abgeschottet ist.
+SAN steht für Storage Area Network und ist die High-End-Variante von zentralen Speichersystemen. Im Gegensatz zu NAS gibt es nämlich bei SAN ein eigenes Netzwerk, über welches die Server auf zentrale Speichersysteme (_Storage Arrays_) zugreifen. Dies hat den Vorteil, dass der Speicherverkehr – etwa bei der Synchronisation von Sicherungsinstanzen – das Unternehmensnetzwerk nicht belastet, da dieser Verkehr vom Unternehmensnetzwerk abgeschottet ist.
 
 ![SAN Aufbau](/images/system_integration_and_infrastructure/SAN-Aufbau.png)
 
-Wie man im Bild sehen kann, haben die Server eigenen Netzwerkkarten, um auf den Speicher zugreifen zu können. Aufgrund der `Host Bus Adapter (HBA)` glauben die Server, dass die Speicherplatten direkt an ihn angeschlossen sind. Das gesamte SAN ist für die Server also transparent.
+Wie man im Bild sehen kann, haben die Server eigene Adapter, um auf den Speicher zugreifen zu können. Aufgrund dieser `Host Bus Adapter (HBA)` glauben die Server, dass die Speicherplatten direkt an sie angeschlossen sind. Das gesamte SAN ist für die Server also transparent. Jeder Server bekommt dabei eigene logische Speicherbereiche, sogenannte **LUNs** (_Logical Unit Numbers_), zugewiesen, die er wie eine lokale Festplatte formatiert und verwendet.
+
+Für die Übertragung werden vor allem zwei Technologien eingesetzt:
+
+- **Fibre Channel (FC):** Eigene, sehr schnelle und zuverlässige Netzwerktechnik mit eigenen Switches, meist über Glasfaser.
+- **iSCSI:** Überträgt SCSI-Befehle über ein normales IP-Netzwerk (Ethernet). Günstiger, sollte aber ebenfalls in einem eigenen, vom übrigen Netzwerk getrennten Netz betrieben werden.
 
 :::note[Hinweis]
 Bei einem SAN-System ist es empfehlenswert, alle Komponenten von einem Hersteller zu kaufen (`SINGLE VENDOR`).
@@ -81,9 +117,12 @@ Bei einem SAN-System ist es empfehlenswert, alle Komponenten von einem Herstelle
 -   **Komplexität**  
     Die Einrichtung und Verwaltung von SAN erfordert spezielle Kenntnisse im Bereich Storage Networking. Dies macht SAN in der Regel komplexer als NAS.
 
--   **eingeschränkte Dateifreigabe**  
+-   **Eingeschränkte Dateifreigabe**  
     Im Vergleich zu NAS ist SAN weniger gut geeignet für die gemeinsame Nutzung von Dateien in einem Netzwerk, da es hauptsächlich auf blockbasierten Datenzugriff ausgerichtet ist.
 
 ## DAS
 
-Der Direct Attatched Storage ist einfach eine Festplatte direkt im PC verbaut.
+Direct Attached Storage bezeichnet Speicher, der direkt an einen einzelnen Rechner angeschlossen ist – also die im PC oder Server verbaute Festplatte bzw. SSD oder ein externes Laufwerk, das per USB, SAS oder Thunderbolt angesteckt wird. Es gibt kein Netzwerk dazwischen.
+
+-   **Vorteile:** sehr einfach, günstig und schnell, da keine Netzwerkverbindung die Geschwindigkeit begrenzt.
+-   **Nachteile:** Der Speicher steht nur diesem einen Rechner zur Verfügung, lässt sich schlecht gemeinsam nutzen und fällt der Rechner aus, sind auch die Daten nicht mehr erreichbar.

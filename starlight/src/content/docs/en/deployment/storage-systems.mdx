@@ -1,0 +1,128 @@
+---
+title: Storage Systems
+description: Direct attached storage (DAS), network attached storage (NAS) and storage area networks (SAN) as well as RAID compared.
+sidebar:
+  order: 2
+---
+
+Professional storage systems are usually a central storage solution so that all users and servers in a network can access this storage. The servers (hosts) then no longer store their data exclusively on local disks, but on the central storage. This is, for example, a prerequisite for moving virtual machines from one host to another during operation.
+
+| Feature          | DAS                                 | NAS                           | SAN                                      |
+| ---------------- | ----------------------------------- | ----------------------------- | ---------------------------------------- |
+| Connection       | Directly to the computer (SATA, SAS, USB) | Via the normal LAN      | Via a dedicated storage network          |
+| Access level     | Block                               | File                          | Block                                    |
+| Protocols        | SATA, SAS, NVMe                     | SMB, NFS                      | Fibre Channel, iSCSI                     |
+| Shared use       | No                                  | Yes                           | Yes (separate storage areas per server)  |
+| Cost             | Low                                 | Medium                        | High                                     |
+
+## RAID
+
+Most storage systems combine several disks into a **RAID** (_redundant array of independent disks_). This allows the failure of individual disks to be survived and/or the speed to be increased. RAID can be implemented in software (by the operating system) or in hardware (by a dedicated RAID controller).
+
+| RAID level  | How it works                                           | Min. disks | Usable capacity       | Survives failure of          |
+| ----------- | ------------------------------------------------------ | ---------- | --------------------- | ---------------------------- |
+| **RAID 0**  | Striping: data is distributed across all disks         | 2          | 100%                  | no disk                      |
+| **RAID 1**  | Mirroring: data is mirrored to every disk              | 2          | 50% (with 2 disks)    | all but one disk             |
+| **RAID 5**  | Striping with distributed parity                       | 3          | (n − 1) disks         | one disk                     |
+| **RAID 6**  | Striping with double parity                            | 4          | (n − 2) disks         | two disks                    |
+| **RAID 10** | Combination of mirroring (1) and striping (0)          | 4          | 50%                   | one disk per mirrored pair   |
+
+:::caution
+A RAID does **not** replace a backup! Accidentally deleted files, viruses or ransomware affect all disks of the RAID at the same time. Learn more under [Backup Strategies](/en/deployment/security-strategies/).
+:::
+
+## NAS
+
+NAS stands for network attached storage and is a simple way to set up central storage for all users in a network. The NAS is a separate computer with an operating system that handles storage management and manages file sharing. Clients access the data at **file level** via protocols such as **SMB** (Windows shares) or **NFS** (Linux/Unix).
+
+### Features
+
+- **RAID**  
+  To store the data redundantly, NAS supports [RAID](#raid) out of the box. It can be implemented both at software level and at hardware level.
+
+- **Permission management**  
+  NAS also has built-in management for different users, which can often also be connected to an Active Directory.
+
+- **Additional services**  
+  Many NAS systems also offer snapshots, cloud backups, media servers or even virtual machines and containers.
+
+### Providers
+
+- TrueNAS (software)
+- OpenMediaVault (software)
+- XigmaNAS (software)
+- Synology and QNAP (hardware): manufacture their own devices specifically for storing data
+
+### Advantages
+
+- **Easy integration**  
+  NAS devices are easy to integrate into existing networks. They act as standalone servers and are accessible over the network.
+
+- **Easy administration**  
+  Administering a NAS is usually user-friendly and does not require special knowledge of storage networking. Configuration is often done via a web interface.
+
+- **Cost-effective for smaller environments**  
+  NAS systems are often cheaper than SAN systems and are therefore well suited for smaller companies or home networks (`SOHO`).
+
+- **Permission management**  
+  NAS already has built-in management for different users by default.
+
+### Disadvantages
+
+- **Limited performance**  
+  Compared to SAN, NAS devices often offer limited performance, especially for intensive applications such as databases or virtualisation.
+
+- **Scalability**  
+  NAS can reach its limits as the need for storage space and performance grows. Scalability can be limited by the number of supported disks.
+
+- **Load on the LAN**  
+  Since all data is sent over the company network and it is usually large files, many packets are created, which put a heavy load on the company network. In addition, splitting data into many packets and the file protocols cause additional overhead.
+
+## SAN
+
+SAN stands for storage area network and is the high-end variant of central storage systems. Unlike NAS, a SAN has a dedicated network through which the servers access central storage systems (_storage arrays_). This has the advantage that storage traffic – for example when synchronising backup instances – does not burden the company network, since this traffic is isolated from the company network.
+
+![SAN structure](/images/system_integration_and_infrastructure/SAN-Aufbau.png)
+
+As you can see in the image, the servers have their own adapters to access the storage. Thanks to these `host bus adapters (HBA)`, the servers believe that the disks are directly connected to them. The entire SAN is therefore transparent to the servers. Each server is assigned its own logical storage areas, so-called **LUNs** (_logical unit numbers_), which it formats and uses like a local disk.
+
+Two technologies are mainly used for the transmission:
+
+- **Fibre Channel (FC):** A dedicated, very fast and reliable network technology with its own switches, usually over optical fibre.
+- **iSCSI:** Transmits SCSI commands over a normal IP network (Ethernet). Cheaper, but should also be operated in a dedicated network separated from the rest of the network.
+
+:::note[Note]
+With a SAN system, it is recommended to buy all components from one manufacturer (`SINGLE VENDOR`).
+:::
+
+### Advantages
+
+- **Dedicated network**  
+  The N in SAN stands for network. This means that a SAN has its own network for managing the storage media. As a result, the company network is not overloaded and storage media can be located at different sites.
+
+- **High performance**  
+  SAN usually offers higher performance than NAS, especially for block-based data access. It is ideal for applications with high performance requirements, such as databases.
+
+- **Scalability**  
+  SAN systems are highly scalable and can easily be adapted to growing storage requirements. This makes them well suited for large companies with large amounts of data.
+
+- **Block-based storage**  
+  SAN works at block level and thus allows direct access to storage blocks. This is particularly advantageous for applications that require block-based data access.
+
+### Disadvantages
+
+- **Cost**  
+  SAN systems are usually more expensive than NAS, both in terms of hardware and implementation.
+
+- **Complexity**  
+  Setting up and administering a SAN requires special knowledge of storage networking. This usually makes SAN more complex than NAS.
+
+- **Limited file sharing**  
+  Compared to NAS, SAN is less suitable for sharing files across a network, since it is mainly designed for block-based data access.
+
+## DAS
+
+Direct attached storage refers to storage that is connected directly to a single computer – i.e. the hard disk or SSD built into the PC or server, or an external drive connected via USB, SAS or Thunderbolt. There is no network in between.
+
+- **Advantages:** very simple, cheap and fast, since no network connection limits the speed.
+- **Disadvantages:** the storage is only available to this one computer, is hard to share and if the computer fails, the data can no longer be reached either.

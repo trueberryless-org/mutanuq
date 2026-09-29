@@ -1,5 +1,8 @@
 ---
 title: Virtualisierung
+description: Hypervisoren vom Typ 1 und Typ 2, Paravirtualisierung, Containervirtualisierung mit Docker sowie System- und User-Mode.
+sidebar:
+  order: 1
 ---
 
 Die Virtualisierung ermöglicht die Erstellung von virtuellen Instanzen von Hardware- und Softwarekomponenten. Das Hauptziel besteht darin, physische Ressourcen zu abstrahieren, um flexiblere und effizientere IT-Infrastrukturen zu schaffen. Durch die Schaffung isolierter virtueller Umgebungen können vorhandene Ressourcen besser genutzt und die Skalierbarkeit verbessert werden. Virtualisierung bildet nicht nur die Grundlage für Cloud Computing, sondern findet auch in Rechenzentren, Netzwerken und Endgeräten vielfältige Anwendungen.
@@ -8,16 +11,16 @@ Die Virtualisierung ermöglicht die Erstellung von virtuellen Instanzen von Hard
 
 -   das Testen von neuen Betriebssystemen
 -   das Testen von neuen Applikationen auf Betriebssystemen
--   Schulung von Umgebungen, welche einfach wieder gelöscht werden können
+-   Schulungsumgebungen, welche einfach wieder gelöscht werden können
 -   Hardware-Ressourcen besser ausnutzen
 -   Snapshots erstellen und wiederherstellen
 -   Cloud Hosting Server mieten
 
 ## Geschichte
 
-Das Konzept der Virtualisierung wurde das erste Mal innerhalb der 1960er Jahre genutzt, um die Mehrbenutzerfähigkeit umzusetzen. Damals hatten Betriebssysteme noch nicht die Funktionalität von mehreren Benutzern integriert, weshalb der einfachste Weg, dies zu erreichen, weitere Instanzen des Betriebssystems waren. Aufgrund der Weiterentwicklungen - Betriebssysteme waren später sowieso automatisch die mehrbenutzerfähig - wurde das Konzept nicht weiterverwendet.
+Das Konzept der Virtualisierung wurde das erste Mal in den 1960er-Jahren auf IBM-Großrechnern genutzt, um die Mehrbenutzerfähigkeit umzusetzen. Damals hatten Betriebssysteme noch nicht die Funktionalität von mehreren Benutzern integriert, weshalb der einfachste Weg, dies zu erreichen, weitere Instanzen des Betriebssystems waren. Aufgrund der Weiterentwicklungen – Betriebssysteme waren später ohnehin mehrbenutzerfähig – verlor das Konzept außerhalb der Großrechnerwelt lange Zeit an Bedeutung.
 
-Um das Jahr 2010 herum wurde das Konzept der Virtualisierung wieder verwendet, weil Entwickler nun Anwendungen und Betriebssysteme testen können wollten. Außerdem kann man Hardware-Ressourcen viel besser ausnutzen, da in einem Unternehmen gewisse Dienste nur zu gewissen Zeiten exzessiv verwendet werden. Beispielsweise melden sich zwischen acht und neun Uhr viele Mitarbeiter am Domain Controller an, am Nachmittag werden sehr viele E-Mails verschickt und Dateien ausgedruckt. Um kostspielige Ressourcen besser nutzen zu können, kann man Server, welche genau diese Aufgaben erfüllen, virtualisieren, damit zu bestimmten Zeiten verschiedene Server flexibel Ressourcen zur Verfügung gestellt bekommen. Virtualisierung hilft dementsprechend enorm bei flexibler Skalierung.
+Ende der 1990er-Jahre wurde das Konzept der Virtualisierung mit VMware (1999) auch auf normalen x86-Rechnern populär und setzte sich in den 2000er-Jahren in Unternehmen durch, weil Entwickler nun Anwendungen und Betriebssysteme testen können wollten. Außerdem kann man Hardware-Ressourcen viel besser ausnutzen, da in einem Unternehmen gewisse Dienste nur zu gewissen Zeiten exzessiv verwendet werden. Beispielsweise melden sich zwischen acht und neun Uhr viele Mitarbeiter am Domain Controller an, am Nachmittag werden sehr viele E-Mails verschickt und Dateien ausgedruckt. Um kostspielige Ressourcen besser nutzen zu können, kann man Server, welche genau diese Aufgaben erfüllen, virtualisieren, damit zu bestimmten Zeiten verschiedene Server flexibel Ressourcen zur Verfügung gestellt bekommen. Virtualisierung hilft dementsprechend enorm bei flexibler Skalierung.
 
 ## Begriffe
 
@@ -27,11 +30,11 @@ Bei einem virtualisierten System gibt es immer zwei wesentliche Teilnehmer:
     Der Host ist der Computer, auf welchem die virtuellen Betriebssysteme laufen. Auf diesem Host läuft ein [Hypervisor](#hypervisor), welcher die verschiedenen virtuellen Maschinen bzw. Guests verwaltet.
 
 -   **Guest**  
-    Das virtuelle Betriebssysteme wird vom [Hypervisor](#hypervisor) verwaltet und läuft somit auf dem Host.
+    Das virtuelle Betriebssystem wird vom [Hypervisor](#hypervisor) verwaltet und läuft somit auf dem Host.
 
 ## Hypervisor
 
-Der Hypervisor ist ein `Virtual Machine Monitor`, welcher die Instanzen der virtuellen Betriebssysteme steuert und verwaltet. Dieses Programm hat die Aufgabe, den virtuellen Maschinen `Rechner-Ressourcen` möglichst effizient zuzuweisen. Denn genau wie jeder andere Computer, benötigen auch virtuelle Maschinen CPU-Ressourcen, Arbeitsspeicher, Festplattenspeicher, Netzwerkkarten und vieles mehr. All diese Ressourcen werden dynamisch aufgeteilt. Benötigt beispielsweise ein Domain Controller momentan viel Kapazitäten, da sich gerade viele Benutzer anmelden wollen, kann der Hypervisor dem Domain Controller fast die gesamten Ressourcen zuschreiben, während andere Server währenddessen im Minimalbetrieb laufen.
+Der Hypervisor ist ein `Virtual Machine Monitor`, welcher die Instanzen der virtuellen Betriebssysteme steuert und verwaltet. Dieses Programm hat die Aufgabe, den virtuellen Maschinen `Rechner-Ressourcen` möglichst effizient zuzuweisen. Denn genau wie jeder andere Computer benötigen auch virtuelle Maschinen CPU-Ressourcen, Arbeitsspeicher, Festplattenspeicher, Netzwerkkarten und vieles mehr. All diese Ressourcen werden dynamisch aufgeteilt. Benötigt beispielsweise ein Domain Controller momentan viel Kapazität, da sich gerade viele Benutzer anmelden wollen, kann der Hypervisor dem Domain Controller fast die gesamten Ressourcen zuteilen, während andere Server währenddessen im Minimalbetrieb laufen.
 
 Je nach Virtualisierungstyp ist der Hypervisor entweder ein einfaches `Anwendungsprogramm`, welches auf einem Betriebssystem installiert ist, oder die `Installation`, welche direkt auf der Hardware aufgesetzt wird.
 
@@ -39,75 +42,64 @@ Je nach Virtualisierungstyp ist der Hypervisor entweder ein einfaches `Anwendung
 
 ### Typ 1 Virtualisierung
 
-Bei einer Typ 1 Virtualisierung (auch Bare-Metall Virtualisierung genannt) interagiert der Hypervisor direkt mit der Hardware. Es gibt kein Betriebssystem zwischen Hardware und Hypervisor. Weil ein Hypervisor ohne Betriebssystem nicht installierbar ist, muss man bei einer Installation zuerst ein Betriebssystem installieren, von welchem aus man anschließend den Hypervisor installieren kann, um anschließend die Betriebssysteme installieren zu können 🫠.
+Bei einer Typ 1 Virtualisierung (auch Bare-Metal-Virtualisierung genannt) interagiert der Hypervisor direkt mit der Hardware. Es gibt kein Betriebssystem zwischen Hardware und Hypervisor. Der Hypervisor bringt selbst einen kleinen, spezialisierten Kern mit und wird wie ein Betriebssystem direkt von einem Installationsmedium auf dem Server installiert. Verwaltet wird er anschließend meist über eine Weboberfläche oder eine eigene Verwaltungssoftware von einem anderen Rechner aus. Da keine zusätzliche Betriebssystemschicht dazwischen liegt, ist Typ 1 besonders leistungsfähig und wird in Rechenzentren eingesetzt.
+
+Eine Besonderheit ist Hyper-V: Es wird zwar als Rolle in einem bereits installierten Windows aktiviert, schiebt sich beim nächsten Start aber unter dieses Windows. Das ursprüngliche Windows läuft danach selbst als privilegierte virtuelle Maschine (_Parent Partition_) auf dem Hypervisor.
 
 ![Typ-1-Virtualisierung](/images/system_integration_and_infrastructure/Typ-1-Virtualisierung.png)
 
 #### Beispiele
 
 -   VMware ESXi (ehemals ESX)
--   Citrix Xen
+-   Xen (z. B. Citrix Hypervisor, ehemals XenServer)
 -   Hyper-V
+-   KVM (im Linux-Kernel integriert, z. B. in Proxmox VE)
 
 ### Typ 2 Virtualisierung
 
 Bei einer Typ 2 Virtualisierung läuft der Hypervisor als einfaches Anwendungsprogramm auf dem unterliegenden Betriebssystem. Dabei muss dem virtualisierten Betriebssystem vorgetäuscht werden, dass es als einziges Zugriff auf die Hardware hat.
 
----
+Jedoch kann der Hypervisor als Anwendung dem virtuellen Betriebssystem nicht ohne Weiteres vortäuschen, dass die Hardware-Ressourcen nur ihm gehören, weil er selbst auch vom Betriebssystem verwaltet wird. Früher mussten privilegierte Befehle des Gastbetriebssystems daher aufwändig per Software abgefangen und übersetzt werden. Heute verwenden Hypervisoren die **hardwareunterstützte Virtualisierung** (_Hardware-Assisted Virtualization_). Diese Technologien ermöglichen es dem Hypervisor, virtuellen Maschinen direkten Zugriff auf bestimmte Hardware-Ressourcen zu geben, ohne dass das Host-Betriebssystem jeden Zugriff vermitteln muss. Dies verbessert die Leistung und Effizienz der Virtualisierung.
 
-Jedoch kann der Hypervisor als Anwendung dem virtuellen Betriebssystem nicht vortäuschen, dass die Hardware-Ressourcen nur ihm gehören, weil er selbst auch vom Betriebssystem verwaltet wird. Eine mögliche Lösung für dieses Problem besteht darin, dass der Hypervisor Techniken wie Hardware-Virtualisierung oder Hardware-Assisted Virtualisation verwendet. Diese Technologien ermöglichen es dem Hypervisor, direkten Zugriff auf bestimmte Hardware-Ressourcen zu erhalten, ohne dass das Host-Betriebssystem jeden Zugriff vermitteln muss. Dies verbessert die Leistung und Effizienz der Virtualisierung.
-
-Die Hardware-Virtualisierung wird oft durch CPU-Funktionen wie Intel VT-x oder AMD-V ermöglicht. Diese Technologien erlauben es dem Hypervisor, virtuelle Maschinen direkt auf die physische Hardware zuzugreifen, wodurch die Verwaltungsschicht des Host-Betriebssystems umgangen wird. Dadurch kann der Hypervisor dem virtualisierten Betriebssystem effektiv vortäuschen, dass es exklusiven Zugriff auf die Hardware hat.
+Die Hardware-Virtualisierung wird durch CPU-Funktionen wie Intel VT-x oder AMD-V ermöglicht. Diese Technologien erlauben es virtuellen Maschinen, die meisten Befehle direkt auf der physischen Hardware auszuführen, wodurch die Verwaltungsschicht des Host-Betriebssystems umgangen wird. Dadurch kann der Hypervisor dem virtualisierten Betriebssystem effektiv vortäuschen, dass es exklusiven Zugriff auf die Hardware hat. Übrigens nutzen auch Typ-1-Hypervisoren diese CPU-Funktionen.
 
 ![Typ-2-Virtualisierung](/images/system_integration_and_infrastructure/Typ-2-Virtualisierung.png)
 
 #### Beispiele
 
--   VMware Workstation Player
--   VirtualBox
+-   VMware Workstation Pro
+-   Oracle VirtualBox
+-   Parallels Desktop (macOS)
 
 ### Paravirtualisierung
 
-Paravirtualisierung ist eine Methode zur Virtualisierung, bei welcher die Gastbetriebssysteme (Guest) speziell für die Virtualisierung angepasst werden. Dies bedeutet, dass die Gastbetriebssysteme die Hardware direkt nicht mehr ansprechen können, sondern stattdessen über eine virtuelle Schnittstelle, die VMI (Virtual Machine Interface), mit der Hardware kommunizieren müssen. Die VMI wird vom Hypervisor bereitgestellt, der die virtuelle Maschine (VM) verwaltet.
+Paravirtualisierung ist eine Methode zur Virtualisierung, bei welcher die Gastbetriebssysteme (Guest) speziell für die Virtualisierung angepasst werden. Das Gastbetriebssystem „weiß“ also, dass es virtualisiert läuft. Anstatt privilegierte Hardwarebefehle auszuführen, die vom Hypervisor abgefangen und emuliert werden müssten, ruft es über eine definierte Schnittstelle direkt Funktionen des Hypervisors auf. Diese Aufrufe nennt man **Hypercalls** – sie funktionieren ähnlich wie [System Calls](#user-mode), nur eben vom Gastbetriebssystem an den Hypervisor. Bekanntestes Beispiel für Paravirtualisierung ist Xen.
 
-#### Virtual Machine Interface
+#### Paravirtualisierte Treiber
 
-Die VMI ist eine zusätzliche Schicht zwischen den Gastbetriebssystemen und der Hardware. Sie ermöglicht es dem Hypervisor, die Kommunikation zwischen den Gastbetriebssystemen und der Hardware zu steuern.
-
-#### Funktionsbibliothek
-
-Die Funktionsbibliothek ist eine Sammlung von Funktionen, die zusammenarbeiten, um eine bestimmte Aufgabe zu erfüllen. Sie ermöglichen es den Gastbetriebssystemen, die Hardwarefunktionen zu nutzen, ohne dass sie direkt auf die Hardware zugreifen müssen.
-
-Die Funktionsbibliotheken sind in der Regel in zwei Teile unterteilt:
-
--   **VMI-Treiber**  
-    Die VMI-Treiber stellen die Verbindung zwischen den Gastbetriebssystemen und der VMI her. Sie sind für die Übersetzung der Hardwareaufrufe der Gastbetriebssysteme in die entsprechenden Aufrufe der VMI verantwortlich.
-
--   **VMI-Funktionen**  
-    Die VMI-Funktionen stellen die eigentlichen Hardwarefunktionen für die Gastbetriebssysteme bereit. Sie umfassen beispielsweise Funktionen zum Zugriff auf die CPU, den Speicher, die Festplatte und andere Hardwarekomponenten.
-    Die Funktionsbibliotheken werden vom Hypervisor bereitgestellt. Der Hypervisor lädt die Funktionsbibliotheken beim Start der Gastbetriebssysteme in den Arbeitsspeicher. Die Gastbetriebssysteme können dann die Funktionsbibliotheken verwenden, um auf die Hardware zuzugreifen.
+Heute wird Paravirtualisierung meist mit der hardwareunterstützten Virtualisierung kombiniert: Das Gastbetriebssystem läuft unverändert, verwendet aber spezielle **paravirtualisierte Treiber** für Festplatten und Netzwerkkarten. Diese Treiber tauschen Daten über gemeinsame Speicherbereiche direkt mit dem Hypervisor aus, anstatt eine echte Hardware-Netzwerkkarte oder Festplatte vorzutäuschen. Beispiele sind die **virtio**-Treiber bei KVM, die VMware Tools oder die Integrationsdienste von Hyper-V.
 
 ##### Beispiel
 
-Um eine Datei zu lesen, muss ein Gastbetriebssystem normalerweise direkt auf die Festplatte zugreifen. Bei der Paravirtualisierung muss das Gastbetriebssystem stattdessen die Funktion `read()` der Funktionsbibliothek aufrufen. Die Funktion `read()` sendet dann einen entsprechenden Aufruf an den Hypervisor. Der Hypervisor übersetzt den Aufruf und leitet ihn dann an die Festplatte weiter.
+Um eine Datei zu lesen, würde ein Gastbetriebssystem ohne Paravirtualisierung auf einen emulierten Festplattencontroller zugreifen. Der Hypervisor müsste jeden einzelnen Hardwarezugriff abfangen und nachbilden. Bei der Paravirtualisierung übergibt der virtio-Treiber des Gastes die Leseanfrage stattdessen direkt an den Hypervisor. Dieser liest die Daten von der echten Festplatte und legt das Ergebnis in einem gemeinsamen Speicherbereich ab.
 
 ##### Vorteile
 
--   Sicherheit: Funktionsbibliotheken können helfen, die Sicherheit der Gastbetriebssysteme zu erhöhen. Dies liegt daran, dass die Gastbetriebssysteme nicht direkt auf die Hardware zugreifen können.
--   Leistung: Funktionsbibliotheken können die Leistung der Gastbetriebssysteme verbessern. Dies liegt daran, dass die Funktionsbibliotheken die Hardwarefunktionen effizienter nutzen können als die Gastbetriebssysteme selbst.
+-   Leistung: Da keine Hardware emuliert werden muss, sind Festplatten- und Netzwerkzugriffe deutlich schneller.
+-   Effizienz: Der Hypervisor hat weniger Aufwand, wodurch mehr Ressourcen für die virtuellen Maschinen bleiben.
 
 ##### Nachteile
 
--   Kompatibilität: Funktionsbibliotheken sind nicht mit allen Gastbetriebssystemen kompatibel.
--   Kosten: Die Entwicklung von Funktionsbibliotheken kann kostspielig sein.
+-   Kompatibilität: Das Gastbetriebssystem muss angepasst sein bzw. die passenden Treiber mitbringen. Bei Betriebssystemen, deren Quellcode nicht verfügbar ist, ist vollständige Paravirtualisierung nicht möglich.
+-   Abhängigkeit: Die angepassten Gastsysteme bzw. Treiber sind an einen bestimmten Hypervisor gebunden.
 
 ### Containervirtualisierung
 
-Im Gegensatz zu anderen Virtualisierungen hat man bei einer Containervirtualisierung kein eigenes Betriebssystem bei den eigenen Containern. Deswegen benötigt man nicht so viel Platz und es kann schneller starten und auch laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen - auch `Environments` - schnell auf neuen Rechnern aufsetzen.
+Im Gegensatz zu anderen Virtualisierungen hat bei einer Containervirtualisierung nicht jeder Container ein eigenes vollständiges Betriebssystem mit eigenem Kernel. Alle Container teilen sich den Kernel des Host-Betriebssystems und enthalten nur die Dateien, Bibliotheken und Programme, die die Anwendung benötigt. Deswegen benötigt man nicht so viel Platz und die Container können schneller starten und laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen – auch `Environments` – schnell auf neuen Rechnern aufsetzen.
 
 ![Containervirtualisierung Aufbau](/images/system_integration_and_infrastructure/Container_Structure.svg)
 
-Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Kern. Die Container nutzen nämlich den Kern des Hosts.
+Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Kern. Die Container nutzen nämlich den Kern des Hosts. Die Trennung der Container voneinander übernimmt der Linux-Kernel mit sogenannten **Namespaces** (eigene Sicht auf Prozesse, Netzwerk und Dateisystem) und **Control Groups** (Begrenzung von CPU und Arbeitsspeicher). Die Isolation ist dadurch allerdings schwächer als bei einer virtuellen Maschine.
 
 #### Vorteile
 
@@ -118,25 +110,90 @@ Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Ke
 
 #### Verwendung
 
-Um Containervirtualisierung zu verwenden, gibt es verschiedene Anbieter, wie zum Beispiel [Docker](https://www.docker.com/) und [Podman](https://podman.io). Falls Sie Docker verwenden, können Sie dies auf MacOS und Windows mittels [Docker Desktop](https://docs.docker.com/get-docker/) installieren.
+Um Containervirtualisierung zu verwenden, gibt es verschiedene Anbieter, wie zum Beispiel [Docker](https://www.docker.com/) und [Podman](https://podman.io). Falls Sie Docker verwenden, können Sie dies auf macOS und Windows mittels [Docker Desktop](https://docs.docker.com/get-docker/) installieren. Da Container einen Linux-Kernel benötigen, startet Docker Desktop dafür im Hintergrund eine kleine virtuelle Maschine mit Linux. Unter Linux kann die Docker Engine direkt installiert werden.
 
 #### Images
 
-Ein Image ist ein Bauplan für einen Container. Im Vergleich zur Objektorientierten Programmierung ist ein Image eine Klasse und ein Container eine Instanz der Klasse. Ein Image enthält den Code und die Tools und Ausführungsprogramme, damit im Container alles enthalten ist, was man benötigt.
+Ein Image ist ein Bauplan für einen Container. Im Vergleich zur objektorientierten Programmierung ist ein Image eine Klasse und ein Container eine Instanz der Klasse. Ein Image enthält den Code und die Tools und Ausführungsprogramme, damit im Container alles enthalten ist, was man benötigt. Images sind unveränderlich und bestehen aus mehreren übereinanderliegenden **Schichten** (_Layers_). Gleiche Schichten werden von mehreren Images gemeinsam genutzt und müssen nur einmal gespeichert und heruntergeladen werden.
 
 #### Container
 
+Ein Container ist eine laufende (oder gestoppte) Instanz eines Images. Beim Start erhält jeder Container eine zusätzliche beschreibbare Schicht über dem Image. Änderungen im Container gehen deshalb verloren, sobald der Container gelöscht wird. Daten, die dauerhaft erhalten bleiben sollen, etwa die Dateien einer Datenbank, werden in **Volumes** gespeichert.
+
+Container sollten möglichst **zustandslos** und kurzlebig sein: Statt einen laufenden Container zu verändern, baut man ein neues Image und ersetzt den alten Container.
+
 #### Dockerfile
+
+Ein Dockerfile beschreibt Schritt für Schritt, wie ein Image gebaut wird. Jede Anweisung erzeugt dabei eine neue Schicht.
+
+```dockerfile
+# Basis-Image mit dem .NET SDK zum Kompilieren
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /app
+
+# Kleineres Laufzeit-Image für die fertige Anwendung
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+```
+
+| Anweisung             | Bedeutung                                                          |
+| --------------------- | ------------------------------------------------------------------ |
+| `FROM`                | Basis-Image, auf dem aufgebaut wird                                |
+| `WORKDIR`             | Arbeitsverzeichnis für die folgenden Anweisungen                   |
+| `COPY`                | Dateien vom Host in das Image kopieren                             |
+| `RUN`                 | Befehl beim Bauen des Images ausführen                             |
+| `EXPOSE`              | Dokumentiert, auf welchem Port die Anwendung lauscht               |
+| `ENTRYPOINT` / `CMD`  | Befehl, der beim Start des Containers ausgeführt wird              |
+
+Das obige Beispiel ist ein sogenannter **Multi-Stage-Build**: Kompiliert wird in einem großen Image mit allen Entwicklungswerkzeugen, das fertige Image enthält aber nur die Laufzeitumgebung und ist dadurch deutlich kleiner.
 
 #### Commands
 
+| Befehl                                   | Bedeutung                                                               |
+| ---------------------------------------- | ----------------------------------------------------------------------- |
+| `docker build -t myapp .`                | Image aus dem Dockerfile im aktuellen Verzeichnis bauen                 |
+| `docker images`                          | Lokale Images anzeigen                                                  |
+| `docker pull nginx`                      | Image aus einer Registry herunterladen                                  |
+| `docker run -d -p 8080:80 --name web nginx` | Container im Hintergrund starten und Port 80 des Containers auf Port 8080 des Hosts weiterleiten |
+| `docker ps` / `docker ps -a`             | Laufende / alle Container anzeigen                                      |
+| `docker logs web`                        | Ausgaben eines Containers anzeigen                                      |
+| `docker exec -it web sh`                 | Eine Shell im laufenden Container öffnen                                |
+| `docker stop web` / `docker rm web`      | Container stoppen / löschen                                             |
+| `docker push myuser/myapp`               | Image in eine Registry hochladen                                        |
+
+Anwendungen aus mehreren Containern (zum Beispiel Webserver und Datenbank) werden meist mit **Docker Compose** in einer `compose.yaml`-Datei beschrieben und gemeinsam mit `docker compose up` gestartet:
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+```
+
 ## System / User Mode
 
-Gewisse Prozesse können nicht von einer Anwendung, wie zum Beispiel dem Hypervisor, selbst, sondern müssen direkt vom Betriebssystem erledigt werden. Beispielsweise der Zugriff auf die Festplatte. Damit nun jedoch auch Anwendungen auf die Festplatte lesen und schreiben können, gibt es das Konzept des System Modes und des User Modes.
+Gewisse Prozesse können nicht von einer Anwendung, wie zum Beispiel dem Hypervisor, selbst erledigt werden, sondern müssen direkt vom Betriebssystem erledigt werden. Beispielsweise der Zugriff auf die Festplatte. Damit nun jedoch auch Anwendungen auf die Festplatte lesen und schreiben können, gibt es das Konzept des System Modes und des User Modes. Der Prozessor unterscheidet dafür verschiedene Berechtigungsstufen, bei x86-Prozessoren etwa **Ring 0** (System Mode) und **Ring 3** (User Mode).
 
 ### System Mode
 
-Bei einem PC, auf welchem ein normales Betriebssystem installiert ist, läuft nur das Betriebssystem und die Interrupt Service Routine im System Mode. Prozesse im System Mode können alles machen, da sie vollständigen Zugriff auf die Hardware haben.
+Bei einem PC, auf welchem ein normales Betriebssystem installiert ist, laufen nur der Betriebssystemkern (_Kernel_) inklusive der Interrupt Service Routinen und Treiber im System Mode (auch _Kernel Mode_). Prozesse im System Mode können alles machen, da sie vollständigen Zugriff auf die Hardware haben.
 
 ### User Mode
 
@@ -145,3 +202,7 @@ Alle anderen Anwendungen laufen im User Mode. Wenn diese nun direkt auf die Hard
 1. Die Anwendung ruft mittels `System calls` die Betriebssystemfunktionalität auf.
 2. Der ausgeführte Prozess wird kurzfristig an das Betriebssystem übergeben, sodass dieses die Aufgabe erledigen kann.
 3. Anschließend kehrt das Programm wieder in den User Mode zurück.
+
+### Bedeutung für die Virtualisierung
+
+Genau hier liegt die Herausforderung der Virtualisierung: Auch der Kernel eines Gastbetriebssystems erwartet, im System Mode zu laufen und uneingeschränkt auf die Hardware zugreifen zu können. Das darf aber nur der Hypervisor. Intel VT-x und AMD-V lösen dieses Problem, indem sie eine zusätzliche, noch privilegiertere Ebene für den Hypervisor einführen (_VMX Root Mode_, oft als „Ring -1“ bezeichnet). Versucht ein Gast einen kritischen Befehl auszuführen, wechselt der Prozessor automatisch zum Hypervisor, der den Befehl sicher behandelt.

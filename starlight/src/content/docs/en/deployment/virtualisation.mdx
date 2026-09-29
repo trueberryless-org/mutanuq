@@ -1,0 +1,208 @@
+---
+title: Virtualisation
+description: Type 1 and type 2 hypervisors, paravirtualisation, container virtualisation with Docker as well as system and user mode.
+sidebar:
+  order: 1
+---
+
+Virtualisation makes it possible to create virtual instances of hardware and software components. The main goal is to abstract physical resources in order to create more flexible and efficient IT infrastructures. By creating isolated virtual environments, existing resources can be used better and scalability can be improved. Virtualisation is not only the foundation of cloud computing, but is also widely used in data centres, networks and end devices.
+
+## Advantages
+
+- testing new operating systems
+- testing new applications on operating systems
+- training environments that can easily be deleted again
+- making better use of hardware resources
+- creating and restoring snapshots
+- renting cloud hosting servers
+
+## History
+
+The concept of virtualisation was first used in the 1960s on IBM mainframes to implement multi-user capability. At that time, operating systems did not yet support multiple users, so the easiest way to achieve this was to run additional instances of the operating system. Due to further developments – operating systems later supported multiple users anyway – the concept lost importance outside the mainframe world for a long time.
+
+At the end of the 1990s, virtualisation also became popular on normal x86 computers with VMware (1999) and became established in companies in the 2000s, because developers now wanted to be able to test applications and operating systems. In addition, hardware resources can be used much better, since in a company certain services are only used heavily at certain times. For example, many employees log on to the domain controller between eight and nine o'clock, and in the afternoon a lot of e-mails are sent and files are printed. To make better use of expensive resources, servers that perform exactly these tasks can be virtualised so that different servers are flexibly given resources at certain times. Virtualisation therefore helps enormously with flexible scaling.
+
+## Terms
+
+In a virtualised system, there are always two essential participants:
+
+- **Host**  
+  The host is the computer on which the virtual operating systems run. A [hypervisor](#hypervisor) runs on this host and manages the various virtual machines or guests.
+
+- **Guest**  
+  The virtual operating system is managed by the [hypervisor](#hypervisor) and therefore runs on the host.
+
+## Hypervisor
+
+The hypervisor is a `virtual machine monitor` that controls and manages the instances of the virtual operating systems. This program has the task of allocating `computing resources` to the virtual machines as efficiently as possible. Just like any other computer, virtual machines need CPU resources, memory, disk space, network cards and much more. All these resources are shared dynamically. If, for example, a domain controller currently needs a lot of capacity because many users want to log on, the hypervisor can allocate almost all resources to the domain controller while other servers run in minimal operation.
+
+Depending on the type of virtualisation, the hypervisor is either a simple `application program` installed on an operating system, or the `installation` that is set up directly on the hardware.
+
+## Types of virtualisation
+
+### Type 1 virtualisation
+
+In type 1 virtualisation (also called bare-metal virtualisation), the hypervisor interacts directly with the hardware. There is no operating system between the hardware and the hypervisor. The hypervisor brings its own small, specialised kernel and is installed directly on the server from installation media, just like an operating system. It is then usually managed via a web interface or dedicated management software from another computer. Since there is no additional operating system layer in between, type 1 is particularly powerful and is used in data centres.
+
+Hyper-V is a special case: it is enabled as a role in an already installed Windows, but on the next start it slides underneath this Windows. The original Windows then itself runs as a privileged virtual machine (_parent partition_) on the hypervisor.
+
+![Type 1 virtualisation](/images/system_integration_and_infrastructure/Typ-1-Virtualisierung.png)
+
+#### Examples
+
+- VMware ESXi (formerly ESX)
+- Xen (e.g. Citrix Hypervisor, formerly XenServer)
+- Hyper-V
+- KVM (integrated into the Linux kernel, e.g. in Proxmox VE)
+
+### Type 2 virtualisation
+
+In type 2 virtualisation, the hypervisor runs as a simple application program on the underlying operating system. The virtualised operating system has to be made to believe that it is the only one with access to the hardware.
+
+However, as an application, the hypervisor cannot easily make the virtual operating system believe that the hardware resources belong to it alone, because the hypervisor itself is also managed by the operating system. In the past, privileged instructions of the guest operating system therefore had to be intercepted and translated in software at great expense. Today, hypervisors use **hardware-assisted virtualisation**. These technologies allow the hypervisor to give virtual machines direct access to certain hardware resources without the host operating system having to mediate every access. This improves the performance and efficiency of virtualisation.
+
+Hardware virtualisation is enabled by CPU features such as Intel VT-x or AMD-V. These technologies allow virtual machines to execute most instructions directly on the physical hardware, bypassing the management layer of the host operating system. This allows the hypervisor to effectively make the virtualised operating system believe that it has exclusive access to the hardware. By the way, type 1 hypervisors also use these CPU features.
+
+![Type 2 virtualisation](/images/system_integration_and_infrastructure/Typ-2-Virtualisierung.png)
+
+#### Examples
+
+- VMware Workstation Pro
+- Oracle VirtualBox
+- Parallels Desktop (macOS)
+
+### Paravirtualisation
+
+Paravirtualisation is a virtualisation method in which the guest operating systems are specially adapted for virtualisation. The guest operating system therefore "knows" that it is running virtualised. Instead of executing privileged hardware instructions that would have to be intercepted and emulated by the hypervisor, it calls functions of the hypervisor directly through a defined interface. These calls are called **hypercalls** – they work similarly to [system calls](#user-mode), just from the guest operating system to the hypervisor. The best-known example of paravirtualisation is Xen.
+
+#### Paravirtualised drivers
+
+Today, paravirtualisation is mostly combined with hardware-assisted virtualisation: the guest operating system runs unmodified but uses special **paravirtualised drivers** for disks and network cards. These drivers exchange data directly with the hypervisor via shared memory areas instead of imitating a real hardware network card or disk. Examples are the **virtio** drivers for KVM, VMware Tools or the Hyper-V integration services.
+
+##### Example
+
+To read a file without paravirtualisation, a guest operating system would access an emulated disk controller. The hypervisor would have to intercept and reproduce every single hardware access. With paravirtualisation, the guest's virtio driver instead passes the read request directly to the hypervisor. The hypervisor reads the data from the real disk and places the result in a shared memory area.
+
+##### Advantages
+
+- Performance: Since no hardware has to be emulated, disk and network access is much faster.
+- Efficiency: The hypervisor has less work to do, leaving more resources for the virtual machines.
+
+##### Disadvantages
+
+- Compatibility: The guest operating system has to be adapted or bring the appropriate drivers. Full paravirtualisation is not possible for operating systems whose source code is not available.
+- Dependency: The adapted guest systems or drivers are tied to a specific hypervisor.
+
+### Container virtualisation
+
+Unlike other kinds of virtualisation, with container virtualisation not every container has its own complete operating system with its own kernel. All containers share the kernel of the host operating system and only contain the files, libraries and programs the application needs. As a result, they need less space and can start and run faster. In addition, the blueprint of a container can be shared much more easily via well-known registries such as `Docker Hub`, which makes it possible to set up environments quickly on new computers.
+
+![Structure of container virtualisation](/images/system_integration_and_infrastructure/Container_Structure.svg)
+
+What you unfortunately cannot see in the image is that a container has no kernel of its own. The containers use the kernel of the host. The separation of the containers from each other is handled by the Linux kernel using so-called **namespaces** (separate view of processes, network and file system) and **control groups** (limiting CPU and memory). However, the isolation is weaker than with a virtual machine.
+
+#### Advantages
+
+- faster
+- little storage space
+- easy to share and publish
+- encapsulates the application and its dependencies (not the entire operating system)
+
+#### Usage
+
+There are various providers for container virtualisation, such as [Docker](https://www.docker.com/) and [Podman](https://podman.io). If you use Docker, you can install it on macOS and Windows using [Docker Desktop](https://docs.docker.com/get-docker/). Since containers need a Linux kernel, Docker Desktop starts a small Linux virtual machine in the background. On Linux, the Docker Engine can be installed directly.
+
+#### Images
+
+An image is a blueprint for a container. Compared to object-oriented programming, an image is a class and a container is an instance of that class. An image contains the code as well as the tools and runtimes so that the container contains everything it needs. Images are immutable and consist of several stacked **layers**. Identical layers are shared by several images and only have to be stored and downloaded once.
+
+#### Containers
+
+A container is a running (or stopped) instance of an image. On start, each container gets an additional writable layer on top of the image. Changes in the container are therefore lost as soon as the container is deleted. Data that should be kept permanently, such as the files of a database, is stored in **volumes**.
+
+Containers should be as **stateless** and short-lived as possible: instead of modifying a running container, you build a new image and replace the old container.
+
+#### Dockerfile
+
+A Dockerfile describes step by step how an image is built. Each instruction creates a new layer.
+
+```dockerfile
+# Base image with the .NET SDK for compiling
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /app
+
+# Smaller runtime image for the finished application
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+```
+
+| Instruction           | Meaning                                                   |
+| --------------------- | --------------------------------------------------------- |
+| `FROM`                | Base image to build on                                    |
+| `WORKDIR`             | Working directory for the following instructions          |
+| `COPY`                | Copy files from the host into the image                   |
+| `RUN`                 | Run a command while building the image                    |
+| `EXPOSE`              | Documents which port the application listens on           |
+| `ENTRYPOINT` / `CMD`  | Command executed when the container starts                |
+
+The example above is a so-called **multi-stage build**: compilation happens in a large image with all development tools, but the final image only contains the runtime and is therefore much smaller.
+
+#### Commands
+
+| Command                                     | Meaning                                                                                   |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `docker build -t myapp .`                   | Build an image from the Dockerfile in the current directory                               |
+| `docker images`                             | List local images                                                                         |
+| `docker pull nginx`                         | Download an image from a registry                                                         |
+| `docker run -d -p 8080:80 --name web nginx` | Start a container in the background and forward port 80 of the container to port 8080 of the host |
+| `docker ps` / `docker ps -a`                | List running / all containers                                                             |
+| `docker logs web`                           | Show the output of a container                                                            |
+| `docker exec -it web sh`                    | Open a shell in the running container                                                     |
+| `docker stop web` / `docker rm web`         | Stop / delete a container                                                                 |
+| `docker push myuser/myapp`                  | Upload an image to a registry                                                             |
+
+Applications made up of several containers (for example a web server and a database) are usually described with **Docker Compose** in a `compose.yaml` file and started together with `docker compose up`:
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+```
+
+## System / user mode
+
+Certain tasks cannot be done by an application, such as the hypervisor, itself, but have to be done directly by the operating system – for example, accessing the hard disk. So that applications can still read from and write to the disk, there is the concept of system mode and user mode. The processor distinguishes different privilege levels for this, for x86 processors for example **ring 0** (system mode) and **ring 3** (user mode).
+
+### System mode
+
+On a PC with a normal operating system, only the operating system kernel, including the interrupt service routines and drivers, runs in system mode (also _kernel mode_). Processes in system mode can do anything, since they have full access to the hardware.
+
+### User mode
+
+All other applications run in user mode. If they need to access the hardware directly, the following process is started:
+
+1. The application calls the operating system functionality via `system calls`.
+2. The running process is briefly handed over to the operating system so that it can do the task.
+3. The program then returns to user mode.
+
+### Relevance for virtualisation
+
+This is exactly where the challenge of virtualisation lies: the kernel of a guest operating system also expects to run in system mode and to have unrestricted access to the hardware. But only the hypervisor may do that. Intel VT-x and AMD-V solve this problem by introducing an additional, even more privileged level for the hypervisor (_VMX root mode_, often called "ring -1"). If a guest tries to execute a critical instruction, the processor automatically switches to the hypervisor, which handles the instruction safely.

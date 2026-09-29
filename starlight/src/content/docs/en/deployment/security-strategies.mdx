@@ -1,0 +1,138 @@
+---
+title: Backup Strategies
+description: How companies back up their data – full, differential and incremental backups, the generation principle, the 3-2-1 rule and LTO tapes.
+sidebar:
+  order: 3
+---
+
+In private life, there is no obligation to back up data. What you do with your data is basically nobody else's business. But things are different for companies. Companies have to keep accounts, and there is an obligation to keep books, records and receipts – such as invoices – for seven years in Austria (§ 132 BAO). And if companies want to keep invoices digitally, these invoices must be backed up strategically. Otherwise, it can quickly happen that space runs out due to excessive redundant backups or that data is lost.
+
+:::note[Additional information]
+Companies can obtain so-called ISO certifications, which prove that certain quality requirements are met. These ISO standards define certain areas and exist for all sectors (environment, IT, quality, consumer goods, food, medicine, ...). Examples of ISO standards are:
+
+- ISO 9000: quality management
+- ISO 14000: environmental management
+- ISO/IEC 27000: information security (certification is done according to ISO/IEC 27001)
+
+:::
+
+## Strategies
+
+To run backups as efficiently as possible, there are several strategies that help when setting up a backup.
+
+### Communication
+
+First of all, it is important to mention that not only IT staff should know about the backup. It is essential that all employees of the company know which data is backed up. This way, employees can be given the responsibility to store data in the right place so that it is also backed up.
+
+### Execution - How?
+
+There are different ways to back up data. Depending on the method, the effort varies, and so does the storage requirement. You also have to consider whether you only want to back up certain data or the entire operating system.
+
+#### Full backup
+
+With a full (or complete) backup, you make a 1:1 copy of the medium. This results in a high storage requirement if, for example, all data is backed up again every day. After one week, the backup already needs about seven times as much space as the data itself. However, it has the advantage of little effort when backing up and restoring.
+
+![Full backup](/images/system_integration_and_infrastructure/backup-full.png)
+
+#### Differential backup
+
+With a differential backup, you regularly make a full backup and, in between, at certain intervals, a partial backup with all changes since the last **full backup**. For example, everything is backed up again weekly (full) and the changes since the beginning of the week daily (difference).
+
+![Differential backup](/images/system_integration_and_infrastructure/backup-differential.png)
+
+#### Incremental backup
+
+With an incremental backup, you regularly make a full backup and, in between, at certain intervals, a partial backup relative to the last **partial backup**. For example, everything is backed up again weekly (full) and the changes since the previous day daily (increment).
+
+![Incremental backup](/images/system_integration_and_infrastructure/backup-incremental.png)
+
+#### Comparison
+
+| Backup type   | Storage requirement | Backup duration | Restoring requires                               |
+| ------------- | ------------------- | --------------- | ------------------------------------------------ |
+| Full          | high                | long            | only the last full backup                        |
+| Differential  | medium (grows until the next full backup) | medium | last full backup + last differential backup |
+| Incremental   | low                 | short           | last full backup + **all** increments since then |
+
+#### Generation principle
+
+The generation principle is a proven backup strategy that solves the following problem:
+
+> When backing up, you want to use storage space optimally and still be able to store data that changes and grows every day. How can I optimise both factors as much as possible?
+
+First, let's answer the question of what a generation is in this context. A new generation is a full backup of all previous backups from previous generations. As you can see in the image below, `V1` (Friday, 5 January) is a new generation, since this backup contains all data of the backups `S1` - `S4` (1 - 4 January). For this reason, the backup from 1 January can be overwritten on 8 January (identical rows mean identical disks).
+
+![Generation principle](/images/system_integration_and_infrastructure/generationenprinzip.png)
+
+To put the principle in technical terms:
+
+> New generations are created at logarithmic intervals. With every backup into a higher generation, all data of the generations below is combined into a full backup.
+
+Due to this logarithmic property, the generation principle can theoretically be applied for an unlimited time without needing much more storage space. The generation principle is not tied to a specific backup type (full, differential, incremental).
+
+The best-known implementation is the **grandfather-father-son principle**: every day, the backup is written to one of four "son" media (Monday to Thursday), every Friday to one of four to five "father" media and at the end of the month to a "grandfather" medium. The media are each reused in rotation. With around 20 media, you can restore the data of every day of the last week, every week of the last month and every month of the last year.
+
+### Responsibility - Who?
+
+A backup does not happen by itself. In a company, it should be clearly defined which employee(s) are responsible for the backup and carry it out conscientiously. These people take care of the data media (e.g. helpdesk, function, ...). In addition, every employee in the company must know what is backed up and when ([communication](#communication)).
+
+### Schedule - When?
+
+Before backing up, you have to consider at which intervals you want to back up. In most cases, it makes sense to back up daily. It must also be clearly defined at what time the backup takes place. The most sensible times are those when the fewest employees are working. This is usually at night – unless the backup is run in a hospital.
+
+Two metrics help with planning:
+
+- **RPO** (_recovery point objective_): How much data may be lost at most? With a daily backup, it is up to 24 hours.
+- **RTO** (_recovery time objective_): How long may the restore take at most?
+
+### Location - Where?
+
+It is important to consider whether the backup should be carried out and stored in a separate room or even in a separate building. The further away the backup is geographically from where the data is used, the better the backed-up data is protected against physical hazards such as fire or water.
+
+It must also be discussed whether the backup is kept in a data safe or whether other storage options make more sense.
+
+The **3-2-1 rule** has become established as a rule of thumb:
+
+- **3** copies of the data (the original and two backups),
+- on **2** different storage media,
+- of which **1** copy is at another location (_offsite_).
+
+Because of ransomware, which also encrypts reachable backups, the rule is often extended to **3-2-1-1-0**: additionally **1** copy that is offline or immutable and **0** errors when verifying the restore.
+
+### Retention period - How long?
+
+In Austria, companies are required by law to keep books, records and receipts for at least seven years, in some cases even longer (for example 22 years for documents relating to real estate). However, it must be clarified whether all data or only certain invoices have to be kept for such a long period. Conversely, under the GDPR, personal data must not be stored longer than necessary.
+
+### Data identification - Which data?
+
+In most cases, it makes sense to back up only user data and not the operating system and programs. To carry out an efficient backup, it is recommended to talk to several employees to find out which types of data need to be backed up, since many backup systems also support restricting the backup to certain file extensions.
+
+### Storage medium - Which medium?
+
+Backups are usually kept for longer periods, which is why magnetic tapes (see [LTO](#linear-tape-open)) often make more sense than hard disks or SSDs: they are cheap per terabyte, last 30 years or more if stored correctly and, once removed from the drive, are protected against attacks over the network. For fast restores, hard disks or cloud storage are often used in addition. However, this decision – like every other strategy – can vary from case to case.
+
+### Encryption
+
+Ask yourself whether encryption is necessary or not. If so, which encryption do you use? At the latest when backups leave the building or are stored in the cloud, they should be encrypted (for example with AES-256). It is crucial to store the key itself securely and separately from the backup – without the key, the backup is worthless.
+
+### Restore
+
+It is really important to test regularly whether the backup can actually be restored. You should also check that the restored files work. If you do not carry out these tests, the entire backup and the associated effort may have been in vain. The restore should be fully tested at least once a year, but preferably more often (for example quarterly) and after every major change to the system.
+
+## Standards
+
+There are also some standards regarding data backup.
+
+### Linear Tape Open
+
+Linear Tape Open (LTO), also known as the LTO Ultrium format, is a powerful, scalable, adaptable open tape format optimised for high capacity, maximum storage density and performance. According to the LTO consortium (HPE, IBM and Quantum), millions of drives and hundreds of millions of cartridges have been shipped since the first LTO products were launched in 2000, making LTO Ultrium the most successful tape format in history.
+
+LTO technology offers a cost-effective way of long-term data storage, backup and archiving. The tape drives use magnetic tapes as a storage medium and are able to back up and archive large amounts of data efficiently.
+
+The different generations of LTO have evolved continuously, with each generation usually offering higher capacity and faster data transfer rates than the previous one. An LTO-9 tape, for example, stores 18 TB uncompressed. Older drives could read tapes of the two previous generations and write tapes of the previous generation. Since LTO-8, a drive can only read and write tapes of the directly preceding generation. **However, newer tapes can never be used in older drives.** When switching to a new generation, old archives therefore have to be copied in good time.
+
+![LTO roadmap](/images/system_integration_and_infrastructure/LTO_Roadmap.jpg)
+
+LTO is widely used in various industries, including data centres, archiving environments and other scenarios where reliable and cost-effective data backup and archiving is required.
+
+Since LTO-4, LTO supports **hardware encryption** (AES-256), and since LTO-3 **WORM media** (write once read many), which can be written once and then no longer changed or deleted. This is useful, for example, for audit-proof archives or as protection against ransomware.
