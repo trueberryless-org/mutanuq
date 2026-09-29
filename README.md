@@ -1,58 +1,59 @@
+# Mutanuq
+
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ba3e3f10-7014-4900-91ba-5d40bc8df650/deploy-status)](https://app.netlify.com/sites/mutanuq/deploys)
 
-## Installation
+The open knowledge platform for students of the HTL Krems, available in German and English.
 
-Please install [PnPm](https://pnpm.io/) beforehand.
+Visit the website at [mutanuq.netlify.app](https://mutanuq.netlify.app).
 
-To get started, clone the repo with this command:
+## Project structure
 
-```
-git clone https://github.com/trueberryless-org/mutanuq
-```
-
-Go into the starlight folder.
+This repository is a [pnpm](https://pnpm.io/) workspace. The website is a [Starlight](https://starlight.astro.build) site located in the [`starlight/`](https://github.com/trueberryless-org/mutanuq/tree/main/starlight) directory.
 
 ```
-cd ./starlight/
+.
+├── starlight/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   └── content/docs/
+│   │       ├── de/
+│   │       └── en/
+│   └── astro.config.mjs
+├── package.json
+└── pnpm-workspace.yaml
 ```
 
-Run
+## Development
 
-```
+Install the dependencies from the root of the repository:
+
+```sh
 pnpm install
 ```
 
-to install all packages found in package.json / all necessary packages.
+Start the development server on `localhost:4444`:
 
-## Workflow
-
-Run
-
-```
-pnpm run dev
+```sh
+pnpm dev
 ```
 
-to run astro with live reload locally.
+Build the website and type-check the project:
 
-If you want to test the search functionality, run
-
+```sh
+pnpm build
+pnpm check
 ```
-pnpm run build
-pnpm run preview
-```
-
-in order to run the project in build mode not in dev mode.
 
 ## Contribution
 
-If you wanna contribute to the website, just edit or create the Markdown files you wanna change and create a pull request.  
-This can either be done directly on GitHub or locally by following the steps above. Good luck and thank you for helping improve the internet day by day!
+If you want to contribute to the website, edit or create the Markdown files you want to change and create a pull request. This can either be done directly on GitHub or locally by following the steps above. Thank you for helping to improve the internet day by day!
 
-More information about contribution can be found unter [CONTRIBUTING.md](https://github.com/trueberryless-org/mutanuq/blob/main/CONTRIBUTING.md).
+More information about contributing can be found in [CONTRIBUTING.md](https://github.com/trueberryless-org/mutanuq/blob/main/CONTRIBUTING.md).
 
 ## License
 
 Licensed under the MIT license, Copyright © trueberryless.
 
-See [LICENSE](/LICENSE) for more information.
+See [LICENSE](https://github.com/trueberryless-org/mutanuq/blob/main/LICENSE) for more information.

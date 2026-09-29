@@ -10,17 +10,13 @@
     "favicon": {
       "external": [
         {
-          "link": "https://mutanuq.trueberryless.org/favicon.svg",
+          "link": "https://mutanuq.netlify.app/favicon.svg",
           "type": "image/svg+xml"
         }
       ]
     },
-    "customCss": [
-      "./lunaria/styles.css"
-    ],
-    "basesToHide": [
-      "src/content/docs/"
-    ],
+    "customCss": ["./lunaria/styles.css"],
+    "basesToHide": ["src/content/docs/"],
     "ui": {
       "statusByLocale.heading": "Translation progress by locale",
       "statusByLocale.incompleteLocalizationLink": "incomplete translation",
