@@ -4,7 +4,6 @@ import lunaria from "@lunariajs/starlight";
 import { defineConfig } from "astro/config";
 import rehypeMathjax from "rehype-mathjax";
 import remarkMath from "remark-math";
-import starlightCoolerCredit from "starlight-cooler-credit";
 import starlightGroupPages from "starlight-group-pages";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
@@ -78,13 +77,11 @@ export default defineConfig({
         lunaria({
           sync: true,
         }),
-        starlightViewModes({
-          zenModeSettings: {
-            keyboardShortcut: "Ctrl+Shift+Z",
-          },
-        }),
+        starlightViewModes(),
         starlightImageZoom(),
-        starlightGroupPages(),
+        starlightGroupPages({
+          sidebarLink: "label",
+        }),
         starlightLinksValidator(),
         starlightSidebarTopics(
           [
@@ -295,10 +292,6 @@ export default defineConfig({
           }
         ),
         starlightThemeRapide(),
-        starlightCoolerCredit({
-          customImage: "./src/assets/starlight-hero-star.png",
-          customImageAlt: "Mutant Logo",
-        }),
       ],
     }),
   ],

@@ -25,7 +25,6 @@
     "rehype-mathjax": "^7.1.0",
     "remark-math": "^6.0.0",
     "sharp": "^0.35.5",
-    "starlight-cooler-credit": "^0.7.0",
     "starlight-group-pages": "^0.1.0",
     "starlight-image-zoom": "^0.16.0",
     "starlight-links-validator": "^0.26.0",

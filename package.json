@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm --filter mutanuq build",
+    "preview": "pnpm --filter mutanuq preview",
     "check": "pnpm --filter mutanuq astro sync && astro check --noSync",
     "dev": "pnpm --filter mutanuq dev",
     "format": "prettier . --write --cache --ignore-unknown"

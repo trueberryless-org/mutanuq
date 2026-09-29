@@ -7,7 +7,6 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - astro-contributors
-  - starlight-cooler-credit
   - starlight-group-pages
   - starlight-sidebar-topics-dropdown
   - starlight-view-modes
