@@ -64,3 +64,17 @@ div.sidebar-pane ul.top-level > li > a {
 .sl-group-pages-group > details > summary:is(:hover, :focus-visible) ~ ul > li {
   border-inline-start-color: var(--sl-color-accent-high);
 }
+
+/* Match the view mode links to the social links next to them: Rapide's gray in the header, the accent color in the mobile menu. */
+.header .social-icons a.starlight-view-modes-social-link-a {
+  color: var(--sl-color-gray-2);
+}
+
+.header .social-icons a.starlight-view-modes-social-link-a:hover {
+  color: var(--sl-color-accent-high);
+  opacity: 1;
+}
+
+.mobile-preferences .social-icons a.starlight-view-modes-social-link-a {
+  color: var(--sl-color-text-accent);
+}
