@@ -1,15 +1,15 @@
 ---
 title: Strategy
-description: Kapselt austauschbare Algorithmen in eigenen Klassen, die zur Laufzeit gewechselt werden können.
+description: Encapsulates interchangeable algorithms in separate classes that can be swapped at runtime.
 ---
 
 ## Problem
 
-Wenn eine Klasse mehrere verschiedene Strategien anbieten soll, ein bestimmtes Ergebnis zu erzielen, dann kann diese Klasse schnell groß und unwartbar werden. Dies will man um jeden Preis vermeiden. Stellen Sie sich vor, Sie entwickeln eine Navigationsapp mit den Funktionalitäten „zu Fuß gehen“, „mit dem Auto fahren“ und „Öffis benutzen“. All diese Funktionen in einer Klasse zu implementieren, ist ein Schuss ins eigene Knie.
+If a class is supposed to offer several different strategies to achieve a certain result, this class can quickly become large and unmaintainable. You want to avoid this at all costs. Imagine you are developing a navigation app with the features "walking", "driving a car" and "using public transport". Implementing all these features in one class means shooting yourself in the foot.
 
-## Lösung
+## Solution
 
-Erstellen Sie für jede Funktionalität – für jede Strategie – eine eigene Klasse, die alle dieselbe Schnittstelle implementieren. Nun kann man in der `Context`-Klasse eine Referenz auf diese Schnittstelle speichern und die Methoden einfach aufrufen. In der objektorientierten Programmierung spart man sich somit viele unnötige `if`-Bedingungen, da durch [Polymorphie](/de/software-development/object-oriented-programming/#polymorphie) automatisch die richtige Implementierung aufgerufen wird. Die Laufzeitumgebung erkennt den tatsächlichen Typ des referenzierten Objekts und ruft den Code dieser Klasse auf.
+Create a separate class for each feature – for each strategy – all of which implement the same interface. Now the `Context` class can store a reference to this interface and simply call its methods. In object-oriented programming, this saves you many unnecessary `if` statements, because [polymorphism](/en/software-development/object-oriented-programming/#polymorphism) automatically calls the right implementation. The runtime recognises the actual type of the referenced object and calls the code of that class.
 
 ## Code
 
@@ -60,7 +60,7 @@ class Context
         this._strategy = strategy;
     }
 
-    // Die ausgewählte Strategie kann somit auch zur Runtime geändert werden
+    // The selected strategy can therefore also be changed at runtime
     public void SetStrategy(IStrategy strategy)
     {
         this._strategy = strategy;

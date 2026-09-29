@@ -1,5 +1,29 @@
 ---
 title: Entwurfsmuster
+description: Bewährte Lösungsschablonen für wiederkehrende Probleme im Softwareentwurf nach der „Gang of Four“.
+sidebar:
+  order: 3
 ---
 
-In der Softwareentwicklung kommt es oft vor, dass ähnliche Problemstellungen gelöst werden müssen. Um bereits durchdachte Lösungen für diese Probleme effizienter umsetzen und entwickeln zu können, gibt es **Entwurfsmuster**.
+In der Softwareentwicklung kommt es oft vor, dass ähnliche Problemstellungen gelöst werden müssen. Um bereits durchdachte Lösungen für diese Probleme effizienter umsetzen und entwickeln zu können, gibt es **Entwurfsmuster** (engl. _Design Patterns_).
+
+Ein Entwurfsmuster ist kein fertiger Code, den man kopieren kann, sondern eine **Lösungsschablone**: Es beschreibt ein Problem, den Kontext, in dem es auftritt, und den Kern einer Lösung, die man an die eigene Situation anpasst. Entwurfsmuster geben Entwicklerinnen und Entwicklern außerdem ein **gemeinsames Vokabular**. Sagt jemand „Das lösen wir mit einem Adapter“, wissen alle Beteiligten sofort, wie die Lösung ungefähr aussieht.
+
+## Die „Gang of Four“
+
+Bekannt wurden Entwurfsmuster durch das Buch _Design Patterns: Elements of Reusable Object-Oriented Software_ (1994) von Erich Gamma, Richard Helm, Ralph Johnson und John Vlissides – der sogenannten „Gang of Four“ (GoF). Darin werden 23 Muster beschrieben und in drei Kategorien eingeteilt:
+
+| Kategorie                   | Zweck                                                                                   | Beispiele                                           |
+| --------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **Erzeugungsmuster**        | Regeln, wie Objekte erstellt werden, und entkoppeln den Code von konkreten Klassen.      | Singleton, Factory Method, Abstract Factory, Builder |
+| **Strukturmuster**          | Beschreiben, wie Klassen und Objekte zu größeren Strukturen zusammengesetzt werden.     | Adapter, Decorator, Composite, Facade, Proxy         |
+| **Verhaltensmuster**        | Regeln die Zusammenarbeit und Verantwortlichkeiten zwischen Objekten.                   | Command, Strategy, Observer, State, Iterator         |
+
+## Wann sollte man Entwurfsmuster einsetzen?
+
+Entwurfsmuster sind Werkzeuge und kein Selbstzweck. Ein Muster lohnt sich, wenn das Problem, das es löst, tatsächlich auftritt – etwa wenn eine Klasse durch viele `if`-Abfragen unübersichtlich wird oder wenn inkompatible Schnittstellen verbunden werden müssen. Wer Muster „auf Vorrat“ einbaut, macht den Code unnötig komplex.
+
+Viele Muster beruhen auf zwei Grundsätzen der objektorientierten Programmierung:
+
+- **Gegen Schnittstellen programmieren, nicht gegen Implementierungen.**
+- **Komposition der Vererbung vorziehen** (siehe [Objektorientierte Programmierung](/de/software-development/object-oriented-programming/#komposition-statt-vererbung)).

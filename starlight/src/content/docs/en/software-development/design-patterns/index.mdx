@@ -1,0 +1,29 @@
+---
+title: Design Patterns
+description: Proven solution templates for recurring problems in software design according to the "Gang of Four".
+sidebar:
+  order: 3
+---
+
+In software development, similar problems often have to be solved. To implement and develop well-thought-out solutions to these problems more efficiently, there are **design patterns**.
+
+A design pattern is not finished code that you can copy, but a **solution template**: it describes a problem, the context in which it occurs and the core of a solution that you adapt to your own situation. Design patterns also give developers a **shared vocabulary**. If someone says "Let's solve this with an adapter", everyone involved immediately knows roughly what the solution looks like.
+
+## The "Gang of Four"
+
+Design patterns became well known through the book _Design Patterns: Elements of Reusable Object-Oriented Software_ (1994) by Erich Gamma, Richard Helm, Ralph Johnson and John Vlissides – the so-called "Gang of Four" (GoF). It describes 23 patterns divided into three categories:
+
+| Category                | Purpose                                                                           | Examples                                             |
+| ----------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Creational patterns** | Control how objects are created and decouple the code from concrete classes.      | Singleton, Factory Method, Abstract Factory, Builder |
+| **Structural patterns** | Describe how classes and objects are composed into larger structures.             | Adapter, Decorator, Composite, Facade, Proxy         |
+| **Behavioral patterns** | Control the collaboration and responsibilities between objects.                   | Command, Strategy, Observer, State, Iterator         |
+
+## When should you use design patterns?
+
+Design patterns are tools, not an end in themselves. A pattern is worth it if the problem it solves actually occurs – for example, when a class becomes cluttered with many `if` statements or when incompatible interfaces have to be connected. Adding patterns "just in case" makes the code unnecessarily complex.
+
+Many patterns are based on two principles of object-oriented programming:
+
+- **Program to an interface, not an implementation.**
+- **Favor composition over inheritance** (see [Object-Oriented Programming](/en/software-development/object-oriented-programming/#composition-over-inheritance)).
