@@ -314,6 +314,20 @@ export default defineConfig({
                 { slug: "economy_and_law" },
                 { slug: "economy_and_law/company_foundation" },
                 { slug: "economy_and_law/marketing" },
+                { slug: "economy_and_law/organisation" },
+                { slug: "economy_and_law/leadership" },
+                {
+                  label: "Recht",
+                  translations: { en: "Law" },
+                  items: [{ autogenerate: { directory: "economy_and_law/law" } }],
+                },
+                {
+                  label: "Rechnungswesen",
+                  translations: { en: "Accounting" },
+                  items: [
+                    { autogenerate: { directory: "economy_and_law/accounting" } },
+                  ],
+                },
               ],
             },
             {
@@ -336,6 +350,7 @@ export default defineConfig({
               "software-development": ["/*/software-development/**"],
               mathematics: ["/*/mathematics/**"],
               languages: ["/*/languages/**"],
+              "economy-and-law": ["/*/economy_and_law/**"],
             },
           }
         ),
