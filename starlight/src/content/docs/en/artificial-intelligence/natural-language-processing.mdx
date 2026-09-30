@@ -385,7 +385,7 @@ print(vector.toarray())
 ```
 
 :::tip[Aha]
-In case you are wondering where the number `53` in the shape comes from: there are 53 different words in the sentences of `corpus` – at least according to how the CountVectorizer tokenised the sentences. The vectorizer therefore has a vocabulary of 53 words.
+In case you are wondering where the number `53` in the shape comes from: there are 53 different words in the sentences of `corpus`, at least according to how the CountVectorizer tokenised the sentences. The vectorizer therefore has a vocabulary of 53 words.
 :::
 
 :::note
@@ -421,12 +421,12 @@ print(labels) ## [1 0 0 0 1 1 0 1 0 1]
 
 ### TF-IDF
 
-When simply counting words, frequent words such as "the" or "village" get a high weight, even though they say little about a single text. **TF-IDF** (_term frequency – inverse document frequency_) compensates for this:
+When simply counting words, frequent words such as "the" or "village" get a high weight, even though they say little about a single text. **TF-IDF** (_term frequency, inverse document frequency_) compensates for this:
 
 - The **term frequency** $tf(t, d)$ indicates how often a word $t$ occurs in a document $d$.
 - The **inverse document frequency** $idf(t) = \log\frac{N}{df(t)}$ is the larger, the fewer of the $N$ documents contain the word.
 
-The TF-IDF value $tf(t, d) \cdot idf(t)$ is therefore high for words that occur frequently in one document but rarely in the entire corpus – exactly those words that characterise a document well. (By default, scikit-learn uses a slightly smoothed variant of this formula and normalises the vectors.)
+The TF-IDF value $tf(t, d) \cdot idf(t)$ is therefore high for words that occur frequently in one document but rarely in the entire corpus, exactly those words that characterise a document well. (By default, scikit-learn uses a slightly smoothed variant of this formula and normalises the vectors.)
 
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer

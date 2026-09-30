@@ -234,24 +234,24 @@ In Österreich läuft eine Gründung typischerweise so ab:
 
 Der Businessplan hilft dem Unternehmensgründer / der -gründerin, die Idee des Unternehmens schriftlich und verständlich festzuhalten. Er wird außerdem von Banken, Investoren und Förderstellen verlangt. Er soll Ziele, Erwartungen, den Unterschied zu Konkurrenten und alles andere, was den Leser interessieren könnte, enthalten.
 
-Außerdem können Sie aufgrund der Planung und Steuerung im Businessplan eine bessere und einfachere Durchführung erwarten.
+Außerdem kannst du aufgrund der Planung und Steuerung im Businessplan eine bessere und einfachere Durchführung erwarten.
 
 ### Struktur und Inhalt des Businessplans
 
 -   Executive Summary: Dieser Teil ist eine komprimierte Zusammenfassung des Businessplans. Er ist ausschlaggebend dafür, ob sich der Leser / die Leserin näher mit dem Businessplan auseinandersetzt. Obwohl die Executive Summary am Anfang steht, wird sie erst am Schluss geschrieben.
 
--   Unternehmen: Beschreiben Sie den Grundstein, auf welchem das Unternehmen aufgebaut wird und führen Sie außerdem das Unternehmens- und Gründerprofil, sowie Unternehmensziele an.
+-   Unternehmen: Beschreibe den Grundstein, auf welchem das Unternehmen aufgebaut wird, und führe außerdem das Unternehmens- und Gründerprofil, sowie Unternehmensziele an.
 
--   **Produkt- / Dienstleistungen**: Beschreiben Sie die Idee des Produktes / der Dienstleistung und den Nutzen für potenzielle Kunden.
+-   **Produkt- / Dienstleistungen**: Beschreibe die Idee des Produktes / der Dienstleistung und den Nutzen für potenzielle Kunden.
 
--   Branchen, Markt, Wettbewerb: Führen Sie an, ob das Marktpotenzial des Unternehmens hoch genug ist und genügend Produkte / Dienstleistungen verkauft werden können. Denn der Erfolg eines Unternehmens ist vom Absatzmarkt abhängig.
+-   Branchen, Markt, Wettbewerb: Führe an, ob das Marktpotenzial des Unternehmens hoch genug ist und genügend Produkte / Dienstleistungen verkauft werden können. Denn der Erfolg eines Unternehmens ist vom Absatzmarkt abhängig.
 
--   Marketing: Beschreiben Sie einen kostengünstigen Weg, um den Kunden Informationen zu übermitteln.
+-   Marketing: Beschreibe einen kostengünstigen Weg, um den Kunden Informationen zu übermitteln.
 
--   Management, Schlüsselpersonen und Organisation: Beschreiben Sie geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen beziehen Sie dabei ein? Vielleicht haben Sie bereits einen Business Angel gewonnen, welcher nicht nur Kapital, sondern auch Erfahrung und Kontakte zu anderen Unternehmen einbringt.
+-   Management, Schlüsselpersonen und Organisation: Beschreibe geplante Schritte und Tätigkeiten um das gewünschte Produkt an den Kunden verkaufen zu können. Welche Personen beziehst du dabei ein? Vielleicht hast du bereits einen Business Angel gewonnen, welcher nicht nur Kapital, sondern auch Erfahrung und Kontakte zu anderen Unternehmen einbringt.
 
--   **Umsetzungsfahrplan**, **Meilensteinplan**: Je detaillierter Sie planen, desto einfacher wird die Durchführung. Außerdem sind Kapitalgeber umso mehr von dem Unternehmen überzeugt, wenn eine genaue effiziente und möglichst realistische Planung vorliegt.
+-   **Umsetzungsfahrplan**, **Meilensteinplan**: Je detaillierter du planst, desto einfacher wird die Durchführung. Außerdem sind Kapitalgeber umso mehr von dem Unternehmen überzeugt, wenn eine genaue effiziente und möglichst realistische Planung vorliegt.
 
--   Chancen und Risiken: Analysieren Sie wirtschaftliche Risiken und Chancen, welche den Erfolg des Unternehmens beeinflussen könnten.
+-   Chancen und Risiken: Analysiere wirtschaftliche Risiken und Chancen, welche den Erfolg des Unternehmens beeinflussen könnten.
 
--   **Finanzplan**: Eine gute Finanzplanung ist für den Aufbau und die Entwicklung jedes erfolgreichen Unternehmens unerlässlich. Bei der Finanzplanung werden die Überlegungen, die Sie in den Vorkapiteln getroffen haben, in Zahlen ausgedrückt. Stellen Sie sich die Fragen `Wie hoch ist mein Kapitalbedarf?` und `Wie soll das Kapital aufgebracht werden?` Beachten Sie dabei, ausreichend Finanzmittel einzuplanen, um zahlungsfähig zu bleiben.
+-   **Finanzplan**: Eine gute Finanzplanung ist für den Aufbau und die Entwicklung jedes erfolgreichen Unternehmens unerlässlich. Bei der Finanzplanung werden die Überlegungen, die du in den Vorkapiteln getroffen hast, in Zahlen ausgedrückt. Stell dir die Fragen `Wie hoch ist mein Kapitalbedarf?` und `Wie soll das Kapital aufgebracht werden?` Beachte dabei, ausreichend Finanzmittel einzuplanen, um zahlungsfähig zu bleiben.

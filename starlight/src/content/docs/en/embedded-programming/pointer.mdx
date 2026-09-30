@@ -1,6 +1,6 @@
 ---
 title: Pointers
-description: Pointers in C – the address and dereference operators, pointer arithmetic and working with arrays and strings.
+description: "Pointers in C: the address and dereference operators, pointer arithmetic and working with arrays and strings."
 sidebar:
   order: 9
 ---
@@ -97,7 +97,7 @@ The functions of `*` and `&` are shown in this table:
 
 ## Working with arrays
 
-We often have to work with arrays, i.e. lists of values. An array is a contiguous area of memory in which all elements are stored directly one after another. An array is not a pointer itself, but in almost all expressions it is automatically converted into a pointer to its first element (_array-to-pointer decay_). Since there are no references in `C`, only this pointer is passed when an array is passed to a function. For this reason, it is not possible to find out the size of the array inside the called function – it has to be passed as an additional parameter. The pointers in these code examples therefore point to the same address:
+We often have to work with arrays, i.e. lists of values. An array is a contiguous area of memory in which all elements are stored directly one after another. An array is not a pointer itself, but in almost all expressions it is automatically converted into a pointer to its first element (_array-to-pointer decay_). Since there are no references in `C`, only this pointer is passed when an array is passed to a function. For this reason, it is not possible to find out the size of the array inside the called function. It has to be passed as an additional parameter. The pointers in these code examples therefore point to the same address:
 
 ```c del="&"
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
@@ -109,7 +109,7 @@ uint8_t numbers[] = { 1, 2, 3, 4, 5 };
 uint8_t *p = numbers; // Automatic conversion to a pointer to numbers[0]
 ```
 
-Both pointers in the example above therefore point to the **first element** of the array. Strictly speaking, however, the first variant with `&` returns a pointer to the entire array (type `uint8_t (*)[5]`), which is why the compiler issues a warning – the second variant is correct. Part of the memory (stack) looks as follows (addresses made up):
+Both pointers in the example above therefore point to the **first element** of the array. Strictly speaking, however, the first variant with `&` returns a pointer to the entire array (type `uint8_t (*)[5]`), which is why the compiler issues a warning. The second variant is correct. Part of the memory (stack) looks as follows (addresses made up):
 
 | Variable name | Address    | Value      |
 | ------------- | ---------- | ---------- |
@@ -132,7 +132,7 @@ uint8_t three = numbers[2];
 three = *(numbers + 2);
 ```
 
-If you want to output all elements of this array, you can use the `C code` below. The `sizeof` operator returns the size of the entire array in bytes here. This only works in this scope, since the variable `numbers` is also declared here – in a function to which the array was passed, `sizeof` would only return the size of the pointer. Since `uint8_t` is exactly one byte, the size here corresponds to the number of elements. In general, the number of elements is calculated with `sizeof(numbers) / sizeof(numbers[0])`.
+If you want to output all elements of this array, you can use the `C code` below. The `sizeof` operator returns the size of the entire array in bytes here. This only works in this scope, since the variable `numbers` is also declared here. In a function to which the array was passed, `sizeof` would only return the size of the pointer. Since `uint8_t` is exactly one byte, the size here corresponds to the number of elements. In general, the number of elements is calculated with `sizeof(numbers) / sizeof(numbers[0])`.
 
 ```c
 uint8_t numbers[5] = { 1, 2, 3, 4, 5 };

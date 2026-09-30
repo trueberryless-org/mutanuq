@@ -1,29 +1,29 @@
 ---
 title: Beschreibende Statistik
-description: Eindimensionale Datenbeschreibung – Merkmalstypen, absolute und relative Häufigkeiten, Diagramme, Lagemaße, Streuungsmaße und Boxplot.
+description: "Eindimensionale Datenbeschreibung: Merkmalstypen, absolute und relative Häufigkeiten, Diagramme, Lagemaße, Streuungsmaße und Boxplot."
 sidebar:
   order: 4
 ---
 
-Die **beschreibende Statistik** fasst große Datenmengen übersichtlich zusammen – mit Tabellen, Diagrammen und wenigen aussagekräftigen Kennzahlen. Sie beantwortet Fragen wie „Wie lange dauert eine Anfrage an den Server typischerweise?“ oder „Wie stark schwanken die Messwerte?“.
+Die **beschreibende Statistik** fasst große Datenmengen übersichtlich zusammen, mit Tabellen, Diagrammen und wenigen aussagekräftigen Kennzahlen. Sie beantwortet Fragen wie „Wie lange dauert eine Anfrage an den Server typischerweise?“ oder „Wie stark schwanken die Messwerte?“.
 
 ## Grundbegriffe
 
 - **Grundgesamtheit:** alle Objekte, über die eine Aussage getroffen werden soll, z. B. alle Schülerinnen und Schüler einer Schule.
 - **Stichprobe:** die tatsächlich untersuchte Teilmenge.
-- **Merkmal:** die untersuchte Eigenschaft, z. B. Körpergröße oder Lieblingsfach. Die möglichen Werte heißen **Ausprägungen**.
+- **Merkmal:** die untersuchte Eigenschaft, z. B. Körpergröße oder Lieblingsfach. Die möglichen Werte heißen Ausprägungen.
 
 | Merkmalstyp                   | Beschreibung                                   | Beispiele                             |
 | ----------------------------- | ---------------------------------------------- | ------------------------------------- |
-| **nominal** (qualitativ)      | Kategorien ohne Reihenfolge                    | Betriebssystem, Geschlecht, Farbe     |
-| **ordinal** (qualitativ)      | Kategorien mit Reihenfolge                     | Schulnoten, Kleidergrößen S/M/L       |
-| **metrisch** (quantitativ)    | Zahlenwerte, Abstände sind sinnvoll            | Temperatur, Dateigröße, Antwortzeit   |
+| nominal (qualitativ)      | Kategorien ohne Reihenfolge                    | Betriebssystem, Geschlecht, Farbe     |
+| ordinal (qualitativ)      | Kategorien mit Reihenfolge                     | Schulnoten, Kleidergrößen S/M/L       |
+| metrisch (quantitativ)    | Zahlenwerte, Abstände sind sinnvoll            | Temperatur, Dateigröße, Antwortzeit   |
 
-Metrische Merkmale können **diskret** (nur einzelne Werte, z. B. Anzahl der Geschwister) oder **stetig** (beliebige Werte in einem Intervall, z. B. Länge) sein.
+Metrische Merkmale können **diskret** (nur einzelne Werte, z. B. Anzahl der Geschwister) oder stetig (beliebige Werte in einem Intervall, z. B. Länge) sein.
 
 ## Häufigkeiten
 
-Bei $n$ Beobachtungen ist die **absolute Häufigkeit** $H$ die Anzahl, wie oft eine Ausprägung vorkommt. Die **relative Häufigkeit** ist der Anteil an allen Beobachtungen:
+Bei $n$ Beobachtungen ist die **absolute Häufigkeit** $H$ die Anzahl, wie oft eine Ausprägung vorkommt. Die relative Häufigkeit ist der Anteil an allen Beobachtungen:
 
 $$
 h = \frac{H}{n}
@@ -39,7 +39,7 @@ Die relativen Häufigkeiten aller Ausprägungen ergeben zusammen $1 = 100\,\%$. 
 | 3    | 8                   | 32 %                | 72 %                           |
 | 4    | 5                   | 20 %                | 92 %                           |
 | 5    | 2                   | 8 %                 | 100 %                          |
-| **Summe** | **25**         | **100 %**           |                                |
+| Summe | 25         | 100 %           |                                |
 :::
 
 Bei stetigen Merkmalen fasst man die Werte in **Klassen** zusammen, zum Beispiel Antwortzeiten von 0–100 ms, 100–200 ms usw.
@@ -50,12 +50,12 @@ Bei stetigen Merkmalen fasst man die Werte in **Klassen** zusammen, zum Beispiel
 | -------------------- | --------------------------------------------------------------- |
 | Säulen-/Balkendiagramm | Häufigkeiten von Kategorien oder diskreten Werten             |
 | Kreisdiagramm        | Anteile an einem Ganzen (wenige Kategorien)                     |
-| Histogramm           | klassierte stetige Daten; die **Fläche** der Rechtecke entspricht der Häufigkeit |
+| Histogramm           | klassierte stetige Daten; die Fläche der Rechtecke entspricht der Häufigkeit |
 | Liniendiagramm       | zeitliche Verläufe                                              |
 | Boxplot              | Lage und Streuung auf einen Blick, Vergleich mehrerer Datenreihen |
 
 :::caution
-Diagramme können täuschen: Beginnt die $y$-Achse nicht bei $0$, wirken kleine Unterschiede riesig. Prüfen Sie immer die Achsenbeschriftung.
+Diagramme können täuschen: Beginnt die $y$-Achse nicht bei $0$, wirken kleine Unterschiede riesig. Prüf immer die Achsenbeschriftung.
 :::
 
 ## Lagemaße
@@ -72,7 +72,7 @@ Bei einer Häufigkeitstabelle gewichtet man jeden Wert mit seiner Häufigkeit: $
 
 ### Median
 
-Der **Median** $\tilde{x}$ ist der Wert in der Mitte der **der Größe nach geordneten** Liste. Mindestens die Hälfte der Werte ist kleiner oder gleich, mindestens die Hälfte größer oder gleich dem Median.
+Der **Median** $\tilde{x}$ ist der Wert in der Mitte der der Größe nach geordneten Liste. Mindestens die Hälfte der Werte ist kleiner oder gleich, mindestens die Hälfte größer oder gleich dem Median.
 
 - Bei ungeradem $n$ ist er der mittlere Wert.
 - Bei geradem $n$ ist er das arithmetische Mittel der beiden mittleren Werte.
@@ -85,7 +85,7 @@ Der **Modus** (Modalwert) ist der am häufigsten vorkommende Wert. Er ist das ei
 Die Antwortzeiten eines Servers in ms: $\;12,\ 15,\ 14,\ 13,\ 16,\ 15,\ 350$
 
 - Mittelwert: $\bar{x} = \frac{435}{7} \approx 62{,}1$ ms
-- Median (geordnet: 12, 13, 14, **15**, 15, 16, 350): $\tilde{x} = 15$ ms
+- Median (geordnet: 12, 13, 14, 15, 15, 16, 350): $\tilde{x} = 15$ ms
 - Modus: $15$ ms
 
 Der einzelne **Ausreißer** 350 ms verzerrt den Mittelwert stark, der Median bleibt davon unberührt. Deshalb gibt man bei schiefen Verteilungen wie Einkommen oder Antwortzeiten oft den Median an.
@@ -107,7 +107,7 @@ Für die Berechnung der Quartile gibt es verschiedene Verfahren, die bei kleinen
 
 ### Varianz und Standardabweichung
 
-Die **Varianz** ist die mittlere quadratische Abweichung vom Mittelwert, die **Standardabweichung** ihre Wurzel:
+Die **Varianz** ist die mittlere quadratische Abweichung vom Mittelwert, die Standardabweichung ihre Wurzel:
 
 $$
 \sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})^2 \qquad \sigma = \sqrt{\sigma^2}
@@ -129,11 +129,11 @@ Der **Variationskoeffizient** $\frac{\sigma}{\bar{x}}$ setzt die Streuung ins Ve
 
 ## Boxplot
 
-Ein **Boxplot** stellt die **Fünf-Punkte-Zusammenfassung** $x_{\min}$, $q_1$, $\tilde{x}$, $q_3$ und $x_{\max}$ grafisch dar:
+Ein **Boxplot** stellt die Fünf-Punkte-Zusammenfassung $x_{\min}$, $q_1$, $\tilde{x}$, $q_3$ und $x_{\max}$ grafisch dar:
 
-- Die **Box** reicht vom unteren zum oberen Quartil und enthält die mittleren 50 % der Daten.
-- Ein Strich in der Box markiert den **Median**.
-- Die **Antennen** (Whisker) reichen bis zum kleinsten und größten Wert.
+- Die Box reicht vom unteren zum oberen Quartil und enthält die mittleren 50 % der Daten.
+- Ein Strich in der Box markiert den Median.
+- Die Antennen (Whisker) reichen bis zum kleinsten und größten Wert.
 
 Je länger Box und Antennen, desto größer die Streuung. Liegt der Median nicht in der Mitte der Box, ist die Verteilung **schief**. Boxplots eignen sich besonders, um mehrere Datenreihen nebeneinander zu vergleichen.
 

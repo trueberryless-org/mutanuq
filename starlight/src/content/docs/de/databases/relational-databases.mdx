@@ -1,6 +1,6 @@
 ---
 title: Relationale Datenbanken
-description: Tabellen, Schlüssel, JOINs, ACID-Transaktionen und Normalformen – die Grundlagen relationaler Datenbanksysteme.
+description: "Tabellen, Schlüssel, JOINs, ACID-Transaktionen und Normalformen: die Grundlagen relationaler Datenbanksysteme."
 sidebar:
   order: 1
 ---
@@ -64,7 +64,7 @@ Im relationalen Modell ist eine **Relation** formal nichts anderes als eine Tabe
 Schlüssel identifizieren Datensätze und verknüpfen Tabellen miteinander.
 
 - **Superschlüssel:** Jede Menge von Attributen, die einen Datensatz eindeutig identifiziert.
-- **Schlüsselkandidat:** Ein minimaler Superschlüssel – man kann kein Attribut weglassen, ohne die Eindeutigkeit zu verlieren.
+- **Schlüsselkandidat:** Ein minimaler Superschlüssel. Man kann kein Attribut weglassen, ohne die Eindeutigkeit zu verlieren.
 - **Primärschlüssel** (`PRIMARY KEY`): Der ausgewählte Schlüsselkandidat, der einen Datensatz eindeutig identifiziert. Er darf nicht `NULL` sein und sollte sich nie ändern.
 - **Künstlicher Schlüssel** (Surrogatschlüssel): Ein eigens eingeführter Schlüssel ohne fachliche Bedeutung, zum Beispiel eine fortlaufende Nummer oder eine GUID.
 - **Zusammengesetzter Schlüssel:** Ein Primärschlüssel, der aus mehreren Spalten besteht, typisch für Zwischentabellen.
@@ -86,7 +86,7 @@ CREATE TABLE Schueler (
 
 ### JOIN-Operationen
 
-Mit einem **JOIN** werden Datensätze aus mehreren Tabellen anhand einer Bedingung – meist Fremdschlüssel = Primärschlüssel – zu einer Ergebnistabelle verbunden.
+Mit einem **JOIN** werden Datensätze aus mehreren Tabellen anhand einer Bedingung (meist Fremdschlüssel = Primärschlüssel) zu einer Ergebnistabelle verbunden.
 
 | JOIN-Art             | Ergebnis                                                                                      |
 | -------------------- | --------------------------------------------------------------------------------------------- |
@@ -121,7 +121,7 @@ Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sin
   Gleichzeitig laufende Transaktionen beeinflussen sich nicht gegenseitig: Das Ergebnis ist so, als wären sie nacheinander ausgeführt worden. Eine gängige Umsetzung ist, dass Daten, die eine Transaktion bearbeitet, gesperrt werden, damit keine anderen Transaktionen die Daten überschreiben können.
 
 - **D**urable  
-  Sobald eine Transaktion erfolgreich abgeschlossen (`COMMIT`) wurde, bleiben ihre Änderungen dauerhaft gespeichert – selbst bei einem Stromausfall oder Absturz des Systems. Dafür schreiben Datenbanksysteme Änderungen zuerst in ein Transaktionsprotokoll (_Write-Ahead-Log_).
+  Sobald eine Transaktion erfolgreich abgeschlossen (`COMMIT`) wurde, bleiben ihre Änderungen dauerhaft gespeichert, selbst bei einem Stromausfall oder Absturz des Systems. Dafür schreiben Datenbanksysteme Änderungen zuerst in ein Transaktionsprotokoll (_Write-Ahead-Log_).
 
 ```sql
 BEGIN TRANSACTION;
@@ -175,7 +175,7 @@ Eine Tabelle ist in der 3. Normalform, wenn sie in 2NF ist und es **keine transi
 
 ### Boyce-Codd-Normalform (BCNF)
 
-Die BCNF verschärft die 3NF: Jede Determinante – also jedes Attribut, von dem andere Attribute funktional abhängen – muss ein Schlüsselkandidat sein. Unterschiede zur 3NF treten nur bei Tabellen mit mehreren, sich überlappenden Schlüsselkandidaten auf.
+Die BCNF verschärft die 3NF: Jede Determinante, also jedes Attribut, von dem andere Attribute funktional abhängen, muss ein Schlüsselkandidat sein. Unterschiede zur 3NF treten nur bei Tabellen mit mehreren, sich überlappenden Schlüsselkandidaten auf.
 
 ### 4. Normalform (4NF)
 

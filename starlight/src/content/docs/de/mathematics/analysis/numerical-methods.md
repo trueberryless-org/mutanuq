@@ -5,7 +5,7 @@ sidebar:
   order: 7
 ---
 
-Viele Gleichungen und Integrale lassen sich nicht exakt lösen – etwa $x = \cos x$ oder $\int e^{-x^2}\,\mathrm{d}x$. **Numerische Verfahren** liefern dafür Näherungslösungen mit beliebiger Genauigkeit. Sie sind die Grundlage dessen, was Taschenrechner und Programme wie GeoGebra im Hintergrund tun, und lassen sich mit wenigen Zeilen Code selbst programmieren.
+Viele Gleichungen und Integrale lassen sich nicht exakt lösen, etwa $x = \cos x$ oder $\int e^{-x^2}\,\mathrm{d}x$. **Numerische Verfahren** liefern dafür Näherungslösungen mit beliebiger Genauigkeit. Sie sind die Grundlage dessen, was Taschenrechner und Programme wie GeoGebra im Hintergrund tun, und lassen sich mit wenigen Zeilen Code selbst programmieren.
 
 ## Iterationsverfahren
 
@@ -36,7 +36,7 @@ Das Verfahren **konvergiert immer**, ist aber langsam: Jeder Schritt halbiert de
 
 ### Regula falsi
 
-Die **Regula falsi** verbessert die Bisektion, indem sie statt des Mittelpunkts die Nullstelle der **Sekante** durch $(a \mid f(a))$ und $(b \mid f(b))$ verwendet:
+Die **Regula falsi** verbessert die Bisektion, indem sie statt des Mittelpunkts die Nullstelle der Sekante durch $(a \mid f(a))$ und $(b \mid f(b))$ verwendet:
 
 $$
 x = a - f(a) \cdot \frac{b - a}{f(b) - f(a)}
@@ -44,7 +44,7 @@ $$
 
 ## Newton-Verfahren
 
-Das **Newton-Verfahren** ersetzt die Funktion an der aktuellen Näherung durch ihre **Tangente** und nimmt deren Nullstelle als nächste Näherung:
+Das **Newton-Verfahren** ersetzt die Funktion an der aktuellen Näherung durch ihre Tangente und nimmt deren Nullstelle als nächste Näherung:
 
 $$
 x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
@@ -117,7 +117,7 @@ $$
 
 ### Simpsonregel
 
-Die **Simpsonregel** verbindet jeweils drei benachbarte Punkte durch eine [Parabel](/de/mathematics/functions/quadratic-functions/#quadratische-interpolation). Die Anzahl $n$ der Streifen muss dafür **gerade** sein:
+Die **Simpsonregel** verbindet jeweils drei benachbarte Punkte durch eine [Parabel](/de/mathematics/functions/quadratic-functions/#quadratische-interpolation). Die Anzahl $n$ der Streifen muss dafür gerade sein:
 
 $$
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}{3} \cdot \big(y_0 + 4y_1 + 2y_2 + 4y_3 + \ldots + 2y_{n-2} + 4y_{n-1} + y_n\big)

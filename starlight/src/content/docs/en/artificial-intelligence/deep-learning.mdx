@@ -5,14 +5,14 @@ sidebar:
   order: 7
 ---
 
-A further subdivision of machine learning is **deep learning** (DL). The special feature of this type of machine learning is the stacking of several layers that process the data from front to back and whose parameters are optimised using `backpropagation`. This allows the model to recognise very complex patterns and relationships. In general, all deep neural networks – that is, neural networks with several hidden layers – fall into the "deep learning" category.
+A further subdivision of machine learning is **deep learning** (DL). The special feature of this type of machine learning is the stacking of several layers that process the data from front to back and whose parameters are optimised using `backpropagation`. This allows the model to recognise very complex patterns and relationships. In general, all deep neural networks, that is, neural networks with several hidden layers, fall into the "deep learning" category.
 
-Besides classic **multi-layer neural networks**, **transformers** are also an important concept in deep learning. They are neural networks as well and consist of many `layers`. Each architecture has particular strengths in certain fields of application – transformers especially in the generative sector (text, image and video generation).
+Besides classic **multi-layer neural networks**, **transformers** are also an important concept in deep learning. They are neural networks as well and consist of many `layers`. Each architecture has particular strengths in certain fields of application, transformers especially in the generative sector (text, image and video generation).
 
 The opposite of deep learning is "shallow learning", which covers all other machine learning algorithms, such as the `support vector machine` (SVM), the `random forest classifier` (RFC) or, more generally, the various mathematical methods of `regression`.
 
 :::danger[Caution]
-However, deep learning does not necessarily mean that the model will be better than shallow learning algorithms. Deep learning only means that the model consists of several layers. Especially with small, tabular data sets, classic methods such as random forests or gradient boosting are often just as good or even better – while being faster to train and easier to explain.
+However, deep learning does not necessarily mean that the model will be better than shallow learning algorithms. Deep learning only means that the model consists of several layers. Especially with small, tabular data sets, classic methods such as random forests or gradient boosting are often just as good or even better, while being faster to train and easier to explain.
 :::
 
 ## The artificial neuron
@@ -23,7 +23,7 @@ $$
 y = f\left(\sum_{i=1}^{n} w_i \cdot x_i + b\right)
 $$
 
-The weights $w_i$ and the bias $b$ are the parameters learned during training. The activation function ensures that the network can also learn non-linear relationships – without it, even a very deep network would just be a single linear function.
+The weights $w_i$ and the bias $b$ are the parameters learned during training. The activation function ensures that the network can also learn non-linear relationships. Without it, even a very deep network would just be a single linear function.
 
 | Activation function | Formula                                    | Typical use                                        |
 | ------------------- | ------------------------------------------ | -------------------------------------------------- |
@@ -37,7 +37,7 @@ The weights $w_i$ and the bias $b$ are the parameters learned during training. T
 Neurons are arranged in layers:
 
 - The **input layer** receives the data, for example the 784 pixels of a 28 × 28 pixel image.
-- The **hidden layers** extract increasingly abstract features step by step – for images, first edges, then shapes and finally whole objects.
+- The **hidden layers** extract increasingly abstract features step by step: for images, first edges, then shapes and finally whole objects.
 - The **output layer** delivers the result, for example a probability per class.
 
 ## Training

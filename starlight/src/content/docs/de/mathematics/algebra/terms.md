@@ -1,13 +1,13 @@
 ---
 title: Terme
-description: Rechnen mit Termen – Vorrangregeln, Klammern, Ausmultiplizieren, Herausheben, binomische Formeln und Bruchterme.
+description: "Rechnen mit Termen: Vorrangregeln, Klammern, Ausmultiplizieren, Herausheben, binomische Formeln und Bruchterme."
 sidebar:
   order: 6
 ---
 
 ## Was ist ein Term?
 
-Ein **Term** ist ein sinnvoller mathematischer Ausdruck aus Zahlen, **Variablen** (Platzhaltern wie $x$ oder $a$), Rechenzeichen und Klammern, zum Beispiel $3x^2 - 2x + 5$ oder $\frac{a + b}{2}$. Setzt man für die Variablen Zahlen ein, erhält man den **Wert** des Terms. Terme enthalten kein Gleichheitszeichen – verbindet man zwei Terme mit $=$, entsteht eine [Gleichung](/de/mathematics/algebra/equations-and-inequalities/).
+Ein **Term** ist ein sinnvoller mathematischer Ausdruck aus Zahlen, Variablen (Platzhaltern wie $x$ oder $a$), Rechenzeichen und Klammern, zum Beispiel $3x^2 - 2x + 5$ oder $\frac{a + b}{2}$. Setzt man für die Variablen Zahlen ein, erhält man den Wert des Terms. Terme enthalten kein Gleichheitszeichen. Verbindet man zwei Terme mit $=$, entsteht eine [Gleichung](/de/mathematics/algebra/equations-and-inequalities/).
 
 Die Menge der Zahlen, die man für eine Variable einsetzen darf, heißt **Definitionsmenge**. Bei $\frac{1}{x - 2}$ darf $x$ nicht $2$ sein, weil man nicht durch $0$ dividieren kann: $D = \mathbb{R} \setminus \{2\}$.
 
@@ -26,7 +26,7 @@ $$
 
 ## Addieren und Subtrahieren
 
-Nur **gleichartige Terme** – Terme mit denselben Variablen in denselben Potenzen – lassen sich zusammenfassen:
+Nur **gleichartige Terme**, also Terme mit denselben Variablen in denselben Potenzen, lassen sich zusammenfassen:
 
 $$
 5x^2 + 3x - 2x^2 + 4 - x = 3x^2 + 2x + 4
@@ -105,7 +105,7 @@ So ist zum Beispiel $(a + b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$.
 
 Ein **Bruchterm** enthält Variablen im Nenner. Die Definitionsmenge schließt alle Werte aus, für die der Nenner $0$ wird. Gerechnet wird wie mit Brüchen:
 
-- **Kürzen:** Zähler und Nenner durch denselben Faktor dividieren. Dazu müssen sie zuerst **faktorisiert** werden – aus Summen darf man nicht kürzen.
+- **Kürzen:** Zähler und Nenner durch denselben Faktor dividieren. Dazu müssen sie zuerst faktorisiert werden. Aus Summen darf man nicht kürzen.
 - **Addieren/Subtrahieren:** Auf einen gemeinsamen Nenner bringen (am besten das kleinste gemeinsame Vielfache der Nenner).
 - **Multiplizieren:** Zähler mal Zähler, Nenner mal Nenner.
 - **Dividieren:** Mit dem Kehrwert multiplizieren.

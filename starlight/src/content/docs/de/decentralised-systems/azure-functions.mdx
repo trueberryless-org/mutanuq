@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschaltet werden. Wenn also momentan viele Anfragen auf Ihre Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegenzunehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
+Azure Functions sind Serverless Computing in Microsoft Azure. Serverless Computing ist ein eher irreführender Begriff. Serverless bedeutet in diesem Zusammenhang einfach, dass Ressourcen `on demand` ein- und ausgeschaltet werden. Wenn also momentan viele Anfragen auf deine Website eintreffen, werden im Hintergrund mehrere Instanzen gestartet. Logischerweise werden auch hier Server verwendet, um diese Anfragen entgegenzunehmen. Allerdings bekommt der Developer nichts davon mit, damit er/sie sich mehr auf die Applikation selbst konzentrieren kann.
 
 Im **Verbrauchstarif** (_Consumption Plan_) bezahlt man nur für die tatsächliche Ausführungszeit der Funktionen. Dafür ist die Laufzeit einer einzelnen Ausführung begrenzt (standardmäßig 5, maximal 10 Minuten) und nach längerer Inaktivität kann der erste Aufruf etwas länger dauern (_Cold Start_).
 
@@ -41,7 +41,7 @@ Jede Azure Function ist eine einfache Funktion in C# oder [anderen Programmiersp
 | Event Hub Trigger                                                                                                         |
 | Service Bus Trigger                                                                                                       |
 
-Die folgenden Beispiele sind Methoden innerhalb einer Klasse, die – wie oben – einen `ILogger` über den Konstruktor erhält.
+Die folgenden Beispiele sind Methoden innerhalb einer Klasse, die wie oben einen `ILogger` über den Konstruktor erhält.
 
 ### Timer Trigger
 
@@ -87,7 +87,7 @@ public void Run(
 
 ### Queue Trigger
 
-Bei jeder neuen Message in der Queue wird die Function getriggert. Jede Message wird dabei genau von einem Empfänger verarbeitet. Sollen Nachrichten an mehrere Empfänger verteilt werden (Publish/Subscribe), verwendet man stattdessen die **Topics** von Azure Service Bus – eine Nachricht an ein Topic wird an alle Abonnenten zugestellt.
+Bei jeder neuen Message in der Queue wird die Function getriggert. Jede Message wird dabei genau von einem Empfänger verarbeitet. Sollen Nachrichten an mehrere Empfänger verteilt werden (Publish/Subscribe), verwendet man stattdessen die **Topics** von Azure Service Bus. Eine Nachricht an ein Topic wird an alle Abonnenten zugestellt.
 
 ```csharp
 [Function("MyQueueTrigger")]
@@ -129,7 +129,7 @@ Statt einer fertigen Liste kann man sich auch einen `TableClient` übergeben las
 
 ## Output Binding
 
-Wenn Sie als Rückgabewert Daten in einen Storage Account schreiben wollen, eignet sich hierfür das Output Binding. Das folgende Beispiel erzeugt für jedes hochgeladene Bild automatisch ein Vorschaubild mit der Bibliothek ImageSharp:
+Wenn du als Rückgabewert Daten in einen Storage Account schreiben willst, eignet sich hierfür das Output Binding. Das folgende Beispiel erzeugt für jedes hochgeladene Bild automatisch ein Vorschaubild mit der Bibliothek ImageSharp:
 
 ```csharp
 [Function("MyOutputBinding")]

@@ -13,7 +13,7 @@ $$
 a^n = \underbrace{a \cdot a \cdot \ldots \cdot a}_{n \text{ factors}}
 $$
 
-$a$ is called the **base**, $n$ the **exponent** and $a^n$ the **power**. By definition, $a^1 = a$.
+$a$ is called the **base**, $n$ the exponent and $a^n$ the power. By definition, $a^1 = a$.
 
 :::caution
 The exponent only applies to the symbol directly in front of it: $-3^2 = -(3 \cdot 3) = -9$, but $(-3)^2 = (-3) \cdot (-3) = 9$. Calculators and programming languages follow this rule.
@@ -51,7 +51,7 @@ $$
 
 ## Powers of ten and scientific notation
 
-Very large and very small numbers are written in **scientific notation** as $a \cdot 10^n$ with $1 \le \lvert a \rvert < 10$. In **engineering notation**, exponents that are multiples of $3$ are used, because they correspond to the **SI prefixes**.
+Very large and very small numbers are written in **scientific notation** as $a \cdot 10^n$ with $1 \le \lvert a \rvert < 10$. In engineering notation, exponents that are multiples of $3$ are used, because they correspond to the SI prefixes.
 
 | Prefix | Symbol | Factor     | Prefix | Symbol | Factor      |
 | ------ | ------ | ---------- | ------ | ------ | ----------- |
@@ -77,7 +77,7 @@ $$
 \sqrt[n]{a} = x \quad\Longleftrightarrow\quad x^n = a, \quad x \ge 0
 $$
 
-$a$ is called the **radicand** and $n$ the **index** of the root. For $n = 2$, we simply write $\sqrt{a}$ (square root).
+$a$ is called the **radicand** and $n$ the index of the root. For $n = 2$, we simply write $\sqrt{a}$ (square root).
 
 :::caution
 $\sqrt{9} = 3$ and not $\pm 3$. However, the equation $x^2 = 9$ has two solutions: $x = \pm\sqrt{9} = \pm 3$.
@@ -124,7 +124,7 @@ $$
 \log_a b = x \quad\Longleftrightarrow\quad a^x = b \qquad (a > 0,\ a \ne 1,\ b > 0)
 $$
 
-Particularly important are the **common logarithm** $\lg x = \log_{10} x$, the **natural logarithm** $\ln x = \log_e x$ with Euler's number $e \approx 2.71828$ and, in computing, the **binary logarithm** $\operatorname{lb} x = \log_2 x$.
+Particularly important are the **common logarithm** $\lg x = \log_{10} x$, the natural logarithm $\ln x = \log_e x$ with Euler's number $e \approx 2.71828$ and, in computing, the binary logarithm $\operatorname{lb} x = \log_2 x$.
 
 :::tip[Examples]
 $\log_2 8 = 3$, because $2^3 = 8$. $\quad \lg 0.001 = -3$, because $10^{-3} = 0.001$. $\quad \ln 1 = 0$, because $e^0 = 1$.

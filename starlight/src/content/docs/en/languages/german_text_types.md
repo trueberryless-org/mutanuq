@@ -1,6 +1,6 @@
 ---
 title: Text Types (German)
-description: Stylistic devices as well as the structure and characteristics of the text types for German lessons and the Matura – from the summary to the text interpretation and the opinion speech.
+description: Stylistic devices as well as the structure and characteristics of the text types for German lessons and the school-leaving exam, from the summary to the text interpretation and the opinion speech.
 sidebar:
     order: 1
 tableOfContents:
@@ -341,7 +341,7 @@ A text interpretation has the following characteristics:
 
 ### Structure
 
-At the beginning of the text interpretation, you have to carry out all tasks of the text analysis in a somewhat shorter form (see [text analysis](#main-part-4)). In addition, you have to interpret why certain stylistic devices were used and identify some genre-specific features – epic, lyric, dramatic.
+At the beginning of the text interpretation, you have to carry out all tasks of the text analysis in a somewhat shorter form (see [text analysis](#main-part-4)). In addition, you have to interpret why certain stylistic devices were used and identify some genre-specific features (epic, lyric, dramatic).
 
 #### Heading
 
@@ -1005,7 +1005,7 @@ In addition, poems sometimes contain caesuras. A caesura is a metrical break wit
             > Die myriadenmal hundert **tausend**?
 
         -   **Equivocal rhyme**  
-            Here, words are rhymed that sound the same but have different meanings and are often spelled differently – so-called homophones.
+            Here, words are rhymed that sound the same but have different meanings and are often spelled differently, so-called homophones.
 
             | Examples of equivocal rhymes |
             | ---------------------------- |
@@ -1193,7 +1193,7 @@ If the source text is a dramatic text type, the following features must be analy
         <br/>
 
     -   _Synthetic dramas_  
-        A synthetic drama, drama of development, conflict or goal is a drama that begins with a certain incident or process. It acts as the trigger for the further events and thus unfolds the plot. Even if a backstory can play a certain role, the course of the action is directed towards an event in the future – the eponymous goal.
+        A synthetic drama, drama of development, conflict or goal is a drama that begins with a certain incident or process. It acts as the trigger for the further events and thus unfolds the plot. Even if a backstory can play a certain role, the course of the action is directed towards an event in the future: the eponymous goal.
 
         At the centre of the events there is usually an internal or external conflict:
 
@@ -1304,7 +1304,7 @@ If the task requires a specific heading, it should be used.
 
 #### Salutation
 
-The task describes a situation that explains the setting and the people in front of whom you deliver the opinion speech. From this situation, you have to infer or decide which people you want to and should address in the salutation. All genders must always be addressed if you do not know whether the audience consists exclusively of men or women. If a person of authority or of higher rank than yourself is in the audience, you must speak formally (`Sie` / `Ihren` / ...). If you know that only your friends are in the audience, you can – and it would probably make sense – speak informally (`du` / `euren` / ...).
+The task describes a situation that explains the setting and the people in front of whom you deliver the opinion speech. From this situation, you have to infer or decide which people you want to and should address in the salutation. All genders must always be addressed if you do not know whether the audience consists exclusively of men or women. If a person of authority or of higher rank than yourself is in the audience, you must speak formally (`Sie` / `Ihren` / ...). If you know that only your friends are in the audience, you can (and it would probably make sense to) speak informally (`du` / `euren` / ...).
 
 > Sehr geehrte Schülerinnen und Schüler!  
 > Sehr geehrte Professorinnen und Professoren!

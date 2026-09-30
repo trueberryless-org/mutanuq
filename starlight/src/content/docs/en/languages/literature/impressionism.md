@@ -1,6 +1,6 @@
 ---
 title: Impressionism
-description: The literature of the turn of the century between Impressionism, Symbolism and Viennese Modernism – with Schnitzler, Hofmannsthal, Rilke, Kraus and the interior monologue.
+description: The literature of the turn of the century between Impressionism, Symbolism and Viennese Modernism, with Schnitzler, Hofmannsthal, Rilke, Kraus and the interior monologue.
 sidebar:
   order: 11
 ---
@@ -19,7 +19,7 @@ Originally, the term **Impressionism** described a style of painting. In the con
 
 The term **Symbolism**, on the other hand, describes poetry that has no "purpose" but a magical language. Symbolism is the art of "hinting".
 
-Other terms related to Impressionism are **fin de siècle** and **Viennese Modernism** (Wiener Moderne). The former literally means "end of the century" in French and expresses that art should stand on its own. In Viennese Modernism – as the name suggests – Vienna is at the centre of literature, architecture, painting etc.
+Other terms related to Impressionism are **fin de siècle** and **Viennese Modernism**. The former literally means "end of the century" in French and expresses that art should stand on its own. In Viennese Modernism, as the name suggests, Vienna is at the centre of literature, architecture, painting etc.
 
 ## Artists
 
@@ -42,7 +42,7 @@ Ernst Mach believed that reality and personality are a succession of "colours, s
 
 ### Sigmund Freud (1856-1939)
 
-Sigmund Freud was a psychoanalyst who declared the **three-part human personality**. It divides every person's way of thinking and acting into three areas: **ego** (ICH), **superego** (ÜBER-ICH) and **id** (ES). While the latter works completely unconsciously and drives self-realisation, sexuality and aggression, the superego is the counterpart to this id. The superego contains moral conscience, authorities, values and norms. The ego finds the middle ground between the superego and the id and lies largely in conscious thinking. Freud saw culture, for example, as the superego. Conflicts with these three layers shape us.
+Sigmund Freud was a psychoanalyst who declared the **three-part human personality**. It divides every person's way of thinking and acting into three areas: **ego**, **superego** and **id**. While the latter works completely unconsciously and drives self-realisation, sexuality and aggression, the superego is the counterpart to this id. The superego contains moral conscience, authorities, values and norms. The ego finds the middle ground between the superego and the id and lies largely in conscious thinking. Freud saw culture, for example, as the superego. Conflicts with these three layers shape us.
 
 ![Three-part human personality](/images/languages/dreischichtige_menschliche_persoenlichkeit.png)
 
@@ -120,7 +120,7 @@ The lieutenant is bored during the concert for which he was given the tickets. W
 
 #### Plot
 
-Lord Chandos – a fictional English author – tries to explain why he has fallen silent as a writer.
+Lord Chandos, a fictional English author, tries to explain why he has fallen silent as a writer.
 
 > _„[...] [abstrakte Worte] zerfielen mir im Munde wie modrige Pilze.“_
 
@@ -130,7 +130,7 @@ Der Panther (The Panther) is about a caged panther that would like to be free. T
 
 #### Plot
 
-The panther lies in its cage and slowly vegetates. It is tired and closes its eyelids – metaphor: the curtain of the pupil.
+The panther lies in its cage and slowly vegetates. It is tired and closes its eyelids. Metaphor: the curtain of the pupil.
 
 <blockquote>
 
@@ -157,7 +157,7 @@ und hört im Herzen auf zu sein.
 
 ### Die Erblindende (1906)
 
-In this thing poem, the main focus is on the eyes of the blind woman. The eyes are the thing. And for this reason, the blind woman behaves differently from other people – she holds her tea differently, walks slowly, etc.
+In this thing poem, the main focus is on the eyes of the blind woman. The eyes are the thing. And for this reason, the blind woman behaves differently from other people: she holds her tea differently, walks slowly, etc.
 
 <blockquote>
 

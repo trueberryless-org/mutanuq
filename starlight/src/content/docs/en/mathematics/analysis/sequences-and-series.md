@@ -7,12 +7,12 @@ sidebar:
 
 ## Sequences
 
-A **sequence** is an ordered list of numbers $\langle a_1, a_2, a_3, \ldots \rangle$. Mathematically, it is a function that assigns a **term** $a_n$ to every natural number $n$ (the index).
+A **sequence** is an ordered list of numbers $\langle a_1, a_2, a_3, \ldots \rangle$. Mathematically, it is a function that assigns a term $a_n$ to every natural number $n$ (the index).
 
 A sequence can be defined in two ways:
 
-- **explicitly** by a formula for the $n$-th term: $a_n = 2n + 1$ gives $3, 5, 7, 9, \ldots$
-- **recursively** by the initial value and a rule for calculating a term from the previous one: $a_1 = 3$, $a_{n+1} = a_n + 2$
+- explicitly by a formula for the $n$-th term: $a_n = 2n + 1$ gives $3, 5, 7, 9, \ldots$
+- recursively by the initial value and a rule for calculating a term from the previous one: $a_1 = 3$, $a_{n+1} = a_n + 2$
 
 Recursive definitions correspond to loops in programs and are well suited to spreadsheets. With the explicit definition, any term can be calculated directly.
 
@@ -22,11 +22,11 @@ $a_1 = 1$, $a_2 = 1$, $a_{n+2} = a_{n+1} + a_n$ gives $1, 1, 2, 3, 5, 8, 13, 21,
 Each term is the sum of the two previous ones.
 :::
 
-A sequence is called **increasing** if $a_{n+1} \ge a_n$ for all $n$, and **bounded** if all terms lie between two fixed bounds.
+A sequence is called **increasing** if $a_{n+1} \ge a_n$ for all $n$, and bounded if all terms lie between two fixed bounds.
 
 ## Arithmetic sequences
 
-In an **arithmetic sequence**, the **difference** between two consecutive terms is constant:
+In an **arithmetic sequence**, the difference between two consecutive terms is constant:
 
 $$
 a_{n+1} - a_n = d \qquad a_n = a_1 + (n - 1) \cdot d
@@ -52,13 +52,13 @@ According to legend, the young Carl Friedrich Gauss was asked to add the numbers
 
 ## Geometric sequences
 
-In a **geometric sequence**, the **ratio** of two consecutive terms is constant:
+In a **geometric sequence**, the ratio of two consecutive terms is constant:
 
 $$
 \frac{a_{n+1}}{a_n} = q \qquad a_n = a_1 \cdot q^{n-1}
 $$
 
-Geometric sequences describe **exponential growth** ($q > 1$) or **exponential decay** ($0 < q < 1$). If $q < 0$, the signs alternate (alternating sequence).
+Geometric sequences describe **exponential growth** ($q > 1$) or exponential decay ($0 < q < 1$). If $q < 0$, the signs alternate (alternating sequence).
 
 :::tip[Example]
 A ball bounces back to 80 % of its previous height after each impact. Dropped from a height of 2 m, it only reaches $2 \cdot 0.8^5 \approx 0.66$ m after the 5th impact.
@@ -77,18 +77,18 @@ $$
 s_{64} = 1 \cdot \frac{2^{64} - 1}{2 - 1} = 2^{64} - 1 \approx 1.8 \cdot 10^{19}
 $$
 
-grains of rice – far more than the entire world harvest. Incidentally, $2^{64} - 1$ is also the largest number that can be stored in an unsigned 64-bit variable.
+grains of rice, far more than the entire world harvest. Incidentally, $2^{64} - 1$ is also the largest number that can be stored in an unsigned 64-bit variable.
 :::
 
 ## Limit of a sequence
 
-If the terms of a sequence get arbitrarily close to a number $a$ as $n \to \infty$, $a$ is called the **limit** of the sequence, and the sequence is called **convergent**:
+If the terms of a sequence get arbitrarily close to a number $a$ as $n \to \infty$, $a$ is called the **limit** of the sequence, and the sequence is called convergent:
 
 $$
 \lim_{n \to \infty} a_n = a
 $$
 
-Otherwise, the sequence is **divergent**. A sequence with the limit $0$ is called a **null sequence**.
+Otherwise, the sequence is **divergent**. A sequence with the limit $0$ is called a null sequence.
 
 :::tip[Examples]
 - $a_n = \frac{1}{n}$: $\;1, \frac{1}{2}, \frac{1}{3}, \ldots \to 0$ (null sequence)
@@ -126,7 +126,7 @@ $$
 K_n = K_0 \cdot (1 + i)^n
 $$
 
-The factor $q = 1 + i$ is called the **accumulation factor**. Conversely, the **present value** of an amount $K_n$ due in $n$ years is $K_0 = \frac{K_n}{(1 + i)^n}$ (**discounting**).
+The factor $q = 1 + i$ is called the **accumulation factor**. Conversely, the present value of an amount $K_n$ due in $n$ years is $K_0 = \frac{K_n}{(1 + i)^n}$ (discounting).
 
 :::tip[Example]
 €5000 earns 3 % interest per year for 8 years:

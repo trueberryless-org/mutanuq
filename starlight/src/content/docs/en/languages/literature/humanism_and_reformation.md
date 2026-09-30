@@ -1,11 +1,11 @@
 ---
 title: Humanism and Reformation
-description: Literature between the Middle Ages and the Baroque – humanism, the printing press, Luther's Bible translation, comic tales and chapbooks.
+description: "Literature between the Middle Ages and the Baroque: humanism, the printing press, Luther's Bible translation, comic tales and chapbooks."
 sidebar:
   order: 2
 ---
 
-Between the Middle Ages and the Baroque, two developments fundamentally changed thinking in Europe: **humanism**, which put people and classical education at the centre, and the **Reformation**, which broke the unity of the Church. Neither would have been possible without the **printing press**.
+Between the Middle Ages and the Baroque, two developments fundamentally changed thinking in Europe: **humanism**, which put people and classical education at the centre, and the Reformation, which broke the unity of the Church. Neither would have been possible without the printing press.
 
 ## Key facts
 
@@ -17,11 +17,11 @@ Between the Middle Ages and the Baroque, two developments fundamentally changed 
 
 ## Historical background
 
-When the Ottomans conquered Constantinople (1453), Greek scholars and manuscripts came to Italy. The discovery of America (1492), Nicolaus Copernicus' new **heliocentric world view** and growing trade shook the medieval world view. On 31 October 1517, Martin Luther published his **95 Theses** against the sale of indulgences. The Reformation that followed led to the division of the Church, to peasants' wars and to wars of religion.
+When the Ottomans conquered Constantinople (1453), Greek scholars and manuscripts came to Italy. The discovery of America (1492), Nicolaus Copernicus' new **heliocentric world view** and growing trade shook the medieval world view. On 31 October 1517, Martin Luther published his 95 Theses against the sale of indulgences. The Reformation that followed led to the division of the Church, to peasants' wars and to wars of religion.
 
 ## Humanism
 
-The **humanists** wanted to perfect people through education. Their motto was "**ad fontes**" – "back to the sources": instead of medieval interpretations, the original texts of antiquity and the Bible were to be read in Latin, Greek and Hebrew. People were seen as free, rational beings who can determine their own lives.
+The **humanists** wanted to perfect people through education. Their motto was "ad fontes", "back to the sources": instead of medieval interpretations, the original texts of antiquity and the Bible were to be read in Latin, Greek and Hebrew. People were seen as free, rational beings who can determine their own lives.
 
 Most humanist writings were in Latin and aimed at scholars.
 
@@ -38,10 +38,10 @@ Luther also wrote numerous hymns, such as "Ein feste Burg ist unser Gott" (A Mig
 
 Alongside scholarly literature, entertaining texts for a wide audience emerged:
 
-- **Schwänke** are short, funny tales in which a clever person often makes fun of a foolish one. The best-known collection is about **Till Eulenspiegel** (1510/11), who tricks people by taking figures of speech literally.
-- **Chapbooks** (Volksbücher) are prose narratives that were printed in large numbers, for example the "Historia von D. Johann Fausten" (1587) – the source for Goethe's "Faust".
-- **Fool's literature:** "Das Narrenschiff" (The Ship of Fools, 1494) by **Sebastian Brant** depicts different kinds of human folly in more than 100 chapters and was one of the most successful books of its time.
-- **Hans Sachs** (1494 – 1576), a shoemaker and Meistersinger from Nuremberg, wrote thousands of master songs, comic tales and carnival plays.
+- Schwänke are short, funny tales in which a clever person often makes fun of a foolish one. The best-known collection is about Till Eulenspiegel (1510/11), who tricks people by taking figures of speech literally.
+- Chapbooks are prose narratives that were printed in large numbers, for example the "Historia von D. Johann Fausten" (1587), the source for Goethe's "Faust".
+- **Fool's literature:** "Das Narrenschiff" (The Ship of Fools, 1494) by Sebastian Brant depicts different kinds of human folly in more than 100 chapters and was one of the most successful books of its time.
+- Hans Sachs (1494 – 1576), a shoemaker and Meistersinger from Nuremberg, wrote thousands of master songs, comic tales and carnival plays.
 
 ## Genres
 

@@ -5,7 +5,7 @@ sidebar:
   order: 7
 ---
 
-Many equations and integrals cannot be solved exactly – for example $x = \cos x$ or $\int e^{-x^2}\,\mathrm{d}x$. **Numerical methods** provide approximate solutions with any desired accuracy. They are the basis of what calculators and programs such as GeoGebra do in the background, and they can be programmed in just a few lines of code.
+Many equations and integrals cannot be solved exactly, for example $x = \cos x$ or $\int e^{-x^2}\,\mathrm{d}x$. **Numerical methods** provide approximate solutions with any desired accuracy. They are the basis of what calculators and programs such as GeoGebra do in the background, and they can be programmed in just a few lines of code.
 
 ## Iterative methods
 
@@ -36,7 +36,7 @@ The method **always converges**, but slowly: each step halves the error, so abou
 
 ### Regula falsi
 
-The **regula falsi** (false position method) improves bisection by using the zero of the **secant** through $(a \mid f(a))$ and $(b \mid f(b))$ instead of the midpoint:
+The **regula falsi** (false position method) improves bisection by using the zero of the secant through $(a \mid f(a))$ and $(b \mid f(b))$ instead of the midpoint:
 
 $$
 x = a - f(a) \cdot \frac{b - a}{f(b) - f(a)}
@@ -44,7 +44,7 @@ $$
 
 ## Newton's method
 
-**Newton's method** replaces the function at the current approximation by its **tangent** and takes its zero as the next approximation:
+**Newton's method** replaces the function at the current approximation by its tangent and takes its zero as the next approximation:
 
 $$
 x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
@@ -117,7 +117,7 @@ $$
 
 ### Simpson's rule
 
-**Simpson's rule** connects every three neighbouring points with a [parabola](/en/mathematics/functions/quadratic-functions/#quadratic-interpolation). The number $n$ of strips must be **even**:
+**Simpson's rule** connects every three neighbouring points with a [parabola](/en/mathematics/functions/quadratic-functions/#quadratic-interpolation). The number $n$ of strips must be even:
 
 $$
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}{3} \cdot \big(y_0 + 4y_1 + 2y_2 + 4y_3 + \ldots + 2y_{n-2} + 4y_{n-1} + y_n\big)

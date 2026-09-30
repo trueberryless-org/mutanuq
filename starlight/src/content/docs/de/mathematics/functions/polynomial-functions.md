@@ -26,7 +26,7 @@ Die Beleuchtungsstärke einer Lampe nimmt mit dem Quadrat des Abstands ab: $E(r)
 
 ## Polynomfunktionen
 
-Eine **Polynomfunktion** (ganzrationale Funktion) vom **Grad** $n$ ist eine Summe von Potenzfunktionen mit natürlichen Hochzahlen:
+Eine **Polynomfunktion** (ganzrationale Funktion) vom Grad $n$ ist eine Summe von Potenzfunktionen mit natürlichen Hochzahlen:
 
 $$
 f(x) = a_n x^n + a_{n-1} x^{n-1} + \ldots + a_1 x + a_0 \qquad (a_n \ne 0)
@@ -38,9 +38,9 @@ Lineare Funktionen sind Polynome vom Grad 1, quadratische vom Grad 2. Polynome s
 
 Eine Polynomfunktion vom Grad $n$ hat
 
-- **höchstens $n$ Nullstellen**,
-- **höchstens $n - 1$ Extremstellen** (Hoch- und Tiefpunkte),
-- **höchstens $n - 2$ Wendestellen**.
+- höchstens $n$ Nullstellen,
+- höchstens $n - 1$ Extremstellen (Hoch- und Tiefpunkte),
+- höchstens $n - 2$ Wendestellen.
 
 Ist der Grad **ungerade**, hat die Funktion mindestens eine Nullstelle.
 
@@ -55,7 +55,7 @@ Für sehr große $\lvert x \rvert$ bestimmt der Summand mit der höchsten Potenz
 
 ### Symmetrie
 
-Kommen nur **gerade** Hochzahlen vor (inklusive der Konstanten $a_0 = a_0 x^0$), ist die Funktion gerade. Kommen nur **ungerade** Hochzahlen vor, ist sie ungerade. $x^4 - 3x^2 + 1$ ist gerade, $x^3 - 2x$ ungerade.
+Kommen nur **gerade** Hochzahlen vor (inklusive der Konstanten $a_0 = a_0 x^0$), ist die Funktion gerade. Kommen nur ungerade Hochzahlen vor, ist sie ungerade. $x^4 - 3x^2 + 1$ ist gerade, $x^3 - 2x$ ungerade.
 
 ## Nullstellen von Polynomfunktionen
 
@@ -77,10 +77,10 @@ Kommt ein Linearfaktor mehrfach vor, spricht man von einer **mehrfachen Nullstel
 
 ### Lösungsverfahren
 
-- **Herausheben**, wenn kein konstantes Glied vorhanden ist: $x^3 - 4x = x(x^2 - 4) = x(x - 2)(x + 2)$
-- **Substitution** bei biquadratischen Gleichungen: $x^4 - 5x^2 + 4 = 0$ wird mit $u = x^2$ zu $u^2 - 5u + 4 = 0$, also $u = 1$ oder $u = 4$ und $x \in \{-2, -1, 1, 2\}$.
-- **Polynomdivision** nach Erraten einer Nullstelle. Ganzzahlige Nullstellen sind immer Teiler des konstanten Glieds $a_0$ (wenn alle Koeffizienten ganzzahlig sind und $a_n = 1$).
-- **Numerische Verfahren** wie das [Newton-Verfahren](/de/mathematics/analysis/numerical-methods/#newton-verfahren) oder der Taschenrechner.
+- Herausheben, wenn kein konstantes Glied vorhanden ist: $x^3 - 4x = x(x^2 - 4) = x(x - 2)(x + 2)$
+- Substitution bei biquadratischen Gleichungen: $x^4 - 5x^2 + 4 = 0$ wird mit $u = x^2$ zu $u^2 - 5u + 4 = 0$, also $u = 1$ oder $u = 4$ und $x \in \{-2, -1, 1, 2\}$.
+- Polynomdivision nach Erraten einer Nullstelle. Ganzzahlige Nullstellen sind immer Teiler des konstanten Glieds $a_0$ (wenn alle Koeffizienten ganzzahlig sind und $a_n = 1$).
+- Numerische Verfahren wie das [Newton-Verfahren](/de/mathematics/analysis/numerical-methods/#newton-verfahren) oder der Taschenrechner.
 
 :::tip[Beispiel: Polynomdivision]
 $f(x) = x^3 - 2x^2 - 5x + 6$. Probieren der Teiler von $6$ ergibt $f(1) = 1 - 2 - 5 + 6 = 0$. Also ist $x_1 = 1$ eine Nullstelle.

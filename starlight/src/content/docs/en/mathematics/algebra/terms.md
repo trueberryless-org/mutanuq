@@ -1,13 +1,13 @@
 ---
 title: Algebraic Expressions
-description: Calculating with algebraic expressions – order of operations, brackets, expanding, factoring out, binomial formulas and algebraic fractions.
+description: "Calculating with algebraic expressions: order of operations, brackets, expanding, factoring out, binomial formulas and algebraic fractions."
 sidebar:
   order: 6
 ---
 
 ## What is an algebraic expression?
 
-An **algebraic expression** (in German _Term_) is a meaningful mathematical expression made of numbers, **variables** (placeholders such as $x$ or $a$), operators and brackets, for example $3x^2 - 2x + 5$ or $\frac{a + b}{2}$. If you substitute numbers for the variables, you get the **value** of the expression. Expressions do not contain an equals sign – if two expressions are joined with $=$, you get an [equation](/en/mathematics/algebra/equations-and-inequalities/).
+An **algebraic expression** is a meaningful mathematical expression made of numbers, variables (placeholders such as $x$ or $a$), operators and brackets, for example $3x^2 - 2x + 5$ or $\frac{a + b}{2}$. If you substitute numbers for the variables, you get the value of the expression. Expressions do not contain an equals sign. If two expressions are joined with $=$, you get an [equation](/en/mathematics/algebra/equations-and-inequalities/).
 
 The set of numbers that may be substituted for a variable is called the **domain**. In $\frac{1}{x - 2}$, $x$ must not be $2$, because you cannot divide by $0$: $D = \mathbb{R} \setminus \{2\}$.
 
@@ -26,7 +26,7 @@ $$
 
 ## Adding and subtracting
 
-Only **like terms** – terms with the same variables to the same powers – can be combined:
+Only **like terms**, that is, terms with the same variables to the same powers, can be combined:
 
 $$
 5x^2 + 3x - 2x^2 + 4 - x = 3x^2 + 2x + 4
@@ -105,7 +105,7 @@ For example, $(a + b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$.
 
 An **algebraic fraction** contains variables in the denominator. The domain excludes all values for which the denominator becomes $0$. Calculations work like with ordinary fractions:
 
-- **Cancelling:** Divide the numerator and the denominator by the same factor. To do so, they must be **factorised** first – you cannot cancel terms of a sum.
+- **Cancelling:** Divide the numerator and the denominator by the same factor. To do so, they must be factorised first. You cannot cancel terms of a sum.
 - **Adding/subtracting:** Bring the fractions to a common denominator (preferably the least common multiple of the denominators).
 - **Multiplying:** numerator times numerator, denominator times denominator.
 - **Dividing:** Multiply by the reciprocal.

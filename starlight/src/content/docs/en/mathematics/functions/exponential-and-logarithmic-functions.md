@@ -13,8 +13,8 @@ $$
 f(x) = c \cdot a^x \qquad (a > 0,\ a \ne 1)
 $$
 
-- $c = f(0)$ is the **initial value**,
-- $a$ is the **growth factor**: if $x$ increases by $1$, the function value is multiplied by $a$.
+- $c = f(0)$ is the initial value,
+- $a$ is the growth factor: if $x$ increases by $1$, the function value is multiplied by $a$.
 
 | Growth factor   | Behaviour                                |
 | --------------- | ---------------------------------------- |
@@ -27,9 +27,9 @@ All graphs of $a^x$ pass through $(0 \mid 1)$, lie above the $x$-axis and have t
 
 | Linear growth                          | Exponential growth                        |
 | -------------------------------------- | ----------------------------------------- |
-| the **same amount** is added per step  | multiplied by the **same factor** per step |
+| the same amount is added per step  | multiplied by the same factor per step |
 | $f(x) = k \cdot x + d$                 | $f(x) = c \cdot a^x$                      |
-| constant **differences** in the table of values | constant **ratios** in the table of values |
+| constant differences in the table of values | constant ratios in the table of values |
 
 For a percentage change of $p\,\%$ per unit of time, the growth factor is $a = 1 \pm \frac{p}{100}$.
 
@@ -51,11 +51,11 @@ $$
 f(t) = c \cdot e^{\lambda t}
 $$
 
-Here $\lambda$ is the **growth constant** ($\lambda > 0$) or **decay constant** ($\lambda < 0$). Every exponential function can be rewritten like this, because $a^t = e^{\ln(a) \cdot t}$.
+Here $\lambda$ is the **growth constant** ($\lambda > 0$) or decay constant ($\lambda < 0$). Every exponential function can be rewritten like this, because $a^t = e^{\ln(a) \cdot t}$.
 
 ## Doubling time and half-life
 
-The **doubling time** $T_2$ is the time after which an exponentially growing value has doubled. The **half-life** $T_{1/2}$ is the time after which an exponentially decaying value has halved. Neither depends on the initial value:
+The **doubling time** $T_2$ is the time after which an exponentially growing value has doubled. The half-life $T_{1/2}$ is the time after which an exponentially decaying value has halved. Neither depends on the initial value:
 
 $$
 T_2 = \frac{\ln 2}{\lambda} \qquad T_{1/2} = \frac{\ln 2}{\lvert\lambda\rvert}
@@ -68,7 +68,7 @@ $$
 u(t) = U_0 \cdot e^{-\frac{t}{\tau}} \qquad \tau = R \cdot C
 $$
 
-With $R = 10\ \text{k}\Omega$ and $C = 100\ \mu\text{F}$, the **time constant** is $\tau = 1\ \text{s}$. After $\tau$, the voltage has fallen to $e^{-1} \approx 37\,\%$, after $5\tau$ to below $1\,\%$ – the capacitor is then considered discharged.
+With $R = 10\ \text{k}\Omega$ and $C = 100\ \mu\text{F}$, the **time constant** is $\tau = 1\ \text{s}$. After $\tau$, the voltage has fallen to $e^{-1} \approx 37\,\%$, after $5\tau$ to below $1\,\%$. The capacitor is then considered discharged.
 
 The half-life is $T_{1/2} = \tau \cdot \ln 2 \approx 0.69\ \text{s}$.
 :::
@@ -121,10 +121,10 @@ $$
 
 ## Logarithmic scaling
 
-If values span many orders of magnitude, they are shown on a **logarithmic scale**. There, equal **factors** have equal distances: the distance from 1 to 10 is the same as from 10 to 100 or from 100 to 1000 (a **decade**).
+If values span many orders of magnitude, they are shown on a **logarithmic scale**. There, equal factors have equal distances: the distance from 1 to 10 is the same as from 10 to 100 or from 100 to 1000 (a decade).
 
-- In a **semi-log** plot, only the $y$-axis is logarithmic. Exponential functions then appear as **straight lines**.
-- In a **log-log** plot, both axes are logarithmic. Then **power functions** appear as straight lines whose slope is the exponent.
+- In a semi-log plot, only the $y$-axis is logarithmic. Exponential functions then appear as straight lines.
+- In a log-log plot, both axes are logarithmic. Then power functions appear as straight lines whose slope is the exponent.
 
 This makes it easy to tell from measurements whether an exponential or a power relationship is present.
 

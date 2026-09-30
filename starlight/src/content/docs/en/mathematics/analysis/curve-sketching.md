@@ -17,32 +17,32 @@ The first derivative shows whether a function is increasing or decreasing:
 
 ## Extrema
 
-At a **local maximum** or **local minimum**, the graph has a horizontal tangent. This gives the **necessary condition**:
+At a **local maximum** or local minimum, the graph has a horizontal tangent. This gives the necessary condition:
 
 $$
 f'(x_0) = 0
 $$
 
-Not every point with $f'(x_0) = 0$ is an extremum – it can also be a **saddle point**, like $x^3$ at $0$. That is why a **sufficient condition** is checked:
+Not every point with $f'(x_0) = 0$ is an extremum. It can also be a **saddle point**, like $x^3$ at $0$. That is why a sufficient condition is checked:
 
 | Condition                          | Result                |
 | ---------------------------------- | --------------------- |
-| $f'(x_0) = 0$ and $f''(x_0) < 0$   | **maximum**           |
-| $f'(x_0) = 0$ and $f''(x_0) > 0$   | **minimum**           |
-| $f'(x_0) = 0$ and $f''(x_0) = 0$   | no conclusion possible – check the sign change of $f'$ |
+| $f'(x_0) = 0$ and $f''(x_0) < 0$   | maximum           |
+| $f'(x_0) = 0$ and $f''(x_0) > 0$   | minimum           |
+| $f'(x_0) = 0$ and $f''(x_0) = 0$   | no conclusion possible, check the sign change of $f'$ |
 
 Alternatively, examine the **sign change** of the first derivative: if $f'$ changes from $+$ to $-$ at $x_0$, it is a maximum; from $-$ to $+$, a minimum; without a sign change, a saddle point.
 
 :::note[Local and global]
-A local maximum is only the largest value in its neighbourhood. The **global** maximum on an interval $[a; b]$ can also lie at the **boundary**. In optimisation problems, the boundary values $f(a)$ and $f(b)$ must therefore be compared with the local extrema.
+A local maximum is only the largest value in its neighbourhood. The **global** maximum on an interval $[a; b]$ can also lie at the boundary. In optimisation problems, the boundary values $f(a)$ and $f(b)$ must therefore be compared with the local extrema.
 :::
 
 ## Curvature and inflection points
 
 The second derivative describes the curvature:
 
-- $f''(x) > 0$: **concave up** (convex) – the slope increases.
-- $f''(x) < 0$: **concave down** (concave) – the slope decreases.
+- $f''(x) > 0$: concave up (convex): the slope increases.
+- $f''(x) < 0$: concave down (concave): the slope decreases.
 
 An **inflection point** is a point where the curvature changes. There the slope is locally at its largest or smallest.
 
@@ -58,15 +58,15 @@ If you ride a bike along the graph from left to right, you steer left in a left-
 
 ## Steps of curve sketching
 
-1. Determine the **domain**
-2. Check for **symmetry** ($f(-x) = f(x)$ or $f(-x) = -f(x)$)
-3. **Zeros** ($f(x) = 0$) and $y$-intercept ($f(0)$)
-4. Calculate the **derivatives** $f'$, $f''$, $f'''$
-5. **Extrema** ($f'(x) = 0$, determine the type with $f''$)
-6. **Inflection points** ($f''(x) = 0$, check with $f'''$) and, if needed, inflection tangents
-7. **End behaviour** and behaviour at gaps in the domain, asymptotes
-8. State the intervals of **monotonicity and curvature**
-9. Sketch the **graph**
+1. Determine the domain
+2. Check for symmetry ($f(-x) = f(x)$ or $f(-x) = -f(x)$)
+3. Zeros ($f(x) = 0$) and $y$-intercept ($f(0)$)
+4. Calculate the derivatives $f'$, $f''$, $f'''$
+5. Extrema ($f'(x) = 0$, determine the type with $f''$)
+6. Inflection points ($f''(x) = 0$, check with $f'''$) and, if needed, inflection tangents
+7. End behaviour and behaviour at gaps in the domain, asymptotes
+8. State the intervals of monotonicity and curvature
+9. Sketch the graph
 
 :::tip[Example: Curve sketching]
 $$
@@ -75,7 +75,7 @@ $$
 
 **Domain:** $D = \mathbb{R}$ (polynomial function)
 
-**Symmetry:** mixed even and odd exponents – no symmetry about the origin or the $y$-axis
+**Symmetry:** mixed even and odd exponents, so no symmetry about the origin or the $y$-axis
 
 **Zeros:** $x(x^2 - 6x + 9) = x(x - 3)^2 = 0 \Rightarrow x_1 = 0$, $x_2 = 3$ (double: the graph touches the axis)
 
@@ -131,14 +131,14 @@ The solution of the [system of equations](/en/mathematics/algebra/systems-of-lin
 
 ## Optimisation problems
 
-In **optimisation problems**, a quantity is to be as large or as small as possible – for example an area, a volume, costs or a profit. This is the procedure:
+In **optimisation problems**, a quantity is to be as large or as small as possible, for example an area, a volume, costs or a profit. This is the procedure:
 
 1. **Objective:** formula for the quantity to be optimised (often with several variables).
 2. **Constraint:** relationship between the variables from the problem statement.
-3. Rearrange the constraint for one variable and substitute it into the objective – this gives the **objective function** with only one variable.
-4. Determine the **domain** of the objective function from the context.
+3. Rearrange the constraint for one variable and substitute it into the objective. This gives the objective function with only one variable.
+4. Determine the domain of the objective function from the context.
 5. Differentiate the objective function, set it to $0$ and solve.
-6. Check the type of extremum and compare with the **boundary values**.
+6. Check the type of extremum and compare with the boundary values.
 7. Calculate all required quantities and state the result in context.
 
 :::tip[Example: Can with minimum material]

@@ -31,7 +31,7 @@ Die Kernbereiche des Controllings sind die Qualitätssicherung, die Dokumentatio
 
 ## Notwendigkeit
 
-Laut einer Studie in Deutschland liegt der Prozentsatz der technisch gelungenen Projekte nur bei 57%. Einen wirtschaftlichen Vorteil erzielen allerdings nur 12% von allen Projekten. Nun fragen Sie sich vielleicht, warum scheitern eigentlich so viele Projekte. Hier sind einige Gründe:
+Laut einer Studie in Deutschland liegt der Prozentsatz der technisch gelungenen Projekte nur bei 57%. Einen wirtschaftlichen Vorteil erzielen allerdings nur 12% von allen Projekten. Nun fragst du dich vielleicht, warum scheitern eigentlich so viele Projekte. Hier sind einige Gründe:
 
 -   mangelnde Kommunikation (70%)
 -   schlechte Planung (56%)
@@ -58,7 +58,7 @@ Außerdem sinkt der prozentuale Kostenanteil des Projektcontrollings mit zunehme
 
 ## Vier Aspekte - Kybernetischer Regelkreis
 
-Projektcontrolling behandelt diese vier Aspekte, die – ähnlich wie ein Regelkreis in der Technik – immer wieder durchlaufen werden:
+Projektcontrolling behandelt diese vier Aspekte, die ähnlich wie ein Regelkreis in der Technik immer wieder durchlaufen werden:
 
 -   **Planung**: Vorbereitung von benötigten Ressourcen für die Erfüllung von Zielen
 -   **Kontrolle**: Überwachen und Vergleichen des IST-Standes eines Projekts mit dem in der Planung festgelegten SOLL-Stand
@@ -161,13 +161,13 @@ Der Earned-Value ist eine Kennzahl, welche bei der Bestimmung folgender Fragen h
 
 > _Liegt mein Projekt zum Kontrollzeitpunkt im **Kostenplan** oder nicht?_
 
--   Ja, wenn der Earned-Value höher ist als die Ist-Kosten. Das bedeutet, dass Sie innerhalb des Budgets liegen oder sogar darunter.
--   Nein, wenn der Earned-Value niedriger ist als die Ist-Kosten. In diesem Fall überschreiten Sie das Budget und Ihr Projekt liegt kostenmäßig „hinten“.
+-   Ja, wenn der Earned-Value höher ist als die Ist-Kosten. Das bedeutet, dass du innerhalb des Budgets liegst oder sogar darunter.
+-   Nein, wenn der Earned-Value niedriger ist als die Ist-Kosten. In diesem Fall überschreitest du das Budget und dein Projekt liegt kostenmäßig „hinten“.
 
 > _Liegt mein Projekt zum Kontrollzeitpunkt im **Zeitplan** oder nicht?_
 
--   Ja, wenn der Earned-Value höher ist als die Plankosten. Das bedeutet, dass Sie mehr Fortschritt erzielt haben, als ursprünglich geplant, und Ihr Projekt liegt zeitlich „vorne“.
--   Nein, wenn der Earned-Value niedriger ist als die Plankosten. In diesem Fall haben Sie weniger Fortschritt erzielt als geplant, und Ihr Projekt liegt zeitlich „hinten“.
+-   Ja, wenn der Earned-Value höher ist als die Plankosten. Das bedeutet, dass du mehr Fortschritt erzielt hast, als ursprünglich geplant, und dein Projekt liegt zeitlich „vorne“.
+-   Nein, wenn der Earned-Value niedriger ist als die Plankosten. In diesem Fall hast du weniger Fortschritt erzielt als geplant, und dein Projekt liegt zeitlich „hinten“.
 
 Dabei sieht ein Diagramm bei der Earned-Value-Analyse so aus:
 
@@ -185,9 +185,9 @@ Mithilfe der Earned-Value-Analyse kann man sich viele weitere Kennzahlen berechn
 
 | Kennzahl                               | Formel      | Bedeutung                                                 |
 | -------------------------------------- | ----------- | --------------------------------------------------------- |
-| Planwert (_Planned Value_, PV)         | –           | geplante Kosten der bis zum Stichtag geplanten Arbeit     |
+| Planwert (_Planned Value_, PV)         | aus dem Plan | geplante Kosten der bis zum Stichtag geplanten Arbeit     |
 | Fertigstellungswert (_Earned Value_, EV) | Fertigstellungsgrad · Gesamtbudget | Wert der tatsächlich erledigten Arbeit  |
-| Istkosten (_Actual Cost_, AC)          | –           | tatsächlich angefallene Kosten                            |
+| Istkosten (_Actual Cost_, AC)          | gemessen    | tatsächlich angefallene Kosten                            |
 | Planabweichung (_Schedule Variance_, SV) | EV − PV   | negativ: Projekt ist hinter dem Zeitplan                  |
 | Kostenabweichung (_Cost Variance_, CV) | EV − AC     | negativ: Projekt ist teurer als geplant                   |
 | Terminindex (SPI)                      | EV / PV     | kleiner 1: Verzug                                         |

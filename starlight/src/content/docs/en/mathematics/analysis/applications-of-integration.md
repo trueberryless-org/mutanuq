@@ -11,7 +11,7 @@ The [definite integral](/en/mathematics/analysis/integral-calculus/#definite-int
 
 1. Find the zeros of $f$ in the interval.
 2. Split the integral into partial integrals at the zeros.
-3. Add up the **absolute values** of the partial integrals.
+3. Add up the absolute values of the partial integrals.
 
 :::tip[Example]
 What is the area between $f(x) = x^2 - 4$ and the $x$-axis on the interval $[0; 3]$?
@@ -30,7 +30,7 @@ $$
 A = \frac{16}{3} + \frac{7}{3} = \frac{23}{3} \approx 7.67
 $$
 
-The integral over the whole interval would be $-\frac{16}{3} + \frac{7}{3} = -3$ – the areas would partly cancel out.
+The integral over the whole interval would be $-\frac{16}{3} + \frac{7}{3} = -3$; the areas would partly cancel out.
 :::
 
 ## Area between two curves
@@ -41,7 +41,7 @@ $$
 A = \int_a^b \big(f(x) - g(x)\big)\,\mathrm{d}x \qquad \text{if } f(x) \ge g(x) \text{ on } [a; b]
 $$
 
-The limits of integration are often the **intersections** of the two graphs ($f(x) = g(x)$). If the graphs intersect within the interval, split it into partial areas as above. Where the graphs lie does not matter – areas below the $x$-axis are also calculated correctly this way.
+The limits of integration are often the **intersections** of the two graphs ($f(x) = g(x)$). If the graphs intersect within the interval, split it into partial areas as above. Where the graphs lie does not matter. Areas below the $x$-axis are also calculated correctly this way.
 
 :::tip[Example]
 Area between $f(x) = x + 2$ and $g(x) = x^2$:
@@ -55,7 +55,7 @@ $$
 
 ## Volumes of solids of revolution
 
-If the graph of $f$ on the interval $[a; b]$ rotates about the **$x$-axis**, a **solid of revolution** is created. Think of it as made up of thin circular discs with radius $f(x)$ and thickness $\mathrm{d}x$:
+If the graph of $f$ on the interval $[a; b]$ rotates about the **$x$-axis**, a solid of revolution is created. Think of it as made up of thin circular discs with radius $f(x)$ and thickness $\mathrm{d}x$:
 
 $$
 V_x = \pi \int_a^b \big(f(x)\big)^2\,\mathrm{d}x
@@ -113,7 +113,7 @@ $$
 f_{\text{eff}} = \sqrt{\frac{1}{b - a} \int_a^b \big(f(x)\big)^2\,\mathrm{d}x}
 $$
 
-In electrical engineering, it is called the **RMS value** (root mean square, in German _Effektivwert_). It is the DC voltage that produces the same power in a resistor as the AC voltage.
+In electrical engineering, it is called the **RMS value** (root mean square). It is the DC voltage that produces the same power in a resistor as the AC voltage.
 
 :::tip[Example: RMS value of a sine voltage]
 $$
@@ -157,4 +157,4 @@ $$
 
 ### Charge and energy
 
-The charge that flows in a period of time is $Q = \int_{t_1}^{t_2} i(t)\,\mathrm{d}t$, the energy converted is $W = \int_{t_1}^{t_2} P(t)\,\mathrm{d}t$. That is why an electricity meter measures energy in kilowatt hours – power times time.
+The charge that flows in a period of time is $Q = \int_{t_1}^{t_2} i(t)\,\mathrm{d}t$, the energy converted is $W = \int_{t_1}^{t_2} P(t)\,\mathrm{d}t$. That is why an electricity meter measures energy in kilowatt hours, that is, power times time.

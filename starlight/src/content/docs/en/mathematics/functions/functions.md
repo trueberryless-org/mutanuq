@@ -7,20 +7,20 @@ sidebar:
 
 ## The concept of a function
 
-A **function** $f$ is a mapping that assigns **exactly one** element $y = f(x)$ to every element $x$ of a **domain** $D$:
+A **function** $f$ is a mapping that assigns exactly one element $y = f(x)$ to every element $x$ of a domain $D$:
 
 $$
 f\colon D \to \mathbb{R}, \quad x \mapsto f(x)
 $$
 
-- $x$ is called the **argument** or independent variable,
-- $y = f(x)$ is called the **function value** or dependent variable,
-- the set of all function values is called the **range** $W$.
+- $x$ is called the argument or independent variable,
+- $y = f(x)$ is called the function value or dependent variable,
+- the set of all function values is called the range $W$.
 
 :::tip[Examples]
 - Every circle radius $r$ is assigned its area: $A(r) = r^2 \pi$, $D = \mathbb{R}^+$.
 - Every time of day is assigned the measured temperature.
-- **Not** a function: every number $x > 0$ is assigned the numbers $y$ with $y^2 = x$ – both $y = 2$ and $y = -2$ belong to $x = 4$.
+- Not a function: every number $x > 0$ is assigned the numbers $y$ with $y^2 = x$, because both $y = 2$ and $y = -2$ belong to $x = 4$.
 :::
 
 Graphically, a function can be recognised by the fact that every vertical line intersects the graph **at most once**.
@@ -38,9 +38,9 @@ Graphically, a function can be recognised by the fact that every vertical line i
 
 Unless stated otherwise, the **maximal domain** is the set of all real numbers for which the function can be evaluated. Excluded are:
 
-- values for which a **denominator becomes $0$**: $f(x) = \frac{1}{x - 3}$, $D = \mathbb{R} \setminus \{3\}$
-- values for which the radicand of an even **root becomes negative**: $f(x) = \sqrt{x + 2}$, $D = [-2; \infty[$
-- values for which the argument of a **logarithm is not positive**: $f(x) = \ln x$, $D = \mathbb{R}^+$
+- values for which a denominator becomes $0$: $f(x) = \frac{1}{x - 3}$, $D = \mathbb{R} \setminus \{3\}$
+- values for which the radicand of an even root becomes negative: $f(x) = \sqrt{x + 2}$, $D = [-2; \infty[$
+- values for which the argument of a logarithm is not positive: $f(x) = \ln x$, $D = \mathbb{R}^+$
 
 In applications, the domain is often further restricted by the context, for example to non-negative times or lengths.
 
@@ -48,9 +48,9 @@ In applications, the domain is often further restricted by the context, for exam
 
 ### Zeros and intercepts
 
-- **Zeros** (roots) are the values $x$ with $f(x) = 0$, i.e. the intersections with the $x$-axis. They are found by solving the equation $f(x) = 0$.
-- The intersection with the **$y$-axis** is $f(0)$.
-- The **intersections of two functions** $f$ and $g$ are found by setting $f(x) = g(x)$.
+- Zeros (roots) are the values $x$ with $f(x) = 0$, i.e. the intersections with the $x$-axis. They are found by solving the equation $f(x) = 0$.
+- The intersection with the $y$-axis is $f(0)$.
+- The intersections of two functions $f$ and $g$ are found by setting $f(x) = g(x)$.
 
 ### Monotonicity
 
@@ -84,8 +84,8 @@ The most important periodic functions are the [trigonometric functions](/en/math
 
 An **asymptote** is a line that the graph approaches arbitrarily closely without reaching it:
 
-- **Horizontal asymptote** $y = c$: the function values approach $c$ as $x \to \pm\infty$. $\frac{1}{x}$ has the asymptote $y = 0$, and so does $e^{-x}$ (for $x \to \infty$).
-- **Vertical asymptote** $x = x_0$ at a **pole**: the function values become arbitrarily large (or small) near $x_0$. $\frac{1}{x - 3}$ has a pole at $x_0 = 3$.
+- Horizontal asymptote $y = c$: the function values approach $c$ as $x \to \pm\infty$. $\frac{1}{x}$ has the asymptote $y = 0$, and so does $e^{-x}$ (for $x \to \infty$).
+- Vertical asymptote $x = x_0$ at a pole: the function values become arbitrarily large (or small) near $x_0$. $\frac{1}{x - 3}$ has a pole at $x_0 = 3$.
 
 Poles mainly occur in [rational functions](/en/mathematics/functions/polynomial-functions/#rational-functions).
 
@@ -96,7 +96,7 @@ Many other graphs can be derived from the graph of a known function $f$:
 | Function          | Change of the graph of $f$                                |
 | ----------------- | --------------------------------------------------------- |
 | $f(x) + c$        | shifted up by $c$ ($c < 0$: down)                          |
-| $f(x - c)$        | shifted **right** by $c$ ($c < 0$: left)                   |
+| $f(x - c)$        | shifted right by $c$ ($c < 0$: left)                   |
 | $a \cdot f(x)$    | stretched vertically by the factor $a$ ($\lvert a \rvert < 1$: compressed) |
 | $f(b \cdot x)$    | compressed or stretched horizontally by the factor $\frac{1}{b}$ |
 | $-f(x)$           | reflected in the $x$-axis                                  |
@@ -108,7 +108,7 @@ With $f(x - c)$, the graph is shifted to the **right** even though there is a mi
 
 ## Inverse function
 
-If a function is **one-to-one** (every function value occurs only once, for example in strictly monotonic functions), there is an **inverse function** $f^{-1}$ that reverses the mapping:
+If a function is **one-to-one** (every function value occurs only once, for example in strictly monotonic functions), there is an inverse function $f^{-1}$ that reverses the mapping:
 
 $$
 y = f(x) \quad\Longleftrightarrow\quad x = f^{-1}(y)

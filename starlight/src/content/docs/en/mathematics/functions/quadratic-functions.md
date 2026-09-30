@@ -13,7 +13,7 @@ $$
 f(x) = a x^2 + b x + c \qquad (a \ne 0)
 $$
 
-Its graph is a **parabola**. The highest or lowest point is called the **vertex** $S$. The parabola is symmetric about the vertical line through the vertex.
+Its graph is a **parabola**. The highest or lowest point is called the vertex $S$. The parabola is symmetric about the vertical line through the vertex.
 
 | Coefficient | Meaning                                                                   |
 | ----------- | ------------------------------------------------------------------------- |

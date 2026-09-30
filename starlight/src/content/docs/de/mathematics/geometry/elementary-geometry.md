@@ -7,7 +7,7 @@ sidebar:
 
 ## Winkel
 
-Winkel werden im **Gradmaß** ($360°$ für eine volle Umdrehung) oder im **Bogenmaß** angegeben. Das Bogenmaß ist die Länge des Kreisbogens am Einheitskreis, eine volle Umdrehung entspricht daher $2\pi$:
+Winkel werden im **Gradmaß** ($360°$ für eine volle Umdrehung) oder im Bogenmaß angegeben. Das Bogenmaß ist die Länge des Kreisbogens am Einheitskreis, eine volle Umdrehung entspricht daher $2\pi$:
 
 $$
 \alpha_{\text{Bogenmaß}} = \frac{\pi}{180°} \cdot \alpha_{\text{Gradmaß}} \qquad 180° \mathrel{\hat{=}} \pi \qquad 90° \mathrel{\hat{=}} \frac{\pi}{2}
@@ -15,13 +15,13 @@ $$
 
 Nach ihrer Größe unterscheidet man spitze ($< 90°$), rechte ($= 90°$), stumpfe ($> 90°$), gestreckte ($= 180°$) und überstumpfe ($> 180°$) Winkel.
 
-An zwei geschnittenen Geraden sind **Scheitelwinkel** gleich groß und **Nebenwinkel** ergeben zusammen $180°$. Wird ein Paar paralleler Geraden von einer dritten Geraden geschnitten, sind **Stufenwinkel** und **Wechselwinkel** gleich groß.
+An zwei geschnittenen Geraden sind **Scheitelwinkel** gleich groß und Nebenwinkel ergeben zusammen $180°$. Wird ein Paar paralleler Geraden von einer dritten Geraden geschnitten, sind Stufenwinkel und Wechselwinkel gleich groß.
 
 ## Dreiecke
 
 In jedem Dreieck gilt:
 
-- Die **Winkelsumme** beträgt $\alpha + \beta + \gamma = 180°$.
+- Die Winkelsumme beträgt $\alpha + \beta + \gamma = 180°$.
 - **Dreiecksungleichung:** Jede Seite ist kürzer als die Summe der beiden anderen.
 - Der größten Seite liegt der größte Winkel gegenüber.
 
@@ -38,7 +38,7 @@ In jedem Dreieck gilt:
 
 - **Gleichschenkeliges Dreieck:** zwei gleich lange Seiten (Schenkel), die beiden Basiswinkel sind gleich groß.
 - **Gleichseitiges Dreieck:** alle Seiten gleich lang, alle Winkel $60°$. Höhe $h = \frac{a}{2}\sqrt{3}$, Fläche $A = \frac{a^2}{4}\sqrt{3}$.
-- **Rechtwinkeliges Dreieck:** ein Winkel ist $90°$. Die Seiten am rechten Winkel heißen **Katheten**, die gegenüberliegende längste Seite **Hypotenuse**.
+- **Rechtwinkeliges Dreieck:** ein Winkel ist $90°$. Die Seiten am rechten Winkel heißen Katheten, die gegenüberliegende längste Seite Hypotenuse.
 
 ### Merkwürdige Punkte
 
@@ -51,7 +51,7 @@ In jedem Dreieck gilt:
 
 ## Ähnlichkeit und Strahlensätze
 
-Zwei Figuren sind **ähnlich**, wenn sie in allen Winkeln übereinstimmen. Dann stehen alle entsprechenden Seiten im selben Verhältnis, dem **Ähnlichkeitsfaktor** $k$. Flächen verändern sich mit $k^2$, Volumen mit $k^3$.
+Zwei Figuren sind **ähnlich**, wenn sie in allen Winkeln übereinstimmen. Dann stehen alle entsprechenden Seiten im selben Verhältnis, dem Ähnlichkeitsfaktor $k$. Flächen verändern sich mit $k^2$, Volumen mit $k^3$.
 
 Zwei Dreiecke sind bereits ähnlich, wenn sie in **zwei Winkeln** übereinstimmen.
 

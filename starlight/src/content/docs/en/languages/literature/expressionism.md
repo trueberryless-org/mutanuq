@@ -27,7 +27,7 @@ The term Dadaism emerged during the epoch of Expressionism and describes a destr
 
 The foundation of this epoch is [Friedrich Nietzsche](/en/languages/literature/impressionism/#friedrich-nietzsche-1844-1900)'s [Also sprach Zarathustra](/en/languages/literature/impressionism/#also-sprach-zarathustra-1883) and Søren Kierkegaard's "freedom is central", who puts freedom at the centre of thinking. Unlike animals, humans can decide on a particular way of life. They can remain in a superficial life of pleasure, the existence Kierkegaard called "aesthetic". But they can also work in solidarity on building a humane society in an "ethical" existence.
 
-The Expressionists also contrast the superficial old person with a coming new person who is fundamentally different from the old one and shows solidarity with fellow human beings. The "old" person is hard-hearted, harsh, evil, alien to fellow human beings and separated by boundary posts. In addition, the terms **society** (Gesellschaft) and **community** (Gemeinschaft) are contrasted: the former defines a construct with rules in which you do not know your fellow human beings, the latter describes a more harmonious, smaller group of people who consciously know each other.
+The Expressionists also contrast the superficial old person with a coming new person who is fundamentally different from the old one and shows solidarity with fellow human beings. The "old" person is hard-hearted, harsh, evil, alien to fellow human beings and separated by boundary posts. In addition, the terms **society** and **community** are contrasted: the former defines a construct with rules in which you do not know your fellow human beings, the latter describes a more harmonious, smaller group of people who consciously know each other.
 
 ### Hermann Bahr (1863-1934)
 
@@ -244,7 +244,7 @@ In the following days, the family worries about money. It is decided that Grete 
 
 #### Part 3
 
-One of the apples remains stuck in his body for months, so that the spot becomes inflamed. Gregor is increasingly neglected and his room becomes a storage room. As an additional source of income, the family rents out rooms of the flat to three gentlemen, which is why Gregor's door remains closed during dinner. But when his sister plays the violin, Gregor opens the door and the gentlemen threaten to give notice. Grete says that they must get rid of **it** (Gregor). That night, Gregor dies from the exertion of crawling with the apple in his body. The new charwoman – the only one who does not detest Gregor – informs the family and disposes of him.
+One of the apples remains stuck in his body for months, so that the spot becomes inflamed. Gregor is increasingly neglected and his room becomes a storage room. As an additional source of income, the family rents out rooms of the flat to three gentlemen, which is why Gregor's door remains closed during dinner. But when his sister plays the violin, Gregor opens the door and the gentlemen threaten to give notice. Grete says that they must get rid of **it** (Gregor). That night, Gregor dies from the exertion of crawling with the apple in his body. The new charwoman, the only one who does not detest Gregor, informs the family and disposes of him.
 
 The family is happy: they give notice to the three gentlemen and the charwoman and hope that Grete will soon find a husband.
 
@@ -301,7 +301,7 @@ In this epoch, many literary magazines were written, such as "Die Aktion" or "De
 
 Dadaism was born when Hugo Ball, Huelsenbeck, Hans Arp and Tristan Tzara met in Zurich in 1916 and discovered the word "Dada" for their art in a dictionary. This "anti-art" was directed against everything that had come before. The "Dadaist Manifesto" of 1918 states that language should express the "explosion" of the time.
 
-To demonstrate this destruction of language, the four founders used various methods, such as "unreason" (no logic in texts), sound poems (no words, but individual sounds), letter poems (focus on one word) and chance. Particularly striking poems are, firstly, the **bruitist** poem – also noise poem – which is supplemented by sounds and acting, and secondly, the **simultaneous** poem, in which several poems are read at the same time.
+To demonstrate this destruction of language, the four founders used various methods, such as "unreason" (no logic in texts), sound poems (no words, but individual sounds), letter poems (focus on one word) and chance. Particularly striking poems are, firstly, the **bruitist** poem, also called noise poem, which is supplemented by sounds and acting, and secondly, the **simultaneous** poem, in which several poems are read at the same time.
 
 ### The Vienna Group
 

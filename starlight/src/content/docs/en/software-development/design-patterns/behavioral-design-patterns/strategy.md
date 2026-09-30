@@ -9,7 +9,7 @@ If a class is supposed to offer several different strategies to achieve a certai
 
 ## Solution
 
-Create a separate class for each feature – for each strategy – all of which implement the same interface. Now the `Context` class can store a reference to this interface and simply call its methods. In object-oriented programming, this saves you many unnecessary `if` statements, because [polymorphism](/en/software-development/object-oriented-programming/#polymorphism) automatically calls the right implementation. The runtime recognises the actual type of the referenced object and calls the code of that class.
+Create a separate class for each feature, that is, for each strategy, all of which implement the same interface. Now the `Context` class can store a reference to this interface and simply call its methods. In object-oriented programming, this saves you many unnecessary `if` statements, because [polymorphism](/en/software-development/object-oriented-programming/#polymorphism) automatically calls the right implementation. The runtime recognises the actual type of the referenced object and calls the code of that class.
 
 ## Code
 

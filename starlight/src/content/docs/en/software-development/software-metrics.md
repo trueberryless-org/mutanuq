@@ -25,7 +25,7 @@ Software systems should be extensible with new functionality. At the same time, 
 
 ### Interoperability
 
-Every system should be able to communicate with other systems. This requires clearly defined interfaces, which in practice – unlike in theory – usually change while the project is being carried out.
+Every system should be able to communicate with other systems. This requires clearly defined interfaces, which in practice, unlike in theory, usually change while the project is being carried out.
 
 ### Portability
 
@@ -102,7 +102,7 @@ With inheritance, it must be possible to use an instance of the subclass instead
 
 -   A subclass method should not throw an `Exception` that the base class does not expect.
 
--   A subclass must not strengthen the preconditions of a method or weaken its postconditions. The classic counterexample is a `Square` that inherits from `Rectangle`: setting the width of a square also changes its height – a caller expecting a `Rectangle` therefore gets wrong areas.
+-   A subclass must not strengthen the preconditions of a method or weaken its postconditions. The classic counterexample is a `Square` that inherits from `Rectangle`: setting the width of a square also changes its height. A caller expecting a `Rectangle` therefore gets wrong areas.
 
 If all of this sounds a bit complicated, don't worry. In statically typed programming languages (Java, C#, ...), the rules about parameters and return values are largely checked by the compiler already. However, you have to follow the behavioral rules (exceptions, pre- and postconditions) yourself.
 
@@ -136,7 +136,7 @@ public class OrderService
 
 #### Dependency injection
 
-In practice, this principle is usually implemented with **dependency injection**: instances are not created by the classes themselves when they are needed, but are created and managed by a framework (a so-called DI container). The programmer no longer takes care of all the instances required for a desired functionality – the system does. The developer only has to declare which instances are needed.
+In practice, this principle is usually implemented with **dependency injection**: instances are not created by the classes themselves when they are needed, but are created and managed by a framework (a so-called DI container). The programmer no longer takes care of all the instances required for a desired functionality; the system does. The developer only has to declare which instances are needed.
 
 > "Don't call us, we'll call you"
 

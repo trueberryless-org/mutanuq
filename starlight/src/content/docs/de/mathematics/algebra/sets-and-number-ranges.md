@@ -7,7 +7,7 @@ sidebar:
 
 ## Mengen
 
-Eine **Menge** ist eine Zusammenfassung von unterscheidbaren Objekten, den **Elementen** der Menge. Mengen werden mit Großbuchstaben bezeichnet, ihre Elemente stehen in geschwungenen Klammern.
+Eine **Menge** ist eine Zusammenfassung von unterscheidbaren Objekten, den Elementen der Menge. Mengen werden mit Großbuchstaben bezeichnet, ihre Elemente stehen in geschwungenen Klammern.
 
 - **Aufzählende Schreibweise:** $A = \{1, 2, 3, 4\}$
 - **Beschreibende Schreibweise:** $A = \{x \in \mathbb{N} \mid 1 \le x \le 4\}$ (gelesen: „alle natürlichen Zahlen $x$, für die gilt …“)
@@ -26,10 +26,10 @@ Die Reihenfolge der Elemente spielt keine Rolle, und jedes Element kommt nur ein
 
 | Operation                   | Schreibweise    | Enthält alle Elemente, die …          |
 | --------------------------- | --------------- | ------------------------------------- |
-| **Durchschnitt** (Schnittmenge) | $A \cap B$  | in $A$ **und** in $B$ liegen          |
-| **Vereinigung**             | $A \cup B$      | in $A$ **oder** in $B$ liegen         |
-| **Differenz**               | $A \setminus B$ | in $A$, aber **nicht** in $B$ liegen  |
-| **Komplement**              | $\overline{A}$  | in der Grundmenge, aber nicht in $A$ liegen |
+| Durchschnitt (Schnittmenge) | $A \cap B$  | in $A$ und in $B$ liegen          |
+| Vereinigung             | $A \cup B$      | in $A$ oder in $B$ liegen         |
+| Differenz               | $A \setminus B$ | in $A$, aber nicht in $B$ liegen  |
+| Komplement              | $\overline{A}$  | in der Grundmenge, aber nicht in $A$ liegen |
 
 :::tip[Beispiel]
 Für $A = \{1, 2, 3, 4\}$ und $B = \{3, 4, 5\}$ gilt:
@@ -39,7 +39,7 @@ Für $A = \{1, 2, 3, 4\}$ und $B = \{3, 4, 5\}$ gilt:
 - $A \setminus B = \{1, 2\}$ und $B \setminus A = \{5\}$
 :::
 
-Mengenoperationen lassen sich gut mit **Venn-Diagrammen** veranschaulichen: Jede Menge wird als Kreis dargestellt, überlappende Bereiche zeigen den Durchschnitt. Zwei Mengen mit $A \cap B = \{\}$ heißen **disjunkt**.
+Mengenoperationen lassen sich gut mit **Venn-Diagrammen** veranschaulichen: Jede Menge wird als Kreis dargestellt, überlappende Bereiche zeigen den Durchschnitt. Zwei Mengen mit $A \cap B = \{\}$ heißen disjunkt.
 
 Die Mengenoperationen entsprechen den logischen Verknüpfungen der [Aussagenlogik](/de/mathematics/algebra/logic-and-boolean-algebra/): Der Durchschnitt entspricht dem „und“, die Vereinigung dem „oder“ und das Komplement der Negation.
 
@@ -53,10 +53,10 @@ $$
 
 | Zahlenbereich | Name                  | Beschreibung                                                        | Beispiele                        |
 | ------------- | --------------------- | ------------------------------------------------------------------- | -------------------------------- |
-| $\mathbb{N}$  | natürliche Zahlen     | $\{0, 1, 2, 3, \dots\}$ – Addition und Multiplikation sind immer möglich | $0, 7, 42$                    |
-| $\mathbb{Z}$  | ganze Zahlen          | $\{\dots, -2, -1, 0, 1, 2, \dots\}$ – auch Subtraktion ist immer möglich | $-5, 0, 13$                  |
-| $\mathbb{Q}$  | rationale Zahlen      | alle Brüche $\frac{p}{q}$ mit $p, q \in \mathbb{Z}$, $q \ne 0$ – auch Division (außer durch 0) | $\frac{3}{4}, -0{,}5, 0{,}\overline{3}$ |
-| $\mathbb{R}$  | reelle Zahlen         | rationale und irrationale Zahlen – alle Punkte der Zahlengeraden    | $\sqrt{2}, \pi, e$               |
+| $\mathbb{N}$  | natürliche Zahlen     | $\{0, 1, 2, 3, \dots\}$; Addition und Multiplikation sind immer möglich | $0, 7, 42$                    |
+| $\mathbb{Z}$  | ganze Zahlen          | $\{\dots, -2, -1, 0, 1, 2, \dots\}$; auch Subtraktion ist immer möglich | $-5, 0, 13$                  |
+| $\mathbb{Q}$  | rationale Zahlen      | alle Brüche $\frac{p}{q}$ mit $p, q \in \mathbb{Z}$, $q \ne 0$; auch Division (außer durch 0) | $\frac{3}{4}, -0{,}5, 0{,}\overline{3}$ |
+| $\mathbb{R}$  | reelle Zahlen         | rationale und irrationale Zahlen; alle Punkte der Zahlengeraden    | $\sqrt{2}, \pi, e$               |
 | $\mathbb{C}$  | [komplexe Zahlen](/de/mathematics/algebra/complex-numbers/) | Erweiterung um die imaginäre Einheit $j$ mit $j^2 = -1$ | $3 + 2j$ |
 
 :::note
@@ -65,7 +65,7 @@ Ob die 0 zu den natürlichen Zahlen gehört, ist eine Frage der Definition. In �
 
 ### Rationale und irrationale Zahlen
 
-Jede rationale Zahl lässt sich als **endliche** oder **periodische** Dezimalzahl schreiben:
+Jede rationale Zahl lässt sich als **endliche** oder periodische Dezimalzahl schreiben:
 
 - $\frac{3}{8} = 0{,}375$ (endlich)
 - $\frac{1}{3} = 0{,}333\ldots = 0{,}\overline{3}$ (periodisch)

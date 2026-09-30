@@ -35,7 +35,7 @@ Hierbei gibt es viele verschiedene Funktionen, welche eine unterschiedliche Anza
 Zu jeder Lesefunktion gibt es eine entsprechende Schreibfunktion (`eeprom_write_...`) sowie eine Update-Funktion (`eeprom_update_...`). Die Update-Funktionen schreiben nur dann, wenn sich der Wert tatsächlich geändert hat, und schonen dadurch den Speicher.
 
 :::tip
-Verwenden Sie für `int`-Werte `eeprom_read_word()`! Beim ATmega328p ist ein `int` nämlich nur 16 Bit groß.
+Verwende für `int`-Werte `eeprom_read_word()`! Beim ATmega328p ist ein `int` nämlich nur 16 Bit groß.
 :::
 
 Dabei muss man immer selbst auswählen, unter welcher Adresse die Bytes gespeichert werden. Der ATmega328p verfügt über eine Speichergröße von 1 KB, also von Adresse `0x000` bis `0x3FF`. Die Adresse wird den Funktionen als Pointer übergeben.
@@ -44,7 +44,7 @@ Dabei muss man immer selbst auswählen, unter welcher Adresse die Bytes gespeich
 
 ### Lesen
 
-Um Daten zu lesen – diese Operation ist theoretisch unlimitiert durchführbar – reicht dieser simple Code aus:
+Um Daten zu lesen (diese Operation ist theoretisch unlimitiert durchführbar), reicht dieser simple Code aus:
 
 ```c
 #define F_CPU 16000000
@@ -64,7 +64,7 @@ Ein noch nie beschriebenes EEPROM enthält an jeder Stelle den Wert `0xFF`.
 
 ### Schreiben
 
-Um Daten zu schreiben – diese Operation ist laut [Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf) pro Speicherzelle mindestens 100.000 Mal durchführbar – reicht dieser simple Code aus. Ein Schreibvorgang dauert etwa 3,3 ms.
+Um Daten zu schreiben (diese Operation ist laut [Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf) pro Speicherzelle mindestens 100.000 Mal durchführbar), reicht dieser simple Code aus. Ein Schreibvorgang dauert etwa 3,3 ms.
 
 ```c
 #define F_CPU 16000000
@@ -82,7 +82,7 @@ int main(void)
 ```
 
 :::caution
-Da die Anzahl der Schreibvorgänge begrenzt ist, sollte man niemals in der Arbeitsschleife ohne Bedingung auf das EEPROM schreiben – bei 1000 Durchläufen pro Sekunde wäre der Speicher sonst nach wenigen Minuten verschlissen.
+Da die Anzahl der Schreibvorgänge begrenzt ist, sollte man niemals in der Arbeitsschleife ohne Bedingung auf das EEPROM schreiben. Bei 1000 Durchläufen pro Sekunde wäre der Speicher sonst nach wenigen Minuten verschlissen.
 :::
 
 ### Variablen mit `EEMEM`

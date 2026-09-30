@@ -1,11 +1,11 @@
 ---
 title: Document-Oriented Databases
-description: NoSQL databases that store data as flexible JSON documents – concepts, the BASE model, MongoDB and CouchDB.
+description: "NoSQL databases that store data as flexible JSON documents: concepts, the BASE model, MongoDB and CouchDB."
 sidebar:
   order: 2
 ---
 
-Document-oriented databases belong to the so-called **NoSQL databases** ("not only SQL"). Instead of distributing data across several tables with fixed columns, they store related information as **documents** – usually in JSON format or a binary variant of it (BSON in MongoDB). A document can contain nested objects and lists and does not have to follow a fixed schema.
+Document-oriented databases belong to the so-called **NoSQL databases** ("not only SQL"). Instead of distributing data across several tables with fixed columns, they store related information as **documents**, usually in JSON format or a binary variant of it (BSON in MongoDB). A document can contain nested objects and lists and does not have to follow a fixed schema.
 
 ```json
 {
@@ -89,4 +89,4 @@ db.students.updateOne({ firstName: "Ben" }, { $push: { courses: "Spanish" } });
 
 ### CouchDB
 
-Apache CouchDB stores JSON documents and can be accessed entirely through an **HTTP/REST interface**. Queries are written using so-called _views_ (MapReduce functions in JavaScript) or the declarative query language Mango. A particular strength is **multi-master replication**: several databases – even devices working offline – can synchronise their data again later. Conflicts are detected through document revisions (`_rev`). With PouchDB, there is even a compatible database that runs directly in the browser.
+Apache CouchDB stores JSON documents and can be accessed entirely through an **HTTP/REST interface**. Queries are written using so-called _views_ (MapReduce functions in JavaScript) or the declarative query language Mango. A particular strength is **multi-master replication**: several databases, even devices working offline, can synchronise their data again later. Conflicts are detected through document revisions (`_rev`). With PouchDB, there is even a compatible database that runs directly in the browser.

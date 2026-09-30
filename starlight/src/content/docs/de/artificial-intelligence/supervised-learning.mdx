@@ -1,6 +1,6 @@
 ---
 title: Supervised Learning
-description: Klassifikation mit gelabelten Daten – von logistischer Regression über Random Forests bis zu neuronalen Netzen mit scikit-learn, TensorFlow und PyTorch.
+description: "Klassifikation mit gelabelten Daten: von logistischer Regression über Random Forests bis zu neuronalen Netzen mit scikit-learn, TensorFlow und PyTorch."
 sidebar:
   order: 8
 ---
@@ -93,7 +93,7 @@ print("Bag of Words\n", X_train_vectorized.toarray())
 
 ### Logistic Regression
 
-Trotz ihres Namens ist die **logistische Regression** ein Klassifikationsverfahren. Sie berechnet zunächst – wie die lineare Regression – eine gewichtete Summe der Merkmale $z = w_1 x_1 + \dots + w_n x_n + b$. Diese wird anschließend durch die **Sigmoid-Funktion** $\sigma(z) = \frac{1}{1 + e^{-z}}$ in eine Wahrscheinlichkeit zwischen 0 und 1 umgewandelt. Liegt die Wahrscheinlichkeit über einem Schwellwert (meist 0,5), wird die positive Klasse vorhergesagt.
+Trotz ihres Namens ist die **logistische Regression** ein Klassifikationsverfahren. Sie berechnet zunächst, wie die lineare Regression, eine gewichtete Summe der Merkmale $z = w_1 x_1 + \dots + w_n x_n + b$. Diese wird anschließend durch die **Sigmoid-Funktion** $\sigma(z) = \frac{1}{1 + e^{-z}}$ in eine Wahrscheinlichkeit zwischen 0 und 1 umgewandelt. Liegt die Wahrscheinlichkeit über einem Schwellwert (meist 0,5), wird die positive Klasse vorhergesagt.
 
 Die logistische Regression ist schnell, gut interpretierbar (die Gewichte zeigen, welche Merkmale für eine Entscheidung wichtig sind) und ein guter erster Vergleichswert (_Baseline_) für jedes Klassifikationsproblem. Mit mehr als zwei Klassen funktioniert sie ebenfalls (multinomiale logistische Regression).
 
@@ -111,7 +111,7 @@ print(clf.predict_proba(X_valid_vectorized))  # Wahrscheinlichkeit pro Klasse
 
 ### Support Vector Machines
 
-Eine **Support Vector Machine** (SVM) sucht jene Trennlinie – bzw. in höheren Dimensionen jene Hyperebene –, welche die Klassen mit dem **größtmöglichen Abstand** (_Margin_) voneinander trennt. Die Datenpunkte, die der Trennlinie am nächsten liegen und deren Lage bestimmen, heißen **Stützvektoren** (_Support Vectors_).
+Eine **Support Vector Machine** (SVM) sucht jene Trennlinie (bzw. in höheren Dimensionen jene Hyperebene), welche die Klassen mit dem **größtmöglichen Abstand** (_Margin_) voneinander trennt. Die Datenpunkte, die der Trennlinie am nächsten liegen und deren Lage bestimmen, heißen **Stützvektoren** (_Support Vectors_).
 
 Lassen sich die Daten nicht durch eine Gerade trennen, hilft der sogenannte **Kernel-Trick**: Die Daten werden (implizit) in einen höherdimensionalen Raum abgebildet, in dem sie linear trennbar sind. Gängige Kernel sind `linear`, `poly` und `rbf`. Der Parameter `C` legt fest, wie stark Fehlklassifikationen im Training bestraft werden.
 
@@ -264,7 +264,7 @@ print(accuracy_score(y_valid, predictions)) ## [Beispieloutput bei einem größe
 
 ## K-nearest Neighbors (KNN)
 
-Der **k-Nächste-Nachbarn-Algorithmus** ist eines der einfachsten Klassifikationsverfahren. Beim „Training“ werden die Daten lediglich gespeichert. Soll ein neuer Datenpunkt klassifiziert werden, sucht der Algorithmus die $k$ Trainingspunkte, die ihm am ähnlichsten sind – meist gemessen mit dem euklidischen Abstand – und wählt die Klasse, die unter diesen Nachbarn am häufigsten vorkommt.
+Der **k-Nächste-Nachbarn-Algorithmus** ist eines der einfachsten Klassifikationsverfahren. Beim „Training“ werden die Daten lediglich gespeichert. Soll ein neuer Datenpunkt klassifiziert werden, sucht der Algorithmus die $k$ Trainingspunkte, die ihm am ähnlichsten sind (meist gemessen mit dem euklidischen Abstand), und wählt die Klasse, die unter diesen Nachbarn am häufigsten vorkommt.
 
 - Ein kleines $k$ (z. B. 1) reagiert stark auf Ausreißer und neigt zu Overfitting, ein großes $k$ glättet die Entscheidung zu sehr (Underfitting). Bei zwei Klassen wählt man $k$ meist ungerade, um Gleichstände zu vermeiden.
 - Da Abstände berechnet werden, müssen die Merkmale vorher **skaliert** werden (z. B. mit dem `StandardScaler`), sonst dominieren Merkmale mit großen Zahlenwerten.

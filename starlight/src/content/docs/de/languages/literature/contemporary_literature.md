@@ -1,11 +1,11 @@
 ---
 title: Gegenwartsliteratur
-description: Deutschsprachige Literatur seit 1990 – Wendeliteratur, Popliteratur, Erinnerungsliteratur, Literatur der Migration und österreichische Gegenwartsautorinnen und -autoren.
+description: "Deutschsprachige Literatur seit 1990: Wendeliteratur, Popliteratur, Erinnerungsliteratur, Literatur der Migration und österreichische Gegenwartsautorinnen und -autoren."
 sidebar:
   order: 17
 ---
 
-Die **Gegenwartsliteratur** umfasst die Literatur seit etwa 1990. Anders als frühere Epochen lässt sie sich nicht auf ein gemeinsames Programm festlegen: Es gibt eine große Vielfalt an Themen, Stilen und Stimmen. Man spricht deshalb oft von der **Postmoderne**, in der Grenzen zwischen „hoher“ und Unterhaltungsliteratur verschwimmen und alte Formen neu kombiniert werden.
+Die **Gegenwartsliteratur** umfasst die Literatur seit etwa 1990. Anders als frühere Epochen lässt sie sich nicht auf ein gemeinsames Programm festlegen: Es gibt eine große Vielfalt an Themen, Stilen und Stimmen. Man spricht deshalb oft von der Postmoderne, in der Grenzen zwischen „hoher“ und Unterhaltungsliteratur verschwimmen und alte Formen neu kombiniert werden.
 
 ## Eckdaten
 
@@ -18,7 +18,7 @@ Die **Gegenwartsliteratur** umfasst die Literatur seit etwa 1990. Anders als fr�
 
 ## Historischer Hintergrund
 
-Mit dem **Fall der Berliner Mauer** am 9. November 1989 endete der Kalte Krieg, 1990 wurden die beiden deutschen Staaten vereinigt. Österreich trat 1995 der **Europäischen Union** bei. Die Globalisierung und das Internet veränderten Arbeit, Kommunikation und das Lesen. Migration prägt die Gesellschaft zunehmend, ebenso wie neue Herausforderungen wie der Klimawandel, Terroranschläge, Wirtschaftskrisen und die Coronapandemie.
+Mit dem **Fall der Berliner Mauer** am 9. November 1989 endete der Kalte Krieg, 1990 wurden die beiden deutschen Staaten vereinigt. Österreich trat 1995 der Europäischen Union bei. Die Globalisierung und das Internet veränderten Arbeit, Kommunikation und das Lesen. Migration prägt die Gesellschaft zunehmend, ebenso wie neue Herausforderungen wie der Klimawandel, Terroranschläge, Wirtschaftskrisen und die Coronapandemie.
 
 ## Strömungen und Themen
 
@@ -28,15 +28,15 @@ Viele Autorinnen und Autoren setzten sich mit dem Ende der DDR und der Wiederver
 
 ### Popliteratur
 
-In den 1990er-Jahren beschrieben junge Autoren wie **Christian Kracht** („Faserland“, 1995) und **Benjamin von Stuckrad-Barre** („Soloalbum“, 1998) die Konsumwelt, Markennamen, Musik und das Lebensgefühl ihrer Generation.
+In den 1990er-Jahren beschrieben junge Autoren wie **Christian Kracht** („Faserland“, 1995) und Benjamin von Stuckrad-Barre („Soloalbum“, 1998) die Konsumwelt, Markennamen, Musik und das Lebensgefühl ihrer Generation.
 
 ### Erinnerungsliteratur
 
-Die NS-Zeit und der Holocaust bleiben wichtige Themen, nun oft aus der Perspektive der Enkelgeneration, die die Geschichte ihrer Familie erforscht. **Bernhard Schlink** erzählt in „**Der Vorleser**“ (1995) von der Liebe eines Jugendlichen zu einer älteren Frau, die sich später als ehemalige KZ-Aufseherin herausstellt. Weitere Beispiele sind W. G. Sebalds „Austerlitz“ (2001) und Monika Helfers Familiengeschichte „Die Bagage“ (2020).
+Die NS-Zeit und der Holocaust bleiben wichtige Themen, nun oft aus der Perspektive der Enkelgeneration, die die Geschichte ihrer Familie erforscht. **Bernhard Schlink** erzählt in „Der Vorleser“ (1995) von der Liebe eines Jugendlichen zu einer älteren Frau, die sich später als ehemalige KZ-Aufseherin herausstellt. Weitere Beispiele sind W. G. Sebalds „Austerlitz“ (2001) und Monika Helfers Familiengeschichte „Die Bagage“ (2020).
 
 ### Literatur der Migration und Mehrsprachigkeit
 
-Immer mehr Autorinnen und Autoren schreiben auf Deutsch, obwohl es nicht ihre Erstsprache ist, oder erzählen von Flucht, Ankommen und Leben zwischen den Kulturen. Beispiele sind **Saša Stanišić** („Wie der Soldat das Grammofon repariert“, 2006; „Herkunft“, 2019), **Emine Sevgi Özdamar**, **Feridun Zaimoglu** und die Wiener Autorin **Julya Rabinowich** („Spaltkopf“, 2008; „Dazwischen: Ich“, 2016).
+Immer mehr Autorinnen und Autoren schreiben auf Deutsch, obwohl es nicht ihre Erstsprache ist, oder erzählen von Flucht, Ankommen und Leben zwischen den Kulturen. Beispiele sind **Saša Stanišić** („Wie der Soldat das Grammofon repariert“, 2006; „Herkunft“, 2019), Emine Sevgi Özdamar, Feridun Zaimoglu und die Wiener Autorin Julya Rabinowich („Spaltkopf“, 2008; „Dazwischen: Ich“, 2016).
 
 ### Neue Medien und Formen
 
@@ -52,7 +52,7 @@ Mit dem Internet entstanden neue Formen wie Blogs, Social-Media-Literatur und **
 - **Arno Geiger** (* 1968): „Der alte König in seinem Exil“ (2011) über die Demenzerkrankung seines Vaters.
 - **Robert Seethaler** (* 1966): „Der Trafikant“ (2012) über einen jungen Mann im Wien des Jahres 1937, der Sigmund Freud kennenlernt; „Ein ganzes Leben“ (2014).
 - **Clemens J. Setz** (* 1982): experimentelle Romane und Erzählungen, 2021 mit dem Georg-Büchner-Preis ausgezeichnet.
-- **Teresa Präauer**, **Raphaela Edelbauer** und **Tonio Schachinger** („Echtzeitalter“, 2023, Deutscher Buchpreis) gehören zu den jüngeren wichtigen Stimmen.
+- Teresa Präauer, Raphaela Edelbauer und Tonio Schachinger („Echtzeitalter“, 2023, Deutscher Buchpreis) gehören zu den jüngeren wichtigen Stimmen.
 
 ## Gattungen
 

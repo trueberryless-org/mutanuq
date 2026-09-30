@@ -26,7 +26,7 @@ The illuminance of a lamp decreases with the square of the distance: $E(r) = \fr
 
 ## Polynomial functions
 
-A **polynomial function** of **degree** $n$ is a sum of power functions with natural exponents:
+A **polynomial function** of degree $n$ is a sum of power functions with natural exponents:
 
 $$
 f(x) = a_n x^n + a_{n-1} x^{n-1} + \ldots + a_1 x + a_0 \qquad (a_n \ne 0)
@@ -38,9 +38,9 @@ Linear functions are polynomials of degree 1, quadratic functions of degree 2. P
 
 A polynomial function of degree $n$ has
 
-- **at most $n$ zeros**,
-- **at most $n - 1$ extrema** (maxima and minima),
-- **at most $n - 2$ inflection points**.
+- at most $n$ zeros,
+- at most $n - 1$ extrema (maxima and minima),
+- at most $n - 2$ inflection points.
 
 If the degree is **odd**, the function has at least one zero.
 
@@ -55,7 +55,7 @@ For very large $\lvert x \rvert$, the term with the highest power $a_n x^n$ dete
 
 ### Symmetry
 
-If only **even** exponents occur (including the constant $a_0 = a_0 x^0$), the function is even. If only **odd** exponents occur, it is odd. $x^4 - 3x^2 + 1$ is even, $x^3 - 2x$ is odd.
+If only **even** exponents occur (including the constant $a_0 = a_0 x^0$), the function is even. If only odd exponents occur, it is odd. $x^4 - 3x^2 + 1$ is even, $x^3 - 2x$ is odd.
 
 ## Zeros of polynomial functions
 
@@ -77,10 +77,10 @@ If a linear factor occurs several times, it is a **multiple zero**. At a double 
 
 ### Methods
 
-- **Factoring out** if there is no constant term: $x^3 - 4x = x(x^2 - 4) = x(x - 2)(x + 2)$
-- **Substitution** for biquadratic equations: $x^4 - 5x^2 + 4 = 0$ becomes $u^2 - 5u + 4 = 0$ with $u = x^2$, so $u = 1$ or $u = 4$ and $x \in \{-2, -1, 1, 2\}$.
-- **Polynomial long division** after guessing a zero. Integer zeros are always divisors of the constant term $a_0$ (if all coefficients are integers and $a_n = 1$).
-- **Numerical methods** such as [Newton's method](/en/mathematics/analysis/numerical-methods/#newtons-method) or a calculator.
+- Factoring out if there is no constant term: $x^3 - 4x = x(x^2 - 4) = x(x - 2)(x + 2)$
+- Substitution for biquadratic equations: $x^4 - 5x^2 + 4 = 0$ becomes $u^2 - 5u + 4 = 0$ with $u = x^2$, so $u = 1$ or $u = 4$ and $x \in \{-2, -1, 1, 2\}$.
+- Polynomial long division after guessing a zero. Integer zeros are always divisors of the constant term $a_0$ (if all coefficients are integers and $a_n = 1$).
+- Numerical methods such as [Newton's method](/en/mathematics/analysis/numerical-methods/#newtons-method) or a calculator.
 
 :::tip[Example: Polynomial long division]
 $f(x) = x^3 - 2x^2 - 5x + 6$. Trying the divisors of $6$ gives $f(1) = 1 - 2 - 5 + 6 = 0$. So $x_1 = 1$ is a zero.

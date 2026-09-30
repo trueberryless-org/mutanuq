@@ -7,7 +7,7 @@ sidebar:
 
 ## Equations and solution sets
 
-An **equation** consists of two [expressions](/en/mathematics/algebra/terms/) joined by an equals sign. A number that gives a true statement when substituted for the variable is a **solution**. All solutions together form the **solution set** $L$.
+An **equation** consists of two [expressions](/en/mathematics/algebra/terms/) joined by an equals sign. A number that gives a true statement when substituted for the variable is a solution. All solutions together form the solution set $L$.
 
 The solution set depends on the **universal set**: the equation $2x = 3$ has no solution in $\mathbb{Z}$ ($L = \{\}$), but the solution $L = \{1.5\}$ in $\mathbb{Q}$.
 
@@ -73,7 +73,7 @@ $$
 x_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 $$
 
-If $a = 1$, the equation is written in the **normalised form** $x^2 + px + q = 0$ and solved with the **$pq$ formula**:
+If $a = 1$, the equation is written in the **normalised form** $x^2 + px + q = 0$ and solved with the $pq$ formula:
 
 $$
 x_{1,2} = -\frac{p}{2} \pm \sqrt{\left(\frac{p}{2}\right)^2 - q}
@@ -130,7 +130,7 @@ Since $-2 \in D$, $L = \{-2\}$.
 
 ## Radical equations
 
-In **radical equations**, isolate the root and square both sides. Squaring is **not** an equivalence transformation, because it can produce extraneous solutions. That is why checking the solutions is essential.
+In **radical equations**, isolate the root and square both sides. Squaring is not an equivalence transformation, because it can produce extraneous solutions. That is why checking the solutions is essential.
 
 :::tip[Example]
 $$

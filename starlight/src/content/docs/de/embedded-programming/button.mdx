@@ -55,7 +55,7 @@ Mechanische Tasten „prellen“: Beim Drücken und Loslassen schließen und öf
 ### Ohne Interrupts
 
 :::note
-Achten Sie genau auf die Unterschiede der if-Bedingungen!
+Achte genau auf die Unterschiede der if-Bedingungen!
 :::
 
 #### Pull-Up Beschaltung
@@ -221,12 +221,12 @@ ISR (INT0_vect) {
 ```
 
 :::caution
-Ohne die Einstellung in `EICRA` wird der Interrupt auf den low-Pegel ausgelöst – die ISR würde also ununterbrochen immer wieder aufgerufen, solange die Taste gedrückt ist. Außerdem sollten ISRs möglichst kurz sein. Ein `_delay_ms()` in der ISR blockiert währenddessen das gesamte Programm. In größeren Programmen setzt man in der ISR deshalb nur eine `volatile`-Variable und verarbeitet den Tastendruck in der Arbeitsschleife (siehe [Interrupts](/de/embedded-programming/interrupts/)).
+Ohne die Einstellung in `EICRA` wird der Interrupt auf den low-Pegel ausgelöst. Die ISR würde also ununterbrochen immer wieder aufgerufen, solange die Taste gedrückt ist. Außerdem sollten ISRs möglichst kurz sein. Ein `_delay_ms()` in der ISR blockiert währenddessen das gesamte Programm. In größeren Programmen setzt man in der ISR deshalb nur eine `volatile`-Variable und verarbeitet den Tastendruck in der Arbeitsschleife (siehe [Interrupts](/de/embedded-programming/interrupts/)).
 :::
 
 #### Gruppenbasierte externe Interrupts
 
-Die gruppenbasierten externen Interrupts (_Pin Change Interrupts_) gelten immer für den gesamten Port und werden bei **jeder** Änderung ausgelöst – also sowohl beim Drücken als auch beim Loslassen. Aus diesem Grund muss man im Interrupt auch nochmals den richtigen PIN auf Tasteneingaben überprüfen, wie man unten im Code sehen kann. Mit `PCICR` aktiviert man den Interrupt für einen Port, mit `PCMSKx` wählt man die Pins aus, die ihn auslösen dürfen.
+Die gruppenbasierten externen Interrupts (_Pin Change Interrupts_) gelten immer für den gesamten Port und werden bei **jeder** Änderung ausgelöst, also sowohl beim Drücken als auch beim Loslassen. Aus diesem Grund muss man im Interrupt auch nochmals den richtigen PIN auf Tasteneingaben überprüfen, wie man unten im Code sehen kann. Mit `PCICR` aktiviert man den Interrupt für einen Port, mit `PCMSKx` wählt man die Pins aus, die ihn auslösen dürfen.
 
 |       | Port B        | Port C         | Port D         |
 | ----- | ------------- | -------------- | -------------- |

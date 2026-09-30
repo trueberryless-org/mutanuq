@@ -7,7 +7,7 @@ sidebar:
 
 ## Quantities and units
 
-In engineering, you rarely calculate with pure numbers but with **physical quantities**. A quantity consists of a **numerical value** and a **unit**:
+In engineering, you rarely calculate with pure numbers but with **physical quantities**. A quantity consists of a numerical value and a unit:
 
 $$
 U = 230\ \text{V} \qquad \text{(quantity = numerical value} \cdot \text{unit)}
@@ -79,7 +79,7 @@ The other way round: an item costs €54 gross. The net price is $\frac{54}{1.2}
 :::caution
 Percentages must not simply be added up. If a price first rises by 10 % and then falls by 10 %, it is **lower** than before: $1.1 \cdot 0.9 = 0.99$, i.e. a decrease of 1 %.
 
-Also distinguish between **percent** and **percentage points**: if an interest rate rises from 2 % to 3 %, that is an increase of one percentage point, but of 50 %.
+Also distinguish between **percent** and percentage points: if an interest rate rises from 2 % to 3 %, that is an increase of one percentage point, but of 50 %.
 :::
 
 Repeated percentage changes lead to exponential growth, for example in [compound interest](/en/mathematics/analysis/sequences-and-series/#compound-interest).
@@ -109,8 +109,8 @@ Measuring instruments often state their accuracy as a relative error, for exampl
 
 If you keep calculating with values that contain errors, the errors propagate. For small errors, the following rule of thumb applies:
 
-- For **addition and subtraction**, the **absolute** errors add up.
-- For **multiplication and division**, the **relative** errors add up.
+- For addition and subtraction, the absolute errors add up.
+- For multiplication and division, the relative errors add up.
 
 :::tip[Example]
 A rectangle is $a = (20 \pm 0.1)\ \text{cm}$ long and $b = (10 \pm 0.1)\ \text{cm}$ wide. The relative errors are $0.5\,\%$ and $1\,\%$. The area $A = 200\ \text{cm}^2$ therefore has a relative error of about $1.5\,\%$, i.e. $A \approx (200 \pm 3)\ \text{cm}^2$.

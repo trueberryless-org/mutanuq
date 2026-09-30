@@ -1,6 +1,6 @@
 ---
 title: Analog-Digital-Converter
-description: Analoge Spannungen mit dem 10-Bit-ADC des ATmega328P messen – Referenzspannung, Kanalwahl, Prescaler, Betriebsmodi und 8-Bit-Auslesen.
+description: "Analoge Spannungen mit dem 10-Bit-ADC des ATmega328P messen: Referenzspannung, Kanalwahl, Prescaler, Betriebsmodi und 8-Bit-Auslesen."
 sidebar:
   order: 7
 ---
@@ -21,7 +21,7 @@ Bei einer Referenzspannung von $5\;V$ entspricht ein Schritt also rund $4{,}9\;m
 
 ### Referenzauswahl Bits
 
-Der ADC vergleicht die gemessene Spannung mit einer **Referenzspannung**, die dem Maximalwert `1023` entspricht. Beim ATmega328p kann man zwischen einer externen Spannung am Pin `AREF`, der Versorgungsspannung `AVCC` (meist 5V) und einer internen Referenz von 1,1V wählen. Meistens müssen Sie `REFS0` auf 1 und `REFS1` auf 0 setzen, damit `AVCC` als Referenz verwendet wird. Mehr Informationen befinden sich in der [Tabelle 23-3 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217).
+Der ADC vergleicht die gemessene Spannung mit einer **Referenzspannung**, die dem Maximalwert `1023` entspricht. Beim ATmega328p kann man zwischen einer externen Spannung am Pin `AREF`, der Versorgungsspannung `AVCC` (meist 5V) und einer internen Referenz von 1,1V wählen. Meistens musst du `REFS0` auf 1 und `REFS1` auf 0 setzen, damit `AVCC` als Referenz verwendet wird. Mehr Informationen befinden sich in der [Tabelle 23-3 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217).
 
 ### Links- oder Rechtsbündig?
 
@@ -111,7 +111,7 @@ ADCSRA |= (1<<ADATE);
 
 ### Prescaler
 
-Der ADC beim ATmega328p benötigt nicht so einen schnellen Takt wie der Systemtakt. Laut Datenblatt benötigt er für die volle 10-Bit-Genauigkeit einen Takt zwischen 50 kHz und 200 kHz. Aus diesem Grund braucht man einen Prescaler, auch Division Factor genannt, welcher – wie der Name schon sagt – den Systemtakt durch eine konfigurierte Zahl dividiert.
+Der ADC beim ATmega328p benötigt nicht so einen schnellen Takt wie der Systemtakt. Laut Datenblatt benötigt er für die volle 10-Bit-Genauigkeit einen Takt zwischen 50 kHz und 200 kHz. Aus diesem Grund braucht man einen Prescaler, auch Division Factor genannt, welcher, wie der Name schon sagt, den Systemtakt durch eine konfigurierte Zahl dividiert.
 
 Beim ATmega328p benötigen wir einen Division Factor von `128`, damit der ADC-Takt bei einem Systemtakt von $16.000.000\;Hz$ zwischen $50K\;Hz$ und $200K\;Hz$ liegt.
 
@@ -129,13 +129,13 @@ Die Konfiguration auf Code-Ebene sieht dann folgendermaßen aus:
 ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
 ```
 
-Falls Sie nicht den ATmega328p verwenden, empfehlen wir einen Blick in die [Tabelle 23-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219).
+Falls du nicht den ATmega328p verwendest, empfehlen wir einen Blick in die [Tabelle 23-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219).
 
 ### effizienter ADC (8-bit Genauigkeit)
 
 Wie vorhin bereits erwähnt hat das Data Register vom ADC beim ATmega328p 10-bit. Weil dies mehr als 8-bit sind, benötigt man zwei Bytes um die Informationen zu speichern. Diese beiden Register heißen `ADCL` und `ADCH`, was einerseits für das Low- und andererseits für das High-Byte steht. Kombiniert können die beiden Register mittels `ADCW`-Register ausgelesen werden. Dabei wird zuerst das Low Byte, anschließend das High Byte ausgelesen. Sobald `ADCL` gelesen wird, sperrt der ADC die beiden Register, bis auch `ADCH` gelesen wurde. So kann keine neue Messung die Werte dazwischen überschreiben.
 
-Außerdem kann man im ADC Multiplexer Selection Register (`ADMUX`-Register) das [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) auf 1 setzen, was dafür sorgt, dass der ADC das Ergebnis linksbündig in die beiden Register `ADCL` und `ADCH` hineinschreibt und nicht rechtsbündig, wie es standardmäßig geschieht. Für ein besseres Verständnis sehen Sie sich entweder die Bilder unten an oder lesen Sie [die Register im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219) nach.
+Außerdem kann man im ADC Multiplexer Selection Register (`ADMUX`-Register) das [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) auf 1 setzen, was dafür sorgt, dass der ADC das Ergebnis linksbündig in die beiden Register `ADCL` und `ADCH` hineinschreibt und nicht rechtsbündig, wie es standardmäßig geschieht. Für ein besseres Verständnis sieh dir entweder die Bilder unten an oder lies [die Register im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219) nach.
 
 ![ADC Right Adjust Result](/images/embedded_programming/adc/adc_right_adjust_result.png)
 ![ADC Left Adjust Result](/images/embedded_programming/adc/adc_left_adjust_result.png)

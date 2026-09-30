@@ -13,7 +13,7 @@ $$
 a^n = \underbrace{a \cdot a \cdot \ldots \cdot a}_{n \text{ Faktoren}}
 $$
 
-$a$ heißt **Basis**, $n$ **Hochzahl** (Exponent) und $a^n$ **Potenz**. Es gilt $a^1 = a$.
+$a$ heißt **Basis**, $n$ Hochzahl (Exponent) und $a^n$ Potenz. Es gilt $a^1 = a$.
 
 :::caution
 Die Hochzahl bezieht sich nur auf das unmittelbar davorstehende Zeichen: $-3^2 = -(3 \cdot 3) = -9$, aber $(-3)^2 = (-3) \cdot (-3) = 9$. Taschenrechner und Programmiersprachen halten sich an diese Regel.
@@ -51,7 +51,7 @@ $$
 
 ## Zehnerpotenzen und Gleitkommaschreibweise
 
-Sehr große und sehr kleine Zahlen schreibt man in der **Gleitkommaschreibweise** (wissenschaftliche Schreibweise) als $a \cdot 10^n$ mit $1 \le \lvert a \rvert < 10$. Für die technische Schreibweise wählt man Hochzahlen, die Vielfache von $3$ sind, weil diese den **SI-Vorsilben** entsprechen.
+Sehr große und sehr kleine Zahlen schreibt man in der **Gleitkommaschreibweise** (wissenschaftliche Schreibweise) als $a \cdot 10^n$ mit $1 \le \lvert a \rvert < 10$. Für die technische Schreibweise wählt man Hochzahlen, die Vielfache von $3$ sind, weil diese den SI-Vorsilben entsprechen.
 
 | Vorsilbe | Zeichen | Faktor     | Vorsilbe | Zeichen | Faktor      |
 | -------- | ------- | ---------- | -------- | ------- | ----------- |
@@ -77,7 +77,7 @@ $$
 \sqrt[n]{a} = x \quad\Longleftrightarrow\quad x^n = a, \quad x \ge 0
 $$
 
-$a$ heißt **Radikand**, $n$ **Wurzelexponent**. Für $n = 2$ schreibt man kurz $\sqrt{a}$ (Quadratwurzel).
+$a$ heißt **Radikand**, $n$ Wurzelexponent. Für $n = 2$ schreibt man kurz $\sqrt{a}$ (Quadratwurzel).
 
 :::caution
 $\sqrt{9} = 3$ und nicht $\pm 3$. Die Gleichung $x^2 = 9$ hat aber zwei Lösungen: $x = \pm\sqrt{9} = \pm 3$.
@@ -124,7 +124,7 @@ $$
 \log_a b = x \quad\Longleftrightarrow\quad a^x = b \qquad (a > 0,\ a \ne 1,\ b > 0)
 $$
 
-Besonders wichtig sind der **dekadische Logarithmus** $\lg x = \log_{10} x$, der **natürliche Logarithmus** $\ln x = \log_e x$ mit der Eulerschen Zahl $e \approx 2{,}71828$ und in der Informatik der **Zweierlogarithmus** $\operatorname{ld} x = \log_2 x$.
+Besonders wichtig sind der **dekadische Logarithmus** $\lg x = \log_{10} x$, der natürliche Logarithmus $\ln x = \log_e x$ mit der Eulerschen Zahl $e \approx 2{,}71828$ und in der Informatik der Zweierlogarithmus $\operatorname{ld} x = \log_2 x$.
 
 :::tip[Beispiele]
 $\log_2 8 = 3$, weil $2^3 = 8$. $\quad \lg 0{,}001 = -3$, weil $10^{-3} = 0{,}001$. $\quad \ln 1 = 0$, weil $e^0 = 1$.

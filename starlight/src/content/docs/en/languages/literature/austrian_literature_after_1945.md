@@ -1,11 +1,11 @@
 ---
 title: Austrian Literature after 1945
-description: Austrian literature from the post-war period to the 1990s – Aichinger, Bachmann, Celan, Jandl, Bernhard, Handke, Jelinek, Turrini and the criticism of Austria's self-image.
+description: "Austrian literature from the post-war period to the 1990s: Aichinger, Bachmann, Celan, Jandl, Bernhard, Handke, Jelinek, Turrini and the criticism of Austria's self-image."
 sidebar:
   order: 16
 ---
 
-For a long time after 1945, Austria saw itself as the "**first victim**" of National Socialism. The complicity of many Austrians in the Nazi crimes was suppressed, and conservative values and an idyllic image of home (Heimat) shaped the culture. Many authors wrote against this self-image and the **silence about the past**. Austrian literature is particularly characterised by its **scepticism of language** and its experimental play with language.
+For a long time after 1945, Austria saw itself as the "**first victim**" of National Socialism. The complicity of many Austrians in the Nazi crimes was suppressed, and conservative values and an idyllic image of home (Heimat) shaped the culture. Many authors wrote against this self-image and the silence about the past. Austrian literature is particularly characterised by its scepticism of language and its experimental play with language.
 
 ## Key facts
 
@@ -19,7 +19,7 @@ For a long time after 1945, Austria saw itself as the "**first victim**" of Nati
 
 ## Historical background
 
-From 1945 to 1955, Austria was occupied by the four Allies. With the **State Treaty** (1955) and **neutrality**, it became independent again. The Second Republic was long shaped by the grand coalition of ÖVP and SPÖ and by **social partnership**. The reckoning with the Nazi era began late: during the **Waldheim affair** in 1986, the war past of presidential candidate Kurt Waldheim was debated. In 1991, Chancellor Franz Vranitzky officially acknowledged Austria's shared responsibility for the first time.
+From 1945 to 1955, Austria was occupied by the four Allies. With the **State Treaty** (1955) and neutrality, it became independent again. The Second Republic was long shaped by the grand coalition of ÖVP and SPÖ and by social partnership. The reckoning with the Nazi era began late: during the Waldheim affair in 1986, the war past of presidential candidate Kurt Waldheim was debated. In 1991, Chancellor Franz Vranitzky officially acknowledged Austria's shared responsibility for the first time.
 
 ## Post-war literature in Austria
 
@@ -29,7 +29,7 @@ Aichinger survived the Nazi era in Vienna as the daughter of a Jewish mother; ma
 
 ### Ingeborg Bachmann (1926 – 1973)
 
-Bachmann, from Carinthia, is one of the most important German-language poets. Her collections "**Die gestundete Zeit**" (Borrowed Time, 1953) and "Anrufung des Großen Bären" (Invocation of the Great Bear, 1956) are marked by images of threat and coldness. In her novel "**Malina**" (1971) and the stories in "Das dreißigste Jahr" (The Thirtieth Year), she examines the destruction of the female self by violence in relationships and society. Her work is deeply concerned with the question of whether language can still express the truth at all. The **Ingeborg Bachmann Prize**, awarded every year in Klagenfurt, is named after her.
+Bachmann, from Carinthia, is one of the most important German-language poets. Her collections "**Die gestundete Zeit**" (Borrowed Time, 1953) and "Anrufung des Großen Bären" (Invocation of the Great Bear, 1956) are marked by images of threat and coldness. In her novel "Malina" (1971) and the stories in "Das dreißigste Jahr" (The Thirtieth Year), she examines the destruction of the female self by violence in relationships and society. Her work is deeply concerned with the question of whether language can still express the truth at all. The Ingeborg Bachmann Prize, awarded every year in Klagenfurt, is named after her.
 
 ### Paul Celan (1920 – 1970)
 
@@ -39,13 +39,13 @@ Celan came from Czernowitz in Bukovina (today Ukraine); his parents were murdere
 
 The [Vienna Group](/en/languages/literature/expressionism/#the-vienna-group) around H. C. Artmann, Gerhard Rühm, Konrad Bayer, Friedrich Achleitner and Oswald Wiener built on Dadaism in the 1950s. It experimented with dialect, montage and sound poetry and provoked the conservative public with its "literary cabarets".
 
-**Ernst Jandl** (1925 – 2000) became famous for his **concrete poetry** and sound poems. His poems play with letters, sounds and the form on the page, for example the poem "lichtung", which uses swapped letters ("lechts und rinks") to show how left and right get confused, or "schtzngrmm", which imitates the sounds of war with consonants. His partner **Friederike Mayröcker** (1924 – 2021) wrote experimental poetry and prose.
+**Ernst Jandl** (1925 – 2000) became famous for his concrete poetry and sound poems. His poems play with letters, sounds and the form on the page, for example the poem "lichtung", which uses swapped letters ("lechts und rinks") to show how left and right get confused, or "schtzngrmm", which imitates the sounds of war with consonants. His partner Friederike Mayröcker (1924 – 2021) wrote experimental poetry and prose.
 
 ## Anti-Heimat literature and criticism of Austria
 
 ### Thomas Bernhard (1931 – 1989)
 
-Bernhard is known for his endless, angry monologues full of repetition and exaggeration, in which he attacks Austria, the Church, the state and the cultural scene. His works include "Frost" (1963), "Holzfällen" (Woodcutters, 1984), "Auslöschung" (Extinction, 1986) and his autobiographical stories such as "Die Ursache" (An Indication of the Cause). His play "**Heldenplatz**" (1988) premiered at the Burgtheater on the 50th anniversary of the "Anschluss" and caused one of the biggest theatre scandals of the Second Republic, because a character says that there are more Nazis in Austria than in 1938. In his will, Bernhard banned the performance of his plays in Austria for the duration of the copyright – his heirs later lifted the ban.
+Bernhard is known for his endless, angry monologues full of repetition and exaggeration, in which he attacks Austria, the Church, the state and the cultural scene. His works include "Frost" (1963), "Holzfällen" (Woodcutters, 1984), "Auslöschung" (Extinction, 1986) and his autobiographical stories such as "Die Ursache" (An Indication of the Cause). His play "**Heldenplatz**" (1988) premiered at the Burgtheater on the 50th anniversary of the "Anschluss" and caused one of the biggest theatre scandals of the Second Republic, because a character says that there are more Nazis in Austria than in 1938. In his will, Bernhard banned the performance of his plays in Austria for the duration of the copyright. His heirs later lifted the ban.
 
 ### Peter Handke (born 1942)
 
@@ -53,14 +53,14 @@ Handke, from Carinthia, became famous overnight in 1966 when he accused Group 47
 
 ### Elfriede Jelinek (born 1946)
 
-In her novels and plays, Jelinek criticises power structures, sexism, violence, the suppression of the Nazi past and the media. Well-known works are "**Die Klavierspielerin**" (The Piano Teacher, 1983), "Die Liebhaberinnen" (Women as Lovers, 1975) and "Lust" (1989). Her "language surfaces" assemble quotations from advertising, the media and philosophy. In 2004, she became the first Austrian to receive the **Nobel Prize in Literature**.
+In her novels and plays, Jelinek criticises power structures, sexism, violence, the suppression of the Nazi past and the media. Well-known works are "**Die Klavierspielerin**" (The Piano Teacher, 1983), "Die Liebhaberinnen" (Women as Lovers, 1975) and "Lust" (1989). Her "language surfaces" assemble quotations from advertising, the media and philosophy. In 2004, she became the first Austrian to receive the Nobel Prize in Literature.
 
 ### Other representatives
 
 - **Peter Turrini** (born 1944): folk plays such as "Rozznjogd" (Rat Hunt, 1971) and "Sauschlachten" (Pig Slaughter), which show the brutality behind the rural idyll
 - **Felix Mitterer** (born 1948): plays about rural Tyrol such as "Kein Platz für Idioten" (No Place for Idiots) and the television series "Die Piefke-Saga"
 - **Franz Innerhofer** (1944 – 2002): "Schöne Tage" (Beautiful Days, 1974) about the hard childhood of an illegitimate child working as a farmhand
-- **Christine Nöstlinger** (1936 – 2018): influential author of children's and young adult books ("Konrad oder Das Kind aus der Konservenbüchse" – Conrad: The Factory-Made Boy)
+- **Christine Nöstlinger** (1936 – 2018): influential author of children's and young adult books ("Konrad oder Das Kind aus der Konservenbüchse", Conrad: The Factory-Made Boy)
 - **H. C. Artmann** (1921 – 2000): dialect poems "med ana schwoazzn dintn" (1958)
 
 ## Genres

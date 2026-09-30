@@ -13,7 +13,7 @@ $$
 j^2 = -1
 $$
 
-In mathematics, it is usually written as $i$. In electrical engineering and at the HTL, $j$ is used, because $i$ already stands for electric current.
+In mathematics, it is usually written as $i$. In electrical engineering and at technical college, $j$ is used, because $i$ already stands for electric current.
 
 With $j$, roots of negative numbers can be taken: $\sqrt{-16} = \sqrt{16} \cdot \sqrt{-1} = 4j$.
 
@@ -31,8 +31,8 @@ $$
 z = a + b\,j \qquad a, b \in \mathbb{R}
 $$
 
-- $a = \operatorname{Re}(z)$ is the **real part**,
-- $b = \operatorname{Im}(z)$ is the **imaginary part** (without $j$).
+- $a = \operatorname{Re}(z)$ is the real part,
+- $b = \operatorname{Im}(z)$ is the imaginary part (without $j$).
 
 The set of all complex numbers is called $\mathbb{C}$. Real numbers are complex numbers with $b = 0$.
 
@@ -40,7 +40,7 @@ The **complex conjugate** of $z = a + bj$ is $z^* = \overline{z} = a - bj$. It h
 
 ## The complex plane
 
-Complex numbers cannot be shown on a number line, but as points (or arrows, called **phasors**) in the **complex plane** (Gaussian plane): the real part is plotted on the horizontal axis and the imaginary part on the vertical axis.
+Complex numbers cannot be shown on a number line, but as points (or arrows, called **phasors**) in the complex plane (Gaussian plane): the real part is plotted on the horizontal axis and the imaginary part on the vertical axis.
 
 The number $z = 3 + 4j$ corresponds to the point $(3 \mid 4)$. The complex conjugate $z^* = 3 - 4j$ is its reflection in the real axis.
 
@@ -149,7 +149,7 @@ In general, the **fundamental theorem of algebra** states that every polynomial 
 
 ## Application: AC circuits
 
-In **complex AC circuit analysis**, sinusoidal voltages and currents are represented as rotating phasors. Resistors, inductors and capacitors are given complex resistances (**impedances**):
+In **complex AC circuit analysis**, sinusoidal voltages and currents are represented as rotating phasors. Resistors, inductors and capacitors are given complex resistances (impedances):
 
 | Component   | Impedance                                | Phase shift              |
 | ----------- | ---------------------------------------- | ------------------------ |

@@ -1,6 +1,6 @@
 ---
 title: Machine Learning
-description: Wie Modelle aus Daten Regeln lernen – der Ablauf von KI-Projekten sowie überwachtes, unüberwachtes und verstärkendes Lernen.
+description: "Wie Modelle aus Daten Regeln lernen: der Ablauf von KI-Projekten sowie überwachtes, unüberwachtes und verstärkendes Lernen."
 sidebar:
   order: 6
 ---
@@ -48,7 +48,7 @@ Bei Klassifikationsaufgaben werden die Vorhersagen des Modells auf den Testdaten
 | **Recall** (Sensitivität)  | $\frac{TP}{TP + FN}$                     | Wie viele der tatsächlich positiven Fälle gefunden wurden           |
 | **F1-Score**               | $2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}$ | Harmonisches Mittel aus Precision und Recall |
 
-Bei unausgeglichenen Datensätzen ist die Accuracy trügerisch: Sind 99 % aller E-Mails kein Spam, erreicht ein Modell, das niemals „Spam“ vorhersagt, bereits 99 % Accuracy – ist aber völlig nutzlos. Bei Regressionsaufgaben verwendet man stattdessen Fehlermaße wie den mittleren quadratischen Fehler (MSE) oder das Bestimmtheitsmaß $R^2$.
+Bei unausgeglichenen Datensätzen ist die Accuracy trügerisch: Sind 99 % aller E-Mails kein Spam, erreicht ein Modell, das niemals „Spam“ vorhersagt, bereits 99 % Accuracy, ist aber völlig nutzlos. Bei Regressionsaufgaben verwendet man stattdessen Fehlermaße wie den mittleren quadratischen Fehler (MSE) oder das Bestimmtheitsmaß $R^2$.
 
 ## Einordnung in die Kategorien
 
@@ -73,6 +73,6 @@ Maschinelles Lernen unterteilt sich hierbei in die drei großen Kategorien `Supe
 -   **Reinforcement Learning**  
     Das verstärkende Lernen ist ein iterativer Prozess, bei welchem ein sogenannter **Agent** durch Ausprobieren lernt. Der Agent führt in einer **Umgebung** Aktionen aus und erhält dafür eine **Belohnung** (oder Bestrafung). Das Ziel des Agenten ist es, eine Strategie zu finden, welche die Summe der Belohnungen langfristig maximiert. Typische Anwendungen sind Spiele (zum Beispiel AlphaGo), die Steuerung von Robotern oder autonomes Fahren.
 
-    Auch große Sprachmodelle wie ChatGPT werden mit einer Variante davon nachtrainiert: Beim **Reinforcement Learning from Human Feedback** (RLHF) bewerten Menschen die Antworten des Modells, und diese Bewertungen dienen als Belohnung. Dadurch werden die Antworten hilfreicher und schädliche Ausgaben seltener. Eine Garantie, dass das Modell nicht manipuliert werden kann oder keine Vorurteile hat, bietet dieses Verfahren allerdings nicht – das Modell lernt nur, was im Belohnungssystem abgebildet ist.
+    Auch große Sprachmodelle wie ChatGPT werden mit einer Variante davon nachtrainiert: Beim **Reinforcement Learning from Human Feedback** (RLHF) bewerten Menschen die Antworten des Modells, und diese Bewertungen dienen als Belohnung. Dadurch werden die Antworten hilfreicher und schädliche Ausgaben seltener. Eine Garantie, dass das Modell nicht manipuliert werden kann oder keine Vorurteile hat, bietet dieses Verfahren allerdings nicht. Das Modell lernt nur, was im Belohnungssystem abgebildet ist.
 
     Hierbei muss man bei der Implementierung des Lernprozesses deshalb besonders aufpassen, nicht versehentlich das Belohnungssystem zu negieren. Dies ist nämlich wirklich einmal auch OpenAI passiert: Durch einen Vorzeichenfehler wurde eine Version von [GPT-2](https://openai.com/index/fine-tuning-gpt-2/) darauf optimiert, möglichst anstößige Texte zu erzeugen ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).

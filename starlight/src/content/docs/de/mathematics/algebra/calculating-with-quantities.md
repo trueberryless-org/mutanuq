@@ -7,7 +7,7 @@ sidebar:
 
 ## Größen und Einheiten
 
-In der Technik rechnet man selten mit reinen Zahlen, sondern mit **physikalischen Größen**. Eine Größe besteht aus einem **Zahlenwert** und einer **Einheit**:
+In der Technik rechnet man selten mit reinen Zahlen, sondern mit **physikalischen Größen**. Eine Größe besteht aus einem Zahlenwert und einer Einheit:
 
 $$
 U = 230\ \text{V} \qquad \text{(Größe = Zahlenwert} \cdot \text{Einheit)}
@@ -37,7 +37,7 @@ $$
 :::
 
 :::tip[Tipp]
-Rechnen Sie immer mit Einheiten. Stimmt die Einheit des Ergebnisses nicht, steckt ein Fehler in der Rechnung. Diese **Einheitenkontrolle** deckt viele Formelfehler auf.
+Rechne immer mit Einheiten. Stimmt die Einheit des Ergebnisses nicht, steckt ein Fehler in der Rechnung. Diese **Einheitenkontrolle** deckt viele Formelfehler auf.
 :::
 
 ## Runden und Überschlagsrechnung
@@ -79,7 +79,7 @@ Umgekehrt: Ein Artikel kostet brutto 54 €. Der Nettopreis ist $\frac{54}{1{,}2
 :::caution
 Prozentsätze dürfen nicht einfach addiert werden. Steigt ein Preis zuerst um 10 % und fällt dann um 10 %, ist er danach **niedriger** als vorher: $1{,}1 \cdot 0{,}9 = 0{,}99$, also ein Minus von 1 %.
 
-Außerdem ist zwischen **Prozent** und **Prozentpunkten** zu unterscheiden: Steigt ein Zinssatz von 2 % auf 3 %, ist das ein Anstieg um einen Prozentpunkt, aber um 50 %.
+Außerdem ist zwischen **Prozent** und Prozentpunkten zu unterscheiden: Steigt ein Zinssatz von 2 % auf 3 %, ist das ein Anstieg um einen Prozentpunkt, aber um 50 %.
 :::
 
 Wiederholte prozentuelle Änderungen führen zum exponentiellen Wachstum, etwa bei der [Zinseszinsrechnung](/de/mathematics/analysis/sequences-and-series/#zinseszinsrechnung).
@@ -109,8 +109,8 @@ Messgeräte geben ihre Genauigkeit oft als relativen Fehler an, etwa „$\pm 1\,
 
 Rechnet man mit fehlerbehafteten Werten weiter, pflanzen sich die Fehler fort. Als Faustregel gilt für kleine Fehler:
 
-- Bei **Addition und Subtraktion** addieren sich die **absoluten** Fehler.
-- Bei **Multiplikation und Division** addieren sich die **relativen** Fehler.
+- Bei Addition und Subtraktion addieren sich die absoluten Fehler.
+- Bei Multiplikation und Division addieren sich die relativen Fehler.
 
 :::tip[Beispiel]
 Ein Rechteck ist $a = (20 \pm 0{,}1)\ \text{cm}$ lang und $b = (10 \pm 0{,}1)\ \text{cm}$ breit. Die relativen Fehler sind $0{,}5\,\%$ und $1\,\%$. Die Fläche $A = 200\ \text{cm}^2$ hat daher einen relativen Fehler von etwa $1{,}5\,\%$, also $A \approx (200 \pm 3)\ \text{cm}^2$.

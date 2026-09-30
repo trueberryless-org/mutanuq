@@ -25,7 +25,7 @@ Softwaresysteme sollen für neue Funktionalitäten erweiterbar sein. Dabei solle
 
 ### Interoperabilität
 
-Jedes System soll mit anderen Systemen kommunizieren können. Hierfür benötigt man klar definierte Schnittstellen, welche sich in der Praxis – im Gegensatz zur Theorie – meist während der Durchführung des Projekts ändern.
+Jedes System soll mit anderen Systemen kommunizieren können. Hierfür benötigt man klar definierte Schnittstellen, welche sich in der Praxis, im Gegensatz zur Theorie, meist während der Durchführung des Projekts ändern.
 
 ### Portabilität
 
@@ -102,7 +102,7 @@ Bei Vererbung muss eine Instanz der Unterklasse anstatt einer Instanz der Basisk
 
 -   Eine Methode der Unterklasse soll keine `Exception` werfen, welche die Basisklasse nicht erwartet.
 
--   Eine Unterklasse darf die Vorbedingungen einer Methode nicht verschärfen und die Nachbedingungen nicht abschwächen. Das klassische Negativbeispiel ist ein `Square`, das von `Rectangle` erbt: Setzt man die Breite eines Quadrats, ändert sich auch die Höhe – ein Aufrufer, der mit einem `Rectangle` rechnet, erhält dadurch falsche Flächen.
+-   Eine Unterklasse darf die Vorbedingungen einer Methode nicht verschärfen und die Nachbedingungen nicht abschwächen. Das klassische Negativbeispiel ist ein `Square`, das von `Rectangle` erbt: Setzt man die Breite eines Quadrats, ändert sich auch die Höhe. Ein Aufrufer, der mit einem `Rectangle` rechnet, erhält dadurch falsche Flächen.
 
 Falls dies alles ein bisschen kompliziert klingt, keine Sorge. In statisch typisierten Programmiersprachen (Java, C#, ...) werden die Regeln zu Parametern und Rückgabewerten größtenteils bereits vom Compiler geprüft. Die Verhaltensregeln (Exceptions, Vor- und Nachbedingungen) muss man jedoch selbst einhalten.
 

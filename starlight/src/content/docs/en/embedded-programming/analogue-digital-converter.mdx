@@ -1,6 +1,6 @@
 ---
 title: Analogue-Digital Converter
-description: Measuring analogue voltages with the 10-bit ADC of the ATmega328P – reference voltage, channel selection, prescaler, operating modes and 8-bit reading.
+description: "Measuring analogue voltages with the 10-bit ADC of the ATmega328P: reference voltage, channel selection, prescaler, operating modes and 8-bit reading."
 sidebar:
   order: 7
 ---
@@ -111,7 +111,7 @@ ADCSRA |= (1<<ADATE);
 
 ### Prescaler
 
-The ADC of the ATmega328P does not need a clock as fast as the system clock. According to the datasheet, it needs a clock between 50 kHz and 200 kHz for full 10-bit precision. For this reason, you need a prescaler, also called division factor, which – as the name suggests – divides the system clock by a configured number.
+The ADC of the ATmega328P does not need a clock as fast as the system clock. According to the datasheet, it needs a clock between 50 kHz and 200 kHz for full 10-bit precision. For this reason, you need a prescaler, also called division factor, which, as the name suggests, divides the system clock by a configured number.
 
 On the ATmega328P, we need a division factor of `128` so that, with a system clock of $16{,}000{,}000\;Hz$, the ADC clock is between $50K\;Hz$ and $200K\;Hz$.
 

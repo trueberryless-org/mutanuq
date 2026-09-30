@@ -7,7 +7,7 @@ sidebar:
 
 ## Lines in parametric form
 
-A line is determined by a **point** $P$ and a **direction vector** $\vec{v}$. Every point $X$ on the line can be reached by starting at $P$ and moving a multiple of $\vec{v}$:
+A line is determined by a **point** $P$ and a direction vector $\vec{v}$. Every point $X$ on the line can be reached by starting at $P$ and moving a multiple of $\vec{v}$:
 
 $$
 g\colon X = P + t \cdot \vec{v} \qquad t \in \mathbb{R}
@@ -54,9 +54,9 @@ Rearranged for $y$, this gives the familiar form $y = \frac{1}{3}x + \frac{1}{3}
 | identical                  | identical                  | yes                         | all           |
 | parallel                   | parallel                   | yes                         | none          |
 | intersecting               | intersecting               | no                          | exactly one   |
-| –                          | **skew**                   | no                          | none          |
+| does not exist             | skew                   | no                          | none          |
 
-Skew lines only exist in space: they are neither parallel nor do they intersect – like two roads on different levels of an interchange.
+Skew lines only exist in space: they are neither parallel nor do they intersect, like two roads on different levels of an interchange.
 
 To find the intersection, set the two lines equal (with **different** parameters $s$ and $t$) and solve the [system of equations](/en/mathematics/algebra/systems-of-linear-equations/).
 
@@ -76,7 +76,7 @@ s &= 3 - t \\
 \end{aligned}
 $$
 
-The third equation gives $t = 1$, the second $s = 2$. Check in the first: $1 + 2 = 3 \ne 1$. The equations contradict each other, and the direction vectors are not parallel – the lines are **skew**.
+The third equation gives $t = 1$, the second $s = 2$. Check in the first: $1 + 2 = 3 \ne 1$. The equations contradict each other, and the direction vectors are not parallel. The lines are **skew**.
 :::
 
 ## Planes in space
@@ -115,7 +115,7 @@ If the direction vector of the line is perpendicular to the normal vector of the
 
 ## Distances
 
-**Distance point – plane (or point – line in $\mathbb{R}^2$):** With the **Hesse normal form**, for the plane $ax + by + cz = d$ and the point $Q = (q_x \mid q_y \mid q_z)$:
+**Distance from a point to a plane (or from a point to a line in $\mathbb{R}^2$):** With the Hesse normal form, for the plane $ax + by + cz = d$ and the point $Q = (q_x \mid q_y \mid q_z)$:
 
 $$
 d(Q, \varepsilon) = \frac{\lvert a q_x + b q_y + c q_z - d \rvert}{\sqrt{a^2 + b^2 + c^2}}
@@ -131,7 +131,7 @@ d = \frac{\lvert 0 - 6 \rvert}{\sqrt{36 + 9 + 4}} = \frac{6}{7} \approx 0.857
 $$
 :::
 
-**Distance point – line in space:** With the cross product, for $g\colon X = P + t\vec{v}$
+**Distance from a point to a line in space:** With the cross product, for $g\colon X = P + t\vec{v}$
 
 $$
 d(Q, g) = \frac{\lvert \overrightarrow{PQ} \times \vec{v} \rvert}{\lvert \vec{v} \rvert}

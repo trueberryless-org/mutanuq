@@ -7,7 +7,7 @@ Das Command Entwurfsmuster ist auch als Action und Transaction Pattern bekannt.
 
 ## Problem
 
-Oft wollen Sie Programme entwickeln, welche Operationen rückgängig machen können oder Operationen verzögern. Doch ein Programm mit `STRG` + `z` Funktionalität ist nicht einfach zu implementieren.
+Oft willst du Programme entwickeln, welche Operationen rückgängig machen können oder Operationen verzögern. Doch ein Programm mit `STRG` + `z` Funktionalität ist nicht einfach zu implementieren.
 
 ## Lösung
 

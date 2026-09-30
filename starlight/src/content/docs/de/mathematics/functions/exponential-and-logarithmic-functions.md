@@ -13,8 +13,8 @@ $$
 f(x) = c \cdot a^x \qquad (a > 0,\ a \ne 1)
 $$
 
-- $c = f(0)$ ist der **Anfangswert**,
-- $a$ ist der **Wachstumsfaktor**: Erhöht man $x$ um $1$, wird der Funktionswert mit $a$ multipliziert.
+- $c = f(0)$ ist der Anfangswert,
+- $a$ ist der Wachstumsfaktor: Erhöht man $x$ um $1$, wird der Funktionswert mit $a$ multipliziert.
 
 | Wachstumsfaktor | Verlauf                                  |
 | --------------- | ---------------------------------------- |
@@ -27,9 +27,9 @@ Alle Graphen von $a^x$ gehen durch $(0 \mid 1)$, liegen oberhalb der $x$-Achse u
 
 | Lineares Wachstum                      | Exponentielles Wachstum                   |
 | -------------------------------------- | ----------------------------------------- |
-| pro Schritt wird **derselbe Betrag** addiert | pro Schritt wird mit **demselben Faktor** multipliziert |
+| pro Schritt wird derselbe Betrag addiert | pro Schritt wird mit demselben Faktor multipliziert |
 | $f(x) = k \cdot x + d$                 | $f(x) = c \cdot a^x$                      |
-| konstante **Differenzen** in der Wertetabelle | konstante **Quotienten** in der Wertetabelle |
+| konstante Differenzen in der Wertetabelle | konstante Quotienten in der Wertetabelle |
 
 Bei einer prozentuellen Änderung um $p\,\%$ pro Zeiteinheit ist der Wachstumsfaktor $a = 1 \pm \frac{p}{100}$.
 
@@ -51,11 +51,11 @@ $$
 f(t) = c \cdot e^{\lambda t}
 $$
 
-Dabei ist $\lambda$ die **Wachstumskonstante** ($\lambda > 0$) bzw. **Zerfallskonstante** ($\lambda < 0$). Jede Exponentialfunktion lässt sich so umschreiben, weil $a^t = e^{\ln(a) \cdot t}$.
+Dabei ist $\lambda$ die **Wachstumskonstante** ($\lambda > 0$) bzw. Zerfallskonstante ($\lambda < 0$). Jede Exponentialfunktion lässt sich so umschreiben, weil $a^t = e^{\ln(a) \cdot t}$.
 
 ## Verdopplungszeit und Halbwertszeit
 
-Die **Verdopplungszeit** $T_2$ ist die Zeit, nach der sich ein exponentiell wachsender Wert verdoppelt hat. Die **Halbwertszeit** $T_{1/2}$ ist die Zeit, nach der sich ein exponentiell abnehmender Wert halbiert hat. Beide hängen nicht vom Anfangswert ab:
+Die **Verdopplungszeit** $T_2$ ist die Zeit, nach der sich ein exponentiell wachsender Wert verdoppelt hat. Die Halbwertszeit $T_{1/2}$ ist die Zeit, nach der sich ein exponentiell abnehmender Wert halbiert hat. Beide hängen nicht vom Anfangswert ab:
 
 $$
 T_2 = \frac{\ln 2}{\lambda} \qquad T_{1/2} = \frac{\ln 2}{\lvert\lambda\rvert}
@@ -68,7 +68,7 @@ $$
 u(t) = U_0 \cdot e^{-\frac{t}{\tau}} \qquad \tau = R \cdot C
 $$
 
-Mit $R = 10\ \text{k}\Omega$ und $C = 100\ \mu\text{F}$ ist die **Zeitkonstante** $\tau = 1\ \text{s}$. Nach $\tau$ ist die Spannung auf $e^{-1} \approx 37\,\%$ gesunken, nach $5\tau$ auf unter $1\,\%$ – der Kondensator gilt dann als entladen.
+Mit $R = 10\ \text{k}\Omega$ und $C = 100\ \mu\text{F}$ ist die **Zeitkonstante** $\tau = 1\ \text{s}$. Nach $\tau$ ist die Spannung auf $e^{-1} \approx 37\,\%$ gesunken, nach $5\tau$ auf unter $1\,\%$. Der Kondensator gilt dann als entladen.
 
 Die Halbwertszeit ist $T_{1/2} = \tau \cdot \ln 2 \approx 0{,}69\ \text{s}$.
 :::
@@ -92,7 +92,7 @@ Die **Logarithmusfunktion** $f(x) = \log_a x$ ist die [Umkehrfunktion](/de/mathe
 - senkrechte Asymptote $x = 0$
 - wächst für $a > 1$ sehr langsam: $\lg 1\,000\,000 = 6$
 
-Die Rechenregeln für Logarithmen finden Sie bei [Potenzen und Wurzeln](/de/mathematics/algebra/powers-and-roots/#logarithmen).
+Die Rechenregeln für Logarithmen findest du bei [Potenzen und Wurzeln](/de/mathematics/algebra/powers-and-roots/#logarithmen).
 
 ## Exponentialgleichungen
 
@@ -121,10 +121,10 @@ $$
 
 ## Logarithmische Skalierung
 
-Überstreichen Werte viele Größenordnungen, stellt man sie auf einer **logarithmischen Skala** dar. Dort haben gleiche **Faktoren** gleiche Abstände: Der Abstand von 1 zu 10 ist genauso groß wie von 10 zu 100 oder von 100 zu 1000 (eine **Dekade**).
+Überstreichen Werte viele Größenordnungen, stellt man sie auf einer **logarithmischen Skala** dar. Dort haben gleiche Faktoren gleiche Abstände: Der Abstand von 1 zu 10 ist genauso groß wie von 10 zu 100 oder von 100 zu 1000 (eine Dekade).
 
-- Bei **einfach logarithmischer** Darstellung ist nur die $y$-Achse logarithmisch. Exponentialfunktionen erscheinen dann als **Geraden**.
-- Bei **doppelt logarithmischer** Darstellung sind beide Achsen logarithmisch. Dann erscheinen **Potenzfunktionen** als Geraden, deren Steigung die Hochzahl ist.
+- Bei einfach logarithmischer Darstellung ist nur die $y$-Achse logarithmisch. Exponentialfunktionen erscheinen dann als Geraden.
+- Bei doppelt logarithmischer Darstellung sind beide Achsen logarithmisch. Dann erscheinen Potenzfunktionen als Geraden, deren Steigung die Hochzahl ist.
 
 So kann man an Messdaten leicht erkennen, ob ein exponentieller oder ein Potenzzusammenhang vorliegt.
 

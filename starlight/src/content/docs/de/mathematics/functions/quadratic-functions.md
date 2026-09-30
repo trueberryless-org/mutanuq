@@ -13,7 +13,7 @@ $$
 f(x) = a x^2 + b x + c \qquad (a \ne 0)
 $$
 
-Ihr Graph ist eine **Parabel**. Der höchste bzw. tiefste Punkt heißt **Scheitelpunkt** $S$. Die Parabel ist symmetrisch zur senkrechten Geraden durch den Scheitelpunkt.
+Ihr Graph ist eine **Parabel**. Der höchste bzw. tiefste Punkt heißt Scheitelpunkt $S$. Die Parabel ist symmetrisch zur senkrechten Geraden durch den Scheitelpunkt.
 
 | Koeffizient | Bedeutung                                                                 |
 | ----------- | ------------------------------------------------------------------------- |
@@ -63,7 +63,7 @@ $$
 f(x) = a (x - x_1)(x - x_2)
 $$
 
-Die Nullstellen berechnet man mit der [Lösungsformel für quadratische Gleichungen](/de/mathematics/algebra/equations-and-inequalities/#quadratische-gleichungen). Eine Parabel kann zwei, eine oder keine Nullstelle haben – je nachdem, ob die Diskriminante positiv, null oder negativ ist. Der Scheitelpunkt liegt immer genau in der Mitte zwischen den Nullstellen: $x_S = \frac{x_1 + x_2}{2}$.
+Die Nullstellen berechnet man mit der [Lösungsformel für quadratische Gleichungen](/de/mathematics/algebra/equations-and-inequalities/#quadratische-gleichungen). Eine Parabel kann zwei, eine oder keine Nullstelle haben, je nachdem, ob die Diskriminante positiv, null oder negativ ist. Der Scheitelpunkt liegt immer genau in der Mitte zwischen den Nullstellen: $x_S = \frac{x_1 + x_2}{2}$.
 
 ## Funktionsgleichung aufstellen
 

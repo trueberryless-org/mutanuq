@@ -1,11 +1,11 @@
 ---
 title: Humanismus und Reformation
-description: Die Literatur zwischen Mittelalter und Barock – Humanismus, Buchdruck, Luthers Bibelübersetzung, Schwänke und Volksbücher.
+description: "Die Literatur zwischen Mittelalter und Barock: Humanismus, Buchdruck, Luthers Bibelübersetzung, Schwänke und Volksbücher."
 sidebar:
   order: 2
 ---
 
-Zwischen Mittelalter und Barock veränderten zwei Entwicklungen das Denken in Europa grundlegend: der **Humanismus**, der den Menschen und die antike Bildung in den Mittelpunkt stellte, und die **Reformation**, die die Einheit der Kirche zerbrach. Beide wären ohne den **Buchdruck** nicht möglich gewesen.
+Zwischen Mittelalter und Barock veränderten zwei Entwicklungen das Denken in Europa grundlegend: der **Humanismus**, der den Menschen und die antike Bildung in den Mittelpunkt stellte, und die Reformation, die die Einheit der Kirche zerbrach. Beide wären ohne den Buchdruck nicht möglich gewesen.
 
 ## Eckdaten
 
@@ -17,11 +17,11 @@ Zwischen Mittelalter und Barock veränderten zwei Entwicklungen das Denken in Eu
 
 ## Historischer Hintergrund
 
-Mit der Eroberung Konstantinopels durch die Osmanen (1453) kamen griechische Gelehrte und Handschriften nach Italien. Die Entdeckung Amerikas (1492), das neue **heliozentrische Weltbild** von Nikolaus Kopernikus und der wachsende Handel ließen das mittelalterliche Weltbild ins Wanken geraten. Am 31. Oktober 1517 veröffentlichte Martin Luther seine **95 Thesen** gegen den Ablasshandel. Die folgende Reformation führte zur Spaltung der Kirche und zu Bauernkriegen und Religionskriegen.
+Mit der Eroberung Konstantinopels durch die Osmanen (1453) kamen griechische Gelehrte und Handschriften nach Italien. Die Entdeckung Amerikas (1492), das neue **heliozentrische Weltbild** von Nikolaus Kopernikus und der wachsende Handel ließen das mittelalterliche Weltbild ins Wanken geraten. Am 31. Oktober 1517 veröffentlichte Martin Luther seine 95 Thesen gegen den Ablasshandel. Die folgende Reformation führte zur Spaltung der Kirche und zu Bauernkriegen und Religionskriegen.
 
 ## Humanismus
 
-Die **Humanisten** wollten den Menschen durch Bildung vervollkommnen. Ihr Leitspruch lautete „**ad fontes**“ – „zurück zu den Quellen“: Statt mittelalterlicher Auslegungen sollten die Originaltexte der Antike und der Bibel in Latein, Griechisch und Hebräisch gelesen werden. Der Mensch galt als freies, vernunftbegabtes Wesen, das über sein Leben selbst bestimmen kann.
+Die **Humanisten** wollten den Menschen durch Bildung vervollkommnen. Ihr Leitspruch lautete „ad fontes“, also „zurück zu den Quellen“: Statt mittelalterlicher Auslegungen sollten die Originaltexte der Antike und der Bibel in Latein, Griechisch und Hebräisch gelesen werden. Der Mensch galt als freies, vernunftbegabtes Wesen, das über sein Leben selbst bestimmen kann.
 
 Die meisten humanistischen Schriften waren lateinisch und richteten sich an Gelehrte.
 
@@ -38,10 +38,10 @@ Luther schrieb außerdem zahlreiche Kirchenlieder, etwa „Ein feste Burg ist un
 
 Neben der gelehrten Literatur entstanden unterhaltsame Texte für ein breites Publikum:
 
-- **Schwänke** sind kurze, lustige Erzählungen, in denen sich oft ein Schlauer über einen Dummen lustig macht. Die bekannteste Sammlung handelt von **Till Eulenspiegel** (1510/11), der die Menschen hereinlegt, indem er Redewendungen wörtlich nimmt.
-- **Volksbücher** sind Prosaerzählungen, die in großer Zahl gedruckt wurden, etwa die „Historia von D. Johann Fausten“ (1587) – die Vorlage für Goethes „Faust“.
-- **Narrenliteratur:** „Das Narrenschiff“ (1494) von **Sebastian Brant** schildert in über 100 Kapiteln verschiedene Arten menschlicher Torheit und war eines der erfolgreichsten Bücher seiner Zeit.
-- **Hans Sachs** (1494 – 1576), Schuhmacher und Meistersinger aus Nürnberg, schrieb Tausende Meisterlieder, Schwänke und Fastnachtsspiele.
+- Schwänke sind kurze, lustige Erzählungen, in denen sich oft ein Schlauer über einen Dummen lustig macht. Die bekannteste Sammlung handelt von Till Eulenspiegel (1510/11), der die Menschen hereinlegt, indem er Redewendungen wörtlich nimmt.
+- Volksbücher sind Prosaerzählungen, die in großer Zahl gedruckt wurden, etwa die „Historia von D. Johann Fausten“ (1587), die Vorlage für Goethes „Faust“.
+- **Narrenliteratur:** „Das Narrenschiff“ (1494) von Sebastian Brant schildert in über 100 Kapiteln verschiedene Arten menschlicher Torheit und war eines der erfolgreichsten Bücher seiner Zeit.
+- Hans Sachs (1494 – 1576), Schuhmacher und Meistersinger aus Nürnberg, schrieb Tausende Meisterlieder, Schwänke und Fastnachtsspiele.
 
 ## Gattungen
 

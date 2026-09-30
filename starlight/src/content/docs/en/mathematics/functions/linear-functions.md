@@ -15,8 +15,8 @@ $$
 
 Its graph is a **straight line**.
 
-- $k$ is the **slope**: if $x$ increases by $1$, $f(x)$ changes by $k$.
-- $d$ is the **intercept** on the $y$-axis: $f(0) = d$.
+- $k$ is the slope: if $x$ increases by $1$, $f(x)$ changes by $k$.
+- $d$ is the intercept on the $y$-axis: $f(0) = d$.
 
 | Slope     | Line                          |
 | --------- | ----------------------------- |
@@ -30,7 +30,7 @@ In many English-speaking countries, a linear function is written as $y = mx + b$
 
 ## Calculating the slope
 
-The slope is the ratio of the vertical change to the horizontal change – the **slope triangle**:
+The slope is the ratio of the vertical change to the horizontal change, shown in the **slope triangle**:
 
 $$
 k = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}
@@ -81,7 +81,7 @@ Many technical and economic relationships are (approximately) linear. In context
 | ---------------------------- | --------------------------- | --------------------------- | ---------------------- |
 | Uniform motion               | $s(t) = v \cdot t + s_0$    | velocity                    | starting position      |
 | Costs                        | $K(x) = k_v \cdot x + K_f$  | variable cost per unit      | fixed costs            |
-| Ohm's law                    | $U(I) = R \cdot I$          | resistance                  | –                      |
+| Ohm's law                    | $U(I) = R \cdot I$          | resistance                  | 0                      |
 | Thermal expansion            | $l(\vartheta) = l_0 (1 + \alpha \vartheta)$ | $l_0 \alpha$      | length at $0\,°\text{C}$ |
 
 :::note
@@ -90,7 +90,7 @@ The slope always has the unit "unit of $y$ per unit of $x$", for example €/uni
 
 ## Direct and inverse proportionality
 
-Two quantities are **directly proportional** if doubling (tripling, …) one quantity doubles (triples, …) the other. Their **quotient** is constant:
+Two quantities are **directly proportional** if doubling (tripling, …) one quantity doubles (triples, …) the other. Their quotient is constant:
 
 $$
 y = k \cdot x \qquad \frac{y}{x} = k
@@ -98,7 +98,7 @@ $$
 
 The graph is a line through the origin ($d = 0$). Example: price and quantity at a fixed unit price.
 
-Two quantities are **inversely proportional** if doubling one halves the other. Their **product** is constant:
+Two quantities are **inversely proportional** if doubling one halves the other. Their product is constant:
 
 $$
 y = \frac{c}{x} \qquad x \cdot y = c

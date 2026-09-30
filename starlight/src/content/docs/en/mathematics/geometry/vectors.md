@@ -1,13 +1,13 @@
 ---
 title: Vectors
-description: Vectors in the plane and in space – representation, position vector, magnitude, operations, dot product, angles, orthogonality and cross product.
+description: "Vectors in the plane and in space: representation, position vector, magnitude, operations, dot product, angles, orthogonality and cross product."
 sidebar:
   order: 3
 ---
 
 ## What is a vector?
 
-A **vector** describes a displacement with a certain **length** and **direction**. It is drawn as an arrow. All arrows with the same length and direction represent the same vector, no matter where they start. In physics, quantities such as force, velocity or electric field strength are described by vectors – unlike **scalars** such as mass or temperature, which only have a numerical value.
+A **vector** describes a displacement with a certain length and direction. It is drawn as an arrow. All arrows with the same length and direction represent the same vector, no matter where they start. In physics, quantities such as force, velocity or electric field strength are described by vectors, unlike scalars such as mass or temperature, which only have a numerical value.
 
 In a coordinate system, a vector is given by its **components**:
 
@@ -50,7 +50,7 @@ $$
 
 ### Addition and subtraction
 
-Vectors are added and subtracted **component by component**. Geometrically, the arrows are placed tip to tail. The result is called the **resultant**.
+Vectors are added and subtracted **component by component**. Geometrically, the arrows are placed tip to tail. The result is called the resultant.
 
 $$
 \begin{pmatrix} 1 \\ 3 \end{pmatrix} + \begin{pmatrix} 4 \\ -1 \end{pmatrix} = \begin{pmatrix} 5 \\ 2 \end{pmatrix}
@@ -120,7 +120,7 @@ In physics, the work done by a force $\vec{F}$ along a displacement $\vec{s}$ is
 
 ## Cross product
 
-The **cross product** (vector product) is only defined in $\mathbb{R}^3$. Its result is a **vector**:
+The **cross product** (vector product) is only defined in $\mathbb{R}^3$. Its result is a vector:
 
 $$
 \vec{a} \times \vec{b} = \begin{pmatrix} a_y b_z - a_z b_y \\ a_z b_x - a_x b_z \\ a_x b_y - a_y b_x \end{pmatrix}
@@ -128,9 +128,9 @@ $$
 
 Properties:
 
-- $\vec{a} \times \vec{b}$ is **perpendicular** to both $\vec{a}$ and $\vec{b}$.
-- Its magnitude is the **area of the parallelogram** spanned by $\vec{a}$ and $\vec{b}$: $\lvert \vec{a} \times \vec{b} \rvert = \lvert \vec{a} \rvert \lvert \vec{b} \rvert \sin\varphi$. The triangle has half this area.
-- $\vec{a}$, $\vec{b}$ and $\vec{a} \times \vec{b}$ form a **right-handed system** (right-hand rule).
+- $\vec{a} \times \vec{b}$ is perpendicular to both $\vec{a}$ and $\vec{b}$.
+- Its magnitude is the area of the parallelogram spanned by $\vec{a}$ and $\vec{b}$: $\lvert \vec{a} \times \vec{b} \rvert = \lvert \vec{a} \rvert \lvert \vec{b} \rvert \sin\varphi$. The triangle has half this area.
+- $\vec{a}$, $\vec{b}$ and $\vec{a} \times \vec{b}$ form a right-handed system (right-hand rule).
 - It is not commutative: $\vec{b} \times \vec{a} = -(\vec{a} \times \vec{b})$.
 - If $\vec{a}$ and $\vec{b}$ are parallel, $\vec{a} \times \vec{b} = \vec{0}$.
 

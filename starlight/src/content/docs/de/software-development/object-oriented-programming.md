@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-Die objektorientierte Programmierung (OOP) ist ein Programmierparadigma, bei dem Daten und das Verhalten, das auf diesen Daten arbeitet, in **Objekten** zusammengefasst werden. Anstatt ein Programm als lange Abfolge von Anweisungen zu betrachten, modelliert man es als Zusammenspiel von Objekten, die miteinander kommunizieren – ähnlich wie Dinge in der realen Welt.
+Die objektorientierte Programmierung (OOP) ist ein Programmierparadigma, bei dem Daten und das Verhalten, das auf diesen Daten arbeitet, in **Objekten** zusammengefasst werden. Anstatt ein Programm als lange Abfolge von Anweisungen zu betrachten, modelliert man es als Zusammenspiel von Objekten, die miteinander kommunizieren, ähnlich wie Dinge in der realen Welt.
 
 ## Klassen und Objekte
 
@@ -101,7 +101,7 @@ Neben dieser Laufzeitpolymorphie gibt es auch die **statische Polymorphie** durc
 
 ## Interfaces
 
-Schnittstellen sind Datentypen, welche **unterschiedliches** Verhalten zusammenfügen. Ein Interface definiert einen Vertrag – also welche Methoden und Properties eine Klasse anbieten muss –, ohne (im Normalfall) eine Implementierung vorzugeben. Interfaces beschreiben eine **„kann“-Beziehung**: Ein `Dog` _kann_ gefüttert werden, ein `Plant` aber auch, obwohl beide sonst nichts gemeinsam haben.
+Schnittstellen sind Datentypen, welche **unterschiedliches** Verhalten zusammenfügen. Ein Interface definiert einen Vertrag, also welche Methoden und Properties eine Klasse anbieten muss, ohne (im Normalfall) eine Implementierung vorzugeben. Interfaces beschreiben eine **„kann“-Beziehung**: Ein `Dog` _kann_ gefüttert werden, ein `Plant` aber auch, obwohl beide sonst nichts gemeinsam haben.
 
 ```csharp
 public interface IFeedable

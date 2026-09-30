@@ -7,7 +7,7 @@ sidebar:
 
 ## Positional number systems
 
-In a **positional number system**, the value of a digit depends on its position in the number. Each position has the value of a power of the **base** $b$. A number with the digits $z_n \dots z_1 z_0$ has the value
+In a **positional number system**, the value of a digit depends on its position in the number. Each position has the value of a power of the base $b$. A number with the digits $z_n \dots z_1 z_0$ has the value
 
 $$
 z_n \cdot b^n + \dots + z_1 \cdot b^1 + z_0 \cdot b^0
@@ -45,7 +45,7 @@ $$
 
 ## Converting from decimal
 
-For integers, the **repeated division method** is used: divide the number by the target base using integer division until the quotient is 0. The remainders, read **from bottom to top**, are the digits of the result.
+For integers, the **repeated division method** is used: divide the number by the target base using integer division until the quotient is 0. The remainders, read from bottom to top, are the digits of the result.
 
 :::tip[Example: 181 to binary]
 | Division    | Quotient | Remainder |
@@ -62,7 +62,7 @@ For integers, the **repeated division method** is used: divide the number by the
 Read from bottom to top: $181_{10} = 1011\,0101_2$.
 :::
 
-For **fractional parts**, repeatedly multiply the fractional part by the base. The integer parts of the results, read **from top to bottom**, are the digits after the point.
+For **fractional parts**, repeatedly multiply the fractional part by the base. The integer parts of the results, read from top to bottom, are the digits after the point.
 
 :::tip[Example: 0.625 to binary]
 $$
@@ -82,7 +82,7 @@ Many decimal fractions cannot be represented exactly in binary. For example, $0.
 
 ## Converting between binary, octal and hexadecimal
 
-Because $8 = 2^3$ and $16 = 2^4$, each octal digit corresponds to exactly **three** and each hexadecimal digit to exactly **four** binary digits. So the binary number is split into groups of three or four (a **nibble**), starting from the right, and each group is translated separately.
+Because $8 = 2^3$ and $16 = 2^4$, each octal digit corresponds to exactly **three** and each hexadecimal digit to exactly four binary digits. So the binary number is split into groups of three or four (a nibble), starting from the right, and each group is translated separately.
 
 | Binary | Hex | Binary | Hex |
 | ------ | --- | ------ | --- |
@@ -126,7 +126,7 @@ $$
 Computers store integers with a fixed number of bits. Negative numbers are usually represented in **two's complement**. This is how to get the representation of $-x$:
 
 1. Write $x$ as a binary number with the given number of bits.
-2. Invert all bits (**ones' complement**).
+2. Invert all bits (ones' complement).
 3. Add $1$.
 
 :::tip[Example: −54 with 8 bits]
@@ -163,11 +163,11 @@ $$
 x = (-1)^S \cdot M \cdot 2^E
 $$
 
-- $S$: **sign bit** ($0$ = positive, $1$ = negative)
-- $M$: **mantissa** (significand), the significant digits
-- $E$: **exponent**
+- $S$: sign bit ($0$ = positive, $1$ = negative)
+- $M$: mantissa (significand), the significant digits
+- $E$: exponent
 
-According to the **IEEE 754** standard, a single-precision number (`float`) consists of 32 bits: 1 sign bit, 8 exponent bits and 23 mantissa bits. A double-precision number (`double`) has 64 bits: 1 sign bit, 11 exponent bits and 52 mantissa bits. The mantissa is **normalised** so that there is always a $1$ before the point, which does not need to be stored. The exponent is stored with a **bias** ($127$ for `float`) so that no negative exponents have to be encoded.
+According to the **IEEE 754** standard, a single-precision number (`float`) consists of 32 bits: 1 sign bit, 8 exponent bits and 23 mantissa bits. A double-precision number (`double`) has 64 bits: 1 sign bit, 11 exponent bits and 52 mantissa bits. The mantissa is normalised so that there is always a $1$ before the point, which does not need to be stored. The exponent is stored with a bias ($127$ for `float`) so that no negative exponents have to be encoded.
 
 :::tip[Example: 13.25 as a float]
 1. Convert to binary: $13.25_{10} = 1101.01_2$

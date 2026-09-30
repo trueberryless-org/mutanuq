@@ -1,6 +1,6 @@
 ---
 title: Relational Databases
-description: Tables, keys, JOINs, ACID transactions and normal forms – the fundamentals of relational database systems.
+description: "Tables, keys, JOINs, ACID transactions and normal forms: the fundamentals of relational database systems."
 sidebar:
   order: 1
 ---
@@ -64,7 +64,7 @@ In the relational model, a **relation** is formally nothing more than a table: a
 Keys identify records and link tables with each other.
 
 - **Super key:** Any set of attributes that uniquely identifies a record.
-- **Candidate key:** A minimal super key – no attribute can be removed without losing uniqueness.
+- **Candidate key:** A minimal super key; no attribute can be removed without losing uniqueness.
 - **Primary key** (`PRIMARY KEY`): The chosen candidate key that uniquely identifies a record. It must not be `NULL` and should never change.
 - **Surrogate key:** A key introduced specifically for this purpose without any business meaning, for example a sequential number or a GUID.
 - **Composite key:** A primary key consisting of several columns, typical for junction tables.
@@ -86,7 +86,7 @@ CREATE TABLE Student (
 
 ### JOIN operations
 
-A **JOIN** combines records from several tables into one result table based on a condition – usually foreign key = primary key.
+A **JOIN** combines records from several tables into one result table based on a condition, usually foreign key = primary key.
 
 | JOIN type            | Result                                                                                        |
 | -------------------- | --------------------------------------------------------------------------------------------- |
@@ -121,7 +121,7 @@ Transactions are several operations combined into one unit in such a way that ei
   Concurrent transactions do not affect each other: the result is as if they had been executed one after another. A common implementation is to lock the data a transaction is working on so that no other transaction can overwrite it.
 
 - **D**urable  
-  Once a transaction has been completed successfully (`COMMIT`), its changes are stored permanently – even in the event of a power failure or system crash. To achieve this, database systems first write changes to a transaction log (_write-ahead log_).
+  Once a transaction has been completed successfully (`COMMIT`), its changes are stored permanently, even in the event of a power failure or system crash. To achieve this, database systems first write changes to a transaction log (_write-ahead log_).
 
 ```sql
 BEGIN TRANSACTION;
@@ -175,7 +175,7 @@ A table is in third normal form if it is in 2NF and there are **no transitive de
 
 ### Boyce-Codd normal form (BCNF)
 
-BCNF tightens 3NF: every determinant – that is, every attribute on which other attributes functionally depend – must be a candidate key. Differences from 3NF only occur in tables with several overlapping candidate keys.
+BCNF tightens 3NF: every determinant (that is, every attribute on which other attributes functionally depend) must be a candidate key. Differences from 3NF only occur in tables with several overlapping candidate keys.
 
 ### Fourth normal form (4NF)
 

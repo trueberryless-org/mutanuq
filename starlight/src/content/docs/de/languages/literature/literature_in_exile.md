@@ -1,28 +1,28 @@
 ---
 title: Literatur im Nationalsozialismus und Exil
-description: Bücherverbrennung, Gleichschaltung und die Literatur von Autorinnen und Autoren im Exil und im Widerstand – mit Thomas Mann, Anna Seghers, Brecht, Zweig und Klaus Mann.
+description: Bücherverbrennung, Gleichschaltung und die Literatur von Autorinnen und Autoren im Exil und im Widerstand, mit Thomas Mann, Anna Seghers, Brecht, Zweig und Klaus Mann.
 sidebar:
   order: 14
 ---
 
-Mit der Machtergreifung der Nationalsozialisten 1933 endete in Deutschland die Freiheit der Kunst. Bücher wurden verbrannt, Autorinnen und Autoren verfolgt, verhaftet oder in die Flucht getrieben. Die deutschsprachige Literatur spaltete sich: in die gelenkte Literatur im Deutschen Reich, die Literatur der **inneren Emigration** und die **Exilliteratur**.
+Mit der Machtergreifung der Nationalsozialisten 1933 endete in Deutschland die Freiheit der Kunst. Bücher wurden verbrannt, Autorinnen und Autoren verfolgt, verhaftet oder in die Flucht getrieben. Die deutschsprachige Literatur spaltete sich: in die gelenkte Literatur im Deutschen Reich, die Literatur der **inneren Emigration** und die Exilliteratur.
 
 ## Eckdaten
 
 - 1933 – 1945
-- 10. Mai 1933: **Bücherverbrennung** in Berlin und vielen anderen Universitätsstädten
-- Gleichschaltung der Kultur durch die **Reichsschrifttumskammer**
+- 10. Mai 1933: Bücherverbrennung in Berlin und vielen anderen Universitätsstädten
+- Gleichschaltung der Kultur durch die Reichsschrifttumskammer
 - über 2000 Schriftstellerinnen und Schriftsteller im Exil
-- 1938: „Anschluss“ Österreichs – auch österreichische Autoren müssen fliehen
+- 1938: „Anschluss“ Österreichs: Auch österreichische Autoren müssen fliehen
 - Themen des Exils: Heimatverlust, Widerstand, Aufklärung über das NS-Regime
 
 ## Historischer Hintergrund
 
-Am 30. Jänner 1933 wurde Adolf Hitler Reichskanzler. Innerhalb weniger Monate errichteten die Nationalsozialisten eine Diktatur. Wer publizieren wollte, musste Mitglied der **Reichsschrifttumskammer** sein, Jüdinnen und Juden sowie politische Gegner wurden ausgeschlossen. Mit dem **„Anschluss“** Österreichs im März 1938 galten diese Regeln auch dort. Der Zweite Weltkrieg (1939 – 1945) und der **Holocaust**, bei dem etwa sechs Millionen Jüdinnen und Juden ermordet wurden, stellen den größten Zivilisationsbruch der Geschichte dar.
+Am 30. Jänner 1933 wurde Adolf Hitler Reichskanzler. Innerhalb weniger Monate errichteten die Nationalsozialisten eine Diktatur. Wer publizieren wollte, musste Mitglied der **Reichsschrifttumskammer** sein, Jüdinnen und Juden sowie politische Gegner wurden ausgeschlossen. Mit dem „Anschluss“ Österreichs im März 1938 galten diese Regeln auch dort. Der Zweite Weltkrieg (1939 – 1945) und der Holocaust, bei dem etwa sechs Millionen Jüdinnen und Juden ermordet wurden, stellen den größten Zivilisationsbruch der Geschichte dar.
 
 ## Bücherverbrennung
 
-Am **10. Mai 1933** verbrannten Studenten, Professoren und SA-Männer auf dem Berliner Opernplatz und in vielen anderen Städten Zehntausende Bücher „undeutscher“ Autoren – darunter Werke von Heinrich Heine, Karl Marx, Sigmund Freud, Erich Kästner, Erich Maria Remarque, Kurt Tucholsky, Stefan Zweig und Bertolt Brecht. Erich Kästner war selbst anwesend und sah zu, wie seine Bücher verbrannt wurden.
+Am **10. Mai 1933** verbrannten Studenten, Professoren und SA-Männer auf dem Berliner Opernplatz und in vielen anderen Städten Zehntausende Bücher „undeutscher“ Autoren, darunter Werke von Heinrich Heine, Karl Marx, Sigmund Freud, Erich Kästner, Erich Maria Remarque, Kurt Tucholsky, Stefan Zweig und Bertolt Brecht. Erich Kästner war selbst anwesend und sah zu, wie seine Bücher verbrannt wurden.
 
 Heinrich Heine hatte bereits 1821 in seiner Tragödie „Almansor“ geschrieben:
 
@@ -34,7 +34,7 @@ Die offiziell geförderte Literatur sollte die NS-Ideologie verbreiten: **Blut-u
 
 Einige Autorinnen und Autoren blieben im Land, lehnten das Regime aber ab. Man spricht von **innerer Emigration**: Sie zogen sich in unpolitische Themen zurück oder übten versteckte Kritik, etwa in historischen Stoffen. Beispiele sind Werner Bergengruen, Reinhold Schneider und Erich Kästner, der unter Pseudonym weiterschrieb.
 
-Auch im **Widerstand** entstand Literatur. Die Flugblätter der **Weißen Rose** um die Geschwister Hans und Sophie Scholl riefen 1942/43 zum Widerstand auf. Die Mitglieder wurden hingerichtet.
+Auch im **Widerstand** entstand Literatur. Die Flugblätter der Weißen Rose um die Geschwister Hans und Sophie Scholl riefen 1942/43 zum Widerstand auf. Die Mitglieder wurden hingerichtet.
 
 ## Exilliteratur
 
@@ -42,15 +42,15 @@ Die Exilautorinnen und -autoren flohen zunächst in Nachbarländer wie die Tsche
 
 ### Thomas Mann (1875 – 1955)
 
-Thomas Mann hatte 1929 den Nobelpreis für Literatur erhalten, vor allem für seinen Roman „**Buddenbrooks**“ (1901) über den Verfall einer Lübecker Kaufmannsfamilie. 1933 kehrte er von einer Vortragsreise nicht mehr nach Deutschland zurück und lebte in der Schweiz und später in den USA. In seinen Radioansprachen „**Deutsche Hörer!**“ wandte er sich über die BBC an die Menschen in Deutschland. Im Exil schrieb er unter anderem „Doktor Faustus“ (1947). Bekannt sind außerdem „Der Zauberberg“ (1924) und die Novelle „Der Tod in Venedig“ (1912).
+Thomas Mann hatte 1929 den Nobelpreis für Literatur erhalten, vor allem für seinen Roman „**Buddenbrooks**“ (1901) über den Verfall einer Lübecker Kaufmannsfamilie. 1933 kehrte er von einer Vortragsreise nicht mehr nach Deutschland zurück und lebte in der Schweiz und später in den USA. In seinen Radioansprachen „Deutsche Hörer!“ wandte er sich über die BBC an die Menschen in Deutschland. Im Exil schrieb er unter anderem „Doktor Faustus“ (1947). Bekannt sind außerdem „Der Zauberberg“ (1924) und die Novelle „Der Tod in Venedig“ (1912).
 
 ### Anna Seghers (1900 – 1983)
 
-„**Das siebte Kreuz**“ (1942) erzählt von der Flucht von sieben Häftlingen aus dem Konzentrationslager Westhofen. Sechs werden gefasst, nur Georg Heisler entkommt – dank der Hilfe vieler Menschen. Das siebte Kreuz, das für ihn vorbereitet wurde, bleibt leer. Der Roman zeigt, dass auch im NS-Staat Menschlichkeit möglich war. In „Transit“ (1944) beschreibt sie die verzweifelte Lage der Flüchtlinge in Marseille.
+„**Das siebte Kreuz**“ (1942) erzählt von der Flucht von sieben Häftlingen aus dem Konzentrationslager Westhofen. Sechs werden gefasst, nur Georg Heisler entkommt, dank der Hilfe vieler Menschen. Das siebte Kreuz, das für ihn vorbereitet wurde, bleibt leer. Der Roman zeigt, dass auch im NS-Staat Menschlichkeit möglich war. In „Transit“ (1944) beschreibt sie die verzweifelte Lage der Flüchtlinge in Marseille.
 
 ### Klaus Mann (1906 – 1949)
 
-Der Sohn Thomas Manns schrieb im Exil den Roman „**Mephisto**“ (1936) über einen Schauspieler, der seine Karriere im NS-Staat durch Anpassung und Verrat vorantreibt – ein Porträt des Schauspielers Gustaf Gründgens.
+Der Sohn Thomas Manns schrieb im Exil den Roman „**Mephisto**“ (1936) über einen Schauspieler, der seine Karriere im NS-Staat durch Anpassung und Verrat vorantreibt. Die Figur ist ein Porträt des Schauspielers Gustaf Gründgens.
 
 ### Weitere Vertreter
 
@@ -59,7 +59,7 @@ Der Sohn Thomas Manns schrieb im Exil den Roman „**Mephisto**“ (1936) über 
 - **Joseph Roth:** starb 1939 verarmt im Pariser Exil
 - **Ödön von Horváth:** kam 1938 im Pariser Exil ums Leben, als ihn ein herabfallender Ast erschlug
 - **Nelly Sachs** (1891 – 1970): floh 1940 nach Schweden und verarbeitete in ihren Gedichten den Holocaust; 1966 erhielt sie den Nobelpreis für Literatur
-- **Lion Feuchtwanger**, **Heinrich Mann**, **Franz Werfel** und **Carl Zuckmayer**, der seit 1926 in Österreich gelebt hatte und 1938 fliehen musste
+- Lion Feuchtwanger, Heinrich Mann, Franz Werfel und Carl Zuckmayer, der seit 1926 in Österreich gelebt hatte und 1938 fliehen musste
 
 ## Literatur über den Holocaust
 

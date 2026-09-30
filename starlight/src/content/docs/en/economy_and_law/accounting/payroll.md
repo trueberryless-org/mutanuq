@@ -10,8 +10,8 @@ Payroll accounting calculates every month what employees are paid and which cont
 ## Basic terms
 
 - Traditionally, manual workers receive wages and salaried employees receive a salary. Today, both are generally called remuneration.
-- **Gross pay** is the agreed remuneration before deductions.
-- **Net pay** is the amount transferred to the employee's account.
+- Gross pay is the agreed remuneration before deductions.
+- Net pay is the amount transferred to the employee's account.
 - The minimum amount is set by the collective agreement (see [labour law](/en/economy_and_law/law/labour_law/#social-partners-and-collective-agreements)).
 
 ## From gross to net

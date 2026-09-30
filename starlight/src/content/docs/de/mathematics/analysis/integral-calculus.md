@@ -5,7 +5,7 @@ sidebar:
   order: 5
 ---
 
-Die **Integralrechnung** ist die Umkehrung der Differentialrechnung. Kennt man die Änderungsrate einer Größe, kann man mit ihr die Größe selbst rekonstruieren – etwa den zurückgelegten Weg aus der Geschwindigkeit. Außerdem berechnet man mit Integralen Flächen, Volumen, Mittelwerte und Arbeit.
+Die **Integralrechnung** ist die Umkehrung der Differentialrechnung. Kennt man die Änderungsrate einer Größe, kann man mit ihr die Größe selbst rekonstruieren, etwa den zurückgelegten Weg aus der Geschwindigkeit. Außerdem berechnet man mit Integralen Flächen, Volumen, Mittelwerte und Arbeit.
 
 ## Stammfunktion
 
@@ -21,7 +21,7 @@ $$
 \int f(x)\,\mathrm{d}x = F(x) + C
 $$
 
-$f$ heißt **Integrand**, $C$ **Integrationskonstante** und $\mathrm{d}x$ gibt die Integrationsvariable an.
+$f$ heißt **Integrand**, $C$ Integrationskonstante und $\mathrm{d}x$ gibt die Integrationsvariable an.
 
 :::tip[Beispiel]
 $F(x) = x^3$, $F(x) = x^3 + 5$ und $F(x) = x^3 - 2$ sind alle Stammfunktionen von $f(x) = 3x^2$. Also ist $\int 3x^2\,\mathrm{d}x = x^3 + C$.
@@ -40,7 +40,7 @@ $F(x) = x^3$, $F(x) = x^3 + 5$ und $F(x) = x^3 - 2$ sind alle Stammfunktionen vo
 | $\cos x$            | $\sin x + C$                                   |
 | $\dfrac{1}{\cos^2 x}$ | $\tan x + C$                                 |
 
-Die **Potenzregel** der Integration: Hochzahl um 1 erhöhen und durch die neue Hochzahl dividieren. Für $n = -1$ funktioniert sie nicht (Division durch 0) – dafür gibt es den Logarithmus.
+Die **Potenzregel** der Integration: Hochzahl um 1 erhöhen und durch die neue Hochzahl dividieren. Für $n = -1$ funktioniert sie nicht (Division durch 0). Dafür gibt es den Logarithmus.
 
 :::tip[Tipp]
 Jedes Ergebnis lässt sich durch **Ableiten überprüfen**: Die Ableitung der Stammfunktion muss wieder den Integranden ergeben.
@@ -86,11 +86,11 @@ $$
 
 ### Substitution
 
-Die **Substitutionsregel** ist die Umkehrung der Kettenregel. Sie hilft, wenn im Integranden eine Funktion **und ihre Ableitung** vorkommen. Man ersetzt die innere Funktion durch eine neue Variable $u$:
+Die **Substitutionsregel** ist die Umkehrung der Kettenregel. Sie hilft, wenn im Integranden eine Funktion und ihre Ableitung vorkommen. Man ersetzt die innere Funktion durch eine neue Variable $u$:
 
 1. $u = g(x)$ wählen
 2. $\frac{\mathrm{d}u}{\mathrm{d}x} = g'(x)$, also $\mathrm{d}x = \frac{\mathrm{d}u}{g'(x)}$
-3. einsetzen – alle $x$ müssen verschwinden
+3. einsetzen, dabei müssen alle $x$ verschwinden
 4. nach $u$ integrieren und zurücksubstituieren
 
 :::tip[Beispiel]
@@ -127,7 +127,7 @@ Probe: $\big(e^x(x - 1)\big)' = e^x(x - 1) + e^x = x e^x$ ✓
 
 ## Bestimmtes Integral
 
-Das **bestimmte Integral** von $f$ zwischen den **Grenzen** $a$ und $b$ ist eine Zahl. Anschaulich ist es der **orientierte Flächeninhalt** zwischen dem Graphen und der $x$-Achse: Flächen oberhalb der Achse zählen positiv, Flächen unterhalb negativ.
+Das **bestimmte Integral** von $f$ zwischen den Grenzen $a$ und $b$ ist eine Zahl. Anschaulich ist es der orientierte Flächeninhalt zwischen dem Graphen und der $x$-Achse: Flächen oberhalb der Achse zählen positiv, Flächen unterhalb negativ.
 
 Man erhält es als Grenzwert von **Riemann-Summen**: Das Intervall $[a; b]$ wird in $n$ schmale Streifen der Breite $\Delta x$ geteilt, jeder Streifen durch ein Rechteck angenähert, und die Rechteckflächen werden addiert. Für $n \to \infty$ gilt:
 
@@ -182,4 +182,4 @@ W = \int_0^{30} \left(200 - 150e^{-0{,}1t}\right)\mathrm{d}t = \Big[ 200t + 1500
 $$
 :::
 
-Weitere Anwendungen wie Flächen zwischen Kurven, Rotationsvolumen und Mittelwerte finden Sie bei den [Anwendungen der Integralrechnung](/de/mathematics/analysis/applications-of-integration/). Integrale, die sich nicht exakt berechnen lassen, löst man mit [numerischer Integration](/de/mathematics/analysis/numerical-methods/#numerische-integration).
+Weitere Anwendungen wie Flächen zwischen Kurven, Rotationsvolumen und Mittelwerte findest du bei den [Anwendungen der Integralrechnung](/de/mathematics/analysis/applications-of-integration/). Integrale, die sich nicht exakt berechnen lassen, löst man mit [numerischer Integration](/de/mathematics/analysis/numerical-methods/#numerische-integration).

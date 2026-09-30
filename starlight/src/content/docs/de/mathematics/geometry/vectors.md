@@ -1,13 +1,13 @@
 ---
 title: Vektoren
-description: Vektoren in der Ebene und im Raum – Darstellung, Ortsvektor, Betrag, Rechenoperationen, Skalarprodukt, Winkel, Orthogonalität und vektorielles Produkt.
+description: "Vektoren in der Ebene und im Raum: Darstellung, Ortsvektor, Betrag, Rechenoperationen, Skalarprodukt, Winkel, Orthogonalität und vektorielles Produkt."
 sidebar:
   order: 3
 ---
 
 ## Was ist ein Vektor?
 
-Ein **Vektor** beschreibt eine Verschiebung mit einer bestimmten **Länge** und **Richtung**. Er wird als Pfeil dargestellt. Alle Pfeile mit gleicher Länge und Richtung stellen denselben Vektor dar, egal wo sie beginnen. In der Physik werden Größen wie Kraft, Geschwindigkeit oder elektrische Feldstärke durch Vektoren beschrieben – im Gegensatz zu **Skalaren** wie Masse oder Temperatur, die nur einen Zahlenwert haben.
+Ein **Vektor** beschreibt eine Verschiebung mit einer bestimmten Länge und Richtung. Er wird als Pfeil dargestellt. Alle Pfeile mit gleicher Länge und Richtung stellen denselben Vektor dar, egal wo sie beginnen. In der Physik werden Größen wie Kraft, Geschwindigkeit oder elektrische Feldstärke durch Vektoren beschrieben, im Gegensatz zu Skalaren wie Masse oder Temperatur, die nur einen Zahlenwert haben.
 
 In einem Koordinatensystem wird ein Vektor durch seine **Komponenten** angegeben:
 
@@ -50,7 +50,7 @@ $$
 
 ### Addition und Subtraktion
 
-Vektoren werden **komponentenweise** addiert und subtrahiert. Geometrisch hängt man bei der Addition die Pfeile aneinander (Spitze an Schaft). Das Ergebnis heißt **Resultierende**.
+Vektoren werden **komponentenweise** addiert und subtrahiert. Geometrisch hängt man bei der Addition die Pfeile aneinander (Spitze an Schaft). Das Ergebnis heißt Resultierende.
 
 $$
 \begin{pmatrix} 1 \\ 3 \end{pmatrix} + \begin{pmatrix} 4 \\ -1 \end{pmatrix} = \begin{pmatrix} 5 \\ 2 \end{pmatrix}
@@ -120,7 +120,7 @@ In der Physik ist die Arbeit, die eine Kraft $\vec{F}$ entlang eines Weges $\vec
 
 ## Vektorielles Produkt
 
-Das **vektorielle Produkt** (Kreuzprodukt) ist nur im $\mathbb{R}^3$ definiert. Sein Ergebnis ist ein **Vektor**:
+Das **vektorielle Produkt** (Kreuzprodukt) ist nur im $\mathbb{R}^3$ definiert. Sein Ergebnis ist ein Vektor:
 
 $$
 \vec{a} \times \vec{b} = \begin{pmatrix} a_y b_z - a_z b_y \\ a_z b_x - a_x b_z \\ a_x b_y - a_y b_x \end{pmatrix}
@@ -128,9 +128,9 @@ $$
 
 Eigenschaften:
 
-- $\vec{a} \times \vec{b}$ steht **normal** auf $\vec{a}$ und auf $\vec{b}$.
-- Sein Betrag ist der **Flächeninhalt des Parallelogramms**, das von $\vec{a}$ und $\vec{b}$ aufgespannt wird: $\lvert \vec{a} \times \vec{b} \rvert = \lvert \vec{a} \rvert \lvert \vec{b} \rvert \sin\varphi$. Das Dreieck hat die halbe Fläche.
-- $\vec{a}$, $\vec{b}$ und $\vec{a} \times \vec{b}$ bilden ein **Rechtssystem** (Rechte-Hand-Regel).
+- $\vec{a} \times \vec{b}$ steht normal auf $\vec{a}$ und auf $\vec{b}$.
+- Sein Betrag ist der Flächeninhalt des Parallelogramms, das von $\vec{a}$ und $\vec{b}$ aufgespannt wird: $\lvert \vec{a} \times \vec{b} \rvert = \lvert \vec{a} \rvert \lvert \vec{b} \rvert \sin\varphi$. Das Dreieck hat die halbe Fläche.
+- $\vec{a}$, $\vec{b}$ und $\vec{a} \times \vec{b}$ bilden ein Rechtssystem (Rechte-Hand-Regel).
 - Es ist nicht kommutativ: $\vec{b} \times \vec{a} = -(\vec{a} \times \vec{b})$.
 - Sind $\vec{a}$ und $\vec{b}$ parallel, ist $\vec{a} \times \vec{b} = \vec{0}$.
 

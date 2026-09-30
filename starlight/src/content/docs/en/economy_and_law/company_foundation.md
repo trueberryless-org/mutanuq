@@ -146,7 +146,7 @@ Founding the company with a partner has certain advantages and disadvantages.
 
 ### Trade-law requirements
 
-A **trade licence** (Gewerbeberechtigung) is required for a commercial activity. It is issued by a trade authority.
+A **trade licence** is required for a commercial activity. It is issued by a trade authority.
 
 An entrepreneurial activity is a commercial activity if it is carried out
 
@@ -163,11 +163,11 @@ An entrepreneurial activity is a commercial activity if it is carried out
 
 #### Proof of qualification
 
-For certain activities, a proof of qualification (Befähigungsnachweis) must also be provided. This means that the entrepreneur must have special professional and entrepreneurial skills and experience.
+For certain activities, a proof of qualification must also be provided. This means that the entrepreneur must have special professional and entrepreneurial skills and experience.
 
 #### Reliability check
 
-For businesses with a high level of responsibility, a reliability check (Zuverlässigkeitsprüfung) is also necessary. There must be no violations in connection with the trade in question.
+For businesses with a high level of responsibility, a reliability check is also necessary. There must be no violations in connection with the trade in question.
 
 #### Types of trades
 
@@ -198,7 +198,7 @@ There are different types of trades, each with different requirements.
 
 #### Activities outside the Trade Act
 
-Entrepreneurial activities that do not fall under the Trade Act (Gewerbeordnung) are subject to other laws and do **not** require a trade licence.
+Entrepreneurial activities that do not fall under the Trade Act are subject to other laws and do **not** require a trade licence.
 
 > liberal professions (doctors, notaries, physiotherapists), new self-employed (lecturers)
 
@@ -222,7 +222,7 @@ Sole proprietorships, OG and KG are **partnerships** in which the founders are p
 In Austria, founding a company typically works like this:
 
 1. **Advice** from the founder service of the Economic Chamber and writing the business plan.
-2. Obtaining the **NeuFöG confirmation**: with the confirmation under the New Business Promotion Act (Neugründungs-Förderungsgesetz), certain fees and charges for the foundation are waived.
+2. Obtaining the **New Business Promotion confirmation**: with the confirmation under the New Business Promotion Act, certain fees and charges for the foundation are waived.
 3. **Trade registration** with the district administrative authority or online via the Trade Information System Austria (GISA). This automatically makes you a member of the Economic Chamber.
 4. **Social insurance**: the self-employed are insured with the social insurance institution for the self-employed (SVS).
 5. **Tax office**: notification of the start of the activity and assignment of a tax number and, if required, a VAT identification number.

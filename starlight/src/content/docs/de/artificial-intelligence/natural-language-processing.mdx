@@ -385,7 +385,7 @@ print(vector.toarray())
 ```
 
 :::tip[Aha]
-Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert. Der Vectorizer verfügt somit über ein Vokabular von 53 Wörtern.
+Falls du dich fragst, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert. Der Vectorizer verfügt somit über ein Vokabular von 53 Wörtern.
 :::
 
 :::note
@@ -421,12 +421,12 @@ print(labels) ## [1 0 0 0 1 1 0 1 0 1]
 
 ### TF-IDF
 
-Beim reinen Zählen von Wörtern erhalten häufige Wörter wie „the“ oder „village“ ein hohes Gewicht, obwohl sie wenig über einen einzelnen Text aussagen. **TF-IDF** (_Term Frequency – Inverse Document Frequency_) gleicht das aus:
+Beim reinen Zählen von Wörtern erhalten häufige Wörter wie „the“ oder „village“ ein hohes Gewicht, obwohl sie wenig über einen einzelnen Text aussagen. **TF-IDF** (_Term Frequency, Inverse Document Frequency_) gleicht das aus:
 
 - Die **Term Frequency** $tf(t, d)$ gibt an, wie oft ein Wort $t$ in einem Dokument $d$ vorkommt.
 - Die **Inverse Document Frequency** $idf(t) = \log\frac{N}{df(t)}$ ist umso größer, je weniger der $N$ Dokumente das Wort enthalten.
 
-Der TF-IDF-Wert $tf(t, d) \cdot idf(t)$ ist also hoch für Wörter, die in einem Dokument häufig, im gesamten Korpus aber selten vorkommen – genau jene Wörter, die ein Dokument gut charakterisieren. (scikit-learn verwendet standardmäßig eine leicht geglättete Variante dieser Formel und normalisiert die Vektoren.)
+Der TF-IDF-Wert $tf(t, d) \cdot idf(t)$ ist also hoch für Wörter, die in einem Dokument häufig, im gesamten Korpus aber selten vorkommen. Das sind genau jene Wörter, die ein Dokument gut charakterisieren. (scikit-learn verwendet standardmäßig eine leicht geglättete Variante dieser Formel und normalisiert die Vektoren.)
 
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer

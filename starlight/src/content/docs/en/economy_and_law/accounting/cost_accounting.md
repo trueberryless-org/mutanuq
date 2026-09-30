@@ -11,8 +11,8 @@ sidebar:
 
 **Costs** are the consumption of goods and services for the business's operations, valued in money. They partly differ from the expenses in bookkeeping:
 
-- **Non-operating expenses** are expenses that are not costs, such as a donation or exceptional damage.
-- **Imputed costs** are costs without a corresponding expense, such as an **imputed entrepreneur's salary** for the work of a sole proprietor or **imputed interest** on equity.
+- Non-operating expenses are expenses that are not costs, such as a donation or exceptional damage.
+- Imputed costs are costs without a corresponding expense, such as an imputed entrepreneur's salary for the work of a sole proprietor or imputed interest on equity.
 
 ## Cost type accounting
 
@@ -20,27 +20,27 @@ Cost type accounting asks: **Which** costs have arisen?
 
 ### By attributability
 
-- **Direct costs** can be attributed directly to a product, e.g. materials or production wages for a specific product.
-- **Overhead costs** relate to several products and cannot be attributed directly, e.g. rent, administrative salaries, electricity or insurance.
+- Direct costs can be attributed directly to a product, e.g. materials or production wages for a specific product.
+- Overhead costs relate to several products and cannot be attributed directly, e.g. rent, administrative salaries, electricity or insurance.
 
 ### By behaviour when output changes
 
-- **Fixed costs** stay the same when production increases, e.g. rent, depreciation or salaries.
-- **Variable costs** increase with quantity, e.g. materials, packaging or commissions.
+- Fixed costs stay the same when production increases, e.g. rent, depreciation or salaries.
+- Variable costs increase with quantity, e.g. materials, packaging or commissions.
 
 $$
 K(x) = K_f + k_v \cdot x
 $$
 
-Here $K$ is the total cost, $K_f$ the fixed costs, $k_v$ the variable cost per unit and $x$ the quantity. The **unit costs** $\frac{K(x)}{x}$ fall as the quantity rises, because the fixed costs are spread over more units (**fixed cost degression**).
+Here $K$ is the total cost, $K_f$ the fixed costs, $k_v$ the variable cost per unit and $x$ the quantity. The **unit costs** $\frac{K(x)}{x}$ fall as the quantity rises, because the fixed costs are spread over more units (fixed cost degression).
 
 ## Cost centre accounting
 
-Cost centre accounting asks: **Where** have the costs arisen? **Cost centres** are areas of the business in which costs arise and are managed, such as **materials**, **production**, **administration** and **sales**.
+Cost centre accounting asks: **Where** have the costs arisen? Cost centres are areas of the business in which costs arise and are managed, such as materials, production, administration and sales.
 
 ### Cost allocation sheet
 
-In the **cost allocation sheet**, the overhead costs are distributed to the cost centres using **allocation keys**, for example rent by square metres or electricity costs by installed power. From this, **overhead rates** are calculated, which are later used to allocate the overhead costs to the products:
+In the **cost allocation sheet**, the overhead costs are distributed to the cost centres using allocation keys, for example rent by square metres or electricity costs by installed power. From this, overhead rates are calculated, which are later used to allocate the overhead costs to the products:
 
 $$
 \text{Overhead rate} = \frac{\text{Overhead costs of the cost centre}}{\text{Allocation base (direct costs)}} \cdot 100\,\%
@@ -53,16 +53,16 @@ $$
 | Auxiliary wages     | €90,000   | direct        | 20,000    | 60,000     | 10,000                 |
 | Depreciation        | €50,000   | asset value   | 5,000     | 40,000     | 5,000                  |
 | Other               | €40,000   | direct        | 5,000     | 10,000     | 25,000                 |
-| **Total**           | €240,000  |               | 40,000    | 150,000    | 50,000                 |
-| **Allocation base** |           |               | direct materials €200,000 | production wages €150,000 | production costs €540,000 |
-| **Overhead rate**   |           |               | **20 %**  | **100 %**  | **≈ 9.3 %**            |
+| Total           | €240,000  |               | 40,000    | 150,000    | 50,000                 |
+| Allocation base |           |               | direct materials €200,000 | production wages €150,000 | production costs €540,000 |
+| Overhead rate   |           |               | 20 %  | 100 %  | ≈ 9.3 %            |
 
 The production costs are $200\,000 + 40\,000 + 150\,000 + 150\,000 = 540\,000$ €.
 :::
 
 ## Cost unit accounting and costing
 
-Cost unit accounting asks: **What** have the costs arisen for? Cost units are the products or services. **Costing** is used to determine the cost per unit and the selling price.
+Cost unit accounting asks: **What** have the costs arisen for? Cost units are the products or services. Costing is used to determine the cost per unit and the selling price.
 
 ### Division costing
 
@@ -81,17 +81,17 @@ With several products, the direct costs are attributed directly, and the overhea
 | ---------------------------------------------------- | ----------- |
 | direct materials                                     | €40.00      |
 | + material overheads 20 %                            | €8.00       |
-| **= Material costs**                                 | **€48.00**  |
+| = Material costs                                 | €48.00  |
 | production wages (direct costs)                      | €30.00      |
 | + production overheads 100 %                         | €30.00      |
-| **= Manufacturing costs**                            | **€60.00**  |
-| **Production costs** (materials + manufacturing)     | **€108.00** |
+| = Manufacturing costs                            | €60.00  |
+| Production costs (materials + manufacturing)     | €108.00 |
 | + administration and sales overheads 9.3 %           | €10.04      |
-| **= Total costs**                                    | **€118.04** |
+| = Total costs                                    | €118.04 |
 | + profit mark-up 15 %                                | €17.71      |
-| **= Net selling price**                              | **€135.75** |
+| = Net selling price                              | €135.75 |
 | + 20 % VAT                                           | €27.15      |
-| **= Gross selling price**                            | **€162.90** |
+| = Gross selling price                            | €162.90 |
 :::
 
 In retail, a single **mark-up** on the purchase price is often used instead of overhead rates.
@@ -112,9 +112,9 @@ The contribution margin shows how much each unit sold contributes to **covering 
 
 ### Decisions based on the contribution margin
 
-- An **additional order** is worthwhile in the short term if the price is above the variable costs (positive contribution margin), provided there is spare capacity, even if the price is below the full costs.
-- In the short term, the **lower price limit** is the variable cost; in the long term, it is the total cost.
-- If there is a bottleneck, the products with the highest contribution margin **per bottleneck unit** (e.g. per machine hour) should be preferred.
+- An additional order is worthwhile in the short term if the price is above the variable costs (positive contribution margin), provided there is spare capacity, even if the price is below the full costs.
+- In the short term, the lower price limit is the variable cost; in the long term, it is the total cost.
+- If there is a bottleneck, the products with the highest contribution margin per bottleneck unit (e.g. per machine hour) should be preferred.
 
 ## Break-even analysis
 

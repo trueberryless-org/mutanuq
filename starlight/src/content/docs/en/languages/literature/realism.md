@@ -1,24 +1,24 @@
 ---
 title: Realism
-description: Poetic or bourgeois realism – reality with transfiguration, humour and the novella in Fontane, Storm, Keller, Ebner-Eschenbach and Anzengruber.
+description: "Poetic or bourgeois realism: reality with transfiguration, humour and the novella in Fontane, Storm, Keller, Ebner-Eschenbach and Anzengruber."
 sidebar:
   order: 9
 ---
 
-After the failure of the 1848 revolution, many authors turned away from political utopias. They wanted to depict **reality** as it is – but not as a mere copy, rather artistically shaped and "transfigured". This is why it is called **poetic** or **bourgeois realism**.
+After the failure of the 1848 revolution, many authors turned away from political utopias. They wanted to depict **reality** as it is, but not as a mere copy, rather artistically shaped and "transfigured". This is why it is called poetic or bourgeois realism.
 
 ## Key facts
 
 - c. 1848 – 1890
-- depiction of reality, but with **transfiguration** (Verklärung)
+- depiction of reality, but with transfiguration
 - the middle classes as readers and subject
 - humour as a reconciling attitude
-- most important genres: the **novella** and the novel
+- most important genres: the novella and the novel
 - politics and social misery are left out
 
 ## Historical background
 
-After 1848, a period of restoration began again. **Industrialisation** progressed rapidly, cities grew and the railway changed life. The natural sciences (for example Darwin's theory of evolution, 1859) shaped a new, worldly view of life. In 1871, the German Empire was founded; in 1867, Austria became the **Dual Monarchy of Austria-Hungary**. The wealthy middle classes became the leading class of society but were mostly politically conservative.
+After 1848, a period of restoration began again. **Industrialisation** progressed rapidly, cities grew and the railway changed life. The natural sciences (for example Darwin's theory of evolution, 1859) shaped a new, worldly view of life. In 1871, the German Empire was founded; in 1867, Austria became the Dual Monarchy of Austria-Hungary. The wealthy middle classes became the leading class of society but were mostly politically conservative.
 
 ## Features
 
@@ -26,7 +26,7 @@ After 1848, a period of restoration began again. **Industrialisation** progresse
 - **Transfiguration:** The ugly and miserable is not left out, but softened. Art should show what is essential and universally valid in reality.
 - **Humour:** It reconciles with the contradictions of the world.
 - **Themes:** middle-class life, marriage and family, social conventions, conflicts between the individual and society, home and region.
-- **Novella:** According to Goethe, it is "an unheard-of event that has occurred". It is usually tightly structured, has a turning point and often a **central symbol** and a **frame narrative**.
+- **Novella:** According to Goethe, it is "an unheard-of event that has occurred". It is usually tightly structured, has a turning point and often a central symbol and a frame narrative.
 
 ## Authors and works
 
@@ -40,7 +40,7 @@ The North German Storm mainly wrote novellas. "**Der Schimmelreiter**" (The Ride
 
 ### Gottfried Keller (1819 – 1890)
 
-The Swiss author Keller wrote the Bildungsroman "**Der grüne Heinrich**" (Green Henry) and the collection of novellas "Die Leute von Seldwyla" (The People of Seldwyla) with "**Romeo und Julia auf dem Dorfe**" (A Village Romeo and Juliet, 1856).
+The Swiss author Keller wrote the Bildungsroman "**Der grüne Heinrich**" (Green Henry) and the collection of novellas "Die Leute von Seldwyla" (The People of Seldwyla) with "Romeo und Julia auf dem Dorfe" (A Village Romeo and Juliet, 1856).
 
 ### Marie von Ebner-Eschenbach (1830 – 1916)
 

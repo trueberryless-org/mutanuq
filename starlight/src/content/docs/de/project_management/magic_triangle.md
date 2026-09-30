@@ -1,6 +1,6 @@
 ---
 title: Magisches Dreieck
-description: Die gegenseitige Abhängigkeit von Leistung, Zeit und Kosten in Projekten – und warum man nicht alle drei gleichzeitig optimieren kann.
+description: Die gegenseitige Abhängigkeit von Leistung, Zeit und Kosten in Projekten und warum man nicht alle drei gleichzeitig optimieren kann.
 sidebar:
   order: 1
 ---
@@ -15,7 +15,7 @@ Das magische Dreieck beschreibt drei Faktoren im Projektmanagement, welche immer
 - **Zeit** (Termine): _Wann_ muss das Projekt bzw. müssen einzelne Meilensteine fertig sein?
 - **Kosten** (Budget und Ressourcen): _Wie viel_ darf das Projekt kosten? Dazu zählen neben Geld auch Personal und Material.
 
-„Magisch“ heißt das Dreieck, weil sich die drei Ziele gegenseitig beeinflussen und niemals alle drei gleichzeitig maximal erfüllt werden können. Ein Projekt, das sehr schnell, sehr günstig und in höchster Qualität umgesetzt werden soll, ist in der Praxis kaum möglich. Häufig wird dies mit dem Spruch „Schnell, billig, gut – wähle zwei“ zusammengefasst.
+„Magisch“ heißt das Dreieck, weil sich die drei Ziele gegenseitig beeinflussen und niemals alle drei gleichzeitig maximal erfüllt werden können. Ein Projekt, das sehr schnell, sehr günstig und in höchster Qualität umgesetzt werden soll, ist in der Praxis kaum möglich. Häufig wird dies mit dem Spruch „Schnell, billig, gut: Wähle zwei“ zusammengefasst.
 
 ## Beispiele
 
@@ -41,6 +41,6 @@ In der agilen Softwareentwicklung (etwa mit Scrum) werden Zeit (feste Sprintlän
 
 ## Erweiterung: Teufelsquadrat
 
-Harry Sneed erweiterte das Modell zum **Teufelsquadrat**, das vier Größen enthält: **Qualität**, **Quantität** (Umfang), **Zeit** und **Kosten**. Die Fläche des Quadrats steht für die gleichbleibende Produktivität des Teams. Zieht man an einer Ecke – verbessert man also einen Faktor –, muss mindestens eine andere Ecke nachgeben, solange sich an der Produktivität nichts ändert.
+Harry Sneed erweiterte das Modell zum **Teufelsquadrat**, das vier Größen enthält: **Qualität**, **Quantität** (Umfang), **Zeit** und **Kosten**. Die Fläche des Quadrats steht für die gleichbleibende Produktivität des Teams. Zieht man an einer Ecke, verbessert man also einen Faktor, muss mindestens eine andere Ecke nachgeben, solange sich an der Produktivität nichts ändert.
 
 Die Einhaltung dieser Ziele zu überwachen, ist eine zentrale Aufgabe des [Projektcontrollings](/de/project_management/project_controlling/).

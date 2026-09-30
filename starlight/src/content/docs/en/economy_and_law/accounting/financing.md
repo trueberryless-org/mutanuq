@@ -5,23 +5,23 @@ sidebar:
   order: 6
 ---
 
-**Financing** covers all measures a business uses to raise the capital it needs for founding, investments and ongoing operations. Four goals often conflict: **liquidity** (ability to pay), **profitability** (capital as cheap as possible), **security** and **independence**.
+**Financing** covers all measures a business uses to raise the capital it needs for founding, investments and ongoing operations. Four goals often conflict: liquidity (ability to pay), profitability (capital as cheap as possible), security and independence.
 
 ## Types of financing
 
 | By origin of the capital       | By legal position of the capital provider |
 | ------------------------------ | ----------------------------------------- |
-| **External financing**: capital comes from outside (owners, banks, suppliers) | **Equity financing**: capital providers become (co-)owners |
-| **Internal financing**: capital is generated within the business (retained profits, depreciation, provisions) | **Debt financing**: capital providers become creditors |
+| External financing: capital comes from outside (owners, banks, suppliers) | Equity financing: capital providers become (co-)owners |
+| Internal financing: capital is generated within the business (retained profits, depreciation, provisions) | Debt financing: capital providers become creditors |
 
 ### Equity financing
 
-Equity is contributed by the owners (**contributions**), for example when the business is founded or through new partners or shareholders, or it is built up through **retained profits** (self-financing).
+Equity is contributed by the owners (**contributions**), for example when the business is founded or through new partners or shareholders, or it is built up through retained profits (self-financing).
 
 - **Advantages:** no obligation to repay, no fixed interest, improves creditworthiness
 - **Disadvantages:** limited availability, new partners want a say and a share of the profits
 
-For start-ups, there are also **business angels**, **venture capital** and **crowdfunding** or **crowdinvesting**.
+For start-ups, there are also business angels, venture capital and crowdfunding or crowdinvesting.
 
 ### Debt financing
 
@@ -54,11 +54,11 @@ A **loan** is granted for a specific purpose, such as an investment, for a fixed
 - **annuity loans:** equal total instalments (annuities), in which the interest portion falls and the repayment portion rises,
 - **bullet loans:** only interest payments during the term, full repayment at the end.
 
-Banks require **collateral**, such as a mortgage, a guarantee or the assignment of receivables, and check the borrower's creditworthiness. For founders, there are subsidised loans and guarantees, for example from the Austrian federal development bank **Austria Wirtschaftsservice (aws)**.
+Banks require **collateral**, such as a mortgage, a guarantee or the assignment of receivables, and check the borrower's creditworthiness. For founders, there are subsidised loans and guarantees, for example from the Austrian federal development bank Austria Wirtschaftsservice (aws).
 
 ### Leasing
 
-With **leasing**, a business rents an asset (e.g. a vehicle, a machine or IT equipment) from a leasing company in return for regular **leasing instalments**.
+With **leasing**, a business rents an asset (e.g. a vehicle, a machine or IT equipment) from a leasing company in return for regular leasing instalments.
 
 - **Operating leasing:** can be terminated at short notice, risk and maintenance usually lie with the lessor, similar to renting
 - **Finance leasing:** long-term, cannot be terminated, often with an option to buy at the residual value at the end
@@ -74,14 +74,14 @@ With **leasing**, a business rents an asset (e.g. a vehicle, a machine or IT equ
 
 Large businesses can raise money on the **capital market** (the stock exchange):
 
-- **Shares:** By issuing shares, a public limited company raises **equity**. The shareholders are co-owners and receive a share of the profits (**dividend**).
-- **Bonds:** By issuing bonds, the business borrows **debt capital** from many investors. It pays interest (the **coupon**) and repays the nominal value at the end of the term.
+- **Shares:** By issuing shares, a public limited company raises equity. The shareholders are co-owners and receive a share of the profits (dividend).
+- **Bonds:** By issuing bonds, the business borrows debt capital from many investors. It pays interest (the coupon) and repays the nominal value at the end of the term.
 
-In Austria, the **Vienna Stock Exchange** is the most important trading venue. The capital market is supervised by the **Financial Market Authority (FMA)** and the **Austrian National Bank (OeNB)**.
+In Austria, the **Vienna Stock Exchange** is the most important trading venue. The capital market is supervised by the Financial Market Authority (FMA) and the Austrian National Bank (OeNB).
 
 ## Liquidity plan
 
-A business can make a profit and still become insolvent if payments come in too late. The **liquidity plan** therefore compares the expected **cash inflows** and **cash outflows** for the coming months and shows in good time when shortages are likely.
+A business can make a profit and still become insolvent if payments come in too late. The **liquidity plan** therefore compares the expected cash inflows and cash outflows for the coming months and shows in good time when shortages are likely.
 
 :::tip[Example: Liquidity plan of a start-up]
 | Month                     | January  | February | March    |
@@ -92,7 +92,7 @@ A business can make a profit and still become insolvent if payments come in too 
 | − rent                    | −1,500   | −1,500   | −1,500   |
 | − investments             | −4,000   | −10,000  | 0        |
 | − other payments          | −2,000   | −1,500   | −2,000   |
-| **= closing balance**     | **8,500** | **−1,500** | **11,000** |
+| = closing balance     | 8,500 | −1,500 | 11,000 |
 
 In February, there is a shortfall of €1,500. The start-up must react in good time, for example by postponing the investment, agreeing an overdraft or asking customers to pay faster.
 :::

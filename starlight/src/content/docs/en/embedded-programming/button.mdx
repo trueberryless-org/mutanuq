@@ -221,12 +221,12 @@ ISR (INT0_vect) {
 ```
 
 :::caution
-Without the setting in `EICRA`, the interrupt is triggered on the low level – so the ISR would be called over and over again as long as the button is pressed. In addition, ISRs should be as short as possible. A `_delay_ms()` in the ISR blocks the entire program meanwhile. In larger programs, the ISR therefore only sets a `volatile` variable and the button press is processed in the main loop (see [interrupts](/en/embedded-programming/interrupts/)).
+Without the setting in `EICRA`, the interrupt is triggered on the low level, so the ISR would be called over and over again as long as the button is pressed. In addition, ISRs should be as short as possible. A `_delay_ms()` in the ISR blocks the entire program meanwhile. In larger programs, the ISR therefore only sets a `volatile` variable and the button press is processed in the main loop (see [interrupts](/en/embedded-programming/interrupts/)).
 :::
 
 #### Group-based external interrupts
 
-Group-based external interrupts (_pin change interrupts_) always apply to the entire port and are triggered on **every** change – i.e. both when pressing and when releasing. For this reason, the interrupt must check the correct pin again for button input, as you can see in the code below. `PCICR` enables the interrupt for a port, and `PCMSKx` selects the pins that may trigger it.
+Group-based external interrupts (_pin change interrupts_) always apply to the entire port and are triggered on **every** change, i.e. both when pressing and when releasing. For this reason, the interrupt must check the correct pin again for button input, as you can see in the code below. `PCICR` enables the interrupt for a port, and `PCMSKx` selects the pins that may trigger it.
 
 |       | Port B        | Port C         | Port D         |
 | ----- | ------------- | -------------- | -------------- |

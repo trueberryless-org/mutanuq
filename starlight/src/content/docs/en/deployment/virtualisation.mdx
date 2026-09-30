@@ -18,7 +18,7 @@ Virtualisation makes it possible to create virtual instances of hardware and sof
 
 ## History
 
-The concept of virtualisation was first used in the 1960s on IBM mainframes to implement multi-user capability. At that time, operating systems did not yet support multiple users, so the easiest way to achieve this was to run additional instances of the operating system. Due to further developments – operating systems later supported multiple users anyway – the concept lost importance outside the mainframe world for a long time.
+The concept of virtualisation was first used in the 1960s on IBM mainframes to implement multi-user capability. At that time, operating systems did not yet support multiple users, so the easiest way to achieve this was to run additional instances of the operating system. Due to further developments (operating systems later supported multiple users anyway), the concept lost importance outside the mainframe world for a long time.
 
 At the end of the 1990s, virtualisation also became popular on normal x86 computers with VMware (1999) and became established in companies in the 2000s, because developers now wanted to be able to test applications and operating systems. In addition, hardware resources can be used much better, since in a company certain services are only used heavily at certain times. For example, many employees log on to the domain controller between eight and nine o'clock, and in the afternoon a lot of e-mails are sent and files are printed. To make better use of expensive resources, servers that perform exactly these tasks can be virtualised so that different servers are flexibly given resources at certain times. Virtualisation therefore helps enormously with flexible scaling.
 
@@ -73,7 +73,7 @@ Hardware virtualisation is enabled by CPU features such as Intel VT-x or AMD-V. 
 
 ### Paravirtualisation
 
-Paravirtualisation is a virtualisation method in which the guest operating systems are specially adapted for virtualisation. The guest operating system therefore "knows" that it is running virtualised. Instead of executing privileged hardware instructions that would have to be intercepted and emulated by the hypervisor, it calls functions of the hypervisor directly through a defined interface. These calls are called **hypercalls** – they work similarly to [system calls](#user-mode), just from the guest operating system to the hypervisor. The best-known example of paravirtualisation is Xen.
+Paravirtualisation is a virtualisation method in which the guest operating systems are specially adapted for virtualisation. The guest operating system therefore "knows" that it is running virtualised. Instead of executing privileged hardware instructions that would have to be intercepted and emulated by the hypervisor, it calls functions of the hypervisor directly through a defined interface. These calls are called **hypercalls**. They work similarly to [system calls](#user-mode), just from the guest operating system to the hypervisor. The best-known example of paravirtualisation is Xen.
 
 #### Paravirtualised drivers
 
@@ -189,7 +189,7 @@ volumes:
 
 ## System / user mode
 
-Certain tasks cannot be done by an application, such as the hypervisor, itself, but have to be done directly by the operating system – for example, accessing the hard disk. So that applications can still read from and write to the disk, there is the concept of system mode and user mode. The processor distinguishes different privilege levels for this, for x86 processors for example **ring 0** (system mode) and **ring 3** (user mode).
+Certain tasks cannot be done by an application, such as the hypervisor, itself, but have to be done directly by the operating system, for example accessing the hard disk. So that applications can still read from and write to the disk, there is the concept of system mode and user mode. The processor distinguishes different privilege levels for this, for x86 processors for example **ring 0** (system mode) and **ring 3** (user mode).
 
 ### System mode
 

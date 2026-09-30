@@ -1,6 +1,6 @@
 ---
 title: Einnahmen-Ausgaben-Rechnung
-description: Die Einnahmen-Ausgaben-Rechnung für kleine Unternehmen – wer sie verwenden darf, das Zufluss-Abfluss-Prinzip, Ausnahmen für Anlagegüter und ein Rechenbeispiel.
+description: "Die Einnahmen-Ausgaben-Rechnung für kleine Unternehmen: wer sie verwenden darf, das Zufluss-Abfluss-Prinzip, Ausnahmen für Anlagegüter und ein Rechenbeispiel."
 sidebar:
   order: 3
 ---
@@ -9,7 +9,7 @@ Die **Einnahmen-Ausgaben-Rechnung (E/A-Rechnung)** ist die einfachste Form der G
 
 ## Wer darf sie verwenden?
 
-- Einzelunternehmen und Personengesellschaften, die **nicht** nach dem UGB rechnungslegungspflichtig sind – also deren Umsatz nicht in zwei aufeinanderfolgenden Jahren **700.000 €** übersteigt,
+- Einzelunternehmen und Personengesellschaften, die nicht nach dem UGB rechnungslegungspflichtig sind, also deren Umsatz nicht in zwei aufeinanderfolgenden Jahren 700.000 € übersteigt,
 - Angehörige freier Berufe (z. B. Ärztinnen, Architekten) unabhängig vom Umsatz.
 
 Kapitalgesellschaften (GmbH, AG) müssen immer die [doppelte Buchhaltung](/de/economy_and_law/accounting/bookkeeping/) führen.
@@ -34,9 +34,9 @@ Anders als bei der doppelten Buchhaltung werden keine Forderungen, Verbindlichke
 
 Einige Vorgänge werden nicht nach dem Zufluss-Abfluss-Prinzip behandelt:
 
-- **Anlagegüter** wie Computer, Maschinen oder Fahrzeuge werden – wie in der doppelten Buchhaltung – über ihre Nutzungsdauer **abgeschrieben**. Nur [geringwertige Wirtschaftsgüter](/de/economy_and_law/accounting/bookkeeping/#abschreibung) bis 1.000 € dürfen sofort abgesetzt werden.
-- **Kredite** sind weder Einnahme noch Ausgabe. Nur die **Zinsen** sind Betriebsausgaben.
-- **Privatentnahmen** (Geld für private Zwecke) und **Privateinlagen** verändern den Gewinn nicht.
+- Anlagegüter wie Computer, Maschinen oder Fahrzeuge werden wie in der doppelten Buchhaltung über ihre Nutzungsdauer abgeschrieben. Nur [geringwertige Wirtschaftsgüter](/de/economy_and_law/accounting/bookkeeping/#abschreibung) bis 1.000 € dürfen sofort abgesetzt werden.
+- Kredite sind weder Einnahme noch Ausgabe. Nur die Zinsen sind Betriebsausgaben.
+- Privatentnahmen (Geld für private Zwecke) und Privateinlagen verändern den Gewinn nicht.
 
 ## Umsatzsteuer
 

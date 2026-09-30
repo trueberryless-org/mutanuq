@@ -44,7 +44,7 @@ You always have to choose yourself at which address the bytes are stored. The AT
 
 ### Reading
 
-To read data – this operation can theoretically be performed an unlimited number of times – this simple code is sufficient:
+To read data, this simple code is sufficient. This operation can theoretically be performed an unlimited number of times.
 
 ```c
 #define F_CPU 16000000
@@ -64,7 +64,7 @@ An EEPROM that has never been written contains the value `0xFF` at every positio
 
 ### Writing
 
-To write data – according to the [datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), this operation can be performed at least 100,000 times per memory cell – this simple code is sufficient. A write operation takes about 3.3 ms.
+To write data, this simple code is sufficient. According to the [datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), this operation can be performed at least 100,000 times per memory cell. A write operation takes about 3.3 ms.
 
 ```c
 #define F_CPU 16000000
@@ -82,7 +82,7 @@ int main(void)
 ```
 
 :::caution
-Since the number of write operations is limited, you should never write to the EEPROM unconditionally in the main loop – at 1000 iterations per second, the memory would otherwise be worn out after a few minutes.
+Since the number of write operations is limited, you should never write to the EEPROM unconditionally in the main loop. At 1000 iterations per second, the memory would otherwise be worn out after a few minutes.
 :::
 
 ### Variables with `EEMEM`

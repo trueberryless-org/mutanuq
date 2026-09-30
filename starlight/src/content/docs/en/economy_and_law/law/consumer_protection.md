@@ -5,20 +5,20 @@ sidebar:
   order: 5
 ---
 
-Consumers are usually inferior to businesses in knowledge, experience and bargaining power. **Consumer protection law** compensates for this imbalance. The most important laws are the **Consumer Protection Act (KSchG)**, the **Distance and Off-Premises Contracts Act (FAGG)** and the **Consumer Warranty Act (VGG)**. Many of these rules are based on EU directives and therefore apply in a similar way throughout the EU.
+Consumers are usually inferior to businesses in knowledge, experience and bargaining power. **Consumer protection law** compensates for this imbalance. The most important laws are the Consumer Protection Act (KSchG), the Distance and Off-Premises Contracts Act (FAGG) and the Consumer Warranty Act (VGG). Many of these rules are based on EU directives and therefore apply in a similar way throughout the EU.
 
-The protective provisions only apply to **consumer transactions** between a **business** and a **consumer** (a person who does not act as part of their business). Many of them cannot be changed by contract to the consumer's disadvantage.
+The protective provisions only apply to **consumer transactions** between a business and a consumer (a person who does not act as part of their business). Many of them cannot be changed by contract to the consumer's disadvantage.
 
 ## Withdrawal rights
 
 ### Distance and off-premises contracts
 
-For **distance contracts** (orders over the internet, by phone, email or catalogue) and **off-premises contracts** (concluded outside the business premises, for example at the front door or on a promotional trip), the consumer can withdraw from the contract within **14 days without giving reasons**.
+For **distance contracts** (orders over the internet, by phone, email or catalogue) and off-premises contracts (concluded outside the business premises, for example at the front door or on a promotional trip), the consumer can withdraw from the contract within 14 days without giving reasons.
 
-- For goods, the period begins when the **goods are received**; for services, when the contract is concluded.
-- If the consumer was not properly informed about the right of withdrawal, the period is extended by up to **12 months**.
-- Withdrawal must be **declared** (no specific form is required, preferably in a verifiable way by email or with the model withdrawal form). Simply sending back the goods is not always sufficient.
-- The business must refund the money **within 14 days**, including the cost of standard delivery. The consumer bears the cost of returning the goods if they were informed about this.
+- For goods, the period begins when the goods are received; for services, when the contract is concluded.
+- If the consumer was not properly informed about the right of withdrawal, the period is extended by up to 12 months.
+- Withdrawal must be declared (no specific form is required, preferably in a verifiable way by email or with the model withdrawal form). Simply sending back the goods is not always sufficient.
+- The business must refund the money within 14 days, including the cost of standard delivery. The consumer bears the cost of returning the goods if they were informed about this.
 
 **Exceptions** to the right of withdrawal include
 
@@ -48,12 +48,12 @@ Businesses must inform consumers clearly and comprehensibly **before** the contr
 
 - their name, address and contact details,
 - the essential characteristics of the goods or service,
-- the **total price** including all taxes and additional costs (shipping),
+- the total price including all taxes and additional costs (shipping),
 - payment, delivery and performance conditions,
 - whether or not there is a right of withdrawal,
 - the duration and termination conditions for long-term contracts.
 
-For online orders, the order button must be clearly labelled, for example with "**order with obligation to pay**" (the **button solution**). Otherwise, the consumer is not bound by the order.
+For online orders, the order button must be clearly labelled, for example with "**order with obligation to pay**" (the button solution). Otherwise, the consumer is not bound by the order.
 
 ## General terms and conditions
 
@@ -64,14 +64,14 @@ In consumer transactions, certain clauses are **invalid**, for example
 - excluding the warranty for new goods,
 - excluding liability for gross negligence and intent,
 - surprising clauses or clauses that grossly disadvantage the consumer,
-- incomprehensibly worded clauses (**transparency requirement**).
+- incomprehensibly worded clauses (transparency requirement).
 
 ## Other protective provisions
 
-- **Cost estimates:** If in doubt, a cost estimate is **binding** and free of charge, unless the business expressly states otherwise.
+- **Cost estimates:** If in doubt, a cost estimate is binding and free of charge, unless the business expressly states otherwise.
 - **Termination of long-term contracts:** Under certain conditions, the consumer can terminate contracts with an indefinite term or a term of more than one year at the end of the first year and every six months thereafter.
 - **Consumer credit:** For loans, there are special information obligations and a 14-day right of withdrawal.
 
 ## Where to get help
 
-Help is available from the **Association for Consumer Information (VKI)**, the **Chamber of Labour (AK)**, the arbitration boards for consumer transactions and, for cross-border problems within the EU, the **European Consumer Centre**.
+Help is available from the **Association for Consumer Information (VKI)**, the Chamber of Labour (AK), the arbitration boards for consumer transactions and, for cross-border problems within the EU, the European Consumer Centre.

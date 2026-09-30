@@ -7,7 +7,7 @@ sidebar:
 
 ## Gleichungen und Lösungsmenge
 
-Eine **Gleichung** besteht aus zwei [Termen](/de/mathematics/algebra/terms/), die durch ein Gleichheitszeichen verbunden sind. Eine Zahl, die beim Einsetzen für die Variable eine wahre Aussage ergibt, ist eine **Lösung**. Alle Lösungen bilden die **Lösungsmenge** $L$.
+Eine **Gleichung** besteht aus zwei [Termen](/de/mathematics/algebra/terms/), die durch ein Gleichheitszeichen verbunden sind. Eine Zahl, die beim Einsetzen für die Variable eine wahre Aussage ergibt, ist eine Lösung. Alle Lösungen bilden die Lösungsmenge $L$.
 
 Die Lösungsmenge hängt von der **Grundmenge** ab: Die Gleichung $2x = 3$ hat in $\mathbb{Z}$ keine Lösung ($L = \{\}$), in $\mathbb{Q}$ die Lösung $L = \{1{,}5\}$.
 
@@ -73,7 +73,7 @@ $$
 x_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 $$
 
-Ist $a = 1$, schreibt man die Gleichung in der **Normalform** $x^2 + px + q = 0$ und verwendet die **kleine Lösungsformel**:
+Ist $a = 1$, schreibt man die Gleichung in der **Normalform** $x^2 + px + q = 0$ und verwendet die kleine Lösungsformel:
 
 $$
 x_{1,2} = -\frac{p}{2} \pm \sqrt{\left(\frac{p}{2}\right)^2 - q}
@@ -130,7 +130,7 @@ Da $-2 \in D$, ist $L = \{-2\}$.
 
 ## Wurzelgleichungen
 
-Bei **Wurzelgleichungen** isoliert man die Wurzel und quadriert beide Seiten. Das Quadrieren ist **keine** Äquivalenzumformung, weil dabei Scheinlösungen entstehen können. Deshalb ist die Probe unbedingt notwendig.
+Bei **Wurzelgleichungen** isoliert man die Wurzel und quadriert beide Seiten. Das Quadrieren ist keine Äquivalenzumformung, weil dabei Scheinlösungen entstehen können. Deshalb ist die Probe unbedingt notwendig.
 
 :::tip[Beispiel]
 $$

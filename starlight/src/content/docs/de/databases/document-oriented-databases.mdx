@@ -1,11 +1,11 @@
 ---
 title: Dokumentenorientierte Datenbanken
-description: NoSQL-Datenbanken, die Daten als flexible JSON-Dokumente speichern – Konzepte, BASE-Modell, MongoDB und CouchDB.
+description: "NoSQL-Datenbanken, die Daten als flexible JSON-Dokumente speichern: Konzepte, BASE-Modell, MongoDB und CouchDB."
 sidebar:
   order: 2
 ---
 
-Dokumentenorientierte Datenbanken gehören zu den sogenannten **NoSQL-Datenbanken** („Not only SQL“). Anstatt Daten auf mehrere Tabellen mit festen Spalten zu verteilen, speichern sie zusammengehörige Informationen als **Dokumente** – meist im JSON-Format oder in einer binären Variante davon (BSON bei MongoDB). Ein Dokument kann verschachtelte Objekte und Listen enthalten und muss keinem festen Schema folgen.
+Dokumentenorientierte Datenbanken gehören zu den sogenannten **NoSQL-Datenbanken** („Not only SQL“). Anstatt Daten auf mehrere Tabellen mit festen Spalten zu verteilen, speichern sie zusammengehörige Informationen als **Dokumente**, meist im JSON-Format oder in einer binären Variante davon (BSON bei MongoDB). Ein Dokument kann verschachtelte Objekte und Listen enthalten und muss keinem festen Schema folgen.
 
 ```json
 {
@@ -89,4 +89,4 @@ db.schueler.updateOne({ vorname: "Ben" }, { $push: { kurse: "Spanisch" } });
 
 ### CouchDB
 
-Apache CouchDB speichert JSON-Dokumente und ist vollständig über eine **HTTP/REST-Schnittstelle** ansprechbar. Abfragen werden über sogenannte _Views_ (MapReduce-Funktionen in JavaScript) oder die deklarative Abfragesprache Mango formuliert. Eine besondere Stärke ist die **Multi-Master-Replikation**: Mehrere Datenbanken – auch offline arbeitende Geräte – können ihre Daten später wieder synchronisieren. Konflikte werden über Dokumentrevisionen (`_rev`) erkannt. Mit PouchDB gibt es sogar eine kompatible Datenbank, die direkt im Browser läuft.
+Apache CouchDB speichert JSON-Dokumente und ist vollständig über eine **HTTP/REST-Schnittstelle** ansprechbar. Abfragen werden über sogenannte _Views_ (MapReduce-Funktionen in JavaScript) oder die deklarative Abfragesprache Mango formuliert. Eine besondere Stärke ist die **Multi-Master-Replikation**: Mehrere Datenbanken, auch offline arbeitende Geräte, können ihre Daten später wieder synchronisieren. Konflikte werden über Dokumentrevisionen (`_rev`) erkannt. Mit PouchDB gibt es sogar eine kompatible Datenbank, die direkt im Browser läuft.

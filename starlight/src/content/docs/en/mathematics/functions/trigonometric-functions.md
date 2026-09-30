@@ -38,12 +38,12 @@ $$
 
 | Parameter | Name                              | Effect on the graph                                 |
 | --------- | --------------------------------- | --------------------------------------------------- |
-| $A$       | **amplitude**                     | vertical stretch, maximum deflection                |
-| $\omega$  | **angular frequency**             | horizontal stretch/compression                      |
-| $\varphi$ | **phase angle**                   | horizontal shift by $-\frac{\varphi}{\omega}$       |
+| $A$       | amplitude                     | vertical stretch, maximum deflection                |
+| $\omega$  | angular frequency             | horizontal stretch/compression                      |
+| $\varphi$ | phase angle                   | horizontal shift by $-\frac{\varphi}{\omega}$       |
 | $d$       | DC component (offset)             | vertical shift                                      |
 
-The angular frequency, the **frequency** $f$ and the **period** $T$ are related by:
+The angular frequency, the **frequency** $f$ and the period $T$ are related by:
 
 $$
 \omega = 2\pi f = \frac{2\pi}{T} \qquad f = \frac{1}{T}
@@ -76,7 +76,7 @@ $$
 
 Two oscillations with the same frequency are **phase-shifted** if their phase angles differ. In an AC circuit with an inductor, the current lags the voltage; with a capacitor, it leads. Such phasors are easiest to calculate with [complex numbers](/en/mathematics/algebra/complex-numbers/#application-ac-circuits).
 
-The superposition of two sine oscillations with the same frequency is again a sine oscillation with that frequency. Superimposing oscillations with different frequencies creates more complicated periodic signals – conversely, every periodic signal can be represented as a sum of sine oscillations (**Fourier analysis**).
+The superposition of two sine oscillations with the same frequency is again a sine oscillation with that frequency. Superimposing oscillations with different frequencies creates more complicated periodic signals. Conversely, every periodic signal can be represented as a sum of sine oscillations (**Fourier analysis**).
 
 ## Important formulas
 

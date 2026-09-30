@@ -1,11 +1,11 @@
 ---
 title: Sicherungsstrategien
-description: Wie Unternehmen ihre Daten sichern – Voll-, differentielle und inkrementelle Sicherung, Generationenprinzip, 3-2-1-Regel und LTO-Bänder.
+description: "Wie Unternehmen ihre Daten sichern: Voll-, differentielle und inkrementelle Sicherung, Generationenprinzip, 3-2-1-Regel und LTO-Bänder."
 sidebar:
   order: 3
 ---
 
-Im privaten Bereich gibt es keine Verpflichtung für die Datensicherung. Was Sie mit Ihren Daten machen, kann jedem anderen Menschen eigentlich recht egal sein. Doch bei Unternehmen sieht das anders aus. Unternehmen müssen eine Buchhaltung führen, für welche es die Pflicht gibt, Bücher, Aufzeichnungen und Belege – also etwa Rechnungen – in Österreich sieben Jahre lang aufzubewahren (§ 132 BAO). Und wenn Unternehmen Rechnungen digital führen wollen, dann müssen diese Rechnungen strategisch gesichert sein. Sonst kann es schnell passieren, dass aufgrund einer exzessiven redundanten Sicherung der Platz ausgeht oder die Daten verloren gehen.
+Im privaten Bereich gibt es keine Verpflichtung für die Datensicherung. Was du mit deinen Daten machst, kann jedem anderen Menschen eigentlich recht egal sein. Doch bei Unternehmen sieht das anders aus. Unternehmen müssen eine Buchhaltung führen, für welche es die Pflicht gibt, Bücher, Aufzeichnungen und Belege (also etwa Rechnungen) in Österreich sieben Jahre lang aufzubewahren (§ 132 BAO). Und wenn Unternehmen Rechnungen digital führen wollen, dann müssen diese Rechnungen strategisch gesichert sein. Sonst kann es schnell passieren, dass aufgrund einer exzessiven redundanten Sicherung der Platz ausgeht oder die Daten verloren gehen.
 
 :::note[Zusätzliche Information]
 Bei Unternehmen gibt es sogenannte ISO-Zertifizierungen, mit welchen nachgewiesen wird, dass bestimmte Qualitätsanforderungen eingehalten werden. Diese ISO-Normen definieren gewisse Bereiche und existieren für alle Sektoren (Umwelt, IT, Qualität, Gebrauchsgüter, Ernährung, Medizin, ...). Beispiele für ISO-Normen sind:
@@ -109,15 +109,15 @@ In den meisten Fällen macht es Sinn, reine Nutzdaten zu sichern und das Betrieb
 
 ### Speichermedium - Welches Medium?
 
-Sicherungen werden meistens für längere Zeiträume aufbewahrt, weshalb Magnetbänder (siehe [LTO](#linear-tape-open)) oft mehr Sinn machen als Festplatten oder SSDs: Sie sind pro Terabyte günstig, halten bei richtiger Lagerung 30 Jahre und mehr und sind, sobald sie aus dem Laufwerk entnommen wurden, vor Angriffen über das Netzwerk geschützt. Für schnelle Wiederherstellungen werden häufig zusätzlich Festplatten oder Cloud-Speicher eingesetzt. Jedoch kann diese Entscheidung – sowie jede andere Strategie – von Fall zu Fall variieren.
+Sicherungen werden meistens für längere Zeiträume aufbewahrt, weshalb Magnetbänder (siehe [LTO](#linear-tape-open)) oft mehr Sinn machen als Festplatten oder SSDs: Sie sind pro Terabyte günstig, halten bei richtiger Lagerung 30 Jahre und mehr und sind, sobald sie aus dem Laufwerk entnommen wurden, vor Angriffen über das Netzwerk geschützt. Für schnelle Wiederherstellungen werden häufig zusätzlich Festplatten oder Cloud-Speicher eingesetzt. Jedoch kann diese Entscheidung, wie jede andere Strategie, von Fall zu Fall variieren.
 
 ### Verschlüsselung
 
-Stellen Sie sich die Frage, ob eine Verschlüsselung notwendig ist oder nicht. Wenn ja, welche Verschlüsselung verwenden Sie? Spätestens wenn Sicherungen das Gebäude verlassen oder in der Cloud gespeichert werden, sollten sie verschlüsselt sein (zum Beispiel mit AES-256). Dabei ist es entscheidend, den Schlüssel selbst sicher und getrennt von der Sicherung aufzubewahren – ohne Schlüssel ist die Sicherung wertlos.
+Stell dir die Frage, ob eine Verschlüsselung notwendig ist oder nicht. Wenn ja, welche Verschlüsselung verwendest du? Spätestens wenn Sicherungen das Gebäude verlassen oder in der Cloud gespeichert werden, sollten sie verschlüsselt sein (zum Beispiel mit AES-256). Dabei ist es entscheidend, den Schlüssel selbst sicher und getrennt von der Sicherung aufzubewahren. Ohne Schlüssel ist die Sicherung wertlos.
 
 ### Wiederherstellung
 
-Es ist wirklich wichtig, regelmäßig zu testen, ob die Sicherung auch wiederhergestellt werden kann. Des Weiteren sollten Sie die Funktionalität der wiederhergestellten Dateien ausprobieren. Wenn Sie diese Testung nicht durchführen, kann es sein, dass die gesamte Sicherung und der verbundene Aufwand umsonst gewesen sind. Die Wiederherstellung sollte mindestens einmal pro Jahr vollständig getestet werden, besser jedoch regelmäßiger (zum Beispiel vierteljährlich) und nach jeder größeren Änderung am System.
+Es ist wirklich wichtig, regelmäßig zu testen, ob die Sicherung auch wiederhergestellt werden kann. Des Weiteren solltest du die Funktionalität der wiederhergestellten Dateien ausprobieren. Wenn du diese Testung nicht durchführst, kann es sein, dass die gesamte Sicherung und der verbundene Aufwand umsonst gewesen sind. Die Wiederherstellung sollte mindestens einmal pro Jahr vollständig getestet werden, besser jedoch regelmäßiger (zum Beispiel vierteljährlich) und nach jeder größeren Änderung am System.
 
 ## Standards
 

@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-Special Function Register (SFR) sind spezielle Speicherstellen, über welche die Hardware des Mikrocontrollers gesteuert wird. Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten verwendet werden. Da C „case-sensitive“ ist, müssen die Namen genau so geschrieben werden, wie sie definiert sind – die Namen der `SFR` sind immer in `UPPERCASE` geschrieben. Außerdem sind diese immer acht Bit breit, sprich `1 Byte`. Standardmäßig sind alle `DDRx` und `PORTx` Register mit `0` initialisiert.
+Special Function Register (SFR) sind spezielle Speicherstellen, über welche die Hardware des Mikrocontrollers gesteuert wird. Es gibt einige wichtige Register, welche für den Eingang und Ausgang von Daten verwendet werden. Da C „case-sensitive“ ist, müssen die Namen genau so geschrieben werden, wie sie definiert sind: Die Namen der `SFR` sind immer in `UPPERCASE` geschrieben. Außerdem sind diese immer acht Bit breit, sprich `1 Byte`. Standardmäßig sind alle `DDRx` und `PORTx` Register mit `0` initialisiert.
 
 Nachstehende Tabelle fasst die SFR für die drei Ports jeweils zusammen.
 
@@ -70,7 +70,7 @@ Nachstehende Tabelle fasst die SFR für die drei Ports jeweils zusammen.
     <td>
       Das Eingangsregister enthält den aktuellen Zustand der Pins. Hier liest
       man ab, ob an einem Pin gerade <em>high</em> (<code>1</code>) oder{" "}
-      <em>low</em> (<code>0</code>) anliegt – zum Beispiel, ob eine Taste
+      <em>low</em> (<code>0</code>) anliegt, zum Beispiel, ob eine Taste
       gedrückt ist.
     </td>
   </tr>

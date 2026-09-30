@@ -27,7 +27,7 @@ Eine Wertetabelle bestätigt das: $f(1{,}9) = 3{,}9$, $f(1{,}99) = 3{,}99$, $f(2
 
 ### Einseitige Grenzwerte
 
-Nähert man sich $x_0$ nur von links ($x < x_0$) oder nur von rechts ($x > x_0$), erhält man den **linksseitigen** bzw. **rechtsseitigen** Grenzwert:
+Nähert man sich $x_0$ nur von links ($x < x_0$) oder nur von rechts ($x > x_0$), erhält man den **linksseitigen** bzw. rechtsseitigen Grenzwert:
 
 $$
 \lim_{x \to x_0^-} f(x) \qquad \lim_{x \to x_0^+} f(x)
@@ -99,14 +99,14 @@ Polynomfunktionen, Exponentialfunktionen, Sinus und Cosinus sind überall stetig
 
 | Art                    | Beschreibung                                                          | Beispiel                                  |
 | ---------------------- | --------------------------------------------------------------------- | ----------------------------------------- |
-| **Sprungstelle**       | links- und rechtsseitiger Grenzwert existieren, sind aber verschieden | Einschaltvorgang, Stufenfunktion, Tarifstufen |
-| **Polstelle**          | die Funktionswerte gehen gegen $\pm\infty$                            | $\frac{1}{x}$ bei $x = 0$                 |
-| **hebbare Unstetigkeit** | der Grenzwert existiert, stimmt aber nicht mit $f(x_0)$ überein oder $f(x_0)$ ist nicht definiert | $\frac{x^2 - 4}{x - 2}$ bei $x = 2$ |
+| Sprungstelle       | links- und rechtsseitiger Grenzwert existieren, sind aber verschieden | Einschaltvorgang, Stufenfunktion, Tarifstufen |
+| Polstelle          | die Funktionswerte gehen gegen $\pm\infty$                            | $\frac{1}{x}$ bei $x = 0$                 |
+| hebbare Unstetigkeit | der Grenzwert existiert, stimmt aber nicht mit $f(x_0)$ überein oder $f(x_0)$ ist nicht definiert | $\frac{x^2 - 4}{x - 2}$ bei $x = 2$ |
 
 Eine hebbare Unstetigkeit lässt sich beseitigen, indem man $f(x_0)$ als den Grenzwert definiert.
 
 :::tip[Beispiel: Paketpreise]
-Ein Paketdienst verlangt bis 2 kg 5 €, bis 5 kg 7 € und bis 10 kg 10 €. Die Preisfunktion ist eine **Treppenfunktion** mit Sprungstellen bei 2 kg und 5 kg. Genau bei 2 kg kostet das Paket noch 5 € – der linksseitige Grenzwert und der Funktionswert sind 5 €, der rechtsseitige Grenzwert 7 €.
+Ein Paketdienst verlangt bis 2 kg 5 €, bis 5 kg 7 € und bis 10 kg 10 €. Die Preisfunktion ist eine **Treppenfunktion** mit Sprungstellen bei 2 kg und 5 kg. Genau bei 2 kg kostet das Paket noch 5 €: Der linksseitige Grenzwert und der Funktionswert sind 5 €, der rechtsseitige Grenzwert 7 €.
 :::
 
 ### Zwischenwertsatz

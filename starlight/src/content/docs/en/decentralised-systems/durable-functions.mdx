@@ -13,7 +13,7 @@ Like the [Azure Functions](/en/decentralised-systems/azure-functions/) page, the
 
 ## Orchestrator
 
-The orchestrator is the organising function of a Durable Function. It is the core that makes long-running executions possible in the first place. The orchestrator can call other functions – so-called activities – and wait for external events.
+The orchestrator is the organising function of a Durable Function. It is the core that makes long-running executions possible in the first place. The orchestrator can call other functions, so-called activities, and wait for external events.
 
 ```csharp
 [Function("HelloCities")]
@@ -56,7 +56,7 @@ Orchestrators have a very special execution process. Every time an activity is c
 
 As soon as it reaches the call of the previous activity again (which has now already been executed, since it was called in the previous run), the orchestrator checks the stored history to see whether the return value of the activity has already been stored. If so, the activity is not called again; instead, the result is read from the history and the orchestrator continues executing the rest of the program.
 
-This initially extremely unusual behavior of a program means that the orchestrator must not use any values that can change with every run – such as the current time, random numbers, new GUIDs or direct database and network access – since the orchestrator executes the same lines of code several times. For this reason, the following program would not measure the time correctly:
+This initially extremely unusual behavior of a program means that the orchestrator must not use any values that can change with every run (such as the current time, random numbers, new GUIDs or direct database and network access), since the orchestrator executes the same lines of code several times. For this reason, the following program would not measure the time correctly:
 
 :::danger[Caution!]
 The program below contains a logic error!

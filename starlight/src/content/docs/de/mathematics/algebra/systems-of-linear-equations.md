@@ -1,13 +1,13 @@
 ---
 title: Lineare Gleichungssysteme
-description: Lineare Gleichungssysteme mit zwei und mehr Variablen – Lösbarkeit, Einsetzungs-, Gleichsetzungs- und Additionsverfahren, Gauß-Verfahren und Matrizenschreibweise.
+description: "Lineare Gleichungssysteme mit zwei und mehr Variablen: Lösbarkeit, Einsetzungs-, Gleichsetzungs- und Additionsverfahren, Gauß-Verfahren und Matrizenschreibweise."
 sidebar:
   order: 8
 ---
 
 ## Begriff
 
-Ein **lineares Gleichungssystem** (LGS) besteht aus mehreren linearen Gleichungen mit mehreren Variablen, die **gleichzeitig** erfüllt sein müssen. „Linear“ bedeutet, dass die Variablen nur in der ersten Potenz vorkommen und nicht miteinander multipliziert werden.
+Ein **lineares Gleichungssystem** (LGS) besteht aus mehreren linearen Gleichungen mit mehreren Variablen, die gleichzeitig erfüllt sein müssen. „Linear“ bedeutet, dass die Variablen nur in der ersten Potenz vorkommen und nicht miteinander multipliziert werden.
 
 $$
 \begin{aligned}
@@ -16,7 +16,7 @@ $$
 \end{aligned}
 $$
 
-Eine Lösung ist ein **Zahlenpaar** $(x \mid y)$, das beide Gleichungen erfüllt – hier $(3 \mid 2)$.
+Eine Lösung ist ein **Zahlenpaar** $(x \mid y)$, das beide Gleichungen erfüllt, hier $(3 \mid 2)$.
 
 ## Lösbarkeit
 
@@ -69,7 +69,7 @@ $$
 
 ## Gauß-Verfahren
 
-Für drei und mehr Variablen bringt man das Gleichungssystem mit dem **Gaußschen Eliminationsverfahren** auf **Stufenform** (Dreiecksform). Dabei sind folgende Umformungen erlaubt:
+Für drei und mehr Variablen bringt man das Gleichungssystem mit dem **Gaußschen Eliminationsverfahren** auf Stufenform (Dreiecksform). Dabei sind folgende Umformungen erlaubt:
 
 - zwei Gleichungen vertauschen,
 - eine Gleichung mit einer Zahl ungleich $0$ multiplizieren,
@@ -113,7 +113,7 @@ Die Lösung ist $(1 \mid 2 \mid 3)$.
 
 ## Matrizenschreibweise
 
-Da sich beim Gauß-Verfahren nur die Koeffizienten ändern, schreibt man das Gleichungssystem kürzer als **Matrix**. Die **Koeffizientenmatrix** $A$ enthält die Koeffizienten, der Vektor $\vec{b}$ die rechten Seiten:
+Da sich beim Gauß-Verfahren nur die Koeffizienten ändern, schreibt man das Gleichungssystem kürzer als **Matrix**. Die Koeffizientenmatrix $A$ enthält die Koeffizienten, der Vektor $\vec{b}$ die rechten Seiten:
 
 $$
 \underbrace{\begin{pmatrix} 1 & 1 & 1 \\ 2 & -1 & 1 \\ 1 & 2 & -1 \end{pmatrix}}_{A} \cdot \underbrace{\begin{pmatrix} x \\ y \\ z \end{pmatrix}}_{\vec{x}} = \underbrace{\begin{pmatrix} 6 \\ 3 \\ 2 \end{pmatrix}}_{\vec{b}}

@@ -1,6 +1,6 @@
 ---
 title: Timer
-description: The timers of the ATmega328P in normal, CTC and PWM mode – prescaler, preload values, compare match and duty cycle.
+description: "The timers of the ATmega328P in normal, CTC and PWM mode: prescaler, preload values, compare match and duty cycle."
 sidebar:
   order: 8
 ---
@@ -69,7 +69,7 @@ Each timer has 3 different modes, which are briefly explained in the table:
 
 | Normal mode | CTC mode | PWM mode |
 | ----------- | -------- | -------- |
-| In normal mode, the timer counts from `BOTTOM` to `TOP` and is set back to `BOTTOM` at `TOP`. You can preload the timer with a certain value – i.e. basically raise the `BOTTOM` value – by simply setting `TCNTn` right after each overflow, which shortens the time until the overflow. | In clear timer on compare match mode, you set the `OCRnA` or `OCRnB` value once at the beginning. When the timer (i.e. `TCNTn`) reaches this value, it is cleared, which means that `TCNTn` is set back to 0. The timers support two independent output compare registers (`OCRnA` and `OCRnB`). | With pulse width modulation, you can vary the (average) voltage on a certain pin. This makes it possible, for example, to control a DC motor, which turns faster the more voltage it receives. |
+| In normal mode, the timer counts from `BOTTOM` to `TOP` and is set back to `BOTTOM` at `TOP`. You can preload the timer with a certain value (i.e. basically raise the `BOTTOM` value) by simply setting `TCNTn` right after each overflow, which shortens the time until the overflow. | In clear timer on compare match mode, you set the `OCRnA` or `OCRnB` value once at the beginning. When the timer (i.e. `TCNTn`) reaches this value, it is cleared, which means that `TCNTn` is set back to 0. The timers support two independent output compare registers (`OCRnA` and `OCRnB`). | With pulse width modulation, you can vary the (average) voltage on a certain pin. This makes it possible, for example, to control a DC motor, which turns faster the more voltage it receives. |
 
 #### Normal mode
 
@@ -109,7 +109,7 @@ $$
 
 #### PWM - Pulse width modulation
 
-With PWM mode, you can generate a certain average voltage between 0V and 5V on certain pins (the `OCnx` pins, e.g. `OC1A` = `PB1`). The pin itself still only knows 0V or 5V. However, by constantly switching the voltage on and off at certain intervals, sluggish loads – such as a motor, an LED for the human eye or a downstream low-pass filter – only experience the average of the voltages over time.
+With PWM mode, you can generate a certain average voltage between 0V and 5V on certain pins (the `OCnx` pins, e.g. `OC1A` = `PB1`). The pin itself still only knows 0V or 5V. However, by constantly switching the voltage on and off at certain intervals, sluggish loads (such as a motor, an LED for the human eye or a downstream low-pass filter) only experience the average of the voltages over time.
 
 In reality, this process happens so fast that you do not notice the constant switching on and off. The process is shown here:
 

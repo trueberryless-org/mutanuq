@@ -5,7 +5,7 @@ description: Ensures that a class has exactly one instance that can be accessed 
 
 ## Problem
 
-The Singleton design pattern ensures that a class can only have a single instance. In addition, this one instance can be accessed globally – throughout the entire program.
+The Singleton design pattern ensures that a class can only have a single instance. In addition, this one instance can be accessed globally, throughout the entire program.
 
 ## Solution
 

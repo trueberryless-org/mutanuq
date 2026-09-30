@@ -9,7 +9,7 @@ Die **Differentialrechnung** untersucht, wie schnell sich eine Größe ändert. 
 
 ## Differenzenquotient
 
-Der **Differenzenquotient** ist die **mittlere Änderungsrate** einer Funktion im Intervall $[x_0; x_0 + h]$:
+Der **Differenzenquotient** ist die mittlere Änderungsrate einer Funktion im Intervall $[x_0; x_0 + h]$:
 
 $$
 \frac{\Delta y}{\Delta x} = \frac{f(x_0 + h) - f(x_0)}{h}
@@ -25,17 +25,17 @@ $$
 $$
 :::
 
-Neben der mittleren Änderungsrate gibt es die **absolute Änderung** $f(x_0 + h) - f(x_0)$ und die **relative Änderung** $\frac{f(x_0 + h) - f(x_0)}{f(x_0)}$.
+Neben der mittleren Änderungsrate gibt es die **absolute Änderung** $f(x_0 + h) - f(x_0)$ und die relative Änderung $\frac{f(x_0 + h) - f(x_0)}{f(x_0)}$.
 
 ## Differentialquotient
 
-Lässt man das Intervall immer kleiner werden ($h \to 0$), wird aus der Sekante die **Tangente** und aus der mittleren die **momentane Änderungsrate**. Dieser [Grenzwert](/de/mathematics/analysis/limits-and-continuity/) heißt **Differentialquotient** oder **Ableitung** von $f$ an der Stelle $x_0$:
+Lässt man das Intervall immer kleiner werden ($h \to 0$), wird aus der Sekante die **Tangente** und aus der mittleren die momentane Änderungsrate. Dieser [Grenzwert](/de/mathematics/analysis/limits-and-continuity/) heißt Differentialquotient oder Ableitung von $f$ an der Stelle $x_0$:
 
 $$
 f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h} = \frac{\mathrm{d}f}{\mathrm{d}x}(x_0)
 $$
 
-Existiert dieser Grenzwert, heißt $f$ an der Stelle $x_0$ **differenzierbar**. Die Ableitung ist die **Steigung der Tangente** an den Graphen im Punkt $(x_0 \mid f(x_0))$.
+Existiert dieser Grenzwert, heißt $f$ an der Stelle $x_0$ **differenzierbar**. Die Ableitung ist die Steigung der Tangente an den Graphen im Punkt $(x_0 \mid f(x_0))$.
 
 :::tip[Beispiel: Ableitung von x² mit dem Grenzwert]
 $$
@@ -51,7 +51,7 @@ Nicht jede stetige Funktion ist überall differenzierbar. Die Betragsfunktion $\
 
 ## Ableitungsfunktion
 
-Ordnet man jeder Stelle $x$ die Ableitung $f'(x)$ zu, erhält man die **Ableitungsfunktion** $f'$. Den Vorgang nennt man **Differenzieren** oder **Ableiten**.
+Ordnet man jeder Stelle $x$ die Ableitung $f'(x)$ zu, erhält man die **Ableitungsfunktion** $f'$. Den Vorgang nennt man Differenzieren oder Ableiten.
 
 | Funktion $f$        | Ableitung $f'$             |
 | ------------------- | -------------------------- |
@@ -74,9 +74,9 @@ Die **Potenzregel** $(x^n)' = n x^{n-1}$ gilt für alle reellen Hochzahlen $n$, 
 | ------------------- | -------------------------------------------------------------- |
 | Faktorregel         | $(c \cdot f)' = c \cdot f'$                                    |
 | Summenregel         | $(f \pm g)' = f' \pm g'$                                       |
-| **Produktregel**    | $(f \cdot g)' = f' \cdot g + f \cdot g'$                       |
-| **Quotientenregel** | $\left(\dfrac{f}{g}\right)' = \dfrac{f' \cdot g - f \cdot g'}{g^2}$ |
-| **Kettenregel**     | $\big(f(g(x))\big)' = f'(g(x)) \cdot g'(x)$ – „äußere mal innere Ableitung“ |
+| Produktregel    | $(f \cdot g)' = f' \cdot g + f \cdot g'$                       |
+| Quotientenregel | $\left(\dfrac{f}{g}\right)' = \dfrac{f' \cdot g - f \cdot g'}{g^2}$ |
+| Kettenregel     | $\big(f(g(x))\big)' = f'(g(x)) \cdot g'(x)$, „äußere mal innere Ableitung“ |
 
 :::tip[Beispiele]
 **Summen- und Faktorregel:**
@@ -118,10 +118,10 @@ Bei der Kettenregel wird die innere Ableitung oft vergessen: $(e^{3x})' = 3e^{3x
 
 ## Höhere Ableitungen
 
-Die Ableitung von $f'$ heißt **zweite Ableitung** $f''$, deren Ableitung **dritte Ableitung** $f'''$ usw.
+Die Ableitung von $f'$ heißt **zweite Ableitung** $f''$, deren Ableitung dritte Ableitung $f'''$ usw.
 
-- $f'$ beschreibt die **Steigung** von $f$ (steigend/fallend).
-- $f''$ beschreibt die **Krümmung** von $f$: Ist $f'' > 0$, ist der Graph **linksgekrümmt** (konvex, „Smiley“), ist $f'' < 0$, ist er **rechtsgekrümmt** (konkav).
+- $f'$ beschreibt die Steigung von $f$ (steigend/fallend).
+- $f''$ beschreibt die Krümmung von $f$: Ist $f'' > 0$, ist der Graph linksgekrümmt (konvex, „Smiley“), ist $f'' < 0$, ist er rechtsgekrümmt (konkav).
 
 In der Physik ist die zweite Ableitung des Weges nach der Zeit die **Beschleunigung**:
 
@@ -169,7 +169,7 @@ $$
 i(t) = C \cdot u'(t) = 10 \cdot 10^{-6} \cdot 325 \cdot 314 \cos(314\,t) \approx 1{,}02 \cos(314\,t)\ \text{A}
 $$
 
-Der Strom ist eine Cosinusfunktion – er eilt der Spannung um $90°$ voraus.
+Der Strom ist eine Cosinusfunktion: Er eilt der Spannung um $90°$ voraus.
 :::
 
 Wie man mit Ableitungen Hoch-, Tief- und Wendepunkte bestimmt und Optimierungsaufgaben löst, zeigt die [Kurvendiskussion](/de/mathematics/analysis/curve-sketching/).

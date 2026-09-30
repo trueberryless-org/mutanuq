@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-Jedes Programm besitzt eine Arbeitsschleife (`while(1) {}`), welche aufgrund des endlosen Laufens dafür sorgt, dass das Programm niemals aufhört, seine Aufgabe zu erfüllen. Somit könnte man den gesamten Code, welcher endlos laufen soll, in diese Arbeitsschleife schreiben. Jedoch stößt man bei komplexeren Programmen auf Probleme, da zu einem willkürlichen Zeitpunkt ein Ereignis – beispielsweise das Drücken einer Taste – eintreten kann. Die Arbeitsschleife hat hierbei Limitationen, obwohl man ständig auf das Eintreten des Ereignisses prüfen könnte. Doch was kann man machen, wenn die Arbeitsschleife an einem bestimmten Punkt ein Delay fordert und die Überprüfung der Tasteneingabe in diesem Zeitraum nicht stattfinden kann? Genau hier kommen `Interrupts` ins Spiel.
+Jedes Programm besitzt eine Arbeitsschleife (`while(1) {}`), welche aufgrund des endlosen Laufens dafür sorgt, dass das Programm niemals aufhört, seine Aufgabe zu erfüllen. Somit könnte man den gesamten Code, welcher endlos laufen soll, in diese Arbeitsschleife schreiben. Jedoch stößt man bei komplexeren Programmen auf Probleme, da zu einem willkürlichen Zeitpunkt ein Ereignis (beispielsweise das Drücken einer Taste) eintreten kann. Die Arbeitsschleife hat hierbei Limitationen, obwohl man ständig auf das Eintreten des Ereignisses prüfen könnte. Doch was kann man machen, wenn die Arbeitsschleife an einem bestimmten Punkt ein Delay fordert und die Überprüfung der Tasteneingabe in diesem Zeitraum nicht stattfinden kann? Genau hier kommen `Interrupts` ins Spiel.
 
 Interrupts bieten eine Möglichkeit, die Ausführung der Arbeitsschleife jederzeit zu unterbrechen, wenn bestimmte Ereignisse eintreten. Die Bedingungen für das Eintreten werden dabei anfangs definiert und von der Hardware ständig überprüft. Tritt das Ereignis ein, wird eine spezielle Funktion aufgerufen, die **Interrupt Service Routine** (ISR):
 
@@ -57,7 +57,7 @@ Treten mehrere Interrupts gleichzeitig auf, wird zuerst derjenige ausgeführt, d
 
 ## Beispiel
 
-In diesem Beispiel setzt die ISR nur ein Flag. Die eigentliche Arbeit – das Umschalten einer LED – passiert in der Arbeitsschleife:
+In diesem Beispiel setzt die ISR nur ein Flag. Die eigentliche Arbeit, das Umschalten einer LED, passiert in der Arbeitsschleife:
 
 ```c
 #define F_CPU 16000000

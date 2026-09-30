@@ -1,29 +1,29 @@
 ---
 title: Descriptive Statistics
-description: Describing one-dimensional data – types of variables, absolute and relative frequencies, charts, measures of central tendency, measures of spread and box plots.
+description: "Describing one-dimensional data: types of variables, absolute and relative frequencies, charts, measures of central tendency, measures of spread and box plots."
 sidebar:
   order: 4
 ---
 
-**Descriptive statistics** summarises large amounts of data clearly – with tables, charts and a few meaningful key figures. It answers questions such as "How long does a request to the server typically take?" or "How much do the measurements vary?".
+**Descriptive statistics** summarises large amounts of data clearly, with tables, charts and a few meaningful key figures. It answers questions such as "How long does a request to the server typically take?" or "How much do the measurements vary?".
 
 ## Basic terms
 
 - **Population:** all objects about which a statement is to be made, e.g. all students of a school.
 - **Sample:** the subset that is actually examined.
-- **Variable:** the property being examined, e.g. height or favourite subject. The possible values are called **categories** or **values**.
+- **Variable:** the property being examined, e.g. height or favourite subject. The possible values are called categories or values.
 
 | Type of variable              | Description                                    | Examples                              |
 | ----------------------------- | ---------------------------------------------- | ------------------------------------- |
-| **nominal** (qualitative)     | categories without an order                    | operating system, gender, colour      |
-| **ordinal** (qualitative)     | categories with an order                       | school grades, clothing sizes S/M/L   |
-| **metric** (quantitative)     | numerical values, differences are meaningful   | temperature, file size, response time |
+| nominal (qualitative)     | categories without an order                    | operating system, gender, colour      |
+| ordinal (qualitative)     | categories with an order                       | school grades, clothing sizes S/M/L   |
+| metric (quantitative)     | numerical values, differences are meaningful   | temperature, file size, response time |
 
-Metric variables can be **discrete** (only individual values, e.g. number of siblings) or **continuous** (any value in an interval, e.g. length).
+Metric variables can be **discrete** (only individual values, e.g. number of siblings) or continuous (any value in an interval, e.g. length).
 
 ## Frequencies
 
-For $n$ observations, the **absolute frequency** $H$ is the number of times a value occurs. The **relative frequency** is its share of all observations:
+For $n$ observations, the **absolute frequency** $H$ is the number of times a value occurs. The relative frequency is its share of all observations:
 
 $$
 h = \frac{H}{n}
@@ -41,7 +41,7 @@ In Austria, grades range from 1 (excellent) to 5 (fail).
 | 3     | 8                  | 32 %               | 72 %                          |
 | 4     | 5                  | 20 %               | 92 %                          |
 | 5     | 2                  | 8 %                | 100 %                         |
-| **Total** | **25**         | **100 %**          |                               |
+| Total | 25         | 100 %          |                               |
 :::
 
 For continuous variables, the values are grouped into **classes**, for example response times of 0–100 ms, 100–200 ms and so on.
@@ -52,7 +52,7 @@ For continuous variables, the values are grouped into **classes**, for example r
 | -------------------- | --------------------------------------------------------------- |
 | Column/bar chart     | frequencies of categories or discrete values                    |
 | Pie chart            | shares of a whole (few categories)                              |
-| Histogram            | grouped continuous data; the **area** of the rectangles corresponds to the frequency |
+| Histogram            | grouped continuous data; the area of the rectangles corresponds to the frequency |
 | Line chart           | changes over time                                               |
 | Box plot             | central tendency and spread at a glance, comparing several data sets |
 
@@ -74,7 +74,7 @@ In a frequency table, each value is weighted by its frequency: $\bar{x} = \frac{
 
 ### Median
 
-The **median** $\tilde{x}$ is the value in the middle of the list **sorted by size**. At least half of the values are less than or equal to the median, at least half are greater than or equal to it.
+The **median** $\tilde{x}$ is the value in the middle of the list sorted by size. At least half of the values are less than or equal to the median, at least half are greater than or equal to it.
 
 - If $n$ is odd, it is the middle value.
 - If $n$ is even, it is the arithmetic mean of the two middle values.
@@ -87,7 +87,7 @@ The **mode** is the most frequent value. It is the only measure of central tende
 Response times of a server in ms: $\;12,\ 15,\ 14,\ 13,\ 16,\ 15,\ 350$
 
 - Mean: $\bar{x} = \frac{435}{7} \approx 62.1$ ms
-- Median (sorted: 12, 13, 14, **15**, 15, 16, 350): $\tilde{x} = 15$ ms
+- Median (sorted: 12, 13, 14, 15, 15, 16, 350): $\tilde{x} = 15$ ms
 - Mode: $15$ ms
 
 The single **outlier** of 350 ms strongly distorts the mean, while the median is not affected. That is why the median is often given for skewed distributions such as incomes or response times.
@@ -109,7 +109,7 @@ There are several methods for calculating quartiles, which give slightly differe
 
 ### Variance and standard deviation
 
-The **variance** is the mean squared deviation from the mean, the **standard deviation** is its square root:
+The **variance** is the mean squared deviation from the mean, the standard deviation is its square root:
 
 $$
 \sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})^2 \qquad \sigma = \sqrt{\sigma^2}
@@ -131,11 +131,11 @@ The **coefficient of variation** $\frac{\sigma}{\bar{x}}$ relates the spread to 
 
 ## Box plot
 
-A **box plot** shows the **five-number summary** $x_{\min}$, $q_1$, $\tilde{x}$, $q_3$ and $x_{\max}$ graphically:
+A **box plot** shows the five-number summary $x_{\min}$, $q_1$, $\tilde{x}$, $q_3$ and $x_{\max}$ graphically:
 
-- The **box** extends from the lower to the upper quartile and contains the middle 50 % of the data.
-- A line in the box marks the **median**.
-- The **whiskers** extend to the smallest and largest values.
+- The box extends from the lower to the upper quartile and contains the middle 50 % of the data.
+- A line in the box marks the median.
+- The whiskers extend to the smallest and largest values.
 
 The longer the box and whiskers, the larger the spread. If the median is not in the middle of the box, the distribution is **skewed**. Box plots are especially suitable for comparing several data sets side by side.
 

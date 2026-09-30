@@ -7,7 +7,7 @@ sidebar:
 
 ## Sets
 
-A **set** is a collection of distinct objects, the **elements** of the set. Sets are denoted by capital letters, and their elements are written in curly brackets.
+A **set** is a collection of distinct objects, the elements of the set. Sets are denoted by capital letters, and their elements are written in curly brackets.
 
 - **Roster notation:** $A = \{1, 2, 3, 4\}$
 - **Set-builder notation:** $A = \{x \in \mathbb{N} \mid 1 \le x \le 4\}$ (read: "all natural numbers $x$ for which …")
@@ -26,10 +26,10 @@ The order of the elements does not matter, and each element occurs only once: $\
 
 | Operation                   | Notation        | Contains all elements that …          |
 | --------------------------- | --------------- | ------------------------------------- |
-| **Intersection**            | $A \cap B$      | are in $A$ **and** in $B$             |
-| **Union**                   | $A \cup B$      | are in $A$ **or** in $B$              |
-| **Difference**              | $A \setminus B$ | are in $A$ but **not** in $B$         |
-| **Complement**              | $\overline{A}$  | are in the universal set but not in $A$ |
+| Intersection            | $A \cap B$      | are in $A$ and in $B$             |
+| Union                   | $A \cup B$      | are in $A$ or in $B$              |
+| Difference              | $A \setminus B$ | are in $A$ but not in $B$         |
+| Complement              | $\overline{A}$  | are in the universal set but not in $A$ |
 
 :::tip[Example]
 For $A = \{1, 2, 3, 4\}$ and $B = \{3, 4, 5\}$:
@@ -39,7 +39,7 @@ For $A = \{1, 2, 3, 4\}$ and $B = \{3, 4, 5\}$:
 - $A \setminus B = \{1, 2\}$ and $B \setminus A = \{5\}$
 :::
 
-Set operations can be visualised well with **Venn diagrams**: each set is drawn as a circle, and overlapping areas show the intersection. Two sets with $A \cap B = \{\}$ are called **disjoint**.
+Set operations can be visualised well with **Venn diagrams**: each set is drawn as a circle, and overlapping areas show the intersection. Two sets with $A \cap B = \{\}$ are called disjoint.
 
 Set operations correspond to the logical connectives of [propositional logic](/en/mathematics/algebra/logic-and-boolean-algebra/): intersection corresponds to "and", union to "or" and the complement to negation.
 
@@ -53,10 +53,10 @@ $$
 
 | Number range  | Name                  | Description                                                         | Examples                         |
 | ------------- | --------------------- | ------------------------------------------------------------------- | -------------------------------- |
-| $\mathbb{N}$  | natural numbers       | $\{0, 1, 2, 3, \dots\}$ – addition and multiplication are always possible | $0, 7, 42$                    |
-| $\mathbb{Z}$  | integers              | $\{\dots, -2, -1, 0, 1, 2, \dots\}$ – subtraction is always possible too | $-5, 0, 13$                  |
-| $\mathbb{Q}$  | rational numbers      | all fractions $\frac{p}{q}$ with $p, q \in \mathbb{Z}$, $q \ne 0$ – division too (except by 0) | $\frac{3}{4}, -0.5, 0.\overline{3}$ |
-| $\mathbb{R}$  | real numbers          | rational and irrational numbers – every point on the number line    | $\sqrt{2}, \pi, e$               |
+| $\mathbb{N}$  | natural numbers       | $\{0, 1, 2, 3, \dots\}$; addition and multiplication are always possible | $0, 7, 42$                    |
+| $\mathbb{Z}$  | integers              | $\{\dots, -2, -1, 0, 1, 2, \dots\}$; subtraction is always possible too | $-5, 0, 13$                  |
+| $\mathbb{Q}$  | rational numbers      | all fractions $\frac{p}{q}$ with $p, q \in \mathbb{Z}$, $q \ne 0$; division too (except by 0) | $\frac{3}{4}, -0.5, 0.\overline{3}$ |
+| $\mathbb{R}$  | real numbers          | rational and irrational numbers; every point on the number line    | $\sqrt{2}, \pi, e$               |
 | $\mathbb{C}$  | [complex numbers](/en/mathematics/algebra/complex-numbers/) | extension by the imaginary unit $j$ with $j^2 = -1$ | $3 + 2j$ |
 
 :::note
@@ -65,7 +65,7 @@ Whether 0 belongs to the natural numbers is a matter of definition. In Austria (
 
 ### Rational and irrational numbers
 
-Every rational number can be written as a **terminating** or a **repeating** decimal:
+Every rational number can be written as a **terminating** or a repeating decimal:
 
 - $\frac{3}{8} = 0.375$ (terminating)
 - $\frac{1}{3} = 0.333\ldots = 0.\overline{3}$ (repeating)

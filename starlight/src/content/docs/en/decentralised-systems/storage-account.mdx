@@ -14,11 +14,11 @@ In Azure, a **storage account** is the container for various storage services. U
 | **Queue Storage** | Messages exchanged between parts of an application                     |
 | **File Storage**  | File shares that can be mounted like a network drive via SMB           |
 
-For local development, the **Azurite** emulator can be used instead of a real storage account. The connection string `UseDevelopmentStorage=true` in the following examples connects to this emulator. In production, the storage account's connection string or – even more secure – authentication via a _managed identity_ is used instead.
+For local development, the **Azurite** emulator can be used instead of a real storage account. The connection string `UseDevelopmentStorage=true` in the following examples connects to this emulator. In production, the storage account's connection string or, even more secure, authentication via a _managed identity_ is used instead.
 
 ## Blob Storage
 
-A blob storage is structured like a file system in which you can upload, download and delete files. However, you need a **container** – a kind of `root` directory – in which all files are stored. Theoretically, you can create an unlimited number of containers. By the way, BLOB stands for _binary large object_.
+A blob storage is structured like a file system in which you can upload, download and delete files. However, you need a **container**, a kind of `root` directory, in which all files are stored. Theoretically, you can create an unlimited number of containers. By the way, BLOB stands for _binary large object_.
 
 ```bash
 dotnet add package Azure.Storage.Blobs

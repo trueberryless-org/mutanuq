@@ -9,7 +9,7 @@ sidebar:
 
 ## Who may use it?
 
-- sole proprietorships and partnerships that are **not** obliged to keep accounts under the Business Code, i.e. whose turnover does not exceed **€700,000** in two consecutive years,
+- sole proprietorships and partnerships that are not obliged to keep accounts under the Business Code, i.e. whose turnover does not exceed €700,000 in two consecutive years,
 - members of liberal professions (e.g. doctors, architects), regardless of their turnover.
 
 Corporations must always use [double-entry bookkeeping](/en/economy_and_law/accounting/bookkeeping/).
@@ -34,9 +34,9 @@ Unlike in double-entry bookkeeping, receivables, liabilities, provisions and sto
 
 Some transactions are not treated according to the cash principle:
 
-- **Fixed assets** such as computers, machines or vehicles are **depreciated** over their useful life, just as in double-entry bookkeeping. Only [low-value assets](/en/economy_and_law/accounting/bookkeeping/#depreciation) up to €1,000 may be deducted immediately.
-- **Loans** are neither income nor expenses. Only the **interest** is a business expense.
-- **Private withdrawals** (money for private purposes) and **private contributions** do not change the profit.
+- Fixed assets such as computers, machines or vehicles are depreciated over their useful life, just as in double-entry bookkeeping. Only [low-value assets](/en/economy_and_law/accounting/bookkeeping/#depreciation) up to €1,000 may be deducted immediately.
+- Loans are neither income nor expenses. Only the interest is a business expense.
+- Private withdrawals (money for private purposes) and private contributions do not change the profit.
 
 ## VAT
 

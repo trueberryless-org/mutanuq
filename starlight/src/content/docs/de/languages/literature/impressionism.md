@@ -1,6 +1,6 @@
 ---
 title: Impressionismus
-description: Die Literatur der Jahrhundertwende zwischen Impressionismus, Symbolismus und Wiener Moderne – mit Schnitzler, Hofmannsthal, Rilke, Kraus und dem inneren Monolog.
+description: Die Literatur der Jahrhundertwende zwischen Impressionismus, Symbolismus und Wiener Moderne, mit Schnitzler, Hofmannsthal, Rilke, Kraus und dem inneren Monolog.
 sidebar:
   order: 11
 ---

@@ -1,13 +1,13 @@
 ---
 title: Systems of Linear Equations
-description: Systems of linear equations with two or more variables – solvability, substitution, equating and elimination method, Gaussian elimination and matrix notation.
+description: "Systems of linear equations with two or more variables: solvability, substitution, equating and elimination method, Gaussian elimination and matrix notation."
 sidebar:
   order: 8
 ---
 
 ## Definition
 
-A **system of linear equations** consists of several linear equations with several variables that must be satisfied **at the same time**. "Linear" means that the variables only appear to the first power and are not multiplied by each other.
+A **system of linear equations** consists of several linear equations with several variables that must be satisfied at the same time. "Linear" means that the variables only appear to the first power and are not multiplied by each other.
 
 $$
 \begin{aligned}
@@ -16,7 +16,7 @@ $$
 \end{aligned}
 $$
 
-A solution is a **pair of numbers** $(x \mid y)$ that satisfies both equations – here $(3 \mid 2)$.
+A solution is a **pair of numbers** $(x \mid y)$ that satisfies both equations, here $(3 \mid 2)$.
 
 ## Solvability
 
@@ -69,7 +69,7 @@ $$
 
 ## Gaussian elimination
 
-For three or more variables, **Gaussian elimination** brings the system into **row echelon form** (triangular form). The following operations are allowed:
+For three or more variables, **Gaussian elimination** brings the system into row echelon form (triangular form). The following operations are allowed:
 
 - swapping two equations,
 - multiplying an equation by a number other than $0$,
@@ -113,7 +113,7 @@ The solution is $(1 \mid 2 \mid 3)$.
 
 ## Matrix notation
 
-Since only the coefficients change during Gaussian elimination, the system is written more compactly as a **matrix**. The **coefficient matrix** $A$ contains the coefficients, the vector $\vec{b}$ the right-hand sides:
+Since only the coefficients change during Gaussian elimination, the system is written more compactly as a **matrix**. The coefficient matrix $A$ contains the coefficients, the vector $\vec{b}$ the right-hand sides:
 
 $$
 \underbrace{\begin{pmatrix} 1 & 1 & 1 \\ 2 & -1 & 1 \\ 1 & 2 & -1 \end{pmatrix}}_{A} \cdot \underbrace{\begin{pmatrix} x \\ y \\ z \end{pmatrix}}_{\vec{x}} = \underbrace{\begin{pmatrix} 6 \\ 3 \\ 2 \end{pmatrix}}_{\vec{b}}

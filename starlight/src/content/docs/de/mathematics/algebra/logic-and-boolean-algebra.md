@@ -7,15 +7,15 @@ sidebar:
 
 ## Aussagen
 
-Eine **Aussage** ist ein Satz, der entweder **wahr** (w, 1) oder **falsch** (f, 0) ist – nie beides und nie keines von beiden.
+Eine **Aussage** ist ein Satz, der entweder wahr (w, 1) oder falsch (f, 0) ist, nie beides und nie keines von beiden.
 
 - „Wien ist die Hauptstadt von Österreich.“ ist eine wahre Aussage.
 - „$7$ ist eine gerade Zahl.“ ist eine falsche Aussage.
-- „Wie spät ist es?“ oder „$x > 3$“ sind keine Aussagen: Die Frage hat keinen Wahrheitswert, und bei $x > 3$ hängt er vom Wert von $x$ ab. Solche Sätze mit Variablen nennt man **Aussageformen**.
+- „Wie spät ist es?“ oder „$x > 3$“ sind keine Aussagen: Die Frage hat keinen Wahrheitswert, und bei $x > 3$ hängt er vom Wert von $x$ ab. Solche Sätze mit Variablen nennt man Aussageformen.
 
 ## Verknüpfungen von Aussagen
 
-Aussagen lassen sich mit **Junktoren** zu neuen Aussagen verknüpfen. Ihr Wahrheitswert hängt nur von den Wahrheitswerten der Teilaussagen ab und wird in einer **Wahrheitstabelle** festgehalten.
+Aussagen lassen sich mit **Junktoren** zu neuen Aussagen verknüpfen. Ihr Wahrheitswert hängt nur von den Wahrheitswerten der Teilaussagen ab und wird in einer Wahrheitstabelle festgehalten.
 
 | Verknüpfung   | Logik               | Boolesche Algebra     | Programmierung | gelesen                  |
 | ------------- | ------------------- | --------------------- | -------------- | ------------------------ |
@@ -41,7 +41,7 @@ Die Implikation $a \Rightarrow b$ ist nur dann falsch, wenn aus einer wahren Vor
 
 ### Tautologien und Widersprüche
 
-Eine zusammengesetzte Aussage, die für alle Belegungen wahr ist, heißt **Tautologie**, zum Beispiel $a \lor \neg a$. Eine Aussage, die immer falsch ist, heißt **Widerspruch** (Kontradiktion), zum Beispiel $a \land \neg a$. Ob eine Aussage eine Tautologie ist, prüft man mit einer Wahrheitstabelle.
+Eine zusammengesetzte Aussage, die für alle Belegungen wahr ist, heißt **Tautologie**, zum Beispiel $a \lor \neg a$. Eine Aussage, die immer falsch ist, heißt Widerspruch (Kontradiktion), zum Beispiel $a \land \neg a$. Ob eine Aussage eine Tautologie ist, prüft man mit einer Wahrheitstabelle.
 
 :::tip[Beispiel: Kontraposition]
 Zeige, dass $(a \Rightarrow b) \Leftrightarrow (\neg b \Rightarrow \neg a)$ eine Tautologie ist.
@@ -72,10 +72,10 @@ Die **Boolesche Algebra** (nach George Boole, 1815–1864) rechnet mit den Werte
 | Idempotenz                | $a \cdot a = a$                             | $a + a = a$                                |
 | Komplement                | $a \cdot \overline{a} = 0$                  | $a + \overline{a} = 1$                     |
 | Absorption                | $a(a + b) = a$                              | $a + ab = a$                               |
-| **De Morgan**             | $\overline{a \cdot b} = \overline{a} + \overline{b}$ | $\overline{a + b} = \overline{a} \cdot \overline{b}$ |
+| De Morgan             | $\overline{a \cdot b} = \overline{a} + \overline{b}$ | $\overline{a + b} = \overline{a} \cdot \overline{b}$ |
 | Doppelte Negation         | $\overline{\overline{a}} = a$               |                                            |
 
-Die Gesetze treten paarweise auf (**Dualitätsprinzip**): Vertauscht man $\cdot$ und $+$ sowie $0$ und $1$, erhält man wieder ein gültiges Gesetz. Das zweite Distributivgesetz $a + bc = (a + b)(a + c)$ gilt – anders als beim Rechnen mit Zahlen – in der Booleschen Algebra ebenfalls.
+Die Gesetze treten paarweise auf (**Dualitätsprinzip**): Vertauscht man $\cdot$ und $+$ sowie $0$ und $1$, erhält man wieder ein gültiges Gesetz. Das zweite Distributivgesetz $a + bc = (a + b)(a + c)$ gilt anders als beim Rechnen mit Zahlen in der Booleschen Algebra ebenfalls.
 
 :::tip[Beispiel: Vereinfachen]
 $$
@@ -90,7 +90,7 @@ $$
 
 ## Schaltfunktionen
 
-Eine **Schaltfunktion** ordnet jeder Kombination von Eingangswerten $0$ oder $1$ einen Ausgangswert $0$ oder $1$ zu. Bei $n$ Eingängen hat ihre Wahrheitstabelle $2^n$ Zeilen. In der Digitaltechnik werden Schaltfunktionen mit **Logikgattern** (AND, OR, NOT, NAND, NOR, XOR) als Schaltung aufgebaut.
+Eine **Schaltfunktion** ordnet jeder Kombination von Eingangswerten $0$ oder $1$ einen Ausgangswert $0$ oder $1$ zu. Bei $n$ Eingängen hat ihre Wahrheitstabelle $2^n$ Zeilen. In der Digitaltechnik werden Schaltfunktionen mit Logikgattern (AND, OR, NOT, NAND, NOR, XOR) als Schaltung aufgebaut.
 
 :::note[NAND und NOR]
 Mit NAND-Gattern ($\overline{a \cdot b}$) allein lässt sich jede Schaltfunktion aufbauen, ebenso mit NOR-Gattern allein. Zum Beispiel ist $\overline{a} = \overline{a \cdot a}$. Deshalb sind NAND-Gatter die Grundbausteine vieler integrierter Schaltungen.
@@ -100,8 +100,8 @@ Mit NAND-Gattern ($\overline{a \cdot b}$) allein lässt sich jede Schaltfunktion
 
 Aus einer Wahrheitstabelle kann man die Schaltfunktion direkt ablesen:
 
-- **Disjunktive Normalform (DNF):** Für jede Zeile mit Ergebnis $1$ bildet man einen **Minterm**, eine UND-Verknüpfung aller Variablen, in der jede Variable, die in dieser Zeile $0$ ist, negiert wird. Die Minterme werden mit ODER verknüpft.
-- **Konjunktive Normalform (KNF):** Für jede Zeile mit Ergebnis $0$ bildet man einen **Maxterm**, eine ODER-Verknüpfung, in der jede Variable, die in dieser Zeile $1$ ist, negiert wird. Die Maxterme werden mit UND verknüpft.
+- **Disjunktive Normalform (DNF):** Für jede Zeile mit Ergebnis $1$ bildet man einen Minterm, eine UND-Verknüpfung aller Variablen, in der jede Variable, die in dieser Zeile $0$ ist, negiert wird. Die Minterme werden mit ODER verknüpft.
+- **Konjunktive Normalform (KNF):** Für jede Zeile mit Ergebnis $0$ bildet man einen Maxterm, eine ODER-Verknüpfung, in der jede Variable, die in dieser Zeile $1$ ist, negiert wird. Die Maxterme werden mit UND verknüpft.
 
 :::tip[Beispiel: Mehrheitsschaltung]
 Eine Alarmanlage mit drei Sensoren $a$, $b$ und $c$ soll auslösen ($y = 1$), wenn mindestens zwei Sensoren anschlagen.

@@ -7,12 +7,12 @@ sidebar:
 
 ## Folgen
 
-Eine **Folge** ist eine geordnete Liste von Zahlen $\langle a_1, a_2, a_3, \ldots \rangle$. Mathematisch ist sie eine Funktion, die jeder natürlichen Zahl $n$ (dem Index) ein **Glied** $a_n$ zuordnet.
+Eine **Folge** ist eine geordnete Liste von Zahlen $\langle a_1, a_2, a_3, \ldots \rangle$. Mathematisch ist sie eine Funktion, die jeder natürlichen Zahl $n$ (dem Index) ein Glied $a_n$ zuordnet.
 
 Eine Folge kann auf zwei Arten angegeben werden:
 
-- **explizit** durch eine Formel für das $n$-te Glied: $a_n = 2n + 1$ ergibt $3, 5, 7, 9, \ldots$
-- **rekursiv** durch den Anfangswert und eine Vorschrift, wie ein Glied aus dem vorherigen berechnet wird: $a_1 = 3$, $a_{n+1} = a_n + 2$
+- explizit durch eine Formel für das $n$-te Glied: $a_n = 2n + 1$ ergibt $3, 5, 7, 9, \ldots$
+- rekursiv durch den Anfangswert und eine Vorschrift, wie ein Glied aus dem vorherigen berechnet wird: $a_1 = 3$, $a_{n+1} = a_n + 2$
 
 Rekursive Darstellungen entsprechen Schleifen in Programmen und eignen sich gut für Tabellenkalkulationen. Mit der expliziten Darstellung kann man ein beliebiges Glied direkt berechnen.
 
@@ -22,11 +22,11 @@ $a_1 = 1$, $a_2 = 1$, $a_{n+2} = a_{n+1} + a_n$ ergibt $1, 1, 2, 3, 5, 8, 13, 21
 Jedes Glied ist die Summe der beiden vorherigen.
 :::
 
-Eine Folge heißt **monoton steigend**, wenn $a_{n+1} \ge a_n$ für alle $n$ gilt, und **beschränkt**, wenn alle Glieder zwischen zwei festen Schranken liegen.
+Eine Folge heißt **monoton steigend**, wenn $a_{n+1} \ge a_n$ für alle $n$ gilt, und beschränkt, wenn alle Glieder zwischen zwei festen Schranken liegen.
 
 ## Arithmetische Folgen
 
-Bei einer **arithmetischen Folge** ist die **Differenz** zweier aufeinanderfolgender Glieder konstant:
+Bei einer **arithmetischen Folge** ist die Differenz zweier aufeinanderfolgender Glieder konstant:
 
 $$
 a_{n+1} - a_n = d \qquad a_n = a_1 + (n - 1) \cdot d
@@ -52,13 +52,13 @@ Der Legende nach sollte der junge Carl Friedrich Gauß die Zahlen von 1 bis 100 
 
 ## Geometrische Folgen
 
-Bei einer **geometrischen Folge** ist der **Quotient** zweier aufeinanderfolgender Glieder konstant:
+Bei einer **geometrischen Folge** ist der Quotient zweier aufeinanderfolgender Glieder konstant:
 
 $$
 \frac{a_{n+1}}{a_n} = q \qquad a_n = a_1 \cdot q^{n-1}
 $$
 
-Geometrische Folgen beschreiben **exponentielles Wachstum** ($q > 1$) oder **exponentielle Abnahme** ($0 < q < 1$). Ist $q < 0$, wechseln die Vorzeichen ab (alternierende Folge).
+Geometrische Folgen beschreiben **exponentielles Wachstum** ($q > 1$) oder exponentielle Abnahme ($0 < q < 1$). Ist $q < 0$, wechseln die Vorzeichen ab (alternierende Folge).
 
 :::tip[Beispiel]
 Ein Ball springt nach jedem Aufprall auf 80 % seiner vorherigen Höhe. Aus 2 m Höhe fallen gelassen, erreicht er nach dem 5. Aufprall noch $2 \cdot 0{,}8^5 \approx 0{,}66$ m.
@@ -77,18 +77,18 @@ $$
 s_{64} = 1 \cdot \frac{2^{64} - 1}{2 - 1} = 2^{64} - 1 \approx 1{,}8 \cdot 10^{19}
 $$
 
-Reiskörner auf dem Brett – weit mehr als die gesamte Welternte. Übrigens ist $2^{64} - 1$ auch die größte Zahl, die sich in einer 64-Bit-Variable ohne Vorzeichen speichern lässt.
+Reiskörner auf dem Brett, weit mehr als die gesamte Welternte. Übrigens ist $2^{64} - 1$ auch die größte Zahl, die sich in einer 64-Bit-Variable ohne Vorzeichen speichern lässt.
 :::
 
 ## Grenzwert einer Folge
 
-Nähern sich die Glieder einer Folge für $n \to \infty$ beliebig nahe einer Zahl $a$ an, heißt $a$ **Grenzwert** (Limes) der Folge, und die Folge heißt **konvergent**:
+Nähern sich die Glieder einer Folge für $n \to \infty$ beliebig nahe einer Zahl $a$ an, heißt $a$ **Grenzwert** (Limes) der Folge, und die Folge heißt konvergent:
 
 $$
 \lim_{n \to \infty} a_n = a
 $$
 
-Andernfalls heißt die Folge **divergent**. Eine Folge mit dem Grenzwert $0$ heißt **Nullfolge**.
+Andernfalls heißt die Folge **divergent**. Eine Folge mit dem Grenzwert $0$ heißt Nullfolge.
 
 :::tip[Beispiele]
 - $a_n = \frac{1}{n}$: $\;1, \frac{1}{2}, \frac{1}{3}, \ldots \to 0$ (Nullfolge)
@@ -98,7 +98,7 @@ Andernfalls heißt die Folge **divergent**. Eine Folge mit dem Grenzwert $0$ hei
 - $a_n = \left(1 + \frac{1}{n}\right)^n \to e \approx 2{,}71828$
 :::
 
-Für geometrische Folgen gilt: $q^n \to 0$ genau dann, wenn $\lvert q \rvert < 1$. Mehr zu Grenzwerten finden Sie bei [Grenzwert und Stetigkeit](/de/mathematics/analysis/limits-and-continuity/).
+Für geometrische Folgen gilt: $q^n \to 0$ genau dann, wenn $\lvert q \rvert < 1$. Mehr zu Grenzwerten findest du bei [Grenzwert und Stetigkeit](/de/mathematics/analysis/limits-and-continuity/).
 
 ### Unendliche geometrische Reihe
 
@@ -126,7 +126,7 @@ $$
 K_n = K_0 \cdot (1 + i)^n
 $$
 
-Der Faktor $q = 1 + i$ heißt **Aufzinsungsfaktor**. Umgekehrt ist der **Barwert** eines Betrags $K_n$, der in $n$ Jahren fällig ist, $K_0 = \frac{K_n}{(1 + i)^n}$ (**Abzinsen**).
+Der Faktor $q = 1 + i$ heißt **Aufzinsungsfaktor**. Umgekehrt ist der Barwert eines Betrags $K_n$, der in $n$ Jahren fällig ist, $K_0 = \frac{K_n}{(1 + i)^n}$ (Abzinsen).
 
 :::tip[Beispiel]
 5000 € werden 8 Jahre lang mit 3 % p. a. verzinst:

@@ -7,7 +7,7 @@ sidebar:
 
 ## Stellenwertsysteme
 
-In einem **Stellenwertsystem** hängt der Wert einer Ziffer von ihrer Position in der Zahl ab. Jede Stelle hat den Wert einer Potenz der **Basis** $b$. Eine Zahl mit den Ziffern $z_n \dots z_1 z_0$ hat den Wert
+In einem **Stellenwertsystem** hängt der Wert einer Ziffer von ihrer Position in der Zahl ab. Jede Stelle hat den Wert einer Potenz der Basis $b$. Eine Zahl mit den Ziffern $z_n \dots z_1 z_0$ hat den Wert
 
 $$
 z_n \cdot b^n + \dots + z_1 \cdot b^1 + z_0 \cdot b^0
@@ -45,7 +45,7 @@ $$
 
 ## Umrechnung aus dem Dezimalsystem
 
-Für ganze Zahlen verwendet man das **Divisionsrestverfahren**: Man dividiert die Zahl so lange ganzzahlig durch die Zielbasis, bis der Quotient 0 ist. Die Reste ergeben – **von unten nach oben** gelesen – die Ziffern der gesuchten Zahl.
+Für ganze Zahlen verwendet man das **Divisionsrestverfahren**: Man dividiert die Zahl so lange ganzzahlig durch die Zielbasis, bis der Quotient 0 ist. Die Reste ergeben, von unten nach oben gelesen, die Ziffern der gesuchten Zahl.
 
 :::tip[Beispiel: 181 ins Dualsystem]
 | Division    | Quotient | Rest |
@@ -62,7 +62,7 @@ Für ganze Zahlen verwendet man das **Divisionsrestverfahren**: Man dividiert di
 Von unten nach oben gelesen: $181_{10} = 1011\,0101_2$.
 :::
 
-Bei **Nachkommastellen** multipliziert man den Nachkommaanteil wiederholt mit der Basis. Die Vorkommastellen der Ergebnisse bilden – **von oben nach unten** gelesen – die Nachkommastellen.
+Bei **Nachkommastellen** multipliziert man den Nachkommaanteil wiederholt mit der Basis. Die Vorkommastellen der Ergebnisse bilden, von oben nach unten gelesen, die Nachkommastellen.
 
 :::tip[Beispiel: 0,625 ins Dualsystem]
 $$
@@ -82,7 +82,7 @@ Viele Dezimalbrüche lassen sich im Dualsystem nicht exakt darstellen. So ist $0
 
 ## Umrechnung zwischen Dual-, Oktal- und Hexadezimalsystem
 
-Weil $8 = 2^3$ und $16 = 2^4$ gilt, entspricht jede Oktalziffer genau **drei** und jede Hexadezimalziffer genau **vier** Dualziffern. Man teilt die Dualzahl deshalb von rechts beginnend in Dreier- bzw. Vierergruppen (ein **Nibble**) und übersetzt jede Gruppe einzeln.
+Weil $8 = 2^3$ und $16 = 2^4$ gilt, entspricht jede Oktalziffer genau **drei** und jede Hexadezimalziffer genau vier Dualziffern. Man teilt die Dualzahl deshalb von rechts beginnend in Dreier- bzw. Vierergruppen (ein Nibble) und übersetzt jede Gruppe einzeln.
 
 | Dual | Hex | Dual | Hex |
 | ---- | --- | ---- | --- |
@@ -126,7 +126,7 @@ $$
 Computer speichern ganze Zahlen mit einer festen Anzahl an Bits. Negative Zahlen werden meist im **Zweierkomplement** dargestellt. So bildet man die Darstellung von $-x$:
 
 1. $x$ als Dualzahl mit der vorgegebenen Bitanzahl schreiben.
-2. Alle Bits invertieren (**Einerkomplement**).
+2. Alle Bits invertieren (Einerkomplement).
 3. $1$ addieren.
 
 :::tip[Beispiel: −54 mit 8 Bit]
@@ -163,11 +163,11 @@ $$
 x = (-1)^V \cdot M \cdot 2^E
 $$
 
-- $V$: **Vorzeichenbit** ($0$ = positiv, $1$ = negativ)
-- $M$: **Mantisse**, die signifikanten Ziffern
-- $E$: **Exponent**
+- $V$: Vorzeichenbit ($0$ = positiv, $1$ = negativ)
+- $M$: Mantisse, die signifikanten Ziffern
+- $E$: Exponent
 
-Nach der Norm **IEEE 754** besteht eine Zahl mit einfacher Genauigkeit (`float`) aus 32 Bit: 1 Vorzeichenbit, 8 Bit Exponent und 23 Bit Mantisse. Eine Zahl mit doppelter Genauigkeit (`double`) hat 64 Bit: 1 Vorzeichenbit, 11 Bit Exponent und 52 Bit Mantisse. Die Mantisse wird **normalisiert**, sodass vor dem Komma immer eine $1$ steht, die nicht gespeichert werden muss. Der Exponent wird mit einem **Bias** (bei `float` $127$) gespeichert, damit keine negativen Exponenten codiert werden müssen.
+Nach der Norm **IEEE 754** besteht eine Zahl mit einfacher Genauigkeit (`float`) aus 32 Bit: 1 Vorzeichenbit, 8 Bit Exponent und 23 Bit Mantisse. Eine Zahl mit doppelter Genauigkeit (`double`) hat 64 Bit: 1 Vorzeichenbit, 11 Bit Exponent und 52 Bit Mantisse. Die Mantisse wird normalisiert, sodass vor dem Komma immer eine $1$ steht, die nicht gespeichert werden muss. Der Exponent wird mit einem Bias (bei `float` $127$) gespeichert, damit keine negativen Exponenten codiert werden müssen.
 
 :::tip[Beispiel: 13,25 als float]
 1. In eine Dualzahl umwandeln: $13{,}25_{10} = 1101{,}01_2$

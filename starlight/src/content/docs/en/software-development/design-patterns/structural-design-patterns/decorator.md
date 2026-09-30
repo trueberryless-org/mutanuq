@@ -13,7 +13,7 @@ Imagine the following scenario: you are building an app with a notification syst
 
 Use a decorator to extend the behavior. This decorator holds a reference to the class that is to be extended. In addition, the decorator implements the same interfaces as the referenced class. In its methods, additional behavior can now be implemented before or after calling the referenced class.
 
-Since a decorator itself has the same interface again, several decorators can be nested inside each other as desired. In the notification example, you could wrap an `EmailNotifier` in an `SmsDecorator` and that in turn in an `AppDecorator` – and a message is sent through all three channels.
+Since a decorator itself has the same interface again, several decorators can be nested inside each other as desired. In the notification example, you could wrap an `EmailNotifier` in an `SmsDecorator` and that in turn in an `AppDecorator`, and a message is sent through all three channels.
 
 ## Code
 

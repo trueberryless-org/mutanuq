@@ -1,6 +1,6 @@
 ---
 title: Pointer
-description: Zeiger in C – Adress- und Dereferenzierungsoperator, Zeigerarithmetik sowie der Umgang mit Arrays und Strings.
+description: "Zeiger in C: Adress- und Dereferenzierungsoperator, Zeigerarithmetik sowie der Umgang mit Arrays und Strings."
 sidebar:
   order: 9
 ---
@@ -97,7 +97,7 @@ Die Funktionalitäten von `*` und `&` werden in dieser Tabelle dargestellt:
 
 ## Mit Arrays arbeiten
 
-Häufig müssen wir mit Arrays, sprich Listen von Werten, arbeiten. Ein Array ist ein zusammenhängender Speicherbereich, in dem alle Elemente direkt hintereinander liegen. Ein Array ist selbst kein Pointer, wird aber in fast allen Ausdrücken automatisch in einen Pointer auf sein erstes Element umgewandelt (_Array-to-Pointer Decay_). Da es in `C` keine Referenzen gibt, wird auch beim Übergeben eines Arrays an eine Funktion nur dieser Pointer übergeben. Aus diesem Grund ist es nicht möglich, innerhalb der aufgerufenen Funktion die Größe des Arrays herauszufinden – man muss sie als zusätzlichen Parameter mitgeben. Somit zeigen die Pointer in diesen Code-Beispielen auf dieselbe Adresse:
+Häufig müssen wir mit Arrays, sprich Listen von Werten, arbeiten. Ein Array ist ein zusammenhängender Speicherbereich, in dem alle Elemente direkt hintereinander liegen. Ein Array ist selbst kein Pointer, wird aber in fast allen Ausdrücken automatisch in einen Pointer auf sein erstes Element umgewandelt (_Array-to-Pointer Decay_). Da es in `C` keine Referenzen gibt, wird auch beim Übergeben eines Arrays an eine Funktion nur dieser Pointer übergeben. Aus diesem Grund ist es nicht möglich, innerhalb der aufgerufenen Funktion die Größe des Arrays herauszufinden. Man muss sie als zusätzlichen Parameter mitgeben. Somit zeigen die Pointer in diesen Code-Beispielen auf dieselbe Adresse:
 
 ```c del="&"
 uint8_t numbers[] = { 1, 2, 3, 4, 5 };
@@ -109,7 +109,7 @@ uint8_t numbers[] = { 1, 2, 3, 4, 5 };
 uint8_t *p = numbers; // Automatische Umwandlung in einen Pointer auf numbers[0]
 ```
 
-Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Die erste Variante mit `&` liefert allerdings genau genommen einen Pointer auf das gesamte Array (Typ `uint8_t (*)[5]`), weshalb der Compiler eine Warnung ausgibt – richtig ist die zweite Variante. Ein Teil des Arbeitsspeichers (Stack) sieht folgendermaßen aus (Adressen frei erfunden):
+Beide Pointer in dem obigen Beispiel zeigen somit auf das **erste Element** des Arrays. Die erste Variante mit `&` liefert allerdings genau genommen einen Pointer auf das gesamte Array (Typ `uint8_t (*)[5]`), weshalb der Compiler eine Warnung ausgibt. Richtig ist die zweite Variante. Ein Teil des Arbeitsspeichers (Stack) sieht folgendermaßen aus (Adressen frei erfunden):
 
 | Variablenname | Adresse    | Wert       |
 | ------------- | ---------- | ---------- |
@@ -132,7 +132,7 @@ uint8_t three = numbers[2];
 three = *(numbers + 2);
 ```
 
-Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Der Operator `sizeof` liefert hier die Größe des gesamten Arrays in Bytes. Das funktioniert nur in diesem Scope, da hier auch die Variable `numbers` deklariert ist – in einer Funktion, der das Array übergeben wurde, würde `sizeof` nur die Größe des Pointers liefern. Da `uint8_t` genau ein Byte groß ist, entspricht die Größe hier der Anzahl der Elemente. Allgemein berechnet man die Anzahl mit `sizeof(numbers) / sizeof(numbers[0])`.
+Wenn man alle Elemente dieses Arrays nun ausgeben will, kann der `C-Code` von unten verwendet werden. Der Operator `sizeof` liefert hier die Größe des gesamten Arrays in Bytes. Das funktioniert nur in diesem Scope, da hier auch die Variable `numbers` deklariert ist. In einer Funktion, der das Array übergeben wurde, würde `sizeof` nur die Größe des Pointers liefern. Da `uint8_t` genau ein Byte groß ist, entspricht die Größe hier der Anzahl der Elemente. Allgemein berechnet man die Anzahl mit `sizeof(numbers) / sizeof(numbers[0])`.
 
 ```c
 uint8_t numbers[5] = { 1, 2, 3, 4, 5 };

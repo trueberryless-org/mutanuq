@@ -1,6 +1,6 @@
 ---
 title: Machine Learning
-description: How models learn rules from data – the process of AI projects as well as supervised, unsupervised and reinforcement learning.
+description: "How models learn rules from data: the process of AI projects as well as supervised, unsupervised and reinforcement learning."
 sidebar:
   order: 6
 ---
@@ -48,7 +48,7 @@ For classification tasks, the model's predictions on the test data are compared 
 | **Recall**    | $\frac{TP}{TP + FN}$                                       | How many of the actually positive cases were found             |
 | **F1 score**  | $2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}$ | Harmonic mean of precision and recall                          |
 
-With imbalanced data sets, accuracy is deceptive: if 99% of all e-mails are not spam, a model that never predicts "spam" already reaches 99% accuracy – but is completely useless. For regression tasks, error measures such as the mean squared error (MSE) or the coefficient of determination $R^2$ are used instead.
+With imbalanced data sets, accuracy is deceptive: if 99% of all e-mails are not spam, a model that never predicts "spam" already reaches 99% accuracy but is completely useless. For regression tasks, error measures such as the mean squared error (MSE) or the coefficient of determination $R^2$ are used instead.
 
 ## Categories
 
@@ -73,6 +73,6 @@ Machine learning is divided into the three major categories `Supervised Learning
 - **Reinforcement learning**  
   Reinforcement learning is an iterative process in which a so-called **agent** learns by trial and error. The agent performs actions in an **environment** and receives a **reward** (or penalty) for them. The agent's goal is to find a strategy that maximises the sum of rewards in the long run. Typical applications are games (for example AlphaGo), controlling robots or autonomous driving.
 
-  Large language models such as ChatGPT are also fine-tuned with a variant of it: in **reinforcement learning from human feedback** (RLHF), humans rate the model's answers, and these ratings serve as the reward. This makes the answers more helpful and harmful output less frequent. However, this method does not guarantee that the model cannot be manipulated or has no biases – the model only learns what is represented in the reward system.
+  Large language models such as ChatGPT are also fine-tuned with a variant of it: in **reinforcement learning from human feedback** (RLHF), humans rate the model's answers, and these ratings serve as the reward. This makes the answers more helpful and harmful output less frequent. However, this method does not guarantee that the model cannot be manipulated or has no biases. The model only learns what is represented in the reward system.
 
   When implementing the learning process, you therefore have to be particularly careful not to accidentally negate the reward system. This actually happened to OpenAI once: due to a sign error, a version of [GPT-2](https://openai.com/index/fine-tuning-gpt-2/) was optimised to produce texts that were as offensive as possible ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).

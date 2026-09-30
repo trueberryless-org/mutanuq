@@ -9,7 +9,7 @@ Die **Trigonometrie** (Dreiecksmessung) stellt Beziehungen zwischen den Seiten u
 
 ## Rechtwinkeliges Dreieck
 
-Bezogen auf einen spitzen Winkel $\alpha$ eines rechtwinkeligen Dreiecks unterscheidet man die **Gegenkathete** (liegt dem Winkel gegenüber), die **Ankathete** (liegt am Winkel an) und die **Hypotenuse** (liegt dem rechten Winkel gegenüber).
+Bezogen auf einen spitzen Winkel $\alpha$ eines rechtwinkeligen Dreiecks unterscheidet man die Gegenkathete (liegt dem Winkel gegenüber), die Ankathete (liegt am Winkel an) und die Hypotenuse (liegt dem rechten Winkel gegenüber).
 
 $$
 \sin\alpha = \frac{\text{Gegenkathete}}{\text{Hypotenuse}} \qquad
@@ -22,7 +22,7 @@ Diese Verhältnisse hängen nur vom Winkel ab, nicht von der Größe des Dreieck
 Ist ein Seitenverhältnis bekannt, erhält man den Winkel mit den Umkehrfunktionen $\arcsin$, $\arccos$ und $\arctan$ (am Taschenrechner $\sin^{-1}$, $\cos^{-1}$, $\tan^{-1}$).
 
 :::caution
-Achten Sie darauf, dass der Taschenrechner im richtigen Winkelmodus ist: **DEG** für Gradmaß, **RAD** für Bogenmaß.
+Achte darauf, dass der Taschenrechner im richtigen Winkelmodus ist: **DEG** für Gradmaß, RAD für Bogenmaß.
 :::
 
 ### Wichtige Zusammenhänge
@@ -90,8 +90,8 @@ $$
 
 Dabei ist $r$ der Umkreisradius. Der Sinussatz wird verwendet, wenn **eine Seite und der gegenüberliegende Winkel** bekannt sind, also bei den Fällen:
 
-- zwei Winkel und eine Seite (**WSW**, **SWW**),
-- zwei Seiten und der Gegenwinkel einer davon (**SSW**).
+- zwei Winkel und eine Seite (WSW, SWW),
+- zwei Seiten und der Gegenwinkel einer davon (SSW).
 
 :::caution[Mehrdeutiger Fall]
 Beim Fall SSW kann es zwei Lösungen geben, weil $\sin\beta = \sin(180° - \beta)$ gilt. Liegt der gegebene Winkel der **größeren** der beiden Seiten gegenüber, ist die Lösung eindeutig.
@@ -109,8 +109,8 @@ $$
 
 Der Cosinussatz ist eine Verallgemeinerung des Satzes von Pythagoras: Für $\gamma = 90°$ ist $\cos\gamma = 0$ und es bleibt $c^2 = a^2 + b^2$. Er wird verwendet bei
 
-- zwei Seiten und dem eingeschlossenen Winkel (**SWS**),
-- drei Seiten (**SSS**).
+- zwei Seiten und dem eingeschlossenen Winkel (SWS),
+- drei Seiten (SSS).
 
 ### Flächenformel
 
@@ -146,5 +146,5 @@ Da $a$ nicht die größte Seite ist, ist $\alpha$ spitz und die Lösung eindeuti
 | eine Seite und zwei Winkel                  | WSW  | dritten Winkel über die Winkelsumme, dann Sinussatz |
 
 :::tip[Tipp]
-Berechnen Sie Winkel nach Möglichkeit mit dem Cosinussatz, weil $\arccos$ im Bereich $0°$ bis $180°$ eindeutig ist. Beim Sinussatz muss man prüfen, ob der Winkel spitz oder stumpf ist.
+Berechne Winkel nach Möglichkeit mit dem Cosinussatz, weil $\arccos$ im Bereich $0°$ bis $180°$ eindeutig ist. Beim Sinussatz muss man prüfen, ob der Winkel spitz oder stumpf ist.
 :::

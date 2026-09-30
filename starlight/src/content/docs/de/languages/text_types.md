@@ -1,6 +1,6 @@
 ---
 title: Textsorten Englisch
-description: Aufbau, Merkmale und nützliche Phrasen der Textsorten für den Englischunterricht und die Matura – Artikel, Blog, E-Mail, Broschüre und Bericht.
+description: "Aufbau, Merkmale und nützliche Phrasen der Textsorten für den Englischunterricht und die Matura: Artikel, Blog, E-Mail, Broschüre und Bericht."
 sidebar:
     order: 3
 tableOfContents:
@@ -23,15 +23,15 @@ Der Artikel ist eine einfache Textsorte, bei der vor allem die kreative Schreibw
 
 #### kreative Überschrift
 
-Geben Sie Ihrem Artikel eine kreative und einprägsame Überschrift, da dies _den Leser / die Leserin_ zum Lesen motivieren muss.
+Gib deinem Artikel eine kreative und einprägsame Überschrift, da dies _den Leser / die Leserin_ zum Lesen motivieren muss.
 
 #### Einleitung
 
-Schreiben Sie eine kreative Einleitung, welche direkte Fragen an _den Leser / die Leserin_ richtet.
+Schreib eine kreative Einleitung, welche direkte Fragen an _den Leser / die Leserin_ richtet.
 
 #### Hauptteil
 
-Im Hauptteil des Artikels sollen die objektiven Vor- und Nachteile des Themas beschrieben werden. Dabei soll dieser in inhaltliche Abschnitte gegliedert werden, um eine logische Struktur zu garantieren. Geben Sie zur Verdeutlichung der Argumente Beispiele an.
+Im Hauptteil des Artikels sollen die objektiven Vor- und Nachteile des Themas beschrieben werden. Dabei soll dieser in inhaltliche Abschnitte gegliedert werden, um eine logische Struktur zu garantieren. Gib zur Verdeutlichung der Argumente Beispiele an.
 
 #### Schluss
 
@@ -136,7 +136,7 @@ Ein Blogbeitrag endet damit, dass man dem Leser noch eine Frage stellt und ihn s
 
 #### Merkmale
 
--   Versuchen Sie, denselben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blogbeitrag))
+-   Versuch, denselben Stil zu verwenden wie im Ausgangstext ([Blogbeitrag](#blogbeitrag))
 -   Direkt den Autor und andere Leser ansprechen
 -   Keine Zwischenüberschriften
 
@@ -210,7 +210,7 @@ Eine informelle E-Mail schreibt man meistens an Freunde, private Kollegen oder a
 
 ##### Allgemeine Informationen
 
-Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
+Schreib zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
 
 > Von: trueberryless@email.com  
 > An: tom.cruise@email.com  
@@ -220,14 +220,14 @@ Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datu
 
 ##### Anrede
 
-Schreiben Sie eine nette Anrede und am besten den Vornamen des Empfängers. Lassen Sie anschließend eine Leerzeile Platz, um die eigentliche Nachricht zu schreiben.
+Schreib eine nette Anrede und am besten den Vornamen des Empfängers. Lass anschließend eine Leerzeile Platz, um die eigentliche Nachricht zu schreiben.
 
 > Lieber Tom!
 
-Sie können die Anrede mit Rufzeichen oder Beistrich beenden. Falls Sie ein Rufzeichen machen, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
+Du kannst die Anrede mit Rufzeichen oder Beistrich beenden. Falls du ein Rufzeichen machst, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
 
 :::caution
-Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Hi Tom,“).
+Beachte bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Hi Tom,“).
 :::
 
 | Phrasen         |
@@ -239,7 +239,7 @@ Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den 
 
 ##### Einleitung
 
-Schreiben Sie eine nette Einleitung. Diese sollte erklären, warum Sie die E-Mail schreiben (Also eigentlich eine längere Version der Betreffzeile).
+Schreib eine nette Einleitung. Diese sollte erklären, warum du die E-Mail schreibst (Also eigentlich eine längere Version der Betreffzeile).
 
 | Phrasen                                                                                                                                                           |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -248,23 +248,23 @@ Schreiben Sie eine nette Einleitung. Diese sollte erklären, warum Sie die E-Mai
 | Wie sieht's aus? Alles klar bei dir? Ich dachte, es wird mal wieder Zeit, ein Lebenszeichen von mir zu geben.                                                     |
 | hoffe, du hast einen guten Tag! Ich wollte mal kurz Hallo sagen und schauen, was bei dir so los ist. Lass mal hören, wie es dir geht!                             |
 
-Natürlich ist der Grund für eine informelle E-Mail nicht immer nur mal Hallo zu sagen. Schreiben Sie die Einleitung dementsprechend individuell für die Situation angepasst.
+Natürlich ist der Grund für eine informelle E-Mail nicht immer nur mal Hallo zu sagen. Schreib die Einleitung dementsprechend individuell für die Situation angepasst.
 
-Beachten Sie hierbei die Groß- und Kleinschreibregel beim ersten Buchstaben der Einleitung, da diese von der [Anrede](#anrede) abhängig ist.
+Beachte hierbei die Groß- und Kleinschreibregel beim ersten Buchstaben der Einleitung, da diese von der [Anrede](#anrede) abhängig ist.
 
 ##### Hauptteil
 
-Schreiben Sie den eigentlichen Text der E-Mail. Hierbei können Sie die inhaltlichen Themen in unterschiedliche Absätze gliedern, damit das Lesen möglichst einfach ist.
+Schreib den eigentlichen Text der E-Mail. Hierbei kannst du die inhaltlichen Themen in unterschiedliche Absätze gliedern, damit das Lesen möglichst einfach ist.
 
 ##### Schlussteil
 
-Schließen Sie Ihre E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
+Schließ deine E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchtest du auch um eine Antwort bitten, wobei du diese zirka so aufbauen kannst:
 
 > Es wäre super, von dir zu hören und zu erfahren, was in deinem Leben gerade passiert. Lass mich wissen, wie es dir geht, und erzähl mir von deinen Abenteuern.
 
 ##### Schlussfloskel
 
-Schließen Sie Ihre E-Mail mit einer Grußformel.
+Schließ deine E-Mail mit einer Grußformel.
 
 > Liebe Grüße,  
 > Felix
@@ -291,7 +291,7 @@ Im beruflichen Leben werden E-Mails meistens formell geschrieben, da man somit R
 
 ##### Allgemeine Informationen
 
-Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
+Schreib zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datum der Absendung und einen Betreff.
 
 > Von: f.schneider@email.com  
 > An: a.hauleitner@email.com  
@@ -301,14 +301,14 @@ Schreiben Sie zuerst die E-Mail-Adressen des Empfängers und Absenders, das Datu
 
 ##### Anrede
 
-Schreiben Sie eine höfliche und angebrachte Anrede. Lassen Sie anschließend eine Leerzeile Platz, um die eigentliche Nachricht zu schreiben.
+Schreib eine höfliche und angebrachte Anrede. Lass anschließend eine Leerzeile Platz, um die eigentliche Nachricht zu schreiben.
 
 > Sehr geehrter Herr Professor Hauleitner!
 
-Sie können die Anrede mit Rufzeichen oder Beistrich beenden. Falls Sie ein Rufzeichen machen, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
+Du kannst die Anrede mit Rufzeichen oder Beistrich beenden. Falls du ein Rufzeichen machst, muss die Einleitung mit einem Großbuchstaben beginnen, bei einem Beistrich sollte man klein weiterschreiben.
 
 :::caution
-Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Dear Mr Hauleitner,“ bzw. „Dear Sir or Madam,“, wenn man den Namen nicht kennt).
+Beachte bei der Groß- und Kleinschreibregel die Unterschiede zwischen den Sprachen. Im Englischen muss man nämlich immer mit einem Großbuchstaben anfangen. Außerdem beendet man die Anrede im Englischen nicht mit einem Rufzeichen, sondern mit einem Beistrich (z. B. „Dear Mr Hauleitner,“ bzw. „Dear Sir or Madam,“, wenn man den Namen nicht kennt).
 :::
 
 | Phrasen                                           |
@@ -320,7 +320,7 @@ Beachten Sie bei der Groß- und Kleinschreibregel die Unterschiede zwischen den 
 
 ##### Einleitung
 
-Schreiben Sie eine Einleitung, welche den Grund für das Schreiben erläutert.
+Schreib eine Einleitung, welche den Grund für das Schreiben erläutert.
 
 | Phrasen                                                                                                                                                                       |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -328,23 +328,23 @@ Schreiben Sie eine Einleitung, welche den Grund für das Schreiben erläutert.
 | Im Anhang habe ich Ihnen eine PDF mit allen Dokumenten hochgeladen.                                                                                                           |
 | Vor einem Monat haben Sie mein Buch `Dive Into Design Patterns` gekauft. Jetzt möchte ich nur sicherstellen, dass alles in Ordnung ist und Sie mit Ihrem Kauf zufrieden sind. |
 
-Natürlich ist der Grund für eine formelle E-Mail immer ein anderer. Schreiben Sie die Einleitung dementsprechend individuell für die Situation angepasst.
+Natürlich ist der Grund für eine formelle E-Mail immer ein anderer. Schreib die Einleitung dementsprechend individuell für die Situation angepasst.
 
-Beachten Sie hierbei die Groß- und Kleinschreibregel beim ersten Buchstaben der Einleitung, da diese von der [Anrede](#anrede) abhängig ist.
+Beachte hierbei die Groß- und Kleinschreibregel beim ersten Buchstaben der Einleitung, da diese von der [Anrede](#anrede) abhängig ist.
 
 ##### Hauptteil
 
-Schreiben Sie den eigentlichen Text der E-Mail. Hierbei können Sie die inhaltlichen Themen in unterschiedliche Absätze gliedern, damit das Lesen möglichst einfach ist.
+Schreib den eigentlichen Text der E-Mail. Hierbei kannst du die inhaltlichen Themen in unterschiedliche Absätze gliedern, damit das Lesen möglichst einfach ist.
 
 ##### Schlussteil
 
-Schließen Sie Ihre E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchten Sie auch um eine Antwort bitten, wobei Sie diese zirka so aufbauen können:
+Schließ deine E-Mail mit einem abschließenden, zusammenfassenden Satz ab, welcher die wichtigsten Punkte der E-Mail erläutert. In manchen Fällen möchtest du auch um eine Antwort bitten, wobei du diese zirka so aufbauen kannst:
 
 > Es wäre mir eine große Freude, von Ihnen zu hören und mehr darüber zu erfahren, wie meine Anfrage bezüglich einer Gehaltserhöhung bearbeitet wird. Bitte teilen Sie mir mit, sobald Sie Informationen zu diesem Thema haben. Vielen Dank für Ihre Aufmerksamkeit und Mühe in dieser Angelegenheit.
 
 ##### Schlussfloskel
 
-Schließen Sie Ihre E-Mail mit einer Grußformel. Im Englischen schreibt man `Yours sincerely,`, wenn man den Namen des Empfängers kennt, und `Yours faithfully,`, wenn man ihn nicht kennt.
+Schließ deine E-Mail mit einer Grußformel. Im Englischen schreibt man `Yours sincerely,`, wenn man den Namen des Empfängers kennt, und `Yours faithfully,`, wenn man ihn nicht kennt.
 
 > Mit freundlichen Grüßen  
 > Felix
@@ -360,17 +360,17 @@ Schließen Sie Ihre E-Mail mit einer Grußformel. Im Englischen schreibt man `Yo
 
 #### Inhalt
 
-Sagen Sie in der Einleitung, wie Sie von der Stelle erfahren haben. Im Hauptteil müssen Sie die folgenden Informationen wiedergeben:
+Sag in der Einleitung, wie du von der Stelle erfahren hast. Im Hauptteil musst du die folgenden Informationen wiedergeben:
 
--   Fassen Sie Ihre Erfahrungen, Fähigkeiten und Qualifikationen zusammen.
--   Zeigen Sie, dass Sie über die in der Stellenausschreibung geforderten Fähigkeiten verfügen.
--   Sagen Sie, was **Sie für das Unternehmen** tun können, _nicht_ was das Unternehmen für Sie tun kann.
--   Stellen Sie dar, was Sie von anderen Bewerbern unterscheidet.
+-   Fass deine Erfahrungen, Fähigkeiten und Qualifikationen zusammen.
+-   Zeig, dass du über die in der Stellenausschreibung geforderten Fähigkeiten verfügen.
+-   Sag, was **du für das Unternehmen** tun kannst, _nicht_ was das Unternehmen für dich tun kann.
+-   Stell dar, was dich von anderen Bewerbern unterscheidet.
 
-Beenden Sie den Text Ihrer E-Mail, indem Sie dem Leser weitere Informationen anbieten und um ein Vorstellungsgespräch bitten.
+Beende den Text deiner E-Mail, indem du dem Leser weitere Informationen anbieten und um ein Vorstellungsgespräch bitten.
 
 :::tip[Tipp]
-Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein Vorstellungsgespräch**. Fragen Sie also einfach am Schluss.
+Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein Vorstellungsgespräch**. Frag also einfach am Schluss.
 :::
 
 #### Phrasen
@@ -401,9 +401,9 @@ Der Hauptgrund für das Schreiben einer Bewerbungs-E-Mail ist die **Bitte um ein
 
 #### Inhalt
 
-Geben Sie in der Einleitung den Grund für Ihre Beschwerde an. 
+Gib in der Einleitung den Grund für deine Beschwerde an. 
 
-Erklären Sie im ersten Absatz des Hauptteils deutlich, was schiefgelaufen ist. Sagen Sie dann, wie sich dies auf Sie ausgewirkt hat. Beenden Sie den Hauptteil Ihrer E-Mail mit einer Aufforderung zum Handeln. Bitten Sie zunächst um eine Lösung oder schlagen Sie eine solche vor. Falls angebracht, drohen Sie anschließend mit Konsequenzen – meistens mit rechtlichen Schritten.
+Erkläre im ersten Absatz des Hauptteils deutlich, was schiefgelaufen ist. Sag dann, wie sich dies auf dich ausgewirkt hat. Beende den Hauptteil deiner E-Mail mit einer Aufforderung zum Handeln. Bitte zunächst um eine Lösung oder schlag eine solche vor. Falls angebracht, droh anschließend mit Konsequenzen, meistens mit rechtlichen Schritten.
 
 #### Phrasen
 
@@ -456,15 +456,15 @@ Eine kurze, einprägsame Überschrift, die das Thema nennt und neugierig macht.
 
 #### Einleitung
 
-Sprechen Sie die Zielgruppe direkt an und stellen Sie in ein bis zwei Sätzen das Thema vor, zum Beispiel mit einer Frage.
+Sprich die Zielgruppe direkt an und stell in ein bis zwei Sätzen das Thema vor, zum Beispiel mit einer Frage.
 
 #### Hauptteil
 
-Gliedern Sie die Informationen in mehrere kurze Abschnitte mit Zwischenüberschriften, zum Beispiel „Was ist ...?“, „Warum ...?“ und „Wie ...?“. Verwenden Sie Aufzählungspunkte für Tipps oder Angebote.
+Gliedere die Informationen in mehrere kurze Abschnitte mit Zwischenüberschriften, zum Beispiel „Was ist ...?“, „Warum ...?“ und „Wie ...?“. Verwende Aufzählungspunkte für Tipps oder Angebote.
 
 #### Schluss
 
-Beenden Sie die Broschüre mit einem Aufruf zum Handeln (_call to action_) und nennen Sie Kontaktdaten oder weiterführende Informationen.
+Beende die Broschüre mit einem Aufruf zum Handeln (_call to action_) und nenne Kontaktdaten oder weiterführende Informationen.
 
 ### Phrasen
 
@@ -478,12 +478,12 @@ Beenden Sie die Broschüre mit einem Aufruf zum Handeln (_call to action_) und n
 
 ## Bericht
 
-Ein Bericht fasst die wichtigsten Informationen einer Präsentation, einer Umfrage, einer Sitzung oder eines Ereignisses wie eines Unfalls zusammen. Er wird in der Regel für eine Autoritätsperson geschrieben (Ihren Chef, den Leiter einer Schule, ...).
+Ein Bericht fasst die wichtigsten Informationen einer Präsentation, einer Umfrage, einer Sitzung oder eines Ereignisses wie eines Unfalls zusammen. Er wird in der Regel für eine Autoritätsperson geschrieben (deinen Chef, den Leiter einer Schule, ...).
 
 ### Merkmale
 
 -   formell
--   kein `Ich` und kein `Du` (Sprechen Sie den Leser nicht an!)
+-   kein `Ich` und kein `Du` (Sprich den Leser nicht an!)
 -   keine umgangssprachlichen Ausdrücke (z. B. „Mach‘s gut“, „Moin“, „Einen Kater haben“, ...)
 -   Verwendung von Passivkonstruktionen (z. B. „Es kann behauptet werden“)
 -   alle Absätze haben Zwischenüberschriften
@@ -494,13 +494,13 @@ Der Bericht ist in Abschnitte unterteilt, die jeweils eine klare Zwischenübersc
 
 #### Allgemeine Informationen
 
-Schreiben Sie zuerst den Namen des Absenders, den Namen des Empfängers und das Datum der Absendung in die obere linke Ecke.
+Schreib zuerst den Namen des Absenders, den Namen des Empfängers und das Datum der Absendung in die obere linke Ecke.
 
 > An: Stevie Wonder  
 > Von: Felix Schneider  
 > Datum: 15. November 2023
 
-Geben Sie dem Bericht dann einen aussagekräftigen Betreff, der das Thema des Berichts kurz und prägnant zusammenfasst.
+Gib dem Bericht dann einen aussagekräftigen Betreff, der das Thema des Berichts kurz und prägnant zusammenfasst.
 
 > Betreff: Arbeiten im Ausland
 
@@ -526,12 +526,12 @@ Nach den allgemeinen Informationen wird eine kurze Einleitung verfasst, in der d
 |                                                                   | diskutieren ...     |
 
 :::note
-In diesen Sätzen wird das Wort `Bericht` sehr häufig verwendet. Sobald Sie eine Phrase verwendet haben, können Sie stattdessen `er` schreiben.
+In diesen Sätzen wird das Wort `Bericht` sehr häufig verwendet. Sobald du eine Phrase verwendet hast, kannst du stattdessen `er` schreiben.
 :::
 
 #### Befunde
 
-Der nächste Schritt besteht darin, die wichtigsten numerischen Daten aus der Studie in einen Fließtext einzubauen. Beginnen Sie immer mit den Extremwerten, da diese besonders interessant sind.
+Der nächste Schritt besteht darin, die wichtigsten numerischen Daten aus der Studie in einen Fließtext einzubauen. Beginne immer mit den Extremwerten, da diese besonders interessant sind.
 
 | Phrasen                                                                                            |
 | -------------------------------------------------------------------------------------------------- |
@@ -567,7 +567,7 @@ Je nachdem, welcher Inhalt in der Aufgabenstellung verlangt wird, gibt es nun ma
 
 ##### Empfehlungen
 
-Zeigen Sie auf, wie die derzeitige Situation verbessert werden könnte, und schlagen Sie die nächsten Schritte vor, um eine solche Veränderung zu erreichen.
+Zeig auf, wie die derzeitige Situation verbessert werden könnte, und schlag die nächsten Schritte vor, um eine solche Veränderung zu erreichen.
 
 | Phrasen                                |
 | -------------------------------------- |
@@ -579,7 +579,7 @@ Zeigen Sie auf, wie die derzeitige Situation verbessert werden könnte, und schl
 
 ##### Schlussfolgerung
 
-Fassen Sie alle oben genannten Informationen zusammen.
+Fass alle oben genannten Informationen zusammen.
 
 | Phrasen                                      |
 | -------------------------------------------- |

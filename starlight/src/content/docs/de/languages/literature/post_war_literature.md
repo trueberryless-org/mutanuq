@@ -1,25 +1,25 @@
 ---
 title: Nachkriegsliteratur
-description: Die deutsche Literatur nach 1945 – Trümmerliteratur, Kahlschlag, Gruppe 47, Kurzgeschichte und die Auseinandersetzung mit Schuld und Vergangenheit bei Borchert, Böll, Grass und Dürrenmatt.
+description: "Die deutsche Literatur nach 1945: Trümmerliteratur, Kahlschlag, Gruppe 47, Kurzgeschichte und die Auseinandersetzung mit Schuld und Vergangenheit bei Borchert, Böll, Grass und Dürrenmatt."
 sidebar:
   order: 15
 ---
 
-Nach dem Zweiten Weltkrieg lagen die Städte in Trümmern, Millionen Menschen waren tot, vertrieben oder in Gefangenschaft. Auch die Sprache schien durch die Propaganda der Nationalsozialisten beschädigt. Junge Autoren wollten deshalb **neu anfangen**: mit einer einfachen, ehrlichen Sprache, die die Wirklichkeit ungeschönt zeigt. Später wurde die Frage nach **Schuld** und **Verantwortung** für die NS-Verbrechen zum zentralen Thema.
+Nach dem Zweiten Weltkrieg lagen die Städte in Trümmern, Millionen Menschen waren tot, vertrieben oder in Gefangenschaft. Auch die Sprache schien durch die Propaganda der Nationalsozialisten beschädigt. Junge Autoren wollten deshalb **neu anfangen**: mit einer einfachen, ehrlichen Sprache, die die Wirklichkeit ungeschönt zeigt. Später wurde die Frage nach Schuld und Verantwortung für die NS-Verbrechen zum zentralen Thema.
 
 ## Eckdaten
 
 - ca. 1945 – 1970
-- **Trümmerliteratur** (Kriegs- und Heimkehrerliteratur)
-- **Kahlschlag** und „Stunde null“: radikaler Neubeginn in Sprache und Literatur
-- **Gruppe 47**
-- **Kurzgeschichte** nach amerikanischem Vorbild
+- Trümmerliteratur (Kriegs- und Heimkehrerliteratur)
+- Kahlschlag und „Stunde null“: radikaler Neubeginn in Sprache und Literatur
+- Gruppe 47
+- Kurzgeschichte nach amerikanischem Vorbild
 - Vergangenheitsbewältigung, Kritik am Wirtschaftswunder
 - Teilung Deutschlands: Literatur in BRD und DDR
 
 ## Historischer Hintergrund
 
-Deutschland und Österreich wurden 1945 von den Alliierten besetzt. 1949 entstanden die Bundesrepublik Deutschland (BRD) und die Deutsche Demokratische Republik (DDR). Österreich erhielt 1955 mit dem **Staatsvertrag** seine volle Unabhängigkeit. Im Westen sorgte das **Wirtschaftswunder** schnell für Wohlstand, viele Menschen wollten die Vergangenheit lieber vergessen. Die Auschwitzprozesse (1963 – 1965) und die Studentenbewegung von **1968** zwangen die Gesellschaft jedoch, sich mit den Verbrechen der NS-Zeit auseinanderzusetzen.
+Deutschland und Österreich wurden 1945 von den Alliierten besetzt. 1949 entstanden die Bundesrepublik Deutschland (BRD) und die Deutsche Demokratische Republik (DDR). Österreich erhielt 1955 mit dem **Staatsvertrag** seine volle Unabhängigkeit. Im Westen sorgte das Wirtschaftswunder schnell für Wohlstand, viele Menschen wollten die Vergangenheit lieber vergessen. Die Auschwitzprozesse (1963 – 1965) und die Studentenbewegung von 1968 zwangen die Gesellschaft jedoch, sich mit den Verbrechen der NS-Zeit auseinanderzusetzen.
 
 ## Trümmerliteratur und Kahlschlag
 
@@ -27,11 +27,11 @@ Die ersten Nachkriegsjahre schildern die zerstörten Städte, den Hunger, die He
 
 ### Wolfgang Borchert (1921 – 1947)
 
-Borchert kam schwer krank aus dem Krieg zurück und starb mit nur 26 Jahren. Sein Drama „**Draußen vor der Tür**“ (1947) erzählt von dem Kriegsheimkehrer Beckmann, der in der Nachkriegsgesellschaft keinen Platz mehr findet – überall bleibt er „draußen vor der Tür“. Seine Kurzgeschichten wie „**Das Brot**“ und „**Die Küchenuhr**“ gelten als Musterbeispiele der Gattung.
+Borchert kam schwer krank aus dem Krieg zurück und starb mit nur 26 Jahren. Sein Drama „**Draußen vor der Tür**“ (1947) erzählt von dem Kriegsheimkehrer Beckmann, der in der Nachkriegsgesellschaft keinen Platz mehr findet. Überall bleibt er „draußen vor der Tür“. Seine Kurzgeschichten wie „Das Brot“ und „Die Küchenuhr“ gelten als Musterbeispiele der Gattung.
 
 ### Heinrich Böll (1917 – 1985)
 
-Böll begann mit Kurzgeschichten über den Krieg („Wanderer, kommst du nach Spa…“) und schrieb später gesellschaftskritische Romane über die Bundesrepublik, etwa „**Ansichten eines Clowns**“ (1963) und „**Die verlorene Ehre der Katharina Blum**“ (1974) über die Macht der Boulevardpresse. 1972 erhielt er den Nobelpreis für Literatur. In seinem Aufsatz „Bekenntnis zur Trümmerliteratur“ (1952) verteidigte er diese Literatur gegen den Vorwurf der Trostlosigkeit.
+Böll begann mit Kurzgeschichten über den Krieg („Wanderer, kommst du nach Spa…“) und schrieb später gesellschaftskritische Romane über die Bundesrepublik, etwa „**Ansichten eines Clowns**“ (1963) und „Die verlorene Ehre der Katharina Blum“ (1974) über die Macht der Boulevardpresse. 1972 erhielt er den Nobelpreis für Literatur. In seinem Aufsatz „Bekenntnis zur Trümmerliteratur“ (1952) verteidigte er diese Literatur gegen den Vorwurf der Trostlosigkeit.
 
 ### Günter Eich (1907 – 1972)
 
@@ -42,8 +42,8 @@ Sein Gedicht „**Inventur**“ (1945/47) gilt als Paradebeispiel der Kahlschlag
 Die **Kurzgeschichte** (nach der amerikanischen _short story_) wurde zur wichtigsten Prosaform der Nachkriegszeit. Typische Merkmale:
 
 - geringer Umfang
-- **unvermittelter Anfang** ohne Einleitung
-- **offener Schluss**
+- unvermittelter Anfang ohne Einleitung
+- offener Schluss
 - Ausschnitt aus dem Alltag, oft ein Wendepunkt im Leben einer Figur
 - wenige, meist durchschnittliche Figuren
 - einfache, alltägliche Sprache, oft viel wörtliche Rede
@@ -51,7 +51,7 @@ Die **Kurzgeschichte** (nach der amerikanischen _short story_) wurde zur wichtig
 
 ## Gruppe 47
 
-Die **Gruppe 47** war ein lockerer Kreis von Autorinnen und Autoren, den Hans Werner Richter 1947 gründete. Bei den Treffen lasen die Mitglieder aus unveröffentlichten Texten und stellten sich der direkten Kritik der anderen (der „elektrische Stuhl“). Die Gruppe prägte die westdeutsche Literatur bis 1967 entscheidend. Zu ihren Mitgliedern oder Preisträgern gehörten unter anderem Heinrich Böll, Günter Grass, **Ingeborg Bachmann**, **Ilse Aichinger**, Paul Celan, Martin Walser und Hans Magnus Enzensberger.
+Die **Gruppe 47** war ein lockerer Kreis von Autorinnen und Autoren, den Hans Werner Richter 1947 gründete. Bei den Treffen lasen die Mitglieder aus unveröffentlichten Texten und stellten sich der direkten Kritik der anderen (der „elektrische Stuhl“). Die Gruppe prägte die westdeutsche Literatur bis 1967 entscheidend. Zu ihren Mitgliedern oder Preisträgern gehörten unter anderem Heinrich Böll, Günter Grass, Ingeborg Bachmann, Ilse Aichinger, Paul Celan, Martin Walser und Hans Magnus Enzensberger.
 
 ## Vergangenheitsbewältigung
 
@@ -63,8 +63,8 @@ Die **Gruppe 47** war ein lockerer Kreis von Autorinnen und Autoren, den Hans We
 
 Die beiden Schweizer Autoren prägten das Theater der Nachkriegszeit.
 
-- **Dürrenmatt:** In der tragischen Komödie „**Der Besuch der alten Dame**“ (1956) kehrt die Milliardärin Claire Zachanassian in ihre verarmte Heimatstadt Güllen zurück und bietet eine Milliarde für den Tod ihres früheren Geliebten Alfred Ill, der sie einst im Stich gelassen hat. Die Bürger lehnen empört ab – und kaufen doch auf Kredit ein, bis sie Ill schließlich töten. In „**Die Physiker**“ (1962) geht es um die Verantwortung der Wissenschaft. Dürrenmatt schrieb auch Kriminalromane wie „Der Richter und sein Henker“.
-- **Frisch:** In „**Andorra**“ (1961) wird der junge Andri von allen für einen Juden gehalten und von den Vorurteilen der Andorraner in den Tod getrieben – ein Stück über Antisemitismus und Schuld. In „Biedermann und die Brandstifter“ lässt ein Bürger aus Feigheit Brandstifter in sein Haus. Bekannt ist auch der Roman „Homo faber“ (1957).
+- **Dürrenmatt:** In der tragischen Komödie „Der Besuch der alten Dame“ (1956) kehrt die Milliardärin Claire Zachanassian in ihre verarmte Heimatstadt Güllen zurück und bietet eine Milliarde für den Tod ihres früheren Geliebten Alfred Ill, der sie einst im Stich gelassen hat. Die Bürger lehnen empört ab und kaufen doch auf Kredit ein, bis sie Ill schließlich töten. In „Die Physiker“ (1962) geht es um die Verantwortung der Wissenschaft. Dürrenmatt schrieb auch Kriminalromane wie „Der Richter und sein Henker“.
+- **Frisch:** In „Andorra“ (1961) wird der junge Andri von allen für einen Juden gehalten und von den Vorurteilen der Andorraner in den Tod getrieben. Es ist ein Stück über Antisemitismus und Schuld. In „Biedermann und die Brandstifter“ lässt ein Bürger aus Feigheit Brandstifter in sein Haus. Bekannt ist auch der Roman „Homo faber“ (1957).
 
 ### Dokumentartheater
 

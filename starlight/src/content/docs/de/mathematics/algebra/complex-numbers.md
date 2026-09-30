@@ -31,8 +31,8 @@ $$
 z = a + b\,j \qquad a, b \in \mathbb{R}
 $$
 
-- $a = \operatorname{Re}(z)$ ist der **Realteil**,
-- $b = \operatorname{Im}(z)$ ist der **Imaginärteil** (ohne $j$).
+- $a = \operatorname{Re}(z)$ ist der Realteil,
+- $b = \operatorname{Im}(z)$ ist der Imaginärteil (ohne $j$).
 
 Die Menge aller komplexen Zahlen heißt $\mathbb{C}$. Reelle Zahlen sind komplexe Zahlen mit $b = 0$.
 
@@ -40,7 +40,7 @@ Die **konjugiert komplexe Zahl** zu $z = a + bj$ ist $z^* = \overline{z} = a - b
 
 ## Gaußsche Zahlenebene
 
-Komplexe Zahlen lassen sich nicht auf einer Zahlengeraden darstellen, sondern als Punkte (oder Pfeile, sogenannte **Zeiger**) in der **Gaußschen Zahlenebene**: Der Realteil wird auf der waagrechten, der Imaginärteil auf der senkrechten Achse aufgetragen.
+Komplexe Zahlen lassen sich nicht auf einer Zahlengeraden darstellen, sondern als Punkte (oder Pfeile, sogenannte **Zeiger**) in der Gaußschen Zahlenebene: Der Realteil wird auf der waagrechten, der Imaginärteil auf der senkrechten Achse aufgetragen.
 
 Die Zahl $z = 3 + 4j$ entspricht dem Punkt $(3 \mid 4)$. Die konjugiert komplexe Zahl $z^* = 3 - 4j$ ist ihr Spiegelbild an der reellen Achse.
 
@@ -149,7 +149,7 @@ Allgemein besagt der **Fundamentalsatz der Algebra**, dass jede Polynomgleichung
 
 ## Anwendung: Wechselstromtechnik
 
-In der **komplexen Wechselstromrechnung** werden sinusförmige Spannungen und Ströme als rotierende Zeiger dargestellt. Widerstand, Spule und Kondensator erhalten komplexe Widerstände (**Impedanzen**):
+In der **komplexen Wechselstromrechnung** werden sinusförmige Spannungen und Ströme als rotierende Zeiger dargestellt. Widerstand, Spule und Kondensator erhalten komplexe Widerstände (Impedanzen):
 
 | Bauteil     | Impedanz                                 | Phasenverschiebung       |
 | ----------- | ---------------------------------------- | ------------------------ |

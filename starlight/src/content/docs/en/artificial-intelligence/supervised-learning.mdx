@@ -1,6 +1,6 @@
 ---
 title: Supervised Learning
-description: Classification with labelled data – from logistic regression and random forests to neural networks with scikit-learn, TensorFlow and PyTorch.
+description: Classification with labelled data, from logistic regression and random forests to neural networks with scikit-learn, TensorFlow and PyTorch.
 sidebar:
   order: 8
 ---
@@ -111,7 +111,7 @@ print(clf.predict_proba(X_valid_vectorized))  # Probability per class
 
 ### Support Vector Machines
 
-A **support vector machine** (SVM) looks for the dividing line – or, in higher dimensions, the hyperplane – that separates the classes with the **largest possible margin**. The data points closest to the dividing line, which determine its position, are called **support vectors**.
+A **support vector machine** (SVM) looks for the dividing line (or, in higher dimensions, the hyperplane) that separates the classes with the **largest possible margin**. The data points closest to the dividing line, which determine its position, are called **support vectors**.
 
 If the data cannot be separated by a straight line, the so-called **kernel trick** helps: the data is (implicitly) mapped into a higher-dimensional space in which it is linearly separable. Common kernels are `linear`, `poly` and `rbf`. The parameter `C` determines how strongly misclassifications are penalised during training.
 
@@ -264,7 +264,7 @@ print(accuracy_score(y_valid, predictions)) ## [Example output with a larger dat
 
 ## K-nearest neighbors (KNN)
 
-The **k-nearest neighbors algorithm** is one of the simplest classification methods. During "training", the data is merely stored. If a new data point is to be classified, the algorithm looks for the $k$ training points that are most similar to it – usually measured by the Euclidean distance – and chooses the class that occurs most frequently among these neighbors.
+The **k-nearest neighbors algorithm** is one of the simplest classification methods. During "training", the data is merely stored. If a new data point is to be classified, the algorithm looks for the $k$ training points that are most similar to it, usually measured by the Euclidean distance, and chooses the class that occurs most frequently among these neighbors.
 
 - A small $k$ (e.g. 1) reacts strongly to outliers and tends to overfit; a large $k$ smooths the decision too much (underfitting). With two classes, $k$ is usually chosen to be odd to avoid ties.
 - Since distances are calculated, the features must be **scaled** beforehand (e.g. with the `StandardScaler`); otherwise, features with large numerical values dominate.

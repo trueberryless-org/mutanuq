@@ -36,8 +36,8 @@ Maslow called levels 1 to 4 deficiency needs and self-actualisation a growth nee
 
 Frederick Herzberg distinguished two kinds of factors:
 
-- **Hygiene factors** prevent dissatisfaction but do not create satisfaction: salary, working conditions, job security, company policy, the relationship with superiors.
-- **Motivators** create real satisfaction and willingness to perform: achievement, recognition, the work itself, responsibility, opportunities for advancement and development.
+- Hygiene factors prevent dissatisfaction but do not create satisfaction: salary, working conditions, job security, company policy, the relationship with superiors.
+- Motivators create real satisfaction and willingness to perform: achievement, recognition, the work itself, responsibility, opportunities for advancement and development.
 
 So a good salary alone does not motivate in the long term, but its absence causes dissatisfaction.
 

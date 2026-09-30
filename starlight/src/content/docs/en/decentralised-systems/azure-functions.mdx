@@ -41,7 +41,7 @@ Every Azure Function is a simple function in C# or [other programming languages]
 | Event Hub trigger                                                                                                         |
 | Service Bus trigger                                                                                                       |
 
-The following examples are methods inside a class that – as above – receives an `ILogger` through its constructor.
+The following examples are methods inside a class that, as above, receives an `ILogger` through its constructor.
 
 ### Timer trigger
 
@@ -87,7 +87,7 @@ public void Run(
 
 ### Queue trigger
 
-The function is triggered for every new message in the queue. Each message is processed by exactly one receiver. If messages should be distributed to several receivers (publish/subscribe), you use Azure Service Bus **topics** instead – a message sent to a topic is delivered to all subscribers.
+The function is triggered for every new message in the queue. Each message is processed by exactly one receiver. If messages should be distributed to several receivers (publish/subscribe), you use Azure Service Bus **topics** instead. A message sent to a topic is delivered to all subscribers.
 
 ```csharp
 [Function("MyQueueTrigger")]

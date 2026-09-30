@@ -1,6 +1,6 @@
 ---
 title: Magic Triangle
-description: The interdependence of scope, time and cost in projects – and why you cannot optimise all three at the same time.
+description: The interdependence of scope, time and cost in projects and why you cannot optimise all three at the same time.
 sidebar:
   order: 1
 ---
@@ -15,7 +15,7 @@ The magic triangle describes three factors in project management that always dep
 - **Time** (deadlines): _When_ must the project or individual milestones be finished?
 - **Cost** (budget and resources): _How much_ may the project cost? Besides money, this also includes staff and material.
 
-The triangle is called "magic" because the three goals influence each other and can never all be fulfilled to the maximum at the same time. A project that is supposed to be implemented very quickly, very cheaply and in the highest quality is hardly possible in practice. This is often summed up with the saying "fast, cheap, good – pick two".
+The triangle is called "magic" because the three goals influence each other and can never all be fulfilled to the maximum at the same time. A project that is supposed to be implemented very quickly, very cheaply and in the highest quality is hardly possible in practice. This is often summed up with the saying "fast, cheap, good: pick two".
 
 ## Examples
 
@@ -41,6 +41,6 @@ In agile software development (for example with Scrum), time (fixed sprint lengt
 
 ## Extension: devil's square
 
-Harry Sneed extended the model to the **devil's square**, which contains four variables: **quality**, **quantity** (scope), **time** and **cost**. The area of the square represents the constant productivity of the team. If you pull on one corner – i.e. improve one factor – at least one other corner has to give way, as long as productivity does not change.
+Harry Sneed extended the model to the **devil's square**, which contains four variables: **quality**, **quantity** (scope), **time** and **cost**. The area of the square represents the constant productivity of the team. If you pull on one corner, i.e. improve one factor, at least one other corner has to give way, as long as productivity does not change.
 
 Monitoring whether these goals are met is a central task of [project controlling](/en/project_management/project_controlling/).

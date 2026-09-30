@@ -1,24 +1,24 @@
 ---
 title: Realismus
-description: Der poetische oder bürgerliche Realismus – Wirklichkeit mit Verklärung, Humor und Novelle bei Fontane, Storm, Keller, Ebner-Eschenbach und Anzengruber.
+description: "Der poetische oder bürgerliche Realismus: Wirklichkeit mit Verklärung, Humor und Novelle bei Fontane, Storm, Keller, Ebner-Eschenbach und Anzengruber."
 sidebar:
   order: 9
 ---
 
-Nach dem Scheitern der Revolution von 1848 wandten sich viele Autoren von politischen Utopien ab. Sie wollten die **Wirklichkeit** darstellen, wie sie ist – allerdings nicht als bloße Kopie, sondern künstlerisch gestaltet und „verklärt“. Man spricht deshalb vom **poetischen** oder **bürgerlichen Realismus**.
+Nach dem Scheitern der Revolution von 1848 wandten sich viele Autoren von politischen Utopien ab. Sie wollten die **Wirklichkeit** darstellen, wie sie ist, allerdings nicht als bloße Kopie, sondern künstlerisch gestaltet und „verklärt“. Man spricht deshalb vom poetischen oder bürgerlichen Realismus.
 
 ## Eckdaten
 
 - ca. 1848 – 1890
-- Darstellung der Wirklichkeit, aber mit **Verklärung**
+- Darstellung der Wirklichkeit, aber mit Verklärung
 - Bürgertum als Leser und Thema
 - Humor als versöhnende Haltung
-- wichtigste Gattungen: **Novelle** und Roman
+- wichtigste Gattungen: Novelle und Roman
 - Aussparung von Politik und sozialem Elend
 
 ## Historischer Hintergrund
 
-Nach 1848 herrschte wieder eine Zeit der Restauration. Die **Industrialisierung** schritt rasch voran, Städte wuchsen, die Eisenbahn veränderte das Leben. Die Naturwissenschaften (etwa Darwins Evolutionstheorie, 1859) prägten ein neues, diesseitiges Weltbild. 1871 wurde das Deutsche Kaiserreich gegründet, Österreich wurde 1867 zur **Doppelmonarchie Österreich-Ungarn**. Das wohlhabende Bürgertum wurde zur tragenden Schicht der Gesellschaft, war aber politisch meist konservativ.
+Nach 1848 herrschte wieder eine Zeit der Restauration. Die **Industrialisierung** schritt rasch voran, Städte wuchsen, die Eisenbahn veränderte das Leben. Die Naturwissenschaften (etwa Darwins Evolutionstheorie, 1859) prägten ein neues, diesseitiges Weltbild. 1871 wurde das Deutsche Kaiserreich gegründet, Österreich wurde 1867 zur Doppelmonarchie Österreich-Ungarn. Das wohlhabende Bürgertum wurde zur tragenden Schicht der Gesellschaft, war aber politisch meist konservativ.
 
 ## Merkmale
 
@@ -26,7 +26,7 @@ Nach 1848 herrschte wieder eine Zeit der Restauration. Die **Industrialisierung*
 - **Verklärung:** Das Hässliche und Elende wird nicht ausgeklammert, aber gemildert. Kunst soll das Wesentliche und Allgemeingültige der Wirklichkeit zeigen.
 - **Humor:** Er versöhnt mit den Widersprüchen der Welt.
 - **Themen:** das bürgerliche Leben, Ehe und Familie, gesellschaftliche Konventionen, Konflikte zwischen Individuum und Gesellschaft, Heimat und Region.
-- **Novelle:** Nach Goethe ist sie „eine sich ereignete unerhörte Begebenheit“. Sie ist meist straff aufgebaut, hat einen Wendepunkt und oft ein **Dingsymbol** und eine **Rahmenhandlung**.
+- **Novelle:** Nach Goethe ist sie „eine sich ereignete unerhörte Begebenheit“. Sie ist meist straff aufgebaut, hat einen Wendepunkt und oft ein Dingsymbol und eine Rahmenhandlung.
 
 ## Autoren und Werke
 
@@ -40,7 +40,7 @@ Der Norddeutsche Storm schrieb vor allem Novellen. „**Der Schimmelreiter**“ 
 
 ### Gottfried Keller (1819 – 1890)
 
-Der Schweizer Keller schrieb den Bildungsroman „**Der grüne Heinrich**“ und die Novellensammlung „Die Leute von Seldwyla“ mit „**Romeo und Julia auf dem Dorfe**“ (1856).
+Der Schweizer Keller schrieb den Bildungsroman „**Der grüne Heinrich**“ und die Novellensammlung „Die Leute von Seldwyla“ mit „Romeo und Julia auf dem Dorfe“ (1856).
 
 ### Marie von Ebner-Eschenbach (1830 – 1916)
 

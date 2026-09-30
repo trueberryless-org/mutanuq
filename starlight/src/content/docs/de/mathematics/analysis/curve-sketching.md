@@ -17,32 +17,32 @@ Die erste Ableitung zeigt, ob eine Funktion steigt oder fällt:
 
 ## Extremwerte
 
-An einem **lokalen Hochpunkt** (Maximum) oder **Tiefpunkt** (Minimum) hat der Graph eine waagrechte Tangente. Daraus ergibt sich die **notwendige Bedingung**:
+An einem **lokalen Hochpunkt** (Maximum) oder Tiefpunkt (Minimum) hat der Graph eine waagrechte Tangente. Daraus ergibt sich die notwendige Bedingung:
 
 $$
 f'(x_0) = 0
 $$
 
-Nicht jede Stelle mit $f'(x_0) = 0$ ist eine Extremstelle – es kann auch ein **Sattelpunkt** vorliegen, wie bei $x^3$ an der Stelle $0$. Deshalb prüft man eine **hinreichende Bedingung**:
+Nicht jede Stelle mit $f'(x_0) = 0$ ist eine Extremstelle. Es kann auch ein **Sattelpunkt** vorliegen, wie bei $x^3$ an der Stelle $0$. Deshalb prüft man eine hinreichende Bedingung:
 
 | Bedingung                          | Ergebnis              |
 | ---------------------------------- | --------------------- |
-| $f'(x_0) = 0$ und $f''(x_0) < 0$   | **Hochpunkt** (Maximum) |
-| $f'(x_0) = 0$ und $f''(x_0) > 0$   | **Tiefpunkt** (Minimum) |
-| $f'(x_0) = 0$ und $f''(x_0) = 0$   | keine Aussage möglich – Vorzeichenwechsel von $f'$ prüfen |
+| $f'(x_0) = 0$ und $f''(x_0) < 0$   | Hochpunkt (Maximum) |
+| $f'(x_0) = 0$ und $f''(x_0) > 0$   | Tiefpunkt (Minimum) |
+| $f'(x_0) = 0$ und $f''(x_0) = 0$   | keine Aussage möglich, Vorzeichenwechsel von $f'$ prüfen |
 
 Alternativ untersucht man den **Vorzeichenwechsel** der ersten Ableitung: Wechselt $f'$ an der Stelle $x_0$ von $+$ nach $-$, liegt ein Hochpunkt vor, von $-$ nach $+$ ein Tiefpunkt, ohne Vorzeichenwechsel ein Sattelpunkt.
 
 :::note[Lokal und global]
-Ein lokales Maximum ist nur in seiner Umgebung der größte Wert. Das **globale** Maximum auf einem Intervall $[a; b]$ kann auch am **Rand** liegen. Bei Optimierungsaufgaben müssen daher die Randwerte $f(a)$ und $f(b)$ mit den lokalen Extremwerten verglichen werden.
+Ein lokales Maximum ist nur in seiner Umgebung der größte Wert. Das **globale** Maximum auf einem Intervall $[a; b]$ kann auch am Rand liegen. Bei Optimierungsaufgaben müssen daher die Randwerte $f(a)$ und $f(b)$ mit den lokalen Extremwerten verglichen werden.
 :::
 
 ## Krümmung und Wendepunkte
 
 Die zweite Ableitung beschreibt die Krümmung:
 
-- $f''(x) > 0$: **linksgekrümmt** (konvex) – die Steigung nimmt zu.
-- $f''(x) < 0$: **rechtsgekrümmt** (konkav) – die Steigung nimmt ab.
+- $f''(x) > 0$: linksgekrümmt (konvex): Die Steigung nimmt zu.
+- $f''(x) < 0$: rechtsgekrümmt (konkav): Die Steigung nimmt ab.
 
 Ein **Wendepunkt** ist ein Punkt, an dem sich das Krümmungsverhalten ändert. Dort ist die Steigung lokal am größten oder am kleinsten.
 
@@ -58,15 +58,15 @@ Fährt man mit dem Fahrrad entlang des Graphen von links nach rechts, lenkt man 
 
 ## Ablauf einer Kurvendiskussion
 
-1. **Definitionsmenge** bestimmen
-2. **Symmetrie** prüfen ($f(-x) = f(x)$ oder $f(-x) = -f(x)$)
-3. **Nullstellen** ($f(x) = 0$) und Schnittpunkt mit der $y$-Achse ($f(0)$)
-4. **Ableitungen** $f'$, $f''$, $f'''$ berechnen
-5. **Extrempunkte** ($f'(x) = 0$, Art mit $f''$ bestimmen)
-6. **Wendepunkte** ($f''(x) = 0$, mit $f'''$ prüfen) und ggf. Wendetangenten
-7. **Verhalten im Unendlichen** bzw. an Definitionslücken, Asymptoten
-8. **Monotonie- und Krümmungsbereiche** angeben
-9. **Graph** zeichnen
+1. Definitionsmenge bestimmen
+2. Symmetrie prüfen ($f(-x) = f(x)$ oder $f(-x) = -f(x)$)
+3. Nullstellen ($f(x) = 0$) und Schnittpunkt mit der $y$-Achse ($f(0)$)
+4. Ableitungen $f'$, $f''$, $f'''$ berechnen
+5. Extrempunkte ($f'(x) = 0$, Art mit $f''$ bestimmen)
+6. Wendepunkte ($f''(x) = 0$, mit $f'''$ prüfen) und ggf. Wendetangenten
+7. Verhalten im Unendlichen bzw. an Definitionslücken, Asymptoten
+8. Monotonie- und Krümmungsbereiche angeben
+9. Graph zeichnen
 
 :::tip[Beispiel: Kurvendiskussion]
 $$
@@ -75,7 +75,7 @@ $$
 
 **Definitionsmenge:** $D = \mathbb{R}$ (Polynomfunktion)
 
-**Symmetrie:** gerade und ungerade Hochzahlen gemischt – keine Symmetrie zum Ursprung oder zur $y$-Achse
+**Symmetrie:** gerade und ungerade Hochzahlen gemischt, also keine Symmetrie zum Ursprung oder zur $y$-Achse
 
 **Nullstellen:** $x(x^2 - 6x + 9) = x(x - 3)^2 = 0 \Rightarrow x_1 = 0$, $x_2 = 3$ (doppelt: Berührpunkt)
 
@@ -131,14 +131,14 @@ Die Lösung des [Gleichungssystems](/de/mathematics/algebra/systems-of-linear-eq
 
 ## Extremwertaufgaben
 
-Bei **Extremwertaufgaben** (Optimierungsaufgaben) soll eine Größe möglichst groß oder klein werden – etwa eine Fläche, ein Volumen, Kosten oder ein Gewinn. So geht man vor:
+Bei **Extremwertaufgaben** (Optimierungsaufgaben) soll eine Größe möglichst groß oder klein werden, etwa eine Fläche, ein Volumen, Kosten oder ein Gewinn. So geht man vor:
 
 1. **Hauptbedingung:** Formel für die Größe, die optimiert werden soll (oft mit mehreren Variablen).
 2. **Nebenbedingung:** Zusammenhang zwischen den Variablen aus der Angabe.
-3. Nebenbedingung nach einer Variablen umformen und in die Hauptbedingung einsetzen – so entsteht die **Zielfunktion** mit nur einer Variablen.
-4. **Definitionsmenge** der Zielfunktion aus dem Sachzusammenhang bestimmen.
+3. Nebenbedingung nach einer Variablen umformen und in die Hauptbedingung einsetzen. So entsteht die Zielfunktion mit nur einer Variablen.
+4. Definitionsmenge der Zielfunktion aus dem Sachzusammenhang bestimmen.
 5. Zielfunktion ableiten, $= 0$ setzen und lösen.
-6. Art des Extremums prüfen und **Randwerte** vergleichen.
+6. Art des Extremums prüfen und Randwerte vergleichen.
 7. Alle gesuchten Größen berechnen und das Ergebnis im Sachzusammenhang formulieren.
 
 :::tip[Beispiel: Dose mit minimalem Materialverbrauch]

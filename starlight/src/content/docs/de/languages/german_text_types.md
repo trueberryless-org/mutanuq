@@ -1,6 +1,6 @@
 ---
 title: Textsorten Deutsch
-description: Stilfiguren sowie Aufbau und Merkmale der Textsorten für den Deutschunterricht und die Matura – von der Zusammenfassung bis zur Textinterpretation und Meinungsrede.
+description: "Stilfiguren sowie Aufbau und Merkmale der Textsorten für den Deutschunterricht und die Matura: von der Zusammenfassung bis zur Textinterpretation und Meinungsrede."
 sidebar:
     order: 0
 tableOfContents:
@@ -74,17 +74,17 @@ Die Überschrift setzt sich aus `Zusammenfassung von` und dem Titel des Ausgangs
 
 #### Einleitung
 
-In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift müssen Sie den Titel nicht unbedingt ein zweites Mal erwähnen.
+In der Einleitung einer Zusammenfassung erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein. Aufgrund der Überschrift musst du den Titel nicht unbedingt ein zweites Mal erwähnen.
 
-Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
+Verwende am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
 > Der Artikel „grüne Wolle“ von Arthur Wilderöm, welcher am 26.10.2023 in „Der Standard“ erschienen ist, beschäftigt sich mit dem Thema Umweltbelastung in Bezug auf Polyester.
 
 #### Hauptteil
 
-Im Hauptteil einer Zusammenfassung werden die wichtigsten Standpunkte, Informationen und Fakten des Ausgangstextes in eigenen Worten formuliert zusammengefasst. Die Reihenfolge der Informationen muss dabei nicht vom Ausgangstext beibehalten werden. Behandeln Sie am besten pro Absatz einen Fakt beziehungsweise ein Argument im Detail. Sie müssen allerdings nicht selbst argumentieren, viel eher sollen Sie die Argumente aus dem Ausgangstext inhaltlich übernehmen.
+Im Hauptteil einer Zusammenfassung werden die wichtigsten Standpunkte, Informationen und Fakten des Ausgangstextes in eigenen Worten formuliert zusammengefasst. Die Reihenfolge der Informationen muss dabei nicht vom Ausgangstext beibehalten werden. Behandle am besten pro Absatz einen Fakt beziehungsweise ein Argument im Detail. Du musst allerdings nicht selbst argumentieren, viel eher sollst du die Argumente aus dem Ausgangstext inhaltlich übernehmen.
 
-Um die wichtigsten Informationen leicht extrahieren zu können, lesen Sie sich den Ausgangstext durch und markieren wirklich nur die Stellen im Text, wo Sie denken, dass Sie den Inhalt unbedingt in die Zusammenfassung einbauen wollen. Setzen Sie sich als Ziel, dass nach dem Durchlesen insgesamt maximal **vier Textstellen** markiert sind. Bedenken Sie, dass die vorgegebene Wortanzahl nicht überschritten werden darf.
+Um die wichtigsten Informationen leicht extrahieren zu können, lies dir den Ausgangstext durch und markiere wirklich nur die Stellen im Text, wo du denkst, dass du den Inhalt unbedingt in die Zusammenfassung einbauen willst. Setz dir als Ziel, dass nach dem Durchlesen insgesamt maximal **vier Textstellen** markiert sind. Bedenke, dass die vorgegebene Wortanzahl nicht überschritten werden darf.
 
 ## Leserbrief
 
@@ -111,43 +111,43 @@ Damit der Leserbrief strukturell wie ein Brief aussieht, gehört ganz _oben rech
 
 #### Anrede
 
-Sie schreiben einen Leserbrief entweder direkt an den Autor des Ausgangstextes oder an das Redaktionsteam der Zeitung / Zeitschrift.
+Du schreibst einen Leserbrief entweder direkt an den Autor des Ausgangstextes oder an das Redaktionsteam der Zeitung / Zeitschrift.
 
 > Sehr geehrter Herr Wilderöm!
 
 > Sehr geehrtes Redaktionsteam,
 
 :::note[Bedenke!]
-Bedenken Sie bei einer Anrede, dass nach einem `,` (Beistrich) der nachfolgende Satz kleingeschrieben anfängt, während nach einem `!` (Rufzeichen) der erste Satz am Anfang einen Großbuchstaben haben muss.
+Bedenke bei einer Anrede, dass nach einem `,` (Beistrich) der nachfolgende Satz kleingeschrieben anfängt, während nach einem `!` (Rufzeichen) der erste Satz am Anfang einen Großbuchstaben haben muss.
 :::
 
 #### Einleitung
 
 In der Einleitung eines Leserbriefes erwähnt man die Meta-Informationen über den Ausgangstext. Es sollten mindestens Titel, Autor, Erscheinungsort und -datum, sowie das Thema enthalten sein.
 
-Verwenden Sie am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
+Verwende am besten den Basissatz, welcher hier mittels Beispiel demonstriert wird:
 
 > Der Artikel „grüne Wolle“ von Arthur Wilderöm, welcher am 26.10.2023 in „Der Standard“ erschienen ist, beschäftigt sich mit dem Thema Umweltbelastung in Bezug auf Polyester.
 
 #### Hauptteil
 
-Im Hauptteil referenzieren Sie alle Stellen im Ausgangstext, zu denen Sie noch etwas hinzufügen oder verbessern wollen. Wenn Sie zum Beispiel anderer Meinung sind, argumentieren Sie, warum Ihre Meinung vertretbarer ist als die des Autors. Verfestigen Sie Ihre Meinung konkret mit Beispielen. Sie können die 3B-Methode oder die 5-Schritt-Methode als Hilfe für Ihre Argumente nehmen.
+Im Hauptteil referenzierst du alle Stellen im Ausgangstext, zu denen du noch etwas hinzufügen oder verbessern willst. Wenn du zum Beispiel anderer Meinung bist, argumentiere, warum deine Meinung vertretbarer ist als die des Autors. Verfestige deine Meinung konkret mit Beispielen. Du kannst die 3B-Methode oder die 5-Schritt-Methode als Hilfe für deine Argumente nehmen.
 
-Unterteilen Sie den Hauptteil in inhaltlich zusammenhängende Abschnitte und markieren Sie diese Absätze mittels Leerzeilen.
+Unterteile den Hauptteil in inhaltlich zusammenhängende Abschnitte und markiere diese Absätze mittels Leerzeilen.
 
 #### Schluss
 
-Fassen Sie im Schlussteil nochmals den wichtigsten Kritikpunkt Ihres Leserbriefs zusammen. Wenn die Aufgabenstellung nach einem Appell verlangt, eignet sich der Schlussteil hervorragend dafür. Appellieren Sie also an alle Leser\*innen oder eine bestimmte Gruppe im Schlussteil oder schreiben Sie ein einfaches Fazit des Briefes.
+Fass im Schlussteil nochmals den wichtigsten Kritikpunkt deines Leserbriefs zusammen. Wenn die Aufgabenstellung nach einem Appell verlangt, eignet sich der Schlussteil hervorragend dafür. Appelliere also an alle Leser\*innen oder eine bestimmte Gruppe im Schlussteil oder schreib ein einfaches Fazit des Briefes.
 
 #### Grußformel
 
-Beenden Sie Ihren Brief mit einer Grußformel.
+Beende deinen Brief mit einer Grußformel.
 
 > Mit freundlichen Grüßen
 
 #### Unterschrift
 
-Falls Sie den Text digital verschicken, reicht Ihr Name unter der Grußformel. Wenn Sie den Text allerdings ausdrucken, unterschreiben Sie wirklich analog unterhalb des Grußes.
+Falls du den Text digital verschickst, reicht dein Name unter der Grußformel. Wenn du den Text allerdings ausdruckst, unterschreib wirklich analog unterhalb des Grußes.
 
 ![Signature](/images/languages/Signature_white.png)
 
@@ -182,11 +182,11 @@ Die Einleitung einer Erörterung soll möglichst kreativ sein. Als Autor will ma
 
 #### Hauptteil
 
-Im Hauptteil werden die wichtigsten Argumente bezogen auf das Thema behandelt. Je nachdem, ob Sie eine Pro- und Kontra-Erörterung oder eine Belegerörterung schreiben sollen, behandeln Sie Pro- und Kontra-Argumente oder nur sich gegenseitig stärkende Argumente. Diese Argumente müssen dabei immer sachlich bleiben und keine persönliche Wertung miteinbeziehen. Es ist außerdem wichtig, dass ein deutlicher Bezug zum Ausgangstext hergestellt wird.
+Im Hauptteil werden die wichtigsten Argumente bezogen auf das Thema behandelt. Je nachdem, ob du eine Pro- und Kontra-Erörterung oder eine Belegerörterung schreiben sollst, behandelst du Pro- und Kontra-Argumente oder nur sich gegenseitig stärkende Argumente. Diese Argumente müssen dabei immer sachlich bleiben und keine persönliche Wertung miteinbeziehen. Es ist außerdem wichtig, dass ein deutlicher Bezug zum Ausgangstext hergestellt wird.
 
 #### Schluss
 
-Im Schlussteil einer Erörterung fassen Sie die wichtigsten Hauptaussagen noch einmal kurz zusammen und diskutieren Zusammenhänge mit möglichen anderen Themen. Zusätzlich kann gefragt sein, einen Appell an die Leserschaft zu schreiben, was ebenfalls im Schluss erfüllt werden muss.
+Im Schlussteil einer Erörterung fasst du die wichtigsten Hauptaussagen noch einmal kurz zusammen und diskutierst Zusammenhänge mit möglichen anderen Themen. Zusätzlich kann gefragt sein, einen Appell an die Leserschaft zu schreiben, was ebenfalls im Schluss erfüllt werden muss.
 
 ## Kommentar
 
@@ -220,25 +220,25 @@ Ein Kommentar hat eine kreative Einleitung, welche zumindest den Autor und den T
 
 Im Hauptteil reihen sich mehrere Paragraphen aneinander, welche sich jeweils auf ein die eigene Meinung unterstützendes Argument beziehen. Falls ein Kontra-Argument eingebaut werden will, muss die Sprachgewandtheit dem Leser übermitteln, dass dieser Punkt im Vergleich zu der eigenen Meinung wenig Präsenz hat.
 
-Vermeiden Sie, `Ich` zu verwenden. Einige passive Konstruktionen können dabei behilflich sein:
+Vermeide, `Ich` zu verwenden. Einige passive Konstruktionen können dabei behilflich sein:
 
 > ~Ich finde, dass ...~
 
 > Für viele steht außer Debatte, dass ...
 
-Betonen Sie außerdem mittels besonderer, ansonsten eher selten verwendeter Stilfiguren die Wichtigkeit von Zitaten, Argumenten oder Behauptungen im Allgemeinen.
+Betone außerdem mittels besonderer, ansonsten eher selten verwendeter Stilfiguren die Wichtigkeit von Zitaten, Argumenten oder Behauptungen im Allgemeinen.
 
 > **Keine Frage:** Die Matura ist kein Honiglecken.
 
 > **Obwohl:** Milch kann auch keine Laktose beinhalten, wenn man es bevorzugt, Produktersatzstoffe zu konsumieren.
 
 :::note[Hinweis]
-Sie sollen in Ihrem Text die Phrasen **nicht** fett markieren. Hier sind die Stilfiguren nur fett, damit deutlich ist, auf welche Teile des Satzes im vorherigen Absatz Bezug genommen wird.
+Du sollst in deinem Text die Phrasen **nicht** fett markieren. Hier sind die Stilfiguren nur fett, damit deutlich ist, auf welche Teile des Satzes im vorherigen Absatz Bezug genommen wird.
 :::
 
 #### Schluss
 
-Im Schlussteil soll der wichtigste Ihrer argumentativen Standpunkte noch einmal auf den Punkt gebracht werden, **ohne `Ich` zu verwenden**. Wenn Sie einmal das Wort `Ich` einbauen, ist das vollkommen okay. Setzen Sie sich allerdings immer als Ziel, subjektiv zu schreiben, ohne subjektive Wörter zu verwenden.
+Im Schlussteil soll der wichtigste deiner argumentativen Standpunkte noch einmal auf den Punkt gebracht werden, **ohne `Ich` zu verwenden**. Wenn du einmal das Wort `Ich` einbaust, ist das vollkommen okay. Setz dir allerdings immer als Ziel, subjektiv zu schreiben, ohne subjektive Wörter zu verwenden.
 
 ## Textanalyse
 
@@ -279,14 +279,14 @@ Der Hauptteil fasst innerhalb von zwei bis drei Sätzen den Inhalt des Ausgangst
 | Argumentation + Beispiele                    | <ul style="margin-top: 1rem"><li><p><strong>Faktenargumente</strong><br>Begründung mittels wissenschaftlichen Fakten</p></li><li><p><strong>Werteargumente</strong> / normative Argumente<br>Begründung mittels gesellschaftlichen <em>Normen / Werten / Regeln</em></p></li><li><p><strong>Vergleichsargumente</strong> / Analogieargumente<br>Nachvollziehbarkeit durch Vergleich mit anderem Bereich</p></li><li><p><strong>Autoritätsargumente</strong><br>Begründung mittels Aussagen von Experten oder anerkannten Organisationen</p></li><li><p><strong>indirekte Argumente</strong><br>Widerlegung von alternativen Standpunkten</p></li><li><p><strong>Plausibilitätsargument</strong><br>logische Schlussfolgerungen</p></li></ul> |
 | Wortfelder / Wortschatz                      | verwendet der Autor / die Autorin die Fachtermini des Themas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Wortarten + Beispiele                        | viele Nomen (Nominalstil), Verben, Adjektive                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [Stilmittel](#stilfiguren) + viele Beispiele | Welche Stilmittel werden verwendet? Nennen Sie immer die Art des rhetorischen Mittels mit möglichst vielen Beispielen. Sie können auch aufzählen, welche Stilfiguren nicht verwendet werden im gesamten Ausgangstext.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [Stilmittel](#stilfiguren) + viele Beispiele | Welche Stilmittel werden verwendet? Nenne immer die Art des rhetorischen Mittels mit möglichst vielen Beispielen. Du kannst auch aufzählen, welche Stilfiguren nicht verwendet werden im gesamten Ausgangstext.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Intention                                    | Analyse von Aufmerksamkeit, Information und Appell + gelungen / nicht gelungen?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
-Arbeiten Sie diese Kriterien in Ihrem Text ab und teilen Sie diese logisch in sprachliche Analyse, inhaltliche Analyse, stilistische Analyse.
+Arbeite diese Kriterien in deinem Text ab und teile diese logisch in sprachliche Analyse, inhaltliche Analyse, stilistische Analyse.
 
 #### Schluss
 
-Im Schlussteil teilen Sie Ihre eigene Meinung, jedoch ohne `Ich` zu verwenden. Dabei fokussieren Sie sich hauptsächlich auf das Bewerten der Intention des Autors. Meistens stellt man sich die Frage: _Wie gut ist es dem Autor gelungen, Sie von_ ihrer / seiner _Meinung zu überzeugen?_ Begründen Sie alle Aussagen!
+Im Schlussteil teilst du deine eigene Meinung, jedoch ohne `Ich` zu verwenden. Dabei fokussierst du dich hauptsächlich auf das Bewerten der Intention des Autors. Meistens stellt man sich die Frage: _Wie gut ist es dem Autor gelungen, dich von_ ihrer / seiner _Meinung zu überzeugen?_ Begründe alle Aussagen!
 
 ### Formulierungshilfen
 
@@ -359,14 +359,14 @@ Bei der Textinterpretation kann man sowohl eine kreative als auch eine 08/15-Ein
 
 #### Hauptteil
 
-In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Wichtig ist auch die Interpretation der Stilfiguren (Warum werden diese Stilfiguren verwendet? Was will _der Autor / die Autorin_ damit ausdrücken?) und die Intention des Autors. Trennen Sie die Interpretation nicht von der Analyse und machen Sie keinen eigenen Absatz mit der Interpretation. Behandeln Sie die Inhalte viel mehr nach den Themen und Merkmalen gruppiert. Im gesamten Hauptteil darf kein `Ich` verwendet werden.
+In einer Textinterpretation muss man alle Analysepunkte erfüllen, welche auch bei der Textanalyse durchgeführt werden müssen (siehe [Textanalyse](#hauptteil-4)). Anschließend analysiert man je nach Art des Ausgangstextes (Epik, Lyrik, Dramatik) auch die spezifischen Merkmale (siehe [Arten](#arten)). Wichtig ist auch die Interpretation der Stilfiguren (Warum werden diese Stilfiguren verwendet? Was will _der Autor / die Autorin_ damit ausdrücken?) und die Intention des Autors. Trenne die Interpretation nicht von der Analyse und mach keinen eigenen Absatz mit der Interpretation. Behandle die Inhalte viel mehr nach den Themen und Merkmalen gruppiert. Im gesamten Hauptteil darf kein `Ich` verwendet werden.
 
 ##### Interpretationsansätze
 
-Da die Interpretation eines epischen, lyrischen und dramatischen Textes nicht immer das Einfachste ist, gibt es ein paar Ansätze, damit Sie auf die Sprünge kommen.
+Da die Interpretation eines epischen, lyrischen und dramatischen Textes nicht immer das Einfachste ist, gibt es ein paar Ansätze, damit du auf die Sprünge kommst.
 
 -   **Kontextualisierung**  
-    Überlegen Sie anhand der Analyse der Zeit und des Ortes, in welchen historischen Kontext der Text eingeordnet werden kann. Zu welcher Epoche / Literaturgeschichte zählt der Text?
+    Überlege anhand der Analyse der Zeit und des Ortes, in welchen historischen Kontext der Text eingeordnet werden kann. Zu welcher Epoche / Literaturgeschichte zählt der Text?
 
 -   **Auswirkung auf den Leser**  
     Welche Auswirkungen hat der Text auf den Leser? Welche Eindrücke und Gefühle werden erzeugt? _Der Autor / Die Autorin_ hat den Text zu dieser Zeit sicherlich nicht unnötig verfasst, sondern wollte vielmehr den Leser dazu bewegen, über etwas nachzudenken. Vielleicht hängt diese Intention auch mit den historischen Ereignissen zusammen.
@@ -375,10 +375,10 @@ Da die Interpretation eines epischen, lyrischen und dramatischen Textes nicht im
     Hat _der Autor / die Autorin_ Kritik an gesellschaftlichen Zuständen geübt? Wenn ja, welche Auswirkungen hatte die gesellschaftliche Wirklichkeit auf _den Autor / die Autorin_?
 
 -   **Psychologie**  
-    Deuten Sie die Handlungen der Figuren und analysieren Sie ihre Motive. Warum hat sich _der Autor / die Autorin_ gedacht, dass die Figuren in den bestimmten Situationen so und so handeln werden?
+    Deute die Handlungen der Figuren und analysiere ihre Motive. Warum hat sich _der Autor / die Autorin_ gedacht, dass die Figuren in den bestimmten Situationen so und so handeln werden?
 
 -   **Kommunikationstheorie**  
-    In einigen Gedichten reden die Figuren aneinander vorbei. Analysieren Sie, ob _der Autor / die Autorin_ solche Merkmale auch in Ihren Ausgangstext eingebaut hat!
+    In einigen Gedichten reden die Figuren aneinander vorbei. Analysiere, ob _der Autor / die Autorin_ solche Merkmale auch in deinen Ausgangstext eingebaut hat!
 
 -   **Textsorten**  
     _Der Autor / Die Autorin_ hat aus einem bestimmten Grund die Handlung mittels Glosse, Lied, Ballade, Gedicht, Tragödie, Roman, Sage, Bildsprache, usw. verfasst. Diese Auswahl muss nicht grundlos geschehen sein. Viele Autoren sind sich über die Auswirkungen, Stärken und Schwächen jener Textsorten bewusst und nutzen diese, um ihre Intentionen (un)bewusst an den Leser zu übertragen. Auch hier ist wieder die Verbindung mit dem Kontext herzustellen, da zu manchen historischen Zeiten das Veröffentlichen bestimmter Inhalte verboten war und Autoren Textarten genutzt haben, um diese Verbote zu umgehen. Warum?
@@ -397,7 +397,7 @@ Wenn der Ausgangstext eine epische Textsorte ist, müssen folgende Merkmale anal
 
 ##### Autor und Titel
 
-Recherchieren Sie Daten bezüglich _des Autors / der Autorin_ und stellen Sie eventuell literaturgeschichtliche Bezüge her. Deuten Sie außerdem den Titel in Bezug auf das Thema und Weltgeschehnisse. Nennen Sie das Thema des Textes.
+Recherchiere Daten bezüglich _des Autors / der Autorin_ und stell eventuell literaturgeschichtliche Bezüge her. Deute außerdem den Titel in Bezug auf das Thema und Weltgeschehnisse. Nenne das Thema des Textes.
 
 ##### Erzählfigur, Erzählperspektive und Erzählhaltung
 
@@ -446,7 +446,7 @@ Der Erzähler ist vom Autor/von der Autorin erfunden und erfüllt eine vermittel
     Die Zeit, in der eine Erzählung stattfindet.
 
     -   _Epoche_  
-        Analysieren Sie, in welche Epoche der Text einzuordnen ist (Zweiter Weltkrieg, Römisches Reich, Jetztzeit).
+        Analysiere, in welche Epoche der Text einzuordnen ist (Zweiter Weltkrieg, Römisches Reich, Jetztzeit).
 
     -   _Erzählzeit_  
         Die Zeit, die man zum Erzählen einer Geschichte benötigt (Vorlesezeit).
@@ -749,7 +749,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
 
         > Doch nahte sich ein liebend Paar
 
-        Versuchen Sie den Vers laut auszusprechen und die Metrik anhand der Hebungen und Senkungen zu erkennen. Kleiner Spoiler, es ist der `Jambus`, da die Betonungen bei `nah`, `sich`, `lie` und `Paar` liegen. Diese Betonungen kann man so symbolisieren: `x` `x́` `x` `x́` `x` `x́` `x` `x́`. Normale `x`e stehen für Senkungen, eine Hebung wird mittels Akut (`x́`) markiert.
+        Versuch den Vers laut auszusprechen und die Metrik anhand der Hebungen und Senkungen zu erkennen. Kleiner Spoiler, es ist der `Jambus`, da die Betonungen bei `nah`, `sich`, `lie` und `Paar` liegen. Diese Betonungen kann man so symbolisieren: `x` `x́` `x` `x́` `x` `x́` `x` `x́`. Normale `x`e stehen für Senkungen, eine Hebung wird mittels Akut (`x́`) markiert.
 
         An dieser Folge kann man gut erkennen, dass der Vers **vier Hebungen** hat. Deshalb bezeichnen wir den Vers als `4-hebigen Jambus`. Da der Vers auch mit einer Hebung endet, spricht man von einem vollständigen Jambus. Hat ein jambischer Vers am Ende eine zusätzliche unbetonte Silbe, nennt man ihn hyperkatalektisch. Fehlt dagegen am Ende eine Silbe, nennt man ihn unvollständig oder katalektisch. Folgendes Beispiel ist ein 3-hebiger hyperkatalektischer Jambus:
 
@@ -1007,7 +1007,7 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
             > Die myriadenmal hundert **tausend**?
 
         -   **äquivoker Reim**  
-            Hier werden Wörter gereimt, die gleich klingen, aber eine unterschiedliche Bedeutung haben und oft auch unterschiedlich geschrieben werden –- sogenannte Homophone.
+            Hier werden Wörter gereimt, die gleich klingen, aber eine unterschiedliche Bedeutung haben und oft auch unterschiedlich geschrieben werden, sogenannte Homophone.
 
             | Beispiele für äquivoke Reime |
             | ---------------------------- |
@@ -1159,9 +1159,9 @@ Außerdem gibt es in Gedichten manchmal Zäsuren. Eine Zäsur ist ein metrischer
     Welche Figuren kommen vor? Wer ist der Sprecher? Wer wird angesprochen? Was erfährt das Publikum über die Figuren?
 
 -   **Ort und Zeit**  
-    An welchem Ort und zu welcher Zeit spielt die Handlung? Sind die Ortsangaben (falls in den Strophen welche vorkommen) real oder haben diese nur eine symbolische Bedeutung? Interpretieren Sie den Ort und dessen Bedeutung.
+    An welchem Ort und zu welcher Zeit spielt die Handlung? Sind die Ortsangaben (falls in den Strophen welche vorkommen) real oder haben diese nur eine symbolische Bedeutung? Interpretiere den Ort und dessen Bedeutung.
 
-    Zu welcher Epoche spielt die lyrische Erzählung? Auch die Zeit kann eine symbolische Bedeutung haben, welche von Ihnen interpretiert werden muss. Zum Beispiel hat der Herbst in Rainer Maria Rilkes Gedicht „Herbsttag“ einen großen Einfluss auf die Einsamkeit der Menschen und symbolisiert allgemein das Ende des Sommers.
+    Zu welcher Epoche spielt die lyrische Erzählung? Auch die Zeit kann eine symbolische Bedeutung haben, welche von dir interpretiert werden muss. Zum Beispiel hat der Herbst in Rainer Maria Rilkes Gedicht „Herbsttag“ einen großen Einfluss auf die Einsamkeit der Menschen und symbolisiert allgemein das Ende des Sommers.
 
 #### Dramatik
 
@@ -1235,29 +1235,29 @@ Die drei aristotelischen Einheiten beschreiben die Einheit des Raums, der Zeit u
 ##### Figuren
 
 -   **Figurenverzeichnis**  
-    In einigen Dramen gibt es ein Figurenverzeichnis, welches die Figuren und ihre Rollen im Drama erklärt. Nutzen Sie dieses Verzeichnis, um die Figuren zu analysieren und zu beschreiben. Listen Sie die wichtigsten Figuren auf und interpretieren Sie, warum jene Figuren in gewissen Situationen so und so handeln!
+    In einigen Dramen gibt es ein Figurenverzeichnis, welches die Figuren und ihre Rollen im Drama erklärt. Nutze dieses Verzeichnis, um die Figuren zu analysieren und zu beschreiben. Liste die wichtigsten Figuren auf und interpretiere, warum jene Figuren in gewissen Situationen so und so handeln!
 
 -   **Charakteristik der Figuren**  
-    Das Publikum erfährt auf irgendeine Art und Weise, welche Charaktere in dem Stück mitspielen. Analysieren Sie diese Wege und beschreiben Sie außerdem, welche Charakteristik die verschiedenen Figuren haben. Beziehen Sie sich nur auf die wichtigsten Figuren im Drama. Vor allem die Entwicklung der Hauptfigur ist äußerst interessant. Beantworten Sie, ob die Geschehnisse die Denkweise dieser Figur im Laufe der Zeit verändern und welche Auswirkung dies wiederum auf das Drama hat.
+    Das Publikum erfährt auf irgendeine Art und Weise, welche Charaktere in dem Stück mitspielen. Analysiere diese Wege und beschreibe außerdem, welche Charakteristik die verschiedenen Figuren haben. Bezieh dich nur auf die wichtigsten Figuren im Drama. Vor allem die Entwicklung der Hauptfigur ist äußerst interessant. Beantworte, ob die Geschehnisse die Denkweise dieser Figur im Laufe der Zeit verändern und welche Auswirkung dies wiederum auf das Drama hat.
 
-    Gehen Sie auch auf die Gefühle, Absichten und Gedanken der wichtigsten Figuren ein. Diese spielen meistens eine wesentliche Rolle bezüglich des Endes aller Handlungen.
+    Geh auch auf die Gefühle, Absichten und Gedanken der wichtigsten Figuren ein. Diese spielen meistens eine wesentliche Rolle bezüglich des Endes aller Handlungen.
 
 -   **Soziogramm**  
-    Wie stehen die Figuren zueinander? Analysieren und interpretieren Sie die Verbindungen und Beziehungen aller wichtigen Figuren.
+    Wie stehen die Figuren zueinander? Analysiere und interpretiere die Verbindungen und Beziehungen aller wichtigen Figuren.
 
 ##### Bühnenbild
 
-Erwähnen Sie die Erklärungen des Bühnenbildes und Gestaltung der Bühne in Ihrem Text, falls diese vorhanden sind. Sie können nicht das Bühnenbild selbst analysieren, da es in dem Text keine Bühne selbst gibt. Jedoch beschreiben einige Autoren vor jeder Szene, wie die Umgebung der Figuren aussehen soll. Analysieren Sie diese Umgebung.
+Erwähne die Erklärungen des Bühnenbildes und Gestaltung der Bühne in deinem Text, falls diese vorhanden sind. Du kannst nicht das Bühnenbild selbst analysieren, da es in dem Text keine Bühne selbst gibt. Jedoch beschreiben einige Autoren vor jeder Szene, wie die Umgebung der Figuren aussehen soll. Analysiere diese Umgebung.
 
-Beschreiben Sie, ob das Bühnenbild realistisch, symbolisch oder antiillusionistisch ist!
+Beschreibe, ob das Bühnenbild realistisch, symbolisch oder antiillusionistisch ist!
 
 ##### Struktur des Dramas
 
-In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailliert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysieren Sie, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesselt im Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
+In Dramen ist den Autoren keine Grenze gegeben. Einige Autoren beschreiben deswegen Szenen detailliert wie im Bilderbuch, andere gehen viel mehr auf die Handlung ein. Analysiere, ob sich Strukturen, wie zum Beispiel Akte, filmähnliche Bilder oder Szenen erkennen lassen können, wie diese Teile angeordnet sind. Wie gut beschreibt _der Autor / die Autorin_ die drei aristotelischen Einheiten? Wie sehr gelingt es _dem Autor / der Autorin_ Spannung im Drama aufzubauen und welche Herangehensweise nutzt _er / sie_, um dieses Level an Spannung aufrecht zu erhalten, damit das Publikum möglichst gefesselt im Sessel klebt? An welcher Stelle im Stück gibt es den dramatischen Höhepunkt oder gibt es vielleicht einen „Moment der letzten Spannung“? Ist der Schluss offen oder sind alle Fragen des Publikums beantwortet?
 
 ##### Regieanweisungen
 
-Teilweise kommen in Dramen Anweisungen aus „dem Off“ vor, um gewisse Handlungen zu beschreiben oder direkt mit den Figuren zu interagieren. Erklären Sie, warum _der Autor / die Autorin_ sich für diese Art der Erzählung entschieden hat. Hat es auf diese Art mehr Humor?
+Teilweise kommen in Dramen Anweisungen aus „dem Off“ vor, um gewisse Handlungen zu beschreiben oder direkt mit den Figuren zu interagieren. Erkläre, warum _der Autor / die Autorin_ sich für diese Art der Erzählung entschieden hat. Hat es auf diese Art mehr Humor?
 
 Anweisungen kann es für mehrere Elemente des Dramas geben:
 
@@ -1312,7 +1312,7 @@ Wenn in der Aufgabenstellung eine spezifische Überschrift verlangt wird, soll d
 
 #### Anrede
 
-In der Aufgabenstellung ist eine Situation beschrieben, welche die Umgebung und Personen, vor welchen man die Meinungsrede vorträgt, erläutert. Aus dieser Situation muss man schließen bzw. entscheiden, welche Personen man in der Anrede ansprechen möchte und soll. Es müssen immer alle Geschlechter angesprochen werden, wenn Sie nicht wissen, ob das Publikum ausschließlich aus männlichen bzw. weiblichen Personen besteht. Falls eine Autoritätsperson bzw. Person aus einem höheren Rang als Ihr eigener im Publikum sitzt, müssen Sie formell schreiben (`Sie` / `Ihren` / ...). Wenn Sie wissen, dass nur Ihre Freunde im Publikum sitzen, können Sie - es wäre wohl sinnvoll - informell schreiben (`du` / `euren` / ...).
+In der Aufgabenstellung ist eine Situation beschrieben, welche die Umgebung und Personen, vor welchen man die Meinungsrede vorträgt, erläutert. Aus dieser Situation muss man schließen bzw. entscheiden, welche Personen man in der Anrede ansprechen möchte und soll. Es müssen immer alle Geschlechter angesprochen werden, wenn du nicht weißt, ob das Publikum ausschließlich aus männlichen bzw. weiblichen Personen besteht. Falls eine Autoritätsperson bzw. Person aus einem höheren Rang als dein eigener im Publikum sitzt, musst du formell schreiben (`Sie` / `Ihren` / ...). Wenn du weißt, dass nur deine Freunde im Publikum sitzen, kannst du - es wäre wohl sinnvoll - informell schreiben (`du` / `euren` / ...).
 
 > Sehr geehrte Schülerinnen und Schüler!  
 > Sehr geehrte Professorinnen und Professoren!
@@ -1325,16 +1325,16 @@ Eine Meinungsrede hat eine kreative Einleitung, welche zumindest den Autor und d
 
 #### Hauptteil
 
-Fassen Sie als erstes das Thema, um welches es in der Meinungsrede gehen wird, zusammen. Dieser Anfang des Hauptteils ist wichtig, damit alle Personen im Publikum die notwendigen Informationen dieses Themas wissen.
+Fass als Erstes das Thema, um welches es in der Meinungsrede gehen wird, zusammen. Dieser Anfang des Hauptteils ist wichtig, damit alle Personen im Publikum die notwendigen Informationen dieses Themas wissen.
 
-Anschließend sollen Sie einige Argumente (jeweils ein Absatz) erwähnen und diese ausführlich begründen. Als Hilfestellung gibt es verschiedene [Redeaufbaumodelle](#redeaufbaumodelle), um die Meinungsrede in sich geschlossen und flüssig zu gestalten.
+Anschließend sollst du einige Argumente (jeweils ein Absatz) erwähnen und diese ausführlich begründen. Als Hilfestellung gibt es verschiedene [Redeaufbaumodelle](#redeaufbaumodelle), um die Meinungsrede in sich geschlossen und flüssig zu gestalten.
 
-Sprechen Sie das Publikum an und stellen Sie Verknüpfungen mit einem typischen Alltag in Ihren Beispielen her, damit die zuhörenden Personen mit diesen Situationen eine Verbindung herstellen und Ihre Meinung unterstützen.
+Sprich das Publikum an und stell Verknüpfungen mit einem typischen Alltag in deinen Beispielen her, damit die zuhörenden Personen mit diesen Situationen eine Verbindung herstellen und deine Meinung unterstützen.
 
 > Sie wissen das ja auch.  
 > Jeder kennt den Moment, wenn der Toast vom Tellerrand kippt und man weiß bereits vorher, dass er 100%ig auf der Marmeladenseite aufklatschen wird.
 
-Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente Ihre eigene Meinung sind.
+Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente deine eigene Meinung sind.
 
 ##### Redeaufbaumodelle
 
@@ -1342,10 +1342,10 @@ Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente I
 
 | Abkürzung | Inhalt                                                                                               |
 | --------- | ---------------------------------------------------------------------------------------------------- |
-| Attention | Schaffen Sie eine emotionale Verbindung, indem Sie beispielsweise etwas Empörendes erzählen.         |
-| Interest  | Erwecken Sie das Interesse des Publikums mittels detaillierterer Erzählung des Inhalts des Arguments |
-| Desire    | Stellen Sie den gewünschten Soll-Zustand dar.                                                        |
-| Action    | Schlagen Sie Maßnahmen vor, um diesen Wunsch-Zustand zu erreichen.                                   |
+| Attention | Schaffe eine emotionale Verbindung, indem du beispielsweise etwas Empörendes erzählen.         |
+| Interest  | Erwecke das Interesse des Publikums mittels detaillierterer Erzählung des Inhalts des Arguments |
+| Desire    | Stell den gewünschten Soll-Zustand dar.                                                        |
+| Action    | Schlag Maßnahmen vor, um diesen Wunsch-Zustand zu erreichen.                                   |
 
 ###### ABBA Prinzip
 
@@ -1367,7 +1367,7 @@ Im gesamten Hauptteil soll sprachlich unterstrichen werden, dass die Argumente I
 
 ###### Drei Zeiten Formel
 
-Teilen Sie Ihren Hauptteil in drei verschiedene Segmente, welche diese Fragen beantworten sollen. Sehen Sie die Fragen dabei als Leitfaden.
+Teile deinen Hauptteil in drei verschiedene Segmente, welche diese Fragen beantworten sollen. Sieh die Fragen dabei als Leitfaden.
 
 -   **Vorgeschichte**: Wie haben sich die Menschen in der Vergangenheit verhalten? Wie war die Situation früher?
 -   **gegenwärtige Situation**: Was hat sich eigentlich geändert? Wie ist die Situation jetzt?
@@ -1381,7 +1381,7 @@ Bei der Plusminus Formel stellt man die Vor- und Nachteile mittels Pro- und Kont
 
 #### Schluss
 
-Fassen Sie Ihre Meinung nochmals kurz zusammen und appellieren Sie mit Lösungsvorschlägen, welche für alle Argumente gelten sollen.
+Fass deine Meinung nochmals kurz zusammen und appelliere mit Lösungsvorschlägen, welche für alle Argumente gelten sollen.
 
 #### Schlussfloskel
 

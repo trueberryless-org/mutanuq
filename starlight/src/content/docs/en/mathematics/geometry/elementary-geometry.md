@@ -7,7 +7,7 @@ sidebar:
 
 ## Angles
 
-Angles are measured in **degrees** ($360°$ for a full turn) or in **radians**. A radian measure is the length of the arc on the unit circle, so a full turn corresponds to $2\pi$:
+Angles are measured in **degrees** ($360°$ for a full turn) or in radians. A radian measure is the length of the arc on the unit circle, so a full turn corresponds to $2\pi$:
 
 $$
 \alpha_{\text{radians}} = \frac{\pi}{180°} \cdot \alpha_{\text{degrees}} \qquad 180° \mathrel{\hat{=}} \pi \qquad 90° \mathrel{\hat{=}} \frac{\pi}{2}
@@ -15,13 +15,13 @@ $$
 
 Depending on their size, angles are acute ($< 90°$), right ($= 90°$), obtuse ($> 90°$), straight ($= 180°$) or reflex ($> 180°$).
 
-Where two lines intersect, **vertical angles** are equal and **adjacent angles** add up to $180°$. If a pair of parallel lines is crossed by a third line, **corresponding angles** and **alternate angles** are equal.
+Where two lines intersect, **vertical angles** are equal and adjacent angles add up to $180°$. If a pair of parallel lines is crossed by a third line, corresponding angles and alternate angles are equal.
 
 ## Triangles
 
 In every triangle:
 
-- The **angle sum** is $\alpha + \beta + \gamma = 180°$.
+- The angle sum is $\alpha + \beta + \gamma = 180°$.
 - **Triangle inequality:** Every side is shorter than the sum of the other two.
 - The largest angle is opposite the longest side.
 
@@ -38,7 +38,7 @@ The vertices are usually labelled $A$, $B$, $C$ anticlockwise, the opposite side
 
 - **Isosceles triangle:** two sides of equal length (legs), the two base angles are equal.
 - **Equilateral triangle:** all sides equal, all angles $60°$. Height $h = \frac{a}{2}\sqrt{3}$, area $A = \frac{a^2}{4}\sqrt{3}$.
-- **Right-angled triangle:** one angle is $90°$. The sides next to the right angle are called **legs** (catheti), the longest side opposite it is the **hypotenuse**.
+- **Right-angled triangle:** one angle is $90°$. The sides next to the right angle are called legs (catheti), the longest side opposite it is the hypotenuse.
 
 ### Triangle centres
 
@@ -51,7 +51,7 @@ The vertices are usually labelled $A$, $B$, $C$ anticlockwise, the opposite side
 
 ## Similarity and intercept theorems
 
-Two figures are **similar** if all their angles are equal. Then all corresponding sides are in the same ratio, the **scale factor** $k$. Areas change with $k^2$, volumes with $k^3$.
+Two figures are **similar** if all their angles are equal. Then all corresponding sides are in the same ratio, the scale factor $k$. Areas change with $k^2$, volumes with $k^3$.
 
 Two triangles are already similar if **two angles** are equal.
 

@@ -15,8 +15,8 @@ $$
 
 Ihr Graph ist eine **Gerade**.
 
-- $k$ ist die **Steigung**: Erhöht man $x$ um $1$, ändert sich $f(x)$ um $k$.
-- $d$ ist der **Achsenabschnitt** auf der $y$-Achse: $f(0) = d$.
+- $k$ ist die Steigung: Erhöht man $x$ um $1$, ändert sich $f(x)$ um $k$.
+- $d$ ist der Achsenabschnitt auf der $y$-Achse: $f(0) = d$.
 
 | Steigung  | Verlauf der Geraden           |
 | --------- | ----------------------------- |
@@ -26,7 +26,7 @@ Ihr Graph ist eine **Gerade**.
 
 ## Steigung berechnen
 
-Die Steigung ist das Verhältnis von Höhenunterschied zu waagrechtem Abstand – das **Steigungsdreieck**:
+Die Steigung ist das Verhältnis von Höhenunterschied zu waagrechtem Abstand, dargestellt im **Steigungsdreieck**:
 
 $$
 k = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}
@@ -77,7 +77,7 @@ Viele technische und wirtschaftliche Zusammenhänge sind (näherungsweise) linea
 | ---------------------------- | --------------------------- | --------------------------- | ---------------------- |
 | Gleichförmige Bewegung       | $s(t) = v \cdot t + s_0$    | Geschwindigkeit             | Startposition          |
 | Kosten                       | $K(x) = k_v \cdot x + K_f$  | variable Kosten pro Stück   | Fixkosten              |
-| Ohmsches Gesetz              | $U(I) = R \cdot I$          | Widerstand                  | –                      |
+| Ohmsches Gesetz              | $U(I) = R \cdot I$          | Widerstand                  | 0                      |
 | Längenausdehnung             | $l(\vartheta) = l_0 (1 + \alpha \vartheta)$ | $l_0 \alpha$      | Länge bei $0\,°\text{C}$ |
 
 :::note
@@ -86,7 +86,7 @@ Die Steigung hat immer die Einheit „Einheit von $y$ pro Einheit von $x$“, zu
 
 ## Direkte und indirekte Proportionalität
 
-Zwei Größen sind **direkt proportional**, wenn zum doppelten (dreifachen, …) Wert der einen Größe der doppelte (dreifache, …) Wert der anderen gehört. Ihr **Quotient** ist konstant:
+Zwei Größen sind **direkt proportional**, wenn zum doppelten (dreifachen, …) Wert der einen Größe der doppelte (dreifache, …) Wert der anderen gehört. Ihr Quotient ist konstant:
 
 $$
 y = k \cdot x \qquad \frac{y}{x} = k
@@ -94,7 +94,7 @@ $$
 
 Der Graph ist eine Gerade durch den Ursprung ($d = 0$). Beispiel: Preis und Menge bei festem Stückpreis.
 
-Zwei Größen sind **indirekt proportional** (umgekehrt proportional), wenn zum doppelten Wert der einen der halbe Wert der anderen gehört. Ihr **Produkt** ist konstant:
+Zwei Größen sind **indirekt proportional** (umgekehrt proportional), wenn zum doppelten Wert der einen der halbe Wert der anderen gehört. Ihr Produkt ist konstant:
 
 $$
 y = \frac{c}{x} \qquad x \cdot y = c

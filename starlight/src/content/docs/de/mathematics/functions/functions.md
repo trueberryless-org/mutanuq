@@ -7,20 +7,20 @@ sidebar:
 
 ## Funktionsbegriff
 
-Eine **Funktion** $f$ ist eine Zuordnung, die jedem Element $x$ einer **Definitionsmenge** $D$ **genau ein** Element $y = f(x)$ zuordnet:
+Eine **Funktion** $f$ ist eine Zuordnung, die jedem Element $x$ einer Definitionsmenge $D$ genau ein Element $y = f(x)$ zuordnet:
 
 $$
 f\colon D \to \mathbb{R}, \quad x \mapsto f(x)
 $$
 
-- $x$ heißt **Argument** oder unabhängige Variable,
-- $y = f(x)$ heißt **Funktionswert** oder abhängige Variable,
-- die Menge aller Funktionswerte heißt **Wertemenge** $W$.
+- $x$ heißt Argument oder unabhängige Variable,
+- $y = f(x)$ heißt Funktionswert oder abhängige Variable,
+- die Menge aller Funktionswerte heißt Wertemenge $W$.
 
 :::tip[Beispiele]
 - Jedem Kreisradius $r$ wird sein Flächeninhalt zugeordnet: $A(r) = r^2 \pi$, $D = \mathbb{R}^+$.
 - Jeder Uhrzeit wird die gemessene Temperatur zugeordnet.
-- **Keine** Funktion: Jeder Zahl $x > 0$ werden die Zahlen $y$ mit $y^2 = x$ zugeordnet – zu $x = 4$ gehören $y = 2$ und $y = -2$.
+- Keine Funktion: Jeder Zahl $x > 0$ werden die Zahlen $y$ mit $y^2 = x$ zugeordnet, denn zu $x = 4$ gehören $y = 2$ und $y = -2$.
 :::
 
 Grafisch erkennt man eine Funktion daran, dass jede senkrechte Gerade den Graphen **höchstens einmal** schneidet.
@@ -38,9 +38,9 @@ Grafisch erkennt man eine Funktion daran, dass jede senkrechte Gerade den Graphe
 
 Wenn nicht anders angegeben, ist die **maximale Definitionsmenge** jene Menge aller reellen Zahlen, für die der Funktionsterm berechnet werden kann. Ausgeschlossen werden:
 
-- Werte, für die ein **Nenner $0$** wird: $f(x) = \frac{1}{x - 3}$, $D = \mathbb{R} \setminus \{3\}$
-- Werte, für die der Radikand einer geraden **Wurzel negativ** wird: $f(x) = \sqrt{x + 2}$, $D = [-2; \infty[$
-- Werte, für die das Argument eines **Logarithmus nicht positiv** ist: $f(x) = \ln x$, $D = \mathbb{R}^+$
+- Werte, für die ein Nenner $0$ wird: $f(x) = \frac{1}{x - 3}$, $D = \mathbb{R} \setminus \{3\}$
+- Werte, für die der Radikand einer geraden Wurzel negativ wird: $f(x) = \sqrt{x + 2}$, $D = [-2; \infty[$
+- Werte, für die das Argument eines Logarithmus nicht positiv ist: $f(x) = \ln x$, $D = \mathbb{R}^+$
 
 In Anwendungen ist die Definitionsmenge oft zusätzlich durch den Sachzusammenhang eingeschränkt, etwa auf nicht negative Zeiten oder Längen.
 
@@ -48,9 +48,9 @@ In Anwendungen ist die Definitionsmenge oft zusätzlich durch den Sachzusammenha
 
 ### Nullstellen und Schnittpunkte
 
-- **Nullstellen** sind die Stellen $x$ mit $f(x) = 0$, also die Schnittpunkte mit der $x$-Achse. Man findet sie durch Lösen der Gleichung $f(x) = 0$.
-- Den Schnittpunkt mit der **$y$-Achse** erhält man mit $f(0)$.
-- Die **Schnittpunkte zweier Funktionen** $f$ und $g$ findet man, indem man $f(x) = g(x)$ setzt.
+- Nullstellen sind die Stellen $x$ mit $f(x) = 0$, also die Schnittpunkte mit der $x$-Achse. Man findet sie durch Lösen der Gleichung $f(x) = 0$.
+- Den Schnittpunkt mit der $y$-Achse erhält man mit $f(0)$.
+- Die Schnittpunkte zweier Funktionen $f$ und $g$ findet man, indem man $f(x) = g(x)$ setzt.
 
 ### Monotonie
 
@@ -84,8 +84,8 @@ Die wichtigsten periodischen Funktionen sind die [Winkelfunktionen](/de/mathemat
 
 Eine **Asymptote** ist eine Gerade, der sich der Graph beliebig nahe annähert, ohne sie zu erreichen:
 
-- **Waagrechte Asymptote** $y = c$: Die Funktionswerte nähern sich für $x \to \pm\infty$ dem Wert $c$ an. $\frac{1}{x}$ hat die Asymptote $y = 0$, $e^{-x}$ ebenfalls (für $x \to \infty$).
-- **Senkrechte Asymptote** $x = x_0$ an einer **Polstelle**: Die Funktionswerte werden in der Nähe von $x_0$ beliebig groß (oder klein). $\frac{1}{x - 3}$ hat an $x_0 = 3$ eine Polstelle.
+- Waagrechte Asymptote $y = c$: Die Funktionswerte nähern sich für $x \to \pm\infty$ dem Wert $c$ an. $\frac{1}{x}$ hat die Asymptote $y = 0$, $e^{-x}$ ebenfalls (für $x \to \infty$).
+- Senkrechte Asymptote $x = x_0$ an einer Polstelle: Die Funktionswerte werden in der Nähe von $x_0$ beliebig groß (oder klein). $\frac{1}{x - 3}$ hat an $x_0 = 3$ eine Polstelle.
 
 Polstellen treten vor allem bei [gebrochen rationalen Funktionen](/de/mathematics/functions/polynomial-functions/#gebrochen-rationale-funktionen) auf.
 
@@ -96,7 +96,7 @@ Aus dem Graphen einer bekannten Funktion $f$ lassen sich viele weitere Graphen a
 | Funktion          | Veränderung des Graphen von $f$                           |
 | ----------------- | --------------------------------------------------------- |
 | $f(x) + c$        | um $c$ nach oben verschoben ($c < 0$: nach unten)          |
-| $f(x - c)$        | um $c$ nach **rechts** verschoben ($c < 0$: nach links)    |
+| $f(x - c)$        | um $c$ nach rechts verschoben ($c < 0$: nach links)    |
 | $a \cdot f(x)$    | in $y$-Richtung mit dem Faktor $a$ gestreckt ($\lvert a \rvert < 1$: gestaucht) |
 | $f(b \cdot x)$    | in $x$-Richtung mit dem Faktor $\frac{1}{b}$ gestaucht bzw. gestreckt |
 | $-f(x)$           | an der $x$-Achse gespiegelt                                |
@@ -108,7 +108,7 @@ Bei $f(x - c)$ wird der Graph nach **rechts** verschoben, obwohl ein Minus daste
 
 ## Umkehrfunktion
 
-Ist eine Funktion **umkehrbar eindeutig** (jeder Funktionswert kommt nur einmal vor, zum Beispiel bei streng monotonen Funktionen), so gibt es eine **Umkehrfunktion** $f^{-1}$, die die Zuordnung umkehrt:
+Ist eine Funktion **umkehrbar eindeutig** (jeder Funktionswert kommt nur einmal vor, zum Beispiel bei streng monotonen Funktionen), so gibt es eine Umkehrfunktion $f^{-1}$, die die Zuordnung umkehrt:
 
 $$
 y = f(x) \quad\Longleftrightarrow\quad x = f^{-1}(y)

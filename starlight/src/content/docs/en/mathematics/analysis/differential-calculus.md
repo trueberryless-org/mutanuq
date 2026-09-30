@@ -9,7 +9,7 @@ sidebar:
 
 ## Difference quotient
 
-The **difference quotient** is the **average rate of change** of a function on the interval $[x_0; x_0 + h]$:
+The **difference quotient** is the average rate of change of a function on the interval $[x_0; x_0 + h]$:
 
 $$
 \frac{\Delta y}{\Delta x} = \frac{f(x_0 + h) - f(x_0)}{h}
@@ -25,17 +25,17 @@ $$
 $$
 :::
 
-Besides the average rate of change, there is the **absolute change** $f(x_0 + h) - f(x_0)$ and the **relative change** $\frac{f(x_0 + h) - f(x_0)}{f(x_0)}$.
+Besides the average rate of change, there is the **absolute change** $f(x_0 + h) - f(x_0)$ and the relative change $\frac{f(x_0 + h) - f(x_0)}{f(x_0)}$.
 
 ## Derivative
 
-If the interval is made smaller and smaller ($h \to 0$), the secant becomes the **tangent** and the average rate of change becomes the **instantaneous rate of change**. This [limit](/en/mathematics/analysis/limits-and-continuity/) is called the **differential quotient** or **derivative** of $f$ at $x_0$:
+If the interval is made smaller and smaller ($h \to 0$), the secant becomes the **tangent** and the average rate of change becomes the instantaneous rate of change. This [limit](/en/mathematics/analysis/limits-and-continuity/) is called the differential quotient or derivative of $f$ at $x_0$:
 
 $$
 f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h} = \frac{\mathrm{d}f}{\mathrm{d}x}(x_0)
 $$
 
-If this limit exists, $f$ is called **differentiable** at $x_0$. The derivative is the **slope of the tangent** to the graph at the point $(x_0 \mid f(x_0))$.
+If this limit exists, $f$ is called **differentiable** at $x_0$. The derivative is the slope of the tangent to the graph at the point $(x_0 \mid f(x_0))$.
 
 :::tip[Example: Derivative of x² using the limit]
 $$
@@ -51,7 +51,7 @@ Not every continuous function is differentiable everywhere. The absolute value f
 
 ## The derivative function
 
-If every point $x$ is assigned the derivative $f'(x)$, you get the **derivative function** $f'$. The process is called **differentiating**.
+If every point $x$ is assigned the derivative $f'(x)$, you get the **derivative function** $f'$. The process is called differentiating.
 
 | Function $f$        | Derivative $f'$            |
 | ------------------- | -------------------------- |
@@ -74,9 +74,9 @@ The **power rule** $(x^n)' = n x^{n-1}$ applies to all real exponents $n$, inclu
 | ------------------- | -------------------------------------------------------------- |
 | Constant factor rule | $(c \cdot f)' = c \cdot f'$                                   |
 | Sum rule            | $(f \pm g)' = f' \pm g'$                                       |
-| **Product rule**    | $(f \cdot g)' = f' \cdot g + f \cdot g'$                       |
-| **Quotient rule**   | $\left(\dfrac{f}{g}\right)' = \dfrac{f' \cdot g - f \cdot g'}{g^2}$ |
-| **Chain rule**      | $\big(f(g(x))\big)' = f'(g(x)) \cdot g'(x)$ – "outer derivative times inner derivative" |
+| Product rule    | $(f \cdot g)' = f' \cdot g + f \cdot g'$                       |
+| Quotient rule   | $\left(\dfrac{f}{g}\right)' = \dfrac{f' \cdot g - f \cdot g'}{g^2}$ |
+| Chain rule      | $\big(f(g(x))\big)' = f'(g(x)) \cdot g'(x)$, "outer derivative times inner derivative" |
 
 :::tip[Examples]
 **Sum and constant factor rules:**
@@ -118,10 +118,10 @@ The inner derivative is often forgotten in the chain rule: $(e^{3x})' = 3e^{3x}$
 
 ## Higher derivatives
 
-The derivative of $f'$ is called the **second derivative** $f''$, its derivative the **third derivative** $f'''$ and so on.
+The derivative of $f'$ is called the **second derivative** $f''$, its derivative the third derivative $f'''$ and so on.
 
-- $f'$ describes the **slope** of $f$ (increasing/decreasing).
-- $f''$ describes the **curvature** of $f$: if $f'' > 0$, the graph is **concave up** (convex, a "smile"); if $f'' < 0$, it is **concave down**.
+- $f'$ describes the slope of $f$ (increasing/decreasing).
+- $f''$ describes the curvature of $f$: if $f'' > 0$, the graph is concave up (convex, a "smile"); if $f'' < 0$, it is concave down.
 
 In physics, the second derivative of distance with respect to time is **acceleration**:
 
@@ -169,7 +169,7 @@ $$
 i(t) = C \cdot u'(t) = 10 \cdot 10^{-6} \cdot 325 \cdot 314 \cos(314\,t) \approx 1.02 \cos(314\,t)\ \text{A}
 $$
 
-The current is a cosine function – it leads the voltage by $90°$.
+The current is a cosine function: it leads the voltage by $90°$.
 :::
 
 How to use derivatives to find maxima, minima and inflection points and to solve optimisation problems is shown in [curve sketching](/en/mathematics/analysis/curve-sketching/).

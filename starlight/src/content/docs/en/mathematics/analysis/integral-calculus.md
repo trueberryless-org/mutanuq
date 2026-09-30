@@ -5,7 +5,7 @@ sidebar:
   order: 5
 ---
 
-**Integral calculus** is the reverse of differential calculus. If you know the rate of change of a quantity, you can use it to reconstruct the quantity itself – for example the distance travelled from the velocity. Integrals are also used to calculate areas, volumes, mean values and work.
+**Integral calculus** is the reverse of differential calculus. If you know the rate of change of a quantity, you can use it to reconstruct the quantity itself, for example the distance travelled from the velocity. Integrals are also used to calculate areas, volumes, mean values and work.
 
 ## Antiderivative
 
@@ -21,7 +21,7 @@ $$
 \int f(x)\,\mathrm{d}x = F(x) + C
 $$
 
-$f$ is called the **integrand**, $C$ the **constant of integration**, and $\mathrm{d}x$ states the variable of integration.
+$f$ is called the **integrand**, $C$ the constant of integration, and $\mathrm{d}x$ states the variable of integration.
 
 :::tip[Example]
 $F(x) = x^3$, $F(x) = x^3 + 5$ and $F(x) = x^3 - 2$ are all antiderivatives of $f(x) = 3x^2$. So $\int 3x^2\,\mathrm{d}x = x^3 + C$.
@@ -40,7 +40,7 @@ $F(x) = x^3$, $F(x) = x^3 + 5$ and $F(x) = x^3 - 2$ are all antiderivatives of $
 | $\cos x$            | $\sin x + C$                                   |
 | $\dfrac{1}{\cos^2 x}$ | $\tan x + C$                                 |
 
-The **power rule** of integration: increase the exponent by 1 and divide by the new exponent. It does not work for $n = -1$ (division by 0) – that is what the logarithm is for.
+The **power rule** of integration: increase the exponent by 1 and divide by the new exponent. It does not work for $n = -1$ (division by 0). That is what the logarithm is for.
 
 :::tip[Tip]
 Every result can be **checked by differentiating**: the derivative of the antiderivative must give the integrand again.
@@ -48,7 +48,7 @@ Every result can be **checked by differentiating**: the derivative of the antide
 
 ## Integration rules
 
-The **constant factor rule** and the **sum rule** apply just like in differentiation:
+The **constant factor rule** and the sum rule apply just like in differentiation:
 
 $$
 \int c \cdot f(x)\,\mathrm{d}x = c \int f(x)\,\mathrm{d}x \qquad \int \big(f(x) \pm g(x)\big)\,\mathrm{d}x = \int f(x)\,\mathrm{d}x \pm \int g(x)\,\mathrm{d}x
@@ -86,11 +86,11 @@ $$
 
 ### Substitution
 
-The **substitution rule** is the reverse of the chain rule. It helps when the integrand contains a function **and its derivative**. The inner function is replaced by a new variable $u$:
+The **substitution rule** is the reverse of the chain rule. It helps when the integrand contains a function and its derivative. The inner function is replaced by a new variable $u$:
 
 1. choose $u = g(x)$
 2. $\frac{\mathrm{d}u}{\mathrm{d}x} = g'(x)$, so $\mathrm{d}x = \frac{\mathrm{d}u}{g'(x)}$
-3. substitute – all $x$ must disappear
+3. substitute, and all $x$ must disappear
 4. integrate with respect to $u$ and substitute back
 
 :::tip[Example]
@@ -127,7 +127,7 @@ Check: $\big(e^x(x - 1)\big)' = e^x(x - 1) + e^x = x e^x$ ✓
 
 ## Definite integral
 
-The **definite integral** of $f$ between the **limits** $a$ and $b$ is a number. Intuitively, it is the **signed area** between the graph and the $x$-axis: areas above the axis count as positive, areas below as negative.
+The **definite integral** of $f$ between the limits $a$ and $b$ is a number. Intuitively, it is the signed area between the graph and the $x$-axis: areas above the axis count as positive, areas below as negative.
 
 It is the limit of **Riemann sums**: the interval $[a; b]$ is divided into $n$ narrow strips of width $\Delta x$, each strip is approximated by a rectangle, and the areas of the rectangles are added up. For $n \to \infty$:
 

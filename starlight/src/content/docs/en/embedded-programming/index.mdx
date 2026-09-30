@@ -2,7 +2,7 @@
 title: Embedded Systems
 sidebar:
   label: Overview
-description: Fundamentals of low-level programming of AVR microcontrollers (ATmega328P) in C – from ports and buttons to timers, the ADC, USART, SPI and EEPROM.
+description: Fundamentals of low-level programming of AVR microcontrollers (ATmega328P) in C, from ports and buttons to timers, the ADC, USART, SPI and EEPROM.
 ---
 
 import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
@@ -15,13 +15,13 @@ In this section, you will learn how to program a microcontroller directly in C. 
 
 ## Evaluation kit/board
 
-An evaluation board (also development board) is a circuit board built around a specific component – such as a microcontroller – that contains everything you need to try it out and develop with it. You can build such boards yourself, but usually you buy them ready-made. For a microcontroller, this includes, for example, the power supply, a crystal as a clock source, a programming interface (e.g. via USB) as well as pin headers, LEDs and buttons. An evaluation board for a larger CPU would additionally need RAM, an SD card and so on.
+An evaluation board (also development board) is a circuit board built around a specific component, such as a microcontroller, that contains everything you need to try it out and develop with it. You can build such boards yourself, but usually you buy them ready-made. For a microcontroller, this includes, for example, the power supply, a crystal as a clock source, a programming interface (e.g. via USB) as well as pin headers, LEDs and buttons. An evaluation board for a larger CPU would additionally need RAM, an SD card and so on.
 
 ## Low-level programming
 
 Low-level (hardware-near) programming primarily allows the programmer to access `lower` elements of the hardware (i.e. closer to the hardware). A distinction is made between `high-level` programming languages (clearly removed from the level of machine language in terms of abstraction and complexity), such as C, JavaScript etc., and "low-level" languages such as assembly. The latter already allows access to CPU registers, which many other high-level programming languages do not support.
 
-However, some complex programs are unfortunately hard to implement in assembly. For this reason, at the beginning of the 1970s Dennis Ritchie developed the programming language C – building on Ken Thompson's language B – and used it to rewrite the Unix operating system, which had previously been written in assembly. C combines the advantages of both worlds: it is a high-level language, but still allows direct access to memory addresses and registers.
+However, some complex programs are unfortunately hard to implement in assembly. For this reason, at the beginning of the 1970s Dennis Ritchie developed the programming language C, building on Ken Thompson's language B, and used it to rewrite the Unix operating system, which had previously been written in assembly. C combines the advantages of both worlds: it is a high-level language, but still allows direct access to memory addresses and registers.
 
 ## Assembly and "C"
 

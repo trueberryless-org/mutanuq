@@ -3,7 +3,7 @@ title: SPI - Serial Peripheral Interface
 sidebar:
   label: SPI
   order: 11
-description: Synchrone serielle Kommunikation mit Peripheriegeräten über SPI – Taktleitung, Chip Select, gleichzeitiges Senden und Empfangen.
+description: "Synchrone serielle Kommunikation mit Peripheriegeräten über SPI: Taktleitung, Chip Select, gleichzeitiges Senden und Empfangen."
 ---
 
 ## Theorie
@@ -12,7 +12,7 @@ Das SPI ist ein serielles Kommunikationsprotokoll (Bus-System), welches verwende
 
 Dabei muss die Kommunikation immer vom Controller aus gestartet werden. Ein Peripheral kann nur Daten senden, wenn er vom Controller dazu aufgefordert wird.
 
-Das SPI verwendet separate Takt- und Datenleitungen sowie eine Auswahlleitung, um das Gerät auszuwählen, mit dem Sie sprechen möchten. Dies ist auch einer der Unterschiede zum [USART](/de/embedded-programming/usart), welches keine synchrone Schnittstelle ist, da es keine Garantie gibt, dass beide Seiten mit der gleichen Taktrate laufen. Beim USART müssen sich die beiden Seiten im Vorhinein einigen, mit welcher Übertragungsgeschwindigkeit ([Baudrate](/de/embedded-programming/usart#baud-rate)) sie kommunizieren und es müssen zusätzliche Start- und Stoppbits übertragen werden.
+Das SPI verwendet separate Takt- und Datenleitungen sowie eine Auswahlleitung, um das Gerät auszuwählen, mit dem du sprechen möchtest. Dies ist auch einer der Unterschiede zum [USART](/de/embedded-programming/usart), welches keine synchrone Schnittstelle ist, da es keine Garantie gibt, dass beide Seiten mit der gleichen Taktrate laufen. Beim USART müssen sich die beiden Seiten im Vorhinein einigen, mit welcher Übertragungsgeschwindigkeit ([Baudrate](/de/embedded-programming/usart#baud-rate)) sie kommunizieren und es müssen zusätzliche Start- und Stoppbits übertragen werden.
 
 :::note
 Einige Dokumentationen (auch das Datenblatt des ATmega328P) verwenden noch die veralteten Begriffe `Master` und `Slave`. Wegen ihres Bezugs zur Sklaverei werden diese Begriffe heutzutage durch neutralere Alternativen ersetzt, etwa auf Empfehlung der Open Source Hardware Association. Folgende Tabelle zeigt die Änderungen diesbezüglich:

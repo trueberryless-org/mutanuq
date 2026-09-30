@@ -5,24 +5,24 @@ sidebar:
   order: 2
 ---
 
-At the end of each financial year, businesses that are obliged to keep accounts prepare **annual accounts**. They consist of the **balance sheet** and the **income statement**; corporations also add **notes** and, from a certain size, a **management report**. Corporations must submit them to the **company register**, where anyone can inspect them.
+At the end of each financial year, businesses that are obliged to keep accounts prepare **annual accounts**. They consist of the balance sheet and the income statement; corporations also add notes and, from a certain size, a management report. Corporations must submit them to the company register, where anyone can inspect them.
 
 ## Balance sheet
 
-The **balance sheet** compares **assets** and **capital** on a reporting date. It shows **what** the capital is used for (assets) and **where** it comes from (equity and liabilities). Both sides are always equal.
+The **balance sheet** compares assets and capital on a reporting date. It shows what the capital is used for (assets) and where it comes from (equity and liabilities). Both sides are always equal.
 
 | Assets (use of funds)                           | Equity and liabilities (source of funds)        |
 | ----------------------------------------------- | ----------------------------------------------- |
-| **A. Fixed assets**: long-term in the business  | **A. Equity**                                   |
+| A. Fixed assets: long-term in the business  | A. Equity                                   |
 | intangible assets (software, licences)          | share capital                                   |
 | property, plant and equipment (land, buildings, machines, IT) | reserves                          |
 | financial assets (investments, securities)      | net profit                                      |
-| **B. Current assets**: short-term               | **B. Provisions**                               |
-| inventories                                     | **C. Liabilities** (debt capital)               |
+| B. Current assets: short-term               | B. Provisions                               |
+| inventories                                     | C. Liabilities (debt capital)               |
 | receivables                                     | long-term (e.g. bank loans)                     |
 | cash, bank balances                             | short-term (e.g. trade payables)                |
 
-The assets side is ordered by **liquidity** (from hard to liquidate to cash), the equity and liabilities side by **maturity** (from long-term to short-term capital).
+The assets side is ordered by **liquidity** (from hard to liquidate to cash), the equity and liabilities side by maturity (from long-term to short-term capital).
 
 $$
 \text{Assets} = \text{Equity} + \text{Debt capital}
@@ -30,7 +30,7 @@ $$
 
 ## Income statement
 
-The **income statement** compares the **revenue** and **expenses** of a financial year and determines the **result** for the year (profit or loss). In Austria, it is usually prepared in **vertical format** using the total cost method:
+The **income statement** compares the revenue and expenses of a financial year and determines the result for the year (profit or loss). In Austria, it is usually prepared in vertical format using the total cost method:
 
 | Item                                             | Example (€)    |
 | ------------------------------------------------ | -------------- |
@@ -40,11 +40,11 @@ The **income statement** compares the **revenue** and **expenses** of a financia
 | − personnel expenses                             | −350,000       |
 | − depreciation                                   | −40,000        |
 | − other operating expenses                       | −90,000        |
-| **= Operating result (EBIT)**                    | **80,000**     |
+| = Operating result (EBIT)                    | 80,000     |
 | + financial income − financial expenses          | −5,000         |
-| **= Result before taxes**                        | **75,000**     |
+| = Result before taxes                        | 75,000     |
 | − taxes on income (e.g. 23 % corporate income tax) | −17,250      |
-| **= Net income for the year**                    | **57,750**     |
+| = Net income for the year                    | 57,750     |
 
 ### Effect of business transactions on profit
 
@@ -57,7 +57,7 @@ Not every business transaction changes the profit:
 | depreciation of a machine                         | yes, reduces profit (without a cash flow) |
 | purchase of a machine                             | no, cash is exchanged for fixed assets |
 | taking out a loan                                 | no, more cash but also more debt |
-| repaying a loan                                   | no (only the **interest** is an expense) |
+| repaying a loan                                   | no (only the interest is an expense) |
 | customer pays an open invoice                     | no, a receivable is exchanged for a bank balance |
 | forming a provision                               | yes, reduces profit |
 

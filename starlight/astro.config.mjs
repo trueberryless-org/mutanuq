@@ -114,10 +114,9 @@ export default defineConfig({
                       },
                       items: [
                         {
-                          slug: "software-development/design-patterns/behavioral-design-patterns/command",
-                        },
-                        {
-                          slug: "software-development/design-patterns/behavioral-design-patterns/strategy",
+                          autogenerate: {
+                            directory: "software-development/design-patterns/behavioral-design-patterns",
+                          },
                         },
                       ],
                     },
@@ -128,7 +127,9 @@ export default defineConfig({
                       },
                       items: [
                         {
-                          slug: "software-development/design-patterns/creational-design-patterns/singleton",
+                          autogenerate: {
+                            directory: "software-development/design-patterns/creational-design-patterns",
+                          },
                         },
                       ],
                     },
@@ -139,10 +140,9 @@ export default defineConfig({
                       },
                       items: [
                         {
-                          slug: "software-development/design-patterns/structural-design-patterns/adapter",
-                        },
-                        {
-                          slug: "software-development/design-patterns/structural-design-patterns/decorator",
+                          autogenerate: {
+                            directory: "software-development/design-patterns/structural-design-patterns",
+                          },
                         },
                       ],
                     },

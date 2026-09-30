@@ -7,15 +7,15 @@ sidebar:
 
 ## Propositions
 
-A **proposition** (statement) is a sentence that is either **true** (T, 1) or **false** (F, 0) – never both and never neither.
+A **proposition** (statement) is a sentence that is either true (T, 1) or false (F, 0), never both and never neither.
 
 - "Vienna is the capital of Austria." is a true proposition.
 - "$7$ is an even number." is a false proposition.
-- "What time is it?" or "$x > 3$" are not propositions: the question has no truth value, and for $x > 3$ it depends on the value of $x$. Such sentences with variables are called **predicates** (open sentences).
+- "What time is it?" or "$x > 3$" are not propositions: the question has no truth value, and for $x > 3$ it depends on the value of $x$. Such sentences with variables are called predicates (open sentences).
 
 ## Connectives
 
-Propositions can be combined into new propositions with **connectives**. Their truth value only depends on the truth values of the parts and is recorded in a **truth table**.
+Propositions can be combined into new propositions with **connectives**. Their truth value only depends on the truth values of the parts and is recorded in a truth table.
 
 | Connective    | Logic               | Boolean algebra       | Programming    | read as                  |
 | ------------- | ------------------- | --------------------- | -------------- | ------------------------ |
@@ -41,7 +41,7 @@ The implication $a \Rightarrow b$ is only false if a false conclusion is drawn f
 
 ### Tautologies and contradictions
 
-A compound proposition that is true for all assignments is called a **tautology**, for example $a \lor \neg a$. A proposition that is always false is called a **contradiction**, for example $a \land \neg a$. Whether a proposition is a tautology can be checked with a truth table.
+A compound proposition that is true for all assignments is called a **tautology**, for example $a \lor \neg a$. A proposition that is always false is called a contradiction, for example $a \land \neg a$. Whether a proposition is a tautology can be checked with a truth table.
 
 :::tip[Example: Contraposition]
 Show that $(a \Rightarrow b) \Leftrightarrow (\neg b \Rightarrow \neg a)$ is a tautology.
@@ -72,7 +72,7 @@ The last column only contains ones. So the statement "If it rains, the street is
 | Idempotence               | $a \cdot a = a$                             | $a + a = a$                                |
 | Complement                | $a \cdot \overline{a} = 0$                  | $a + \overline{a} = 1$                     |
 | Absorption                | $a(a + b) = a$                              | $a + ab = a$                               |
-| **De Morgan**             | $\overline{a \cdot b} = \overline{a} + \overline{b}$ | $\overline{a + b} = \overline{a} \cdot \overline{b}$ |
+| De Morgan             | $\overline{a \cdot b} = \overline{a} + \overline{b}$ | $\overline{a + b} = \overline{a} \cdot \overline{b}$ |
 | Double negation           | $\overline{\overline{a}} = a$               |                                            |
 
 The laws come in pairs (**duality principle**): if you swap $\cdot$ and $+$ as well as $0$ and $1$, you get another valid law. Unlike with ordinary numbers, the second distributive law $a + bc = (a + b)(a + c)$ also holds in Boolean algebra.
@@ -90,7 +90,7 @@ $$
 
 ## Switching functions
 
-A **switching function** assigns an output value $0$ or $1$ to every combination of input values $0$ or $1$. With $n$ inputs, its truth table has $2^n$ rows. In digital electronics, switching functions are built as circuits with **logic gates** (AND, OR, NOT, NAND, NOR, XOR).
+A **switching function** assigns an output value $0$ or $1$ to every combination of input values $0$ or $1$. With $n$ inputs, its truth table has $2^n$ rows. In digital electronics, switching functions are built as circuits with logic gates (AND, OR, NOT, NAND, NOR, XOR).
 
 :::note[NAND and NOR]
 Every switching function can be built from NAND gates ($\overline{a \cdot b}$) alone, and likewise from NOR gates alone. For example, $\overline{a} = \overline{a \cdot a}$. That is why NAND gates are the basic building blocks of many integrated circuits.
@@ -100,8 +100,8 @@ Every switching function can be built from NAND gates ($\overline{a \cdot b}$) a
 
 A switching function can be read directly from a truth table:
 
-- **Disjunctive normal form (DNF):** For each row with result $1$, form a **minterm**: an AND of all variables in which every variable that is $0$ in this row is negated. The minterms are combined with OR.
-- **Conjunctive normal form (CNF):** For each row with result $0$, form a **maxterm**: an OR in which every variable that is $1$ in this row is negated. The maxterms are combined with AND.
+- **Disjunctive normal form (DNF):** For each row with result $1$, form a minterm: an AND of all variables in which every variable that is $0$ in this row is negated. The minterms are combined with OR.
+- **Conjunctive normal form (CNF):** For each row with result $0$, form a maxterm: an OR in which every variable that is $1$ in this row is negated. The maxterms are combined with AND.
 
 :::tip[Example: Majority circuit]
 An alarm system with three sensors $a$, $b$ and $c$ should trigger ($y = 1$) if at least two sensors respond.

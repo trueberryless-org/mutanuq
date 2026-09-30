@@ -9,7 +9,7 @@ sidebar:
 
 ## Right-angled triangle
 
-With respect to an acute angle $\alpha$ of a right-angled triangle, we distinguish the **opposite side** (opposite the angle), the **adjacent side** (next to the angle) and the **hypotenuse** (opposite the right angle).
+With respect to an acute angle $\alpha$ of a right-angled triangle, we distinguish the opposite side (opposite the angle), the adjacent side (next to the angle) and the hypotenuse (opposite the right angle).
 
 $$
 \sin\alpha = \frac{\text{opposite}}{\text{hypotenuse}} \qquad
@@ -22,7 +22,7 @@ These ratios only depend on the angle, not on the size of the triangle, because 
 If a ratio of sides is known, the angle is obtained with the inverse functions $\arcsin$, $\arccos$ and $\arctan$ (on a calculator $\sin^{-1}$, $\cos^{-1}$, $\tan^{-1}$).
 
 :::caution
-Make sure the calculator is in the right angle mode: **DEG** for degrees, **RAD** for radians.
+Make sure the calculator is in the right angle mode: **DEG** for degrees, RAD for radians.
 :::
 
 ### Important relationships
@@ -90,8 +90,8 @@ $$
 
 Here $r$ is the circumradius. The law of sines is used when **a side and its opposite angle** are known, i.e. in the cases:
 
-- two angles and one side (**ASA**, **AAS**),
-- two sides and the angle opposite one of them (**SSA**).
+- two angles and one side (ASA, AAS),
+- two sides and the angle opposite one of them (SSA).
 
 :::caution[Ambiguous case]
 In the SSA case, there can be two solutions, because $\sin\beta = \sin(180° - \beta)$. If the given angle is opposite the **longer** of the two sides, the solution is unique.
@@ -109,8 +109,8 @@ $$
 
 The law of cosines is a generalisation of the Pythagorean theorem: for $\gamma = 90°$, $\cos\gamma = 0$ and $c^2 = a^2 + b^2$ remains. It is used for
 
-- two sides and the included angle (**SAS**),
-- three sides (**SSS**).
+- two sides and the included angle (SAS),
+- three sides (SSS).
 
 ### Area formula
 

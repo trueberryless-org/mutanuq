@@ -18,7 +18,7 @@ Die Virtualisierung ermöglicht die Erstellung von virtuellen Instanzen von Hard
 
 ## Geschichte
 
-Das Konzept der Virtualisierung wurde das erste Mal in den 1960er-Jahren auf IBM-Großrechnern genutzt, um die Mehrbenutzerfähigkeit umzusetzen. Damals hatten Betriebssysteme noch nicht die Funktionalität von mehreren Benutzern integriert, weshalb der einfachste Weg, dies zu erreichen, weitere Instanzen des Betriebssystems waren. Aufgrund der Weiterentwicklungen – Betriebssysteme waren später ohnehin mehrbenutzerfähig – verlor das Konzept außerhalb der Großrechnerwelt lange Zeit an Bedeutung.
+Das Konzept der Virtualisierung wurde das erste Mal in den 1960er-Jahren auf IBM-Großrechnern genutzt, um die Mehrbenutzerfähigkeit umzusetzen. Damals hatten Betriebssysteme noch nicht die Funktionalität von mehreren Benutzern integriert, weshalb der einfachste Weg, dies zu erreichen, weitere Instanzen des Betriebssystems waren. Aufgrund der Weiterentwicklungen (Betriebssysteme waren später ohnehin mehrbenutzerfähig) verlor das Konzept außerhalb der Großrechnerwelt lange Zeit an Bedeutung.
 
 Ende der 1990er-Jahre wurde das Konzept der Virtualisierung mit VMware (1999) auch auf normalen x86-Rechnern populär und setzte sich in den 2000er-Jahren in Unternehmen durch, weil Entwickler nun Anwendungen und Betriebssysteme testen können wollten. Außerdem kann man Hardware-Ressourcen viel besser ausnutzen, da in einem Unternehmen gewisse Dienste nur zu gewissen Zeiten exzessiv verwendet werden. Beispielsweise melden sich zwischen acht und neun Uhr viele Mitarbeiter am Domain Controller an, am Nachmittag werden sehr viele E-Mails verschickt und Dateien ausgedruckt. Um kostspielige Ressourcen besser nutzen zu können, kann man Server, welche genau diese Aufgaben erfüllen, virtualisieren, damit zu bestimmten Zeiten verschiedene Server flexibel Ressourcen zur Verfügung gestellt bekommen. Virtualisierung hilft dementsprechend enorm bei flexibler Skalierung.
 
@@ -73,7 +73,7 @@ Die Hardware-Virtualisierung wird durch CPU-Funktionen wie Intel VT-x oder AMD-V
 
 ### Paravirtualisierung
 
-Paravirtualisierung ist eine Methode zur Virtualisierung, bei welcher die Gastbetriebssysteme (Guest) speziell für die Virtualisierung angepasst werden. Das Gastbetriebssystem „weiß“ also, dass es virtualisiert läuft. Anstatt privilegierte Hardwarebefehle auszuführen, die vom Hypervisor abgefangen und emuliert werden müssten, ruft es über eine definierte Schnittstelle direkt Funktionen des Hypervisors auf. Diese Aufrufe nennt man **Hypercalls** – sie funktionieren ähnlich wie [System Calls](#user-mode), nur eben vom Gastbetriebssystem an den Hypervisor. Bekanntestes Beispiel für Paravirtualisierung ist Xen.
+Paravirtualisierung ist eine Methode zur Virtualisierung, bei welcher die Gastbetriebssysteme (Guest) speziell für die Virtualisierung angepasst werden. Das Gastbetriebssystem „weiß“ also, dass es virtualisiert läuft. Anstatt privilegierte Hardwarebefehle auszuführen, die vom Hypervisor abgefangen und emuliert werden müssten, ruft es über eine definierte Schnittstelle direkt Funktionen des Hypervisors auf. Diese Aufrufe nennt man **Hypercalls**. Sie funktionieren ähnlich wie [System Calls](#user-mode), nur eben vom Gastbetriebssystem an den Hypervisor. Bekanntestes Beispiel für Paravirtualisierung ist Xen.
 
 #### Paravirtualisierte Treiber
 
@@ -95,7 +95,7 @@ Um eine Datei zu lesen, würde ein Gastbetriebssystem ohne Paravirtualisierung a
 
 ### Containervirtualisierung
 
-Im Gegensatz zu anderen Virtualisierungen hat bei einer Containervirtualisierung nicht jeder Container ein eigenes vollständiges Betriebssystem mit eigenem Kernel. Alle Container teilen sich den Kernel des Host-Betriebssystems und enthalten nur die Dateien, Bibliotheken und Programme, die die Anwendung benötigt. Deswegen benötigt man nicht so viel Platz und die Container können schneller starten und laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen – auch `Environments` – schnell auf neuen Rechnern aufsetzen.
+Im Gegensatz zu anderen Virtualisierungen hat bei einer Containervirtualisierung nicht jeder Container ein eigenes vollständiges Betriebssystem mit eigenem Kernel. Alle Container teilen sich den Kernel des Host-Betriebssystems und enthalten nur die Dateien, Bibliotheken und Programme, die die Anwendung benötigt. Deswegen benötigt man nicht so viel Platz und die Container können schneller starten und laufen. Außerdem kann man den Bauplan eines Containers sehr viel einfacher über bekannte Registries, wie zum Beispiel `Docker Hub`, teilen und somit Umgebungen (auch `Environments`) schnell auf neuen Rechnern aufsetzen.
 
 ![Containervirtualisierung Aufbau](/images/system_integration_and_infrastructure/Container_Structure.svg)
 
@@ -110,7 +110,7 @@ Wie man in dem Bild leider nicht sehen kann, hat ein Container keinen eigenen Ke
 
 #### Verwendung
 
-Um Containervirtualisierung zu verwenden, gibt es verschiedene Anbieter, wie zum Beispiel [Docker](https://www.docker.com/) und [Podman](https://podman.io). Falls Sie Docker verwenden, können Sie dies auf macOS und Windows mittels [Docker Desktop](https://docs.docker.com/get-docker/) installieren. Da Container einen Linux-Kernel benötigen, startet Docker Desktop dafür im Hintergrund eine kleine virtuelle Maschine mit Linux. Unter Linux kann die Docker Engine direkt installiert werden.
+Um Containervirtualisierung zu verwenden, gibt es verschiedene Anbieter, wie zum Beispiel [Docker](https://www.docker.com/) und [Podman](https://podman.io). Falls du Docker verwendest, kannst du dies auf macOS und Windows mittels [Docker Desktop](https://docs.docker.com/get-docker/) installieren. Da Container einen Linux-Kernel benötigen, startet Docker Desktop dafür im Hintergrund eine kleine virtuelle Maschine mit Linux. Unter Linux kann die Docker Engine direkt installiert werden.
 
 #### Images
 

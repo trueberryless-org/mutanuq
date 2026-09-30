@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-Every program has a main loop (`while(1) {}`) which, because it runs endlessly, ensures that the program never stops doing its job. So you could write all the code that should run endlessly into this main loop. However, with more complex programs you run into problems, since an event – for example pressing a button – can occur at any time. The main loop has limitations here, even though you could constantly check whether the event has occurred. But what can you do if the main loop requires a delay at a certain point and the button input cannot be checked during this time? This is exactly where `interrupts` come into play.
+Every program has a main loop (`while(1) {}`) which, because it runs endlessly, ensures that the program never stops doing its job. So you could write all the code that should run endlessly into this main loop. However, with more complex programs you run into problems, since an event, for example pressing a button, can occur at any time. The main loop has limitations here, even though you could constantly check whether the event has occurred. But what can you do if the main loop requires a delay at a certain point and the button input cannot be checked during this time? This is exactly where `interrupts` come into play.
 
 Interrupts offer a way to interrupt the execution of the main loop at any time when certain events occur. The conditions for this are defined at the beginning and are constantly checked by the hardware. When the event occurs, a special function is called, the **interrupt service routine** (ISR):
 
@@ -57,7 +57,7 @@ If several interrupts occur at the same time, the one located further up in the 
 
 ## Example
 
-In this example, the ISR only sets a flag. The actual work – toggling an LED – happens in the main loop:
+In this example, the ISR only sets a flag. The actual work, toggling an LED, happens in the main loop:
 
 ```c
 #define F_CPU 16000000

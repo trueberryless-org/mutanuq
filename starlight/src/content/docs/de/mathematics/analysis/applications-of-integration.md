@@ -11,7 +11,7 @@ Das [bestimmte Integral](/de/mathematics/analysis/integral-calculus/#bestimmtes-
 
 1. Nullstellen von $f$ im Intervall bestimmen.
 2. Das Integral an den Nullstellen in Teilintegrale zerlegen.
-3. Die **Beträge** der Teilintegrale addieren.
+3. Die Beträge der Teilintegrale addieren.
 
 :::tip[Beispiel]
 Wie groß ist die Fläche zwischen $f(x) = x^2 - 4$ und der $x$-Achse im Intervall $[0; 3]$?
@@ -30,7 +30,7 @@ $$
 A = \frac{16}{3} + \frac{7}{3} = \frac{23}{3} \approx 7{,}67
 $$
 
-Das Integral über das ganze Intervall wäre $-\frac{16}{3} + \frac{7}{3} = -3$ – die Flächen würden sich teilweise aufheben.
+Das Integral über das ganze Intervall wäre $-\frac{16}{3} + \frac{7}{3} = -3$, die Flächen würden sich teilweise aufheben.
 :::
 
 ## Fläche zwischen zwei Kurven
@@ -41,7 +41,7 @@ $$
 A = \int_a^b \big(f(x) - g(x)\big)\,\mathrm{d}x \qquad \text{wenn } f(x) \ge g(x) \text{ auf } [a; b]
 $$
 
-Die Integrationsgrenzen sind oft die **Schnittstellen** der beiden Graphen ($f(x) = g(x)$). Schneiden sich die Graphen innerhalb des Intervalls, muss man wie oben in Teilflächen zerlegen. Wo die Graphen liegen, spielt keine Rolle – auch Flächen unterhalb der $x$-Achse werden so richtig berechnet.
+Die Integrationsgrenzen sind oft die **Schnittstellen** der beiden Graphen ($f(x) = g(x)$). Schneiden sich die Graphen innerhalb des Intervalls, muss man wie oben in Teilflächen zerlegen. Wo die Graphen liegen, spielt keine Rolle. Auch Flächen unterhalb der $x$-Achse werden so richtig berechnet.
 
 :::tip[Beispiel]
 Fläche zwischen $f(x) = x + 2$ und $g(x) = x^2$:
@@ -55,7 +55,7 @@ $$
 
 ## Volumen von Rotationskörpern
 
-Rotiert der Graph von $f$ im Intervall $[a; b]$ um die **$x$-Achse**, entsteht ein **Rotationskörper**. Man denkt ihn sich aus dünnen Kreisscheiben mit Radius $f(x)$ und Dicke $\mathrm{d}x$ zusammengesetzt:
+Rotiert der Graph von $f$ im Intervall $[a; b]$ um die **$x$-Achse**, entsteht ein Rotationskörper. Man denkt ihn sich aus dünnen Kreisscheiben mit Radius $f(x)$ und Dicke $\mathrm{d}x$ zusammengesetzt:
 
 $$
 V_x = \pi \int_a^b \big(f(x)\big)^2\,\mathrm{d}x
@@ -157,4 +157,4 @@ $$
 
 ### Ladung und Energie
 
-Die in einem Zeitraum geflossene Ladung ist $Q = \int_{t_1}^{t_2} i(t)\,\mathrm{d}t$, die umgesetzte Energie $W = \int_{t_1}^{t_2} P(t)\,\mathrm{d}t$. Deshalb misst ein Stromzähler die Energie in Kilowattstunden – Leistung mal Zeit.
+Die in einem Zeitraum geflossene Ladung ist $Q = \int_{t_1}^{t_2} i(t)\,\mathrm{d}t$, die umgesetzte Energie $W = \int_{t_1}^{t_2} P(t)\,\mathrm{d}t$. Deshalb misst ein Stromzähler die Energie in Kilowattstunden, also Leistung mal Zeit.

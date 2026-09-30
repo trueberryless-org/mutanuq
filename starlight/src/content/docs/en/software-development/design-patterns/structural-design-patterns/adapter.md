@@ -11,7 +11,7 @@ In software development, it often happens that different systems or components u
 
 You can create an adapter for this. This adapter is a separate, special class that converts an interface so that it can be understood by another object. In our example, the adapter implements `IQuackable` and stores a reference to an `IHonkable` object. In the `Quack` method, the `Honk` method of our `IHonkable` object is called.
 
-An adapter therefore works like a travel plug adapter: neither the socket nor the device is changed – the adapter in between makes sure that both fit together.
+An adapter therefore works like a travel plug adapter: neither the socket nor the device is changed; the adapter in between makes sure that both fit together.
 
 ## Code
 

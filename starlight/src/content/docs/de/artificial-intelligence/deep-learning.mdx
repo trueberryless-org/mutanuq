@@ -5,14 +5,14 @@ sidebar:
   order: 7
 ---
 
-Eine weitere Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellem Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und deren Parameter mittels `Backpropagation` optimiert werden. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle tiefen neuronalen Netze (Deep Neural Networks) – also neuronale Netze mit mehreren verborgenen Schichten – in die Kategorie „Deep Learning“ fallen.
+Eine weitere Unterteilung im maschinellen Lernen ist das **Deep Learning** (DL). Die Besonderheit dieser Art von maschinellem Lernen ist die Aneinanderreihung von mehreren Schichten, welche die Daten von vorne nach hinten verarbeiten und deren Parameter mittels `Backpropagation` optimiert werden. Dadurch kann das Modell sehr komplexe Muster und Beziehungen erkennen. Allgemein kann man sagen, dass alle tiefen neuronalen Netze (Deep Neural Networks), also neuronale Netze mit mehreren verborgenen Schichten, in die Kategorie „Deep Learning“ fallen.
 
-Neben klassischen **mehrschichtigen neuronalen Netzen** sind auch **Transformer** ein wichtiges Konzept im Deep-Learning-Bereich. Auch sie sind neuronale Netze, die aus vielen `Layers` bestehen. Jede Architektur hat besondere Stärken in bestimmten Einsatzgebieten – Transformer vor allem im generativen Sektor (Text-, Bild-, Videoerstellung).
+Neben klassischen **mehrschichtigen neuronalen Netzen** sind auch **Transformer** ein wichtiges Konzept im Deep-Learning-Bereich. Auch sie sind neuronale Netze, die aus vielen `Layers` bestehen. Jede Architektur hat besondere Stärken in bestimmten Einsatzgebieten, Transformer vor allem im generativen Sektor (Text-, Bild-, Videoerstellung).
 
 Das Gegenteil des „Deep Learning“ (tiefen Lernens) ist das „Shallow Learning“ (flaches Lernen), welches alle anderen Algorithmen des maschinellen Lernens umfasst, wie zum Beispiel die `Support Vector Machine` (SVM), den `Random Forest Classifier` (RFC) oder ganz allgemein die verschiedenen mathematischen Methoden der `Regression`.
 
 :::danger[Achtung]
-Deep Learning bedeutet allerdings nicht zwangsläufig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning bezeichnet nur, dass das Modell aus mehreren Schichten (Layer) besteht. Gerade bei kleinen, tabellarischen Datensätzen sind klassische Verfahren wie Random Forests oder Gradient Boosting oft genauso gut oder sogar besser – und dabei schneller zu trainieren und leichter zu erklären.
+Deep Learning bedeutet allerdings nicht zwangsläufig, dass das Modell anschließend besser als Algorithmen des flachen Lernens sein muss. Deep Learning bezeichnet nur, dass das Modell aus mehreren Schichten (Layer) besteht. Gerade bei kleinen, tabellarischen Datensätzen sind klassische Verfahren wie Random Forests oder Gradient Boosting oft genauso gut oder sogar besser und dabei schneller zu trainieren und leichter zu erklären.
 :::
 
 ## Das künstliche Neuron
@@ -23,7 +23,7 @@ $$
 y = f\left(\sum_{i=1}^{n} w_i \cdot x_i + b\right)
 $$
 
-Die Gewichte $w_i$ und der Bias $b$ sind die Parameter, die beim Training gelernt werden. Die Aktivierungsfunktion sorgt dafür, dass das Netz auch nichtlineare Zusammenhänge lernen kann – ohne sie wäre ein noch so tiefes Netz nur eine einzige lineare Funktion.
+Die Gewichte $w_i$ und der Bias $b$ sind die Parameter, die beim Training gelernt werden. Die Aktivierungsfunktion sorgt dafür, dass das Netz auch nichtlineare Zusammenhänge lernen kann. Ohne sie wäre ein noch so tiefes Netz nur eine einzige lineare Funktion.
 
 | Aktivierungsfunktion | Formel                              | Typischer Einsatz                                   |
 | -------------------- | ----------------------------------- | --------------------------------------------------- |
@@ -37,7 +37,7 @@ Die Gewichte $w_i$ und der Bias $b$ sind die Parameter, die beim Training gelern
 Neuronen werden in Schichten angeordnet:
 
 - Die **Eingabeschicht** nimmt die Daten entgegen, zum Beispiel die 784 Pixel eines 28 × 28 Pixel großen Bildes.
-- Die **verborgenen Schichten** (_Hidden Layers_) extrahieren schrittweise immer abstraktere Merkmale – bei Bildern etwa zuerst Kanten, dann Formen und schließlich ganze Objekte.
+- Die **verborgenen Schichten** (_Hidden Layers_) extrahieren schrittweise immer abstraktere Merkmale, bei Bildern etwa zuerst Kanten, dann Formen und schließlich ganze Objekte.
 - Die **Ausgabeschicht** liefert das Ergebnis, zum Beispiel eine Wahrscheinlichkeit pro Klasse.
 
 ## Training
@@ -69,7 +69,7 @@ Tiefe Netze haben oft Millionen Parameter und neigen daher zum Auswendiglernen d
 | **Recurrent Neural Network (RNN, LSTM)**  | Interner Zustand, der Informationen über frühere Eingaben speichert  | Zeitreihen, Spracherkennung                   |
 | **Transformer**                           | _Self-Attention_: Jedes Element einer Sequenz gewichtet alle anderen | Sprachmodelle (GPT, BERT), Übersetzung, Bildgenerierung |
 
-Codebeispiele zu diesen Architekturen finden Sie unter [Supervised Learning](/de/artificial-intelligence/supervised-learning/#neuronale-netze).
+Codebeispiele zu diesen Architekturen findest du unter [Supervised Learning](/de/artificial-intelligence/supervised-learning/#neuronale-netze).
 
 ## Beispiel mit Keras
 

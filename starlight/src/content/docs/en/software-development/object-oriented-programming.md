@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-Object-oriented programming (OOP) is a programming paradigm in which data and the behavior that operates on this data are combined into **objects**. Instead of viewing a program as a long sequence of instructions, you model it as an interplay of objects that communicate with each other – similar to things in the real world.
+Object-oriented programming (OOP) is a programming paradigm in which data and the behavior that operates on this data are combined into **objects**. Instead of viewing a program as a long sequence of instructions, you model it as an interplay of objects that communicate with each other, similar to things in the real world.
 
 ## Classes and objects
 
@@ -101,7 +101,7 @@ Besides this runtime polymorphism, there is also **static polymorphism** through
 
 ## Interfaces
 
-Interfaces are data types that combine **different** behavior. An interface defines a contract – that is, which methods and properties a class must provide – without (usually) prescribing an implementation. Interfaces describe a **"can do" relationship**: a `Dog` _can_ be fed, but so can a `Plant`, even though both have nothing else in common.
+Interfaces are data types that combine **different** behavior. An interface defines a contract, that is, which methods and properties a class must provide, without (usually) prescribing an implementation. Interfaces describe a **"can do" relationship**: a `Dog` _can_ be fed, but so can a `Plant`, even though both have nothing else in common.
 
 ```csharp
 public interface IFeedable

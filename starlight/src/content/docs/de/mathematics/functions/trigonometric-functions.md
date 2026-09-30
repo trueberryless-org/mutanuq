@@ -38,12 +38,12 @@ $$
 
 | Parameter | Name                              | Wirkung auf den Graphen                             |
 | --------- | --------------------------------- | --------------------------------------------------- |
-| $A$       | **Amplitude**                     | Streckung in $y$-Richtung, maximale Auslenkung      |
-| $\omega$  | **Kreisfrequenz**                 | Streckung/Stauchung in $t$-Richtung                 |
-| $\varphi$ | **Nullphasenwinkel**              | Verschiebung in $t$-Richtung um $-\frac{\varphi}{\omega}$ |
+| $A$       | Amplitude                     | Streckung in $y$-Richtung, maximale Auslenkung      |
+| $\omega$  | Kreisfrequenz                 | Streckung/Stauchung in $t$-Richtung                 |
+| $\varphi$ | Nullphasenwinkel              | Verschiebung in $t$-Richtung um $-\frac{\varphi}{\omega}$ |
 | $d$       | Gleichanteil (Offset)             | Verschiebung in $y$-Richtung                        |
 
-Zwischen Kreisfrequenz, **Frequenz** $f$ und **Periodendauer** $T$ gilt:
+Zwischen Kreisfrequenz, **Frequenz** $f$ und Periodendauer $T$ gilt:
 
 $$
 \omega = 2\pi f = \frac{2\pi}{T} \qquad f = \frac{1}{T}
@@ -76,7 +76,7 @@ $$
 
 Zwei Schwingungen gleicher Frequenz sind **phasenverschoben**, wenn ihre Nullphasenwinkel verschieden sind. In einem Wechselstromkreis mit Spule eilt der Strom der Spannung nach, mit Kondensator eilt er vor. Die Rechnung mit solchen Zeigern erfolgt am einfachsten mit [komplexen Zahlen](/de/mathematics/algebra/complex-numbers/#anwendung-wechselstromtechnik).
 
-Die Überlagerung zweier Sinusschwingungen gleicher Frequenz ergibt wieder eine Sinusschwingung derselben Frequenz. Überlagert man Schwingungen verschiedener Frequenz, entstehen kompliziertere periodische Signale – umgekehrt lässt sich jedes periodische Signal als Summe von Sinusschwingungen darstellen (**Fourier-Analyse**).
+Die Überlagerung zweier Sinusschwingungen gleicher Frequenz ergibt wieder eine Sinusschwingung derselben Frequenz. Überlagert man Schwingungen verschiedener Frequenz, entstehen kompliziertere periodische Signale. Umgekehrt lässt sich jedes periodische Signal als Summe von Sinusschwingungen darstellen (**Fourier-Analyse**).
 
 ## Wichtige Formeln
 

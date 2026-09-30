@@ -13,7 +13,7 @@ Das **CAP-Theorem** (auch Brewers Theorem) wurde im Jahr 2000 von Eric Brewer fo
   Jeder Lesezugriff liefert den zuletzt geschriebenen Wert oder einen Fehler. Alle Knoten sehen zur selben Zeit dieselben Daten.
 
 - **A**vailability (Verfügbarkeit)  
-  Jede Anfrage an einen funktionierenden Knoten erhält eine Antwort – ohne Garantie, dass diese den aktuellsten Wert enthält.
+  Jede Anfrage an einen funktionierenden Knoten erhält eine Antwort, allerdings ohne Garantie, dass diese den aktuellsten Wert enthält.
 
 - **P**artition Tolerance (Partitionstoleranz)  
   Das System arbeitet weiter, auch wenn Nachrichten zwischen Knoten verloren gehen oder das Netzwerk in mehrere Teile zerfällt (_Netzwerkpartition_).
@@ -24,8 +24,8 @@ In einem verteilten System lassen sich Netzwerkausfälle nie vollständig aussch
 
 Beispiel: Zwei Datenbankserver in Wien und Krems replizieren ihre Daten. Die Verbindung zwischen ihnen bricht ab und ein Benutzer ändert in Wien einen Datensatz. Nun fragt ein anderer Benutzer denselben Datensatz in Krems ab.
 
-- Ein **CP-System** verweigert die Antwort (oder liefert einen Fehler), bis die Verbindung wiederhergestellt ist – die Daten bleiben konsistent, das System ist aber teilweise nicht verfügbar.
-- Ein **AP-System** antwortet mit dem veralteten Wert – das System bleibt verfügbar, liefert aber vorübergehend inkonsistente Daten.
+- Ein **CP-System** verweigert die Antwort (oder liefert einen Fehler), bis die Verbindung wiederhergestellt ist. Die Daten bleiben konsistent, das System ist aber teilweise nicht verfügbar.
+- Ein **AP-System** antwortet mit dem veralteten Wert. Das System bleibt verfügbar, liefert aber vorübergehend inkonsistente Daten.
 
 | Typ    | Garantien                          | Beispiele                                         |
 | ------ | ---------------------------------- | ------------------------------------------------- |
@@ -33,7 +33,7 @@ Beispiel: Zwei Datenbankserver in Wien und Krems replizieren ihre Daten. Die Ver
 | **AP** | Verfügbarkeit und Partitionstoleranz | Cassandra, CouchDB, DynamoDB, DNS                |
 | **CA** | Konsistenz und Verfügbarkeit       | Klassische relationale Datenbank auf einem einzelnen Server (nicht verteilt) |
 
-Ein CA-System ist nur möglich, wenn es keine Netzwerkpartitionen geben kann – also im Grunde nur bei einem nicht verteilten System.
+Ein CA-System ist nur möglich, wenn es keine Netzwerkpartitionen geben kann, also im Grunde nur bei einem nicht verteilten System.
 
 ## Zusammenhang mit ACID und BASE
 

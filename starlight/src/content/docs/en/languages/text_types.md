@@ -1,6 +1,6 @@
 ---
 title: Text Types (English)
-description: Structure, characteristics and useful phrases of the text types for English lessons and the Matura – article, blog, email, leaflet and report.
+description: "Structure, characteristics and useful phrases of the text types for English lessons and the school-leaving exam: article, blog, email, leaflet and report."
 sidebar:
     order: 3
 tableOfContents:

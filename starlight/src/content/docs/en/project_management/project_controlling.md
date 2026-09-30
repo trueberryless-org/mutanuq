@@ -58,7 +58,7 @@ In addition, the percentage share of project controlling costs decreases as the 
 
 ## Four aspects - cybernetic control loop
 
-Project controlling deals with these four aspects, which – similar to a control loop in engineering – are run through again and again:
+Project controlling deals with these four aspects, which, similar to a control loop in engineering, are run through again and again:
 
 - **Planning**: preparing the resources required to achieve goals
 - **Monitoring**: observing and comparing the ACTUAL state of a project with the TARGET state defined in the planning
@@ -185,9 +185,9 @@ With the earned value analysis, many further key figures can be calculated that 
 
 | Key figure                     | Formula                            | Meaning                                                 |
 | ------------------------------ | ---------------------------------- | ------------------------------------------------------- |
-| Planned value (PV)             | –                                  | planned cost of the work scheduled up to the status date |
+| Planned value (PV)             | from the plan                      | planned cost of the work scheduled up to the status date |
 | Earned value (EV)              | degree of completion · total budget | value of the work actually completed                   |
-| Actual cost (AC)               | –                                  | costs actually incurred                                 |
+| Actual cost (AC)               | measured                           | costs actually incurred                                 |
 | Schedule variance (SV)         | EV − PV                            | negative: project is behind schedule                    |
 | Cost variance (CV)             | EV − AC                            | negative: project is more expensive than planned        |
 | Schedule performance index (SPI) | EV / PV                          | less than 1: delay                                      |

@@ -1,11 +1,11 @@
 ---
 title: Weimar Classicism
-description: Weimar Classicism with Goethe and Schiller – humanity, harmony and moderation, "Faust", "Iphigenia in Tauris" and the great ballads.
+description: "Weimar Classicism with Goethe and Schiller: humanity, harmony and moderation, \"Faust\", \"Iphigenia in Tauris\" and the great ballads."
 sidebar:
   order: 6
 ---
 
-**Weimar Classicism** refers to the period of close collaboration between **Goethe** and **Schiller** in Weimar. After their stormy youth, both sought **harmony, moderation and order**. Their aim was to educate people to become harmonious, morally good personalities – to **humanity**. The art of ancient Greece served as their model.
+**Weimar Classicism** refers to the period of close collaboration between Goethe and Schiller in Weimar. After their stormy youth, both sought harmony, moderation and order. Their aim was to educate people to become harmonious, morally good personalities, in other words to humanity. The art of ancient Greece served as their model.
 
 ## Key facts
 
@@ -18,7 +18,7 @@ sidebar:
 
 ## Historical background
 
-The **French Revolution** (1789) began with great hopes but ended in the Reign of Terror and war. Goethe and Schiller rejected a violent change of society. Instead, they relied on **changing people through education and art**. Weimar was a small duchy whose duke, Carl August, and his mother, Anna Amalia, brought artists and scholars to their court.
+The **French Revolution** (1789) began with great hopes but ended in the Reign of Terror and war. Goethe and Schiller rejected a violent change of society. Instead, they relied on changing people through education and art. Weimar was a small duchy whose duke, Carl August, and his mother, Anna Amalia, brought artists and scholars to their court.
 
 ## Features
 
@@ -33,14 +33,14 @@ The **French Revolution** (1789) began with great hopes but ended in the Reign o
 
 Goethe came to Weimar in 1775, where he also served as a minister. His journey to **Italy** (1786 – 1788) is considered the beginning of Classicism.
 
-- **"Iphigenie auf Tauris"** (Iphigenia in Tauris, verse version 1787): Iphigenia, a priestess on the island of Tauris, is supposed to sacrifice her brother Orestes. Instead of resorting to a ruse, she chooses **the truth** and trusts in the humanity of King Thoas – and he does indeed let the Greeks leave. The drama is considered a model example of the ideal of humanity.
-- **"Faust. Der Tragödie erster Teil"** (Faust, Part One, 1808): the scholar Heinrich Faust is in despair because, despite all his knowledge, he cannot recognise "what holds the world together in its innermost being". He makes a wager with the devil **Mephistopheles**: if he is ever satisfied with a moment, his soul belongs to Mephisto. Faust is rejuvenated, seduces the young Gretchen and plunges her into misfortune. Gretchen kills her child, is sentenced to death and is "saved" in prison at the end because she repents her guilt. "Faust II" was only published after Goethe's death (1832).
-- **Ballads** such as "Der Zauberlehrling" (The Sorcerer's Apprentice) and "Erlkönig" (The Erl-King)
-- **"Wilhelm Meisters Lehrjahre"** (Wilhelm Meister's Apprenticeship, 1795/96): the prototype of the **Bildungsroman**, in which a young man finds himself through experience
+- **"Iphigenie auf Tauris"** (Iphigenia in Tauris, verse version 1787): Iphigenia, a priestess on the island of Tauris, is supposed to sacrifice her brother Orestes. Instead of resorting to a ruse, she chooses the truth and trusts in the humanity of King Thoas, and he does indeed let the Greeks leave. The drama is considered a model example of the ideal of humanity.
+- **"Faust. Der Tragödie erster Teil"** (Faust, Part One, 1808): the scholar Heinrich Faust is in despair because, despite all his knowledge, he cannot recognise "what holds the world together in its innermost being". He makes a wager with the devil Mephistopheles: if he is ever satisfied with a moment, his soul belongs to Mephisto. Faust is rejuvenated, seduces the young Gretchen and plunges her into misfortune. Gretchen kills her child, is sentenced to death and is "saved" in prison at the end because she repents her guilt. "Faust II" was only published after Goethe's death (1832).
+- Ballads such as "Der Zauberlehrling" (The Sorcerer's Apprentice) and "Erlkönig" (The Erl-King)
+- **"Wilhelm Meisters Lehrjahre"** (Wilhelm Meister's Apprenticeship, 1795/96): the prototype of the Bildungsroman, in which a young man finds himself through experience
 
 <blockquote>
 
-**Faust I** – Johann Wolfgang von Goethe
+**Faust I** by Johann Wolfgang von Goethe
 
 Habe nun, ach! Philosophie,  
 Juristerei und Medizin,  
@@ -60,7 +60,7 @@ Schiller lived in Weimar from 1799. He studied history and philosophy intensivel
 - **"Wallenstein"** (1799): trilogy about the general in the Thirty Years' War
 - **"Maria Stuart"** (1800): the conflict between Mary, Queen of Scots, and Elizabeth I of England
 - **"Wilhelm Tell"** (1804): the Swiss struggle for freedom against Habsburg rule
-- **Ballads** such as "Die Bürgschaft" (The Pledge), "Der Handschuh" (The Glove) and "Der Taucher" (The Diver) – in 1797, the so-called **year of ballads**, Goethe and Schiller competed in writing ballads
+- Ballads such as "Die Bürgschaft" (The Pledge), "Der Handschuh" (The Glove) and "Der Taucher" (The Diver). In 1797, the so-called year of ballads, Goethe and Schiller competed in writing ballads
 - **"An die Freude"** (Ode to Joy, 1785): Ludwig van Beethoven set the ode to music in his 9th Symphony; the melody is today the anthem of the European Union
 - **"Über die ästhetische Erziehung des Menschen"** (On the Aesthetic Education of Man, 1795): theoretical work on art as a path to freedom
 

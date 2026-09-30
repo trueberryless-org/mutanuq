@@ -5,7 +5,7 @@ description: Stellt sicher, dass es von einer Klasse genau eine Instanz gibt, au
 
 ## Problem
 
-Das Singleton Entwurfsmuster sorgt dafür, dass eine Klasse nur eine einzige Instanz haben kann. Außerdem kann auf diese eine Instanz global – im gesamten Programm – zugegriffen werden.
+Das Singleton Entwurfsmuster sorgt dafür, dass eine Klasse nur eine einzige Instanz haben kann. Außerdem kann auf diese eine Instanz global, also im gesamten Programm, zugegriffen werden.
 
 ## Lösung
 

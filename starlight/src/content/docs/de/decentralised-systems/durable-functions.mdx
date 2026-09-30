@@ -13,7 +13,7 @@ Die Beispiele verwenden wie auf der Seite [Azure Functions](/de/decentralised-sy
 
 ## Orchestrator
 
-Der Orchestrator ist die organisatorische Funktion einer Durable Function. Er ist der Kernpunkt, der langfristige Ausführungen erst ermöglicht. Der Orchestrator kann andere Functions – sogenannte Activities – aufrufen und auf externe Events warten.
+Der Orchestrator ist die organisatorische Funktion einer Durable Function. Er ist der Kernpunkt, der langfristige Ausführungen erst ermöglicht. Der Orchestrator kann andere Functions (sogenannte Activities) aufrufen und auf externe Events warten.
 
 ```csharp
 [Function("HelloCities")]
@@ -56,7 +56,7 @@ Orchestrators haben einen ganz besonderen Ausführungsprozess. Bei jedem Aufruf 
 
 Sobald er wieder zum Aufruf der vorherigen Activity kommt (diese wurde nun bereits durchgeführt, da sie beim vorherigen Durchlauf aufgerufen wurde), schaut der Orchestrator im gespeicherten Verlauf nach, ob der Rückgabewert der Activity bereits gespeichert ist. Wenn ja, wird die Activity nicht noch einmal aufgerufen, sondern das Ergebnis aus dem Verlauf ausgelesen und der Orchestrator setzt die Durchführung des weiteren Programmablaufs fort.
 
-Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass im Orchestrator keine Werte verwendet werden dürfen, die sich bei jedem Durchlauf ändern können – etwa die aktuelle Uhrzeit, Zufallszahlen, neue GUIDs oder direkte Datenbank- und Netzwerkzugriffe –, da der Orchestrator dieselben Programmzeilen mehrmals durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig messen:
+Dieses anfangs äußerst ungewöhnliche Verhalten eines Programms führt dazu, dass im Orchestrator keine Werte verwendet werden dürfen, die sich bei jedem Durchlauf ändern können, etwa die aktuelle Uhrzeit, Zufallszahlen, neue GUIDs oder direkte Datenbank- und Netzwerkzugriffe, da der Orchestrator dieselben Programmzeilen mehrmals durchführt. Folgendes Programm würde aus diesem Grund die Zeit nicht richtig messen:
 
 :::danger[Achtung!]
 Unteres Programm hat einen Logikfehler!
@@ -160,7 +160,7 @@ Das Function Chaining ermöglicht die Ausführung von Funktionen in einer bestim
 
 ![Durable Function Chaining](/images/decentralised_systems/azure-function/durable-function-chaining.png)
 
-Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Sie können die Abfolge von Funktionen mithilfe üblicher imperativer Codestrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
+Durable Functions erleichtern die präzise Implementierung dieses Musters, wie im folgenden Beispiel gezeigt. Du kannst die Abfolge von Funktionen mithilfe üblicher imperativer Codestrukturen steuern, wobei Logik für Fehlerbehandlung und bedingte Anweisungen integriert werden kann.
 
 ```csharp
 [Function("Chaining")]
@@ -188,7 +188,7 @@ Beim Fan-Out/Fan-In-Muster werden mehrere Funktionen parallel ausgeführt, und d
 
 ![Durable Function Fan Out Fan In](/images/decentralised_systems/azure-function/durable-function-fan-out-fan-in.png)
 
-In normalen Funktionen kann das Auffächern nach außen (Fan-Out) erreicht werden, indem die Funktion mehrere Nachrichten an eine Warteschlange sendet. Das Zusammenführen (Fan-In) ist komplexer, da Sie den Status der ausgelösten Funktionen nachverfolgen und deren Ausgaben speichern müssen.
+In normalen Funktionen kann das Auffächern nach außen (Fan-Out) erreicht werden, indem die Funktion mehrere Nachrichten an eine Warteschlange sendet. Das Zusammenführen (Fan-In) ist komplexer, da du den Status der ausgelösten Funktionen nachverfolgen und deren Ausgaben speichern musst.
 
 ```csharp
 [Function("FanOutFanIn")]
@@ -219,7 +219,7 @@ Das asynchrone HTTP-API-Muster koordiniert die Statusverfolgung von lang laufend
 
 ![Durable Function Async HTTP API](/images/decentralised_systems/azure-function/durable-function-async-http-api.png)
 
-Durable Functions erleichtern und vereinfachen die Implementierung dieses Musters erheblich, indem sie integrierte Unterstützung bieten. Sie können REST-Befehle verwenden, um Orchestrator-Funktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
+Durable Functions erleichtern und vereinfachen die Implementierung dieses Musters erheblich, indem sie integrierte Unterstützung bieten. Du kannst REST-Befehle verwenden, um Orchestrator-Funktionen zu starten und deren Status abzufragen. Dies bietet eine einfachere Interaktion mit langen Funktionsausführungen.
 
 ```bash
 > curl -X POST https://myfunc.azurewebsites.net/api/orchestrators/DoWork -H "Content-Length: 0" -i

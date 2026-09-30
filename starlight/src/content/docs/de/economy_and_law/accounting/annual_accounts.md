@@ -5,24 +5,24 @@ sidebar:
   order: 2
 ---
 
-Am Ende jedes Geschäftsjahres erstellen buchführungspflichtige Unternehmen einen **Jahresabschluss**. Er besteht aus der **Bilanz** und der **Gewinn- und Verlustrechnung (GuV)**, bei Kapitalgesellschaften zusätzlich aus einem **Anhang** und – ab einer bestimmten Größe – einem **Lagebericht**. Kapitalgesellschaften müssen ihn beim **Firmenbuch** einreichen, wo ihn jeder einsehen kann.
+Am Ende jedes Geschäftsjahres erstellen buchführungspflichtige Unternehmen einen **Jahresabschluss**. Er besteht aus der Bilanz und der Gewinn- und Verlustrechnung (GuV), bei Kapitalgesellschaften zusätzlich aus einem Anhang und ab einer bestimmten Größe einem Lagebericht. Kapitalgesellschaften müssen ihn beim Firmenbuch einreichen, wo ihn jeder einsehen kann.
 
 ## Bilanz
 
-Die **Bilanz** ist eine Gegenüberstellung von **Vermögen** (Aktiva) und **Kapital** (Passiva) zu einem Stichtag. Sie zeigt, **wofür** das Kapital verwendet wird (Aktiva) und **woher** es stammt (Passiva). Beide Seiten sind immer gleich groß.
+Die **Bilanz** ist eine Gegenüberstellung von Vermögen (Aktiva) und Kapital (Passiva) zu einem Stichtag. Sie zeigt, wofür das Kapital verwendet wird (Aktiva) und woher es stammt (Passiva). Beide Seiten sind immer gleich groß.
 
 | Aktiva (Mittelverwendung)                       | Passiva (Mittelherkunft)                        |
 | ----------------------------------------------- | ----------------------------------------------- |
-| **A. Anlagevermögen** – langfristig im Unternehmen | **A. Eigenkapital**                          |
-| – immaterielle Vermögensgegenstände (Software, Lizenzen) | – Grund- bzw. Stammkapital               |
-| – Sachanlagen (Grundstücke, Gebäude, Maschinen, EDV) | – Rücklagen                                 |
-| – Finanzanlagen (Beteiligungen, Wertpapiere)    | – Bilanzgewinn                                  |
-| **B. Umlaufvermögen** – kurzfristig             | **B. Rückstellungen**                           |
-| – Vorräte                                       | **C. Verbindlichkeiten** (Fremdkapital)         |
-| – Forderungen                                   | – langfristig (z. B. Bankdarlehen)              |
-| – Kassa, Bankguthaben                           | – kurzfristig (z. B. Lieferverbindlichkeiten)   |
+| A. Anlagevermögen (langfristig)        | A. Eigenkapital                          |
+| immaterielle Vermögensgegenstände (Software, Lizenzen) | Grund- bzw. Stammkapital               |
+| Sachanlagen (Grundstücke, Gebäude, Maschinen, EDV) | Rücklagen                                 |
+| Finanzanlagen (Beteiligungen, Wertpapiere)    | Bilanzgewinn                                  |
+| B. Umlaufvermögen (kurzfristig)             | B. Rückstellungen                           |
+| Vorräte                                       | C. Verbindlichkeiten (Fremdkapital)         |
+| Forderungen                                   | langfristig (z. B. Bankdarlehen)              |
+| Kassa, Bankguthaben                           | kurzfristig (z. B. Lieferverbindlichkeiten)   |
 
-Die Aktivseite ist nach der **Liquidität** geordnet (von schwer zu flüssigen Mitteln), die Passivseite nach der **Fristigkeit** (von langfristig bis kurzfristig verfügbarem Kapital).
+Die Aktivseite ist nach der **Liquidität** geordnet (von schwer zu flüssigen Mitteln), die Passivseite nach der Fristigkeit (von langfristig bis kurzfristig verfügbarem Kapital).
 
 $$
 \text{Vermögen} = \text{Eigenkapital} + \text{Fremdkapital}
@@ -30,7 +30,7 @@ $$
 
 ## Gewinn- und Verlustrechnung
 
-Die **GuV** stellt die **Erträge** und **Aufwände** eines Geschäftsjahres gegenüber und ermittelt den **Jahreserfolg** (Gewinn oder Verlust). In Österreich wird sie meist in **Staffelform** nach dem Gesamtkostenverfahren aufgestellt:
+Die **GuV** stellt die Erträge und Aufwände eines Geschäftsjahres gegenüber und ermittelt den Jahreserfolg (Gewinn oder Verlust). In Österreich wird sie meist in Staffelform nach dem Gesamtkostenverfahren aufgestellt:
 
 | Position                                         | Beispiel (€)   |
 | ------------------------------------------------ | -------------- |
@@ -40,11 +40,11 @@ Die **GuV** stellt die **Erträge** und **Aufwände** eines Geschäftsjahres geg
 | − Personalaufwand                                | −350.000       |
 | − Abschreibungen                                 | −40.000        |
 | − sonstige betriebliche Aufwände                 | −90.000        |
-| **= Betriebsergebnis (EBIT)**                    | **80.000**     |
+| = Betriebsergebnis (EBIT)                    | 80.000     |
 | + Finanzerträge − Finanzaufwände                 | −5.000         |
-| **= Ergebnis vor Steuern**                       | **75.000**     |
+| = Ergebnis vor Steuern                       | 75.000     |
 | − Steuern vom Einkommen (z. B. 23 % KöSt)        | −17.250        |
-| **= Jahresüberschuss**                           | **57.750**     |
+| = Jahresüberschuss                           | 57.750     |
 
 ### Ergebniswirksamkeit von Geschäftsfällen
 
@@ -55,10 +55,10 @@ Nicht jeder Geschäftsfall verändert den Gewinn:
 | Verkauf von Waren (Erlös)                         | ja, erhöht den Gewinn |
 | Zahlung von Gehältern                             | ja, verringert den Gewinn |
 | Abschreibung einer Maschine                       | ja, verringert den Gewinn (ohne Geldfluss) |
-| Kauf einer Maschine                               | nein – Tausch von Geld gegen Anlagevermögen |
-| Aufnahme eines Kredits                            | nein – mehr Geld, aber auch mehr Schulden |
-| Tilgung eines Kredits                             | nein (nur die **Zinsen** sind Aufwand) |
-| Kunde bezahlt eine offene Rechnung                | nein – Tausch von Forderung gegen Bankguthaben |
+| Kauf einer Maschine                               | nein, Tausch von Geld gegen Anlagevermögen |
+| Aufnahme eines Kredits                            | nein, mehr Geld, aber auch mehr Schulden |
+| Tilgung eines Kredits                             | nein (nur die Zinsen sind Aufwand) |
+| Kunde bezahlt eine offene Rechnung                | nein, Tausch von Forderung gegen Bankguthaben |
 | Bildung einer Rückstellung                        | ja, verringert den Gewinn |
 
 ## Kennzahlen
@@ -130,5 +130,5 @@ Ein Unternehmen hat ein Eigenkapital von 200.000 €, ein Gesamtkapital von 500.
 - Gesamtkapitalrentabilität: $\frac{30\,000 + 10\,000}{500\,000} = 8\,\%$
 - Umsatzrentabilität: $\frac{30\,000}{600\,000} = 5\,\%$
 
-Weil die Gesamtkapitalrentabilität (8 %) über dem Fremdkapitalzinssatz ($\frac{10\,000}{300\,000} \approx 3{,}3\,\%$) liegt, erhöht zusätzliches Fremdkapital die Eigenkapitalrentabilität (**Leverage-Effekt**) – allerdings auch das Risiko.
+Weil die Gesamtkapitalrentabilität (8 %) über dem Fremdkapitalzinssatz ($\frac{10\,000}{300\,000} \approx 3{,}3\,\%$) liegt, erhöht zusätzliches Fremdkapital die Eigenkapitalrentabilität (**Leverage-Effekt**), allerdings auch das Risiko.
 :::

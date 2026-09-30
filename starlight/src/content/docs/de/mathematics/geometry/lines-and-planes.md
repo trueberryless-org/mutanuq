@@ -7,7 +7,7 @@ sidebar:
 
 ## Geraden in Parameterdarstellung
 
-Eine Gerade ist durch einen **Punkt** $P$ und einen **Richtungsvektor** $\vec{v}$ festgelegt. Jeden Punkt $X$ der Geraden erreicht man, indem man von $P$ aus ein Vielfaches von $\vec{v}$ geht:
+Eine Gerade ist durch einen **Punkt** $P$ und einen Richtungsvektor $\vec{v}$ festgelegt. Jeden Punkt $X$ der Geraden erreicht man, indem man von $P$ aus ein Vielfaches von $\vec{v}$ geht:
 
 $$
 g\colon X = P + t \cdot \vec{v} \qquad t \in \mathbb{R}
@@ -54,9 +54,9 @@ Umgeformt nach $y$ ergibt sich die bekannte Form $y = \frac{1}{3}x + \frac{1}{3}
 | identisch                 | identisch                 | ja                          | alle              |
 | parallel                  | parallel                  | ja                          | keine             |
 | schneidend                | schneidend                | nein                        | genau einer       |
-| –                         | **windschief**            | nein                        | keine             |
+| gibt es nicht             | windschief            | nein                        | keine             |
 
-Windschiefe Geraden gibt es nur im Raum: Sie sind weder parallel, noch schneiden sie einander – wie zwei Straßen auf verschiedenen Ebenen einer Kreuzung.
+Windschiefe Geraden gibt es nur im Raum: Sie sind weder parallel, noch schneiden sie einander, wie zwei Straßen auf verschiedenen Ebenen einer Kreuzung.
 
 Um den Schnittpunkt zu bestimmen, setzt man die beiden Geraden gleich (mit **verschiedenen** Parametern $s$ und $t$) und löst das [Gleichungssystem](/de/mathematics/algebra/systems-of-linear-equations/).
 
@@ -76,7 +76,7 @@ s &= 3 - t \\
 \end{aligned}
 $$
 
-Aus der dritten Gleichung folgt $t = 1$, aus der zweiten $s = 2$. Probe in der ersten: $1 + 2 = 3 \ne 1$. Die Gleichungen widersprechen einander, und die Richtungsvektoren sind nicht parallel – die Geraden sind **windschief**.
+Aus der dritten Gleichung folgt $t = 1$, aus der zweiten $s = 2$. Probe in der ersten: $1 + 2 = 3 \ne 1$. Die Gleichungen widersprechen einander, und die Richtungsvektoren sind nicht parallel. Die Geraden sind **windschief**.
 :::
 
 ## Ebenen im Raum
@@ -115,7 +115,7 @@ Ist der Richtungsvektor der Geraden normal auf den Normalvektor der Ebene ($\vec
 
 ## Abstände
 
-**Abstand Punkt – Ebene (bzw. Punkt – Gerade in $\mathbb{R}^2$):** Mit der **Hesseschen Normalform** gilt für die Ebene $ax + by + cz = d$ und den Punkt $Q = (q_x \mid q_y \mid q_z)$:
+**Abstand Punkt zu Ebene (bzw. Punkt zu Gerade in $\mathbb{R}^2$):** Mit der Hesseschen Normalform gilt für die Ebene $ax + by + cz = d$ und den Punkt $Q = (q_x \mid q_y \mid q_z)$:
 
 $$
 d(Q, \varepsilon) = \frac{\lvert a q_x + b q_y + c q_z - d \rvert}{\sqrt{a^2 + b^2 + c^2}}
@@ -131,7 +131,7 @@ d = \frac{\lvert 0 - 6 \rvert}{\sqrt{36 + 9 + 4}} = \frac{6}{7} \approx 0{,}857
 $$
 :::
 
-**Abstand Punkt – Gerade im Raum:** Mit dem vektoriellen Produkt gilt für $g\colon X = P + t\vec{v}$
+**Abstand Punkt zu Gerade im Raum:** Mit dem vektoriellen Produkt gilt für $g\colon X = P + t\vec{v}$
 
 $$
 d(Q, g) = \frac{\lvert \overrightarrow{PQ} \times \vec{v} \rvert}{\lvert \vec{v} \rvert}

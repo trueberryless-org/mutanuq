@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-A business needs a clear organisation so that everyone knows who is responsible for what and how work is done. A distinction is made between the **organisational structure** (who does what?) and the **process organisation** (how, when and in what order is work done?).
+A business needs a clear organisation so that everyone knows who is responsible for what and how work is done. A distinction is made between the **organisational structure** (who does what?) and the process organisation (how, when and in what order is work done?).
 
 ## Business functions
 

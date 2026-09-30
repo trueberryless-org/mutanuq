@@ -1,6 +1,6 @@
 ---
 title: USART - Universal Synchronous and Asynchronous Receiver Transmitter
-description: Serielle Kommunikation zwischen dem ATmega328P und dem PC – Baudrate, Datenformat, Senden und Empfangen von Zeichen und Zeichenketten.
+description: "Serielle Kommunikation zwischen dem ATmega328P und dem PC: Baudrate, Datenformat, Senden und Empfangen von Zeichen und Zeichenketten."
 sidebar:
   label: USART
   order: 10
@@ -12,7 +12,7 @@ In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, D
 
 ### Datenübertragung
 
-Für die Datenübertragung braucht es zwei PINs, einen PIN zum Senden (TX, _Transmit_) und einen PIN zum Empfangen (RX, _Receive_) von Daten. Dafür sind beim ATmega328p die PINs `PD0` (RXD) und `PD1` (TXD) reserviert. Wenn Sie das USART also verwenden möchten, achten Sie darauf, diese beiden PINs nicht gleichzeitig für andere Zwecke zu verwenden. Beim Verbinden zweier Geräte wird immer TX des einen mit RX des anderen verbunden (und umgekehrt), außerdem müssen beide Geräte eine gemeinsame Masse (GND) haben.
+Für die Datenübertragung braucht es zwei PINs, einen PIN zum Senden (TX, _Transmit_) und einen PIN zum Empfangen (RX, _Receive_) von Daten. Dafür sind beim ATmega328p die PINs `PD0` (RXD) und `PD1` (TXD) reserviert. Wenn du das USART also verwenden möchtest, achte darauf, diese beiden PINs nicht gleichzeitig für andere Zwecke zu verwenden. Beim Verbinden zweier Geräte wird immer TX des einen mit RX des anderen verbunden (und umgekehrt), außerdem müssen beide Geräte eine gemeinsame Masse (GND) haben.
 
 Im asynchronen Modus gibt es keine gemeinsame Taktleitung. Jedes Zeichen wird deshalb in einen **Rahmen** (_Frame_) verpackt:
 
@@ -37,11 +37,11 @@ $$
 UBRR0 = 103;
 ```
 
-Für andere Baud Rate-Konfigurationen lesen Sie bitte [Kapitel 19-11 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163) durch.
+Für andere Baud Rate-Konfigurationen lies bitte [Kapitel 19-11 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163) durch.
 
 #### Senden aktivieren
 
-Wenn Sie Daten senden möchten, müssen Sie dies aktivieren.
+Wenn du Daten senden möchtest, musst du dies aktivieren.
 
 ```c
 UCSR0B |= (1<<TXEN0);
@@ -65,13 +65,13 @@ So stellt man 8 Datenbits ein (dies ist nach einem Reset bereits die Standardein
 UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
 ```
 
-Für andere Konfigurationen verwenden Sie die [Tabelle 19-7 aus dem Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
+Für andere Konfigurationen verwende die [Tabelle 19-7 aus dem Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
 
 ## Code
 
 ### Konfiguration
 
-Meistens verwenden Sie diese Konfiguration, um alles bezüglich `USART` richtig zu konfigurieren:
+Meistens verwendest du diese Konfiguration, um alles bezüglich `USART` richtig zu konfigurieren:
 
 ```c
 UBRR0 = 103;

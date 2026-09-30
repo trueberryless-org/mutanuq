@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-Cloud Computing bezeichnet die Bereitstellung von IT-Ressourcen – etwa Rechenleistung, Speicher, Datenbanken oder ganze Anwendungen – über das Internet, die bei Bedarf gemietet und nach tatsächlicher Nutzung abgerechnet werden. Große Cloud-Anbieter wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) betreiben dafür riesige Rechenzentren auf der ganzen Welt und kümmern sich um Hardware, Wartung und eine hohe Verfügbarkeit. Programmierer können sich dadurch stärker auf die Applikationen und die Benutzerdaten konzentrieren. Diese Art, Software zu betreiben, ist in den letzten zwei Jahrzehnten immer beliebter geworden, da sie sowohl für die Anbieter als auch für die Kunden (Programmierer) einige Vorteile mit sich bringt.
+Cloud Computing bezeichnet die Bereitstellung von IT-Ressourcen wie Rechenleistung, Speicher, Datenbanken oder ganze Anwendungen über das Internet, die bei Bedarf gemietet und nach tatsächlicher Nutzung abgerechnet werden. Große Cloud-Anbieter wie Google (Google Cloud), Microsoft (Azure) und Amazon (AWS) betreiben dafür riesige Rechenzentren auf der ganzen Welt und kümmern sich um Hardware, Wartung und eine hohe Verfügbarkeit. Programmierer können sich dadurch stärker auf die Applikationen und die Benutzerdaten konzentrieren. Diese Art, Software zu betreiben, ist in den letzten zwei Jahrzehnten immer beliebter geworden, da sie sowohl für die Anbieter als auch für die Kunden (Programmierer) einige Vorteile mit sich bringt.
 
 ## Übersicht
 
@@ -67,15 +67,15 @@ Dies ist eine Mischung aus den obigen beiden Ressourcentypen. Bei einer Azure SQ
 
 ## Redundanz
 
-Für viele Dienste können Sie den gewünschten Grad der Redundanz angeben. Dieser bestimmt, wie gut Ihre Daten gegen Hardwareausfälle, Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
+Für viele Dienste kannst du den gewünschten Grad der Redundanz angeben. Dieser bestimmt, wie gut deine Daten gegen Hardwareausfälle, Naturkatastrophen und dergleichen geschützt sind und wiederhergestellt werden können.
 
 ### Lokal redundanter Speicher (LRS)
 
-Hierbei werden Ihre Daten drei Mal innerhalb eines einzigen physischen Standortes (Rechenzentrums) in der primären Region gespeichert. Das ist die günstigste Variante, allerdings sind die Daten dadurch nicht sehr gut gegen Feuer, Überflutungen und sonstige Vernichtungsmöglichkeiten einzelner Standorte geschützt.
+Hierbei werden deine Daten drei Mal innerhalb eines einzigen physischen Standortes (Rechenzentrums) in der primären Region gespeichert. Das ist die günstigste Variante, allerdings sind die Daten dadurch nicht sehr gut gegen Feuer, Überflutungen und sonstige Vernichtungsmöglichkeiten einzelner Standorte geschützt.
 
 ### Zonenredundanter Speicher (ZRS)
 
-ZRS kopiert Ihre Daten synchron über drei Azure-Verfügbarkeitszonen in der primären Region. Verfügbarkeitszonen sind voneinander getrennte Rechenzentren mit eigener Strom-, Kühl- und Netzwerkversorgung. Deswegen wird dieser Grad der Redundanz für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
+ZRS kopiert deine Daten synchron über drei Azure-Verfügbarkeitszonen in der primären Region. Verfügbarkeitszonen sind voneinander getrennte Rechenzentren mit eigener Strom-, Kühl- und Netzwerkversorgung. Deswegen wird dieser Grad der Redundanz für Anwendungen empfohlen, welche eine hohe Verfügbarkeit erfordern.
 
 ### Georedundanter Speicher (GRS)
 
@@ -87,4 +87,4 @@ Die höchste Redundanz bietet GZRS, eine Kombination aus ZRS und GRS: In der pri
 
 ## Skalierbarkeit
 
-Für die meisten Services gibt es die Option, eine `Auto-Skalierung` einzustellen, damit bei vielen Anfragen mehrere Instanzen Ihrer Services gestartet werden können und bei Ruhezeiten diese automatisch wieder heruntergefahren werden können. Dabei handelt es sich um [horizontale Skalierung](/de/software-development/software-metrics/#horizontale-skalierung). Wechselt man hingegen auf einen leistungsstärkeren Tarif mit mehr CPU und Arbeitsspeicher, skaliert man vertikal.
+Für die meisten Services gibt es die Option, eine `Auto-Skalierung` einzustellen, damit bei vielen Anfragen mehrere Instanzen deiner Services gestartet werden können und bei Ruhezeiten diese automatisch wieder heruntergefahren werden können. Dabei handelt es sich um [horizontale Skalierung](/de/software-development/software-metrics/#horizontale-skalierung). Wechselt man hingegen auf einen leistungsstärkeren Tarif mit mehr CPU und Arbeitsspeicher, skaliert man vertikal.
