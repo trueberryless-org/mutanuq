@@ -2,7 +2,7 @@
 title: Magisches Dreieck
 description: Die gegenseitige Abhängigkeit von Leistung, Zeit und Kosten in Projekten und warum man nicht alle drei gleichzeitig optimieren kann.
 sidebar:
-  order: 1
+  order: 5
 ---
 
 Das magische Dreieck beschreibt drei Faktoren im Projektmanagement, welche immer voneinander abhängig sind. Ändert sich ein Faktor, muss sich auch einer oder beide anderen Faktoren ändern.
@@ -43,4 +43,4 @@ In der agilen Softwareentwicklung (etwa mit Scrum) werden Zeit (feste Sprintlän
 
 Harry Sneed erweiterte das Modell zum **Teufelsquadrat**, das vier Größen enthält: **Qualität**, **Quantität** (Umfang), **Zeit** und **Kosten**. Die Fläche des Quadrats steht für die gleichbleibende Produktivität des Teams. Zieht man an einer Ecke, verbessert man also einen Faktor, muss mindestens eine andere Ecke nachgeben, solange sich an der Produktivität nichts ändert.
 
-Die Einhaltung dieser Ziele zu überwachen, ist eine zentrale Aufgabe des [Projektcontrollings](/de/project_management/project_controlling/).
+Die Einhaltung dieser Ziele zu überwachen, ist eine zentrale Aufgabe des [Projektcontrollings](/de/project_management/controlling/project_controlling/).

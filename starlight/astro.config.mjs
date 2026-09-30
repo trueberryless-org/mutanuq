@@ -240,6 +240,29 @@ export default defineConfig({
               link: "/deployment/",
               items: [
                 { slug: "deployment" },
+                {
+                  label: "Windows Server",
+                  translations: { en: "Windows Server" },
+                  items: [
+                    {
+                      autogenerate: { directory: "deployment/windows_server" },
+                    },
+                  ],
+                },
+                {
+                  label: "Linux-Server",
+                  translations: { en: "Linux Servers" },
+                  items: [
+                    { autogenerate: { directory: "deployment/linux_server" } },
+                  ],
+                },
+                {
+                  label: "Betrieb und Sicherheit",
+                  translations: { en: "Operations and Security" },
+                  items: [
+                    { autogenerate: { directory: "deployment/operations" } },
+                  ],
+                },
                 { slug: "deployment/virtualisation" },
                 { slug: "deployment/storage-systems" },
                 { slug: "deployment/security-strategies" },
@@ -382,8 +405,59 @@ export default defineConfig({
               link: "/project_management/",
               items: [
                 { slug: "project_management" },
-                { slug: "project_management/magic_triangle" },
-                { slug: "project_management/project_controlling" },
+                {
+                  label: "Grundlagen",
+                  translations: { en: "Basics" },
+                  items: [
+                    {
+                      autogenerate: { directory: "project_management/basics" },
+                    },
+                  ],
+                },
+                {
+                  label: "Projektorganisation",
+                  translations: { en: "Project Organisation" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/organisation",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Projektplanung",
+                  translations: { en: "Project Planning" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/planning",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Steuerung und Abschluss",
+                  translations: { en: "Controlling and Closing" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/controlling",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Qualitätsmanagement",
+                  translations: { en: "Quality Management" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/quality_management",
+                      },
+                    },
+                  ],
+                },
               ],
             },
           ],

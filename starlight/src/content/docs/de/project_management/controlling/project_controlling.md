@@ -2,7 +2,7 @@
 title: Projektcontrolling
 description: Planung, Kontrolle, Analyse und Steuerung von Projekten mit Werkzeugen wie Soll-Ist-Vergleich, ABC-Analyse, Termin- und Kostenkontrolle und Earned-Value-Analyse.
 sidebar:
-  order: 2
+  order: 1
 ---
 
 :::note

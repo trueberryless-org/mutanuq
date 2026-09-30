@@ -2,7 +2,7 @@
 title: Project Controlling
 description: Planning, monitoring, analysing and steering projects with tools such as target/actual comparison, ABC analysis, schedule and cost control and earned value analysis.
 sidebar:
-  order: 2
+  order: 1
 ---
 
 :::note

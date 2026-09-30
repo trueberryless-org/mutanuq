@@ -2,7 +2,7 @@
 title: Magic Triangle
 description: The interdependence of scope, time and cost in projects and why you cannot optimise all three at the same time.
 sidebar:
-  order: 1
+  order: 5
 ---
 
 The magic triangle describes three factors in project management that always depend on each other. If one factor changes, one or both of the other factors must change as well.
@@ -43,4 +43,4 @@ In agile software development (for example with Scrum), time (fixed sprint lengt
 
 Harry Sneed extended the model to the **devil's square**, which contains four variables: **quality**, **quantity** (scope), **time** and **cost**. The area of the square represents the constant productivity of the team. If you pull on one corner, i.e. improve one factor, at least one other corner has to give way, as long as productivity does not change.
 
-Monitoring whether these goals are met is a central task of [project controlling](/en/project_management/project_controlling/).
+Monitoring whether these goals are met is a central task of [project controlling](/en/project_management/controlling/project_controlling/).
