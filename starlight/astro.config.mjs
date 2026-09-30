@@ -115,7 +115,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: "software-development/design-patterns/behavioral-design-patterns",
+                            directory:
+                              "software-development/design-patterns/behavioral-design-patterns",
                           },
                         },
                       ],
@@ -128,7 +129,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: "software-development/design-patterns/creational-design-patterns",
+                            directory:
+                              "software-development/design-patterns/creational-design-patterns",
                           },
                         },
                       ],
@@ -141,7 +143,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: "software-development/design-patterns/structural-design-patterns",
+                            directory:
+                              "software-development/design-patterns/structural-design-patterns",
                           },
                         },
                       ],
@@ -297,7 +300,9 @@ export default defineConfig({
                 {
                   label: "Literatur",
                   translations: { en: "Literature" },
-                  items: [{ autogenerate: { directory: "languages/literature" } }],
+                  items: [
+                    { autogenerate: { directory: "languages/literature" } },
+                  ],
                 },
                 { slug: "languages/text_types" },
               ],
@@ -319,13 +324,17 @@ export default defineConfig({
                 {
                   label: "Recht",
                   translations: { en: "Law" },
-                  items: [{ autogenerate: { directory: "economy_and_law/law" } }],
+                  items: [
+                    { autogenerate: { directory: "economy_and_law/law" } },
+                  ],
                 },
                 {
                   label: "Rechnungswesen",
                   translations: { en: "Accounting" },
                   items: [
-                    { autogenerate: { directory: "economy_and_law/accounting" } },
+                    {
+                      autogenerate: { directory: "economy_and_law/accounting" },
+                    },
                   ],
                 },
               ],
