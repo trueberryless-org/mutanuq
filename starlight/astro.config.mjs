@@ -296,7 +296,34 @@ export default defineConfig({
               link: "/languages/",
               items: [
                 { slug: "languages" },
-                { slug: "languages/german_text_types" },
+                {
+                  label: "Textsorten Deutsch",
+                  translations: { en: "German Text Types" },
+                  items: [
+                    { slug: "languages/german_text_types" },
+                    { slug: "languages/german_text_types/stylistic_devices" },
+                    { slug: "languages/german_text_types/summary" },
+                    {
+                      slug: "languages/german_text_types/letter_to_the_editor",
+                    },
+                    { slug: "languages/german_text_types/argumentative_essay" },
+                    { slug: "languages/german_text_types/commentary" },
+                    { slug: "languages/german_text_types/text_analysis" },
+                    {
+                      label: "Textinterpretation",
+                      translations: { en: "Text Interpretation" },
+                      items: [
+                        {
+                          autogenerate: {
+                            directory:
+                              "languages/german_text_types/text_interpretation",
+                          },
+                        },
+                      ],
+                    },
+                    { slug: "languages/german_text_types/opinion_speech" },
+                  ],
+                },
                 {
                   label: "Literatur",
                   translations: { en: "Literature" },
@@ -304,7 +331,13 @@ export default defineConfig({
                     { autogenerate: { directory: "languages/literature" } },
                   ],
                 },
-                { slug: "languages/text_types" },
+                {
+                  label: "Textsorten Englisch",
+                  translations: { en: "English Text Types" },
+                  items: [
+                    { autogenerate: { directory: "languages/text_types" } },
+                  ],
+                },
               ],
             },
             {
