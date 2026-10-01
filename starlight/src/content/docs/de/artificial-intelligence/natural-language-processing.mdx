@@ -1,5 +1,8 @@
 ---
 title: Natural Language Processing
+description: Textverarbeitung mit spaCy, Feature Engineering mit Bag of Words und TF-IDF sowie Textklassifikation und Transformer-Modelle.
+sidebar:
+  order: 9
 ---
 
 Natürliche Sprachverarbeitung (Natural Language Processing, NLP) ist ein interdisziplinäres Forschungsfeld, das sich mit der Wechselwirkung zwischen Computern und menschlicher Sprache befasst. Das Hauptziel von NLP ist es, Computern die Fähigkeit zu verleihen, menschliche Sprache in all ihren Nuancen zu verstehen, zu interpretieren und darauf zu reagieren. Dies beinhaltet nicht nur die Erkennung von Wörtern und Grammatik, sondern auch die Analyse von Bedeutung, Kontext und sogar Emotionen, die in der menschlichen Sprache enthalten sein können.
@@ -8,7 +11,7 @@ NLP nutzt Methoden aus verschiedenen Bereichen wie Linguistik, Informatik und k�
 
 ## Text Processing
 
-Im ersten Schritt der Natural Language Processing muss der Text so bearbeitet werden, dass Merkmale (Wörter, Features) des Textes von der Maschine besser verarbeitet werden können.
+Im ersten Schritt des Natural Language Processing muss der Text so bearbeitet werden, dass Merkmale (Wörter, Features) des Textes von der Maschine besser verarbeitet werden können.
 
 1. **Reinigung**
    Der erste Schritt in der Textverarbeitungspipeline beinhaltet die Reinigung des Texts, um unnötige Zeichen, Symbole oder Formatierungen zu entfernen. Dies erleichtert die folgenden Verarbeitungsschritte und verbessert die Konsistenz der Daten.
@@ -37,11 +40,12 @@ Als Normalisierung bezeichnet man die Konvertierung von Text in Kleinbuchstaben.
 
 ```python
 ## Konvertierung in Kleinbuchstaben
-df = pd.DataFrame({'tweets': [col.lower() for col in ['I am a dog', 'I am a cat', 'I am a fish']]}).
+import pandas as pd
+df = pd.DataFrame({'tweets': [col.lower() for col in ['I am a dog!', 'I am a cat.', 'I am a fish?']]})
 
 ## Entfernung der Satzzeichen
 import re
-df.tweets = [re.sub("[^a-z0-9 .]", '', col) for col in df.tweets]
+df.tweets = [re.sub("[^a-z0-9 ]", '', col) for col in df.tweets]
 ```
 
 ### Tokenisierung
@@ -83,7 +87,7 @@ Euro                 NOUN                  False      Euro
 
 ### Stoppwörter entfernen
 
-Vieler Wörter jeder Sprache haben eine geringen Einfluss auf die Aussagekraft eines Textes. Diese Wörter werden als Stoppwörter bezeichnet. Im Normalfall können KI-Modelle besser trainiert werden, wenn die Stoppwörter aus dem Text entfernt werden.
+Viele Wörter jeder Sprache haben einen geringen Einfluss auf die Aussagekraft eines Textes. Diese Wörter werden als Stoppwörter bezeichnet. Klassische Modelle wie Bag of Words können im Normalfall besser trainiert werden, wenn die Stoppwörter aus dem Text entfernt werden. Bei modernen Transformer-Modellen werden Stoppwörter hingegen nicht entfernt, da auch Wörter wie „nicht“ die Bedeutung eines Satzes entscheidend verändern können.
 
 ```python
 import spacy
@@ -95,7 +99,7 @@ class NLP:
 
     def remove_stopwords(self):
         doc = nlp(self.text)
-        self.text = " ".join([token for token in doc if not token.is_stop])
+        self.text = " ".join([token.text for token in doc if not token.is_stop])
         return self.text
 
 text = "How to develop a chatbot using Python"
@@ -103,7 +107,7 @@ text = NLP(text).remove_stopwords()
 print(text) ## develop chatbot Python
 ```
 
-### Parts of Speech Tagging
+### Part-of-Speech-Tagging
 
 Part-of-Speech-Tagging ist eine NLP-Technik, die jedem Wort in einem Text grammatikalische Kategorien zuweist, wie Nomen, Verben oder Adjektive. Diese Markierungen helfen bei der Analyse der Satzstruktur und unterstützen Aufgaben wie Textanalyse und Sentimentanalyse.
 
@@ -156,7 +160,7 @@ Paris                LOC
 
 ### Stemming & Lemmatisierung
 
-Stemming und Lemmatisierung sind Techniken zur Textnormalisierung in der NLP. Sie reduzieren Wörter auf ihre Basisformen (Stammwörter), was die Effizienz von Such- und Klassifikationsalgorithmen verbessert. Lemmatisierung hat hierbei den Vorteil gegenüber Stemming, ein Wörterbuch zu verwenden, das die Wortformen auf ihre Stammebene normalisiert.
+Stemming und Lemmatisierung sind Techniken zur Textnormalisierung in der NLP. Sie reduzieren Wörter auf ihre Basisformen (Stammwörter), was die Effizienz von Such- und Klassifikationsalgorithmen verbessert. Stemming schneidet dabei nur nach festen Regeln Endungen ab (aus „studies“ wird etwa „studi“). Lemmatisierung hat hierbei den Vorteil gegenüber Stemming, ein Wörterbuch und grammatikalisches Wissen zu verwenden, das die Wortformen auf ihre tatsächliche Grundform (das Lemma) zurückführt.
 
 ```python
 import spacy
@@ -185,7 +189,7 @@ Autos                Auto
 
 Machine Learning Algorithmen können mit Text nicht viel anfangen. Diese bevorzugen numerische Eingaben. Besteht nun die Notwendigkeit, Text zu verarbeiten, ist dessen Umwandlung in eine numerische Darstellungsform unumgänglich. Dieser Vorgang ist Teil des sogenannten `Feature Engineerings`. Unter Feature Engineering bei Texten versteht man den Prozess der Auswahl, Erstellung und Transformation von Merkmalen (Features).
 
-Methoden zur Umwandlung von Text in numerische Darstellungen sind beispielsweise `One-Hot Encoding`, `N-Gramme` und `TF-IDF` (Term Frequency-Inverse Document Frequency). N-Gramme werden oft in leichtgewichtigen Shallow-Learning-Modellen wie Random Forest und logistischer Regression verwendet. TF-IDF hingegen finden eher Anwendung in Deep Learning Modellen.
+Methoden zur Umwandlung von Text in numerische Darstellungen sind beispielsweise `One-Hot Encoding`, `N-Gramme` und `TF-IDF` (Term Frequency-Inverse Document Frequency). Diese Verfahren werden vor allem in leichtgewichtigen Shallow-Learning-Modellen wie Random Forest, Naive Bayes und logistischer Regression verwendet. Deep-Learning-Modelle arbeiten hingegen meist mit gelernten, dichten Vektoren, den sogenannten [Word Embeddings](#word-embeddings).
 
 ### One-Hot Encoding
 
@@ -196,7 +200,7 @@ import spacy
 from sklearn.feature_extraction.text import CountVectorizer
 nlp = spacy.load('en_core_web_sm') ## de_core_news_sm
 
-text="Jim loves NLP. He will learn NLP in two monts. NLP is Jim's future."
+text="Jim loves NLP. He will learn NLP in two months. NLP is Jim's future."
 
 def get_spacy_tokens(text):
     doc = nlp(text)
@@ -214,7 +218,7 @@ print("Encoded Document is:\n", vector.toarray())
 ```python
 // one-hot.output
 Vocabulary:
- {'Jim': 3, 'loves': 9, 'NLP': 4, '.': 1, 'He': 2, 'will': 12, 'learn': 8, 'in': 6, 'two': 11, 'monts': 10, 'is': 7, "'s": 0, 'future': 5}
+ {'Jim': 3, 'loves': 9, 'NLP': 4, '.': 1, 'He': 2, 'will': 12, 'learn': 8, 'in': 6, 'two': 11, 'months': 10, 'is': 7, "'s": 0, 'future': 5}
 Encoded Document is:
  [[0 0 0 1 0 0 0 0 0 0 0 0 0]
  [0 0 0 0 0 0 0 0 0 1 0 0 0]
@@ -318,7 +322,7 @@ print(vectorizer.get_feature_names_out())
 ## ['adventures' 'and' 'apples' 'at' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'for' 'forest' 'gathered' 'gatherings' 'grateful' 'had' 'in' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'on' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'the' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'were' 'whiskers' 'wildflowers' 'with']
 ```
 
-Dabei werden einbuchstabige Wörter wie `a`, `I` oder Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
+Dabei werden einbuchstabige Tokens wie `a`, `I` oder einstellige Zahlen ignoriert, was mittels `token_pattern` geändert werden kann.
 
 ```python
 vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b')
@@ -337,7 +341,7 @@ print(vectorizer.get_feature_names_out())
 ## ['adventures' 'apples' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'forest' 'gathered' 'gatherings' 'grateful' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'whiskers' 'wildflowers']
 ```
 
-Jedes Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `max lisa tim` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
+Jede Vokabel enthält hier nur ein Wort, was bedeutet, dass beispielsweise `max lisa tim` nicht gefunden werden kann. Will man dieses Verhalten beeinflussen, kann man mittels `ngram_range` die minimale und maximale Wortanzahl festlegen.
 
 ```python
 vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
@@ -360,14 +364,14 @@ print(vectorizer.get_feature_names_out())
 ## ['max lisa tim']
 ```
 
-Sobald man mit den Features zufrieden ist, kann man sich das Vokabular anzeigen lassen. Dieses ist ein Dictionary, welches jedes Wort einer Zahl zuweist, damit beim Machine Learning Prozess besser damit gearbeitet werden kann. Computer verstehen Nummern besser als Wörter.
+Sobald man mit den Features zufrieden ist, kann man sich das Vokabular anzeigen lassen. Dieses ist ein Dictionary, welches jedes Wort einer Zahl zuweist, damit beim Machine-Learning-Prozess besser damit gearbeitet werden kann. Computer verstehen Nummern besser als Wörter. Die folgenden Ausgaben beziehen sich auf den Vectorizer mit Stoppwörtern, aber ohne `ngram_range` und `vocabulary`.
 
 ```python
 print(vectorizer.vocabulary_)
 ## {'charming': 8, 'village': 50, 'max': 31, 'lisa': 29, 'tim': 47, 'enjoyed': 16, 'life': 28, 'joys': 26, 'their': 44, 'pets': 35, 'rocky': 39, 'lively': 30, 'dog': 14, 'whiskers': 51, 'elegant': 15, 'cat': 6, 'charlie': 7, 'colorful': 9, 'parrot': 34, 'daily': 11, 'they': 46, 'gathered': 21, 'square': 41, 'exploring': 18, 'nearby': 33, 'forest': 20, 'discovering': 13, 'vibrant': 49, 'birds': 3, 'wildflowers': 52, 'babbling': 2, 'stream': 42, 'grateful': 23, 'adventures': 0, 'remained': 38, 'inseparable': 25, 'even': 17, 'rainy': 37, 'days': 12, 'trio': 48, 'met': 32, 'indoors': 24, 'brought': 4, 'tea': 43, 'cookies': 10, 'shared': 40, 'apples': 1, 'these': 45, 'gatherings': 22, 'filled': 19, 'laughter': 27, 'camaraderie': 5, 'quaint': 36}
 ```
 
-Nun kann man die Features mittels `.transform()` in einem Nummern-Matrix umwandeln. Diese sagt aus, welche Vokabeln in den drei Sätzen von `corpus` vorkommen. Beispielsweise kommt im ersten Satz das Wort `charming` vor, weswegen bei Index 8 die Zahl 1 steht (grün markiert). Kommt ein Wort öfter vor, steht die entsprechende Anzahl an der Stelle. Hierbei ist das Wort `lisa` (Index 29) rot markiert, da Lisa im dritten String zweimal vorkommt.
+Nun kann man die Features mittels `.transform()` in eine Zahlenmatrix umwandeln. Diese sagt aus, welche Vokabeln in den drei Sätzen von `corpus` vorkommen. Beispielsweise kommt im ersten Satz das Wort `charming` vor, weswegen bei Index 8 die Zahl 1 steht (grün markiert). Kommt ein Wort öfter vor, steht die entsprechende Anzahl an der Stelle. Hierbei ist das Wort `lisa` (Index 29) rot markiert, da Lisa im dritten String zweimal vorkommt.
 
 ```python ins="‎1" del="‎2"
 vector = vectorizer.transform(corpus)
@@ -381,7 +385,7 @@ print(vector.toarray())
 ```
 
 :::tip[Aha]
-Falls Sie sich fragen, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert. Der Vectorizer verfügt somit über ein Vokabular von 53 Wörtern.
+Falls du dich fragst, woher die Zahl `53` bei der Shape kommt: Es gibt 53 unterschiedliche Wörter in den Sätzen von `corpus`. Zumindest hat der CountVectorizer die Sätze so tokenisiert. Der Vectorizer verfügt somit über ein Vokabular von 53 Wörtern.
 :::
 
 :::note
@@ -406,13 +410,90 @@ pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
 
 #### LabelEncoder
 
-Ein `LabelEncoder` nummeriert die verschiedenen Wörter in einem Vokabular. Diese Wörter werden dann in einem Array zusammengefasst.
+Ein `LabelEncoder` nummeriert die verschiedenen Werte einer Liste, meist die Zielklassen (`y`) eines Datensatzes. Die Nummern werden alphabetisch vergeben und in einem Array zusammengefasst.
 
 ```python
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
-labels = le.fit_transform(['Muffin', 'Donat', 'Donat', 'Donat', 'Muffin', 'Muffin', 'Donat', 'Muffin', 'Donat', 'Muffin'])
+labels = le.fit_transform(['Muffin', 'Donut', 'Donut', 'Donut', 'Muffin', 'Muffin', 'Donut', 'Muffin', 'Donut', 'Muffin'])
 print(labels) ## [1 0 0 0 1 1 0 1 0 1]
 ```
 
+### TF-IDF
+
+Beim reinen Zählen von Wörtern erhalten häufige Wörter wie „the“ oder „village“ ein hohes Gewicht, obwohl sie wenig über einen einzelnen Text aussagen. **TF-IDF** (_Term Frequency, Inverse Document Frequency_) gleicht das aus:
+
+- Die **Term Frequency** $tf(t, d)$ gibt an, wie oft ein Wort $t$ in einem Dokument $d$ vorkommt.
+- Die **Inverse Document Frequency** $idf(t) = \log\frac{N}{df(t)}$ ist umso größer, je weniger der $N$ Dokumente das Wort enthalten.
+
+Der TF-IDF-Wert $tf(t, d) \cdot idf(t)$ ist also hoch für Wörter, die in einem Dokument häufig, im gesamten Korpus aber selten vorkommen. Das sind genau jene Wörter, die ein Dokument gut charakterisieren. (scikit-learn verwendet standardmäßig eine leicht geglättete Variante dieser Formel und normalisiert die Vektoren.)
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(stop_words='english')
+X_tfidf = tfidf.fit_transform(corpus)
+print(X_tfidf.shape) ## (3, <Anzahl unterschiedliche Wörter ohne Stoppwörter>)
+```
+
+Der `TfidfVectorizer` bietet dieselben Parameter wie der `CountVectorizer` (`ngram_range`, `stop_words`, `vocabulary`, ...).
+
+### Word Embeddings
+
+Bei Bag of Words und TF-IDF ist jedes Wort eine eigene Dimension. Die Vektoren sind dadurch sehr lang, fast nur mit Nullen gefüllt, und Wörter wie „Auto“ und „Fahrzeug“ haben nichts miteinander zu tun. **Word Embeddings** wie _Word2Vec_, _GloVe_ oder _fastText_ stellen jedes Wort stattdessen als dichten Vektor mit meist 100 bis 300 Dimensionen dar. Diese Vektoren werden aus großen Textmengen gelernt, sodass Wörter mit ähnlicher Bedeutung nahe beieinanderliegen. Berühmt ist das Beispiel:
+
+$$
+\vec{König} - \vec{Mann} + \vec{Frau} \approx \vec{Königin}
+$$
+
+Die größeren spaCy-Modelle (zum Beispiel `de_core_news_md`) enthalten bereits Wortvektoren:
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_md")
+print(nlp("Auto").similarity(nlp("Fahrzeug"))) ## hoher Wert, z. B. 0.7
+print(nlp("Auto").similarity(nlp("Banane")))   ## niedriger Wert
+```
+
 ## Modeling
+
+Sobald der Text in Zahlen umgewandelt wurde, kann ein beliebiges Modell aus dem [Supervised Learning](/de/artificial-intelligence/supervised-learning/) trainiert werden. Mit einer `Pipeline` aus scikit-learn lassen sich Vektorisierung und Klassifikation zu einem einzigen Modell verbinden. Das ist nicht nur übersichtlicher, sondern verhindert auch, dass das Vokabular versehentlich mit den Testdaten gelernt wird.
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import classification_report
+
+## df enthält die Spalten 'text' und 'label' (z. B. "spam" / "ham")
+X_train, X_test, y_train, y_test = train_test_split(df['text'], df['label'], test_size=0.3, random_state=42)
+
+model = make_pipeline(TfidfVectorizer(ngram_range=(1, 2)), LogisticRegression(max_iter=1000))
+model.fit(X_train, y_train)
+
+print(classification_report(y_test, model.predict(X_test)))
+print(model.predict(["Sie haben ein iPhone gewonnen! Jetzt klicken!"])) ## ['spam']
+```
+
+### Sentimentanalyse
+
+Bei der **Sentimentanalyse** wird die Stimmung eines Textes bestimmt, etwa ob eine Produktbewertung positiv, neutral oder negativ ist. Mit klassischen Verfahren trainiert man dafür wie oben einen Klassifikator auf gelabelten Bewertungen. Alternativ gibt es fertige, vortrainierte Modelle.
+
+### Transformer-Modelle
+
+Moderne NLP-Systeme basieren fast ausschließlich auf [Transformern](/de/artificial-intelligence/supervised-learning/#transformer-netzwerke). Diese Modelle werden zuerst auf riesigen Textmengen **vortrainiert** (_Pre-Training_) und lernen dabei Sprache ganz allgemein. Anschließend werden sie mit vergleichsweise wenigen Beispielen auf eine konkrete Aufgabe **feinabgestimmt** (_Fine-Tuning_). Man unterscheidet grob:
+
+- **Encoder-Modelle** wie BERT verstehen Texte besonders gut und eignen sich für Klassifikation, NER oder Suche.
+- **Decoder-Modelle** wie GPT erzeugen Texte Wort für Wort (genauer: Token für Token) und bilden die Grundlage von Chatbots wie ChatGPT.
+- **Encoder-Decoder-Modelle** wie T5 wandeln einen Text in einen anderen um, zum Beispiel bei Übersetzungen oder Zusammenfassungen.
+
+Über die Bibliothek `transformers` von Hugging Face lassen sich tausende vortrainierte Modelle mit wenigen Zeilen verwenden:
+
+```python
+from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis", model="oliverguhr/german-sentiment-bert")
+print(classifier("Das Produkt ist wirklich großartig, ich bin sehr zufrieden!"))
+## [{'label': 'positive', 'score': 0.99...}]
+```

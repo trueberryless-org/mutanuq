@@ -1,3 +1,45 @@
 ---
 title: CAP-Theorem
+description: Warum ein verteiltes Datenbanksystem bei einer Netzwerkpartition zwischen Konsistenz und Verfügbarkeit wählen muss.
+sidebar:
+  order: 4
 ---
+
+Das **CAP-Theorem** (auch Brewers Theorem) wurde im Jahr 2000 von Eric Brewer formuliert und 2002 von Seth Gilbert und Nancy Lynch bewiesen. Es besagt, dass ein verteiltes Datenspeichersystem höchstens **zwei der drei** folgenden Eigenschaften gleichzeitig garantieren kann.
+
+## Die drei Eigenschaften
+
+- **C**onsistency (Konsistenz)  
+  Jeder Lesezugriff liefert den zuletzt geschriebenen Wert oder einen Fehler. Alle Knoten sehen zur selben Zeit dieselben Daten.
+
+- **A**vailability (Verfügbarkeit)  
+  Jede Anfrage an einen funktionierenden Knoten erhält eine Antwort, allerdings ohne Garantie, dass diese den aktuellsten Wert enthält.
+
+- **P**artition Tolerance (Partitionstoleranz)  
+  Das System arbeitet weiter, auch wenn Nachrichten zwischen Knoten verloren gehen oder das Netzwerk in mehrere Teile zerfällt (_Netzwerkpartition_).
+
+## Die eigentliche Entscheidung
+
+In einem verteilten System lassen sich Netzwerkausfälle nie vollständig ausschließen. Partitionstoleranz ist daher praktisch immer notwendig. Die eigentliche Aussage des CAP-Theorems lautet deshalb: **Tritt eine Netzwerkpartition auf, muss sich das System zwischen Konsistenz und Verfügbarkeit entscheiden.**
+
+Beispiel: Zwei Datenbankserver in Wien und Krems replizieren ihre Daten. Die Verbindung zwischen ihnen bricht ab und ein Benutzer ändert in Wien einen Datensatz. Nun fragt ein anderer Benutzer denselben Datensatz in Krems ab.
+
+- Ein **CP-System** verweigert die Antwort (oder liefert einen Fehler), bis die Verbindung wiederhergestellt ist. Die Daten bleiben konsistent, das System ist aber teilweise nicht verfügbar.
+- Ein **AP-System** antwortet mit dem veralteten Wert. Das System bleibt verfügbar, liefert aber vorübergehend inkonsistente Daten.
+
+| Typ    | Garantien                          | Beispiele                                         |
+| ------ | ---------------------------------- | ------------------------------------------------- |
+| **CP** | Konsistenz und Partitionstoleranz  | MongoDB (Standardkonfiguration), HBase, etcd, ZooKeeper |
+| **AP** | Verfügbarkeit und Partitionstoleranz | Cassandra, CouchDB, DynamoDB, DNS                |
+| **CA** | Konsistenz und Verfügbarkeit       | Klassische relationale Datenbank auf einem einzelnen Server (nicht verteilt) |
+
+Ein CA-System ist nur möglich, wenn es keine Netzwerkpartitionen geben kann, also im Grunde nur bei einem nicht verteilten System.
+
+## Zusammenhang mit ACID und BASE
+
+- CP-Systeme orientieren sich eher am [ACID-Modell](/de/databases/relational-databases/#acid-transaktionen) mit starker Konsistenz.
+- AP-Systeme folgen meist dem [BASE-Modell](/de/databases/document-oriented-databases/#base) mit _Eventual Consistency_.
+
+## Erweiterung: PACELC
+
+Das CAP-Theorem beschreibt nur den Fehlerfall. Das **PACELC-Theorem** ergänzt: Bei einer Partition (**P**) muss zwischen **A**vailability und **C**onsistency gewählt werden, **e**lse (im Normalbetrieb) zwischen **L**atency (Antwortzeit) und **C**onsistency. Auch ohne Ausfall kostet starke Konsistenz nämlich Zeit, weil sich die Knoten erst abstimmen müssen.

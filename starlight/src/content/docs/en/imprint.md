@@ -11,13 +11,13 @@ Felix Schneider (trueberryless)
 Ketz 13  
 3541 Senftenberg
 
-Website: [trueberryless.org](https://trueberryless.org)
+Website: [felixs.dev](https://felixs.dev)
 
 ## Disclaimer
 
 ### Content
 
-The content of this website has been created with the utmost care. However, no guarantee can be given for the correctness, completeness, and topicality of the content. As a service provider, we are responsible for our own content on this website in accordance with § 7 para. 1 ECG and general laws. However, according to §§ 8 to 10 ECG, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general laws remain unaffected. However, liability in this regard is only possible from the time of knowledge of a specific legal violation. Upon becoming aware of corresponding legal violations, we will remove this content immediately.
+The content of this website has been created with the utmost care. However, no guarantee can be given for the correctness, completeness, and topicality of the content. As a service provider, we are responsible for our own content on this website in accordance with general laws. However, according to § 18 ECG, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general laws remain unaffected. However, liability in this regard is only possible from the time of knowledge of a specific legal violation. Upon becoming aware of corresponding legal violations, we will remove this content immediately.
 
 ### External Links
 

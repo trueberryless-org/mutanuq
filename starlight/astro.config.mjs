@@ -1,9 +1,10 @@
+import { unified } from "@astrojs/markdown-remark";
 import starlight from "@astrojs/starlight";
 import lunaria from "@lunariajs/starlight";
 import { defineConfig } from "astro/config";
 import rehypeMathjax from "rehype-mathjax";
 import remarkMath from "remark-math";
-import starlightCoolerCredit from "starlight-cooler-credit";
+import starlightGroupPages from "starlight-group-pages";
 import starlightImageZoom from "starlight-image-zoom";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightSidebarTopics from "starlight-sidebar-topics";
@@ -13,7 +14,7 @@ import starlightViewModes from "starlight-view-modes";
 // https://astro.build/config
 // https://starlight.astro.build/reference/configuration/
 export default defineConfig({
-  site: "https://mutanuq.trueberryless.org",
+  site: "https://mutanuq.felixs.dev",
   integrations: [
     starlight({
       title: "Mutanuq",
@@ -67,6 +68,7 @@ export default defineConfig({
         "@fontsource-variable/jetbrains-mono/wght.css",
       ],
       components: {
+        MarkdownContent: "./src/components/MarkdownContent.astro",
         Pagination: "./src/components/Pagination.astro",
         TableOfContents: "./src/components/TableOfContents.astro",
         Sidebar: "./src/components/Sidebar.astro",
@@ -75,209 +77,408 @@ export default defineConfig({
         lunaria({
           sync: true,
         }),
-        starlightViewModes({
-          zenModeSettings: {
-            keyboardShortcut: "Ctrl+Shift+Z",
-          },
-        }),
+        starlightViewModes(),
         starlightImageZoom(),
-        starlightLinksValidator(),
-        starlightSidebarTopics([
-          {
-            label: {
-              en: "Software Development",
-              de: "Softwareentwicklung",
-            },
-            icon: "puzzle",
-            link: "/software-development/object-oriented-programming",
-            items: [
-              { slug: "software-development/object-oriented-programming" },
-              { slug: "software-development/software-metrics" },
-              {
-                label: "Entwurfsmuster",
-                translations: {
-                  en: "Design Patterns",
-                },
-                items: [
-                  {
-                    slug: "software-development/design-patterns",
-                  },
-                  {
-                    label: "Verhaltensbasierte Entwurfsmuster",
-                    translations: {
-                      en: "Behavioral Design Patterns",
-                    },
-                    items: [
-                      {
-                        slug: "software-development/design-patterns/behavioral-design-patterns/command",
-                      },
-                      {
-                        slug: "software-development/design-patterns/behavioral-design-patterns/strategy",
-                      },
-                    ],
-                  },
-                  {
-                    label: "Schöpferische Entwurfsmuster",
-                    translations: {
-                      en: "Creational Design Patterns",
-                    },
-                    items: [
-                      {
-                        slug: "software-development/design-patterns/creational-design-patterns/singleton",
-                      },
-                    ],
-                  },
-                  {
-                    label: "Strukturelle Entwurfsmuster",
-                    translations: {
-                      en: "Structural Design Patterns",
-                    },
-                    items: [
-                      {
-                        slug: "software-development/design-patterns/structural-design-patterns/adapter",
-                      },
-                      {
-                        slug: "software-development/design-patterns/structural-design-patterns/decorator",
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            label: {
-              en: "Databases",
-              de: "Datenbanken",
-            },
-            icon: "document",
-            link: "/databases/relational-databases/",
-            items: [
-              { slug: "databases/relational-databases" },
-              { slug: "databases/document-oriented-databases" },
-              { slug: "databases/schema" },
-              { slug: "databases/cap-theorem" },
-            ],
-          },
-          {
-            label: {
-              en: "Artificial Intelligence",
-              de: "Künstliche Intelligenz",
-            },
-            icon: "star",
-            link: "/artificial-intelligence/",
-            items: [
-              { slug: "artificial-intelligence" },
-              { slug: "artificial-intelligence/python" },
-              { slug: "artificial-intelligence/numpy" },
-              { slug: "artificial-intelligence/pandas" },
-              { slug: "artificial-intelligence/matplotlib" },
-              { slug: "artificial-intelligence/seaborn" },
-              { slug: "artificial-intelligence/machine-learning" },
-              { slug: "artificial-intelligence/deep-learning" },
-              { slug: "artificial-intelligence/supervised-learning" },
-              { slug: "artificial-intelligence/natural-language-processing" },
-            ],
-          },
-          {
-            label: {
-              en: "Decentralised Systems",
-              de: "Dezentrale Systeme",
-            },
-            icon: "cloud-download",
-            link: "/decentralised-systems/cloud-computing/",
-            items: [
-              { slug: "decentralised-systems/cloud-computing" },
-              { slug: "decentralised-systems/storage-account" },
-              { slug: "decentralised-systems/azure-functions" },
-              { slug: "decentralised-systems/durable-functions" },
-            ],
-          },
-          {
-            label: {
-              en: "Embedded Systems",
-              de: "Hardwarenahe Programmierung",
-            },
-            icon: "laptop",
-            link: "/embedded-programming/",
-            items: [
-              { slug: "embedded-programming" },
-              { slug: "embedded-programming/basic-programm" },
-              { slug: "embedded-programming/special-function-register" },
-              { slug: "embedded-programming/light-emitting-diode" },
-              { slug: "embedded-programming/button" },
-              { slug: "embedded-programming/liquid-crystal-display" },
-              { slug: "embedded-programming/interrupts" },
-              { slug: "embedded-programming/analogue-digital-converter" },
-              { slug: "embedded-programming/timer" },
-              { slug: "embedded-programming/pointer" },
-              { slug: "embedded-programming/usart" },
-              { slug: "embedded-programming/spi" },
-              { slug: "embedded-programming/eeprom" },
-            ],
-          },
-          {
-            label: {
-              en: "Deployment",
-              de: "Bereitstellung",
-            },
-            icon: "rocket",
-            link: "/deployment/virtualisation/",
-            items: [
-              { slug: "deployment/virtualisation" },
-              { slug: "deployment/storage-systems" },
-              { slug: "deployment/security-strategies" },
-            ],
-          },
-          {
-            label: {
-              en: "Languages",
-              de: "Sprachen",
-            },
-            icon: "translate",
-            link: "/languages/german_text_types/",
-            items: [
-              { slug: "languages/german_text_types" },
-              { slug: "languages/literature" },
-              { slug: "languages/text_types" },
-            ],
-          },
-          {
-            label: {
-              en: "Economy and Law",
-              de: "Wirtschaft und Recht",
-            },
-            icon: "approve-check-circle",
-            link: "/economy_and_law/company_foundation/",
-            items: [
-              { slug: "economy_and_law/company_foundation" },
-              { slug: "economy_and_law/marketing" },
-            ],
-          },
-          {
-            label: {
-              en: "Project Management",
-              de: "Projektmanagement",
-            },
-            icon: "list-format",
-            link: "/project_management/magic_triangle/",
-            items: [
-              { slug: "project_management/magic_triangle" },
-              { slug: "project_management/project_controlling" },
-            ],
-          },
-        ]),
-        starlightThemeRapide(),
-        starlightCoolerCredit({
-          customImage: "./src/assets/starlight-hero-star.png",
-          customImageAlt: "Mutant Logo",
+        starlightGroupPages({
+          extendIndexPages: false,
+          sidebarLink: "label",
         }),
+        starlightLinksValidator(),
+        starlightSidebarTopics(
+          [
+            {
+              id: "software-development",
+              label: {
+                en: "Software Development",
+                de: "Softwareentwicklung",
+              },
+              icon: "puzzle",
+              link: "/software-development/",
+              items: [
+                { slug: "software-development" },
+                { slug: "software-development/object-oriented-programming" },
+                { slug: "software-development/software-metrics" },
+                {
+                  label: "Entwurfsmuster",
+                  translations: {
+                    en: "Design Patterns",
+                  },
+                  items: [
+                    {
+                      slug: "software-development/design-patterns",
+                    },
+                    {
+                      label: "Verhaltensbasierte Entwurfsmuster",
+                      translations: {
+                        en: "Behavioral Design Patterns",
+                      },
+                      items: [
+                        {
+                          autogenerate: {
+                            directory:
+                              "software-development/design-patterns/behavioral-design-patterns",
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      label: "Erzeugende Entwurfsmuster",
+                      translations: {
+                        en: "Creational Design Patterns",
+                      },
+                      items: [
+                        {
+                          autogenerate: {
+                            directory:
+                              "software-development/design-patterns/creational-design-patterns",
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      label: "Strukturelle Entwurfsmuster",
+                      translations: {
+                        en: "Structural Design Patterns",
+                      },
+                      items: [
+                        {
+                          autogenerate: {
+                            directory:
+                              "software-development/design-patterns/structural-design-patterns",
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "databases",
+              label: {
+                en: "Databases",
+                de: "Datenbanken",
+              },
+              icon: "document",
+              link: "/databases/",
+              items: [
+                { slug: "databases" },
+                { slug: "databases/relational-databases" },
+                { slug: "databases/document-oriented-databases" },
+                { slug: "databases/schema" },
+                { slug: "databases/cap-theorem" },
+              ],
+            },
+            {
+              id: "artificial-intelligence",
+              label: {
+                en: "Artificial Intelligence",
+                de: "Künstliche Intelligenz",
+              },
+              icon: "star",
+              link: "/artificial-intelligence/",
+              items: [
+                { slug: "artificial-intelligence" },
+                { slug: "artificial-intelligence/python" },
+                { slug: "artificial-intelligence/numpy" },
+                { slug: "artificial-intelligence/pandas" },
+                { slug: "artificial-intelligence/matplotlib" },
+                { slug: "artificial-intelligence/seaborn" },
+                { slug: "artificial-intelligence/machine-learning" },
+                { slug: "artificial-intelligence/deep-learning" },
+                { slug: "artificial-intelligence/supervised-learning" },
+                { slug: "artificial-intelligence/natural-language-processing" },
+              ],
+            },
+            {
+              id: "decentralised-systems",
+              label: {
+                en: "Decentralised Systems",
+                de: "Dezentrale Systeme",
+              },
+              icon: "cloud-download",
+              link: "/decentralised-systems/",
+              items: [
+                { slug: "decentralised-systems" },
+                { slug: "decentralised-systems/cloud-computing" },
+                { slug: "decentralised-systems/storage-account" },
+                { slug: "decentralised-systems/azure-functions" },
+                { slug: "decentralised-systems/durable-functions" },
+              ],
+            },
+            {
+              id: "embedded-programming",
+              label: {
+                en: "Embedded Systems",
+                de: "Hardwarenahe Programmierung",
+              },
+              icon: "laptop",
+              link: "/embedded-programming/",
+              items: [
+                { slug: "embedded-programming" },
+                { slug: "embedded-programming/basic-programm" },
+                { slug: "embedded-programming/special-function-register" },
+                { slug: "embedded-programming/light-emitting-diode" },
+                { slug: "embedded-programming/button" },
+                { slug: "embedded-programming/liquid-crystal-display" },
+                { slug: "embedded-programming/interrupts" },
+                { slug: "embedded-programming/analogue-digital-converter" },
+                { slug: "embedded-programming/timer" },
+                { slug: "embedded-programming/pointer" },
+                { slug: "embedded-programming/usart" },
+                { slug: "embedded-programming/spi" },
+                { slug: "embedded-programming/eeprom" },
+              ],
+            },
+            {
+              id: "deployment",
+              label: {
+                en: "Deployment",
+                de: "Bereitstellung",
+              },
+              icon: "rocket",
+              link: "/deployment/",
+              items: [
+                { slug: "deployment" },
+                {
+                  label: "Windows Server",
+                  translations: { en: "Windows Server" },
+                  items: [
+                    {
+                      autogenerate: { directory: "deployment/windows_server" },
+                    },
+                  ],
+                },
+                {
+                  label: "Linux-Server",
+                  translations: { en: "Linux Servers" },
+                  items: [
+                    { autogenerate: { directory: "deployment/linux_server" } },
+                  ],
+                },
+                {
+                  label: "Betrieb und Sicherheit",
+                  translations: { en: "Operations and Security" },
+                  items: [
+                    { autogenerate: { directory: "deployment/operations" } },
+                  ],
+                },
+                { slug: "deployment/virtualisation" },
+                { slug: "deployment/storage-systems" },
+                { slug: "deployment/security-strategies" },
+              ],
+            },
+            {
+              id: "mathematics",
+              label: {
+                en: "Mathematics",
+                de: "Mathematik",
+              },
+              icon: "pencil",
+              link: "/mathematics/",
+              items: [
+                { slug: "mathematics" },
+                {
+                  label: "Zahlen und Algebra",
+                  translations: { en: "Numbers and Algebra" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/algebra" } },
+                  ],
+                },
+                {
+                  label: "Geometrie",
+                  translations: { en: "Geometry" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/geometry" } },
+                  ],
+                },
+                {
+                  label: "Funktionen",
+                  translations: { en: "Functions" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/functions" } },
+                  ],
+                },
+                { slug: "mathematics/descriptive-statistics" },
+                {
+                  label: "Analysis",
+                  translations: { en: "Calculus" },
+                  items: [
+                    { autogenerate: { directory: "mathematics/analysis" } },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "languages",
+              label: {
+                en: "Languages",
+                de: "Sprachen",
+              },
+              icon: "translate",
+              link: "/languages/",
+              items: [
+                { slug: "languages" },
+                {
+                  label: "Textsorten Deutsch",
+                  translations: { en: "German Text Types" },
+                  items: [
+                    { slug: "languages/german_text_types" },
+                    { slug: "languages/german_text_types/stylistic_devices" },
+                    { slug: "languages/german_text_types/summary" },
+                    {
+                      slug: "languages/german_text_types/letter_to_the_editor",
+                    },
+                    { slug: "languages/german_text_types/argumentative_essay" },
+                    { slug: "languages/german_text_types/commentary" },
+                    { slug: "languages/german_text_types/text_analysis" },
+                    {
+                      label: "Textinterpretation",
+                      translations: { en: "Text Interpretation" },
+                      items: [
+                        {
+                          autogenerate: {
+                            directory:
+                              "languages/german_text_types/text_interpretation",
+                          },
+                        },
+                      ],
+                    },
+                    { slug: "languages/german_text_types/opinion_speech" },
+                  ],
+                },
+                {
+                  label: "Literatur",
+                  translations: { en: "Literature" },
+                  items: [
+                    { autogenerate: { directory: "languages/literature" } },
+                  ],
+                },
+                {
+                  label: "Textsorten Englisch",
+                  translations: { en: "English Text Types" },
+                  items: [
+                    { autogenerate: { directory: "languages/text_types" } },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "economy-and-law",
+              label: {
+                en: "Economy and Law",
+                de: "Wirtschaft und Recht",
+              },
+              icon: "approve-check-circle",
+              link: "/economy_and_law/",
+              items: [
+                { slug: "economy_and_law" },
+                { slug: "economy_and_law/company_foundation" },
+                { slug: "economy_and_law/marketing" },
+                { slug: "economy_and_law/organisation" },
+                { slug: "economy_and_law/leadership" },
+                {
+                  label: "Recht",
+                  translations: { en: "Law" },
+                  items: [
+                    { autogenerate: { directory: "economy_and_law/law" } },
+                  ],
+                },
+                {
+                  label: "Rechnungswesen",
+                  translations: { en: "Accounting" },
+                  items: [
+                    {
+                      autogenerate: { directory: "economy_and_law/accounting" },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "project-management",
+              label: {
+                en: "Project Management",
+                de: "Projektmanagement",
+              },
+              icon: "list-format",
+              link: "/project_management/",
+              items: [
+                { slug: "project_management" },
+                {
+                  label: "Grundlagen",
+                  translations: { en: "Basics" },
+                  items: [
+                    {
+                      autogenerate: { directory: "project_management/basics" },
+                    },
+                  ],
+                },
+                {
+                  label: "Projektorganisation",
+                  translations: { en: "Project Organisation" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/organisation",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Projektplanung",
+                  translations: { en: "Project Planning" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/planning",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Steuerung und Abschluss",
+                  translations: { en: "Controlling and Closing" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/controlling",
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: "Qualitätsmanagement",
+                  translations: { en: "Quality Management" },
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: "project_management/quality_management",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          {
+            topics: {
+              "software-development": ["/*/software-development/**"],
+              mathematics: ["/*/mathematics/**"],
+              languages: ["/*/languages/**"],
+              "economy-and-law": ["/*/economy_and_law/**"],
+            },
+          }
+        ),
+        starlightThemeRapide(),
       ],
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeMathjax],
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeMathjax],
+    }),
   },
   redirects: {
     "/": "/en/",

@@ -1,13 +1,92 @@
 ---
 title: Interrupts
+description: Wie Interrupts die Arbeitsschleife unterbrechen, wie man Interrupt Service Routinen schreibt und worauf man dabei achten muss.
+sidebar:
+  order: 6
 ---
 
-Jedes Programm besitzt eine Arbeitsschleife (`while(1) {}`), welche aufgrund des endlosen Laufens dafür sorgt, dass das Programm niemals aufhört, seine Aufgabe zu erfüllen. Somit könnte man den gesamten Code, welcher endlos laufen soll, in diese Arbeitsschleife schreiben. Jedoch stößt man bei komplexeren Programmen auf Probleme, da zu einem willkürlichen Zeitpunkt ein Ereignis -- beispielsweise das Drücken einer Taste -- eintreten kann. Die Arbeitsschleife hat hierbei Limitationen, obwohl man ständig auf das Eintreten des Ereignisses prüfen könnte. Doch was kann man machen, wenn die Arbeitsschleife an einem bestimmten Punkt ein Delay fordert und die Überprüfung der Tasteneingabe in diesem Zeitraum nicht stattfinden kann? Genau hier kommen `Interrupts` ins Spiel.
+Jedes Programm besitzt eine Arbeitsschleife (`while(1) {}`), welche aufgrund des endlosen Laufens dafür sorgt, dass das Programm niemals aufhört, seine Aufgabe zu erfüllen. Somit könnte man den gesamten Code, welcher endlos laufen soll, in diese Arbeitsschleife schreiben. Jedoch stößt man bei komplexeren Programmen auf Probleme, da zu einem willkürlichen Zeitpunkt ein Ereignis (beispielsweise das Drücken einer Taste) eintreten kann. Die Arbeitsschleife hat hierbei Limitationen, obwohl man ständig auf das Eintreten des Ereignisses prüfen könnte. Doch was kann man machen, wenn die Arbeitsschleife an einem bestimmten Punkt ein Delay fordert und die Überprüfung der Tasteneingabe in diesem Zeitraum nicht stattfinden kann? Genau hier kommen `Interrupts` ins Spiel.
 
-Interrupts bieten eine Möglichkeit, die Ausführung der Arbeitsschleife jederzeit zu unterbrechen, wenn bestimmte Ereignisse eintreten. Die Bedingungen für das Eintreten werden dabei anfangs definiert und von der Hardware ständig überprüft. Der Ablauf einer Unterbrechung der Arbeitsschleife ist hier visualisiert:
+Interrupts bieten eine Möglichkeit, die Ausführung der Arbeitsschleife jederzeit zu unterbrechen, wenn bestimmte Ereignisse eintreten. Die Bedingungen für das Eintreten werden dabei anfangs definiert und von der Hardware ständig überprüft. Tritt das Ereignis ein, wird eine spezielle Funktion aufgerufen, die **Interrupt Service Routine** (ISR):
 
 ```c
 ISR(...) {
     // Interrupt Service Routine
+}
+```
+
+## Ablauf
+
+1. Das Programm befindet sich in der Arbeitsschleife.
+2. Ein Ereignis tritt ein (z. B. eine fallende Flanke an `INT0`), und die Hardware setzt das zugehörige **Interrupt-Flag**.
+3. Der aktuelle Befehl wird noch fertig ausgeführt, anschließend speichert der Mikrocontroller die Rücksprungadresse auf dem Stack.
+4. Über die **Interrupt-Vektortabelle** springt er zur passenden ISR. Während der ISR sind weitere Interrupts standardmäßig deaktiviert.
+5. Nach dem Ende der ISR wird das Programm genau an der Stelle fortgesetzt, an der es unterbrochen wurde.
+
+## Interrupts aktivieren
+
+Damit ein Interrupt ausgelöst werden kann, müssen zwei Bedingungen erfüllt sein:
+
+- Der einzelne Interrupt muss in seinem Register aktiviert sein, zum Beispiel `EIMSK |= (1<<INT0);` für den externen Interrupt 0.
+- Interrupts müssen **global** aktiviert sein. Dies geschieht mit `sei()` (_Set Enable Interrupt_). Mit `cli()` (_Clear Interrupt_) werden sie wieder global deaktiviert.
+
+Für beides wird `#include <avr/interrupt.h>` benötigt.
+
+## Interruptquellen
+
+Der ATmega328P besitzt zahlreiche Interruptquellen. Der Name des Vektors wird der ISR als Parameter übergeben:
+
+| Vektor              | Auslöser                                                                   |
+| ------------------- | -------------------------------------------------------------------------- |
+| `INT0_vect`, `INT1_vect` | [Direkte externe Interrupts](/de/embedded-programming/button/#direkte-externe-interrupts) an PD2 und PD3 |
+| `PCINT0_vect` … `PCINT2_vect` | [Gruppenbasierte externe Interrupts](/de/embedded-programming/button/#gruppenbasierte-externe-interrupts) an Port B, C und D |
+| `TIMERn_OVF_vect`   | Überlauf eines [Timers](/de/embedded-programming/timer/)                   |
+| `TIMERn_COMPA_vect`, `TIMERn_COMPB_vect` | Compare Match eines Timers                          |
+| `ADC_vect`          | [ADC](/de/embedded-programming/analogue-digital-converter/)-Messung abgeschlossen |
+| `USART_RX_vect`     | Zeichen über [USART](/de/embedded-programming/usart/) empfangen            |
+| `SPI_STC_vect`      | [SPI](/de/embedded-programming/spi/)-Übertragung abgeschlossen             |
+| `EE_READY_vect`     | [EEPROM](/de/embedded-programming/eeprom/) bereit für den nächsten Schreibvorgang |
+
+Treten mehrere Interrupts gleichzeitig auf, wird zuerst derjenige ausgeführt, der in der Vektortabelle weiter vorne steht (niedrigere Adresse = höhere Priorität).
+
+## Regeln für ISRs
+
+- **ISRs kurz halten.** Während eine ISR läuft, werden keine anderen Interrupts bearbeitet. Längere Berechnungen oder `_delay_ms()` gehören deshalb in die Arbeitsschleife.
+- **Gemeinsame Variablen als `volatile` deklarieren.** Variablen, die sowohl in der ISR als auch in der Arbeitsschleife verwendet werden, müssen mit `volatile` gekennzeichnet werden. Sonst könnte der Compiler den Wert in der Arbeitsschleife in einem Register zwischenspeichern und die Änderung durch die ISR nie bemerken.
+- **Atomare Zugriffe beachten.** Der ATmega328P ist ein 8-Bit-Prozessor. Das Lesen einer 16-Bit-Variable benötigt deshalb zwei Befehle, zwischen denen ein Interrupt den Wert verändern könnte. Solche Zugriffe schützt man mit `ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { ... }` aus `<util/atomic.h>`.
+
+## Beispiel
+
+In diesem Beispiel setzt die ISR nur ein Flag. Die eigentliche Arbeit, das Umschalten einer LED, passiert in der Arbeitsschleife:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+volatile uint8_t buttonPressed = 0;
+
+int main(void)
+{
+    DDRB |= (1<<DDB0);      // LED an PB0 als Ausgang
+    PORTD |= (1<<PORTD2);   // interner Pull-Up für die Taste an PD2
+
+    EICRA |= (1<<ISC01);    // INT0 bei fallender Flanke
+    EIMSK |= (1<<INT0);     // INT0 aktivieren
+    sei();                  // Interrupts global aktivieren
+
+    while (1)
+    {
+        if (buttonPressed)
+        {
+            buttonPressed = 0;
+            PORTB ^= (1<<PORTB0);
+        }
+    }
+}
+
+ISR(INT0_vect) {
+    buttonPressed = 1;
 }
 ```

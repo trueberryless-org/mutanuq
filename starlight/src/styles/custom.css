@@ -38,3 +38,43 @@ div.sidebar-pane ul.top-level > li > a {
 .sl-markdown-content :is(th, td):last-of-type:not(:where(.not-content *)) {
   padding-right: 0.5rem !important;
 }
+
+/* Put the group toggle in front of clickable group labels, like Rapide does for other groups. */
+.sl-group-pages-group > details > summary {
+  flex-direction: row;
+  justify-content: start;
+  inset-inline: 0 auto;
+  inline-size: calc(1.25rem + var(--sl-sidebar-item-padding-inline) / 2);
+  padding-inline: calc(var(--sl-sidebar-item-padding-inline) / 2) 0;
+  background-color: transparent;
+}
+
+.sl-group-pages-link {
+  margin-inline: calc(1.25rem + var(--sl-sidebar-item-padding-inline) / 2) 0;
+  padding-inline: 0.375rem var(--sl-sidebar-item-padding-inline);
+  background-color: transparent;
+}
+
+/* Use Rapide's hover style: an accent color instead of a background. */
+.sl-group-pages-link:is(:hover, :focus-visible),
+.sl-group-pages-group > details > summary:is(:hover, :focus-visible) {
+  color: var(--sl-color-accent-high);
+}
+
+.sl-group-pages-group > details > summary:is(:hover, :focus-visible) ~ ul > li {
+  border-inline-start-color: var(--sl-color-accent-high);
+}
+
+/* Match the view mode links to the social links next to them: Rapide's gray in the header, the accent color in the mobile menu. */
+.header .social-icons a.starlight-view-modes-social-link-a {
+  color: var(--sl-color-gray-2);
+}
+
+.header .social-icons a.starlight-view-modes-social-link-a:hover {
+  color: var(--sl-color-accent-high);
+  opacity: 1;
+}
+
+.mobile-preferences .social-icons a.starlight-view-modes-social-link-a {
+  color: var(--sl-color-text-accent);
+}

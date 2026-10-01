@@ -1,8 +1,11 @@
 ---
 title: Taste
+description: Tasten mit Pull-Up- oder Pull-Down-Widerstand anschließen, entprellen und per Polling oder Interrupt abfragen.
+sidebar:
+  order: 4
 ---
 
-Tasten sind eine Eingabe des Benutzers auf einfachster Hardware-Ebene. Die Taste kann entweder gedrückt sein oder eben nicht. Diese binäre Zustandsoption ermöglicht das einfache Konvertieren in „Strom an“ oder „Strom aus“.
+Tasten sind eine Eingabe des Benutzers auf einfachster Hardware-Ebene. Die Taste kann entweder gedrückt sein oder eben nicht. Diese binäre Zustandsoption ermöglicht das einfache Konvertieren in „Spannung an“ oder „Spannung aus“.
 
 ## Theorie
 
@@ -25,7 +28,7 @@ Active High Beschaltungen funktionieren genau anders herum. Hierbei liegen die *
 
 ### Active Low / Pull-Up
 
-Am korrespondierendem PIN baut man einen Spannungsteiler auf, welcher auf der einen Seite einen 10K Widerstand mit 5V Versorgungsspannung und auf der anderen Seite eine an den Ground angeschlossene Taste anliegen hat.
+Am korrespondierenden PIN baut man einen Spannungsteiler auf, welcher auf der einen Seite einen 10K Widerstand mit 5V Versorgungsspannung und auf der anderen Seite eine an den Ground angeschlossene Taste anliegen hat. Ist die Taste offen, „zieht“ der Widerstand den Pin auf 5V (high). Wird sie gedrückt, ist der Pin direkt mit GND verbunden (low).
 
 ![Pull-Up Widerstand](/images/embedded_programming/button/pull_up_widerstand.png)
 _Ein Pull-Up Widerstand Aufbau, wenn die Taste geöffnet ist_
@@ -35,13 +38,17 @@ _Ein Pull-Up Widerstand Aufbau, wenn die Taste geschlossen ist_
 
 ### Active High / Pull-Down
 
-Am korrespondierendem PIN liegt wieder ein Spannungsteiler an, welcher diesmal allerdings auf der Seite des 10K Widerstandes den Ground (GRN) hat und auf der anderen Seite befindet sich die Taste mit 5V Versorgungsspannung.
+Am korrespondierenden PIN liegt wieder ein Spannungsteiler an, welcher diesmal allerdings auf der Seite des 10K Widerstandes den Ground (GND) hat, und auf der anderen Seite befindet sich die Taste mit 5V Versorgungsspannung.
 
 ![Pull-Down Widerstand](/images/embedded_programming/button/pull_down_widerstand.png)
 _Ein Pull-Down Widerstand Aufbau, wenn die Taste geöffnet ist_
 
 ![Pull-Down Widerstand geschlossen](/images/embedded_programming/button/pull_down_widerstand_closed.png)
 _Ein Pull-Down Widerstand Aufbau, wenn die Taste geschlossen ist_
+
+## Entprellen
+
+Mechanische Tasten „prellen“: Beim Drücken und Loslassen schließen und öffnen die Kontakte einige Millisekunden lang mehrmals hintereinander, bevor sie einen stabilen Zustand erreichen. Der Mikrocontroller ist so schnell, dass er jeden dieser Wechsel als eigenen Tastendruck erkennen würde. In den folgenden Beispielen wird deshalb nach jeder Abfrage eine kurze Wartezeit (`_delay_ms(70)`) eingebaut. Alternativ kann man in Hardware einen Kondensator parallel zur Taste schalten.
 
 ## Code
 
@@ -75,7 +82,7 @@ void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
     if (!(PINB & (1<<PINB0)))
     {
-        // Taste wurde 1x gedrückt
+        // Taste ist gedrückt
     }
 
     // Prellen vermeiden
@@ -107,7 +114,7 @@ void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
     if (PINB & (1<<PINB0))
     {
-        // Taste wurde 1x gedrückt
+        // Taste ist gedrückt
     }
 
     // Prellen vermeiden
@@ -142,8 +149,27 @@ void checkButton(void) {
     // Überprüfen, ob die Taste gedrückt wird.
     if (!(PINB & (1<<PINB0)))
     {
-        // Taste wurde 1x gedrückt
+        // Taste ist gedrückt
     }
+
+    // Prellen vermeiden
+    _delay_ms(70);
+}
+```
+
+Beim Polling ist die Bedingung so lange wahr, wie die Taste gedrückt gehalten wird. Soll eine Aktion nur **einmal pro Tastendruck** ausgeführt werden, merkt man sich den vorherigen Zustand und reagiert nur auf den Wechsel von „nicht gedrückt“ auf „gedrückt“ (_Flankenerkennung_):
+
+```c
+void checkButton(void) {
+    static uint8_t wasPressed = 0;
+    uint8_t isPressed = !(PINB & (1<<PINB0));
+
+    if (isPressed && !wasPressed)
+    {
+        // Taste wurde soeben 1x gedrückt
+    }
+
+    wasPressed = isPressed;
 
     // Prellen vermeiden
     _delay_ms(70);
@@ -154,9 +180,9 @@ void checkButton(void) {
 
 Mit Interrupts hat man den Vorteil, dass man nicht in der while-Schleife ständig eine Methode aufrufen muss, welche die Tasten abfragt. Dieses Verhalten wird bei den [Interrupts](/de/embedded-programming/interrupts) noch besser erklärt.
 
-#### Direkt externe Interrupts
+#### Direkte externe Interrupts
 
-An Port D gibt es zwei PINs (2 und 3), welche über direkte externe Interrupts - Funktionalitäten verfügen. Das bedeutet, dass dort angeschlossene Tasten spezifisch mithilfe von bereits definierten Interrupts überprüft werden können. Dies erspart ein wenig komplexen Programmcode.
+An Port D gibt es zwei PINs (2 und 3), welche über direkte externe Interrupt-Funktionalitäten (`INT0` und `INT1`) verfügen. Über das Register `EICRA` legt man fest, wann der Interrupt ausgelöst wird: bei einem low-Pegel (Standard), bei jeder Änderung, bei einer fallenden oder bei einer steigenden Flanke. Bei einer Pull-Up-Beschaltung erkennt man einen Tastendruck an der **fallenden Flanke**. Das bedeutet, dass dort angeschlossene Tasten spezifisch mithilfe von bereits definierten Interrupts überprüft werden können. Dies erspart ein wenig komplexen Programmcode.
 
 ```c
 #include <avr/io.h>
@@ -173,7 +199,10 @@ int main(void)
     PORTD |= (1<<PORTD2);
 
     // Interrupt
-    //  direktes externe Interrupt an Port D, Pin 2 aktivieren
+    //  bei fallender Flanke auslösen (ISC01 = 1, ISC00 = 0)
+    EICRA |= (1<<ISC01);
+    EICRA &= ~(1<<ISC00);
+    //  direkten externen Interrupt an Port D, Pin 2 aktivieren
     EIMSK |= (1<<INT0);
 
     //  Set Enable Interrupt
@@ -191,9 +220,13 @@ ISR (INT0_vect) {
 }
 ```
 
+:::caution
+Ohne die Einstellung in `EICRA` wird der Interrupt auf den low-Pegel ausgelöst. Die ISR würde also ununterbrochen immer wieder aufgerufen, solange die Taste gedrückt ist. Außerdem sollten ISRs möglichst kurz sein. Ein `_delay_ms()` in der ISR blockiert währenddessen das gesamte Programm. In größeren Programmen setzt man in der ISR deshalb nur eine `volatile`-Variable und verarbeitet den Tastendruck in der Arbeitsschleife (siehe [Interrupts](/de/embedded-programming/interrupts/)).
+:::
+
 #### Gruppenbasierte externe Interrupts
 
-Die gruppenbasierten externen Interrupts gelten immer für den gesamten Port. Aus diesem Grund muss man im Interrupt auch nochmals den richtigen PIN auf Tasteneingaben überprüfen, wie man unten, im Code, sehen kann.
+Die gruppenbasierten externen Interrupts (_Pin Change Interrupts_) gelten immer für den gesamten Port und werden bei **jeder** Änderung ausgelöst, also sowohl beim Drücken als auch beim Loslassen. Aus diesem Grund muss man im Interrupt auch nochmals den richtigen PIN auf Tasteneingaben überprüfen, wie man unten im Code sehen kann. Mit `PCICR` aktiviert man den Interrupt für einen Port, mit `PCMSKx` wählt man die Pins aus, die ihn auslösen dürfen.
 
 |       | Port B        | Port C         | Port D         |
 | ----- | ------------- | -------------- | -------------- |
@@ -221,7 +254,7 @@ int main(void)
     PORTD |= (1<<PORTD4);
 
     // Interrupt
-    //  gruppenbasiertes externe Interrupt an Port D, Pin 4 aktivieren
+    //  gruppenbasierten externen Interrupt an Port D, Pin 4 aktivieren
     PCICR |= (1<<PCIE2);
     PCMSK2 |= (1<<PCINT20);
 
@@ -246,14 +279,14 @@ ISR (PCINT2_vect) {
 
 ## Troubleshooting
 
-### Floating Point
+### Floating Input
 
-Ohne Widerstand darf man keine 5V Versorgungsspannung auf der Taste anlegen:
+Schließt man eine Taste nur zwischen 5V und dem Pin an, ohne einen Pull-Down-Widerstand zu verwenden, ist der Eingang bei offener Taste mit nichts verbunden. Er „schwebt“ (_floating_) und nimmt zufällige Werte an, etwa durch elektromagnetische Einstreuungen oder wenn man mit dem Finger in die Nähe kommt. Deshalb braucht jeder Eingang einen definierten Zustand über einen Pull-Up- oder Pull-Down-Widerstand:
 
 ![Floating Point](/images/embedded_programming/button/floating_point.png)
 
 ### Kurzschluss
 
-Ebenso darf ein Spannungsteiler nicht einfach an den Ground (GND) angeschlossen werden, da dieser Ground sofort die Versorgungsspannung aufheben würde.
+Ebenso darf die Taste nicht ohne Widerstand gleichzeitig mit der Versorgungsspannung und dem Ground (GND) verbunden werden. Beim Drücken würde sonst ein Kurzschluss zwischen 5V und GND entstehen, der die Spannungsversorgung oder das Board beschädigen kann.
 
 ![Kurzschluss](/images/embedded_programming/button/kurzschluss.png)

@@ -1,0 +1,405 @@
+---
+title: Timer
+description: "The timers of the ATmega328P in normal, CTC and PWM mode: prescaler, preload values, compare match and duty cycle."
+sidebar:
+  order: 8
+---
+
+The timer is a very useful instrument in low-level programming and is particularly well suited for time-based operations, such as:
+
+- a delay (program delay) of a certain number of seconds
+- triggering the ADC regularly
+- running a DC motor with speed control
+
+## Theory
+
+The ATmega328P has 3 different timers:
+
+- TC0: 8-bit
+- TC1: 16-bit
+- TC2: 8-bit; async
+
+:::note
+Throughout this article, always replace the `n` with the number of the timer you are currently using (TC0: n = 0; TC1: n = 1; ...). In the ATmega328P datasheet, TC0 is [chapter 14](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=74), TC1 [chapter 15](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=89) and TC2 [chapter 17](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=116).
+:::
+
+Each timer has its own counter register `TCNTn`, which counts up by one with each clock cycle of the timer (i.e. the system clock divided by the [prescaler](#prescaler)). When the counter register has reached the `TOP` value or the `OCRnx` value ([CTC mode](#ctc---clear-timer-on-compare-match)), an overflow occurs. This is the technical term for the process in which `TCNTn` is set back to the `BOTTOM` value.
+
+:::tip[Aha!]
+The 16-bit timer has more storage space for the counter register, namely **two** bytes instead of just one byte. It therefore overflows less often, because `TCNT1` can count from 0 to 65535 (65536 steps), while `TCNT0` and `TCNT2` only run from 0 to 255 (256 steps).
+:::
+
+The overflow process is periodic and is shown graphically here:
+
+![Timer overflow](/images/embedded_programming/timer/timer_ueberlauf.png)
+
+:::tip[Formula]
+To calculate the time span $\Delta t$ that describes the intervals at which the respective timer overflows, the following formula can be used:
+
+$$
+\frac {2^{bits\;of\;the\;timer} \cdot prescaler} {Hz\;of\;the\;microcontroller} = {\Delta t\;in\;seconds}
+$$
+
+:::
+
+### Prescaler
+
+The prescaler slows down the counting clock. At hardware level, the prescaler is a component in front of the timer that receives the system clock as input and passes the modified new clock on to the timer. By default, the prescaler is not set, which means that the timer receives no clock at all and is therefore stopped.
+
+| Prescaler | new clock $f$ | new period $T$ | $\Delta t$ 8-bit / 256 | $\Delta t$ 16-bit / 65536 |
+| --------: | ------------: | -------------: | ---------------------: | ------------------------: |
+|         1 |         16MHz |    0.0000625ms |                0.016ms |                   4.096ms |
+|         8 |          2MHz |       0.0005ms |                0.128ms |                  32.768ms |
+|        64 |        250kHz |        0.004ms |                1.024ms |                 262.144ms |
+|       256 |       62.5kHz |        0.016ms |                4.096ms |                1048.576ms |
+|      1024 |     15.625kHz |        0.064ms |               16.384ms |                4194.304ms |
+
+:::tip[Reminder]
+The period $T$ is equal to $\frac1f$, where $f$ is the frequency in `Hz`. In other words: the higher the clock, the shorter the period.
+
+$$
+T = \frac1f \Leftrightarrow f = \frac1T
+$$
+
+:::
+
+### Modes of operation
+
+Each timer has 3 different modes, which are briefly explained in the table:
+
+| Normal mode | CTC mode | PWM mode |
+| ----------- | -------- | -------- |
+| In normal mode, the timer counts from `BOTTOM` to `TOP` and is set back to `BOTTOM` at `TOP`. You can preload the timer with a certain value (i.e. basically raise the `BOTTOM` value) by simply setting `TCNTn` right after each overflow, which shortens the time until the overflow. | In clear timer on compare match mode, you set the `OCRnA` or `OCRnB` value once at the beginning. When the timer (i.e. `TCNTn`) reaches this value, it is cleared, which means that `TCNTn` is set back to 0. The timers support two independent output compare registers (`OCRnA` and `OCRnB`). | With pulse width modulation, you can vary the (average) voltage on a certain pin. This makes it possible, for example, to control a DC motor, which turns faster the more voltage it receives. |
+
+#### Normal mode
+
+To trigger certain program code at desired intervals, we can use a timer that constantly counts up and overflows. Since the time until the overflow will usually not correspond exactly to the desired time span, we have to change (i.e. increase) the `BOTTOM` value / preload value so that the time difference between the preload value and the `TOP` value corresponds exactly to the desired time span. How to implement this in code is explained below in the [code](#preloading-tcntn) section. To spare you the difficult calculations, here is a simple formula for calculating the preload value:
+
+$$
+preload\;value = 2^{bits\;of\;the\;timer} - {desired\;time\;span\;in\;seconds} * \frac {Hz\;of\;the\;microcontroller} {prescaler}
+$$
+
+:::note[Note!]
+For the above formula not to produce nonsensical results, the following conditions must be met:
+
+$$
+prescaler = \{ 1, 8, 64, 256, 1024 \}
+$$
+
+$$
+0 \le desired\;time\;span \le \frac {1} {Hz\;of\;the\;microcontroller} * 2^{bits\;of\;the\;timer} * prescaler
+$$
+
+If these domains are not respected, negative preload values would result, which cannot be written into the counter register.
+:::
+
+This image is suitable for visualising what we have just done:
+
+![Preloading the timer with a certain value](/images/embedded_programming/timer/timer_vorladen.png)
+
+#### CTC - Clear timer on compare match
+
+Clear timer on compare match mode makes it easy for us to execute program code at exact regular intervals. At the beginning, you set the `OCRnx` value (output compare register) once as an upper limit. You can imagine it as lowering the `TOP` value. CTC mode is therefore the opposite of preloading, but serves the same purpose.
+
+The formula for calculating the `output compare register` value is quite similar. Since the timer counts from 0 up to and including `OCRnx`, you have to subtract one. Again, observe the same domains as for the [formula above](#normal-mode)!
+
+$$
+output\;compare\;register = {desired\;time\;span\;in\;seconds} * \frac {Hz\;of\;the\;microcontroller} {prescaler} - 1
+$$
+
+#### PWM - Pulse width modulation
+
+With PWM mode, you can generate a certain average voltage between 0V and 5V on certain pins (the `OCnx` pins, e.g. `OC1A` = `PB1`). The pin itself still only knows 0V or 5V. However, by constantly switching the voltage on and off at certain intervals, sluggish loads (such as a motor, an LED for the human eye or a downstream low-pass filter) only experience the average of the voltages over time.
+
+In reality, this process happens so fast that you do not notice the constant switching on and off. The process is shown here:
+
+![Duty cycle slowly settles to the average](/images/embedded_programming/timer/timer_pwm_duty_cycle_average.png)
+
+PWM mode therefore allows us to set the average voltage exactly at runtime.
+
+##### Duty cycle
+
+You may have noticed that $50\%$ is written in the image above in the areas where the voltage is _high_. Exactly this time interval in percent is the so-called **duty cycle**, and its calculation is shown here:
+
+$$
+Duty\;Cycle = \frac {T_{on}} {T_{on} + T_{off}} * 100\%
+$$
+
+:::note
+$T_{on}$ is the time in which the voltage is _high_, and $T_{off}$ the time in which it is _low_. Together they make up the period $T = T_{on} + T_{off}$. The average voltage is therefore $U_{avg} = Duty\;Cycle \cdot 5\;V$.
+:::
+
+The duty cycle is configured via the `OCRnx` register. Just like in CTC mode, it determines the compare value (`output compare register`).
+
+![PWM mode compare register](/images/embedded_programming/timer/timer_pwm_compare_register.png)
+
+---
+
+PWM mode can be operated inverted or non-inverted:
+
+##### Inverting mode
+
+In inverting mode, the voltage is set to _high_ when the compare value is reached (`TCNTn` $=$ `OCRnx`) and to _low_ on overflow.
+
+![PWM mode inverting mode](/images/embedded_programming/timer/timer_pwm_inverting_mode.png)
+
+##### Non-inverting mode
+
+In non-inverting mode, it is exactly the other way round. When the compare value is reached (`TCNTn` $=$ `OCRnx`), the voltage is set to _low_, and on overflow to _high_.
+
+![PWM mode non-inverting mode](/images/embedded_programming/timer/timer_pwm_non_inverting_mode.png)
+
+### Interrupts
+
+Each timer can trigger an [interrupt](/en/embedded-programming/interrupts/) on certain events. They are enabled in the `TIMSKn` register:
+
+| Bit       | Interrupt                          | Vector                |
+| --------- | ---------------------------------- | --------------------- |
+| `TOIEn`   | Overflow of the counter register   | `TIMERn_OVF_vect`     |
+| `OCIEnA`  | Compare match with `OCRnA`         | `TIMERn_COMPA_vect`   |
+| `OCIEnB`  | Compare match with `OCRnB`         | `TIMERn_COMPB_vect`   |
+
+In addition, interrupts must be enabled globally with `sei()`.
+
+## Code
+
+Clear table of the most important configurations (you can find all configurations here: [TC0: table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [TC1: table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109), [TC2: table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130)):
+
+|     | Normal mode                                                     | CTC mode                                                        | Fast<br/>PWM mode                                               | Phase correct<br/>PWM mode                                      |
+| --- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| TC0 | `WGM00` == 0<br/>`WGM01` == 0<br/>`WGM02` == 0                  | `WGM00` == 0<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 1<br/>`WGM02` == 0                  | `WGM00` == 1<br/>`WGM01` == 0<br/>`WGM02` == 0                  |
+| TC1 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 | `WGM10` == 0<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 1<br/>`WGM13` == 0 | `WGM10` == 1<br/>`WGM11` == 0<br/>`WGM12` == 0<br/>`WGM13` == 0 |
+| TC2 | `WGM20` == 0<br/>`WGM21` == 0<br/>`WGM22` == 0                  | `WGM20` == 0<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 1<br/>`WGM22` == 0                  | `WGM20` == 1<br/>`WGM21` == 0<br/>`WGM22` == 0                  |
+
+### Normal mode
+
+The following configurations can be made for the normal mode of the timer:
+
+- Set `WGMn0`, `WGMn1` and `WGMn2` (and `WGM13`) to 0 (see [table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) or [table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
+
+  ```c
+  // Set the timer mode to normal mode
+  TCCRnA &= ~((1<<WGMn0) | (1<<WGMn1));
+  TCCRnB &= ~((1<<WGMn2));
+  ```
+
+- Set `CSn0`, `CSn1` and `CSn2` (see [table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87), [table 15-6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=110) or [table 17-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=131))
+
+  ```c
+  // Set the prescaler - example 1024
+  TCCRnB |= (1<<CSn0) | (1<<CSn2);
+  TCCRnB &= ~(1<<CSn1);
+  ```
+
+  Use [this](#prescaler) table to find out which prescaler value makes the most sense in your program.
+
+#### Preloading `TCNTn`
+
+:::tip[Task]
+Write a program in which an ISR is executed every **four milliseconds**! Use the timer in normal mode!
+:::
+
+To solve this task, we use the [formula](#normal-mode) to calculate the preload value of $1536$. Since $4\;ms$ is already possible with the 16-bit timer without a prescaler, we choose the prescaler $1$: $65536 - 0.004 \cdot \frac{16{,}000{,}000}{1} = 1536$.
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+int main(void)
+{
+    // Set the timer mode to normal (optional)
+    TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
+    TCCR1B &= ~((1<<WGM12) | (1<<WGM13));
+
+    // Preload the counter register
+    TCNT1 = 1536;
+
+    // Enable the overflow interrupt
+    TIMSK1 |= (1<<TOIE1);
+
+    // Set prescaler 1 - this starts the timer
+    TCCR1B |= (1<<CS10);
+
+    sei();
+
+    while (1);
+}
+
+// ISR is triggered on every overflow - every 4ms in this case
+ISR(TIMER1_OVF_vect) {
+    // Code
+
+    // Preload the counter register
+    TCNT1 = 1536;
+}
+```
+
+### CTC - Clear timer on compare match
+
+The following configurations must/can be made for the CTC mode of the timer:
+
+- Set `WGMnx` correctly (TC0 / TC2: `WGMn1`; TC1: `WGM12` (and `WGM13`))  
+  (see [table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) or [table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
+
+- Set `OCIEnx` to 1 (see [14.9.6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=88), [15.11.8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=112) or [17.11.6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=132))
+
+  ```c
+  // Enable interrupts - example compare match A
+  TIMSKn |= (1<<OCIEnA);
+  ```
+
+- Set `CSn0`, `CSn1` and `CSn2` (see [table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87), [table 15-6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=110) or [table 17-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=131))
+
+  ```c
+  // Set the prescaler - example 256
+  TCCRnB |= (1<<CSn2);
+  TCCRnB &= ~((1<<CSn0) | (1<<CSn1));
+  ```
+
+  Use [this](#prescaler) table to find out which prescaler value makes the most sense in your program.
+
+:::tip[Task]
+Write a program in which an ISR is executed every **four milliseconds**! Use the timer in CTC mode!
+:::
+
+To solve this task, we use the [formula](#ctc---clear-timer-on-compare-match) to calculate the compare value of $63999$ ($0.004 \cdot \frac{16{,}000{,}000}{1} - 1$).
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+int main(void)
+{
+    // Set the timer mode to CTC
+    TCCR1A &= ~((1<<WGM10) | (1<<WGM11));
+    TCCR1B |= (1<<WGM12);
+    TCCR1B &= ~(1<<WGM13);
+
+    // Set the output compare register correctly
+    OCR1A = 63999;
+
+    // Enable the output compare register interrupt
+    TIMSK1 |= (1<<OCIE1A);
+
+    // Set prescaler 1 - this starts the timer
+    TCCR1B |= (1<<CS10);
+
+    sei();
+
+    while (1);
+}
+
+// ISR is triggered on every compare match - every 4ms in this case
+ISR(TIMER1_COMPA_vect) {
+    // Code
+}
+```
+
+### PWM - Pulse width modulation
+
+The following configurations must/can be made for the PWM mode of the timer:
+
+- Set `WGMnx` correctly
+  (see [table 14-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=86), [table 15-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=109) or [table 17-8](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=130))
+
+- Set inverting / non-inverting mode
+
+  - `COMnA0` and `COMnA1` (see [table 14-3 and 14-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=84), [table 15-3 and 15-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=108) or [table 17-3 and 17-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=128))
+  - `COMnB0` and `COMnB1` (see [table 14-6 and 14-7](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=85), [table 15-3 and 15-4](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=108) or [table 17-6 and 17-7](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=129))
+
+- Set `CSn0`, `CSn1` and `CSn2` (see [table 14-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=87), [table 15-6](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=110) or [table 17-9](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=131))
+
+  ```c
+  // Set the prescaler - example 64
+  TCCRnB |= (1<<CSn0) | (1<<CSn1);
+  TCCRnB &= ~(1<<CSn2);
+  ```
+
+  Use [this](#prescaler) table to find out which prescaler value makes the most sense in your program.
+
+:::tip[Task]
+Write a program in which the brightness of an LED on `PB1` (`OC1A`) is controlled with a potentiometer on `PC3`! Use timer 1 in fast PWM mode (8-bit) and the [ADC](/en/embedded-programming/analogue-digital-converter/)!
+:::
+
+The ADC delivers values from `0` to `1023`, but the compare register in 8-bit PWM mode expects values from `0` to `255`. The ADC value is therefore divided by 4 in the ISR.
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+
+int main(void)
+{
+    // Configure PB1 as an output
+    DDRB |= (1<<DDB1);
+
+    // WGM10 and WGM12: enable fast PWM; 8-bit (MAX -> 255)
+    TCCR1A |= (1<<WGM10);
+    TCCR1B |= (1<<WGM12);
+
+    // CS12: set a prescaler of 256 => PWM at 244.1 Hz
+    TCCR1B |= (1<<CS12);
+
+    // set non-inverting mode
+    TCCR1A |= (1<<COM1A1);
+
+    // REFS0: due to the wiring of the ADC.
+    // A3: analogue signal on PC3 => MUX0 | MUX1
+    ADMUX |= (1<<REFS0) | (1<<MUX0) | (1<<MUX1);
+
+    // ADEN => Enables ADC
+    // ADPSx => Division Factor to get between 50kHz and 200kHz with our 16MHz board.
+    ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+
+    ADCSRA |= (1<<ADIE);
+
+    // ADSC => Start Conversion
+    ADCSRA |= (1<<ADSC);
+
+    sei();
+
+    /* Replace with your application code */
+    while (1)
+    {
+        //OCR1A = 65;             // pulse width / duty cycle of approx. 25%
+        //_delay_ms(2000);
+        //OCR1A = 128;            // pulse width / duty cycle of approx. 50%
+        //_delay_ms(2000);
+        //OCR1A = 255;            // pulse width / duty cycle of approx. 100%
+        //_delay_ms(2000);
+    }
+}
+
+ISR(ADC_vect) {
+    OCR1A = ADCW / (1023 / 255);
+
+    // ADSC => Start Conversion
+    ADCSRA |= (1<<ADSC);
+}
+```
+
+### Interrupts
+
+Timer/counter n overflow:
+
+```c
+ISR(TIMERn_OVF_vect) {
+
+}
+```
+
+Timer/counter n compare match x:
+
+```c
+// CTC Mode
+ISR(TIMERn_COMPx_vect) {
+
+}
+```

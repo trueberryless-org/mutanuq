@@ -1,0 +1,129 @@
+---
+title: Special Function Registers
+description: Using the DDRx, PORTx and PINx registers to configure pins as inputs or outputs, output voltages and read inputs.
+sidebar:
+  order: 2
+---
+
+Special function registers (SFR) are special memory locations through which the hardware of the microcontroller is controlled. There are some important registers used for the input and output of data. Since C is case-sensitive, the names must be written exactly as they are defined: the names of the `SFR` are always written in `UPPERCASE`. In addition, these registers are always eight bits wide, i.e. `1 byte`. By default, all `DDRx` and `PORTx` registers are initialised with `0`.
+
+The following table summarises the SFR for each of the three ports.
+
+<table>
+  <tr>
+    <th></th>
+    <th>Data direction register</th>
+    <th>Output register</th>
+    <th>Input register</th>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td>
+      <code>DDRB</code>
+    </td>
+    <td>
+      <code>PORTB</code>
+    </td>
+    <td>
+      <code>PINB</code>
+    </td>
+  </tr>
+  <tr>
+    <td>C</td>
+    <td>
+      <code>DDRC</code>
+    </td>
+    <td>
+      <code>PORTC</code>
+    </td>
+    <td>
+      <code>PINC</code>
+    </td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td>
+      <code>DDRD</code>
+    </td>
+    <td>
+      <code>PORTD</code>
+    </td>
+    <td>
+      <code>PIND</code>
+    </td>
+  </tr>
+  <tr>
+    <td>Description</td>
+    <td>
+      Each pin can be either an input or an output. This direction of the
+      data flow can be set using the data direction register. Since all{" "}
+      <code>DDR</code> are set to <code>0</code> by default,{" "}
+      <strong>everything is an input by default</strong>. With the code below,
+      you can set the respective pins to outputs (e.g. for an LED).
+    </td>
+    <td>
+      If you want to apply <code>5V</code> to a pin configured as an output,
+      you set the corresponding bit in the output register to{" "}
+      <code>1</code>. If the pin is an input instead, a <code>1</code> enables
+      the internal pull-up resistor.
+    </td>
+    <td>
+      The input register contains the current state of the pins. This is where
+      you read whether a pin is currently <em>high</em> (<code>1</code>) or{" "}
+      <em>low</em> (<code>0</code>), for example whether a button is pressed.
+    </td>
+  </tr>
+</table>
+
+## Examples
+
+### Setting input / output
+
+This is how to configure pin `1` of port `D` as an output:
+
+```c
+DDRD |= (1<<PORTD1);
+```
+
+This is how to configure pin `1` of port `D` as an input (default):
+
+```c
+DDRD &= ~(1<<PORTD1);
+```
+
+### Applying a voltage to a pin
+
+This is how to apply a voltage of `5V` to pin `1` of port `D`:
+
+```c
+PORTD |= (1<<PORTD1);
+```
+
+This is how to apply no voltage to pin `1` of port `D` (default):
+
+```c
+PORTD &= ~(1<<PORTD1);
+```
+
+### Reading the voltage of a pin
+
+This is how to read the voltage of pin `1`, port `D`:
+
+```c
+if (PIND & (1<<PIND1))
+{
+    // Pin is high (on the ATmega328P with a 5V supply from about 3V)
+}
+```
+
+When reading button inputs, the [method with the internal pull-up resistor](/en/embedded-programming/button/#internal-pull-up-resistor) is usually used. Here, 0V is applied when the button is pressed, which means that the condition must be negated. To debounce the button (at software level), a delay is added.
+
+```c del="!"
+if (!(PIND & (1<<PIND1)))
+{
+    // Button (pull-up) is pressed
+}
+
+// Avoid bouncing
+_delay_ms(70);
+```

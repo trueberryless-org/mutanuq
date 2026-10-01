@@ -1,16 +1,19 @@
 ---
 title: Supervised Learning
+description: "Klassifikation mit gelabelten Daten: von logistischer Regression über Random Forests bis zu neuronalen Netzen mit scikit-learn, TensorFlow und PyTorch."
+sidebar:
+  order: 8
 ---
 
 Supervised Learning ist ein zentraler Bereich in der maschinellen Lernpraxis, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Im Gegensatz zum unsupervised Learning, bei dem der Algorithmus versucht, selbständig Muster in den Daten zu identifizieren, erfolgt beim Supervised Learning das Training anhand von gelabelten Daten, die als Eingabe-Output-Paare vorliegen.
 
 In diesem Kontext bezeichnet „gelabelte Daten“ eine Menge von Eingabebeispielen, für die die zugehörigen Ausgaben bereits bekannt sind. Das Ziel besteht darin, ein Modell zu erstellen, das in der Lage ist, aus neuen, bisher ungesehenen Eingabebeispielen korrekte Vorhersagen oder Klassifikationen zu treffen.
 
-Es gibt verschiedene Arten von Modellen im Bereich des Supervised Learning, die jeweils für spezifische Aufgaben und Datenstrukturen entwickelt wurden. Dazu gehören lineare Modelle wie die logistische Regression für binäre Klassifikation, Support Vector Machines für marginale Klassifikation, Ensemble-Methoden wie Random Forests zur Kombination mehrerer Modelle, Naive Bayes für probabilistische Klassifikation und neuronale Netzwerke für komplexe Mustererkennung.
+Es gibt verschiedene Arten von Modellen im Bereich des Supervised Learning, die jeweils für spezifische Aufgaben und Datenstrukturen entwickelt wurden. Dazu gehören lineare Modelle wie die logistische Regression für binäre Klassifikation, Support Vector Machines für die Klassifikation mit maximalem Abstand zwischen den Klassen, Ensemble-Methoden wie Random Forests zur Kombination mehrerer Modelle, Naive Bayes für probabilistische Klassifikation und neuronale Netzwerke für komplexe Mustererkennung.
 
 Der Trainingsprozess besteht darin, das Modell mit den gelabelten Daten zu füttern und die Gewichtungen oder Parameter des Modells so anzupassen, dass es in der Lage ist, aus den gegebenen Eingaben genaue Vorhersagen zu machen. Das trainierte Modell kann dann auf neuen, nicht gelabelten Daten angewendet werden, um Vorhersagen zu treffen oder Muster zu identifizieren.
 
-Supervised Learning findet in einer Vielzahl von Anwendungen Anwendung, darunter Spracherkennung, Bildklassifikation, medizinische Diagnose, Finanzprognosen und vieles mehr. Die Wahl des geeigneten Modells hängt von der Art der Daten und der spezifischen Aufgabe ab, die gelöst werden soll.
+Supervised Learning kommt in einer Vielzahl von Anwendungen zum Einsatz, darunter Spracherkennung, Bildklassifikation, medizinische Diagnose, Finanzprognosen und vieles mehr. Die Wahl des geeigneten Modells hängt von der Art der Daten und der spezifischen Aufgabe ab, die gelöst werden soll.
 
 ## Vorbereitung
 
@@ -57,17 +60,20 @@ print("y_valid:", y_valid.shape) ## y_valid: (2,)
 
 ### Vektorisieren
 
-Beim maschinellen Lernens wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Form von Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](/de/artificial-intelligence/natural-language-processing#bag-of-words-bow) vektorisiert.
+Beim maschinellen Lernen wird die Vektorisierung der Daten als wichtiger Schritt betrachtet. Die Vektorisierung ist ein Prozess, bei dem die Daten in Vektoren umgewandelt werden. In diesem Beispiel werden die Textdaten mittels [BoW](/de/artificial-intelligence/natural-language-processing#bag-of-words-bow) vektorisiert.
 
 ```python
 from sklearn.feature_extraction.text import CountVectorizer
 vectorizer = CountVectorizer()
 
-vectorizer.fit(X)
+## Das Vokabular nur aus den Trainingsdaten lernen, damit keine Informationen
+## aus den Validierungsdaten in das Training einfließen (Data Leakage)
+vectorizer.fit(X_train)
 print("Token Count:", len(vectorizer.get_feature_names_out()))
 ## <Anzahl unterschiedliche Wörter>
 
 X_train_vectorized = vectorizer.transform(X_train)
+X_valid_vectorized = vectorizer.transform(X_valid)
 print("X_train_vectorized:", X_train_vectorized.shape)
 ## X_train_vectorized: (<Anzahl Trainingsbeispiele>, <Anzahl unterschiedliche Wörter>)
 
@@ -87,7 +93,37 @@ print("Bag of Words\n", X_train_vectorized.toarray())
 
 ### Logistic Regression
 
+Trotz ihres Namens ist die **logistische Regression** ein Klassifikationsverfahren. Sie berechnet zunächst, wie die lineare Regression, eine gewichtete Summe der Merkmale $z = w_1 x_1 + \dots + w_n x_n + b$. Diese wird anschließend durch die **Sigmoid-Funktion** $\sigma(z) = \frac{1}{1 + e^{-z}}$ in eine Wahrscheinlichkeit zwischen 0 und 1 umgewandelt. Liegt die Wahrscheinlichkeit über einem Schwellwert (meist 0,5), wird die positive Klasse vorhergesagt.
+
+Die logistische Regression ist schnell, gut interpretierbar (die Gewichte zeigen, welche Merkmale für eine Entscheidung wichtig sind) und ein guter erster Vergleichswert (_Baseline_) für jedes Klassifikationsproblem. Mit mehr als zwei Klassen funktioniert sie ebenfalls (multinomiale logistische Regression).
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+clf = LogisticRegression(max_iter=1000)
+clf.fit(X_train_vectorized, y_train)
+
+predictions = clf.predict(X_valid_vectorized)
+print(accuracy_score(y_valid, predictions))
+print(clf.predict_proba(X_valid_vectorized))  # Wahrscheinlichkeit pro Klasse
+```
+
 ### Support Vector Machines
+
+Eine **Support Vector Machine** (SVM) sucht jene Trennlinie (bzw. in höheren Dimensionen jene Hyperebene), welche die Klassen mit dem **größtmöglichen Abstand** (_Margin_) voneinander trennt. Die Datenpunkte, die der Trennlinie am nächsten liegen und deren Lage bestimmen, heißen **Stützvektoren** (_Support Vectors_).
+
+Lassen sich die Daten nicht durch eine Gerade trennen, hilft der sogenannte **Kernel-Trick**: Die Daten werden (implizit) in einen höherdimensionalen Raum abgebildet, in dem sie linear trennbar sind. Gängige Kernel sind `linear`, `poly` und `rbf`. Der Parameter `C` legt fest, wie stark Fehlklassifikationen im Training bestraft werden.
+
+SVMs funktionieren sehr gut bei Daten mit vielen Merkmalen, zum Beispiel bei Textklassifikation, werden bei sehr großen Datensätzen aber langsam.
+
+```python
+from sklearn.svm import SVC
+
+clf = SVC(kernel='rbf', C=1.0)
+clf.fit(X_train_vectorized, y_train)
+predictions = clf.predict(X_valid_vectorized)
+```
 
 ## Ensemble-Methoden
 
@@ -121,7 +157,7 @@ In der folgenden Abbildung sieht man ein Beispiel eines Entscheidungsbaums, welc
 
 Der Random Forest ist ein Ensemble-Lernverfahren, das viele Entscheidungsbäume kombiniert. Jeder Baum wird auf einer zufälligen Teilmenge der Trainingsdaten (mit Zurücklegen) und einer zufälligen Teilmenge der Merkmale trainiert. Die Vorhersagen der einzelnen Bäume werden dann aggregiert, um die endgültige Vorhersage zu machen. Bei Klassifikationsproblemen erfolgt dies in der Regel durch Mehrheitsabstimmung.
 
-Im folgenden Bild sieht man anhand eines Beispiels, wie die Genauigkeit des gesamten Waldes aufgrund des unterschiedlichen Aufbaus der Bäume insgesamt steigt, da sich Fehler gegenseitig automatisch aufheben. Dieses Phänomen nennt sich `Weisheit der Crowd`.
+Im folgenden Bild sieht man anhand eines Beispiels, wie die Genauigkeit des gesamten Waldes aufgrund des unterschiedlichen Aufbaus der Bäume insgesamt steigt, da sich die Fehler einzelner Bäume weitgehend gegenseitig aufheben. Dieses Phänomen nennt sich `Weisheit der Crowd`.
 
 <img
   src="/images/artificial_intelligence/rfc_ensemble_lm.png"
@@ -191,6 +227,22 @@ Dieses Beispiel zeigt die typischen Schritte zur Verwendung eines Random Forest 
 
 ### Gradient Boosting Classifier
 
+Auch **Gradient Boosting** kombiniert viele Entscheidungsbäume, geht dabei aber anders vor als ein Random Forest. Die Bäume werden nicht unabhängig voneinander, sondern **nacheinander** trainiert: Jeder neue, meist sehr kleine Baum versucht, die Fehler der bisherigen Bäume zu korrigieren. Die Vorhersage ergibt sich aus der gewichteten Summe aller Bäume.
+
+- Die **Lernrate** (`learning_rate`) bestimmt, wie stark jeder Baum das Ergebnis beeinflusst. Kleinere Werte benötigen mehr Bäume, generalisieren aber meist besser.
+- Da jeder Baum auf den vorherigen aufbaut, kann Gradient Boosting schneller überanpassen als ein Random Forest und muss sorgfältiger eingestellt werden.
+
+Gradient Boosting gehört bei tabellarischen Daten zu den leistungsfähigsten Verfahren überhaupt. Besonders bekannte, optimierte Implementierungen sind **XGBoost**, **LightGBM** und **CatBoost**.
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+# X_train, X_test, ... aus dem Random-Forest-Beispiel (Iris-Datensatz)
+clf = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
+clf.fit(X_train, y_train)
+print(f'Genauigkeit: {clf.score(X_test, y_test) * 100:.2f}%')
+```
+
 ## Naive Bayes
 
 Naive-Bayes-Modelle sind eine Klasse von probabilistischen Klassifikationsalgorithmen im Bereich des Supervised Learning. Sie basieren auf dem Bayes'schen Theorem und gehen von der naiven Annahme aus, dass die Merkmale eines Datenpunkts unabhängig voneinander sind, obwohl dies in der Realität oft nicht der Fall ist. Trotz ihrer Einfachheit haben Naive-Bayes-Modelle sich als effektiv in vielen Anwendungen, insbesondere in der Textklassifikation, erwiesen. Diese Modelle sind schnell zu trainieren und zu implementieren, und sie bieten gute Leistung, wenn die Unabhängigkeitsannahme in der Praxis zumindest annähernd erfüllt ist.
@@ -204,13 +256,30 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 
 clf = MultinomialNB(alpha=0.2)
-clf.fit(X_train, y_train)
+clf.fit(X_train_vectorized, y_train)
 
-predictions = clf.predict(X_valid)
-print(accuracy_score(predictions, y_valid)) ## [Beispieloutput:] 0.9772727272727273
+predictions = clf.predict(X_valid_vectorized)
+print(accuracy_score(y_valid, predictions)) ## [Beispieloutput bei einem größeren Datensatz:] 0.9772727272727273
 ```
 
 ## K-nearest Neighbors (KNN)
+
+Der **k-Nächste-Nachbarn-Algorithmus** ist eines der einfachsten Klassifikationsverfahren. Beim „Training“ werden die Daten lediglich gespeichert. Soll ein neuer Datenpunkt klassifiziert werden, sucht der Algorithmus die $k$ Trainingspunkte, die ihm am ähnlichsten sind (meist gemessen mit dem euklidischen Abstand), und wählt die Klasse, die unter diesen Nachbarn am häufigsten vorkommt.
+
+- Ein kleines $k$ (z. B. 1) reagiert stark auf Ausreißer und neigt zu Overfitting, ein großes $k$ glättet die Entscheidung zu sehr (Underfitting). Bei zwei Klassen wählt man $k$ meist ungerade, um Gleichstände zu vermeiden.
+- Da Abstände berechnet werden, müssen die Merkmale vorher **skaliert** werden (z. B. mit dem `StandardScaler`), sonst dominieren Merkmale mit großen Zahlenwerten.
+- Da bei jeder Vorhersage alle Trainingsdaten durchsucht werden, ist KNN bei großen Datensätzen langsam.
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+# X_train, X_test, ... aus dem Random-Forest-Beispiel (Iris-Datensatz)
+clf = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))
+clf.fit(X_train, y_train)
+print(f'Genauigkeit: {clf.score(X_test, y_test) * 100:.2f}%')
+```
 
 ## Neuronale Netze
 
@@ -309,7 +378,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 Transformer sind eine neuere Architektur, die insbesondere in der Verarbeitung natürlicher Sprache (NLP) verwendet wird. Sie basieren auf einem Mechanismus namens Selbstaufmerksamkeit, der es ermöglicht, Abhängigkeiten über große Entfernungen in der Sequenz zu modellieren. Im Gegensatz zu RNNs verarbeiten Transformer alle Eingaben gleichzeitig und nutzen Mechanismen, die die Bedeutung jeder Position in der Eingabesequenz gewichten.
 
-Die bekannteste Anwendung von Transformern ist das Modell BERT (Bidirectional Encoder Representations from Transformers), das Spitzenleistungen in einer Vielzahl von NLP-Aufgaben erzielt hat.
+Bekannte Anwendungen von Transformern sind das Modell BERT (Bidirectional Encoder Representations from Transformers), das Spitzenleistungen in einer Vielzahl von NLP-Aufgaben erzielt hat, sowie die GPT-Modelle (Generative Pre-trained Transformer), auf denen unter anderem ChatGPT basiert.
 
 ```python
 import torch
@@ -329,7 +398,7 @@ TensorFlow ist ein Open-Source-Framework für maschinelles Lernen, das von Googl
 Hauptmerkmale von TensorFlow sind:
 
 - **Tensors:** Grundlegende Datenstrukturen, die n-dimensionalen Arrays ähneln.
-- **Graphen:** Modelle werden als gerichtete Graphen dargestellt, wobei Knoten Operationen und Kanten Datenströme darstellen.
+- **Graphen:** Modelle können als gerichtete Graphen dargestellt werden, wobei Knoten Operationen und Kanten Datenströme darstellen. Seit TensorFlow 2 wird Code standardmäßig direkt (_eager_) ausgeführt, Graphen entstehen bei Bedarf über `tf.function`.
 - **Keras API:** Eine hochstufige API, die das Erstellen und Trainieren von Modellen vereinfacht.
 
 TensorFlow bietet Unterstützung für verteiltes Training, ermöglicht den Einsatz auf verschiedenen Plattformen (CPUs, GPUs, TPUs) und hat eine große Community sowie umfangreiche Dokumentation.
@@ -347,13 +416,13 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=
 
 ### PyTorch
 
-PyTorch ist ein Open-Source-Framework für maschinelles Lernen, das von Facebook entwickelt wurde. Es ist besonders beliebt wegen seiner Einfachheit und Flexibilität sowie seiner dynamischen Computational Graphen.
+PyTorch ist ein Open-Source-Framework für maschinelles Lernen, das ursprünglich von Facebook (heute Meta) entwickelt wurde und inzwischen von der PyTorch Foundation betreut wird. Es ist besonders beliebt wegen seiner Einfachheit und Flexibilität sowie seiner dynamischen Computational Graphen.
 
 Hauptmerkmale von PyTorch sind:
 
 - **Tensors:** Ähnlich wie in TensorFlow, aber mit einer einfacheren Syntax.
 - **Autograd:** Automatische Differenzierung zur Berechnung von Gradienten.
-- **TorchScript:** Ermöglicht die Konvertierung von PyTorch-Modellen in eine Form, die in einer Produktionsumgebung ausgeführt werden kann.
+- **Export:** Mit `torch.export` (früher TorchScript) oder dem Austauschformat ONNX können Modelle in eine Form gebracht werden, die in einer Produktionsumgebung ohne Python ausgeführt werden kann.
 
 PyTorch ist besonders bei Forschern und Entwicklern beliebt, da es intuitive und pythonische APIs bietet, die das Experimentieren und Debuggen erleichtern.
 

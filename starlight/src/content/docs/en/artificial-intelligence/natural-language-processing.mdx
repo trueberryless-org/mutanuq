@@ -1,0 +1,499 @@
+---
+title: Natural Language Processing
+description: Text processing with spaCy, feature engineering with bag of words and TF-IDF, as well as text classification and transformer models.
+sidebar:
+  order: 9
+---
+
+Natural language processing (NLP) is an interdisciplinary field of research that deals with the interaction between computers and human language. The main goal of NLP is to give computers the ability to understand, interpret and respond to human language in all its nuances. This includes not only recognising words and grammar, but also analysing meaning, context and even emotions that may be contained in human language.
+
+NLP uses methods from various fields such as linguistics, computer science and artificial intelligence to develop models and algorithms that enable computers to process natural language effectively. The basic tasks of NLP include text classification, named entity recognition (NER), machine translation, text generation and sentiment analysis.
+
+## Text processing
+
+In the first step of natural language processing, the text has to be processed in such a way that features (words) of the text can be processed better by the machine.
+
+1. **Cleaning**
+   The first step in the text processing pipeline involves cleaning the text to remove unnecessary characters, symbols or formatting. This makes the following processing steps easier and improves the consistency of the data.
+
+2. **Normalisation**
+   Normalisation involves converting text into a uniform form, e.g. converting upper and lower case or removing accents. This ensures that the text is consistent and comparable.
+
+3. **Tokenisation**
+   Tokenisation splits the text into individual words or tokens. Each token represents a meaningful unit, which makes later analysis easier.
+
+4. **Removing stop words**
+   Stop words such as "and", "or" or "the" often contribute little to the meaning and are removed to put the focus on more relevant content.
+
+5. **Part-of-speech tagging (POS)**
+   In this step, grammatical categories such as nouns, verbs or adjectives are assigned to the individual words. This helps to analyse the syntactic structure.
+
+6. **Named entity recognition (NER)**
+   Named entities such as people, places or organisations are identified and marked in order to extract important information from the text.
+
+7. **Stemming and lemmatisation**
+   The last step is stemming (more advanced: lemmatisation (with a dictionary)), in which words are reduced to their stem. This helps to unify variants of a word and makes analysis easier.
+
+### Normalisation
+
+Normalisation refers to converting text to lower case. This makes sense in most cases of text processing, but does not necessarily have to happen. Removing punctuation can also be part of normalisation.
+
+```python
+## Convert to lower case
+import pandas as pd
+df = pd.DataFrame({'tweets': [col.lower() for col in ['I am a dog!', 'I am a cat.', 'I am a fish?']]})
+
+## Remove punctuation
+import re
+df.tweets = [re.sub("[^a-z0-9 ]", '', col) for col in df.tweets]
+```
+
+### Tokenisation
+
+Tokenisation refers to splitting a text into individual words. These words are called tokens. The following examples use the German spaCy model; for English texts, load `en_core_web_sm` instead.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") ## en_core_web_sm
+doc = nlp("Steve Jobs, CEO von Apple, erwägt den Kauf eines österreichischen Startups um 6 Mio. Euro.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.pos_:{10}}", f"{token.ent_type_:{10}}", f"{str(token.is_stop):{10}}", f"{token.lemma_:{20}}")
+```
+
+```python
+// token.output
+Text                 POS        ENT_TYPE   IS_STOP    Lemma
+--------------------------------------------------------------------------
+Steve                PROPN      PER        False      Steve
+Jobs                 PROPN      PER        False      Jobs
+,                    PUNCT                 False      --
+CEO                  PROPN                 False      CEO
+von                  ADP                   True       von
+Apple                PROPN      ORG        False      Apple
+,                    PUNCT                 False      --
+erwägt               VERB                  False      erwägen
+den                  DET                   True       der
+Kauf                 NOUN                  False      Kauf
+eines                DET                   True       ein
+österreichischen     ADJ        MISC       False      österreichisch
+Startups             NOUN                  False      Startup
+um                   ADP                   True       um
+6                    NUM                   False      6
+Mio.                 NOUN                  False      Mio.
+Euro                 NOUN                  False      Euro
+.                    PUNCT                 False      --
+```
+
+### Removing stop words
+
+Many words in every language have little influence on the meaning of a text. These words are called stop words. Classic models such as bag of words can usually be trained better if stop words are removed from the text. With modern transformer models, however, stop words are not removed, since words like "not" can decisively change the meaning of a sentence.
+
+```python
+import spacy
+nlp = spacy.load("en_core_web_sm") ## de_core_news_sm
+
+class NLP:
+    def __init__(self, text):
+        self.text = text
+
+    def remove_stopwords(self):
+        doc = nlp(self.text)
+        self.text = " ".join([token.text for token in doc if not token.is_stop])
+        return self.text
+
+text = "How to develop a chatbot using Python"
+text = NLP(text).remove_stopwords()
+print(text) ## develop chatbot Python
+```
+
+### Part-of-speech tagging
+
+Part-of-speech tagging is an NLP technique that assigns grammatical categories such as nouns, verbs or adjectives to every word in a text. These tags help to analyse the sentence structure and support tasks such as text analysis and sentiment analysis.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") ## en_core_web_sm
+doc = nlp("Ich habe immer Hunger.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.pos_:{10}}")
+```
+
+```python
+// pos.output
+Text                 POS
+--------------------------------
+Ich                  PRON
+habe                 AUX
+immer                ADV
+Hunger               NOUN
+.                    PUNCT
+```
+
+### Named entity recognition
+
+NER identifies and classifies specific entities such as people, places and organisations in a text. This information extraction is crucial for applications such as entity linking and building knowledge graphs.
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") ## en_core_web_sm
+doc = nlp("Marie Curie besuchte das Louvre-Museum in Paris.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.ent_type_:{10}}")
+```
+
+```python
+// ner.output
+Text                 ENT_TYPE
+--------------------------------
+Marie                PER
+Curie                PER
+besuchte
+das
+Louvre-Museum        LOC
+in
+Paris                LOC
+.
+```
+
+### Stemming & lemmatisation
+
+Stemming and lemmatisation are text normalisation techniques in NLP. They reduce words to their base forms, which improves the efficiency of search and classification algorithms. Stemming only cuts off endings according to fixed rules ("studies", for example, becomes "studi"). Lemmatisation has the advantage over stemming of using a dictionary and grammatical knowledge to reduce word forms to their actual base form (the lemma).
+
+```python
+import spacy
+nlp = spacy.load("de_core_news_sm") ## en_core_web_sm
+doc = nlp("Michael Jordan erwägt den Kauf eines Autos.")
+
+for token in doc:
+    print(f"{token.text:{20}}", f"{token.lemma_:{20}}")
+```
+
+```python
+// lemma.output
+Text                 Lemma
+------------------------------------------
+Michael              Michael
+Jordan               Jordan
+erwägt               erwägen
+den                  der
+Kauf                 Kauf
+eines                ein
+Autos                Auto
+.                    --
+```
+
+## Feature engineering
+
+Machine learning algorithms cannot do much with text. They prefer numerical input. If text needs to be processed, converting it into a numerical representation is unavoidable. This process is part of so-called `feature engineering`. Feature engineering for texts refers to the process of selecting, creating and transforming features.
+
+Methods for converting text into numerical representations include `one-hot encoding`, `n-grams` and `TF-IDF` (term frequency–inverse document frequency). These methods are mainly used in lightweight shallow learning models such as random forest, naive Bayes and logistic regression. Deep learning models, on the other hand, usually work with learned, dense vectors, the so-called [word embeddings](#word-embeddings).
+
+### One-hot encoding
+
+One-hot encoding is a method in which each word in a text is converted into a binary vector. Each word is represented by a column, and if the word occurs in the text, the corresponding column is set to 1, otherwise to 0.
+
+```python
+import spacy
+from sklearn.feature_extraction.text import CountVectorizer
+nlp = spacy.load('en_core_web_sm') ## de_core_news_sm
+
+text="Jim loves NLP. He will learn NLP in two months. NLP is Jim's future."
+
+def get_spacy_tokens(text):
+    doc = nlp(text)
+    return [token.text for token in doc]
+text_tokens = get_spacy_tokens(text)
+vectorizer = CountVectorizer(tokenizer=get_spacy_tokens, lowercase=False, token_pattern=None)
+
+vectorizer.fit(text_tokens)
+print("Vocabulary:\n", vectorizer.vocabulary_)
+
+vector = vectorizer.transform(text_tokens)
+print("Encoded Document is:\n", vector.toarray())
+```
+
+```python
+// one-hot.output
+Vocabulary:
+ {'Jim': 3, 'loves': 9, 'NLP': 4, '.': 1, 'He': 2, 'will': 12, 'learn': 8, 'in': 6, 'two': 11, 'months': 10, 'is': 7, "'s": 0, 'future': 5}
+Encoded Document is:
+ [[0 0 0 1 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 1 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 1 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 1]
+ [0 0 0 0 0 0 0 0 1 0 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 1 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 0 0 0 1 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 1 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 1 0 0 0 0 0]
+ [0 0 0 1 0 0 0 0 0 0 0 0 0]
+ [1 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0]]
+```
+
+#### With Pandas
+
+Using the confusingly named `get_dummies()` method, one-hot encoding can also be done with Pandas.
+
+```txt
+// products.csv
+produkt_id,kategorie
+1,Elektronik
+2,Kleidung
+3,Bücher
+4,Elektronik
+5,Elektronik
+6,Bücher
+7,Kleidung
+8,Bücher
+9,Elektronik
+10,Kleidung
+11,Bücher
+12,Elektronik
+13,Bücher
+14,Elektronik
+15,Kleidung
+16,Kleidung
+```
+
+```python
+import pandas as pd
+df = pd.read_csv('products.csv')
+df = pd.get_dummies(df, columns=["kategorie"], dtype=int)
+df.columns = map(str.lower, df.columns)
+print(df)
+```
+
+```python
+// one-hot_pandas.output
+    produkt_id  kategorie_bücher  kategorie_elektronik  kategorie_kleidung
+0            1                 0                     1                   0
+1            2                 0                     0                   1
+2            3                 1                     0                   0
+3            4                 0                     1                   0
+4            5                 0                     1                   0
+5            6                 1                     0                   0
+6            7                 0                     0                   1
+7            8                 1                     0                   0
+8            9                 0                     1                   0
+9           10                 0                     0                   1
+10          11                 1                     0                   0
+11          12                 0                     1                   0
+12          13                 1                     0                   0
+13          14                 0                     1                   0
+14          15                 0                     0                   1
+15          16                 0                     0                   1
+```
+
+### Bag of words (BoW)
+
+The `bag of words` (BoW) is a commonly used method in text processing and natural language processing. Its approach is to reduce a text to a set of words and to count the frequency of each word in the text without taking the order of the words into account.
+
+#### CountVectorizer
+
+The `CountVectorizer` can be used to create a vocabulary and convert the words in a text into numerical vectors.
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+```
+
+```python
+corpus = ["In a charming village, Max, Lisa, and Tim enjoyed life's joys with their pets: Rocky, the lively dog; Whiskers, Lisa's elegant cat; and Charlie, Tim's colorful parrot. Daily, they gathered at the village square, exploring the nearby forest, discovering vibrant birds, wildflowers, and a babbling stream.",
+          "Grateful for adventures, Max, Lisa, and Tim, with Rocky, Whiskers, and Charlie, remained inseparable. Even on rainy days, the trio met indoors. Max brought tea, Lisa had cookies, and Tim shared apples. These gatherings were filled with laughter and camaraderie.",
+          "In a quaint village, Max, Lisa, and Tim enjoyed life's joys with their pets: Rocky, the lively dog; Whiskers, Lisa's elegant cat; and Charlie, Tim's colorful parrot."]
+
+```
+
+By default, the `CountVectorizer` can be used like this:
+
+```python
+vectorizer = CountVectorizer()
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+## ['adventures' 'and' 'apples' 'at' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'for' 'forest' 'gathered' 'gatherings' 'grateful' 'had' 'in' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'on' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'the' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'were' 'whiskers' 'wildflowers' 'with']
+```
+
+Single-character tokens such as `a`, `I` or single-digit numbers are ignored, which can be changed using `token_pattern`.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b')
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+## ['a' 'adventures' 'and' 'apples' 'at' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'for' 'forest' 'gathered' 'gatherings' 'grateful' 'had' 'in' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'on' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 's' 'shared' 'square' 'stream' 'tea' 'the' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'were' 'whiskers' 'wildflowers' 'with']
+```
+
+If certain words should be filtered out, you can do this with `stop_words`.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'])
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+## ['adventures' 'apples' 'babbling' 'birds' 'brought' 'camaraderie' 'cat' 'charlie' 'charming' 'colorful' 'cookies' 'daily' 'days' 'discovering' 'dog' 'elegant' 'enjoyed' 'even' 'exploring' 'filled' 'forest' 'gathered' 'gatherings' 'grateful' 'indoors' 'inseparable' 'joys' 'laughter' 'life' 'lisa' 'lively' 'max' 'met' 'nearby' 'parrot' 'pets' 'quaint' 'rainy' 'remained' 'rocky' 'shared' 'square' 'stream' 'tea' 'their' 'these' 'they' 'tim' 'trio' 'vibrant' 'village' 'whiskers' 'wildflowers']
+```
+
+Each vocabulary entry contains only one word here, which means that, for example, `max lisa tim` cannot be found. To change this behavior, you can set the minimum and maximum number of words with `ngram_range`.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'],
+                             ngram_range=(1,3))
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+## ['adventures' 'adventures max' 'adventures max lisa' 'apples' 'apples these' 'apples these gatherings' 'babbling' 'babbling stream' 'birds' 'birds wildflowers' 'birds wildflowers babbling' 'brought' 'brought tea' 'brought tea lisa' 'camaraderie' 'cat' 'cat charlie' 'cat charlie tim' 'charlie' 'charlie remained' 'charlie remained inseparable' 'charlie tim' 'charlie tim colorful' 'charming' 'charming village' 'charming village max' 'colorful' 'colorful parrot' 'colorful parrot daily' 'cookies' 'cookies tim' 'cookies tim shared' 'daily' 'daily they' 'daily they gathered' 'days' 'days trio' 'days trio met' 'discovering' 'discovering vibrant' 'discovering vibrant birds' 'dog' 'dog whiskers' 'dog whiskers lisa' 'elegant' 'elegant cat' 'elegant cat charlie' 'enjoyed' 'enjoyed life' 'enjoyed life joys' 'even' 'even rainy' 'even rainy days' 'exploring' 'exploring nearby' 'exploring nearby forest' 'filled' 'filled laughter' 'filled laughter camaraderie' 'forest' 'forest discovering' 'forest discovering vibrant' 'gathered' 'gathered village' 'gathered village square' 'gatherings' 'gatherings filled' 'gatherings filled laughter' 'grateful' 'grateful adventures' 'grateful adventures max' 'indoors' 'indoors max' 'indoors max brought' 'inseparable' 'inseparable even' 'inseparable even rainy' 'joys' 'joys their' 'joys their pets' 'laughter' 'laughter camaraderie' 'life' 'life joys' 'life joys their' 'lisa' 'lisa cookies' 'lisa cookies tim' 'lisa elegant' 'lisa elegant cat' 'lisa tim' 'lisa tim enjoyed' 'lisa tim rocky' 'lively' 'lively dog' 'lively dog whiskers' 'max' 'max brought' 'max brought tea' 'max lisa' 'max lisa tim' 'met' 'met indoors' 'met indoors max' 'nearby' 'nearby forest' 'nearby forest discovering' 'parrot' 'parrot daily' 'parrot daily they' 'pets' 'pets rocky' 'pets rocky lively' 'quaint' 'quaint village' 'quaint village max' 'rainy' 'rainy days' 'rainy days trio' 'remained' 'remained inseparable' 'remained inseparable even' 'rocky' 'rocky lively' 'rocky lively dog' 'rocky whiskers' 'rocky whiskers charlie' 'shared' 'shared apples' 'shared apples these' 'square' 'square exploring' 'square exploring nearby' 'stream' 'tea' 'tea lisa' 'tea lisa cookies' 'their' 'their pets' 'their pets rocky' 'these' 'these gatherings' 'these gatherings filled' 'they' 'they gathered' 'they gathered village' 'tim' 'tim colorful' 'tim colorful parrot' 'tim enjoyed' 'tim enjoyed life' 'tim rocky' 'tim rocky whiskers' 'tim shared' 'tim shared apples' 'trio' 'trio met' 'trio met indoors' 'vibrant' 'vibrant birds' 'vibrant birds wildflowers' 'village' 'village max' 'village max lisa' 'village square' 'village square exploring' 'whiskers' 'whiskers charlie' 'whiskers charlie remained' 'whiskers lisa' 'whiskers lisa elegant' 'wildflowers' 'wildflowers babbling' 'wildflowers babbling stream']
+```
+
+If you want to limit the vocabulary to certain entries, you can do this with `vocabulary`.
+
+```python
+vectorizer = CountVectorizer(token_pattern=u'(?u)\\b\\w+\\b',
+                             stop_words=['a','and','at','for','had','in','on','the','s','were','with'],
+                             ngram_range=(1,4),
+                             vocabulary=['max lisa tim'])
+vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+## ['max lisa tim']
+```
+
+As soon as you are happy with the features, you can display the vocabulary. It is a dictionary that assigns a number to each word so that it can be worked with more easily in the machine learning process. Computers understand numbers better than words. The following outputs refer to the vectorizer with stop words, but without `ngram_range` and `vocabulary`.
+
+```python
+print(vectorizer.vocabulary_)
+## {'charming': 8, 'village': 50, 'max': 31, 'lisa': 29, 'tim': 47, 'enjoyed': 16, 'life': 28, 'joys': 26, 'their': 44, 'pets': 35, 'rocky': 39, 'lively': 30, 'dog': 14, 'whiskers': 51, 'elegant': 15, 'cat': 6, 'charlie': 7, 'colorful': 9, 'parrot': 34, 'daily': 11, 'they': 46, 'gathered': 21, 'square': 41, 'exploring': 18, 'nearby': 33, 'forest': 20, 'discovering': 13, 'vibrant': 49, 'birds': 3, 'wildflowers': 52, 'babbling': 2, 'stream': 42, 'grateful': 23, 'adventures': 0, 'remained': 38, 'inseparable': 25, 'even': 17, 'rainy': 37, 'days': 12, 'trio': 48, 'met': 32, 'indoors': 24, 'brought': 4, 'tea': 43, 'cookies': 10, 'shared': 40, 'apples': 1, 'these': 45, 'gatherings': 22, 'filled': 19, 'laughter': 27, 'camaraderie': 5, 'quaint': 36}
+```
+
+Now the features can be converted into a matrix of numbers using `.transform()`. It shows which vocabulary entries occur in the three sentences of `corpus`. For example, the word `charming` occurs in the first sentence, which is why there is a 1 at index 8 (marked green). If a word occurs more often, the corresponding count is at that position. The word `lisa` (index 29) is marked red, because Lisa occurs twice in the third string.
+
+```python ins="‎1" del="‎2"
+vector = vectorizer.transform(corpus)
+print(vector.shape) ## (3, 53)
+print(vector.toarray())
+## [
+## [0 0 1 1 0 0 1 1 ‎1 1 0 1 0 1 1 1 1 0 1 0 1 1 0 0 0 0 1 0 1 2 1 1 0 1 1 1 0 0 0 1 0 1 1 0 1 0 1 2 0 1 2 1 1]
+## [1 1 0 0 1 1 0 1 0 0 1 0 1 0 0 0 0 1 0 1 0 0 1 1 1 1 0 1 0 2 0 2 1 0 0 0 0 1 1 1 1 0 0 1 0 1 0 2 1 0 0 1 0]
+## [0 0 0 0 0 0 1 1 0 1 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 1 0 1 ‎2 1 1 0 0 1 1 1 0 0 1 0 0 0 0 1 0 0 2 0 0 1 1 0]
+## ]
+```
+
+:::tip[Aha]
+In case you are wondering where the number `53` in the shape comes from: there are 53 different words in the sentences of `corpus`, at least according to how the CountVectorizer tokenised the sentences. The vectorizer therefore has a vocabulary of 53 words.
+:::
+
+:::note
+Using the `fit_transform()` method, you can easily combine the individual steps and learn a vocabulary while converting the text into a `bag of words` representation at the same time.
+
+```python
+vectorizer.fit_transform(["Ich bin cool!"])
+vectorizer.get_feature_names_out()
+## array(['bin', 'cool', 'ich'], dtype=object)
+```
+
+:::
+
+The `CountVectorizer` can also be used to display the features in a Pandas DataFrame.
+
+```python
+import pandas as pd
+pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
+```
+
+![CountVectorizer Pandas - Output](/images/artificial_intelligence/count_vectorizer_pandas_output.png)
+
+#### LabelEncoder
+
+A `LabelEncoder` numbers the different values of a list, usually the target classes (`y`) of a data set. The numbers are assigned alphabetically and combined into an array.
+
+```python
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+labels = le.fit_transform(['Muffin', 'Donut', 'Donut', 'Donut', 'Muffin', 'Muffin', 'Donut', 'Muffin', 'Donut', 'Muffin'])
+print(labels) ## [1 0 0 0 1 1 0 1 0 1]
+```
+
+### TF-IDF
+
+When simply counting words, frequent words such as "the" or "village" get a high weight, even though they say little about a single text. **TF-IDF** (_term frequency, inverse document frequency_) compensates for this:
+
+- The **term frequency** $tf(t, d)$ indicates how often a word $t$ occurs in a document $d$.
+- The **inverse document frequency** $idf(t) = \log\frac{N}{df(t)}$ is the larger, the fewer of the $N$ documents contain the word.
+
+The TF-IDF value $tf(t, d) \cdot idf(t)$ is therefore high for words that occur frequently in one document but rarely in the entire corpus, exactly those words that characterise a document well. (By default, scikit-learn uses a slightly smoothed variant of this formula and normalises the vectors.)
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(stop_words='english')
+X_tfidf = tfidf.fit_transform(corpus)
+print(X_tfidf.shape) ## (3, <number of different words without stop words>)
+```
+
+The `TfidfVectorizer` offers the same parameters as the `CountVectorizer` (`ngram_range`, `stop_words`, `vocabulary`, ...).
+
+### Word embeddings
+
+With bag of words and TF-IDF, each word is a separate dimension. The vectors are therefore very long, filled almost entirely with zeros, and words like "car" and "vehicle" have nothing to do with each other. **Word embeddings** such as _Word2Vec_, _GloVe_ or _fastText_ instead represent each word as a dense vector with usually 100 to 300 dimensions. These vectors are learned from large amounts of text so that words with similar meanings are close to each other. A famous example is:
+
+$$
+\vec{King} - \vec{Man} + \vec{Woman} \approx \vec{Queen}
+$$
+
+The larger spaCy models (for example `en_core_web_md`) already contain word vectors:
+
+```python
+nlp = spacy.load("en_core_web_md")
+print(nlp("car").similarity(nlp("vehicle"))) ## high value, e.g. 0.7
+print(nlp("car").similarity(nlp("banana")))   ## low value
+print(nlp("Auto").similarity(nlp("Banane")))   ## niedriger Wert
+```
+
+## Modeling
+
+Once the text has been converted into numbers, any model from [supervised learning](/en/artificial-intelligence/supervised-learning/) can be trained. With a scikit-learn `Pipeline`, vectorisation and classification can be combined into a single model. This is not only clearer, but also prevents the vocabulary from being learned accidentally with the test data.
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import classification_report
+
+## df contains the columns 'text' and 'label' (e.g. "spam" / "ham")
+X_train, X_test, y_train, y_test = train_test_split(df['text'], df['label'], test_size=0.3, random_state=42)
+
+model = make_pipeline(TfidfVectorizer(ngram_range=(1, 2)), LogisticRegression(max_iter=1000))
+model.fit(X_train, y_train)
+
+print(classification_report(y_test, model.predict(X_test)))
+print(model.predict(["You have won an iPhone! Click now!"])) ## ['spam']
+```
+
+### Sentiment analysis
+
+**Sentiment analysis** determines the mood of a text, for example whether a product review is positive, neutral or negative. With classic methods, you train a classifier on labelled reviews as shown above. Alternatively, there are ready-made, pre-trained models.
+
+### Transformer models
+
+Modern NLP systems are based almost exclusively on [transformers](/en/artificial-intelligence/supervised-learning/#transformer-networks). These models are first **pre-trained** on huge amounts of text and learn language in general. They are then **fine-tuned** on a specific task with comparatively few examples. Roughly, a distinction is made between:
+
+- **Encoder models** such as BERT understand texts particularly well and are suitable for classification, NER or search.
+- **Decoder models** such as GPT generate texts word by word (more precisely: token by token) and form the basis of chatbots such as ChatGPT.
+- **Encoder-decoder models** such as T5 transform one text into another, for example for translations or summaries.
+
+With the Hugging Face `transformers` library, thousands of pre-trained models can be used with just a few lines:
+
+```python
+from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis")
+print(classifier("The product is really great, I am very satisfied!"))
+## [{'label': 'POSITIVE', 'score': 0.99...}]
+```

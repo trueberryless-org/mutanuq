@@ -1,9 +1,9 @@
 ---
 title: Willkommen bei Mutanuq
-description: Entdecke Wissen!
+description: "Die offene Wissensplattform für Schülerinnen und Schüler der HTL Krems: von Softwareentwicklung über Elektronik bis zu Wirtschaft und Sprachen."
 template: splash
 hero:
-  tagline: Schaue dich um, im Mutanuq Universum!
+  tagline: Die offene Wissensplattform für die HTL Krems. Schau dich im Mutanuq-Universum um!
   image:
     file: ../../../assets/start_logo.svg
   actions:
@@ -18,23 +18,41 @@ hero:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
+Mutanuq bündelt das Wissen aus dem Unterricht der Höheren Technischen Lehranstalt (HTL) Krems, verständlich erklärt, mit Beispielen und auf Deutsch sowie Englisch. Die Inhalte werden von Schülerinnen und Schülern für Schülerinnen und Schüler erstellt und können von allen verbessert werden.
+
+## Themen
+
+import { LinkCard } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <LinkCard title="Softwareentwicklung" href="/de/software-development/" description="Objektorientierte Programmierung, Softwaremetriken und Entwurfsmuster." />
+  <LinkCard title="Datenbanken" href="/de/databases/" description="Relationale und dokumentenorientierte Datenbanken, Schemata und das CAP-Theorem." />
+  <LinkCard title="Künstliche Intelligenz" href="/de/artificial-intelligence/" description="Python, Datenanalyse, maschinelles Lernen, Deep Learning und NLP." />
+  <LinkCard title="Dezentrale Systeme" href="/de/decentralised-systems/" description="Cloud Computing, Storage Accounts, Azure Functions und Durable Functions." />
+  <LinkCard title="Hardwarenahe Programmierung" href="/de/embedded-programming/" description="AVR-Mikrocontroller in C: Ports, Timer, ADC, USART, SPI und EEPROM." />
+  <LinkCard title="Bereitstellung" href="/de/deployment/" description="Virtualisierung und Container, Speichersysteme und Sicherungsstrategien." />
+  <LinkCard title="Sprachen" href="/de/languages/" description="Textsorten für Deutsch und Englisch sowie literarische Epochen." />
+  <LinkCard title="Wirtschaft und Recht" href="/de/economy_and_law/" description="Unternehmensgründung in Österreich und Marketing." />
+  <LinkCard title="Projektmanagement" href="/de/project_management/" description="Das magische Dreieck und Projektcontrolling." />
+</CardGrid>
+
 ## Hilf mit oder erkunde das Universum
 
 {/* prettier-ignore */}
 <CardGrid stagger>
   <Card title="Schnuppere ins Wissen" icon="random">
-    Du interessierst sich für technisches Wissen von einer HTL? Entdecke das Mutanuq-Universum!
+    Du interessierst dich für technisches Wissen von einer HTL? Entdecke das Mutanuq-Universum!
   </Card>
-  <Card title="Contribute to the universe" icon="add-document">
+  <Card title="Trage zum Universum bei" icon="add-document">
     Schaue einmal bei <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a> vorbei und erstelle einen Pull Request.
   </Card>
-  <Card title="Support my work" icon="rocket">
-    Ich würde mich riesig freuen, wenn du mich unterstützen würdest mittels <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>, <a href="https://www.patreon.com/trueberryless">Patreon</a> or <a href="https://ko-fi.com/trueberryless">Ko-fi</a>.
+  <Card title="Unterstütze meine Arbeit" icon="rocket">
+    Ich würde mich riesig freuen, wenn du mich mittels <a href="https://www.paypal.com/donate/?hosted_button_id=WDQ5D2VQ6SWEC">PayPal</a>, <a href="https://www.patreon.com/trueberryless">Patreon</a> oder <a href="https://ko-fi.com/trueberryless">Ko-fi</a> unterstützen würdest.
   </Card>
-  <Card title="Correct my mistakes" icon="pencil">
+  <Card title="Korrigiere meine Fehler" icon="pencil">
     Wenn dir irgendwelche inhaltlichen Fehler oder Rechtschreibfehler auffallen, klicke ganz unten auf `Seite bearbeiten`, um diese auszubessern!
   </Card>
-  <Card title="Star the project" icon="star">
+  <Card title="Gib dem Projekt einen Stern" icon="star">
     Gib dem Projekt auf <a href="https://github.com/trueberryless-org/mutanuq">GitHub</a> einen Stern!
   </Card>
 </CardGrid>

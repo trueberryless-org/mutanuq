@@ -1,5 +1,8 @@
 ---
 title: Machine Learning
+description: "Wie Modelle aus Daten Regeln lernen: der Ablauf von KI-Projekten sowie überwachtes, unüberwachtes und verstärkendes Lernen."
+sidebar:
+  order: 6
 ---
 
 Maschinelles Lernen ist ein Bereich der Informatik, der es ermöglicht, Modelle zu trainieren, um Muster und Beziehungen in Daten zu erkennen. Der große Unterschied zum herkömmlichen Programmieren besteht darin, dass beim maschinellen Lernen anhand von unglaublich vielen Datensätzen (mit zugehörigen richtigen Antworten) **Regeln** erlernt werden, die dann auf neue Daten angewendet werden können, während ein Algorithmus anhand von festgelegten Regeln die **Antworten** findet. Folgendes Bild veranschaulicht dieses Konzept:
@@ -30,31 +33,46 @@ Der Prozess des maschinellen Lernens ist im folgenden Diagramm dargestellt:
     class="dark-only"
 />
 
-Wie man sehen kann, beginnt dieser Prozess mit dem **Aggregieren** der Daten und **Bereinigung** dieser. Auch wenn man es nicht glaubt, machen diese Teilaufgaben **ca. 50-70%** des Arbeitsaufwandes vom gesamten Prozess aus. Hierbei muss besonders auf den Datenschutz der Kunden, die Datenqualität und die Datensicherheit geachtet werden. Die Daten selbst können im Internet gratis oder kostenlos gefunden werden. Saubere Daten sind Gold wert!
+Wie man sehen kann, beginnt dieser Prozess mit dem **Aggregieren** der Daten und der **Bereinigung** dieser. Auch wenn man es nicht glaubt, machen diese Teilaufgaben **ca. 50-70%** des Arbeitsaufwandes vom gesamten Prozess aus. Hierbei muss besonders auf den Datenschutz der Kunden, die Datenqualität und die Datensicherheit geachtet werden. Die Daten selbst können im Internet gratis oder kostenpflichtig gefunden werden, zum Beispiel auf [Kaggle](https://www.kaggle.com/datasets). Saubere Daten sind Gold wert!
 
-Der eigentliche interessante Teil beginnt dann beim Aufbereitung und Trainieren des Modells mit den Daten und dem anschließenden Testen. Hierbei gibt es einige Methoden der deskriptiven Statistik, um die Qualität des Modells zu beurteilen. Sobald der Kunde mit dieser zufrieden ist, kann das Modell in der Produktionsumgebung eingesetzt werden.
+Der eigentlich interessante Teil beginnt dann bei der Aufbereitung und dem Trainieren des Modells mit den Daten und dem anschließenden Testen. Hierbei gibt es einige Kennzahlen und Methoden der Statistik, um die Qualität des Modells zu beurteilen. Sobald der Kunde mit dieser zufrieden ist, kann das Modell in der Produktionsumgebung eingesetzt werden.
+
+### Qualität eines Modells bewerten
+
+Bei Klassifikationsaufgaben werden die Vorhersagen des Modells auf den Testdaten mit den richtigen Antworten verglichen. Daraus ergibt sich die **Konfusionsmatrix** mit richtig positiven (TP), falsch positiven (FP), richtig negativen (TN) und falsch negativen (FN) Vorhersagen. Aus ihr werden die wichtigsten Kennzahlen berechnet:
+
+| Kennzahl                   | Formel                                   | Bedeutung                                                           |
+| -------------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **Accuracy** (Genauigkeit) | $\frac{TP + TN}{TP + TN + FP + FN}$      | Anteil aller richtigen Vorhersagen                                  |
+| **Precision** (Präzision)  | $\frac{TP}{TP + FP}$                     | Wie viele der als positiv vorhergesagten Fälle wirklich positiv sind |
+| **Recall** (Sensitivität)  | $\frac{TP}{TP + FN}$                     | Wie viele der tatsächlich positiven Fälle gefunden wurden           |
+| **F1-Score**               | $2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}$ | Harmonisches Mittel aus Precision und Recall |
+
+Bei unausgeglichenen Datensätzen ist die Accuracy trügerisch: Sind 99 % aller E-Mails kein Spam, erreicht ein Modell, das niemals „Spam“ vorhersagt, bereits 99 % Accuracy, ist aber völlig nutzlos. Bei Regressionsaufgaben verwendet man stattdessen Fehlermaße wie den mittleren quadratischen Fehler (MSE) oder das Bestimmtheitsmaß $R^2$.
 
 ## Einordnung in die Kategorien
 
 Maschinelles Lernen unterteilt sich hierbei in die drei großen Kategorien `Supervised Learning`, `Unsupervised Learning`, `Reinforcement Learning`.
 
 -   **Supervised Learning**  
-    Das überwachte Lernen kategorisiert alle Aufgaben des Maschinellen Lernens, bei welchem das Trainieren mithilfe von Daten und zugehörigen richtigen bzw. gewollten Antworten stattfindet. Das Modell wird demnach auf eine Art „Soll-Zustand“ hintrainiert. Um die Datensätze möglichst effizient zu nutzen, werden meistens 70% der Ursprungsdaten für den Prozess des Trainierens verwendet und die restlichen 30% für das Testen der Genauigkeit des Modells.
+    Das überwachte Lernen umfasst alle Aufgaben des maschinellen Lernens, bei welchen das Trainieren mithilfe von Daten und zugehörigen richtigen bzw. gewollten Antworten stattfindet. Das Modell wird demnach auf eine Art „Soll-Zustand“ hintrainiert. Um die Datensätze möglichst effizient zu nutzen, werden meistens 70% der Ursprungsdaten für den Prozess des Trainierens verwendet und die restlichen 30% für das Testen der Genauigkeit des Modells.
 
-    Beispiele für das überwachte Lernen sind die Klassifizierung von Bildern, Texten, Sprache, Emotionen, die Erkennung von Spam-E-Mails, Empfehlungssysteme in Online-Shops oder gewissen Formen von Vorhersagen in bestimmten Bereichen.
+    Beispiele für das überwachte Lernen sind die Klassifizierung von Bildern, Texten, Sprache, Emotionen, die Erkennung von Spam-E-Mails, Empfehlungssysteme in Online-Shops oder gewisse Formen von Vorhersagen in bestimmten Bereichen.
 
-    Die größten Herausforderungen dieser Sparte sind das `Overfitting` und `Underfitting`. Aufgrund des Daseins der korrekten Antworten kann es geschehen, dass das Modell zu sehr and die Trainingsdaten trainiert wird und somit keine allgemein gültigen Regeln erstellen kann (`Overfitting`). Oder die Beschaffenheit der Daten, die falsch ausgewählte Architektur (Neuronales Netz) oder Algorithmus lässt keine allgemeinen Regeln erkennen (`Underfitting`).
+    Die größten Herausforderungen dieser Sparte sind das `Overfitting` und `Underfitting`. Da die korrekten Antworten bekannt sind, kann es geschehen, dass das Modell zu sehr an die Trainingsdaten angepasst wird und somit keine allgemein gültigen Regeln erstellen kann (`Overfitting`). Oder die Beschaffenheit der Daten, die falsch ausgewählte Architektur (Neuronales Netz) oder der Algorithmus lässt keine allgemeinen Regeln erkennen (`Underfitting`).
 
-    Nichtsdestotrotz ist das überwachte Lernen das weit verbreitetste und am häufigsten genutzte Verfahren, da es sich als sehr effektiv erwiesen hat.
+    Nichtsdestotrotz ist das überwachte Lernen das am weitesten verbreitete und am häufigsten genutzte Verfahren, da es sich als sehr effektiv erwiesen hat. Mehr dazu unter [Supervised Learning](/de/artificial-intelligence/supervised-learning/).
 
 -   **Unsupervised Learning**  
-    Beim unüberwachten Lernen versucht der Algorithmus im Trainingsprozess die Daten in Gruppen zu clustern, um gemeinsame oder unterschiedliche Eigenschaften festzustellen. Dabei sind als Datengrundlage keine Antworten vorhanden und das Modell muss selbständig die Muster in den Daten erkennen.
+    Beim unüberwachten Lernen versucht der Algorithmus im Trainingsprozess die Daten in Gruppen zu clustern, um gemeinsame oder unterschiedliche Eigenschaften festzustellen. Dabei sind als Datengrundlage keine Antworten vorhanden und das Modell muss selbstständig die Muster in den Daten erkennen. Ein bekannter Algorithmus ist **k-Means**, der die Daten in $k$ Gruppen einteilt, deren Punkte jeweils möglichst nahe am Mittelpunkt ihrer Gruppe liegen. Neben dem Clustering zählt auch die **Dimensionsreduktion** (zum Beispiel mit der Hauptkomponentenanalyse, PCA) zum unüberwachten Lernen.
 
-    Diese Sparte ist vor allem in Bereichen des Clustern vorzufinden. Beispielsweise kann man unbeaufsichtigtes Lernen in Echtzeit nutzen, um Muster in Kundenmerkmalen (Marketingabteilung), Anomalien (Betrugserkennung), Empfehlungssystemen oder selten auf der Bildverarbeitung zu identifizieren.
+    Diese Sparte ist vor allem im Bereich des Clusterns vorzufinden. Beispielsweise kann man unüberwachtes Lernen in Echtzeit nutzen, um Muster in Kundenmerkmalen (Marketingabteilung), Anomalien (Betrugserkennung), Empfehlungssystemen oder seltener in der Bildverarbeitung zu identifizieren.
 
-    Diese Art des maschinellen Lernens wird nicht so häufig verwendet, da die Interpretierbarkeit der Ergebnisse, die Skalierbarkeit und Komplexität oft zu großen Problemen führt. Erstaunlicherweise basiert unser Gehirn jedoch am ehesten auf dieser Methodik, da in unseren frühen Lebensjahren ausschließlich Rohdaten eingespeist werden (Hören, Sehen, Schmecken, ...).
+    Diese Art des maschinellen Lernens wird nicht so häufig verwendet, da die Interpretierbarkeit der Ergebnisse, die Skalierbarkeit und Komplexität oft zu großen Problemen führen. Interessanterweise ähnelt die Art, wie wir Menschen in unseren frühen Lebensjahren lernen, dieser Methodik, da wir zunächst hauptsächlich unbeschriftete Rohdaten aufnehmen (Hören, Sehen, Schmecken, ...).
 
 -   **Reinforcement Learning**  
-    Das verstärkende Lernen ist ein iterativer Prozess, bei welchem das Modell mithilfe des Belohnungssystems trainiert wird. Das Ziel des Modells ist die Maximierung der Belohnung, welches mit dem Ziel der Programmierer (Maximierung der Genauigkeit) stark korreliert. Außerdem werden schlechte Belohnungen bzw. Bestrafungen vom Modell vermieden, was bedeutet, dass die Bewerter des Modells bereits in der Trainingsphase die Robustheit und Fairness des Modells sicherstellen kann. Somit kann diese künstliche Intelligenz schwer manipuliert werden, schädliche Informationen preiszugeben, und hat keine Vorurteile.
+    Das verstärkende Lernen ist ein iterativer Prozess, bei welchem ein sogenannter **Agent** durch Ausprobieren lernt. Der Agent führt in einer **Umgebung** Aktionen aus und erhält dafür eine **Belohnung** (oder Bestrafung). Das Ziel des Agenten ist es, eine Strategie zu finden, welche die Summe der Belohnungen langfristig maximiert. Typische Anwendungen sind Spiele (zum Beispiel AlphaGo), die Steuerung von Robotern oder autonomes Fahren.
 
-    Hierbei muss man bei der Implementierung des Learnprozesses jedoch aufpassen, nicht versehentlich das Belohnungssystem zu negieren. Dies ist nämlich wirklich einmal auch OpenAI passiert, weswegen [GPT-2 das unanständigste Modell](https://openai.com/index/fine-tuning-gpt-2/) in der Geschichte wurde ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).
+    Auch große Sprachmodelle wie ChatGPT werden mit einer Variante davon nachtrainiert: Beim **Reinforcement Learning from Human Feedback** (RLHF) bewerten Menschen die Antworten des Modells, und diese Bewertungen dienen als Belohnung. Dadurch werden die Antworten hilfreicher und schädliche Ausgaben seltener. Eine Garantie, dass das Modell nicht manipuliert werden kann oder keine Vorurteile hat, bietet dieses Verfahren allerdings nicht. Das Modell lernt nur, was im Belohnungssystem abgebildet ist.
+
+    Hierbei muss man bei der Implementierung des Lernprozesses deshalb besonders aufpassen, nicht versehentlich das Belohnungssystem zu negieren. Dies ist nämlich wirklich einmal auch OpenAI passiert: Durch einen Vorzeichenfehler wurde eine Version von [GPT-2](https://openai.com/index/fine-tuning-gpt-2/) darauf optimiert, möglichst anstößige Texte zu erzeugen ([YouTube](https://www.youtube.com/watch?v=qV_rOlHjvvs)).
