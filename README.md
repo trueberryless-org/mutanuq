@@ -9,25 +9,28 @@ Visit the website at [mutanuq.felixs.dev](https://mutanuq.felixs.dev).
 
 ## Project structure
 
-This repository is a [pnpm](https://pnpm.io/) workspace. The website is a [Starlight](https://starlight.astro.build) site located in the [`starlight/`](https://github.com/trueberryless-org/mutanuq/tree/main/starlight) directory.
+The website is a [Starlight](https://starlight.astro.build) site at the root of this repository.
 
 ```
 .
-├── starlight/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   └── content/docs/
-│   │       ├── de/
-│   │       └── en/
-│   └── astro.config.mjs
-├── package.json
-└── pnpm-workspace.yaml
+├── lunaria/
+├── public/
+├── src/
+│   ├── components/
+│   ├── content/docs/
+│   │   ├── de/
+│   │   └── en/
+│   └── styles/
+├── astro.config.mjs
+├── lunaria.config.json
+└── package.json
 ```
+
+Content lives in [`src/content/docs/`](https://github.com/trueberryless-org/mutanuq/tree/main/src/content/docs), with one directory per language (`de` and `en`).
 
 ## Development
 
-Install the dependencies from the root of the repository:
+Install the dependencies with [pnpm](https://pnpm.io/):
 
 ```sh
 pnpm install
