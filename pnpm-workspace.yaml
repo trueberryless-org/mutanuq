@@ -1,11 +1,12 @@
 packages:
-  - "starlight/"
-  - "packages/**/*"
+  - "starlight"
 
 allowBuilds:
-  "@parcel/watcher": false
-  "@tailwindcss/oxide": false
-  canvas: false
   esbuild: false
   sharp: true
-  unrs-resolver: false
+
+minimumReleaseAgeExclude:
+  - astro-contributors
+  - starlight-group-pages
+  - starlight-sidebar-topics-dropdown
+  - starlight-view-modes
