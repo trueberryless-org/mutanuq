@@ -1,4 +1,4 @@
-# starlight
+# mutanuq
 
 ## 0.3.0
 

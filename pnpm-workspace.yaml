@@ -1,6 +1,3 @@
-packages:
-  - "starlight"
-
 allowBuilds:
   esbuild: false
   sharp: true

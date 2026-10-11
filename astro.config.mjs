@@ -36,8 +36,7 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl:
-          "https://github.com/trueberryless-org/mutanuq/tree/main/starlight/",
+        baseUrl: "https://github.com/trueberryless-org/mutanuq/tree/main/",
       },
       lastUpdated: true,
       defaultLocale: "de",

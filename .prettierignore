@@ -42,3 +42,6 @@ Thumbs.db
 
 # Changelog
 .changeset
+
+# Rewritten by @lunariajs/starlight on every build
+lunaria.config.json

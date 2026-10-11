@@ -37,7 +37,7 @@ Anyone can contribute to this repository. You can contribute by creating new con
 
 ## Creating new content
 
-To create new pages, go to the [docs folder](https://github.com/trueberryless-org/mutanuq/tree/main/starlight/src/content/docs). It is recommended to start creating new content in German, as this is the default language of [Mutanuq](https://github.com/trueberryless-org/mutanuq). Find a suitable folder inside the `de/` directory and follow these steps:
+To create new pages, go to the [docs folder](https://github.com/trueberryless-org/mutanuq/tree/main/src/content/docs). It is recommended to start creating new content in German, as this is the default language of [Mutanuq](https://github.com/trueberryless-org/mutanuq). Find a suitable folder inside the `de/` directory and follow these steps:
 
 1. Click `Add File` -> `Create New File` in the top right corner of the GitHub page.
 2. The filename must end in `.md` or `.mdx` to work properly. If you are not sure which extension to choose, `.md` is recommended.
@@ -78,7 +78,7 @@ Translations help make Mutanuq accessible to more people.
 
 ### Translating Mutanuq’s docs
 
-Mutanuq’s documentation is also translated into multiple languages. You can find the source code for the site in [the `starlight/` directory](./starlight/) of this repository.
+Mutanuq’s documentation is also translated into multiple languages. The source code for the site is at the root of this repository.
 
 Help out by:
 
@@ -92,11 +92,11 @@ Visit **<https://mutanuq.felixs.dev/lunaria>** to track translation progress for
 
 To add a language, you will need its BCP-47 tag and a label. See [“Adding a new language”](https://contribute.docs.astro.build/guides/i18n/#adding-a-new-language) in the Astro docs repo for some helpful tips around choosing these.
 
--   Add your language to the `locales` config in `starlight/astro.config.mjs`
--   Add your language to the `locales` config in `starlight/lunaria.config.json`
+-   Add your language to the `locales` config in `astro.config.mjs`
+-   Add your language to the `locales` config in `lunaria.config.json`
 -   Add your language’s subtag to the `🌏 i18n` label config in `.github/labeler.yml`
 -   Create the first translated page for your language.
-    This must be the Mutanuq landing page: `starlight/src/content/docs/{language}/index.mdx`.
+    This must be the Mutanuq landing page: `src/content/docs/{language}/index.mdx`.
 -   Open a pull request on GitHub to add your changes to Mutanuq!
 
 [issues]: https://github.com/trueberryless-org/mutanuq/issues
