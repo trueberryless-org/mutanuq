@@ -1,8 +1,11 @@
 ---
 title: Grundprogramm
+description: Aufbau eines typischen C-Programms für den AVR-Mikrocontroller mit Initialisierung und Arbeitsschleife.
+sidebar:
+  order: 1
 ---
 
-Ein typisches C-Programm hat eine main-function, welche am Start des Programms aufgerufen wird. Wichtig ist, dass diese Funktion eine Endlosschleife, die sogenannte Arbeitsschleife, enthält, ansonsten würde das Program aufhören zu laufen.
+Ein typisches C-Programm hat eine `main`-Funktion, welche am Start des Programms aufgerufen wird. Wichtig ist, dass diese Funktion eine Endlosschleife, die sogenannte Arbeitsschleife, enthält, ansonsten würde das Programm aufhören zu laufen. Anders als auf einem PC gibt es auf dem Mikrocontroller nämlich kein Betriebssystem, zu dem das Programm nach dem Ende von `main` zurückkehren könnte.
 
 ```c
 /*
@@ -30,3 +33,15 @@ int main(void)
     }
 }
 ```
+
+## Erklärung
+
+| Zeile                                 | Bedeutung                                                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `#define F_CPU 16000000`              | Teilt den Bibliotheken mit, dass der Mikrocontroller mit 16 MHz getaktet ist. Wird vor allem von `_delay_ms()` benötigt, um die Wartezeit richtig zu berechnen. |
+| `#include <avr/io.h>`                 | Enthält die Namen aller Register (z. B. `PORTB`, `DDRB`) und Bits des verwendeten Mikrocontrollers.                                        |
+| `#include <avr/interrupt.h>`          | Wird für [Interrupts](/de/embedded-programming/interrupts/) benötigt (`sei()`, `cli()`, `ISR()`).                                          |
+| `#define __DELAY_BACKWARD_COMPATIBLE__` | Erlaubt es, `_delay_ms()` auch mit Variablen statt nur mit konstanten Zahlen aufzurufen.                                                 |
+| `#include <util/delay.h>`             | Stellt die Warte-Funktionen `_delay_ms()` und `_delay_us()` bereit.                                                                        |
+
+Vor der Arbeitsschleife werden typischerweise alle Konfigurationen vorgenommen, zum Beispiel welche Pins [Ein- oder Ausgänge](/de/embedded-programming/special-function-register/) sind oder wie ein [Timer](/de/embedded-programming/timer/) arbeiten soll. In der Arbeitsschleife läuft dann die eigentliche Logik des Programms.

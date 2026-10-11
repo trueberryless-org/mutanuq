@@ -1,8 +1,11 @@
 ---
 title: Matplotlib
+description: Linien-, Balken- und Streudiagramme, Histogramme und Boxplots mit Matplotlib erstellen.
+sidebar:
+  order: 4
 ---
 
-Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter und interaktiver Visualisierungen in Python. Es ist besonders nützlich für wissenschaftliche und datenbezogene Visualisierungen.
+Matplotlib ist eine umfassende Bibliothek zum Erstellen statischer, animierter und interaktiver Visualisierungen in Python. Sie ist besonders nützlich für wissenschaftliche und datenbezogene Visualisierungen.
 
 ## Installation
 
@@ -139,3 +142,28 @@ plt.show()
 ```
 
 <img src="/images/artificial_intelligence/diagrams/box.png" alt="Boxplot" style="max-width: 500px;" />
+
+## Mehrere Diagramme (Subplots)
+
+Neben der einfachen `plt`-Schnittstelle bietet Matplotlib eine objektorientierte Schnittstelle. Mit `plt.subplots()` erhält man eine Abbildung (`Figure`) und ein oder mehrere Achsensysteme (`Axes`), auf denen man gezielt zeichnen kann. So lassen sich mehrere Diagramme nebeneinander darstellen:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 2 * np.pi, 100)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+
+ax1.plot(x, np.sin(x), label='sin(x)')
+ax1.set_title('Sinus')
+ax1.legend()
+
+ax2.plot(x, np.cos(x), color='orange', label='cos(x)')
+ax2.set_title('Kosinus')
+ax2.legend()
+
+fig.tight_layout()
+fig.savefig('trigonometrie.png', dpi=150)  # Abbildung als Bild speichern
+plt.show()
+```

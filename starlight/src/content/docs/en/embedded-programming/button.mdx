@@ -1,0 +1,292 @@
+---
+title: Button
+description: Connecting buttons with a pull-up or pull-down resistor, debouncing them and reading them via polling or interrupts.
+sidebar:
+  order: 4
+---
+
+Buttons are user input at the simplest hardware level. A button can either be pressed or not. This binary state makes it easy to convert it into "voltage on" or "voltage off".
+
+## Theory
+
+Basically, there are two different ways to use buttons:
+
+- Active low wiring => pull-up resistor
+- Active high wiring => pull-down resistor
+
+These two types must be handled differently at [code level](#code).
+
+### Active low / pull-up
+
+With active low wiring, **0V** (low) is applied to the input when the button is pressed (active). The [setup](#active-low--pull-up-1) of active low wiring uses a pull-up resistor.
+
+### Active high / pull-down
+
+Active high wiring works exactly the other way round. Here, **5V** (high) is applied to the input when the button is pressed (active). The [setup](#active-high--pull-down-1) of active high wiring uses a pull-down resistor.
+
+## Setup
+
+### Active low / pull-up
+
+A voltage divider is built at the corresponding pin, with a 10K resistor to the 5V supply voltage on one side and a button connected to ground on the other side. When the button is open, the resistor "pulls" the pin up to 5V (high). When it is pressed, the pin is connected directly to GND (low).
+
+![Pull-up resistor](/images/embedded_programming/button/pull_up_widerstand.png)
+_A pull-up resistor setup with the button open_
+
+![Pull-up resistor closed](/images/embedded_programming/button/pull_up_widerstand_closed.png)
+_A pull-up resistor setup with the button closed_
+
+### Active high / pull-down
+
+Again, there is a voltage divider at the corresponding pin, but this time with ground (GND) on the side of the 10K resistor and the button connected to the 5V supply voltage on the other side.
+
+![Pull-down resistor](/images/embedded_programming/button/pull_down_widerstand.png)
+_A pull-down resistor setup with the button open_
+
+![Pull-down resistor closed](/images/embedded_programming/button/pull_down_widerstand_closed.png)
+_A pull-down resistor setup with the button closed_
+
+## Debouncing
+
+Mechanical buttons "bounce": when pressed and released, the contacts close and open several times for a few milliseconds before they reach a stable state. The microcontroller is so fast that it would recognise each of these changes as a separate button press. In the following examples, a short delay (`_delay_ms(70)`) is therefore added after each check. Alternatively, a capacitor can be connected in parallel to the button in hardware.
+
+## Code
+
+### Without interrupts
+
+:::note
+Pay close attention to the differences in the if conditions!
+:::
+
+#### Pull-up wiring
+
+```c
+#include <avr/io.h>
+#include <util/delay.h>
+
+void checkButton(void);
+
+int main(void)
+{
+    // Button on port B, pin 0
+    //  Configure port B, pin 0 as an input
+    DDRB &= ~(1<<DDB0);
+
+    while (1)
+    {
+        checkButton();
+    }
+}
+
+void checkButton(void) {
+    // Check whether the button is pressed.
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Button is pressed
+    }
+
+    // Avoid bouncing
+    _delay_ms(70);
+}
+```
+
+#### Pull-down wiring
+
+```c
+#include <avr/io.h>
+#include <util/delay.h>
+
+void checkButton(void);
+
+int main(void)
+{
+    // Button on port B, pin 0
+    //  Configure port B, pin 0 as an input
+    DDRB &= ~(1<<DDB0);
+
+    while (1)
+    {
+        checkButton();
+    }
+}
+
+void checkButton(void) {
+    // Check whether the button is pressed.
+    if (PINB & (1<<PINB0))
+    {
+        // Button is pressed
+    }
+
+    // Avoid bouncing
+    _delay_ms(70);
+}
+```
+
+#### Internal pull-up resistor
+
+```c
+#include <avr/io.h>
+#include <util/delay.h>
+
+void checkButton(void);
+
+int main(void)
+{
+    // Button on port B, pin 0
+    //  Configure port B, pin 0 as an input
+    DDRB &= ~(1<<DDB0);
+
+    //  Port B, pin 0 voltage: 5V (enable the internal pull-up resistor)
+    PORTB |= (1<<PORTB0);
+
+    while (1)
+    {
+        checkButton();
+    }
+}
+
+void checkButton(void) {
+    // Check whether the button is pressed.
+    if (!(PINB & (1<<PINB0)))
+    {
+        // Button is pressed
+    }
+
+    // Avoid bouncing
+    _delay_ms(70);
+}
+```
+
+With polling, the condition stays true as long as the button is held down. If an action should only be executed **once per button press**, you remember the previous state and only react to the change from "not pressed" to "pressed" (_edge detection_):
+
+```c
+void checkButton(void) {
+    static uint8_t wasPressed = 0;
+    uint8_t isPressed = !(PINB & (1<<PINB0));
+
+    if (isPressed && !wasPressed)
+    {
+        // Button has just been pressed once
+    }
+
+    wasPressed = isPressed;
+
+    // Avoid bouncing
+    _delay_ms(70);
+}
+```
+
+### With interrupts
+
+With interrupts, you have the advantage that you do not have to constantly call a method in the while loop that checks the buttons. This behavior is explained in more detail in [interrupts](/en/embedded-programming/interrupts/).
+
+#### Direct external interrupts
+
+On port D, there are two pins (2 and 3) with direct external interrupt functionality (`INT0` and `INT1`). The `EICRA` register determines when the interrupt is triggered: on a low level (default), on any change, on a falling edge or on a rising edge. With pull-up wiring, a button press can be recognised by the **falling edge**.
+
+```c
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+int main(void)
+{
+    // Button on port D, pin 2
+    //  Configure port D, pin 2 as an input
+    DDRD &= ~(1<<DDD2);
+
+    //  Port D, pin 2 voltage: 5V (enable the internal pull-up resistor)
+    PORTD |= (1<<PORTD2);
+
+    // Interrupt
+    //  trigger on a falling edge (ISC01 = 1, ISC00 = 0)
+    EICRA |= (1<<ISC01);
+    EICRA &= ~(1<<ISC00);
+    //  enable the direct external interrupt on port D, pin 2
+    EIMSK |= (1<<INT0);
+
+    //  Set Enable Interrupt
+    sei();
+
+    while (1)
+    {
+    }
+}
+
+ISR (INT0_vect) {
+    // Button has been pressed once
+
+    _delay_ms(70);
+}
+```
+
+:::caution
+Without the setting in `EICRA`, the interrupt is triggered on the low level, so the ISR would be called over and over again as long as the button is pressed. In addition, ISRs should be as short as possible. A `_delay_ms()` in the ISR blocks the entire program meanwhile. In larger programs, the ISR therefore only sets a `volatile` variable and the button press is processed in the main loop (see [interrupts](/en/embedded-programming/interrupts/)).
+:::
+
+#### Group-based external interrupts
+
+Group-based external interrupts (_pin change interrupts_) always apply to the entire port and are triggered on **every** change, i.e. both when pressing and when releasing. For this reason, the interrupt must check the correct pin again for button input, as you can see in the code below. `PCICR` enables the interrupt for a port, and `PCMSKx` selects the pins that may trigger it.
+
+|       | Port B        | Port C         | Port D         |
+| ----- | ------------- | -------------- | -------------- |
+| PIN 0 | PCIE0, PCINT0 | PCIE1, PCINT8  | PCIE2, PCINT16 |
+| PIN 1 | PCIE0, PCINT1 | PCIE1, PCINT9  | PCIE2, PCINT17 |
+| PIN 2 | PCIE0, PCINT2 | PCIE1, PCINT10 | PCIE2, PCINT18 |
+| PIN 3 | PCIE0, PCINT3 | PCIE1, PCINT11 | PCIE2, PCINT19 |
+| PIN 4 | PCIE0, PCINT4 | PCIE1, PCINT12 | PCIE2, PCINT20 |
+| PIN 5 | PCIE0, PCINT5 | PCIE1, PCINT13 | PCIE2, PCINT21 |
+| PIN 6 | PCIE0, PCINT6 | PCIE1, PCINT14 | PCIE2, PCINT22 |
+| PIN 7 | PCIE0, PCINT7 | -              | PCIE2, PCINT23 |
+
+```c
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+int main(void)
+{
+    // Button on port D, pin 4
+    //  Configure port D, pin 4 as an input
+    DDRD &= ~(1<<DDD4);
+
+    //  Port D, pin 4 voltage: 5V (enable the internal pull-up resistor)
+    PORTD |= (1<<PORTD4);
+
+    // Interrupt
+    //  enable the group-based external interrupt on port D, pin 4
+    PCICR |= (1<<PCIE2);
+    PCMSK2 |= (1<<PCINT20);
+
+    //  Set Enable Interrupt
+    sei();
+
+    while (1)
+    {
+    }
+}
+
+ISR (PCINT2_vect) {
+    // necessary check of the specific pin 4 on port D
+    //  due to the use of group-based interrupts
+    if(!(PIND & (1<<PIND4))){
+        // Button has been pressed once
+    }
+
+    _delay_ms(70);
+}
+```
+
+## Troubleshooting
+
+### Floating input
+
+If you only connect a button between 5V and the pin without using a pull-down resistor, the input is connected to nothing when the button is open. It "floats" and takes on random values, for example due to electromagnetic interference or when you bring your finger close to it. Every input therefore needs a defined state via a pull-up or pull-down resistor:
+
+![Floating input](/images/embedded_programming/button/floating_point.png)
+
+### Short circuit
+
+Likewise, the button must not be connected to both the supply voltage and ground (GND) without a resistor. Otherwise, pressing it would create a short circuit between 5V and GND, which can damage the power supply or the board.
+
+![Short circuit](/images/embedded_programming/button/kurzschluss.png)

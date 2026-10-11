@@ -1,0 +1,92 @@
+---
+title: Interrupts
+description: How interrupts interrupt the main loop, how to write interrupt service routines and what to watch out for.
+sidebar:
+  order: 6
+---
+
+Every program has a main loop (`while(1) {}`) which, because it runs endlessly, ensures that the program never stops doing its job. So you could write all the code that should run endlessly into this main loop. However, with more complex programs you run into problems, since an event, for example pressing a button, can occur at any time. The main loop has limitations here, even though you could constantly check whether the event has occurred. But what can you do if the main loop requires a delay at a certain point and the button input cannot be checked during this time? This is exactly where `interrupts` come into play.
+
+Interrupts offer a way to interrupt the execution of the main loop at any time when certain events occur. The conditions for this are defined at the beginning and are constantly checked by the hardware. When the event occurs, a special function is called, the **interrupt service routine** (ISR):
+
+```c
+ISR(...) {
+    // Interrupt service routine
+}
+```
+
+## Sequence
+
+1. The program is in the main loop.
+2. An event occurs (e.g. a falling edge at `INT0`) and the hardware sets the corresponding **interrupt flag**.
+3. The current instruction is finished, then the microcontroller stores the return address on the stack.
+4. Via the **interrupt vector table**, it jumps to the matching ISR. By default, further interrupts are disabled during the ISR.
+5. After the ISR has ended, the program continues exactly where it was interrupted.
+
+## Enabling interrupts
+
+For an interrupt to be triggered, two conditions must be met:
+
+- The individual interrupt must be enabled in its register, for example `EIMSK |= (1<<INT0);` for external interrupt 0.
+- Interrupts must be enabled **globally**. This is done with `sei()` (_set enable interrupt_). `cli()` (_clear interrupt_) disables them globally again.
+
+Both require `#include <avr/interrupt.h>`.
+
+## Interrupt sources
+
+The ATmega328P has numerous interrupt sources. The name of the vector is passed to the ISR as a parameter:
+
+| Vector              | Trigger                                                                    |
+| ------------------- | -------------------------------------------------------------------------- |
+| `INT0_vect`, `INT1_vect` | [Direct external interrupts](/en/embedded-programming/button/#direct-external-interrupts) on PD2 and PD3 |
+| `PCINT0_vect` … `PCINT2_vect` | [Group-based external interrupts](/en/embedded-programming/button/#group-based-external-interrupts) on port B, C and D |
+| `TIMERn_OVF_vect`   | Overflow of a [timer](/en/embedded-programming/timer/)                     |
+| `TIMERn_COMPA_vect`, `TIMERn_COMPB_vect` | Compare match of a timer                              |
+| `ADC_vect`          | [ADC](/en/embedded-programming/analogue-digital-converter/) conversion complete |
+| `USART_RX_vect`     | Character received via [USART](/en/embedded-programming/usart/)            |
+| `SPI_STC_vect`      | [SPI](/en/embedded-programming/spi/) transfer complete                     |
+| `EE_READY_vect`     | [EEPROM](/en/embedded-programming/eeprom/) ready for the next write        |
+
+If several interrupts occur at the same time, the one located further up in the vector table (lower address = higher priority) is executed first.
+
+## Rules for ISRs
+
+- **Keep ISRs short.** While an ISR is running, no other interrupts are handled. Longer calculations or `_delay_ms()` therefore belong in the main loop.
+- **Declare shared variables as `volatile`.** Variables used in both the ISR and the main loop must be marked with `volatile`. Otherwise, the compiler could cache the value in a register in the main loop and never notice the change made by the ISR.
+- **Pay attention to atomic access.** The ATmega328P is an 8-bit processor. Reading a 16-bit variable therefore takes two instructions, between which an interrupt could change the value. Such accesses are protected with `ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { ... }` from `<util/atomic.h>`.
+
+## Example
+
+In this example, the ISR only sets a flag. The actual work, toggling an LED, happens in the main loop:
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+volatile uint8_t buttonPressed = 0;
+
+int main(void)
+{
+    DDRB |= (1<<DDB0);      // LED on PB0 as an output
+    PORTD |= (1<<PORTD2);   // internal pull-up for the button on PD2
+
+    EICRA |= (1<<ISC01);    // INT0 on a falling edge
+    EIMSK |= (1<<INT0);     // enable INT0
+    sei();                  // enable interrupts globally
+
+    while (1)
+    {
+        if (buttonPressed)
+        {
+            buttonPressed = 0;
+            PORTB ^= (1<<PORTB0);
+        }
+    }
+}
+
+ISR(INT0_vect) {
+    buttonPressed = 1;
+}
+```

@@ -1,8 +1,11 @@
 ---
 title: Marketing
+description: Marketingziele, Segmentierung und Positionierung, der Marketingmix mit den 4 bzw. 7 Ps, Marktforschung, Produktlebenszyklus und Portfolioanalyse.
+sidebar:
+  order: 2
 ---
 
-Das Marketing präsentiert Produkte und Dienstleistungen für den Kunden möglichst attraktiv. Doch Marketing ist nicht nur eine Werbestrategie sondern repräsentiert viel eher die **Denkweise** des Unternehmens und stellt den Kunden in den Mittelpunkt aller unternehmerischen Tätigkeiten. Mit Marketingaktivitäten wollen Unternehmen vor allem die Bedürfnisse der Kunden besser verstehen und bestmöglich erfüllen. Dadurch soll Kundenzufriedenheit und Kundenbindung erreicht werden.
+Das Marketing präsentiert Produkte und Dienstleistungen für den Kunden möglichst attraktiv. Doch Marketing ist nicht nur eine Werbestrategie, sondern repräsentiert viel eher die **Denkweise** des Unternehmens und stellt den Kunden in den Mittelpunkt aller unternehmerischen Tätigkeiten. Mit Marketingaktivitäten wollen Unternehmen vor allem die Bedürfnisse der Kunden besser verstehen und bestmöglich erfüllen. Dadurch soll Kundenzufriedenheit und Kundenbindung erreicht werden.
 
 ## Marketingkonzeption
 
@@ -10,7 +13,7 @@ Das Marketing präsentiert Produkte und Dienstleistungen für den Kunden möglic
 -   Strategien für die Realisierung wählen
 -   Adäquate Marketinginstrumente auswählen
 
-Um Marketing besser einsetzten zu können, betreibt man **Marktforschung**.
+Um Marketing besser einsetzen zu können, betreibt man **Marktforschung**.
 
 ## Ziele des Marketings
 
@@ -20,12 +23,12 @@ Beim Marketing gibt es zwei verschiedene Arten von Zielen, marktökonomische (au
 
 -   Umsatz
 -   Marktanteil
-    -   relativ: Marktanteil im Vergleich zum stärksten Mitbewerber
-    -   absolut: Marktanteil im Vergleich zu allen Mitbewerbern
+    -   absolut: eigener Umsatz im Verhältnis zum Umsatz des gesamten Marktes
+    -   relativ: eigener Marktanteil im Verhältnis zum Marktanteil des stärksten Mitbewerbers
 -   Deckungsbeitrag
     -   Erlös - variable Kosten
     -   langfristig auch Fixkosten decken
--   Werberendite
+-   Werberendite (zusätzlicher Gewinn durch eine Werbemaßnahme im Verhältnis zu ihren Kosten)
 
 ### Marktpsychologische Ziele
 
@@ -45,7 +48,7 @@ Beim Analysieren des Marktes kann man nicht alle Zielgruppen auf einmal betracht
 
 #### Ablauf der Analyse
 
-Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmärkte (Segmente) unterteilt. Anschließend wird entschieden, ob mehrere oder einer dieser Segmente bearbeitet werden soll, und schlussendlich wird der Kundennutzen spezifisch für dieses Segment / diese Segmente angesprochen, damit die Kunden von der Leistung des Unternehmens überzeugt werden.
+Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmärkte (Segmente) unterteilt. Anschließend wird entschieden, ob eines oder mehrere dieser Segmente bearbeitet werden sollen, und schlussendlich wird der Kundennutzen spezifisch für dieses Segment / diese Segmente angesprochen, damit die Kunden von der Leistung des Unternehmens überzeugt werden.
 
 #### Mögliche Segmentierungskriterien
 
@@ -58,7 +61,7 @@ Zuerst wird der Gesamtmarkt anhand bestimmter Kriterien in verschiedene Teilmär
 
 ##### Konzentriertes Marketing
 
-Das Marketing wird auf bestimmte Segmente fokussiert. Diese Variante wird am häufigsten verwendet, da Marketing sonst ziemlich teuer werden kann.
+Das Marketing wird auf ein oder wenige bestimmte Segmente fokussiert. Diese Variante wird vor allem von kleineren Unternehmen häufig verwendet, da Marketing sonst ziemlich teuer werden kann.
 
 ##### Differenziertes Marketing
 
@@ -70,40 +73,54 @@ Das Unternehmen fährt ein Marketing für alle Kunden.
 
 #### Vorteil
 
-Durch das Aufteilen des Marktes in Käufergruppen mit ähnlichen Merkmalen, können Marketinginstrumente den spezifischen Kundenwünschen und -erwartungen angepasst werden.
+Durch das Aufteilen des Marktes in Käufergruppen mit ähnlichen Merkmalen können Marketinginstrumente den spezifischen Kundenwünschen und -erwartungen angepasst werden.
 
 #### Marktpositionierung
 
-Es wird ein bedeutsamer Kundennutzen angesprochen, um von den Leistung zu überzeugen. Man will sich dauerhaft **positiv** von der Konkurrenz abgrenzen um eine Unique Selling Proposition (`USP`) zu erhalten.
+Es wird ein bedeutsamer Kundennutzen angesprochen, um von der Leistung zu überzeugen. Man will sich dauerhaft **positiv** von der Konkurrenz abgrenzen, um eine Unique Selling Proposition (`USP`) zu erhalten.
 
 ## Instrumente
 
 Marketinginstrumente sind bestimmte Maßnahmen und Mittel, um Aktivitäten am Markt gezielt zu gestalten. Es gibt vier verschiedene Instrumente in der klassischen Marketinglehre (`4Ps`). Diese können am besten genutzt werden, wenn sie zusammen eingesetzt werden. Die Kombination der einzelnen Marketinginstrumente bezeichnet man als **Marketingmix**.
 
-Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufgelistet.
+Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alle aufgelistet.
 
 ### Produkt- und Sortimentspolitik (Product)
 
 -   Was kann das Produkt?
 -   Kann man eine Produktgruppierung (z. B.: Handy + Hülle) vermarkten?
+-   Wie sehen Verpackung, Marke, Garantie und Service aus?
+-   Wie breit (Anzahl der Produktgruppen) und wie tief (Varianten pro Gruppe) soll das Sortiment sein?
 
 ### Kontrahierungspolitik / Preis und Konditionen (Price)
 
 -   Wie viel kostet das Produkt?
 -   Welche Zahlungsbedingungen (Skonto, Rabatt, ...) können wir anbieten?
+-   Welche Preisstrategie wird verfolgt?
+    -   **Hochpreisstrategie** (Premium): hohe Qualität und exklusives Image, z. B. Luxusmarken
+    -   **Niedrigpreisstrategie**: Masse statt Klasse, z. B. Diskonter
+    -   **Penetrationsstrategie**: niedriger Einführungspreis, um schnell Marktanteile zu gewinnen, danach Preiserhöhung
+    -   **Abschöpfungsstrategie** (Skimming): hoher Einführungspreis, der schrittweise gesenkt wird, z. B. bei neuen Smartphones
 
 ### Distributionspolitik (Place)
 
 -   Wie kommt die Ware von mir zum Kunden?
+-   **Direkter Absatz**: ohne Zwischenhändler, z. B. eigener Onlineshop oder eigene Filialen
+-   **Indirekter Absatz**: über den Groß- und Einzelhandel
+-   Wo sollen Lager und Verkaufsstellen liegen, und wie wird geliefert (Logistik)?
 
 ### Kommunikationspolitik (Promotion)
 
 -   Wie werden Informationen zwischen Unternehmen und Kunden ausgetauscht?
+-   **Werbung**: bezahlte Botschaften in Medien wie TV, Radio, Plakaten oder Social Media
+-   **Verkaufsförderung**: kurzfristige Kaufanreize wie Gutscheine, Gewinnspiele oder Probepackungen
+-   **Öffentlichkeitsarbeit (PR)**: Aufbau eines positiven Images, z. B. durch Presseaussendungen oder Sponsoring
+-   **Persönlicher Verkauf**: direktes Verkaufsgespräch mit dem Kunden
 
 ### Personalpolitik (People)
 
 -   Dienstleistungen anhand des Personals bewerten
--   Die Personalzufriendenheit wirkt sich auf die Kundenzufriedenheit aus
+-   Die Personalzufriedenheit wirkt sich auf die Kundenzufriedenheit aus
 
 ### Prozessmanagement (Process)
 
@@ -117,7 +134,7 @@ Andere Marketinglehren beschreiben insgesamt `7Ps`, deswegen sind hier alls aufg
 
 ### **Marketingmix**
 
-> Gemeinsame Nutzung alle Marketingstrategien / Marketinginstrumente
+> Gezielte Kombination aller Marketinginstrumente, die aufeinander abgestimmt sein müssen. Ein Luxusprodukt passt beispielsweise nicht zu einem Diskontpreis und einem Vertrieb über den Diskonter.
 
 ## Marktforschung
 
@@ -174,13 +191,13 @@ Wenn man auf dem Markt erstmals Daten für einen bestimmten Zweck erhebt, sprich
 
 -   Befragung: gezielte Fragen stellen (persönlich / telefonisch / schriftlich / computerunterstützt)
 
--   Beobachtung: systematisch Erfassen des Verhaltens; persönlich (Menschen); apparativ (Kameras); online (Soziale Netzwerke)
+-   Beobachtung: systematisches Erfassen des Verhaltens; persönlich (Menschen); apparativ (Kameras); online (Soziale Netzwerke)
 
 -   Experiment: festgelegte, kontrollierte Bedingungen, wobei Teilnehmer beobachtet und/oder anschließend befragt werden
 
     -   Produkttest: das Produkt an die Bedürfnisse anpassen
     -   Storetest: Verkaufszahlen von verschiedenen Ausführungen eines Produktes testen
-    -   Markttest: Produkte bei zufälligen Kunden überprüfen lassen
+    -   Markttest: das neue Produkt samt Marketingmix zuerst nur in einem begrenzten Testgebiet verkaufen
 
     ***
 
@@ -194,17 +211,17 @@ Produkte sollten den Bedürfnissen und Erwartungen des Kunden entsprechen oder s
 #### Nutzen eines Produktes
 
 -   Grundnutzen
-    -   Was der Kunde Grundsätzlich vom Produkt erwartet
+    -   Was der Kunde grundsätzlich vom Produkt erwartet
 -   Zusatznutzen
-    -   Alles, was die Grundnutzen übertrifft -\> z. B. zusätzliche Funktionen
+    -   Alles, was den Grundnutzen übertrifft -\> z. B. zusätzliche Funktionen
 -   Zusatzleistungen
-    -   Zusätzliche Leistungen zu einem Produkt, meistens in form von Dienstleistungen
+    -   Zusätzliche Leistungen zu einem Produkt, meistens in Form von Dienstleistungen
 
 ### Produktanalyse
 
 Für Unternehmen ist es wichtig, nicht nur zum momentanen Zeitpunkt Gewinn zu machen, sondern auch auf langfristige Sicht in der Zukunft stetig Gewinn machen zu können. Aufgrund des [Produktlebenszyklus](#produktlebenszyklus) sind Produkte jedoch langfristig nicht immer gewinnbringend. Deswegen suchen Unternehmen stetig nach neuen innovativen Produkten, die später erfolgreich sein könnten.
 
-Die **Produktzyklusanalyse** und **Portfolioanalyse** sind zwei von vielen, sehr hilfreichen Methoden, die die Produktanalyse erleichtert werden kann.
+Die **Produktzyklusanalyse** und **Portfolioanalyse** sind zwei von vielen sehr hilfreichen Methoden, mit denen die Produktanalyse erleichtert werden kann.
 
 #### Produktlebenszyklus
 
@@ -221,13 +238,13 @@ Der Lebenszyklus kann auf einzelne Produkte, Produktgruppen oder auch Produktbra
 Man unterscheidet die folgenden Phasen:
 
 -   **Einführungsphase** / **Relaunch**  
-    Das Produkt wird neu auf auf dem Markt eingeführt und erwirtschaftet noch wenig Umsatz. Wenn das Unternehmen in das Produkt investiert und mittels Marketing potentielle Kunden zu Kunden machen, kann das Produkt dem Unternehmen viel Gewinn einbringen.
+    Das Produkt wird neu auf dem Markt eingeführt und erwirtschaftet noch wenig Umsatz, meist sogar Verluste, da hohe Kosten für Entwicklung und Werbung anfallen. Wenn das Unternehmen in das Produkt investiert und mittels Marketing potenzielle Kunden zu Kunden macht, kann das Produkt dem Unternehmen viel Gewinn einbringen.
 
 -   **Wachstumsphase**  
     Der Umsatz steigt kontinuierlich, das Produkt kommt bei den Käufern gut an. Werbemaßnahmen unterstützen die Wachstumsphase des Produkts.
 
 -   **Reifephase**  
-    Die Umsatzzuwächse lassen nach, die Menschen kaufen das Produkt noch immer stetig nach und bringen dem Unternehmen viel Gewinn ein. Zu diesem Zeitpunkt muss das Unternehmen nicht viel Kapital für Marketing ausgeben, da die Kunden das Produkt bereits kennen und sowieso kaufen.
+    Die Umsatzzuwächse lassen nach, die Menschen kaufen das Produkt aber noch immer stetig nach und bringen dem Unternehmen viel Gewinn ein. Zu diesem Zeitpunkt muss das Unternehmen weniger Kapital für Marketing ausgeben, da die Kunden das Produkt bereits kennen und sowieso kaufen.
 
 -   **Sättigungsphase**  
     Der Markt ist gesättigt, sprich viele Menschen besitzen bereits ein Produkt oder die Menschen brauchen es nicht mehr so sehr. Eine Steigerung des Umsatzes ist nicht mehr möglich, der Umsatz geht zurück.
@@ -244,15 +261,15 @@ Die Portfolioanalyse (auch `BCG-Portfolio`) ordnet die Produkte in eine 4-Feld-M
 
 ![Portfolioanalyse](/images/economy_and_law/portfolioanalyse.png)
 
-Jedes der vier Quadranten hat verschiedene Bedeutungen für das Produkt und dementsprechend soll das Unternehmen auch handeln.
+Jeder der vier Quadranten hat verschiedene Bedeutungen für das Produkt und dementsprechend soll das Unternehmen auch handeln.
 
 -   **Questionmarks**  
-    Dies sind Nachwuchsprodukte in der Einführungsphase, welche momentan noch einen geringen Marktanteil haben. Wenn das Unternehmen diese Produkte fördert und das Wachstum beobachtet, kann das Produkt am Markt stark wachsen und zu einem `Star` werden. Falls das Unternehmen die Gelegenheit der Förderung verpasst oder keine Kunden am Produkt interessiert sind, könnte das Produkt direkt zum `Poor Dog` werden, und das will das Unternehmen vermeiden.
+    Dies sind Nachwuchsprodukte in der Einführungsphase, welche in einem stark wachsenden Markt momentan noch einen geringen Marktanteil haben. Wenn das Unternehmen diese Produkte fördert und das Wachstum beobachtet, kann das Produkt am Markt stark wachsen und zu einem `Star` werden. Falls das Unternehmen die Gelegenheit der Förderung verpasst oder keine Kunden am Produkt interessiert sind, könnte das Produkt direkt zum `Poor Dog` werden, und das will das Unternehmen vermeiden.
 
 -   **Stars**  
     Wenn das Produkt in dem Sektor `Stars` angelangt ist, muss das Unternehmen mittels Marketing dafür sorgen, dass viele Kunden sich für das Unternehmen und nicht für die Konkurrenz entscheiden. Denn es gibt aufgrund des hohen Marktwachstums noch viele Kunden, die noch gar kein Produkt dieser Art besitzen, und diese Kunden sollen sich nun zwischen den Produkten der anbietenden Unternehmen entscheiden.
 
-    `Stars` bringen dem Unternehmen hohe Gewinne ein und der Umsatz und der Marktanteil können auch noch weiter gesteigert werden. Damit man diese Steigerung erreicht muss eben auch noch viel Kapital in Marketing investiert werden.
+    `Stars` bringen dem Unternehmen hohe Gewinne ein und der Umsatz und der Marktanteil können auch noch weiter gesteigert werden. Damit man diese Steigerung erreicht, muss eben auch noch viel Kapital in Marketing investiert werden.
 
 -   **Cashcows**  
     Sobald die jährliche Wachstumsrate sinkt, wird aus dem `Star` eine `Cashcow`. Eine `Cashcow` erfordert kaum mehr Investitionen, steuert dafür viel Gewinn für die Unternehmenskassa bei. Man versucht, Produkte _möglichst lange als `Cashcows` zu halten_, um möglichst hohe Gewinne abzuschöpfen.

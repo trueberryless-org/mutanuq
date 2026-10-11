@@ -1,39 +1,55 @@
 ---
-title: Übersicht
+title: Hardwarenahe Programmierung
+sidebar:
+  label: Überblick
+description: "Grundlagen der hardwarenahen Programmierung von AVR-Mikrocontrollern (ATmega328P) in C: von Ports und Tasten über Timer und ADC bis zu USART, SPI und EEPROM."
 ---
+
+import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+
+In diesem Bereich lernst du, einen Mikrocontroller direkt in C zu programmieren. Als Beispiel dient der **ATmega328P**, der unter anderem auf dem Arduino Uno verbaut ist und mit einem Takt von 16 MHz betrieben wird. Die Konzepte lassen sich aber auf andere Mikrocontroller übertragen.
+
+## Themen
+
+<GroupPageCards directory="embedded-programming" />
 
 ## Evaluation Kit/Board
 
-Ein Evaluation Board ist eine System was man um ein Bauteil oder System herum baut, bzw. gibt es sie manchmal vorgefertigt. Dieses Board/Kit braucht man damit das Teil funktioniert. Für ein Evaluation Board für eine CPU bräuchte man zum Beispiel RAM, eine SD-Card usw...
+Ein Evaluation Board (auch Entwicklungsboard) ist eine Platine, die rund um ein bestimmtes Bauteil, etwa einen Mikrocontroller, aufgebaut ist und alles enthält, was man zum Ausprobieren und Entwickeln damit benötigt. Solche Boards kann man selbst bauen, meistens kauft man sie aber fertig. Für einen Mikrocontroller gehören dazu zum Beispiel die Stromversorgung, ein Quarz als Taktgeber, eine Programmierschnittstelle (etwa über USB) sowie Steckleisten, LEDs und Tasten. Für ein Evaluation Board für eine größere CPU bräuchte man zusätzlich zum Beispiel RAM, eine SD-Karte usw.
 
 ## Hardwarenahe Programmierung
 
-Eine hardwarenahe Programmierung ermöglicht dem Programmierer in erster Linie, auf mehrere `tiefere` (näher bei der Hardware befindend) Elemente der Hardware zuzugreifen. Dabei unterscheidet man `höhere` (in Abstraktion und Komplexität von der Ebene der Maschinensprachen deutlich entfernte) Programmiersprachen, wie zum Beispiel C, Javascript, usw., und „tiefe“ Sprachen, wie Assembler. Letztere Programmiersprache ermöglicht bereits den Zugriff auf CPU-Register, welches viele andere höhere Programmiersprachen nicht unterstützen.
+Eine hardwarenahe Programmierung ermöglicht dem Programmierer in erster Linie, auf `tiefere` (näher bei der Hardware befindliche) Elemente der Hardware zuzugreifen. Dabei unterscheidet man `höhere` (in Abstraktion und Komplexität von der Ebene der Maschinensprachen deutlich entfernte) Programmiersprachen, wie zum Beispiel C, JavaScript usw., und „tiefe“ Sprachen, wie Assembler. Letztere Programmiersprache ermöglicht bereits den Zugriff auf CPU-Register, was viele andere höhere Programmiersprachen nicht unterstützen.
 
-Einige komplexe Programme können jedoch leider nur schwer oder gar nicht mit hardwarenahen Programmiersprachen umgesetzt werden. Aus diesem Grund haben Dennis Richie und Ken Thompson die Programmiersprache C entwickelt, mit dessen Hilfe sie dann Unix entwickelt haben...
+Einige komplexe Programme können jedoch leider nur schwer mit Assembler umgesetzt werden. Aus diesem Grund entwickelte Dennis Ritchie Anfang der 1970er-Jahre, aufbauend auf der Sprache B von Ken Thompson, die Programmiersprache C, mit deren Hilfe das zuvor in Assembler geschriebene Betriebssystem Unix neu geschrieben wurde. C verbindet die Vorteile beider Welten: Es ist eine Hochsprache, erlaubt aber trotzdem direkten Zugriff auf Speicheradressen und Register.
 
 ## Assembler und „C“
 
-Wie bereits um oberen Absatz angeschnitten, sind Assembler und C eher hardwarenahe Programmiersprachen. Wobei allerdings der wichtige Unterschied ist, dass C zu einer Hochsprache zählt und Assembler nicht. Dafür kann man mit Assembler wirklich Kerne programmieren. Was man mit Assembler allerdings nicht kann, ist das Entwickeln von komplexen Programmen, weil dies nicht dem „Komfort“ eines Programmierers entspricht (quasi viel zu kompliziert...).
+Wie bereits im oberen Absatz angeschnitten, sind Assembler und C eher hardwarenahe Programmiersprachen. Wobei allerdings der wichtige Unterschied ist, dass C zu den Hochsprachen zählt und Assembler nicht. Dafür hat man mit Assembler die volle Kontrolle über jeden einzelnen Befehl, den der Prozessorkern ausführt. Komplexe Programme lassen sich mit Assembler allerdings nur sehr mühsam entwickeln, weil dies nicht dem „Komfort“ eines Programmierers entspricht (quasi viel zu kompliziert...).
 
-Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") ausführlich erklärt, hat jede Programmiersprache ihre Existenzberechtigung. Allerdings kann man nicht mit jeder Programmiersprache alles erreichen, wie es dieses Zitat verdeutlichen soll (Z3-11):
+Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/ASM_vs_C "ASM vs C") ausführlich erklärt, hat jede Programmiersprache ihre Existenzberechtigung. Allerdings kann man nicht mit jeder Programmiersprache alles gleich gut erreichen, wie es dieses Zitat verdeutlichen soll (Z3-11):
 
 > Bei zeit- und prozessoroptimierten Assemblerprogrammen sind viel mehr Adaptionen zu leisten, als bei den Hochsprachen. Bei typischen Applikationen für AVR, 8051 oder PIC ist dies meist noch relativ problemlos möglich, da die Codegröße und Strukturvielfalt begrenzt sind. [...] Bei einem ARM7, mit seiner dreistufigen Pipeline, wird dies schon schwieriger [...]. Der Konstrukteur des Compilers [...] kann dies besser, da er erstens die Architektur sehr gut kennt und sich zweitens mit nichts anderem als Codegeneration beschäftigt.
 
 ## Compiler
 
-Der Compiler wandelt den Programmcode, den wir entwickelt haben (zum Beispiel: .c, .h, ... - Files) in eine .hex-Datei, die der Mikrocontroller interpretieren und damit arbeiten kann. Der Vorgang, den dieser Compiler durchführt, heißt dann logischerweise kompilieren.
+Der Compiler wandelt den Programmcode, den wir entwickelt haben (zum Beispiel: .c, .h, ... - Files), in Maschinencode um, den der Mikrocontroller ausführen kann. Der Vorgang, den dieser Compiler durchführt, heißt dann logischerweise kompilieren. Genau genommen besteht dieser Vorgang aus mehreren Schritten, die von der sogenannten **Toolchain** (für AVR: `avr-gcc`) erledigt werden:
+
+1. **Präprozessor:** Ersetzt `#include`- und `#define`-Anweisungen.
+2. **Compiler:** Übersetzt jede `.c`-Datei in eine Objektdatei (`.o`).
+3. **Linker:** Verbindet alle Objektdateien und Bibliotheken zu einem fertigen Programm (`.elf`).
+4. **Konvertierung:** Aus dem Programm wird eine `.hex`-Datei erzeugt, die mit einem Programmiergerät bzw. Bootloader in den Flash-Speicher des Mikrocontrollers geladen wird.
 
 ## Plattformabhängigkeit
 
-Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/Plattformunabh%C3%A4ngige_Programmierung_in_C "Plattformunabhängige Programmierung in C") äußerst ausführlich beschreibt, bleibt der Programmcode laut Definition immer plattformabhängig. Jedoch kann man durch geschicktes Verwenden verschiedener Datentypen eine gewisse Plattformunabhängigkeit herbeiführen. Das bedeutet jedoch nicht, dass man eine Anwendung für einen AVR-µC unverändert für einen PC kompilieren kann, da der PC unter anderem nicht über die gleiche Peripherie (Timer, I/O-Ports, Datenbusse, ...) verfügt.
+Wie es dieser [Artikel](https://www.mikrocontroller.net/articles/Plattformunabh%C3%A4ngige_Programmierung_in_C "Plattformunabhängige Programmierung in C") äußerst ausführlich beschreibt, bleibt der Programmcode laut Definition immer plattformabhängig. Jedoch kann man durch geschicktes Verwenden verschiedener Datentypen eine gewisse Plattformunabhängigkeit herbeiführen. So ist ein `int` beim ATmega328P nur 16 Bit groß, auf einem PC hingegen meist 32 Bit. Mit Datentypen aus `<stdint.h>` wie `uint8_t` oder `int16_t` legt man die Größe deshalb explizit fest. Das bedeutet jedoch nicht, dass man eine Anwendung für einen AVR-µC unverändert für einen PC kompilieren kann, da der PC unter anderem nicht über die gleiche Peripherie (Timer, I/O-Ports, Datenbusse, ...) verfügt.
 
-Aus diesem Grund sollte man immer plattformabhängige und plattformunabhängige Programmierung teilen und separat schreiben. Wenn man nämlich den plattformabhängigen Teil isoliert programmiert, muss man nur diesen Teil umschreiben, damit man den Code für andere Geräte kompilieren kann.
+Aus diesem Grund sollte man immer plattformabhängige und plattformunabhängige Programmierung trennen und separat schreiben. Wenn man nämlich den plattformabhängigen Teil isoliert programmiert, muss man nur diesen Teil umschreiben, damit man den Code für andere Geräte kompilieren kann.
 
 ## AVR
 
-AVR ist eine Familie von 8-Bit-Mikrocontrollern die weit verbreitet sind, da sie einfach gebaut sind, aber auch leicht programmierbar sind. Wir verwenden auch einen AVR Chip (einen ATmega) und verwenden die Atmel IDE, da die AVR-Familie auch von Atmel stammt.
+AVR ist eine Familie von 8-Bit-Mikrocontrollern, die weit verbreitet sind, da sie einfach gebaut, aber auch leicht programmierbar sind. Wir verwenden auch einen AVR-Chip (den ATmega328P). Die AVR-Familie stammt ursprünglich von Atmel, das 2016 von Microchip übernommen wurde. Als Entwicklungsumgebung eignet sich deshalb das **Microchip Studio** (früher Atmel Studio) oder alternativ Visual Studio Code mit der `avr-gcc`-Toolchain.
 
 ## Port
 
-Unter einem Port versteht man in der Elektronik einen Digitalen I/O Port mit dem man einfach einen Bit-Zustand darstellt. Der Zustand ist dann entweder 1-5V oder 0V. Sie werden hauptsächlich für das ein- und auslesen von digitalen Signalen verwendet, aber auch manchmal für A/D oder D/A Wandler.
+Unter einem Port versteht man beim AVR eine Gruppe von bis zu acht digitalen Ein- und Ausgängen (Pins), die gemeinsam über [Register](/de/embedded-programming/special-function-register/) angesprochen werden. Der ATmega328P hat die Ports B, C und D. Jeder Pin stellt einen Bit-Zustand dar: Er ist entweder _high_ (ungefähr die Versorgungsspannung, also 5 V) oder _low_ (0 V). Ports werden hauptsächlich für das Einlesen und Ausgeben von digitalen Signalen verwendet. Viele Pins haben zusätzlich Sonderfunktionen, etwa als Eingang für den [Analog-Digital-Converter](/de/embedded-programming/analogue-digital-converter/) oder für die serielle Kommunikation.
