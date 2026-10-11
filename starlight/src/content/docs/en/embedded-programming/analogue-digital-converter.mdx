@@ -1,0 +1,183 @@
+---
+title: Analogue-Digital Converter
+description: "Measuring analogue voltages with the 10-bit ADC of the ATmega328P: reference voltage, channel selection, prescaler, operating modes and 8-bit reading."
+sidebar:
+  order: 7
+---
+
+The ADC converts an analogue signal into a digital signal. Consequently, an ADC pin is always an input. The following graphic illustrates this:
+
+![Analogue signal is processed into a digital signal](/images/embedded_programming/adc/analog_to_digital.webp)
+
+## Theory
+
+The ATmega328P has a **10-bit ADC**. However, this functionality is only available on port C (in the DIP package). Depending on how much voltage is applied to the corresponding pin (for example `PC5`), the ADC converts the analogue value into a digital one between `0` and `1023` (both inclusive). This value can be read via the `ADCW` macro (made up of `ADCL` and `ADCH`). The measured voltage can be calculated back from the digital value:
+
+$$
+U = \frac{ADCW \cdot U_{ref}}{1024}
+$$
+
+With a reference voltage of $5\;V$, one step therefore corresponds to about $4.9\;mV$.
+
+### Reference selection bits
+
+The ADC compares the measured voltage with a **reference voltage** that corresponds to the maximum value `1023`. On the ATmega328P, you can choose between an external voltage at the `AREF` pin, the supply voltage `AVCC` (usually 5V) and an internal reference of 1.1V. Usually, you have to set `REFS0` to 1 and `REFS1` to 0 so that `AVCC` is used as the reference. More information can be found in [table 23-3 of the datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217).
+
+### Left or right adjusted?
+
+The digital input, which can be used for countless purposes at code level, is stored in two bytes, because 10 bits do not fit into one byte. These two bytes can be accessed via the registers `ADCL` (low byte) and `ADCH` (high byte). In addition, `ADCW` gives access to all 16 bits at once. Whether the digital data should be stored on the left or right side of these 16 bits can be selected with the [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) bit in the `ADMUX` register. The advantages and disadvantages of this choice are explained in the chapter ["efficient ADC"](#efficient-adc-8-bit-precision).
+
+### Pin selection
+
+To determine which pin (only port C possible) the analogue input is applied to, the `MUXx` bits are used. These four bits in the [`ADMUX`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) register are converted into the corresponding pin by the [MUX decoder](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=206).
+
+The following table and [table 23-4 of the datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=218) show how to find the right configuration:
+
+| PIN    | MUX0 | MUX1 | MUX2 | MUX3 |
+| ------ | ---- | ---- | ---- | ---- |
+| `ADC0` | 0    | 0    | 0    | 0    |
+| `ADC1` | 1    | 0    | 0    | 0    |
+| `ADC2` | 0    | 1    | 0    | 0    |
+| `ADC3` | 1    | 1    | 0    | 0    |
+| `ADC4` | 0    | 0    | 1    | 0    |
+| `ADC5` | 1    | 0    | 1    | 0    |
+
+In this example, the ADC is configured for `PC5`:
+
+```c
+ADMUX |= (1<<MUX0) | (1<<MUX2);
+```
+
+### Enabling the interrupt
+
+An ADC measurement usually looks like this:
+
+1. Start the measurement
+2. Measurement complete
+3. The ISR (interrupt) is called and the value can be read
+
+To achieve this sequence, you have to enable the ADC and then configure it to use the corresponding interrupt. At code level, this configuration looks as follows:
+
+```c
+// ADC Enable
+ADCSRA |= (1<<ADEN);
+// ADC Interrupt Enable
+ADCSRA |= (1<<ADIE);
+
+// Set Enable Interrupt
+sei();
+```
+
+And now you can start the measurement:
+
+```c
+ADCSRA |= (1<<ADSC);
+```
+
+### Modes of operation
+
+#### Normal mode
+
+In normal mode, the conversion from the analogue to the digital signal has to be started manually each time. As soon as the measurement is complete, the corresponding ISR is called. Usually, the next measurement is started directly at the end of the [interrupt](/en/embedded-programming/interrupts/).
+
+```c
+int main(void)
+{
+    // 0 by default anyway, therefore optional
+    ADCSRA &= ~(1<<ADATE);
+    // ...
+
+    sei();
+
+    // start the first measurement
+    ADCSRA |= (1<<ADSC);
+}
+
+ISR(ADC_vect) {
+    // Code - digital input available as `ADCW`
+
+    // start the next measurement
+    ADCSRA |= (1<<ADSC);
+}
+```
+
+#### Free running mode
+
+The ADC can be configured to be triggered automatically over and over again, as fast as it can. After the first manual start, each further measurement starts automatically as soon as the previous one is complete. This creates the risk that, if the ADC [interrupt](/en/embedded-programming/interrupts/) takes longer to execute, the next measurement is already finished and `ADCW` is overwritten before the current execution has even finished.
+
+```c
+ADCSRA |= (1<<ADATE);
+```
+
+### Prescaler
+
+The ADC of the ATmega328P does not need a clock as fast as the system clock. According to the datasheet, it needs a clock between 50 kHz and 200 kHz for full 10-bit precision. For this reason, you need a prescaler, also called division factor, which, as the name suggests, divides the system clock by a configured number.
+
+On the ATmega328P, we need a division factor of `128` so that, with a system clock of $16{,}000{,}000\;Hz$, the ADC clock is between $50K\;Hz$ and $200K\;Hz$.
+
+$$
+\frac {16{,}000{,}000\;Hz} {128} = 125{,}000\;Hz
+$$
+
+$$
+50{,}000\;Hz \le 125{,}000\;Hz \le 200{,}000\;Hz
+$$
+
+At code level, the configuration then looks as follows:
+
+```c
+ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+```
+
+If you are not using the ATmega328P, we recommend taking a look at [table 23-5](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219).
+
+### Efficient ADC (8-bit precision)
+
+As mentioned before, the data register of the ADC on the ATmega328P has 10 bits. Since this is more than 8 bits, two bytes are needed to store the information. These two registers are called `ADCL` and `ADCH`, which stand for the low and the high byte. Combined, the two registers can be read via `ADCW`. The low byte is read first, then the high byte. As soon as `ADCL` is read, the ADC locks both registers until `ADCH` has also been read. This way, no new measurement can overwrite the values in between.
+
+In addition, you can set [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) to 1 in the ADC multiplexer selection register (`ADMUX`), which causes the ADC to write the result left-adjusted into the two registers `ADCL` and `ADCH` instead of right-adjusted, as it does by default. For a better understanding, either look at the images below or read up on [the registers in the datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=219).
+
+![ADC right adjust result](/images/embedded_programming/adc/adc_right_adjust_result.png)
+![ADC left adjust result](/images/embedded_programming/adc/adc_left_adjust_result.png)
+
+The combination of these two functionalities allows the ADC value to be read faster and more efficiently. If you set [`ADLAR`](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=217) to 1 so that the _most significant bits_ are in `ADCH`, you can read the `ADCH` value directly and save the read operation of `ADCL`. However, you have to accept lower precision, because the two _least significant bits_ (the data bits `ADC0` and `ADC1`) are not read. `ADCH` then returns a value between `0` and `255`. If you scale it back up to 10 bits ($ADCH \cdot 4$), three out of four values are rounded down and the maximum value is therefore `1020`.
+
+## Setup
+
+A **potentiometer** used as a voltage divider is suitable for trying this out: the two outer terminals are connected to 5V and GND, the middle terminal (wiper) to the ADC pin, for example `PC5`. Depending on the position, a voltage between 0V and 5V is then applied to the pin. In addition, `AVCC` must be connected to the supply voltage, and a 100 nF capacitor should be connected between the `AREF` pin and GND to stabilise the reference voltage (already present on the Arduino Uno).
+
+## Code
+
+```c
+#define F_CPU 16000000
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+int main(void)
+{
+    // AVCC as reference voltage, channel ADC5 (PC5)
+    ADMUX |= (1<<REFS0);
+    ADMUX |= (1<<MUX0) | (1<<MUX2);
+
+    ADCSRA |= (1<<ADEN) | (1<<ADIE);
+    ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+
+    // optional: free running mode
+    ADCSRA |= (1<<ADATE);
+
+    sei();
+
+    ADCSRA |= (1<<ADSC);
+
+    while (1);
+}
+
+ISR(ADC_vect) {
+    // Code - digital input available as `ADCW`
+    uint16_t value = ADCW;
+
+    // start the next measurement (not necessary in free running mode)
+    ADCSRA |= (1<<ADSC);
+}
+```

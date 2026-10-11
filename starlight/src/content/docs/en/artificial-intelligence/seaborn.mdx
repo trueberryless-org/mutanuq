@@ -1,0 +1,122 @@
+---
+title: Seaborn
+description: Statistical visualisations such as pair plots, heatmaps and violin plots with Seaborn.
+sidebar:
+  order: 5
+---
+
+Seaborn is a library based on Matplotlib that was developed specifically for statistical visualisations. It offers a simpler API and nicer default styles.
+
+## Installation
+
+To install Seaborn, you can use pip:
+
+```bash
+pip install seaborn
+```
+
+## Basic example
+
+Here is a simple example that shows how to create a histogram with Seaborn:
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Data
+data = np.random.randn(1000)
+
+# Create a histogram
+sns.histplot(data, bins=30, kde=True)
+plt.xlabel('Values')
+plt.ylabel('Frequency')
+plt.title('Seaborn histogram with KDE')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/histplot.png" alt="Histogram and line chart" style="max-width: 500px;" />
+
+## Pair plot
+
+A pair plot is useful for showing the relationships between several variables in a data set.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load an example data set
+df = sns.load_dataset('iris')
+
+# Create a pair plot
+sns.pairplot(df, hue='species')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/pairplot.png" alt="Pair plot" style="max-width: 700px;" />
+
+## Heatmap
+
+A heatmap is useful for visualising correlations between different variables.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate random data
+data = np.random.rand(10, 12)
+
+# Create a heatmap
+sns.heatmap(data, annot=True, fmt=".1f")
+plt.xlabel('Columns')
+plt.ylabel('Rows')
+plt.title('Heatmap')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/heatmap.png" alt="Heatmap" style="max-width: 500px;" />
+
+To actually display the correlations of a data set, you pass the correlation matrix to the heatmap, for example `sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')`.
+
+## Violin plot
+
+A violin plot combines aspects of box plots and density plots.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load an example data set
+df = sns.load_dataset('iris')
+
+# Create a violin plot
+sns.violinplot(x='species', y='sepal_length', data=df)
+plt.xlabel('Species')
+plt.ylabel('Sepal length')
+plt.title('Violin plot of the sepal length by species')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/violinplot.png" alt="Violin plot" style="max-width: 500px;" />
+
+## Relplot (for AI applications)
+
+A relplot (relationship plot) is useful for visualising the relationship between different variables, especially in large data sets that are common in AI applications.
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load an example data set
+df = sns.load_dataset('tips')
+
+# Create a relplot
+sns.relplot(x='total_bill', y='tip', hue='time', size='size', data=df)
+plt.xlabel('Total bill')
+plt.ylabel('Tip')
+plt.title('Relplot of total bills and tips')
+plt.show()
+```
+
+<img src="/images/artificial_intelligence/diagrams/relplot.png" alt="Relplot" style="max-width: 500px;" />

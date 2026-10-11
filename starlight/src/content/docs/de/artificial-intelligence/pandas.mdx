@@ -1,5 +1,8 @@
 ---
 title: Pandas
+description: Datenanalyse und -manipulation mit Series und DataFrames in Python.
+sidebar:
+  order: 3
 ---
 
 Pandas ist eine leistungsstarke und weit verbreitete Bibliothek für Datenanalyse und -manipulation in der Programmiersprache Python. Entwickelt auf Basis von NumPy bietet Pandas Datenstrukturen, die ideal für die Verarbeitung und Analyse von strukturierten Daten wie Tabellen oder CSV-Dateien geeignet sind. Diese Bibliothek erleichtert das Arbeiten mit großen Datensätzen und ermöglicht es, komplexe Operationen auf Daten schnell und effizient durchzuführen. Pandas wird in den Bereichen Datenwissenschaft, Finanzanalyse, Machine Learning und anderen datenintensiven Anwendungen eingesetzt. In dieser Einführung werden wir einen Blick auf die Schlüsselfunktionen und -konzepte von Pandas werfen, um ein Verständnis für die Vielseitigkeit dieser Bibliothek zu entwickeln.
@@ -18,7 +21,7 @@ Pandas führt zwei grundlegende Datenstrukturen ein: `DataFrames` und `Series`. 
 
 ### Series
 
-Eine `Series` ist eine grundlegende eindimensionale, beschriftete Datenstruktur, vergleichbar mit einer Liste oder einem Array, jedoch mit einem Index, der jedem Element zugeordnet ist. In Pandas ist die Series eine essentielle Datenstruktur und bildet die Grundlage für DataFrames. Sie kann als eindimensionales Array oder Liste betrachtet werden und enthält Daten unterschiedlicher Datentypen wie numerische Werte, Zeichenketten oder Zeitstempel. Die Series ermöglicht den Zugriff auf Daten durch einen Index und unterstützt eine Vielzahl von Funktionen zur Datenmanipulation. Sie erlaubt es, spezifische Datenpunkte in einem DataFrame zu isolieren und gezielte Operationen auf einzelnen Spalten durchzuführen, was sie zu einem unverzichtbaren Werkzeug für die Arbeit mit strukturierten Daten in Pandas macht.
+Eine `Series` ist eine grundlegende eindimensionale, beschriftete Datenstruktur, vergleichbar mit einer Liste oder einem Array, jedoch mit einem Index, der jedem Element zugeordnet ist. In Pandas ist die Series eine essentielle Datenstruktur und bildet die Grundlage für DataFrames. Sie kann als eindimensionales Array oder Liste betrachtet werden und enthält Daten eines Datentyps, zum Beispiel numerische Werte, Zeichenketten oder Zeitstempel. Die Series ermöglicht den Zugriff auf Daten durch einen Index und unterstützt eine Vielzahl von Funktionen zur Datenmanipulation. Sie erlaubt es, spezifische Datenpunkte in einem DataFrame zu isolieren und gezielte Operationen auf einzelnen Spalten durchzuführen, was sie zu einem unverzichtbaren Werkzeug für die Arbeit mit strukturierten Daten in Pandas macht.
 
 Eine Series kann in Python so erstellt werden:
 
@@ -42,14 +45,14 @@ dtype: int64
 
 #### Zugriff auf Daten
 
-Um nun auf eine Zelle mithilfe des Indexes zuzugreifen, kann man die Syntax mit den eckigen Klammern (`[]`) oder die Methode `loc()` verwenden.
+Um nun auf eine Zelle mithilfe des Indexes zuzugreifen, kann man die Syntax mit den eckigen Klammern (`[]`) oder den Indexer `loc[]` verwenden.
 
 ```python
 print(s['a'])  # Zugriff auf Element mit Index 'a'
 print(s.loc['a'])  # Zugriff auf Element mit Index 'a'
 ```
 
-Man kann Zellen auch ohne den vergebenen Index selektieren (`iloc()`-Methode).
+Man kann Zellen auch ohne den vergebenen Index über ihre Position selektieren (Indexer `iloc[]`).
 
 ```python
 print(s.iloc[0])  # Zugriff auf Element an erster Stelle (0)
@@ -87,7 +90,7 @@ Ein DataFrame kann ähnlich wie eine Series erstellt werden. Dabei kann man eine
   ```
 
 - **Tuple**  
-  In diesem Fall hat der Input für das DataFrame den Typen einer Liste, mit mehreren Tuples darin. Man beachte, dass die Spaltennamen beim instantiieren des DataFrames angegeben werden müssen, da `data` selbst keine Informationen darüber enthält.
+  In diesem Fall hat der Input für das DataFrame den Typen einer Liste, mit mehreren Tuples darin. Man beachte, dass die Spaltennamen beim Instanziieren des DataFrames angegeben werden müssen, da `data` selbst keine Informationen darüber enthält.
 
   ```python
   data = [(1, 5, 9),
@@ -110,7 +113,7 @@ Ein DataFrame kann ähnlich wie eine Series erstellt werden. Dabei kann man eine
   ```
 
 - **CSV**  
-  Man kann ein DataFrame auch mithilfe einer CSV-Datei erstellen. Dies kommt in der Praxis sehr häufig vor, da CSV-Dateien häufig als Eingabe für Analyseprogramme verwendet werden. Hierbei kann man auch angeben, dass eine Bestimmte Spalte Informationen bezüglich der Indizes enthält.
+  Man kann ein DataFrame auch mithilfe einer CSV-Datei erstellen. Dies kommt in der Praxis sehr häufig vor, da CSV-Dateien häufig als Eingabe für Analyseprogramme verwendet werden. Hierbei kann man auch angeben, dass eine bestimmte Spalte Informationen bezüglich der Indizes enthält.
 
   ```csv
   //file.csv
@@ -142,11 +145,7 @@ Ein DataFrame kann ähnlich wie eine Series erstellt werden. Dabei kann man eine
   ```
 
 - **SQL-Datenbank**  
-  Man kann auch direkt aus einer SQL-Datenbank lesen. In diesem Fall muss man zunächst eine Verbindung mit der Datenbank herstellen.
-
-  ```bash title="Installing sqlite3"
-  pip install pysqlite3
-  ```
+  Man kann auch direkt aus einer SQL-Datenbank lesen. In diesem Fall muss man zunächst eine Verbindung mit der Datenbank herstellen. Das Modul `sqlite3` ist bereits in der Python-Standardbibliothek enthalten und muss nicht installiert werden.
 
   ```python
   import sqlite3
@@ -184,7 +183,7 @@ Um ein DataFrame persistieren zu können, kann man die Daten in eine Datei oder 
 
 - **SQL**
   ```python
-  df.to_sql('example.sql', con)
+  df.to_sql('examples', con)  # Name der Tabelle
   ```
 
 #### Zugriff auf Daten
@@ -238,7 +237,7 @@ Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein D
   print(df.iloc[0, 0]) # Zeile Index 0; Spalte Index 0
   ```
 
-  Um auf mehrere Zellen zuzugreifen, können diese Möglichkeiten verwendet werden (bei `iloc()` sind die Angaben jeweils `inklusiv:exklusiv`):
+  Um auf mehrere Zellen zuzugreifen, können diese Möglichkeiten verwendet werden (bei `iloc[]` sind die Angaben jeweils `inklusiv:exklusiv`, bei `loc[]` hingegen `inklusiv:inklusiv`):
 
   ```python
   print(df.loc[["I","II","III"], ['A','B']]) # Zeilen I, II & III; Spalten A & B
@@ -252,7 +251,7 @@ Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein D
   Die Daten eines DataFrames können mithilfe von Bedingungen auch gefiltert werden:
 
   ```python
-  # Alle Zeilen, dessen Wert in Spalte 'A' größer 2 ist
+  # Alle Zeilen, deren Wert in Spalte 'A' größer als 2 ist
   print(df[df['A'] > 2])
 
   """
@@ -263,7 +262,7 @@ Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein D
   ```
 
   ```python
-  # Alle Series 'A', dessen Wert größer 2 ist
+  # Alle Werte der Spalte 'A', die größer als 2 sind
   print(df.loc[df['A'] > 2, 'A'])
 
   """
@@ -272,7 +271,7 @@ Bei einem DataFrame ist der Zugriff auf die Daten nun ein wenig anders, da ein D
   """
   ```
 
-  Diese Bedingungen funktieren nur, weil die Bedingung eine Series selbst ist und somit die Berechnung pro Zeile durchgeführt werden.
+  Diese Bedingungen funktionieren nur, weil die Bedingung selbst eine Series ist und die Berechnung somit pro Zeile durchgeführt wird.
 
   ```python
   df['A'] > 2
@@ -304,13 +303,17 @@ Pandas bietet eine Vielzahl von Methoden und Operationen zur Datenanalyse und -m
   ```
 
 - **Inplace**  
-  Die elegantere Variante ist jedoch die Verwendung der `inplace`-Option, welche die Änderungen direkt in dem DataFrame speichert:
+  Alternativ gibt es die `inplace`-Option, welche die Änderungen direkt in dem DataFrame speichert:
 
   ```python
   df.dropna(inplace=True)
   ```
 
   Wichtig zu beachten ist, dass beim positiven Setzen des `inplace`-Parameters kein DataFrame mehr zurückgegeben wird. Stattdessen returniert dieser Aufruf nun `None`.
+
+  :::note
+  Die Entwickler von Pandas empfehlen inzwischen die erste Variante (Überschreiben), da `inplace` in den meisten Fällen weder Speicher noch Zeit spart und Methodenketten verhindert. Für einige Methoden soll der Parameter in Zukunft entfernt werden.
+  :::
 
 ### `head()`
 
@@ -469,7 +472,7 @@ C -0.959166 -0.916515  1.000000
 
 ### `isnull()`
 
-Die Methode `isnull` gibt ein DataFrame mit boolischen Werte zurück, welche Auskunft über die fehlenden Werte eines DataFrames geben. Mithilfe der [`sum`-Methode](/de/artificial-intelligence/numpy#aggregationsfunktionen) kann man dadurch wichtige Informationen des DataFrames extrahieren.
+Die Methode `isnull` gibt ein DataFrame mit booleschen Werten zurück, welche Auskunft über die fehlenden Werte eines DataFrames geben. Mithilfe der [`sum`-Methode](/de/artificial-intelligence/numpy#aggregationsfunktionen) kann man dadurch wichtige Informationen des DataFrames extrahieren.
 
 ```python ins="‎NaN"
 """
@@ -528,7 +531,7 @@ df.isnull().sum().sum()
 
 Die Methode `dropna` entfernt Zeilen (oder Spalten) mit fehlenden Werten (`NaN` -- Not a Number) aus dem DataFrame.
 
-`dropna` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+`dropna` zählt zu den manipulativen Methoden, weswegen der Parameter `inplace` zur Verfügung steht.
 
 ```python ins="‎NaN"
 """
@@ -566,7 +569,7 @@ IV   8
 
 Die Methode `fillna` ersetzt Zellen mit fehlenden Werten (`NaN` -- Not a Number).
 
-`fillna` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+`fillna` zählt zu den manipulativen Methoden, weswegen der Parameter `inplace` zur Verfügung steht.
 
 ```python ins="‎NaN"
 """
@@ -704,6 +707,10 @@ Name: A, dtype: int64
 
 ### `applymap()`
 
+:::caution
+Seit Pandas 2.1 ist `applymap` veraltet und wurde in `DataFrame.map` umbenannt. Neuer Code sollte daher `df.map(...)` verwenden.
+:::
+
 Die Methode `applymap` wendet eine Funktion auf jedes Element (jede Zelle) eines DataFrame an.
 
 ```python
@@ -746,7 +753,7 @@ A
 
 Mithilfe der manipulativen Methode `rename` kann man jegliche Eigenschaften eines DataFrames umbenennen. Meistens will man die Spaltennamen oder Indexes umbenennen.
 
-`rename` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+`rename` zählt zu den manipulativen Methoden, weswegen der Parameter `inplace` zur Verfügung steht.
 
 ```python
 df.rename(columns={'A':'X', 'B':'Y', 'C':'Z'})
@@ -776,7 +783,7 @@ iv   4  8  12
 
 Mithilfe der manipulativen Methode `replace` kann man beliebige alphanumerische Werte mit statischen oder dynamischen Werten ersetzen. Allerdings können diese Werte nur in den Daten, also nicht in den Spaltennamen und Indizes, vorkommen. Deswegen ist das `replace` quasi das `rename` für die Werte.
 
-`replace` zählt zu den manipulativen Methoden, weswegen der Paramter `inplace` zur Verfügung steht.
+`replace` zählt zu den manipulativen Methoden, weswegen der Parameter `inplace` zur Verfügung steht.
 
 ```python
 df.replace(1, 2)
@@ -794,14 +801,13 @@ IV   4  8  12
 
 ### Bereinigen von Nullwerten
 
-Im Bereich der künstlichen Intelligenz sind Nullwerte oft unerwünscht, weshalb man diese meistens mit Werte ersetzen möchte, welche das Trainieren des Modells nicht behindern. Eine einfache Möglichkeit, Nullwerte nicht ganz so störend zu machen, ist das spaltenweise Ersetzen der Nullwerte durch den Durchschnitt der Werte in der Spalte.
+Im Bereich der künstlichen Intelligenz sind Nullwerte oft unerwünscht, weshalb man diese meistens mit Werten ersetzen möchte, welche das Trainieren des Modells nicht behindern. Eine einfache Möglichkeit, Nullwerte nicht ganz so störend zu machen, ist das spaltenweise Ersetzen der Nullwerte durch den Durchschnitt der Werte in der Spalte.
 
 ```python
-for col in df.columns:
-    df[col].fillna(df[col].mean(), inplace=True)
+df = df.fillna(df.mean(numeric_only=True))
 ```
 
-Meistens ist es auch noch sinnvoll, die Nullwerte nicht einfach mit dem Median aller Datensätze zu ersetzen, sondern nur mit dem Median der Datensätze, die beim Supervised Learning auch die gleichen Antworten haben. Somit sind die fehlenden Daten am wenigsten störend für das Trainieren.
+Meistens ist es auch noch sinnvoll, die Nullwerte nicht einfach mit dem Durchschnitt aller Datensätze zu ersetzen, sondern nur mit dem Median der Datensätze, die beim Supervised Learning auch die gleichen Antworten haben. Somit sind die fehlenden Daten am wenigsten störend für das Trainieren.
 
 ```python del="‎NaN" ins="‎18.0" ins="‎30.5"
 """
@@ -814,12 +820,9 @@ V    29  26.0  29.0        0
 VI   31  35.0   ‎NaN        0
 """
 
-# Replace all NaN with median + watch out for Outcome value
+# NaN-Werte pro Outcome-Gruppe durch den Median dieser Gruppe ersetzen
 sensible_col = ['A', 'B', 'C']
-masks = [ df['Outcome'] == 0, df['Outcome'] == 1 ]
-
-for mask in masks:
-    df.loc[mask, sensible_col] = df.loc[mask, sensible_col].replace(np.nan, df[df[mask] != np.nan].mean())
+df[sensible_col] = df.groupby('Outcome')[sensible_col].transform(lambda col: col.fillna(col.median()))
 
 """
       A     B     C  Outcome

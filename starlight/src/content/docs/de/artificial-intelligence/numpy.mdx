@@ -1,5 +1,8 @@
 ---
 title: NumPy
+description: Mehrdimensionale Arrays, Broadcasting und lineare Algebra mit der Python-Bibliothek NumPy.
+sidebar:
+  order: 2
 ---
 
 NumPy ist eine grundlegende Bibliothek für numerische Berechnungen in Python. Sie bietet Unterstützung für große, mehrdimensionale Arrays und Matrizen sowie eine Sammlung von mathematischen Funktionen, um diese effizient zu bearbeiten. Viele andere Module in der Python-Community basieren auf NumPy.
@@ -16,7 +19,7 @@ pip install numpy
 
 ### Mathematische Strukturen
 
-In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit verschiedenen Dimensionen:
+In der Mathematik gibt es -- genau wie in NumPy -- mehrere Strukturen mit verschiedenen Dimensionen:
 
 -   **Skalar**: Ein einzelner Wert, zum Beispiel eine Zahl $a=3$ (0 Dimensionen).
 -   **Vektor**: Eine eindimensionale Sammlung von Werten, zum Beispiel $\mathbf{v} = [1, 2, 3]$.
@@ -25,7 +28,9 @@ In der Mathematik gibt es -- genau wie in Numpy -- mehrere Strukturen mit versch
     1 & 2 \\
     3 & 4
     \end{bmatrix}$.
--   **Tensore**: Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+-   **Tensor**: Eine mehrdimensionale Sammlung von Werten (drei oder mehr Dimensionen).
+
+In NumPy werden all diese Strukturen durch denselben Datentyp `ndarray` dargestellt. Die Anzahl der Dimensionen erhält man mit `array.ndim`, die Größe jeder Dimension mit `array.shape`. Im Gegensatz zu Python-Listen haben alle Elemente eines Arrays denselben Datentyp (`array.dtype`), wodurch Berechnungen in optimiertem C-Code und damit deutlich schneller ausgeführt werden können.
 
 ## Erstellen von Arrays
 
@@ -176,6 +181,8 @@ Matrixmultiplikation:
  [[19 22]
  [43 50]]
 ```
+
+Seit Python 3.5 kann für die Matrixmultiplikation auch der Operator `@` verwendet werden: `C = A @ B`. Achtung: `A * B` multipliziert die Matrizen hingegen elementweise.
 
 ## Funktionen und Methoden
 

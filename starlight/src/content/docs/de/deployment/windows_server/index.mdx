@@ -1,0 +1,16 @@
+---
+title: Windows Server
+description: Installation und Verwaltung von Windows Server mit PowerShell, Active Directory, Gruppenrichtlinien, DNS, DHCP, Dateidiensten und Updates sowie praktische Übungen.
+sidebar:
+  order: 1
+---
+
+import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+
+In den meisten Unternehmen und Schulen bildet Windows Server das Rückgrat der IT: Er verwaltet Benutzerkonten, verteilt Einstellungen an alle PCs, löst Namen auf, vergibt IP-Adressen und stellt Dateifreigaben bereit. Diese Seiten führen dich von der Installation bis zu einer vollständigen Domäne. Die Beispiele verwenden durchgehend PowerShell, weil sich damit jeder Schritt nachvollziehen, wiederholen und automatisieren lässt.
+
+![Übungsnetz mit zwei Domänencontrollern, Dateiserver und Client](/images/deployment/lab_network_de.svg)
+
+Alle Beispiele beziehen sich auf dieses Übungsnetz mit der Domäne `corp.example.com`. Am besten baust du es mit virtuellen Maschinen nach, etwa mit Hyper-V (siehe [Virtualisierung](/de/deployment/virtualisation/)).
+
+<GroupPageCards directory="deployment/windows_server" />

@@ -1,32 +1,47 @@
 ---
 title: USART - Universal Synchronous and Asynchronous Receiver Transmitter
+description: "Serielle Kommunikation zwischen dem ATmega328P und dem PC: Baudrate, Datenformat, Senden und Empfangen von Zeichen und Zeichenketten."
 sidebar:
   label: USART
+  order: 10
 ---
 
-In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, Daten zwischen Computern auszutauschen. Um diese Verbindung zwischen unserem ATmega328p Board und unserer Entwicklungsmaschine herzustellen, gibt es das USART (Universal Synchronous/Asynchronous Receiver Transmitter).
+In Datenverarbeitungsprogrammen ist es oft, wenn nicht sogar immer, notwendig, Daten zwischen Computern auszutauschen. Um diese Verbindung zwischen unserem ATmega328p-Board und unserer Entwicklungsmaschine herzustellen, gibt es das USART (Universal Synchronous/Asynchronous Receiver Transmitter). Auf dem PC kann man die empfangenen Daten mit einem Terminalprogramm (zum Beispiel dem seriellen Monitor der Arduino IDE, PuTTY oder HTerm) anzeigen.
 
 ## Theorie
 
 ### Datenübertragung
 
-Für die Datenübertragung braucht es zwei PINs, ein PIN zum Senden und ein PIN zum Empfangen von Daten. Dafür sind beim ATmega328p die PINs `PD0` und `PD1` reserviert. Wenn Sie das USART also verwenden möchten, achten Sie darauf, diese beiden PINs nicht gleichzeitig für andere Zwecke zu verwenden.
+Für die Datenübertragung braucht es zwei PINs, einen PIN zum Senden (TX, _Transmit_) und einen PIN zum Empfangen (RX, _Receive_) von Daten. Dafür sind beim ATmega328p die PINs `PD0` (RXD) und `PD1` (TXD) reserviert. Wenn du das USART also verwenden möchtest, achte darauf, diese beiden PINs nicht gleichzeitig für andere Zwecke zu verwenden. Beim Verbinden zweier Geräte wird immer TX des einen mit RX des anderen verbunden (und umgekehrt), außerdem müssen beide Geräte eine gemeinsame Masse (GND) haben.
+
+Im asynchronen Modus gibt es keine gemeinsame Taktleitung. Jedes Zeichen wird deshalb in einen **Rahmen** (_Frame_) verpackt:
+
+1. **Startbit** (immer low), damit der Empfänger den Beginn eines Zeichens erkennt,
+2. **5 bis 9 Datenbits**, beginnend mit dem niederwertigsten Bit,
+3. optional ein **Paritätsbit** zur Fehlererkennung,
+4. **1 oder 2 Stoppbits** (immer high).
+
+Die häufigste Einstellung wird als **8N1** bezeichnet: 8 Datenbits, keine (_None_) Parität, 1 Stoppbit.
 
 ### Konfiguration
 
 #### Baud Rate
 
-Damit das `USART` beim ATmega328p richtig funktioniert, muss man die Baud Rate auf 9600 setzen. Die Baud Rate gibt an, wie viele Bits pro Sekunde übertragen werden sollen. Dabei ist es wichtig, dass unsere Arduino Board und der andere Kommunikationspartner die gleiche Baud Rate verwenden.
+Die Baud Rate gibt an, wie viele Bits pro Sekunde übertragen werden sollen. Dabei ist es wichtig, dass unser Arduino-Board und der andere Kommunikationspartner die gleiche Baud Rate verwenden. Eine sehr häufig verwendete Baud Rate ist 9600. Den Wert für das Register `UBRR0` berechnet man im normalen asynchronen Modus mit folgender Formel:
+
+$$
+UBRR = \frac{f_{CPU}}{16 \cdot Baudrate} - 1 = \frac{16.000.000}{16 \cdot 9600} - 1 \approx 103
+$$
 
 ```c
 UBRR0 = 103;
 ```
 
-Für andere Baud Rate-Konfigurationen lesen Sie bitte [Kapitel 19-11 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163) durch.
+Für andere Baud Rate-Konfigurationen lies bitte [Kapitel 19-11 im Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=163) durch.
 
 #### Senden aktivieren
 
-Wenn Sie Daten senden möchten, müssen Sie dies aktivieren.
+Wenn du Daten senden möchtest, musst du dies aktivieren.
 
 ```c
 UCSR0B |= (1<<TXEN0);
@@ -34,7 +49,7 @@ UCSR0B |= (1<<TXEN0);
 
 #### Empfangen aktivieren
 
-Für das Aktivieren für das Empfangen von Daten muss zusätzlich auch das Interrupt aktiviert werden, damit bei jedem hereinkommenden Zeichen diese getriggert wird.
+Für das Empfangen von Daten muss zusätzlich auch der Interrupt aktiviert werden, damit dieser bei jedem hereinkommenden Zeichen ausgelöst wird.
 
 ```c
 UCSR0B |= (1<<RXEN0) | (1<<RXCIE0);
@@ -42,31 +57,32 @@ UCSR0B |= (1<<RXEN0) | (1<<RXCIE0);
 
 #### Größe der Bits setzen
 
-Sender und Empfänger müssen definieren, wie viele Bits pro gesendetem Zeichen verwendet werden sollen. Je nachdem, welche Codierung (`ASCII`, `UTF-8`, `UTF-16` ...) verwendet wird, benötigen die Zeichen jeweils acht, 16 oder mehrere Bits.
+Sender und Empfänger müssen definieren, wie viele Datenbits pro gesendetem Zeichen verwendet werden sollen. Üblich sind 8 Datenbits, also genau ein Byte. Damit lassen sich alle `ASCII`-Zeichen übertragen. Zeichen aus Codierungen wie `UTF-8` oder `UTF-16`, die mehr als ein Byte benötigen, werden einfach als mehrere Bytes hintereinander gesendet.
 
-Die meisten Encodings verwenden 8-bit:
+So stellt man 8 Datenbits ein (dies ist nach einem Reset bereits die Standardeinstellung):
 
 ```c
 UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
 ```
 
-Für andere Konfigurationen verwenden Sie die [Tabelle 19-7 aus dem Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
+Für andere Konfigurationen verwende die [Tabelle 19-7 aus dem Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf#page=162).
 
 ## Code
 
 ### Konfiguration
 
-Meistens verwenden Sie diese Konfiguration um alles bezüglich `USART` richtig zu konfigurieren:
+Meistens verwendest du diese Konfiguration, um alles bezüglich `USART` richtig zu konfigurieren:
 
 ```c
 UBRR0 = 103;
 UCSR0B |= (1<<TXEN0) | (1<<RXEN0) | (1<<RXCIE0);
 UCSR0C |= (1<<UCSZ00) | (1<<UCSZ01);
+sei(); // für den Empfangs-Interrupt
 ```
 
 ### Daten senden
 
-Um die Implementierung zu erleichtern, verwendet man [Pointer](/de/embedded-programming/pointer). Dies ist die Methode für einzelne [ASCII-Zeichen](https://www.torsten-horn.de/techdocs/ascii.htm).
+Dies ist die Methode für einzelne [ASCII-Zeichen](https://www.torsten-horn.de/techdocs/ascii.htm). Bevor ein neues Zeichen in das Datenregister `UDR0` geschrieben wird, muss gewartet werden, bis das Flag `UDRE0` (_Data Register Empty_) anzeigt, dass das vorherige Zeichen fertig übertragen wurde.
 
 ```c
 void write_char(char str) {
@@ -75,7 +91,7 @@ void write_char(char str) {
 }
 ```
 
-Für ganze Zeichenketten gibt es diese einfache Methode:
+Für ganze Zeichenketten gibt es diese einfache Methode, die mithilfe eines [Pointers](/de/embedded-programming/pointer/) Zeichen für Zeichen bis zum abschließenden `\0` sendet:
 
 ```c
 void write_string(char *arr) {
@@ -88,7 +104,7 @@ void write_string(char *arr) {
 
 ### Daten empfangen
 
-Während man ganze Zeichenketten schicken kann, kann man immer nur einzelne Zeichen empfangen.
+Während man ganze Zeichenketten schicken kann, kann man immer nur einzelne Zeichen empfangen. Bei jedem empfangenen Zeichen wird die ISR aufgerufen.
 
 ```c
 ISR(USART_RX_vect) {
@@ -97,4 +113,26 @@ ISR(USART_RX_vect) {
 }
 ```
 
-Um ganze Zeichenketten zu empfangen müsste man ein Protokoll definieren / verwenden, damit die Kommunikation zwischen den Computern einheitlich ist. Das Protokoll würde zum Beispiel definieren, welcher Overhead vor / nach den eigentlichen RAW-Daten mitgeschickt werden müsste, damit alle Komponenten exakt wissen, welche Zeichen zu welcher Zeichenkette gehören.
+Um ganze Zeichenketten zu empfangen, müsste man ein Protokoll definieren / verwenden, damit die Kommunikation zwischen den Computern einheitlich ist. Das Protokoll würde zum Beispiel definieren, welcher Overhead vor / nach den eigentlichen RAW-Daten mitgeschickt werden müsste, damit alle Komponenten exakt wissen, welche Zeichen zu welcher Zeichenkette gehören.
+
+Ein einfaches Beispiel für ein solches Protokoll ist, jede Nachricht mit einem Zeilenumbruch (`\n`) zu beenden. Die ISR sammelt die Zeichen in einem Puffer, bis der Zeilenumbruch empfangen wurde:
+
+```c
+#define BUFFER_SIZE 32
+
+volatile char rxBuffer[BUFFER_SIZE];
+volatile uint8_t rxIndex = 0;
+volatile uint8_t messageComplete = 0;
+
+ISR(USART_RX_vect) {
+    char c = UDR0;
+
+    if (c == '\n' || rxIndex == BUFFER_SIZE - 1) {
+        rxBuffer[rxIndex] = '\0';  // String terminieren
+        rxIndex = 0;
+        messageComplete = 1;       // wird in der Arbeitsschleife ausgewertet
+    } else {
+        rxBuffer[rxIndex++] = c;
+    }
+}
+```

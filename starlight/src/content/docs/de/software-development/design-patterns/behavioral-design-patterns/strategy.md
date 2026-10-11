@@ -1,14 +1,15 @@
 ---
 title: Strategy
+description: Kapselt austauschbare Algorithmen in eigenen Klassen, die zur Laufzeit gewechselt werden können.
 ---
 
 ## Problem
 
-Wenn eine Klasse mehrere verschiedene Strategien anbieten soll, ein bestimmtes Ergebnis zu erzielen, dann kann diese Klasse schnell groß und unwartbar werden. Dies will man um jeden Preis vermeiden. Stelle Sie sich vor, Sie entwickeln eine Navigationsapp mit den Funktionalitäten „zu Fuß gehen“, „mit dem Auto fahren“ und „Öffis benutzen“. All diese Funktionen in einer Klasse zu implementieren ist ein Schuss ins eigene Knie.
+Wenn eine Klasse mehrere verschiedene Strategien anbieten soll, ein bestimmtes Ergebnis zu erzielen, dann kann diese Klasse schnell groß und unwartbar werden. Dies will man um jeden Preis vermeiden. Stell dir vor, du entwickelst eine Navigationsapp mit den Funktionalitäten „zu Fuß gehen“, „mit dem Auto fahren“ und „Öffis benutzen“. All diese Funktionen in einer Klasse zu implementieren, ist ein Schuss ins eigene Knie.
 
 ## Lösung
 
-Erstellen Sie für jede Funktionalität - für jede Strategie - eine eigene Klasse, alle erben von der gleichen Schnittstelle. Nun kann man in der `Context`-Klasse eine Referenz auf diese Schnittstelle speichern und die Methoden einfach aufrufen. In der Objekt-orientierten Programmierung spart man sich somit viele unnötige `If`-Bedingungen, da das Framework automatisch die richtige Implementierung aufruft. Das Framework erkennt den Typen der Referenz und ruft den Code von dieser Klasse auf.
+Erstelle für jede Funktionalität, also für jede Strategie, eine eigene Klasse, die alle dieselbe Schnittstelle implementieren. Nun kann man in der `Context`-Klasse eine Referenz auf diese Schnittstelle speichern und die Methoden einfach aufrufen. In der objektorientierten Programmierung spart man sich somit viele unnötige `if`-Bedingungen, da durch [Polymorphie](/de/software-development/object-oriented-programming/#polymorphie) automatisch die richtige Implementierung aufgerufen wird. Die Laufzeitumgebung erkennt den tatsächlichen Typ des referenzierten Objekts und ruft den Code dieser Klasse auf.
 
 ## Code
 

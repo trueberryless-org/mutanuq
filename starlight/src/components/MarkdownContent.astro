@@ -1,0 +1,11 @@
+---
+import Default from "@astrojs/starlight/components/MarkdownContent.astro";
+import StarlightGroupPagesMarkdownContent from "starlight-group-pages/components/MarkdownContent.astro";
+import ImageZoom from "starlight-image-zoom/components/ImageZoom.astro";
+---
+
+<ImageZoom />
+<Default>
+  <slot />
+  <StarlightGroupPagesMarkdownContent />
+</Default>

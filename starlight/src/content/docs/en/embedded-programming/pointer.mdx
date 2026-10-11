@@ -1,0 +1,166 @@
+---
+title: Pointers
+description: "Pointers in C: the address and dereference operators, pointer arithmetic and working with arrays and strings."
+sidebar:
+  order: 9
+---
+
+Pointers are variables that hold memory addresses and thus point to other data. Pointers are a comprehensive and powerful tool for interacting with data types that require more than one byte of memory. Pointers are especially important in `C` for working with arrays.
+
+As you can see in the following code, there are two operators related to pointers: `*` and `&`.
+
+```c
+// Variable i with value 12
+int i = 12;
+
+// Pointer variable p
+int *p = NULL;
+
+// Pointer to i
+p = &i;
+
+// Output of p (address)
+printf("Address: %p", p); // e.g.: Address: 0x00000008
+
+// Output of the value p points to
+printf("Value: %d", *p); // Value: 12
+```
+
+The final state of the program in memory (stack) is visualised here (the addresses are of course made up, and this is only a fictional excerpt of the memory):
+
+| Variable name | Address    | Value      |
+| ------------- | ---------- | ---------- |
+| `i`           | `00000008` | 12         |
+| `p`           | `00000069` | `00000008` |
+
+## Operators
+
+The functions of `*` and `&` are shown in this table:
+
+<table>
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Function</th>
+      <th style="min-width: 200px;">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2">
+        <code>*</code>
+      </td>
+      <td>
+        Declaring a pointer
+        <blockquote>
+          <strong>
+            <a href="https://stackoverflow.com/questions/5590150/difference-between-int-p-and-int-p-declaration">
+              Note
+            </a>
+          </strong>
+          : The position of the asterisk relative to the variable name makes no
+          difference. However, the asterisk always only applies to the
+          following variable! In example 4, just like in example 3, only one
+          pointer and one normal variable are therefore created.
+        </blockquote>
+      </td>
+      <td>
+        <code>int *p;</code>
+        <br />
+        <code>int* p;</code>
+        <br />
+        <code>int *p, q;</code>
+        <br />
+        <code>int* p, q;</code>
+      </td>
+    </tr>
+    <tr>
+      <td>reading the value the pointer points to (dereferencing)</td>
+      <td>
+        <code>int i = *p;</code>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>&</code>
+      </td>
+      <td>
+        The address operator returns the address of a variable and can thus be
+        used to create a pointer to it.
+      </td>
+      <td>
+        <code>int *p = &i;</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Working with arrays
+
+We often have to work with arrays, i.e. lists of values. An array is a contiguous area of memory in which all elements are stored directly one after another. An array is not a pointer itself, but in almost all expressions it is automatically converted into a pointer to its first element (_array-to-pointer decay_). Since there are no references in `C`, only this pointer is passed when an array is passed to a function. For this reason, it is not possible to find out the size of the array inside the called function. It has to be passed as an additional parameter. The pointers in these code examples therefore point to the same address:
+
+```c del="&"
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = &numbers;
+```
+
+```c
+uint8_t numbers[] = { 1, 2, 3, 4, 5 };
+uint8_t *p = numbers; // Automatic conversion to a pointer to numbers[0]
+```
+
+Both pointers in the example above therefore point to the **first element** of the array. Strictly speaking, however, the first variant with `&` returns a pointer to the entire array (type `uint8_t (*)[5]`), which is why the compiler issues a warning. The second variant is correct. Part of the memory (stack) looks as follows (addresses made up):
+
+| Variable name | Address    | Value      |
+| ------------- | ---------- | ---------- |
+| `numbers[0]`  | `00000F00` | 1          |
+| `numbers[1]`  | `00000F01` | 2          |
+| `numbers[2]`  | `00000F02` | 3          |
+| `numbers[3]`  | `00000F03` | 4          |
+| `numbers[4]`  | `00000F04` | 5          |
+| `p`           | `00000F42` | `00000F00` |
+
+So no additional address is stored for the array itself. The name `numbers` directly stands for the memory area starting at `00000F00`.
+
+Now you can access the individual values of the array either with the `[]` operator or by adding the index to the pointer and then dereferencing it. When adding, the index is automatically multiplied by the size of the data type (_pointer arithmetic_): with a `uint16_t` array, `numbers + 2` would therefore point 4 bytes further.
+
+```c
+// [] operator
+uint8_t three = numbers[2];
+
+// Pointer access
+three = *(numbers + 2);
+```
+
+If you want to output all elements of this array, you can use the `C code` below. The `sizeof` operator returns the size of the entire array in bytes here. This only works in this scope, since the variable `numbers` is also declared here. In a function to which the array was passed, `sizeof` would only return the size of the pointer. Since `uint8_t` is exactly one byte, the size here corresponds to the number of elements. In general, the number of elements is calculated with `sizeof(numbers) / sizeof(numbers[0])`.
+
+```c
+uint8_t numbers[5] = { 1, 2, 3, 4, 5 };
+
+for(int i = 0; i < sizeof(numbers); i++) {
+    printf("%u", *(numbers + i));
+}
+```
+
+With strings, i.e. arrays of characters, a terminating character (`\0`) is automatically stored after the last character when the string is created, so that the following `while` loop can be used for output. The array must therefore always be at least one character larger than the actual text. The `while` loop automatically stops at the end of the string, since the terminating character `\0` corresponds to a false condition. This is exactly how the characters are sent one after another via [USART](/en/embedded-programming/usart/#sending-data).
+
+```c
+char buffer[10] = "Hello";
+char *p = buffer;
+
+while(*p) {
+    printf("%c", *p);
+    p++;
+}
+```
+
+Note that dereferencing and incrementing the pointer can be written in a single line.
+
+```c "*p++"
+char buffer[10] = "Hello";
+char *p = buffer;
+
+while(*p) {
+    printf("%c", *p++);
+}
+```

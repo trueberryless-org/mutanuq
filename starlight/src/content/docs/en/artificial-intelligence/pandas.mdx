@@ -1,0 +1,846 @@
+---
+title: Pandas
+description: Data analysis and manipulation with Series and DataFrames in Python.
+sidebar:
+  order: 3
+---
+
+Pandas is a powerful and widely used library for data analysis and manipulation in the Python programming language. Built on top of NumPy, Pandas provides data structures that are ideal for processing and analysing structured data such as tables or CSV files. This library makes working with large data sets easier and allows complex operations on data to be performed quickly and efficiently. Pandas is used in data science, financial analysis, machine learning and other data-intensive applications. In this introduction, we will take a look at the key functions and concepts of Pandas to develop an understanding of the versatility of this library.
+
+```bash title="Installing pandas"
+pip install pandas
+```
+
+```python
+import pandas as pd
+```
+
+## Series and DataFrame
+
+Pandas introduces two fundamental data structures: `DataFrames` and `Series`. A DataFrame can be seen as a two-dimensional data structure organised in the form of a table. This table consists of rows and columns, where each column represents a certain data type. Individual columns in a DataFrame are called Series. A Series, on the other hand, can be seen as a one-dimensional array or list and contains data of a certain data type.
+
+### Series
+
+A `Series` is a basic one-dimensional, labelled data structure, comparable to a list or an array, but with an index assigned to each element. In Pandas, the Series is an essential data structure and forms the basis for DataFrames. It can be seen as a one-dimensional array or list and contains data of one data type, for example numerical values, strings or timestamps. The Series allows data to be accessed via an index and supports a variety of functions for data manipulation. It makes it possible to isolate specific data points in a DataFrame and to perform targeted operations on individual columns, which makes it an indispensable tool for working with structured data in Pandas.
+
+A Series can be created in Python like this:
+
+```python
+import pandas as pd
+
+s = pd.Series([1, 3, 5, 7, 9], index=['a', 'b', 'c', 'd', 'e'])
+```
+
+This Series is then a column that looks like this (in this case, the letters are the indices, i.e. not meaningful data but only tools of the Series):
+
+```
+//output.txt
+a    1
+b    3
+c    5
+d    7
+e    9
+dtype: int64
+```
+
+#### Accessing data
+
+To access a cell using its index, you can use the square bracket syntax (`[]`) or the `loc[]` indexer.
+
+```python
+print(s['a'])  # Access the element with index 'a'
+print(s.loc['a'])  # Access the element with index 'a'
+```
+
+You can also select cells by their position without the assigned index (`iloc[]` indexer).
+
+```python
+print(s.iloc[0])  # Access the element at the first position (0)
+```
+
+### DataFrame
+
+A `DataFrame` is a two-dimensional, tabular data structure with labelled axes (rows and columns) and represents the main data structure in Pandas. This structure organises data in rows and columns, where each column is a Series. DataFrames are extremely versatile and enable efficient processing and analysis of structured data of different data types. They make accessing, filtering and transforming data easier and are often used to represent tables in various formats such as CSV files, Excel spreadsheets or SQL queries. Operations on DataFrames can be applied to both rows and columns, which enables comprehensive data manipulation.
+
+#### Creating a DataFrame
+
+A DataFrame can be created in a similar way to a Series. A variety of different object types can be passed.
+
+- **Dictionary**  
+  In this case, the input for the DataFrame is of type `dictionary`, whose keys are strings and whose values are lists.
+
+  ```python
+  data = {
+      'A': [1, 2, 3, 4],
+      'B': [5, 6, 7, 8],
+      'C': [9, 10, 11, 12]
+  }
+  df = pd.DataFrame(data, index=["I","II","III","IV"])
+  ```
+
+- **List**  
+  In this case, the input for the DataFrame is a list containing several dictionaries.
+
+  ```python
+  data = [{'A': 1, 'B': 5, 'C': 9},
+          {'A': 2, 'B': 6, 'C': 10},
+          {'A': 3, 'B': 7, 'C': 11},
+          {'A': 4, 'B': 8, 'C': 12}]
+  df = pd.DataFrame(data, index=["I","II","III","IV"])
+  ```
+
+- **Tuple**  
+  In this case, the input for the DataFrame is a list containing several tuples. Note that the column names have to be specified when instantiating the DataFrame, since `data` itself contains no information about them.
+
+  ```python
+  data = [(1, 5, 9),
+          (2, 6, 10),
+          (3, 7, 11),
+          (4, 8, 12)]
+  df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
+  ```
+
+- **NumPy**  
+  You can also create a DataFrame from a NumPy `array`.
+
+  ```python
+  import numpy as np
+  data = np.array([[1, 5, 9],
+                  [2, 6, 10],
+                  [3, 7, 11],
+                  [4, 8, 12]])
+  df = pd.DataFrame(data, columns=['A', 'B', 'C'], index=["I","II","III","IV"])
+  ```
+
+- **CSV**  
+  You can also create a DataFrame from a CSV file. This is very common in practice, since CSV files are often used as input for analysis programs. You can also specify that a certain column contains the index information.
+
+  ```csv
+  //file.csv
+  ,A,B,C
+  I,1,5,9
+  II,2,6,10
+  III,3,7,11
+  IV,4,8,12
+  ```
+
+  ```python
+  df = pd.read_csv('file.csv', index_col=0)  # Example of reading from a CSV file
+  ```
+
+- **JSON**  
+  Of course, the data format can also be JSON:
+
+  ```json
+  //file.json
+  {
+    "A": { "I": 1, "II": 2, "III": 3, "IV": 4 },
+    "B": { "I": 5, "II": 6, "III": 7, "IV": 8 },
+    "C": { "I": 9, "II": 10, "III": 11, "IV": 12 }
+  }
+  ```
+
+  ```python
+  df = pd.read_json('file.json')  # Example of reading from a JSON file
+  ```
+
+- **SQL database**  
+  You can also read directly from an SQL database. In this case, you first have to establish a connection to the database. The `sqlite3` module is already included in the Python standard library and does not have to be installed.
+
+  ```python
+  import sqlite3
+  con = sqlite3.connect("database.db")
+
+  df = pd.read_sql_query("SELECT * FROM examples", con)
+  ```
+
+In all cases, the DataFrame in this example finally looks like this:
+
+```
+//output.txt
+     A   B   C
+I    1   5   9
+II   2   6  10
+III  3   7  11
+IV   4   8  12
+```
+
+#### Saving a DataFrame
+
+To persist a DataFrame, you can save the data to a file or database. The `CSV` and `JSON` formats are used most often, which is why their integration in Pandas is easier than ever.
+
+- **CSV**
+
+  ```python
+  df.to_csv('example.csv')
+  ```
+
+- **JSON**
+
+  ```python
+  df.to_json('example.json')
+  ```
+
+- **SQL**
+  ```python
+  df.to_sql('examples', con)  # Name of the table
+  ```
+
+#### Accessing data
+
+With a DataFrame, accessing data is a little different, since a DataFrame is basically a list of Series.
+
+- Accessing specific **columns**  
+  To access a column, the following options can be used:
+
+  ```python
+  print(df.A) # Property A
+  print(df['A']) # Column A
+  print(df.loc[:, 'A']) # Column A; all rows
+  print(df.iloc[:, 0]) # Column index 0; all rows
+  ```
+
+  To access several columns, the following options can be used:
+
+  ```python
+  print(df[['A', 'B']]) # Columns A & B
+  print(df.loc[:, ['A', 'B']]) # Columns A & B; all rows
+  print(df.iloc[:, [0, 1]]) # Column indices 0 & 1; all rows
+  print(df.iloc[:, 0:2]) # Column indices 0 to 1; all rows
+  print(df.iloc[:, :2]) # Column indices up to 1; all rows
+  print(df.iloc[:, :-1]) # Column indices up to the second-to-last column; all rows
+  ```
+
+- Accessing specific **rows**  
+  To access a row, the following options can be used:
+
+  ```python
+  print(df.loc["I"]) # Row I
+  print(df.iloc[0]) # Row index 0
+  ```
+
+  To access several rows, the following options can be used:
+
+  ```python
+  print(df.loc[["I", "II"]]) # Rows I & II
+  print(df.iloc[[0, 1]]) # Row indices 0 & 1
+  print(df.iloc[0:2]) # Row indices 0 to 1
+  print(df.iloc[:2]) # Row indices up to 1
+  print(df.iloc[:-2]) # Row indices up to the third-to-last row
+  ```
+
+- Accessing specific **cells**  
+  To access a cell, the following options can be used:
+
+  ```python
+  print(df.loc["I", 'A']) # Row I; column A
+  print(df.iloc[0, 0]) # Row index 0; column index 0
+  ```
+
+  To access several cells, the following options can be used (with `iloc[]` the ranges are `inclusive:exclusive`, with `loc[]`, however, `inclusive:inclusive`):
+
+  ```python
+  print(df.loc[["I","II","III"], ['A','B']]) # Rows I, II & III; columns A & B
+  print(df.loc["I":"III", 'A':'B']) # Rows I to III; columns A to B
+  print(df.iloc[0:3, 0:2]) # Row indices 0 to 2; column indices 0 to 1
+  print(df.iloc[:3, :2]) # Row indices up to 2; column indices up to 1
+  print(df.iloc[:-1, :-1]) # Row indices up to the second-to-last row; column indices up to the second-to-last column
+  ```
+
+- Accessing data with **conditions**  
+  The data of a DataFrame can also be filtered using conditions:
+
+  ```python
+  # All rows whose value in column 'A' is greater than 2
+  print(df[df['A'] > 2])
+
+  """
+       A  B   C
+  III  3  7  11
+  IV   4  8  12
+  """
+  ```
+
+  ```python
+  # All values of column 'A' that are greater than 2
+  print(df.loc[df['A'] > 2, 'A'])
+
+  """
+  III    3
+  IV     4
+  """
+  ```
+
+  These conditions only work because the condition itself is a Series, so the calculation is performed row by row.
+
+  ```python
+  df['A'] > 2
+
+  """
+  I      False
+  II     False
+  III     True
+  IV      True
+  Name: A, dtype: bool
+  """
+  ```
+
+## Operations and methods
+
+Pandas offers a variety of methods and operations for data analysis and manipulation. All methods that change the data of the DataFrame offer two ways to save the changes:
+
+- **Overwriting**  
+  On the one hand, you can simply overwrite the old data by assigning the new data to the DataFrame:
+
+  ```python
+  df = df.dropna()
+  ```
+
+  In the background, the method's `inplace` parameter is set to `False` and the new data is simply returned.
+
+  ```python
+  df.dropna(inplace=False) # this call returns the DataFrame
+  ```
+
+- **Inplace**  
+  Alternatively, there is the `inplace` option, which saves the changes directly in the DataFrame:
+
+  ```python
+  df.dropna(inplace=True)
+  ```
+
+  It is important to note that when the `inplace` parameter is set to `True`, no DataFrame is returned anymore. Instead, this call now returns `None`.
+
+  :::note
+  The Pandas developers now recommend the first option (overwriting), since `inplace` saves neither memory nor time in most cases and prevents method chaining. For some methods, the parameter is planned to be removed in the future.
+  :::
+
+### `head()`
+
+The `head` method displays the first n rows of a DataFrame.
+
+```python
+df.head(3) # First 5 rows by default
+
+"""
+     A  B   C
+I    1  5   9
+II   2  6  10
+III  3  7  11
+"""
+```
+
+### `tail()`
+
+The `tail` method displays the last n rows of a DataFrame.
+
+```python
+df.tail(3) # Last 5 rows by default
+
+"""
+     A  B   C
+II   2  6  10
+III  3  7  11
+IV   4  8  12
+"""
+```
+
+### `shape`
+
+The `shape` property shows the dimensions of the DataFrame.
+
+```python
+df.shape
+
+"""
+(4, 3)
+"""
+```
+
+The order of the numbers corresponds to the ascending axis number. In our example, this means we have four rows and three columns, because axis 0 is the rows and axis 1 is the columns.
+
+In most cases of artificial intelligence, the first number is the number of examples. In our case, the second number tells us the number of features of each example. In [supervised learning](/en/artificial-intelligence/supervised-learning/), the last column is usually the answer of the example, which is why there could also be only two features.
+
+### `columns`
+
+The `columns` property shows the names of the columns.
+
+```python
+df.columns
+
+"""
+Index(['A', 'B', 'C'], dtype='object')
+"""
+```
+
+### `info()`
+
+The `info` method outputs general information about a DataFrame or a Series.
+
+```python
+df.info()
+
+"""
+<class 'pandas.core.frame.DataFrame'>
+Index: 4 entries, I to IV
+Data columns (total 3 columns):
+ #   Column  Non-Null Count  Dtype
+---  ------  --------------  -----
+ 0   A       4 non-null      int64
+ 1   B       4 non-null      int64
+ 2   C       4 non-null      int64
+dtypes: int64(3)
+memory usage: 128.0+ bytes
+None
+"""
+```
+
+```python
+df['A'].info()
+
+"""
+<class 'pandas.core.series.Series'>
+Index: 4 entries, I to IV
+Series name: A
+Non-Null Count  Dtype
+--------------  -----
+4 non-null      int64
+dtypes: int64(1)
+memory usage: 64.0+ bytes
+None
+"""
+```
+
+### `describe()`
+
+The `describe` method outputs descriptive statistics about a DataFrame or a Series.
+
+```python
+df.describe()
+
+"""
+              A         B          C
+count  4.000000  4.000000   4.000000
+mean   2.500000  6.500000  10.500000
+std    1.290994  1.290994   1.290994
+min    1.000000  5.000000   9.000000
+25%    1.750000  5.750000   9.750000
+50%    2.500000  6.500000  10.500000
+75%    3.250000  7.250000  11.250000
+max    4.000000  8.000000  12.000000
+"""
+```
+
+```python
+df['A'].describe()
+
+"""
+count    4.000000
+mean     2.500000
+std      1.290994
+min      1.000000
+25%      1.750000
+50%      2.500000
+75%      3.250000
+max      4.000000
+Name: A, dtype: float64
+"""
+```
+
+### `corr()`
+
+The `corr` method calculates the correlations between the columns.
+
+```python
+"""
+      A   B  C
+I     2   3  4
+II    4   9  3
+III   8  27  2
+IV   16  81  1
+"""
+
+df.corr()
+
+"""
+          A         B         C
+A  1.000000  0.991934 -0.959166
+B  0.991934  1.000000 -0.916515
+C -0.959166 -0.916515  1.000000
+"""
+```
+
+### `isnull()`
+
+The `isnull` method returns a DataFrame with boolean values that provide information about the missing values of a DataFrame. Using the [`sum` method](/en/artificial-intelligence/numpy/#aggregation-functions), you can extract important information about the DataFrame.
+
+```python ins="‎NaN"
+"""
+       A  B     C
+I    ‎NaN  5   9.0
+II   2.0  6  10.0
+III  3.0  7  11.0
+IV   4.0  8   ‎NaN
+"""
+```
+
+```python
+df.isnull()
+
+"""
+         A      B      C
+I     True  False  False
+II   False  False  False
+III  False  False  False
+IV   False  False   True
+"""
+```
+
+```python
+df.isnull().sum()
+
+"""
+A    1
+B    0
+C    1
+dtype: int64
+"""
+```
+
+```python
+df.isnull().sum(axis=1)
+
+"""
+I      1
+II     0
+III    0
+IV     1
+dtype: int64
+"""
+```
+
+```python
+df.isnull().sum().sum()
+
+"""
+2
+"""
+```
+
+### `dropna()`
+
+The `dropna` method removes rows (or columns) with missing values (`NaN`, not a number) from the DataFrame.
+
+`dropna` is one of the manipulating methods, which is why the `inplace` parameter is available.
+
+```python ins="‎NaN"
+"""
+       A  B     C
+I    ‎NaN  5   9.0
+II   2.0  6  10.0
+III  3.0  7  11.0
+IV   4.0  8   ‎NaN
+"""
+```
+
+```python
+df.dropna() # automatically axis 0
+
+"""
+       A  B     C
+II   2.0  6  10.0
+III  3.0  7  11.0
+"""
+```
+
+```python
+df.dropna(axis=1)
+
+"""
+     B
+I    5
+II   6
+III  7
+IV   8
+"""
+```
+
+### `fillna()`
+
+The `fillna` method replaces cells with missing values (`NaN`, not a number).
+
+`fillna` is one of the manipulating methods, which is why the `inplace` parameter is available.
+
+```python ins="‎NaN"
+"""
+       A  B     C
+I    ‎NaN  5   9.0
+II   2.0  6  10.0
+III  3.0  7  11.0
+IV   4.0  8   ‎NaN
+"""
+
+df.fillna(0)
+
+"""
+       A  B     C
+I    0.0  5   9.0
+II   2.0  6  10.0
+III  3.0  7  11.0
+IV   4.0  8   0.0
+"""
+```
+
+### `unique()`
+
+The `unique` method returns the unique values in a column.
+
+```python ins="‎1"
+"""
+     A  B   C
+I    1  5   9
+II   2  6  10
+III  ‎1  7  11
+IV   4  8  12
+"""
+
+df['A'].unique()
+
+"""
+[1 2 4]
+"""
+```
+
+### `nunique()`
+
+The `nunique` method returns the total number of unique values.
+
+```python ins="‎1"
+"""
+     A  B   C
+I    1  5   9
+II   2  6  10
+III  ‎1  7  11
+IV   4  8  12
+"""
+
+df['A'].nunique()
+
+"""
+3
+"""
+```
+
+### `value_counts()`
+
+The `value_counts` method returns how often each unique value occurs in a column.
+
+```python ins="‎1"
+"""
+     A  B   C
+I    1  5   9
+II   2  6  10
+III  ‎1  7  11
+IV   4  8  12
+"""
+
+df['A'].value_counts()
+
+"""
+A
+1    2
+2    1
+4    1
+Name: count, dtype: int64
+"""
+```
+
+### `apply()`
+
+The `apply` method applies a function along an axis of the DataFrame. It can be applied to rows or columns.
+
+By default, operations are applied to each column (`axis=0`).
+
+```python
+# Mean per column
+df.apply(lambda x: x.mean())
+
+"""
+A     2.5
+B     6.5
+C    10.5
+dtype: float64
+"""
+```
+
+However, this can easily be changed:
+
+```python "axis=1"
+# Mean per row
+df.apply(lambda x: x.mean(), axis=1)
+
+"""
+I      5.0
+II     6.0
+III    7.0
+IV     8.0
+dtype: float64
+"""
+```
+
+### `map()`
+
+The `map` method applies a function to each element of a Series. The method is therefore similar to `apply` per column, with the difference that `map` cannot be applied to the entire DataFrame (all columns at once).
+
+```python
+# Apply a squaring function to each element
+df['A'].map(lambda x: x ** 2)
+
+"""
+I       1
+II      4
+III     9
+IV     16
+Name: A, dtype: int64
+"""
+```
+
+### `applymap()`
+
+:::caution
+Since Pandas 2.1, `applymap` is deprecated and has been renamed to `DataFrame.map`. New code should therefore use `df.map(...)`.
+:::
+
+The `applymap` method applies a function to each element (each cell) of a DataFrame.
+
+```python
+# Apply a squaring function to each element of the entire DataFrame
+df.applymap(lambda x: x ** 2)
+
+"""
+      A   B    C
+I     1  25   81
+II    4  36  100
+III   9  49  121
+IV   16  64  144
+"""
+```
+
+### `groupby()`
+
+The `groupby` method groups the DataFrame by the values of one or more columns and enables aggregations as in SQL queries.
+
+```python ins="‎1" ins="‎3"
+"""
+     A  B   C
+I    1  5   9
+II   ‎1  6  10
+III  3  7  11
+IV   ‎3  8  12
+"""
+
+df.groupby('A').sum() # Calculate the sum of groups 1 and 3
+
+"""
+    B   C
+A
+1  11  19
+3  15  23
+"""
+```
+
+### `rename()`
+
+The manipulating method `rename` can be used to rename any labels of a DataFrame. Usually, you want to rename the column names or indices.
+
+`rename` is one of the manipulating methods, which is why the `inplace` parameter is available.
+
+```python
+df.rename(columns={'A':'X', 'B':'Y', 'C':'Z'})
+
+"""
+     X  Y   Z
+I    1  5   9
+II   2  6  10
+III  3  7  11
+IV   4  8  12
+"""
+```
+
+```python
+df.rename(index=str.lower)
+
+"""
+     A  B   C
+i    1  5   9
+ii   2  6  10
+iii  3  7  11
+iv   4  8  12
+"""
+```
+
+### `replace()`
+
+The manipulating method `replace` can be used to replace any alphanumeric values with static or dynamic values. However, these values can only occur in the data, i.e. not in the column names and indices. This makes `replace` basically the `rename` for values.
+
+`replace` is one of the manipulating methods, which is why the `inplace` parameter is available.
+
+```python
+df.replace(1, 2)
+
+"""
+     A  B   C
+I    2  5   9
+II   2  6  10
+III  3  7  11
+IV   4  8  12
+"""
+```
+
+## Application examples
+
+### Cleaning null values
+
+In the field of artificial intelligence, null values are often undesirable, which is why you usually want to replace them with values that do not hinder the training of the model. A simple way to make null values less disruptive is to replace them column by column with the mean of the values in that column.
+
+```python
+df = df.fillna(df.mean(numeric_only=True))
+```
+
+It often also makes sense not to simply replace the null values with the mean of all records, but only with the median of the records that have the same answers in supervised learning. This way, the missing data is least disruptive for training.
+
+```python del="‎NaN" ins="‎18.0" ins="‎30.5"
+"""
+      A     B     C  Outcome
+I    31  34.0  32.0        0
+II   17   ‎NaN  10.0        1
+III  13   ‎NaN  11.0        1
+IV   14  18.0  12.0        1
+V    29  26.0  29.0        0
+VI   31  35.0   ‎NaN        0
+"""
+
+# Replace NaN values per Outcome group with the median of that group
+sensible_col = ['A', 'B', 'C']
+df[sensible_col] = df.groupby('Outcome')[sensible_col].transform(lambda col: col.fillna(col.median()))
+
+"""
+      A     B     C  Outcome
+I    31  34.0  32.0        0
+II   17  ‎18.0  10.0        1
+III  13  ‎18.0  11.0        1
+IV   14  18.0  12.0        1
+V    29  26.0  29.0        0
+VI   31  35.0  ‎30.5        0
+"""
+```
+
+### Standardising column names
+
+In Python, `snake_case` is the most common convention. This means that everything is written in lower case and words are separated by underscores (`_`). Since many data sets do not follow these conventions, it makes sense to standardise the column names.
+
+In this example, all column names are automatically converted to lower case, brackets are removed and spaces are replaced by underscores.
+
+```python
+df.columns = [col.lower().replace("(", "").replace(")", "").replace(" ", "_") for col in df]
+```

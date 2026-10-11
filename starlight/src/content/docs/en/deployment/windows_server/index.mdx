@@ -1,0 +1,16 @@
+---
+title: Windows Server
+description: Installing and managing Windows Server with PowerShell, Active Directory, Group Policy, DNS, DHCP, file services and updates, plus hands-on exercises.
+sidebar:
+  order: 1
+---
+
+import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+
+In most companies and schools, Windows Server is the backbone of IT: it manages user accounts, distributes settings to all PCs, resolves names, assigns IP addresses and provides file shares. These pages take you from installation to a complete domain. The examples use PowerShell throughout, because every step can then be traced, repeated and automated.
+
+![Lab network with two domain controllers, a file server and a client](/images/deployment/lab_network_en.svg)
+
+All examples refer to this lab network with the domain `corp.example.com`. The best way to follow along is to rebuild it with virtual machines, for example with Hyper-V (see [virtualisation](/en/deployment/virtualisation/)).
+
+<GroupPageCards directory="deployment/windows_server" />
