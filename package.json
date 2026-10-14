@@ -43,7 +43,7 @@
     "typescript": "^6.0.3"
   },
   "engines": {
-    "node": ">=22.23.3"
+    "node": ">=24.21.0"
   },
   "packageManager": "pnpm@11.28.0",
   "homepage": "https://mutanuq.felixs.dev",
