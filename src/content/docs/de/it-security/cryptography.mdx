@@ -1,0 +1,626 @@
+---
+title: Kryptografie
+description: Klassische Chiffren, symmetrische Verschlüsselung mit AES und Betriebsmodi, RSA, Diffie-Hellman, ECC, Hashfunktionen, Passwort-Hashing, HMAC, digitale Signaturen und hybride Verfahren.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Kryptografie ist das wichtigste technische Werkzeug der IT-Sicherheit. Sie schützt die **Vertraulichkeit** (Verschlüsselung), die **Integrität** (Hashwerte, MACs) und die **Authentizität** (Signaturen) von Daten, auch wenn diese über unsichere Netze wie das Internet laufen oder auf einem gestohlenen Laptop liegen.
+
+## Begriffe
+
+| Begriff                         | Bedeutung                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| **Klartext** (_Plaintext_)      | die lesbare Ausgangsnachricht                                                |
+| **Geheimtext** (_Ciphertext_, Chiffrat) | die verschlüsselte Nachricht                                         |
+| **Schlüssel** (_Key_)           | geheimer Parameter, der die Verschlüsselung steuert                          |
+| **Chiffre** (_Cipher_)          | das Verschlüsselungsverfahren                                                |
+| **Kryptografie**                | Lehre vom Entwurf von Verschlüsselungsverfahren                             |
+| **Kryptoanalyse**               | Lehre vom Brechen dieser Verfahren                                           |
+| **Kryptologie**                 | Oberbegriff für Kryptografie und Kryptoanalyse                               |
+| **Steganografie**               | Verstecken der Existenz einer Nachricht, etwa in den Bits eines Bildes      |
+
+Für die Verschlüsselung $E$ und Entschlüsselung $D$ mit Schlüssel $k$ gilt: $c = E_k(m)$ und $D_k(c) = m$.
+
+## Klassische Verfahren
+
+### Caesar-Chiffre
+
+Die **Caesar-Chiffre** verschiebt jeden Buchstaben um eine feste Anzahl Stellen im Alphabet, bei Julius Caesar um 3: aus A wird D, aus Z wird C. Mit den Buchstaben als Zahlen 0 bis 25 gilt:
+
+$$
+c = (m + k) \bmod 26 \qquad m = (c - k) \bmod 26
+$$
+
+Die Caesar-Chiffre ist eine **monoalphabetische Substitution**: Jeder Klartextbuchstabe wird immer durch denselben Geheimtextbuchstaben ersetzt. Sie ist auf zwei Arten trivial zu brechen: Es gibt nur 25 sinnvolle Schlüssel (**Brute Force**), und die Buchstabenhäufigkeit bleibt erhalten (**Häufigkeitsanalyse**). Im Deutschen ist E mit etwa 17 % der häufigste Buchstabe. Der häufigste Buchstabe im Geheimtext ist also vermutlich ein verschlüsseltes E.
+
+### Vigenère-Chiffre
+
+Die **Vigenère-Chiffre** (16. Jahrhundert) verwendet ein Schlüsselwort. Jeder Buchstabe des Schlüsselworts gibt die Verschiebung für einen Klartextbuchstaben an, das Schlüsselwort wird wiederholt. Mit dem Schlüssel `LEMON` (L = 11, E = 4, M = 12, O = 14, N = 13) wird `ATTACKATDAWN` zu `LXFOPVEFRNHR`. Derselbe Klartextbuchstabe wird je nach Position unterschiedlich verschlüsselt (**polyalphabetisch**), die Häufigkeitsanalyse funktioniert deshalb nicht direkt.
+
+Galt sie lange als unknackbar, so lässt sie sich doch brechen: Mit dem **Kasiski-Test** (1863) oder dem **Friedman-Test** bestimmt man die Schlüssellänge $n$. Dann zerfällt der Geheimtext in $n$ Caesar-Chiffren, die einzeln per Häufigkeitsanalyse gelöst werden.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(ClassicCiphers.Caesar("HALLO WELT", 3));        // KDOOR ZHOW
+Console.WriteLine(ClassicCiphers.Caesar("KDOOR ZHOW", -3));       // HALLO WELT
+Console.WriteLine(ClassicCiphers.Vigenere("ATTACKATDAWN", "LEMON", encrypt: true));  // LXFOPVEFRNHR
+Console.WriteLine(ClassicCiphers.Vigenere("LXFOPVEFRNHR", "LEMON", encrypt: false)); // ATTACKATDAWN
+
+public static class ClassicCiphers
+{
+    // verschiebt nur die Großbuchstaben A bis Z, alles andere bleibt
+    static char Shift(char c, int shift) =>
+        c is >= 'A' and <= 'Z' ? (char)('A' + ((c - 'A' + shift) % 26 + 26) % 26) : c;
+
+    public static string Caesar(string text, int key) =>
+        string.Concat(text.Select(c => Shift(c, key)));
+
+    public static string Vigenere(string text, string key, bool encrypt)
+    {
+        var result = new char[text.Length];
+        for (int i = 0; i < text.Length; i++)
+        {
+            int shift = key[i % key.Length] - 'A';
+            result[i] = Shift(text[i], encrypt ? shift : -shift);
+        }
+        return new string(result);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// verschiebt nur die Großbuchstaben A bis Z, alles andere bleibt
+fn shift(c: char, shift: i32) -> char {
+    if c.is_ascii_uppercase() {
+        let pos = (c as i32 - 'A' as i32 + shift).rem_euclid(26);
+        char::from(b'A' + pos as u8)
+    } else {
+        c
+    }
+}
+
+fn caesar(text: &str, key: i32) -> String {
+    text.chars().map(|c| shift(c, key)).collect()
+}
+
+fn vigenere(text: &str, key: &str, encrypt: bool) -> String {
+    let shifts: Vec<i32> = key.bytes().map(|b| i32::from(b - b'A')).collect();
+    text.chars()
+        .zip(shifts.iter().cycle())
+        .map(|(c, &s)| shift(c, if encrypt { s } else { -s }))
+        .collect()
+}
+
+fn main() {
+    println!("{}", caesar("HALLO WELT", 3)); // KDOOR ZHOW
+    println!("{}", caesar("KDOOR ZHOW", -3)); // HALLO WELT
+    println!("{}", vigenere("ATTACKATDAWN", "LEMON", true)); // LXFOPVEFRNHR
+    println!("{}", vigenere("LXFOPVEFRNHR", "LEMON", false)); // ATTACKATDAWN
+}
+```
+
+</TabItem>
+</Tabs>
+
+Ist der Schlüssel echt zufällig, so lang wie die Nachricht und wird nur ein einziges Mal verwendet, heißt das Verfahren **One-Time-Pad**. Claude Shannon bewies 1949, dass es **perfekt sicher** ist: Der Geheimtext verrät nichts über den Klartext. Praktisch scheitert es daran, dass ebenso viel geheimes Schlüsselmaterial sicher übertragen werden muss, wie Nachrichten verschickt werden.
+
+### Kerckhoffs-Prinzip
+
+Auguste Kerckhoffs formulierte 1883: Die Sicherheit eines Verfahrens darf nur von der Geheimhaltung des **Schlüssels** abhängen, nicht von der Geheimhaltung des **Algorithmus**. Ein Algorithmus lässt sich nicht dauerhaft geheim halten (Reverse Engineering, Insider), ein Schlüssel lässt sich dagegen leicht austauschen. Öffentliche Verfahren wie AES wurden außerdem jahrelang von Fachleuten weltweit untersucht. Selbst erfundene, geheime Verschlüsselung („Security by Obscurity“) ist fast immer schwach. Daraus folgt eine praktische Regel: **Implementiere keine eigene Kryptografie**, sondern verwende geprüfte Bibliotheken.
+
+## Symmetrische Verschlüsselung
+
+Bei **symmetrischen** Verfahren verwenden Sender und Empfänger **denselben Schlüssel** zum Ver- und Entschlüsseln. Sie sind sehr schnell (moderne Prozessoren haben eigene AES-Befehle) und eignen sich für große Datenmengen.
+
+Das Problem ist der **Schlüsselaustausch**: Der Schlüssel muss vorher auf sicherem Weg zum Partner gelangen. Außerdem braucht jedes Paar einen eigenen Schlüssel, bei $n$ Teilnehmern also
+
+$$
+\frac{n \cdot (n - 1)}{2}
+$$
+
+Schlüssel. Für 100 Personen sind das bereits 4950 Schlüssel.
+
+### Block- und Stromchiffren
+
+- Eine **Blockchiffre** verschlüsselt Blöcke fester Länge, bei AES 128 Bit. Längere Nachrichten werden in Blöcke zerlegt und mit einem **Betriebsmodus** verarbeitet, der letzte Block wird bei manchen Modi aufgefüllt (_Padding_).
+- Eine **Stromchiffre** erzeugt aus Schlüssel und Nonce einen pseudozufälligen **Schlüsselstrom**, der Bit für Bit mit dem Klartext per XOR verknüpft wird. Beispiel: **ChaCha20**. Wird derselbe Schlüsselstrom zweimal verwendet, ergibt das XOR der beiden Geheimtexte das XOR der Klartexte, und die Sicherheit ist dahin.
+
+### DES und AES
+
+| Verfahren | Jahr | Blockgröße | Schlüssellänge         | Status                                            |
+| --------- | ---- | ---------- | ---------------------- | ------------------------------------------------- |
+| **DES**   | 1977 | 64 Bit     | 56 Bit                 | gebrochen, 1999 in unter 24 Stunden per Brute Force |
+| **3DES**  | 1998 | 64 Bit     | 112 bzw. 168 Bit       | veraltet, vom NIST seit 2024 nicht mehr zugelassen |
+| **AES**   | 2001 | 128 Bit    | 128, 192 oder 256 Bit  | Standard, sicher                                  |
+| **ChaCha20** | 2008 | Stromchiffre | 256 Bit           | sicher, schnell ohne Hardwareunterstützung        |
+
+Der **Advanced Encryption Standard** (AES, FIPS 197) ging 2001 aus einem öffentlichen Wettbewerb des NIST hervor. Gewonnen hat der Algorithmus **Rijndael** der belgischen Kryptografen Joan Daemen und Vincent Rijmen. AES arbeitet in Runden (10, 12 oder 14 je nach Schlüssellänge) aus Substitution (S-Box), Zeilenverschiebung, Spaltenmischung und XOR mit einem Rundenschlüssel. Ein Brute-Force-Angriff auf 128 Bit ($2^{128} \approx 3{,}4 \cdot 10^{38}$ Schlüssel) ist mit keiner denkbaren Rechenleistung durchführbar.
+
+### Betriebsmodi
+
+| Modus   | Funktionsweise                                                                              | Eigenschaften                                                   |
+| ------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **ECB** (_Electronic Codebook_) | jeder Block einzeln mit demselben Schlüssel                      | **unsicher**: gleiche Klartextblöcke ergeben gleiche Geheimtextblöcke |
+| **CBC** (_Cipher Block Chaining_) | jeder Klartextblock wird vor dem Verschlüsseln mit dem vorigen Geheimtextblock per XOR verknüpft, der erste mit einem zufälligen **IV** | verbreitet, aber ohne Integritätsschutz, anfällig für Padding-Oracle-Angriffe |
+| **CTR** (_Counter_) | verschlüsselt einen Zähler (Nonce + Blocknummer) und verknüpft das Ergebnis per XOR mit dem Klartext | macht aus der Blockchiffre eine Stromchiffre, parallelisierbar |
+| **GCM** (_Galois/Counter Mode_) | CTR-Verschlüsselung plus Authentifizierungs-Tag (GHASH)        | **AEAD**: Vertraulichkeit und Integrität, Standard in TLS 1.3   |
+
+**Warum ECB schlecht ist**: Weil identische Klartextblöcke zu identischen Geheimtextblöcken werden, bleiben Muster sichtbar. Ein mit ECB verschlüsseltes Bild (das bekannte Beispiel ist der Linux-Pinguin Tux) zeigt nach der Verschlüsselung noch deutlich die Umrisse des Motivs. Außerdem kann ein Angreifer Blöcke vertauschen oder wiederholen, ohne dass es auffällt.
+
+**AEAD** (_Authenticated Encryption with Associated Data_) verschlüsselt und schützt gleichzeitig die Integrität. Zusätzlich können unverschlüsselte, aber geschützte Daten (_Associated Data_), etwa ein Header, mit authentifiziert werden. Bei GCM darf eine **Nonce** (_number used once_, 96 Bit) mit demselben Schlüssel **niemals** wiederverwendet werden, sonst lassen sich Klartexte und sogar der Authentifizierungsschlüssel rekonstruieren. Neue Anwendungen sollten immer ein AEAD-Verfahren verwenden: **AES-GCM** oder **ChaCha20-Poly1305**.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+
+byte[] key = RandomNumberGenerator.GetBytes(32);   // AES-256
+byte[] nonce = RandomNumberGenerator.GetBytes(12); // 96 Bit, pro Nachricht neu!
+byte[] plaintext = Encoding.UTF8.GetBytes("Treffpunkt: Bibliothek, 14 Uhr");
+byte[] header = Encoding.UTF8.GetBytes("an: Anna");  // nicht verschlüsselt, aber geschützt
+
+byte[] ciphertext = new byte[plaintext.Length];
+byte[] tag = new byte[16];
+using var aes = new AesGcm(key, tagSizeInBytes: 16);
+aes.Encrypt(nonce, plaintext, ciphertext, tag, header);
+
+byte[] decrypted = new byte[ciphertext.Length];
+aes.Decrypt(nonce, ciphertext, tag, decrypted, header);
+Console.WriteLine(Encoding.UTF8.GetString(decrypted));
+
+// Manipulation: ein Bit im Geheimtext kippen
+ciphertext[0] ^= 1;
+try
+{
+    aes.Decrypt(nonce, ciphertext, tag, decrypted, header);
+}
+catch (AuthenticationTagMismatchException)
+{
+    Console.WriteLine("Manipulation erkannt, Entschlüsselung verweigert");
+}
+
+// Ausgabe:
+// Treffpunkt: Bibliothek, 14 Uhr
+// Manipulation erkannt, Entschlüsselung verweigert
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: skip */}
+
+```rust
+// benötigt das Crate aes-gcm (Version 0.10) in Cargo.toml
+use aes_gcm::aead::{Aead, AeadCore, KeyInit, OsRng, Payload};
+use aes_gcm::Aes256Gcm;
+
+fn main() -> Result<(), &'static str> {
+    let key = Aes256Gcm::generate_key(OsRng); // AES-256
+    let cipher = Aes256Gcm::new(&key);
+    let nonce = Aes256Gcm::generate_nonce(&mut OsRng); // 96 Bit, pro Nachricht neu!
+    let header = b"an: Anna"; // nicht verschlüsselt, aber geschützt
+
+    let mut ciphertext = cipher
+        .encrypt(&nonce, Payload { msg: "Treffpunkt: Bibliothek, 14 Uhr".as_bytes(), aad: header })
+        .map_err(|_| "Verschlüsselung fehlgeschlagen")?; // Geheimtext mit angehängtem Tag
+
+    let decrypted = cipher
+        .decrypt(&nonce, Payload { msg: &ciphertext, aad: header })
+        .map_err(|_| "Entschlüsselung fehlgeschlagen")?;
+    println!("{}", String::from_utf8_lossy(&decrypted));
+
+    // Manipulation: ein Bit im Geheimtext kippen
+    ciphertext[0] ^= 1;
+    if cipher.decrypt(&nonce, Payload { msg: &ciphertext, aad: header }).is_err() {
+        println!("Manipulation erkannt, Entschlüsselung verweigert");
+    }
+    Ok(())
+}
+
+// Ausgabe:
+// Treffpunkt: Bibliothek, 14 Uhr
+// Manipulation erkannt, Entschlüsselung verweigert
+```
+
+</TabItem>
+</Tabs>
+
+Den Schlüssel erzeugt immer ein **kryptografisch sicherer Zufallszahlengenerator** (CSPRNG) wie `RandomNumberGenerator` bzw. `OsRng`, nie `System.Random` oder ein einfacher Pseudozufallsgenerator, dessen Ausgabe vorhersagbar ist.
+
+## Asymmetrische Verschlüsselung
+
+Bei **asymmetrischen** Verfahren (_Public-Key-Kryptografie_, 1976 von Whitfield Diffie und Martin Hellman vorgeschlagen) besitzt jeder Teilnehmer ein **Schlüsselpaar**:
+
+- Der **öffentliche Schlüssel** (_Public Key_) darf jeder kennen. Mit ihm wird verschlüsselt bzw. eine Signatur geprüft.
+- Der **private Schlüssel** (_Private Key_) bleibt geheim. Mit ihm wird entschlüsselt bzw. signiert.
+
+Aus dem öffentlichen Schlüssel lässt sich der private praktisch nicht berechnen, weil dazu ein schweres mathematisches Problem gelöst werden müsste. Damit entfällt das Problem des geheimen Schlüsselaustauschs, und $n$ Teilnehmer brauchen nur $n$ Schlüsselpaare. Asymmetrische Verfahren sind aber um Größenordnungen **langsamer** als symmetrische. Offen bleibt außerdem, ob ein öffentlicher Schlüssel wirklich der Person gehört, die er zu gehören vorgibt. Diese Frage löst die [Public-Key-Infrastruktur](/de/it-security/pki-and-tls/).
+
+### RSA
+
+**RSA** (1977, Ronald Rivest, Adi Shamir, Leonard Adleman) beruht darauf, dass das Multiplizieren zweier großer Primzahlen einfach ist, das Zerlegen des Produkts in seine Primfaktoren (**Faktorisierung**) aber extrem aufwendig.
+
+**Schlüsselerzeugung:**
+
+1. Wähle zwei große, zufällige Primzahlen $p$ und $q$.
+2. Berechne den **RSA-Modul** $n = p \cdot q$ und $\varphi(n) = (p - 1)(q - 1)$.
+3. Wähle einen öffentlichen Exponenten $e$ mit $\operatorname{ggT}(e, \varphi(n)) = 1$, in der Praxis meist $e = 65537$.
+4. Berechne den privaten Exponenten $d$ als modulares Inverses: $e \cdot d \equiv 1 \pmod{\varphi(n)}$ (mit dem erweiterten euklidischen Algorithmus).
+
+Öffentlicher Schlüssel ist $(e, n)$, privater Schlüssel ist $(d, n)$.
+
+**Ver- und Entschlüsselung** einer Zahl $m < n$:
+
+$$
+c = m^{e} \bmod n \qquad m = c^{d} \bmod n
+$$
+
+**Rechenbeispiel** mit winzigen Zahlen:
+
+- $p = 61$, $q = 53$, also $n = 3233$ und $\varphi(n) = 60 \cdot 52 = 3120$.
+- $e = 17$ (teilerfremd zu 3120).
+- $d = 2753$, denn $17 \cdot 2753 = 46\,801 = 15 \cdot 3120 + 1$.
+- Klartext $m = 65$: $c = 65^{17} \bmod 3233 = 2790$.
+- Entschlüsseln: $2790^{2753} \bmod 3233 = 65$.
+
+Wer $n = 3233$ in $61 \cdot 53$ zerlegen kann, kann $\varphi(n)$ und damit $d$ berechnen. Bei echten Schlüsseln hat $n$ mindestens 2048 Bit (über 600 Dezimalstellen), und keine bekannte Methode faktorisiert solche Zahlen in vertretbarer Zeit. Das BSI empfiehlt in der Technischen Richtlinie TR-02102-1 für neue Systeme mindestens **3000 Bit**.
+
+In der Praxis wird nie „rohes“ RSA (_Textbook RSA_) verwendet, weil es deterministisch und verformbar ist: Derselbe Klartext ergibt immer denselben Geheimtext. Zum Verschlüsseln dient das Padding **OAEP**, zum Signieren **PSS**.
+
+### Diffie-Hellman-Schlüsselaustausch
+
+Mit dem **Diffie-Hellman-Verfahren** (DH) vereinbaren zwei Partner über einen öffentlich mitgehörten Kanal einen gemeinsamen geheimen Schlüssel, ohne ihn je zu übertragen. Die Sicherheit beruht auf dem **diskreten Logarithmus**: Aus $g^{a} \bmod p$ lässt sich $a$ bei großen Zahlen praktisch nicht berechnen.
+
+1. Alice und Bob einigen sich öffentlich auf eine Primzahl $p$ und eine Basis $g$.
+2. Alice wählt geheim $a$ und sendet $A = g^{a} \bmod p$.
+3. Bob wählt geheim $b$ und sendet $B = g^{b} \bmod p$.
+4. Alice berechnet $s = B^{a} \bmod p$, Bob berechnet $s = A^{b} \bmod p$. Beide erhalten denselben Wert, denn $(g^{b})^{a} = (g^{a})^{b} = g^{ab}$.
+
+**Rechenbeispiel**: $p = 23$, $g = 5$, $a = 6$, $b = 15$.
+
+- $A = 5^{6} \bmod 23 = 15\,625 \bmod 23 = 8$
+- $B = 5^{15} \bmod 23 = 19$
+- Alice: $s = 19^{6} \bmod 23 = 2$, Bob: $s = 8^{15} \bmod 23 = 2$
+
+Ein Lauscher kennt $p$, $g$, $A$ und $B$, aber nicht $a$ oder $b$. DH allein **authentifiziert nicht**: Ein Man in the Middle kann mit beiden Seiten getrennt einen Schlüssel aushandeln. Deshalb werden die DH-Werte in TLS mit einer Signatur des Servers bestätigt. Wird für jede Verbindung ein neues, temporäres Schlüsselpaar erzeugt (**DHE** bzw. **ECDHE**, _ephemeral_), erreicht man **Forward Secrecy**: Selbst wer später den langfristigen privaten Schlüssel des Servers stiehlt, kann aufgezeichnete Verbindungen nicht nachträglich entschlüsseln.
+
+Beide Rechenbeispiele lassen sich mit **modularer Exponentiation** nachrechnen. Das Verfahren „Square and Multiply“ braucht nur so viele Schritte, wie der Exponent Bits hat, und reduziert nach jeder Multiplikation modulo $n$, damit die Zahlen klein bleiben:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Numerics;
+
+// RSA mit den Zahlen aus dem Rechenbeispiel
+BigInteger n = 61 * 53, e = 17, d = 2753;
+BigInteger c = BigInteger.ModPow(65, e, n);
+Console.WriteLine($"RSA: Geheimtext {c}, entschlüsselt {BigInteger.ModPow(c, d, n)}");
+
+// Diffie-Hellman
+BigInteger p = 23, g = 5, a = 6, b = 15;
+BigInteger aPublic = BigInteger.ModPow(g, a, p);
+BigInteger bPublic = BigInteger.ModPow(g, b, p);
+Console.WriteLine($"DH: A = {aPublic}, B = {bPublic}");
+Console.WriteLine($"Alice: {BigInteger.ModPow(bPublic, a, p)}, Bob: {BigInteger.ModPow(aPublic, b, p)}");
+
+// Ausgabe:
+// RSA: Geheimtext 2790, entschlüsselt 65
+// DH: A = 8, B = 19
+// Alice: 2, Bob: 2
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Square and Multiply: berechnet base^exp mod modulus
+fn mod_pow(mut base: u64, mut exp: u64, modulus: u64) -> u64 {
+    let mut result = 1;
+    base %= modulus;
+    while exp > 0 {
+        if exp & 1 == 1 {
+            result = result * base % modulus;
+        }
+        base = base * base % modulus;
+        exp >>= 1;
+    }
+    result
+}
+
+fn main() {
+    // RSA mit den Zahlen aus dem Rechenbeispiel
+    let (n, e, d) = (61 * 53, 17, 2753);
+    let c = mod_pow(65, e, n);
+    println!("RSA: Geheimtext {c}, entschlüsselt {}", mod_pow(c, d, n));
+
+    // Diffie-Hellman
+    let (p, g, a, b) = (23, 5, 6, 15);
+    let a_public = mod_pow(g, a, p);
+    let b_public = mod_pow(g, b, p);
+    println!("DH: A = {a_public}, B = {b_public}");
+    println!("Alice: {}, Bob: {}", mod_pow(b_public, a, p), mod_pow(a_public, b, p));
+}
+
+// Ausgabe:
+// RSA: Geheimtext 2790, entschlüsselt 65
+// DH: A = 8, B = 19
+// Alice: 2, Bob: 2
+```
+
+</TabItem>
+</Tabs>
+
+Die Rust-Version mit `u64` funktioniert nur für kleine Moduln, weil `base * base` sonst überläuft. Echte Implementierungen verwenden Ganzzahlen beliebiger Länge und laufen zudem in konstanter Zeit, damit die Rechendauer nichts über den Schlüssel verrät (**Seitenkanalangriff**).
+
+### Elliptische Kurven
+
+**Elliptic Curve Cryptography** (ECC) rechnet statt mit Potenzen modulo $p$ mit Punkten auf einer elliptischen Kurve. Das entsprechende Problem (diskreter Logarithmus auf elliptischen Kurven) ist schwerer, deshalb genügen viel kürzere Schlüssel. Das spart Rechenzeit, Speicher und Bandbreite, was besonders bei Smartcards, Smartphones und vielen TLS-Verbindungen zählt.
+
+| Sicherheitsniveau | Symmetrisch | RSA, DH    | ECC     |
+| ----------------- | ----------- | ---------- | ------- |
+| 112 Bit           | 3DES        | 2048 Bit   | 224 Bit |
+| 128 Bit           | AES-128     | 3072 Bit   | 256 Bit |
+| 192 Bit           | AES-192     | 7680 Bit   | 384 Bit |
+| 256 Bit           | AES-256     | 15 360 Bit | 512 Bit |
+
+(Vergleichswerte nach NIST SP 800-57.) Verbreitete Kurven sind **P-256** (NIST) und **Curve25519**, die als **X25519** für den Schlüsselaustausch (ECDH) und als **Ed25519** für Signaturen eingesetzt wird.
+
+### Post-Quanten-Kryptografie
+
+Ein ausreichend großer Quantencomputer könnte mit dem **Shor-Algorithmus** Faktorisierung und diskrete Logarithmen effizient lösen und damit RSA, DH und ECC brechen. Symmetrische Verfahren und Hashfunktionen sind weniger betroffen: Der **Grover-Algorithmus** halbiert ihr Sicherheitsniveau effektiv, AES-256 bleibt also ausreichend. Weil Angreifer verschlüsselte Daten schon heute speichern könnten, um sie später zu entschlüsseln (_Harvest now, decrypt later_), hat das NIST 2024 die ersten Post-Quanten-Standards veröffentlicht: **ML-KEM** (FIPS 203) für den Schlüsselaustausch sowie **ML-DSA** (FIPS 204) und **SLH-DSA** (FIPS 205) für Signaturen. Browser und TLS-Bibliotheken setzen bereits hybride Verfahren wie X25519 kombiniert mit ML-KEM-768 ein.
+
+## Hashfunktionen
+
+Eine **kryptografische Hashfunktion** $h$ bildet eine Nachricht beliebiger Länge auf einen **Hashwert** (_Digest_, Fingerabdruck) fester Länge ab. Sie hat keinen Schlüssel. Anforderungen:
+
+| Eigenschaft                    | Bedeutung                                                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| **Deterministisch**            | gleiche Eingabe ergibt immer denselben Hashwert                                    |
+| **Effizient**                  | schnell berechenbar                                                                |
+| **Einwegfunktion** (_Preimage Resistance_) | aus $h(m)$ lässt sich $m$ praktisch nicht berechnen                    |
+| **Schwache Kollisionsresistenz** (_Second Preimage Resistance_) | zu gegebenem $m$ findet man kein $m' \neq m$ mit $h(m') = h(m)$ |
+| **Starke Kollisionsresistenz** (_Collision Resistance_) | man findet überhaupt kein Paar $m \neq m'$ mit $h(m) = h(m')$ |
+| **Lawineneffekt**              | eine kleine Änderung der Eingabe ändert etwa die Hälfte der Bits des Hashwerts      |
+
+Weil unendlich viele Eingaben auf endlich viele Hashwerte abgebildet werden, **gibt es** Kollisionen immer. Es darf nur praktisch unmöglich sein, eine zu finden. Wegen des **Geburtstagsparadoxons** findet man bei einem Hashwert mit $n$ Bit eine Kollision schon nach etwa $2^{n/2}$ Versuchen, nicht erst nach $2^{n}$. Ein 128-Bit-Hash bietet also nur etwa 64 Bit Kollisionssicherheit.
+
+| Verfahren   | Länge          | Status                                                                     |
+| ----------- | -------------- | -------------------------------------------------------------------------- |
+| **MD5**     | 128 Bit        | **gebrochen**: Kollisionen seit 2004 in Sekunden berechenbar               |
+| **SHA-1**   | 160 Bit        | **gebrochen**: erste praktische Kollision 2017 (SHAttered), nicht mehr verwenden |
+| **SHA-2** (SHA-224, SHA-256, SHA-384, SHA-512) | 224 bis 512 Bit | sicher, Standard                                      |
+| **SHA-3**   | 224 bis 512 Bit | sicher, seit 2015 (FIPS 202), anderer Aufbau (Keccak, Schwammkonstruktion) |
+
+Wie gefährlich gebrochene Hashfunktionen sind, zeigte die Spionagesoftware **Flame** (2012): Sie nutzte eine MD5-Kollision, um ein gefälschtes Microsoft-Zertifikat zu erzeugen und sich als Windows-Update auszugeben.
+
+Anwendungen: Integritätsprüfung von Downloads (Prüfsumme vergleichen), digitale Signaturen (es wird der Hashwert signiert), Passwortspeicherung (mit speziellen Verfahren, siehe unten), Git-Commits, Blockchains und Deduplizierung.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+
+foreach (string text in new[] { "abc", "Hallo", "hallo" })
+{
+    byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(text));
+    Console.WriteLine($"{text,-5} {Convert.ToHexStringLower(hash)}");
+}
+
+// Ausgabe:
+// abc   ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+// Hallo 753692ec36adb4c794c973945eb2a99c1649703ea6f76bf259abb4fb838e013e
+// hallo d3751d33f9cd5049c4af2b462735457e4d3baf130bcbb87f389e349fbaeb20b9
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+
+fn main() {
+    for text in ["abc", "Hallo", "hallo"] {
+        let hash = Sha256::digest(text.as_bytes());
+        println!("{text:<5} {}", hex::encode(hash));
+    }
+}
+
+// Ausgabe:
+// abc   ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+// Hallo 753692ec36adb4c794c973945eb2a99c1649703ea6f76bf259abb4fb838e013e
+// hallo d3751d33f9cd5049c4af2b462735457e4d3baf130bcbb87f389e349fbaeb20b9
+```
+
+</TabItem>
+</Tabs>
+
+Am Unterschied zwischen „Hallo“ und „hallo“ siehst du den Lawineneffekt: Ein einziges geändertes Bit der Eingabe ergibt einen völlig anderen Hashwert. Der Wert für „abc“ ist der offizielle Testvektor aus dem Standard.
+
+### Passwörter sicher speichern
+
+Passwörter dürfen nie im Klartext und auch nicht verschlüsselt gespeichert werden, sondern nur als Hashwert. Beim Anmelden wird das eingegebene Passwort gleich gehasht und mit dem gespeicherten Wert verglichen. Ein einfacher SHA-256-Hash reicht dafür aber nicht:
+
+- **Gleiche Passwörter ergeben gleiche Hashes.** Ein Angreifer sieht sofort, welche Benutzer dasselbe Passwort haben, und kann mit **Rainbow Tables** (vorberechneten Tabellen) viele Hashes auf einmal nachschlagen.
+- **SHA-256 ist zu schnell.** Eine Grafikkarte berechnet Milliarden SHA-256-Hashes pro Sekunde und probiert so ganze Wörterbücher in Sekunden durch.
+
+Die Lösung besteht aus drei Bausteinen:
+
+1. **Salt**: ein zufälliger Wert (mindestens 16 Byte), der für **jeden Benutzer neu** erzeugt, vor dem Hashen an das Passwort gehängt und im Klartext neben dem Hash gespeichert wird. Gleiche Passwörter ergeben so verschiedene Hashes, und vorberechnete Tabellen werden nutzlos, weil sie für jeden Salt neu berechnet werden müssten.
+2. **Langsame Hashfunktion** mit einstellbarem Aufwand (_Key Stretching_): Das Hashen dauert absichtlich einige Millisekunden. Für den Benutzer ist das unmerklich, für den Angreifer vervielfacht es die Rechenzeit.
+3. **Pepper** (optional): ein geheimer Wert, der für **alle Benutzer gleich** ist und **getrennt** von der Datenbank gespeichert wird, etwa in einem Hardware-Sicherheitsmodul oder als Konfigurationsgeheimnis. Erbeutet ein Angreifer nur die Datenbank, fehlt ihm der Pepper.
+
+| Verfahren   | Eigenschaften                                                                                   | Empfohlene Parameter (OWASP)                    |
+| ----------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **Argon2id** | Sieger der Password Hashing Competition 2015, speicherintensiv, erste Wahl                    | 19 MiB Speicher, 2 Iterationen, 1 Thread       |
+| **scrypt**  | speicherintensiv (_memory-hard_), erschwert Angriffe mit Grafikkarten und Spezialhardware      | $N = 2^{17}$, $r = 8$, $p = 1$                  |
+| **bcrypt**  | seit 1999 bewährt, berücksichtigt nur die ersten 72 Byte des Passworts                          | Kostenfaktor mindestens 10                      |
+| **PBKDF2**  | nach NIST zugelassen (FIPS), aber nicht speicherintensiv                                         | 600 000 Iterationen mit HMAC-SHA-256            |
+
+Speicherintensive Verfahren wie Argon2 sind besser, weil Grafikkarten zwar viele Rechenkerne, aber pro Kern wenig schnellen Speicher haben. .NET bringt PBKDF2 mit (`Rfc2898DeriveBytes.Pbkdf2`), für Argon2 gibt es Bibliotheken wie `Konscious.Security.Cryptography.Argon2` (C#) bzw. das Crate `argon2` (Rust). ASP.NET Core Identity speichert Passwörter standardmäßig mit PBKDF2.
+
+### MAC und HMAC
+
+Ein Hashwert schützt nicht vor absichtlicher Manipulation: Wer die Nachricht ändert, berechnet einfach den Hashwert neu. Ein **Message Authentication Code** (MAC) bezieht deshalb einen geheimen Schlüssel ein. Nur wer den Schlüssel kennt, kann einen gültigen MAC erzeugen oder prüfen. Ein MAC sichert **Integrität** und **Authentizität**, aber keine Nichtabstreitbarkeit, weil beide Seiten denselben Schlüssel besitzen.
+
+Der Standard ist **HMAC** (RFC 2104). Er ruft die Hashfunktion zweimal auf, mit dem Schlüssel $K'$ (auf die Blockgröße aufgefüllt) und den Konstanten $\mathit{ipad}$ (Byte `0x36`) und $\mathit{opad}$ (Byte `0x5c`):
+
+$$
+\mathrm{HMAC}(K, m) = h\big((K' \oplus \mathit{opad}) \,\Vert\, h((K' \oplus \mathit{ipad}) \,\Vert\, m)\big)
+$$
+
+Das einfachere $h(K \Vert m)$ wäre bei SHA-256 unsicher, weil Hashfunktionen nach dem Merkle-Damgård-Prinzip eine **Length-Extension-Attacke** erlauben: Wer $h(K \Vert m)$ kennt, kann ohne den Schlüssel $h(K \Vert m \Vert \text{Zusatz})$ berechnen. HMAC verhindert das durch den zweiten, äußeren Hash.
+
+Das folgende Programm implementiert HMAC-SHA-256 in Rust selbst, um den Aufbau zu zeigen, und prüft es gegen den Testvektor aus RFC 4231. In C# und in echten Rust-Projekten (Crate `hmac`) verwendest du die fertige Implementierung. Darauf baut **PBKDF2** auf, das HMAC sehr oft hintereinander mit demselben Schlüssel (dem Passwort) ausführt. Deshalb hasht die Implementierung die beiden aufgefüllten Schlüsselblöcke nur einmal und setzt bei jedem Aufruf auf einer Kopie dieser Zwischenzustände auf:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+
+byte[] mac = HMACSHA256.HashData(
+    Encoding.UTF8.GetBytes("Jefe"),
+    Encoding.UTF8.GetBytes("what do ya want for nothing?"));
+Console.WriteLine(Convert.ToHexStringLower(mac));
+
+// Passwort-Hash mit PBKDF2: Salt pro Benutzer zufällig, hier fest für eine reproduzierbare Ausgabe
+byte[] salt = Encoding.UTF8.GetBytes("salz-von-anna-01");
+byte[] hash = Rfc2898DeriveBytes.Pbkdf2("Korrekt Pferd Batterie Heftklammer",
+    salt, iterations: 600_000, HashAlgorithmName.SHA256, outputLength: 32);
+Console.WriteLine(Convert.ToHexStringLower(hash));
+
+// beim Anmelden: neu berechnen und in konstanter Zeit vergleichen
+byte[] attempt = Rfc2898DeriveBytes.Pbkdf2("korrekt pferd batterie heftklammer",
+    salt, 600_000, HashAlgorithmName.SHA256, 32);
+Console.WriteLine(CryptographicOperations.FixedTimeEquals(hash, attempt) ? "Anmeldung ok" : "falsches Passwort");
+
+// Ausgabe:
+// 5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843
+// ffb5d09e81a6a38644b51036913eabee06c19fb1b6724ec41647076506b9ec12
+// falsches Passwort
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+
+const BLOCK_SIZE: usize = 64; // Blockgröße von SHA-256 in Byte
+
+/// HMAC-SHA-256; innerer und äußerer Zustand werden einmal vorberechnet
+#[derive(Clone)]
+struct HmacSha256 {
+    inner: Sha256,
+    outer: Sha256,
+}
+
+impl HmacSha256 {
+    fn new(key: &[u8]) -> Self {
+        // zu lange Schlüssel werden zuerst gehasht, dann mit Nullen aufgefüllt
+        let mut padded_key = [0u8; BLOCK_SIZE];
+        if key.len() > BLOCK_SIZE {
+            padded_key[..32].copy_from_slice(&Sha256::digest(key));
+        } else {
+            padded_key[..key.len()].copy_from_slice(key);
+        }
+        let inner = Sha256::new().chain_update(padded_key.map(|b| b ^ 0x36));
+        let outer = Sha256::new().chain_update(padded_key.map(|b| b ^ 0x5c));
+        Self { inner, outer }
+    }
+
+    fn compute(&self, message: &[u8]) -> [u8; 32] {
+        let inner_hash = self.inner.clone().chain_update(message).finalize();
+        self.outer.clone().chain_update(inner_hash).finalize().into()
+    }
+}
+
+/// PBKDF2-HMAC-SHA-256 für einen Ausgabeblock von 32 Byte
+fn pbkdf2_sha256(password: &[u8], salt: &[u8], iterations: u32) -> [u8; 32] {
+    let hmac = HmacSha256::new(password);
+    let mut first = salt.to_vec();
+    first.extend_from_slice(&1u32.to_be_bytes()); // Blocknummer 1
+    let mut u = hmac.compute(&first);
+    let mut result = u;
+    for _ in 1..iterations {
+        u = hmac.compute(&u);
+        result.iter_mut().zip(u).for_each(|(r, x)| *r ^= x);
+    }
+    result
+}
+
+/// Vergleich in konstanter Zeit: bricht nicht beim ersten Unterschied ab
+fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
+    a.len() == b.len() && a.iter().zip(b).fold(0u8, |acc, (x, y)| acc | (x ^ y)) == 0
+}
+
+fn main() {
+    let mac = HmacSha256::new(b"Jefe").compute(b"what do ya want for nothing?");
+    println!("{}", hex::encode(mac));
+
+    // Passwort-Hash mit PBKDF2: Salt pro Benutzer zufällig, hier fest für eine reproduzierbare Ausgabe
+    let salt = b"salz-von-anna-01";
+    let hash = pbkdf2_sha256(b"Korrekt Pferd Batterie Heftklammer", salt, 600_000);
+    println!("{}", hex::encode(hash));
+
+    // beim Anmelden: neu berechnen und in konstanter Zeit vergleichen
+    let attempt = pbkdf2_sha256(b"korrekt pferd batterie heftklammer", salt, 600_000);
+    println!("{}", if constant_time_eq(&hash, &attempt) { "Anmeldung ok" } else { "falsches Passwort" });
+}
+
+// Ausgabe:
+// 5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843
+// ffb5d09e81a6a38644b51036913eabee06c19fb1b6724ec41647076506b9ec12
+// falsches Passwort
+```
+
+</TabItem>
+</Tabs>
+
+Der Vergleich in **konstanter Zeit** verhindert einen **Timing-Angriff**: Ein normaler Vergleich bricht beim ersten unterschiedlichen Byte ab. Aus der gemessenen Antwortzeit könnte ein Angreifer sonst Byte für Byte erraten, wie viel seines Werts bereits stimmt.
+
+## Digitale Signaturen
+
+Eine **digitale Signatur** ist das elektronische Gegenstück zur Unterschrift. Sie verwendet die Schlüssel umgekehrt wie die Verschlüsselung:
+
+1. Der Sender berechnet den Hashwert der Nachricht und **signiert** ihn mit seinem **privaten** Schlüssel.
+2. Er sendet Nachricht und Signatur.
+3. Der Empfänger berechnet selbst den Hashwert und **prüft** die Signatur mit dem **öffentlichen** Schlüssel des Senders. Stimmen die Werte überein, ist die Nachricht unverändert und stammt vom Besitzer des privaten Schlüssels.
+
+Signiert wird der Hashwert und nicht die ganze Nachricht, weil asymmetrische Operationen langsam sind und nur kleine Zahlen verarbeiten. Signaturen sichern **Integrität**, **Authentizität** und **Nichtabstreitbarkeit**, weil nur der Sender den privaten Schlüssel besitzt. Verbreitete Verfahren sind **RSA-PSS**, **ECDSA** und **Ed25519**. In der EU regelt die **eIDAS-Verordnung**, dass eine **qualifizierte elektronische Signatur** der handschriftlichen Unterschrift gleichgestellt ist. In Österreich erstellt man sie etwa mit der **ID Austria**.
+
+| Zweck          | Sender verwendet                          | Empfänger verwendet                  |
+| -------------- | ----------------------------------------- | ------------------------------------ |
+| Verschlüsseln  | öffentlichen Schlüssel des Empfängers     | seinen eigenen privaten Schlüssel     |
+| Signieren      | seinen eigenen privaten Schlüssel          | öffentlichen Schlüssel des Senders    |
+
+## Hybride Verschlüsselung
+
+In der Praxis kombiniert man beide Welten, um ihre Vorteile zu vereinen: die Geschwindigkeit symmetrischer und den einfachen Schlüsselaustausch asymmetrischer Verfahren.
+
+1. Der Sender erzeugt einen zufälligen, einmaligen **Sitzungsschlüssel** (etwa 256 Bit für AES).
+2. Er verschlüsselt die eigentlichen Daten **symmetrisch** mit AES-GCM.
+3. Er verschlüsselt nur den kurzen Sitzungsschlüssel **asymmetrisch** mit dem öffentlichen Schlüssel des Empfängers, oder beide Seiten leiten ihn per (EC)DH ab.
+4. Der Empfänger entschlüsselt mit seinem privaten Schlüssel den Sitzungsschlüssel und damit die Daten.
+
+So arbeiten TLS, SSH, PGP, S/MIME und die Verschlüsselung in Messengern wie Signal. Ein typisches Zusammenspiel aller Bausteine zeigt die Seite [PKI und TLS](/de/it-security/pki-and-tls/).
+
+## Weiterführende Quellen
+
+- [BSI TR-02102: Kryptographische Verfahren, Empfehlungen und Schlüssellängen](https://www.bsi.bund.de/dok/TR-02102) (Bundesamt für Sicherheit in der Informationstechnik)
+- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+- Christof Paar, Jan Pelzl: _Kryptografie verständlich_. Springer Vieweg, mit begleitenden Videovorlesungen

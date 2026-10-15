@@ -1,0 +1,147 @@
+---
+title: AD- und DA-Umsetzung
+description: Abtastung, Abtasttheorem nach Nyquist und Shannon, Aliasing, Quantisierung und Auflösung, Wandlertypen (Flash, SAR, Sigma-Delta) und DA-Umsetzer mit R-2R-Netzwerk.
+sidebar:
+  order: 14
+---
+
+Die Welt ist analog: Temperatur, Schall, Licht und Spannungen von Sensoren ändern sich stufenlos. Computer verarbeiten aber nur Zahlen. Ein **Analog-Digital-Umsetzer** (ADU, ADC, _analog-to-digital converter_) wandelt eine Spannung in eine Zahl um, ein **Digital-Analog-Umsetzer** (DAU, DAC) macht aus einer Zahl wieder eine Spannung. Beide Wandler stecken in jedem Smartphone, jeder Soundkarte, jedem Messgerät und in fast jedem Mikrocontroller.
+
+## Vom analogen zum digitalen Signal
+
+Ein analoges Signal ist **zeitkontinuierlich** (zu jedem Zeitpunkt definiert) und **wertkontinuierlich** (jeder Wert möglich). Ein digitales Signal ist in beiden Richtungen diskret. Die Umsetzung erfolgt in drei Schritten:
+
+1. **Abtasten** (_sampling_): In festen Zeitabständen $T_\mathrm{A}$ wird ein Wert entnommen. Eine **Abtast-Halte-Schaltung** (_sample and hold_) lädt dazu einen Kondensator auf den Momentanwert und hält ihn während der Umsetzung konstant.
+2. **Quantisieren**: Der Wert wird der nächstgelegenen von endlich vielen Stufen zugeordnet.
+3. **Codieren**: Die Stufennummer wird als Dualzahl ausgegeben.
+
+## Abtastung
+
+Die **Abtastfrequenz** $f_\mathrm{A} = 1/T_\mathrm{A}$ gibt an, wie oft pro Sekunde abgetastet wird. Wie hoch sie sein muss, beantwortet das **Abtasttheorem** von Nyquist und Shannon:
+
+$$
+f_\mathrm{A} > 2 \cdot f_\mathrm{max}
+$$
+
+Ein Signal, das keine Frequenzanteile über $f_\mathrm{max}$ enthält, lässt sich aus den Abtastwerten fehlerfrei rekonstruieren, wenn die Abtastfrequenz größer als das Doppelte von $f_\mathrm{max}$ ist. Die halbe Abtastfrequenz $f_\mathrm{A}/2$ heißt **Nyquist-Frequenz**.
+
+| Anwendung         | Signalbandbreite      | Abtastfrequenz          |
+| ----------------- | --------------------- | ----------------------- |
+| Telefon (ISDN, G.711) | $300$ bis $3400\,\mathrm{Hz}$ | $8\,\mathrm{kHz}$ |
+| Audio-CD          | bis $20\,\mathrm{kHz}$ | $44{,}1\,\mathrm{kHz}$ |
+| Studio-Audio, Video | bis $20\,\mathrm{kHz}$ | $48$ oder $96\,\mathrm{kHz}$ |
+
+### Aliasing
+
+Enthält das Signal Frequenzen oberhalb der Nyquist-Frequenz, erscheinen sie nach der Abtastung als falsche, tiefere Frequenzen (**Aliasing**). Die Alias-Frequenz ist der Abstand zum nächsten Vielfachen der Abtastfrequenz:
+
+$$
+f_\mathrm{alias} = \lvert f - k \cdot f_\mathrm{A} \rvert \qquad k \in \mathbb{N} \text{ so, dass } f_\mathrm{alias} \le f_\mathrm{A}/2
+$$
+
+:::tip[Beispiel]
+Ein Signal mit $900\,\mathrm{Hz}$ wird mit $1\,\mathrm{kHz}$ abgetastet. Die Abtastwerte sind dieselben wie die eines Signals mit $\lvert 900 - 1000 \rvert\,\mathrm{Hz} = 100\,\mathrm{Hz}$. Nach der Abtastung lässt sich das nicht mehr unterscheiden. Derselbe Effekt lässt Wagenräder im Film scheinbar rückwärts drehen.
+:::
+
+Aliasing kann man nach der Abtastung nicht mehr korrigieren. Deshalb schaltet man vor jeden ADC einen **Anti-Aliasing-Filter**, einen [Tiefpass](/de/electrical-engineering/filters/), der alle Anteile über der Nyquist-Frequenz ausreichend dämpft. Weil reale Filter nicht unendlich steil sind, wählt man die Abtastfrequenz deutlich höher als $2 f_\mathrm{max}$, bei der CD $44{,}1$ statt $40\,\mathrm{kHz}$.
+
+## Quantisierung
+
+Ein ADC mit $N$ Bit unterscheidet $2^N$ Stufen. Die kleinste auflösbare Spannungsänderung ist die **Auflösung** oder $1\,\mathrm{LSB}$ (_least significant bit_), bezogen auf die Referenzspannung $U_\mathrm{ref}$:
+
+$$
+U_\mathrm{LSB} = \frac{U_\mathrm{ref}}{2^N} \qquad D = \left\lfloor \frac{U_\mathrm{e}}{U_\mathrm{ref}} \cdot 2^N \right\rfloor
+$$
+
+$D$ ist der ausgegebene Digitalwert (je nach Wandler abgerundet oder gerundet, höchstens $2^N - 1$).
+
+:::tip[Beispiel]
+Ein 10-Bit-ADC mit $U_\mathrm{ref} = 5\,\mathrm{V}$ hat $1024$ Stufen. Ein LSB entspricht $5\,\mathrm{V}/1024 \approx 4{,}88\,\mathrm{mV}$. Eine Eingangsspannung von $2{,}5\,\mathrm{V}$ ergibt $D = 2{,}5/5 \cdot 1024 = 512$. Umgekehrt entspricht der Wert $D = 300$ einer Spannung von $300 \cdot 4{,}88\,\mathrm{mV} \approx 1{,}46\,\mathrm{V}$.
+:::
+
+Die Abweichung zwischen dem tatsächlichen Wert und der Stufe heißt **Quantisierungsfehler**, er beträgt bei rundenden Wandlern höchstens $\pm\tfrac{1}{2}\,\mathrm{LSB}$. Er wirkt wie ein Rauschen. Das theoretisch beste **Signal-Rausch-Verhältnis** eines idealen $N$-Bit-Wandlers für ein Sinussignal über den vollen Bereich ist:
+
+$$
+\mathrm{SNR} = 6{,}02 \cdot N + 1{,}76\,\mathrm{dB}
+$$
+
+Jedes zusätzliche Bit bringt also etwa $6\,\mathrm{dB}$. Eine Audio-CD mit 16 Bit erreicht rund $98\,\mathrm{dB}$. Reale Wandler erreichen wegen Rauschen und Nichtlinearität weniger, man gibt deshalb die **effektive Bitzahl** (ENOB) an.
+
+Die **Datenrate** eines digitalisierten Signals ist Abtastfrequenz mal Bitzahl mal Kanäle. Bei der CD: $44\,100\,\mathrm{Hz} \cdot 16\,\mathrm{bit} \cdot 2 = 1\,411\,200\,\mathrm{bit/s} \approx 1{,}41\,\mathrm{Mbit/s}$.
+
+## ADC-Verfahren
+
+| Verfahren                       | Prinzip                                                                     | Geschwindigkeit         | Auflösung        | Einsatz                                |
+| ------------------------------- | --------------------------------------------------------------------------- | ----------------------- | ---------------- | -------------------------------------- |
+| **Flash** (Parallelumsetzer)    | $2^N - 1$ Komparatoren vergleichen gleichzeitig mit allen Stufen eines Spannungsteilers | sehr hoch (GS/s) | klein (6 bis 8 bit) | Oszilloskope, Radar          |
+| **Sukzessive Approximation** (SAR) | Wägeverfahren: $N$ Vergleichsschritte mit einem internen DAC            | mittel (kS/s bis einige MS/s) | 8 bis 18 bit | Mikrocontroller, Datenerfassung  |
+| **Sigma-Delta** ($\Sigma\Delta$) | 1-Bit-Wandler mit sehr hoher Überabtastung, digitales Filter berechnet den Mittelwert | niedrig bis mittel | sehr hoch (16 bis 32 bit) | Audio, Präzisionsmessung, Waagen |
+| **Dual-Slope** (integrierend)   | Integrator wird mit $U_\mathrm{e}$ aufintegriert und mit $U_\mathrm{ref}$ abintegriert, die Zeit wird gezählt | langsam | hoch, unterdrückt Netzbrumm | Digitalmultimeter |
+
+Der Flash-Wandler braucht für 8 Bit bereits 255 Komparatoren, der Aufwand verdoppelt sich mit jedem Bit. Der Sigma-Delta-Wandler tauscht Geschwindigkeit gegen Genauigkeit, weil er viele grobe Messungen mittelt.
+
+### Sukzessive Approximation
+
+Der SAR-Wandler arbeitet wie eine Balkenwaage mit Gewichten $\tfrac{1}{2}$, $\tfrac{1}{4}$, $\tfrac{1}{8}$ … des Messbereichs. Beginnend beim höchstwertigen Bit setzt er probeweise ein Bit auf 1, erzeugt mit einem internen DAC die zugehörige Spannung und vergleicht sie mit dem Eingang. Ist die DAC-Spannung größer, wird das Bit wieder gelöscht. Nach $N$ Schritten steht das Ergebnis fest.
+
+:::tip[Beispiel: 4-Bit-SAR]
+$U_\mathrm{ref} = 5\,\mathrm{V}$, also $U_\mathrm{LSB} = 0{,}3125\,\mathrm{V}$. Die Eingangsspannung ist $U_\mathrm{e} = 3{,}2\,\mathrm{V}$.
+
+| Schritt | Probewert | DAC-Spannung | Vergleich         | Bit |
+| ------- | --------- | ------------ | ----------------- | --- |
+| 1       | 1000      | $2{,}5\,\mathrm{V}$    | $2{,}5 \le 3{,}2$ | 1   |
+| 2       | 1100      | $3{,}75\,\mathrm{V}$   | $3{,}75 > 3{,}2$  | 0   |
+| 3       | 1010      | $3{,}125\,\mathrm{V}$  | $3{,}125 \le 3{,}2$ | 1 |
+| 4       | 1011      | $3{,}4375\,\mathrm{V}$ | $3{,}4375 > 3{,}2$ | 0  |
+
+Ergebnis: $1010_2 = 10$, das entspricht $3{,}125\,\mathrm{V}$. Der Rest von $0{,}075\,\mathrm{V}$ ist kleiner als ein LSB.
+:::
+
+Der ADC des ATmega-Mikrocontrollers ist ein 10-Bit-SAR-Wandler. Seine Konfiguration und Programmierung zeigt [Hardwarenahe Programmierung: ADC](/de/embedded-programming/analogue-digital-converter/).
+
+## Digital-Analog-Umsetzer
+
+Ein DAC erzeugt aus einem Digitalwert $D$ die Spannung:
+
+$$
+U_\mathrm{a} = D \cdot \frac{U_\mathrm{ref}}{2^N}
+$$
+
+Ein 8-Bit-DAC mit $U_\mathrm{ref} = 5\,\mathrm{V}$ gibt bei $D = 200$ die Spannung $200 \cdot 5\,\mathrm{V}/256 \approx 3{,}91\,\mathrm{V}$ aus. Am Ausgang entsteht eine Treppenkurve, die ein Tiefpass (Rekonstruktionsfilter) glättet.
+
+### Gewichtete Widerstände
+
+Die naheliegende Lösung ist ein [Summierverstärker](/de/electrical-engineering/operational-amplifiers/#addierer), bei dem jedes Bit über einen Widerstand $R$, $2R$, $4R$, $8R$ … an die virtuelle Masse geführt wird. Für viele Bits braucht man aber sehr unterschiedliche und trotzdem genaue Widerstandswerte, bei 12 Bit ein Verhältnis von $1 : 2048$. Das ist schwer herzustellen.
+
+### R-2R-Netzwerk
+
+Das **R-2R-Netzwerk** kommt mit nur zwei Widerstandswerten aus. Es besteht aus einer Leiter mit Längswiderständen $R$ und Querwiderständen $2R$. Von jedem Knoten aus gesehen hat der Rest der Leiter in Richtung des niederwertigen Endes den Widerstand $2R$. Deshalb teilt sich der Strom an jedem Knoten genau in zwei Hälften: Der Zweig des höchstwertigen Bits führt $I/2$, der nächste $I/4$ und so weiter.
+
+Jeder $2R$-Zweig wird je nach Bit entweder auf die virtuelle Masse eines OPV (Bit = 1) oder auf Masse (Bit = 0) geschaltet. Da beide Punkte auf $0\,\mathrm{V}$ liegen, ändert das Umschalten die Stromverteilung nicht. Der Gesamtstrom aus der Referenz ist $U_\mathrm{ref}/R$, und mit einem Rückkopplungswiderstand $R_\mathrm{f} = R$ gilt:
+
+$$
+I_\mathrm{sum} = \frac{U_\mathrm{ref}}{R} \cdot \frac{D}{2^N} \qquad U_\mathrm{a} = -R_\mathrm{f} \cdot I_\mathrm{sum} = -U_\mathrm{ref} \cdot \frac{D}{2^N}
+$$
+
+Weil nur das Verhältnis der Widerstände zählt und alle auf demselben Chip liegen, lassen sich R-2R-Netzwerke sehr genau fertigen.
+
+### PWM als DAC
+
+Viele Mikrocontroller haben keinen DAC. Eine einfache Alternative ist ein [PWM-Signal](/de/embedded-programming/timer/) mit nachgeschaltetem RC-Tiefpass, dessen Grenzfrequenz weit unter der PWM-Frequenz liegt. Der Tiefpass bildet den Mittelwert: Bei $5\,\mathrm{V}$ und $30\,\%$ Tastverhältnis erhält man $1{,}5\,\mathrm{V}$ mit etwas Restwelligkeit. Audio-Endstufen der Klasse D arbeiten nach demselben Prinzip.
+
+### Kenngrößen von Wandlern
+
+| Kenngröße              | Bedeutung                                                                 |
+| ---------------------- | ------------------------------------------------------------------------- |
+| Auflösung              | Anzahl der Bits                                                            |
+| Umsetzzeit, Abtastrate | Dauer einer Wandlung, Anzahl Wandlungen pro Sekunde (S/s)                  |
+| Offsetfehler           | Verschiebung der ganzen Kennlinie                                          |
+| Verstärkungsfehler     | falsche Steigung der Kennlinie                                             |
+| Nichtlinearität (DNL, INL) | Abweichungen einzelner Stufen bzw. der ganzen Kennlinie von der Geraden |
+| Monotonie              | Ein größerer Digitalwert ergibt nie eine kleinere Spannung (wichtig bei DACs in Regelkreisen) |
+
+## Weiterführende Quellen
+
+- [Analog Devices: The Data Conversion Handbook](https://www.analog.com/en/resources/technical-books/data-conversion-handbook.html)
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg (Kapitel D/A- und A/D-Umsetzer).
+- [Wikipedia: Nyquist-Shannon-Abtasttheorem](https://de.wikipedia.org/wiki/Nyquist-Shannon-Abtasttheorem)

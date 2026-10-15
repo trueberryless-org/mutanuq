@@ -1,0 +1,356 @@
+---
+title: Datenformate
+description: "XML mit Namensräumen, DTD, XML Schema und XPath, JSON und JSON Schema, YAML, CSV nach RFC 4180 und binäre Formate im Vergleich sowie JSON in PostgreSQL."
+sidebar:
+  order: 17
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Wenn Programme Daten austauschen, speichern oder konfigurieren, brauchen sie ein gemeinsames **Datenformat**. Textformate wie XML, JSON, YAML und CSV sind von Menschen lesbar und plattformunabhängig. Binärformate sind kompakter und schneller. Wie man diese Formate in C# und Rust liest und schreibt, zeigt die Seite [Dateien und Serialisierung](/de/software-development/files-and-serialization/). Diese Seite beschreibt die Formate selbst.
+
+| Format     | Struktur                    | Schema                      | Typische Verwendung                                          |
+| ---------- | --------------------------- | --------------------------- | ------------------------------------------------------------ |
+| **XML**    | Baum aus Elementen und Attributen | DTD, XML Schema (XSD) | Office-Dokumente, Konfiguration (`.csproj`), SOAP, Behörden- und Bankenaustausch, SVG |
+| **JSON**   | verschachtelte Objekte und Arrays | JSON Schema           | REST-APIs, Konfiguration, Dokumentdatenbanken                |
+| **YAML**   | wie JSON, Einrückung statt Klammern | JSON Schema         | Konfiguration (Docker Compose, Kubernetes, CI-Pipelines)     |
+| **CSV**    | Tabelle                     | keines                      | Tabellenkalkulation, Datenexport und -import                 |
+| **Protocol Buffers**, **Parquet** | binär    | im Format festgelegt        | schnelle Dienstkommunikation (gRPC), Datenanalyse            |
+
+## XML
+
+Die **Extensible Markup Language** (XML) ist seit 1998 eine Empfehlung des W3C. Ein XML-Dokument ist ein Baum aus **Elementen**, die mit Start- und End-Tags geschrieben werden und **Attribute**, Text und weitere Elemente enthalten können.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<schule name="HTL Krems">
+  <!-- Kommentar -->
+  <klasse name="3AHIT" jahrgang="3">
+    <schueler id="1">
+      <vorname>Anna</vorname>
+      <nachname>Huber</nachname>
+      <note fach="AM">2</note>
+      <note fach="SEW">1</note>
+    </schueler>
+    <schueler id="2">
+      <vorname>Ben</vorname>
+      <nachname>Wolf</nachname>
+      <note fach="AM">4</note>
+    </schueler>
+  </klasse>
+</schule>
+```
+
+### Wohlgeformt und gültig
+
+Ein Dokument ist **wohlgeformt** (_well-formed_), wenn es die Syntaxregeln von XML einhält. Ein XML-Parser muss die Verarbeitung abbrechen, wenn das nicht der Fall ist.
+
+- Es gibt genau ein **Wurzelelement**.
+- Jedes Element wird geschlossen: `<note>2</note>` oder leer `<leer/>`.
+- Elemente sind korrekt verschachtelt: `<a><b></b></a>`, nicht `<a><b></a></b>`.
+- Groß- und Kleinschreibung wird unterschieden: `<Note>` und `<note>` sind verschiedene Elemente.
+- Attributwerte stehen in Anführungszeichen, und jedes Attribut kommt in einem Element nur einmal vor.
+- Die Zeichen `<` und `&` werden im Text als **Entitäten** `&lt;` und `&amp;` geschrieben, ebenso `>` als `&gt;`, `"` als `&quot;` und `'` als `&apos;`. Längere Textstellen mit vielen Sonderzeichen lassen sich in einen `<![CDATA[ ... ]]>`-Abschnitt setzen.
+
+Ein Dokument ist **gültig** (_valid_), wenn es zusätzlich einem **Schema** entspricht, das festlegt, welche Elemente und Attribute in welcher Reihenfolge und mit welchen Datentypen vorkommen dürfen.
+
+Ob Information in ein Element oder ein Attribut gehört, ist eine Entwurfsfrage. Als Faustregel gilt: Attribute für Metadaten und Kennungen (`id`, `fach`), Elemente für die eigentlichen Daten und für alles, was mehrfach vorkommen oder Struktur haben kann.
+
+### Namensräume
+
+Werden XML-Vokabulare kombiniert, können Elementnamen kollidieren: `<titel>` kann der Titel eines Buches oder einer Person sein. **Namensräume** (_Namespaces_) ordnen Namen über einen URI eindeutig zu. Der URI muss nicht erreichbar sein, er dient nur als eindeutiger Name.
+
+```xml
+<bestellung xmlns="https://example.at/shop"
+            xmlns:adr="https://example.at/adresse">
+  <adr:strasse>Alauntalstraße 29</adr:strasse>
+</bestellung>
+```
+
+### DTD und XML Schema
+
+Die **Document Type Definition** (DTD) ist die ältere, einfachere Schemasprache. Sie kennt kaum Datentypen und ist selbst kein XML. Heute verwendet man meist **XML Schema** (XSD), das selbst in XML geschrieben ist und Datentypen, Wertebereiche und Häufigkeiten beschreiben kann:
+
+```xml
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="schueler">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="vorname" type="xs:string"/>
+        <xs:element name="nachname" type="xs:string"/>
+        <xs:element name="note" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="notenwert">
+                <xs:attribute name="fach" type="xs:string" use="required"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="notenwert">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="5"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+```
+
+`xs:sequence` legt die Reihenfolge fest, `minOccurs` und `maxOccurs` die Häufigkeit, `xs:restriction` schränkt einen Datentyp ein. Weitere Schemasprachen sind RELAX NG und Schematron.
+
+### XPath
+
+**XPath** ist eine Sprache, um Teile eines XML-Dokuments auszuwählen. Ein Pfad beschreibt den Weg durch den Baum, ähnlich einem Dateipfad.
+
+| Ausdruck                              | Auswahl                                                     |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `/schule/klasse`                      | alle `klasse`-Elemente direkt unter der Wurzel `schule`      |
+| `//schueler`                          | alle `schueler`-Elemente, egal wo                           |
+| `//schueler/@id`                      | die `id`-Attribute aller Schüler                            |
+| `//schueler[nachname='Wolf']`         | Schüler mit dem Nachnamen Wolf (Prädikat in eckigen Klammern) |
+| `//schueler[1]`                       | jeweils der erste Schüler einer Klasse (Zählung ab 1)        |
+| `//note[@fach='AM' and . > 3]/../vorname` | Vornamen der Schüler mit einer AM-Note schlechter als 3; `.` ist der aktuelle Knoten, `..` der Elternknoten |
+| `count(//schueler)`                   | Anzahl der Schüler                                          |
+| `//klasse[@jahrgang >= 3]/@name`      | Namen der Klassen ab dem 3. Jahrgang                        |
+
+XPath wird von **XSLT** verwendet, einer Sprache, die XML-Dokumente in andere XML-, HTML- oder Textdokumente umwandelt, und von **XQuery**, einer Abfragesprache für XML-Datenbestände.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Xml.Linq;
+using System.Xml.XPath;
+
+var xml = """
+    <schule name="HTL Krems">
+      <klasse name="3AHIT" jahrgang="3">
+        <schueler id="1"><vorname>Anna</vorname><nachname>Huber</nachname>
+          <note fach="AM">2</note><note fach="SEW">1</note></schueler>
+        <schueler id="2"><vorname>Ben</vorname><nachname>Wolf</nachname>
+          <note fach="AM">4</note></schueler>
+      </klasse>
+    </schule>
+    """;
+var doc = XDocument.Parse(xml);
+
+foreach (var name in doc.XPathSelectElements("//note[@fach='AM' and . > 3]/../vorname"))
+{
+    Console.WriteLine(name.Value);
+}
+Console.WriteLine(doc.XPathEvaluate("count(//schueler)"));
+// Ausgabe:
+// Ben
+// 2
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use quick_xml::de::from_str;
+use serde::Deserialize;
+
+// Rust hat kein XPath in der Standardbibliothek. Mit serde wird das Dokument
+// in Strukturen übersetzt, die Auswahl erfolgt dann mit Iteratoren.
+#[derive(Deserialize)]
+struct Schule {
+    klasse: Vec<Klasse>,
+}
+
+#[derive(Deserialize)]
+struct Klasse {
+    schueler: Vec<Schueler>,
+}
+
+#[derive(Deserialize)]
+struct Schueler {
+    vorname: String,
+    #[serde(default)]
+    note: Vec<Note>,
+}
+
+#[derive(Deserialize)]
+struct Note {
+    #[serde(rename = "@fach")]
+    fach: String,
+    #[serde(rename = "$text")]
+    wert: u8,
+}
+
+fn main() -> Result<(), quick_xml::DeError> {
+    let xml = r#"
+        <schule name="HTL Krems">
+          <klasse name="3AHIT" jahrgang="3">
+            <schueler id="1"><vorname>Anna</vorname><nachname>Huber</nachname>
+              <note fach="AM">2</note><note fach="SEW">1</note></schueler>
+            <schueler id="2"><vorname>Ben</vorname><nachname>Wolf</nachname>
+              <note fach="AM">4</note></schueler>
+          </klasse>
+        </schule>"#;
+    let schule: Schule = from_str(xml)?;
+
+    let alle = schule.klasse.iter().flat_map(|k| &k.schueler);
+    for s in alle.clone().filter(|s| s.note.iter().any(|n| n.fach == "AM" && n.wert > 3)) {
+        println!("{}", s.vorname);
+    }
+    println!("{}", alle.count());
+    Ok(())
+}
+// Ausgabe:
+// Ben
+// 2
+```
+
+</TabItem>
+</Tabs>
+
+## JSON
+
+Die **JavaScript Object Notation** (JSON) ist in RFC 8259 und ECMA-404 standardisiert. Sie entstand aus der Objektschreibweise von JavaScript und ist heute das Standardformat für Web-APIs, weil sie kompakt, leicht lesbar und in jeder Sprache einfach zu verarbeiten ist.
+
+```json
+{
+  "id": 1,
+  "vorname": "Anna",
+  "nachname": "Huber",
+  "aktiv": true,
+  "klasse": { "name": "3AHIT", "jahrgang": 3 },
+  "noten": [
+    { "fach": "AM", "wert": 2 },
+    { "fach": "SEW", "wert": 1 }
+  ],
+  "email": null
+}
+```
+
+| Datentyp    | Schreibweise                    | Hinweis                                                              |
+| ----------- | ------------------------------- | -------------------------------------------------------------------- |
+| **Objekt**  | `{ "schluessel": wert, ... }`   | Schlüssel sind immer Zeichenketten in doppelten Anführungszeichen    |
+| **Array**   | `[wert, wert, ...]`             | geordnete Liste, Werte dürfen verschiedene Typen haben               |
+| **Zeichenkette** | `"Text"`                   | nur doppelte Anführungszeichen, Sonderzeichen mit `\`: `\"`, `\\`, `\n`, `ä` |
+| **Zahl**    | `42`, `-3.5`, `1.2e3`           | keine Unterscheidung zwischen ganzen Zahlen und Kommazahlen, kein `NaN` und keine führenden Nullen |
+| **Wahrheitswert** | `true`, `false`           | klein geschrieben                                                    |
+| **null**    | `null`                          | kein Wert                                                            |
+
+Im Gegensatz zu JavaScript erlaubt JSON **keine Kommentare**, kein abschließendes Komma nach dem letzten Element und keine einfachen Anführungszeichen. Ein Datumstyp fehlt. Üblich sind Zeichenketten im Format ISO 8601 wie `"2025-10-15T08:00:00Z"`. Sehr große ganze Zahlen über $2^{53}$ verlieren in JavaScript an Genauigkeit und werden deshalb oft als Zeichenkette übertragen.
+
+### JSON Schema
+
+**JSON Schema** beschreibt, wie ein gültiges JSON-Dokument aufgebaut ist. Es wird zur Validierung von API-Anfragen, zur Dokumentation (OpenAPI verwendet es) und für die Autovervollständigung in Editoren genutzt.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["id", "vorname", "nachname"],
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "vorname": { "type": "string", "minLength": 1 },
+    "nachname": { "type": "string", "minLength": 1 },
+    "email": { "type": ["string", "null"], "format": "email" },
+    "noten": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fach", "wert"],
+        "properties": {
+          "fach": { "type": "string" },
+          "wert": { "type": "integer", "minimum": 1, "maximum": 5 }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+### JSON in der Datenbank
+
+Viele relationale Datenbanken können JSON speichern und abfragen. PostgreSQL bietet dafür den Typ `jsonb`, der JSON in einem binären, indizierbaren Format speichert:
+
+```sql
+CREATE TABLE Ereignis (
+    Id    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Daten JSONB NOT NULL
+);
+
+INSERT INTO Ereignis (Daten) VALUES
+    ('{"typ": "anmeldung", "benutzer": "anna", "geraet": {"os": "Android"}}'),
+    ('{"typ": "abmeldung", "benutzer": "anna"}'),
+    ('{"typ": "anmeldung", "benutzer": "ben", "geraet": {"os": "Windows"}}');
+
+SELECT Daten->>'benutzer' AS Benutzer, Daten->'geraet'->>'os' AS System
+FROM Ereignis
+WHERE Daten->>'typ' = 'anmeldung'          -- ->> liefert Text, -> liefert JSON
+ORDER BY Id;
+
+SELECT COUNT(*) FROM Ereignis WHERE Daten @> '{"benutzer": "anna"}';   -- enthält
+
+CREATE INDEX ix_ereignis_daten ON Ereignis USING GIN (Daten);          -- Index für @>
+```
+
+JSON-Spalten eignen sich für Daten, deren Struktur sich ändert oder die nur gespeichert und als Ganzes gelesen werden. Werden Felder regelmäßig gefiltert, verknüpft oder mit Constraints geprüft, gehören sie in eigene Spalten.
+
+## YAML
+
+**YAML** (_YAML Ain't Markup Language_) ist eine Obermenge von JSON, die auf Lesbarkeit für Menschen ausgelegt ist. Statt Klammern bestimmt die **Einrückung** die Struktur, und Kommentare mit `#` sind erlaubt. Deshalb ist YAML das Standardformat für Konfigurationsdateien, etwa für Docker Compose, Kubernetes und CI-Pipelines (siehe [Versionsverwaltung](/de/software-development/version-control/#continuous-integration)).
+
+```yaml
+# Konfiguration eines Notendienstes
+dienst:
+  name: notenservice
+  port: 8080
+  datenbank:
+    host: db.schule.at
+    name: schule
+  klassen:            # Liste
+    - 3AHIT
+    - 4AHIT
+  wartung: false
+  beschreibung: |
+    Mehrzeiliger Text,
+    Zeilenumbrüche bleiben erhalten.
+```
+
+Fallstricke:
+
+- Eingerückt wird nur mit **Leerzeichen**, nie mit Tabulatoren. Eine falsche Einrückung ändert die Bedeutung, ohne dass ein Fehler auftritt.
+- YAML erkennt Typen automatisch. In der älteren Version YAML 1.1 wurden `yes`, `no`, `on` und `off` als Wahrheitswerte gelesen, sodass der Ländercode `NO` für Norwegen zu `false` wurde. Versionsnummern wie `3.10` werden zur Zahl `3.1`. Werte, die Text bleiben sollen, setzt man deshalb in Anführungszeichen.
+- YAML-Bibliotheken können beim Laden beliebige Objekte erzeugen. Verwende zum Einlesen fremder Daten die sicheren Ladefunktionen.
+
+## CSV
+
+**CSV** (_Comma-Separated Values_) speichert eine Tabelle als Text: eine Zeile pro Datensatz, die Felder durch Kommas getrennt, meist mit einer Kopfzeile. Das Format ist alt und einfach, aber nur lose in **RFC 4180** beschrieben:
+
+```text
+Id,Vorname,Nachname,Bemerkung
+1,Anna,Huber,
+2,Ben,Wolf,"Klassensprecher, 3AHIT"
+3,Clara,Berger,"Spitzname ""CB"""
+```
+
+- Felder, die das Trennzeichen, Anführungszeichen oder Zeilenumbrüche enthalten, stehen in **doppelten Anführungszeichen**. Ein Anführungszeichen im Feld wird verdoppelt.
+- Zeilen enden laut RFC mit CRLF, in der Praxis kommen beide Varianten vor.
+- Das Format kennt **keine Datentypen**: Ob `01234` eine Postleitzahl oder die Zahl 1234 ist, entscheidet das lesende Programm.
+- In Ländern, in denen das Komma das Dezimaltrennzeichen ist, verwendet Excel das **Semikolon** als Trennzeichen. Die Zeichenkodierung (UTF-8 mit oder ohne BOM, Windows-1252) ist nicht festgelegt und führt oft zu falsch dargestellten Umlauten (siehe [Zeichenkodierung](/de/computer-science/data-representation/#zeichenkodierung)).
+
+Schreibe CSV deshalb nie mit einfachem Zusammenfügen von Zeichenketten, sondern mit einer Bibliothek, die das Maskieren übernimmt. PostgreSQL liest und schreibt CSV mit `COPY ... WITH (FORMAT csv, HEADER)`.
+
+## Binäre Formate
+
+Textformate sind lesbar, aber groß und langsam zu verarbeiten. Für hohe Datenmengen gibt es binäre Formate:
+
+- **Protocol Buffers** (Google) und **Apache Avro** beschreiben Nachrichten mit einem Schema. Aus dem Schema werden Klassen für viele Sprachen erzeugt. gRPC verwendet Protocol Buffers für die Kommunikation zwischen Diensten.
+- **MessagePack** und **CBOR** sind binäre Gegenstücke zu JSON ohne Schema.
+- **Apache Parquet** speichert Tabellen spaltenweise und stark komprimiert und ist das Standardformat in [Data Lakes](/de/databases/data-warehouse/#data-lake-und-lakehouse).
+
+## Weiterführende Quellen
+
+- [W3C: Extensible Markup Language (XML) 1.0](https://www.w3.org/TR/xml/) und [XML Path Language (XPath)](https://www.w3.org/TR/xpath-31/)
+- [RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format](https://www.rfc-editor.org/rfc/rfc8259) und [json-schema.org](https://json-schema.org/)

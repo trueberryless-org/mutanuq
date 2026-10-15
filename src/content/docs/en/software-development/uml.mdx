@@ -1,0 +1,258 @@
+---
+title: UML
+description: The Unified Modeling Language with class, object, use case, sequence, activity, state, component and deployment diagrams.
+sidebar:
+  order: 18
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+The **Unified Modeling Language** (UML) is a graphical language for describing software systems before or while programming them. It is standardised by the **Object Management Group** (OMG); the current version is UML 2.5.1. Diagrams help to discuss designs in a team, to agree on requirements with customers and to document existing systems. You do not have to model every detail: a diagram is good if it answers the question it was drawn for.
+
+## Diagram types
+
+UML 2.5 has 14 diagram types in two groups:
+
+| Group                     | Diagram                      | Shows                                                                 |
+| ------------------------- | ---------------------------- | --------------------------------------------------------------------- |
+| **Structure diagrams**    | **Class diagram**            | classes, their attributes, methods and relationships                  |
+|                           | Object diagram               | concrete objects and their values at one point in time                |
+|                           | Package diagram              | division into packages and their dependencies                         |
+|                           | **Component diagram**        | replaceable building blocks and their interfaces                      |
+|                           | **Deployment diagram**       | hardware, servers and which software runs where                       |
+|                           | Composite structure diagram  | the internal structure of a class                                     |
+|                           | Profile diagram              | extensions of UML itself                                              |
+| **Behaviour diagrams**    | **Use case diagram**         | what the system does for whom                                         |
+|                           | **Activity diagram**         | processes and algorithms                                              |
+|                           | **State machine diagram**    | states of an object and transitions                                   |
+| of which **interaction diagrams** | **Sequence diagram**  | messages between objects in chronological order                       |
+|                           | Communication diagram        | messages with a focus on the connections                              |
+|                           | Timing diagram               | state changes along a time axis                                       |
+|                           | Interaction overview diagram | interplay of several interactions                                     |
+
+The diagrams in bold are the ones used most often in practice and in class.
+
+## Class diagram
+
+The class diagram shows the **static structure** of a system. A class is drawn as a rectangle with three compartments: name, attributes and operations (methods).
+
+![UML class diagram of a school administration with an interface, an abstract class, inheritance, aggregation, composition and association](/images/software_development/uml_class_diagram_en.svg)
+
+### Notation
+
+- **Attribute**: `visibility name: Type [multiplicity] = default`, for example `- grades: int[0..*]`.
+- **Operation**: `visibility name(parameter: Type): ReturnType`, for example `+ Add(s: Student): void`.
+- **Visibility**: `+` public, `-` private, `#` protected, `~` package (roughly `internal` in C#).
+- **Static** elements are underlined.
+- **Abstract** classes and operations are written in _italics_ or marked with `{abstract}`.
+- **Interfaces** get the stereotype `«interface»`.
+
+### Relationships
+
+![Overview of the relationships in the UML class diagram with their arrow types](/images/software_development/uml_relationships_en.svg)
+
+| Relationship     | Line and end                                         | Meaning                                                      |
+| ---------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| **Inheritance**  | solid, hollow triangle at the superclass             | "is a"                                                       |
+| **Realisation**  | dashed, hollow triangle at the interface             | class implements interface                                   |
+| **Association**  | solid line, optionally with an arrow (navigability)  | objects know each other                                      |
+| **Aggregation**  | hollow diamond at the whole                          | "has a", parts can exist independently                       |
+| **Composition**  | filled diamond at the whole                          | "consists of", parts are deleted together with the whole     |
+| **Dependency**   | dashed, open arrow                                   | uses briefly, for example as a parameter                     |
+
+**Multiplicities** at the ends of an association state how many objects are involved: `1` (exactly one), `0..1` (none or one), `*` or `0..*` (any number), `1..*` (at least one), `2..4` (two to four). In the diagram above, every `SchoolClass` belongs to exactly one `School`, and a `School` has at least one `SchoolClass`.
+
+### From diagram to code
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+public interface IGradable
+{
+    double AverageGrade();
+}
+
+public abstract class Person(string name, DateOnly birthDate)
+{
+    protected string name = name;
+    protected DateOnly birthDate = birthDate;
+
+    public int Age()
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        int age = today.Year - birthDate.Year;
+        if (birthDate.AddYears(age) > today) age--; // birthday not reached yet
+        return age;
+    }
+
+    public abstract string Describe();
+}
+
+public class Student(string name, DateOnly birthDate, int studentId)
+    : Person(name, birthDate), IGradable
+{
+    private readonly int studentId = studentId;
+    private readonly List<int> grades = [];
+
+    public double AverageGrade() => grades.Count == 0 ? 0 : grades.Average();
+
+    public override string Describe() => $"{name} ({studentId})";
+}
+
+public class SchoolClass(string name)
+{
+    private readonly string name = name;
+    private readonly List<Student> students = []; // aggregation: students also exist without a class
+
+    public void Add(Student s) => students.Add(s);
+}
+
+public class School(string name)
+{
+    private readonly string name = name;
+    private readonly List<SchoolClass> classes = []; // composition: classes are only created within the school
+
+    public SchoolClass Open(string className)
+    {
+        var c = new SchoolClass(className);
+        classes.Add(c);
+        return c;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::rc::Rc;
+
+pub trait Gradable {
+    fn average_grade(&self) -> f64;
+}
+
+// Rust has no inheritance: shared data is embedded through composition
+pub struct Person {
+    name: String,
+    birth_year: u32,
+}
+
+pub trait Describe {
+    fn describe(&self) -> String;
+}
+
+pub struct Student {
+    person: Person,
+    student_id: u32,
+    grades: Vec<u8>,
+}
+
+impl Gradable for Student {
+    fn average_grade(&self) -> f64 {
+        if self.grades.is_empty() {
+            return 0.0;
+        }
+        self.grades.iter().map(|&g| g as f64).sum::<f64>() / self.grades.len() as f64
+    }
+}
+
+impl Describe for Student {
+    fn describe(&self) -> String {
+        format!("{} ({})", self.person.name, self.student_id)
+    }
+}
+
+// aggregation: shared references, students exist independently
+pub struct SchoolClass {
+    name: String,
+    students: Vec<Rc<Student>>,
+}
+
+// composition: the school owns its classes
+pub struct School {
+    name: String,
+    classes: Vec<SchoolClass>,
+}
+
+impl School {
+    pub fn open(&mut self, name: &str) -> &mut SchoolClass {
+        self.classes.push(SchoolClass { name: name.to_string(), students: Vec::new() });
+        self.classes.last_mut().unwrap()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Aggregation and composition often look the same in code. The difference lies in the **lifetime**: with composition, the whole creates and owns its parts. In Rust, this becomes visible because the school owns its classes directly in the `Vec`, while classes know their students through shared references (`Rc`).
+
+### Object diagram
+
+An **object diagram** is a snapshot: it shows concrete objects with values. The name is underlined and has the form `objectName: Class`, for example <u>`anna: Student`</u> with `studentId = 4711`. Object diagrams help to check a class diagram against an example.
+
+## Use case diagram
+
+The **use case diagram** shows from the users' point of view **what** a system does, not how. It is used early in [requirements analysis](/en/software-development/software-engineering/#requirements-analysis).
+
+![UML use case diagram of a grade management system with include and extend relationships](/images/software_development/uml_use_case_en.svg)
+
+- **Actor** (stick figure): a role that interacts with the system, such as a person or another system.
+- **Use case** (ellipse): a function that provides value to an actor.
+- **System boundary** (rectangle): what belongs to the system.
+- **«include»**: the base use case **always** contains the included one (every entering of a grade requires logging in). The arrow points to the included use case.
+- **«extend»**: the extending use case is only added **under a condition** (parents are only notified of a failing grade). The arrow points to the base use case.
+- **Generalisation** between actors or use cases is drawn like inheritance with a hollow triangle.
+
+Every use case comes with a textual **description** containing the actor, precondition, flow (main flow and alternatives) and postcondition.
+
+## Sequence diagram
+
+The **sequence diagram** shows which messages objects exchange in which **chronological order**. Time runs from top to bottom.
+
+![UML sequence diagram of a login with browser, controller, repository and database](/images/software_development/uml_sequence_en.svg)
+
+| Element                | Representation                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Lifeline**           | rectangle with an underlined name and a dashed line downwards                   |
+| **Activation bar**     | narrow rectangle while the object is working                                    |
+| **Synchronous message** | solid arrow with a filled head; the sender waits for the answer                |
+| **Asynchronous message** | solid arrow with an open head; the sender does not wait                       |
+| **Reply**              | dashed arrow with an open head                                                  |
+| **Self-call**          | arrow that leads back to its own lifeline                                       |
+| **Combined fragment**  | frame with an operator: `alt` (alternatives), `opt` (optional), `loop` (loop), `par` (parallel) |
+
+## Activity diagram
+
+The **activity diagram** describes **processes**: business processes, use cases in detail or algorithms. It is the successor of the flowchart and can additionally show parallel flows.
+
+![UML activity diagram of an order with decision, fork and join](/images/software_development/uml_activity_en.svg)
+
+- **Initial node**: filled circle. **Final node**: filled circle with a ring.
+- **Action**: rectangle with rounded corners.
+- **Decision** and **merge**: diamond. The outgoing edges carry **conditions** in square brackets (_guards_), which must be mutually exclusive.
+- **Fork** and **join**: thick bar. After a fork, the branches run in parallel; the join waits until all of them have finished.
+- **Partitions** (_swimlanes_): columns that show who performs an action, for example customer, sales and warehouse.
+
+## State machine diagram
+
+The **state machine diagram** shows which **states** an object can take and through which **events** it changes from one state to another. It is suitable for objects with clearly distinguishable states: orders, traffic lights, connections, game characters.
+
+![UML state machine diagram of an order with the states New, Paid, Shipped and Cancelled](/images/software_development/uml_state_en.svg)
+
+A transition is labelled `event [guard] / action`. States can have their own actions: `entry /` when entering, `exit /` when leaving and `do /` while staying. State machine diagrams can be implemented directly with the [State](/en/software-development/design-patterns/#state) design pattern or with an enum and `match`. They correspond to the [finite automata](/en/computer-science/automata-and-formal-languages/) of theoretical computer science.
+
+## Component and deployment diagrams
+
+- The **component diagram** shows the large building blocks of a system (such as web front end, order service, payment service) as rectangles with the stereotype `«component»`. **Provided interfaces** are drawn as a circle ("lollipop"), **required interfaces** as a half circle ("socket").
+- The **deployment diagram** shows the hardware and execution environments as three-dimensional boxes (**nodes**), such as web server, database server and clients, as well as the **artefacts** (programs, files) installed on them and the communication paths between them (for example `«HTTPS»`).
+
+## Tools
+
+UML diagrams are drawn with tools such as **draw.io** (diagrams.net), **Enterprise Architect**, **Visual Paradigm** or **StarUML**. Text-based tools such as **PlantUML** and **Mermaid** generate diagrams from a simple description language that can be stored in version control like code. Rider and Visual Studio can generate class diagrams from existing code.
+
+## Further reading
+
+- [UML specification by the OMG](https://www.omg.org/spec/UML/)
+- Martin Fowler: _UML Distilled_, Addison-Wesley (compact introduction)

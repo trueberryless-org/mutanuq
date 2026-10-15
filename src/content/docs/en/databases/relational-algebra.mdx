@@ -1,0 +1,223 @@
+---
+title: Relational Algebra
+description: The operators of relational algebra with examples and SQL equivalents, from selection and projection to joins and division.
+sidebar:
+  order: 3
+---
+
+**Relational algebra** is the mathematical foundation of relational databases. It defines operators that take one or two relations as input and return a relation again. Because the result of every operation is again a relation, the operators can be nested in any way (**closure**). The database system internally translates every SQL query into such an expression and then optimises it.
+
+## Sample data
+
+All examples use these tables:
+
+**Class**
+
+| Id | Name  | Year |
+| -- | ----- | ---- |
+| 1  | 3AHIT | 3    |
+| 2  | 4AHIT | 4    |
+| 3  | 5AHIT | 5    |
+
+**Student**
+
+| Id | FirstName | LastName | ClassId |
+| -- | --------- | -------- | ------- |
+| 1  | Anna      | Huber    | 1       |
+| 2  | Ben       | Wolf     | 1       |
+| 3  | Clara     | Berger   | 2       |
+| 4  | David     | Novak    | `NULL`  |
+
+**Subject**
+
+| Id | Code |
+| -- | ---- |
+| 1  | AM   |
+| 2  | SEW  |
+| 3  | INSY |
+
+**Grade**
+
+| StudentId | SubjectId | Value |
+| --------- | --------- | ----- |
+| 1         | 1         | 2     |
+| 1         | 2         | 1     |
+| 1         | 3         | 1     |
+| 2         | 1         | 4     |
+| 2         | 2         | 3     |
+| 3         | 2         | 2     |
+| 3         | 3         | 3     |
+
+```sql
+CREATE TABLE Class (Id INT PRIMARY KEY, Name VARCHAR(10), Year INT);
+CREATE TABLE Student (Id INT PRIMARY KEY, FirstName VARCHAR(50), LastName VARCHAR(50),
+                      ClassId INT REFERENCES Class(Id));
+CREATE TABLE Subject (Id INT PRIMARY KEY, Code VARCHAR(10));
+CREATE TABLE Grade (StudentId INT REFERENCES Student(Id), SubjectId INT REFERENCES Subject(Id),
+                    Value INT, PRIMARY KEY (StudentId, SubjectId));
+
+INSERT INTO Class VALUES (1, '3AHIT', 3), (2, '4AHIT', 4), (3, '5AHIT', 5);
+INSERT INTO Student VALUES (1, 'Anna', 'Huber', 1), (2, 'Ben', 'Wolf', 1),
+                           (3, 'Clara', 'Berger', 2), (4, 'David', 'Novak', NULL);
+INSERT INTO Subject VALUES (1, 'AM'), (2, 'SEW'), (3, 'INSY');
+INSERT INTO Grade VALUES (1, 1, 2), (1, 2, 1), (1, 3, 1), (2, 1, 4), (2, 2, 3), (3, 2, 2), (3, 3, 3);
+```
+
+## Basic operators
+
+### Selection
+
+**Selection** $\sigma$ (sigma) chooses the **rows** that meet a condition. The columns stay unchanged.
+
+$$
+\sigma_{\text{Year} \geq 4}(\text{Class})
+$$
+
+returns the classes 4AHIT and 5AHIT. Conditions may contain comparisons ($=, \neq, <, \leq, >, \geq$) and the connectives $\land$ (and), $\lor$ (or) and $\lnot$ (not). Selection corresponds to the `WHERE` clause:
+
+```sql
+SELECT * FROM Class WHERE Year >= 4;
+```
+
+### Projection
+
+**Projection** $\pi$ (pi) chooses **columns**. Because a relation is a set, projection removes duplicate rows.
+
+$$
+\pi_{\text{ClassId}}(\text{Student})
+$$
+
+returns the values 1, 2 and `NULL`, that is, three rows instead of four. In SQL, only `DISTINCT` removes the duplicates:
+
+```sql
+SELECT DISTINCT ClassId FROM Student;
+```
+
+### Renaming
+
+**Renaming** $\rho$ (rho) gives a relation or an attribute a new name. This is necessary when a relation is joined with itself or when two attributes have the same name. $\rho_{S}(\text{Student})$ corresponds to the alias `FROM Student AS S`, and $\rho_{\text{ClassName} \leftarrow \text{Name}}(\text{Class})$ corresponds to `SELECT Name AS ClassName`.
+
+### Set operations
+
+Union, intersection and difference work as in [set theory](/en/mathematics/algebra/sets-and-number-ranges/). For this, both relations must be **union-compatible**: the same number of attributes, each with compatible domains.
+
+With $A = \pi_{\text{StudentId}}(\sigma_{\text{SubjectId} = 1}(\text{Grade}))$ (students with an AM grade, that is, 1 and 2) and $B = \pi_{\text{StudentId}}(\sigma_{\text{SubjectId} = 3}(\text{Grade}))$ (students with an INSY grade, that is, 1 and 3):
+
+| Operation        | Expression     | Result     | SQL         |
+| ---------------- | -------------- | ---------- | ----------- |
+| **Union**        | $A \cup B$     | 1, 2, 3    | `UNION`     |
+| **Intersection** | $A \cap B$     | 1          | `INTERSECT` |
+| **Difference**   | $A - B$        | 2          | `EXCEPT` (`MINUS` in Oracle) |
+
+```sql
+SELECT StudentId FROM Grade WHERE SubjectId = 1
+EXCEPT
+SELECT StudentId FROM Grade WHERE SubjectId = 3;
+```
+
+`UNION`, `INTERSECT` and `EXCEPT` remove duplicates. With `UNION ALL`, they are kept, which is faster because nothing has to be sorted or hashed.
+
+### Cartesian product
+
+The **Cartesian product** $R \times S$ combines every row of $R$ with every row of $S$. If $R$ and $S$ have $m$ and $n$ rows, the result has $m \cdot n$ rows. $\text{Student} \times \text{Class}$ therefore has $4 \cdot 3 = 12$ rows, most of which make no sense. In SQL, the product is called `CROSS JOIN`.
+
+Selection, projection, renaming, union, difference and Cartesian product are the six **basic operators**. All other operators can be composed from them. Intersection, for example, is $A \cap B = A - (A - B)$.
+
+## Joins
+
+A **join** is a Cartesian product immediately followed by a selection. It only combines the rows that match.
+
+| Join                   | Notation                        | Meaning                                                                             |
+| ---------------------- | ------------------------------- | ----------------------------------------------------------------------------------- |
+| **Theta join**         | $R \bowtie_{\theta} S$          | $\sigma_{\theta}(R \times S)$ with any condition $\theta$                           |
+| **Equi-join**          | $R \bowtie_{R.a = S.b} S$       | theta join whose condition consists only of equalities                              |
+| **Natural join**       | $R \bowtie S$                   | equi-join over all attributes with the same name, which then appear only once in the result |
+| **Left outer join**    | R ⟕ S                           | like an equi-join, plus the rows of $R$ without a partner, filled with `NULL`       |
+| **Right outer join**   | R ⟖ S                           | the same for the rows of $S$                                                        |
+| **Full outer join**    | R ⟗ S                           | rows without a partner from both sides                                              |
+| **Semi-join**          | $R \ltimes S$                   | only the rows of $R$ that have a partner in $S$, and only the columns of $R$        |
+
+$$
+\text{Student} \bowtie_{\text{Student.ClassId} = \text{Class.Id}} \text{Class}
+$$
+
+returns Anna and Ben with 3AHIT and Clara with 4AHIT. David has no class and is missing. Only the left outer join includes him with `NULL` as the class name:
+
+```sql
+SELECT s.FirstName, c.Name
+FROM Student s
+LEFT JOIN Class c ON s.ClassId = c.Id
+ORDER BY s.Id;
+```
+
+The natural join is available in SQL as `NATURAL JOIN` but is rarely used: it joins over **all** columns with the same name, in the example over `Id`, which would be wrong. How joins are written in SQL is shown on the page [SQL Queries](/en/databases/sql-queries/#joins).
+
+## Division
+
+**Division** $R \div S$ answers questions of the form "Which elements are related to **all** elements of another set?". For example, we are looking for the students who have a grade in **every** subject:
+
+$$
+\pi_{\text{StudentId}, \text{SubjectId}}(\text{Grade}) \div \rho_{\text{SubjectId} \leftarrow \text{Id}}(\pi_{\text{Id}}(\text{Subject}))
+$$
+
+The result is student 1 (Anna). Ben is missing the INSY grade, Clara the AM grade. SQL has no operator of its own for this. Two formulations are common: counting, or a double negation ("There is no subject in which the student has no grade").
+
+```sql
+-- Variant 1: counting
+SELECT StudentId
+FROM Grade
+GROUP BY StudentId
+HAVING COUNT(DISTINCT SubjectId) = (SELECT COUNT(*) FROM Subject);
+
+-- Variant 2: double negation
+SELECT s.Id
+FROM Student s
+WHERE NOT EXISTS (
+    SELECT * FROM Subject sub
+    WHERE NOT EXISTS (
+        SELECT * FROM Grade g WHERE g.StudentId = s.Id AND g.SubjectId = sub.Id
+    )
+);
+```
+
+## Extended operators
+
+Classical algebra is not quite enough for SQL. Extensions are:
+
+- **Grouping and aggregation** $\gamma$ (gamma): $\gamma_{\text{StudentId};\ \text{AVG(Value)}}(\text{Grade})$ calculates the grade average per student (1: 1.33, 2: 3.5, 3: 2.5) and corresponds to `GROUP BY` with aggregate functions.
+- **Sorting** $\tau$ (tau) corresponds to `ORDER BY`. Strictly speaking, the result is no longer a relation because relations are unordered.
+- **Duplicate-preserving operators**: SQL works with multisets. `SELECT` without `DISTINCT` therefore corresponds to a projection without duplicate removal.
+
+## Expressions and optimisation
+
+An expression can be represented as an **operator tree**: the leaves are tables, the inner nodes are operators. The question "first and last names of all students in year 3" reads
+
+$$
+\pi_{\text{FirstName}, \text{LastName}}(\sigma_{\text{Year} = 3}(\text{Student} \bowtie_{\text{ClassId} = \text{Class.Id}} \text{Class}))
+$$
+
+and in SQL:
+
+```sql
+SELECT s.FirstName, s.LastName
+FROM Student s
+JOIN Class c ON s.ClassId = c.Id
+WHERE c.Year = 3;
+```
+
+Many expressions are **equivalent**, that is, they return the same result. The query optimiser uses transformation rules to find a faster equivalent expression. The most important rule is: **perform selections as early as possible** (_selection pushdown_). In the example, the class in year 3 is found first and only then joined with the students. This creates a much smaller intermediate result:
+
+$$
+\pi_{\text{FirstName}, \text{LastName}}(\text{Student} \bowtie_{\text{ClassId} = \text{Class.Id}} \sigma_{\text{Year} = 3}(\text{Class}))
+$$
+
+Projections are also performed early so that only the required columns are passed on, and with several joins, the order is chosen so that intermediate results stay small. Which plan the system has chosen is shown by `EXPLAIN` (see [indexes](/en/databases/sql-advanced/#indexes)).
+
+:::note[Relational calculus]
+Besides the algebra, Codd described the **relational calculus**, which is based on predicate logic. It only describes which tuples are in the result, for example $\{\, s \mid s \in \text{Student} \land s.\text{ClassId} = 1 \,\}$. Algebra and calculus are equally expressive. A language that can do at least everything the algebra can do is called **relationally complete**. SQL is relationally complete.
+:::
+
+## Further reading
+
+- Ramez Elmasri, Shamkant B. Navathe: _Fundamentals of Database Systems_, Pearson, chapter "The Relational Algebra and Relational Calculus"
+- [Relational algebra](https://en.wikipedia.org/wiki/Relational_algebra) on Wikipedia

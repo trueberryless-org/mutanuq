@@ -1,0 +1,412 @@
+---
+title: Rechnerarchitektur
+description: Von-Neumann- und Harvard-Architektur, Aufbau der CPU, Befehlszyklus, Befehlssätze, Adressierungsarten, Pipelining, Caches, Speicherhierarchie, Busse, Interrupts, DMA und Leistungsbewertung.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Rechnerarchitektur** beschreibt, wie ein Computer intern aufgebaut ist: welche Bausteine es gibt, wie sie zusammenarbeiten und wie ein Programm Befehl für Befehl ausgeführt wird. Wer das versteht, kann erklären, warum ein Programm mit gut geordneten Speicherzugriffen um ein Vielfaches schneller läuft als eines mit zufälligen, warum acht Kerne nicht achtmal so schnell sind und was im Prozessor passiert, wenn eine Taste gedrückt wird. Die Grundlagen der digitalen Schaltungen (Gatter, Flipflops, Addierer) behandelt die Elektrotechnik, die [Schaltalgebra](/de/mathematics/algebra/logic-and-boolean-algebra/) die Mathematik.
+
+## Von-Neumann- und Harvard-Architektur
+
+John von Neumann beschrieb 1945 im „First Draft of a Report on the EDVAC“ einen Rechner, dessen Aufbau bis heute die Grundlage fast aller Computer ist. Die **Von-Neumann-Architektur** besteht aus fünf Funktionseinheiten:
+
+- **Rechenwerk** (ALU, _Arithmetic Logic Unit_): führt arithmetische und logische Operationen aus.
+- **Steuerwerk** (_Control Unit_): holt Befehle aus dem Speicher, dekodiert sie und steuert die anderen Einheiten.
+- **Speicher**: enthält **Programm und Daten gemeinsam** in durchnummerierten Zellen (Adressen).
+- **Ein- und Ausgabewerk**: Verbindung zur Außenwelt.
+- **Bussystem**: verbindet die Einheiten.
+
+Rechenwerk und Steuerwerk bilden zusammen den **Prozessor** (CPU, _Central Processing Unit_). Das Revolutionäre war das **Speicherprogrammkonzept** (_stored program_): Das Programm liegt als Daten im Speicher und kann ohne Umbau der Hardware ausgetauscht werden. Befehle werden standardmäßig nacheinander ausgeführt, Sprungbefehle ändern die Reihenfolge.
+
+![Von-Neumann-Architektur mit gemeinsamem Bus für Programm und Daten, daneben die Harvard-Architektur mit getrenntem Programm- und Datenspeicher](/images/computer-science/von_neumann_harvard_de.svg)
+
+Der Nachteil: Befehle und Daten müssen über **denselben Bus** transportiert werden. Weil der Prozessor viel schneller rechnet, als der Speicher liefern kann, wartet er oft auf Daten. Diesen Engpass nennt man **Von-Neumann-Flaschenhals**.
+
+Die **Harvard-Architektur** (benannt nach dem Harvard Mark I, 1944) hat getrennte Speicher und Busse für Befehle und Daten. Der Prozessor kann gleichzeitig den nächsten Befehl und einen Operanden laden, und ein fehlerhaftes Programm kann seinen eigenen Code nicht überschreiben. Sie ist typisch für Mikrocontroller (AVR wie im Arduino, PIC) und digitale Signalprozessoren.
+
+Moderne PC-Prozessoren sind eine **modifizierte Harvard-Architektur**: Der Hauptspeicher ist gemeinsam (von Neumann), aber der L1-Cache ist in einen Befehls- und einen Datencache getrennt (Harvard).
+
+| Merkmal                | Von Neumann                         | Harvard                                  |
+| ---------------------- | ----------------------------------- | ---------------------------------------- |
+| Speicher               | gemeinsam für Programm und Daten    | getrennt                                 |
+| Busse                  | einer                               | zwei                                     |
+| gleichzeitiger Zugriff | nein                                | Befehl und Daten parallel                |
+| Flexibilität           | Speicheraufteilung beliebig         | Größen fest vorgegeben                   |
+| Einsatz                | PC, Server (auf Hauptspeicherebene) | Mikrocontroller, DSP, L1-Cache           |
+
+## Aufbau der CPU
+
+### Rechenwerk
+
+Die **ALU** verknüpft zwei Operanden: Addition, Subtraktion, logisches UND, ODER, XOR, Vergleich und Schiebeoperationen. Multiplikation und Division übernehmen eigene Einheiten. Gleitkommazahlen berechnet die **FPU** (_Floating Point Unit_), Vektoroperationen (eine Operation auf viele Werte gleichzeitig, **SIMD**) Erweiterungen wie SSE und AVX bei x86 oder NEON bei ARM.
+
+### Steuerwerk
+
+Das **Steuerwerk** dekodiert den aktuellen Befehl und erzeugt die Steuersignale, die festlegen, welche Register gelesen werden, was die ALU rechnet und wohin das Ergebnis geschrieben wird. Bei **festverdrahteter** Steuerung ist die Logik direkt als Schaltung umgesetzt (schnell, typisch für RISC), bei **mikroprogrammierter** Steuerung führt jeder Maschinenbefehl ein kleines internes Programm aus Mikrobefehlen aus (flexibel, typisch für komplexe CISC-Befehle).
+
+### Register
+
+**Register** sind sehr schnelle Speicherzellen direkt im Prozessor. Ihre Zahl ist klein, ein Zugriff dauert weniger als einen Takt.
+
+| Register                   | Aufgabe                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| **Befehlszähler** (PC, _Program Counter_, bei x86 `RIP`) | Adresse des nächsten Befehls                              |
+| **Befehlsregister** (IR, _Instruction Register_) | der gerade ausgeführte Befehl                                     |
+| **Allzweckregister**       | Operanden und Zwischenergebnisse: x86-64 hat 16 (`RAX` bis `R15`), ARM64 31 (`X0` bis `X30`), RISC-V 32 (`x0` bis `x31`, `x0` ist immer 0) |
+| **Akkumulator**            | bei einfachen Prozessoren das Register, in dem die ALU ihr Ergebnis ablegt              |
+| **Stapelzeiger** (SP, _Stack Pointer_) | Adresse der Spitze des Stacks (Rücksprungadressen, lokale Variablen)        |
+| **Statusregister** (Flags, bei x86 `RFLAGS`) | Eigenschaften des letzten Ergebnisses                                 |
+| **Speicheradressregister** (MAR) und **Speicherdatenregister** (MDR) | Schnittstelle zum Speicherbus     |
+
+Die wichtigsten **Flags** im Statusregister:
+
+| Flag           | gesetzt, wenn                                                    |
+| -------------- | ---------------------------------------------------------------- |
+| **Z** (Zero)   | das Ergebnis 0 ist                                               |
+| **C** (Carry)  | ein Übertrag aus dem höchsten Bit entsteht (Überlauf bei vorzeichenlosen Zahlen) |
+| **N/S** (Negative, Sign) | das höchste Bit des Ergebnisses 1 ist                  |
+| **V/O** (Overflow) | ein Überlauf bei vorzeichenbehafteten Zahlen auftritt (siehe [Zweierkomplement](/de/computer-science/data-representation/#überlauf)) |
+
+Bedingte Sprünge werten diese Flags aus: Ein Vergleich `cmp a, b` berechnet intern `a - b`, verwirft das Ergebnis und setzt nur die Flags. `je` (_jump if equal_) springt dann, wenn das Z-Flag gesetzt ist.
+
+## Befehlszyklus
+
+Jeder Befehl durchläuft den **Befehlszyklus** (_Fetch-Decode-Execute-Zyklus_), der sich ununterbrochen wiederholt, solange der Rechner läuft:
+
+1. **Holen** (_Fetch_): Der Inhalt des Befehlszählers wird auf den Adressbus gelegt, der Befehl aus dem Speicher ins Befehlsregister geladen. Der Befehlszähler wird um die Befehlslänge erhöht.
+2. **Dekodieren** (_Decode_): Das Steuerwerk ermittelt, welche Operation auszuführen ist und welche Operanden gebraucht werden.
+3. **Operanden holen** (_Fetch Operands_): Werte aus Registern oder dem Speicher lesen.
+4. **Ausführen** (_Execute_): Die ALU führt die Operation aus, oder bei einem Sprung wird der Befehlszähler neu gesetzt.
+5. **Zurückschreiben** (_Write Back_): Das Ergebnis wird in ein Register oder in den Speicher geschrieben.
+
+Danach prüft der Prozessor, ob ein **Interrupt** anliegt, und beginnt sonst mit dem nächsten Befehl. Der **Takt** gibt den Rhythmus vor. Ein Befehl braucht je nach Komplexität einen oder mehrere Takte.
+
+## Befehlssätze
+
+Die **Befehlssatzarchitektur** (ISA, _Instruction Set Architecture_) ist die Schnittstelle zwischen Hardware und Software: Sie legt fest, welche Befehle, Register, Datentypen und Adressierungsarten ein Prozessor kennt. Programme, die für eine ISA übersetzt wurden, laufen auf jedem Prozessor dieser ISA, egal wie er intern gebaut ist (die **Mikroarchitektur**).
+
+| Merkmal                 | CISC (_Complex Instruction Set Computer_)     | RISC (_Reduced Instruction Set Computer_)            |
+| ----------------------- | --------------------------------------------- | ---------------------------------------------------- |
+| Befehle                 | viele, mächtige, teils sehr komplexe Befehle  | wenige, einfache Befehle                             |
+| Befehlslänge            | variabel (x86: 1 bis 15 Byte)                 | fest (meist 4 Byte)                                  |
+| Speicherzugriff         | viele Befehle können direkt auf den Speicher zugreifen | nur `load` und `store` (**Load-Store-Architektur**) |
+| Register                | eher wenige                                   | viele                                                |
+| Takte pro Befehl        | unterschiedlich                               | meist einer (gut für Pipelining)                     |
+| Steuerwerk              | oft mikroprogrammiert                         | festverdrahtet                                       |
+| Beispiele               | x86, x86-64                                   | ARM, RISC-V, MIPS, PowerPC                           |
+
+Die Grenze ist heute fließend: Moderne x86-Prozessoren zerlegen ihre CISC-Befehle intern in RISC-artige **Mikrooperationen** (µops) und führen diese aus.
+
+- **x86-64** (auch AMD64, x64): Intel und AMD, dominiert bei PCs und Servern, abwärtskompatibel bis zum 8086 von 1978.
+- **ARM** (AArch64): lizenziert von Arm Ltd. an Hersteller wie Apple, Qualcomm und Samsung. Sehr energieeffizient, in fast allen Smartphones, in Apple-Silicon-Macs und zunehmend in Servern.
+- **RISC-V**: offene, lizenzfreie ISA, entstanden 2010 an der UC Berkeley. Modular aufgebaut (Basisbefehlssatz plus Erweiterungen) und vor allem in Mikrocontrollern, Lehre und Forschung verbreitet.
+
+### Adressierungsarten
+
+Die **Adressierungsart** legt fest, wo ein Befehl seinen Operanden findet. Beispiele in x86-Syntax (Intel-Schreibweise: Ziel zuerst):
+
+| Adressierungsart        | Operand ist                                   | Beispiel               |
+| ----------------------- | --------------------------------------------- | ---------------------- |
+| **unmittelbar** (_immediate_) | eine Konstante im Befehl selbst          | `mov eax, 5`           |
+| **Register**            | der Inhalt eines Registers                    | `mov eax, ebx`         |
+| **direkt** (absolut)    | der Speicherinhalt an einer festen Adresse    | `mov eax, [0x1000]`    |
+| **registerindirekt**    | der Speicherinhalt an der Adresse im Register (wie ein Zeiger) | `mov eax, [ebx]` |
+| **indiziert / Basis + Versatz** | Speicher an Register plus Konstante, z. B. Feldelement oder Strukturfeld | `mov eax, [ebx + 8]`, `mov eax, [ebx + esi*4]` |
+| **relativ** (PC-relativ) | Ziel relativ zum Befehlszähler, für Sprünge und positionsunabhängigen Code | `jmp label` |
+
+### Ein Assemblerbeispiel
+
+**Assembler** ist die für Menschen lesbare Form der Maschinenbefehle: Jede Zeile entspricht genau einem Befehl. Das folgende Programm berechnet die Summe $1 + 2 + \ldots + 10$ in x86-64 (Intel-Syntax):
+
+```asm
+    mov  ecx, 10        ; Zähler = 10
+    xor  eax, eax       ; Summe = 0 (XOR mit sich selbst ergibt 0)
+loop_start:
+    add  eax, ecx       ; Summe += Zähler
+    dec  ecx            ; Zähler -= 1, setzt das Z-Flag bei 0
+    jnz  loop_start     ; springen, solange Z-Flag nicht gesetzt
+    ; eax enthält jetzt 55
+```
+
+Dasselbe in RISC-V. Hier gibt es keine Flags, der bedingte Sprung vergleicht direkt ein Register:
+
+```asm
+    li   t0, 10         # Zähler = 10
+    li   a0, 0          # Summe = 0
+loop_start:
+    add  a0, a0, t0     # Summe = Summe + Zähler (drei Operanden)
+    addi t0, t0, -1     # Zähler = Zähler - 1
+    bnez t0, loop_start # springen, wenn Zähler != 0
+```
+
+Der **Assembler** übersetzt diese Mnemonics in Maschinencode, zum Beispiel wird `xor eax, eax` zu den Bytes `31 C0`. Ein Compiler für C#, Rust oder C erzeugt (direkt oder über eine Zwischensprache und JIT) genau solche Befehle.
+
+## Pipelining
+
+Ohne Pipelining durchläuft ein Befehl alle Phasen, bevor der nächste beginnt. Beim **Pipelining** arbeiten die Phasen wie ein Fließband gleichzeitig an verschiedenen Befehlen. Die klassische RISC-Pipeline hat fünf Stufen: **IF** (_Instruction Fetch_), **ID** (_Instruction Decode_, Register lesen), **EX** (_Execute_), **MEM** (Speicherzugriff), **WB** (_Write Back_).
+
+| Takt     | 1  | 2  | 3  | 4   | 5   | 6   | 7   | 8   | 9  |
+| -------- | -- | -- | -- | --- | --- | --- | --- | --- | -- |
+| Befehl 1 | IF | ID | EX | MEM | WB  |     |     |     |    |
+| Befehl 2 |    | IF | ID | EX  | MEM | WB  |     |     |    |
+| Befehl 3 |    |    | IF | ID  | EX  | MEM | WB  |     |    |
+| Befehl 4 |    |    |    | IF  | ID  | EX  | MEM | WB  |    |
+| Befehl 5 |    |    |    |     | IF  | ID  | EX  | MEM | WB |
+
+Fünf Befehle brauchen ohne Pipeline $5 \cdot 5 = 25$ Takte, mit Pipeline nur $9$. Allgemein braucht eine Pipeline mit $k$ Stufen für $n$ Befehle $k + n - 1$ Takte. Für große $n$ wird pro Takt ein Befehl fertig, der **Durchsatz** steigt also auf das $k$-Fache. Die Ausführungszeit eines einzelnen Befehls (**Latenz**) wird nicht kürzer.
+
+### Hazards
+
+Ein **Hazard** (Konflikt) verhindert, dass der nächste Befehl im nächsten Takt starten kann:
+
+| Hazard                | Ursache                                                          | Lösung                                                       |
+| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| **struktureller Hazard** | zwei Befehle brauchen gleichzeitig dieselbe Hardware, z. B. einen gemeinsamen Speicherport | Hardware verdoppeln, z. B. getrennte Befehls- und Datencaches |
+| **Datenhazard**       | ein Befehl braucht ein Ergebnis, das der vorige noch nicht geschrieben hat (_Read after Write_): `add r1, r2, r3` gefolgt von `sub r4, r1, r5` | **Forwarding** (Ergebnis direkt von der ALU weiterreichen), Warten (**Stall**, „Pipeline-Blase“), Umordnen der Befehle durch Compiler oder Hardware |
+| **Kontrollhazard**    | bei einem bedingten Sprung ist erst nach EX bekannt, welcher Befehl als nächster kommt | **Sprungvorhersage** (_Branch Prediction_), spekulative Ausführung; bei falscher Vorhersage wird die Pipeline geleert |
+
+Moderne Prozessoren gehen weit darüber hinaus: Sie haben 14 bis 20 Pipelinestufen, führen mehrere Befehle pro Takt parallel aus (**superskalar**) und ändern die Reihenfolge, wenn ein Befehl auf Daten warten muss (**Out-of-Order-Ausführung**). Die Sprungvorhersage trifft in typischen Programmen in deutlich über 90 % der Fälle. Die Sicherheitslücken **Spectre** und **Meltdown** (2018) nutzten aus, dass spekulativ ausgeführte Befehle Spuren im Cache hinterlassen.
+
+## Speicherhierarchie
+
+Schneller Speicher ist teuer und klein, großer Speicher ist langsam. Die **Speicherhierarchie** kombiniert deshalb mehrere Ebenen. Jede Ebene speichert eine Teilmenge der darunterliegenden.
+
+| Ebene            | typische Größe        | typische Zugriffszeit | Technik             |
+| ---------------- | --------------------- | --------------------- | ------------------- |
+| Register         | einige hundert Byte   | unter 0,3 ns (1 Takt) | Flipflops           |
+| L1-Cache         | 32 bis 64 KiB je Kern (je Befehle und Daten) | ca. 1 ns (4 bis 5 Takte) | SRAM |
+| L2-Cache         | 0,5 bis 3 MiB je Kern | ca. 3 bis 5 ns        | SRAM                |
+| L3-Cache         | 8 bis 128 MiB, von allen Kernen geteilt | ca. 10 bis 20 ns | SRAM |
+| Hauptspeicher    | 8 bis 128 GiB (PC)    | ca. 60 bis 100 ns     | DRAM                |
+| SSD (NVMe)       | 0,5 bis 8 TB          | ca. 20 bis 100 µs     | NAND-Flash          |
+| Festplatte (HDD) | 1 bis 30 TB           | ca. 5 bis 10 ms       | Magnetplatten       |
+
+Von oben nach unten steigen Größe und Zugriffszeit, Preis pro Byte sinkt. Register, Caches und RAM sind **flüchtig**, sie verlieren ihren Inhalt ohne Strom. Zwischen einem L1-Treffer und einem Festplattenzugriff liegt ein Faktor von etwa $10^7$.
+
+### Lokalität
+
+Caches funktionieren, weil Programme ein vorhersagbares Zugriffsmuster haben (**Lokalitätsprinzip**):
+
+- **Zeitliche Lokalität**: Auf Daten, die gerade benutzt wurden, wird bald wieder zugegriffen (Schleifenvariablen, Schleifencode).
+- **Räumliche Lokalität**: Nach einem Zugriff auf eine Adresse folgen bald Zugriffe auf benachbarte Adressen (Arrays, sequenzieller Code).
+
+Deshalb lädt der Cache nie einzelne Bytes, sondern ganze **Cachezeilen** (_cache lines_) von meist 64 Byte. Ein Programm, das ein zweidimensionales Array zeilenweise durchläuft, nutzt jede geladene Zeile vollständig. Spaltenweise springt es bei jedem Zugriff in eine andere Cachezeile und kann um ein Vielfaches langsamer sein.
+
+### Caches
+
+Findet der Prozessor die gesuchten Daten im Cache, ist das ein **Treffer** (_hit_), sonst ein **Fehlzugriff** (_miss_), und die Zeile muss aus der nächsten Ebene geladen werden. Die **mittlere Zugriffszeit** (_Average Memory Access Time_) ist:
+
+$$
+t_{\text{mittel}} = t_{\text{Treffer}} + \text{Fehlerrate} \cdot t_{\text{Fehlzugriff}}
+$$
+
+Beispiel: $1\,\mathrm{ns} + 0{,}05 \cdot 100\,\mathrm{ns} = 6\,\mathrm{ns}$. Schon 5 % Fehlzugriffe versechsfachen die Zugriffszeit gegenüber einem reinen Treffer.
+
+**Abbildung** (_mapping_): Wo im Cache darf eine Speicherzeile liegen?
+
+| Organisation                 | Zeile darf liegen …                        | Vor- und Nachteile                                         |
+| ---------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| **direkt abgebildet** (_direct mapped_) | an genau einem Platz (Adresse modulo Anzahl Zeilen) | einfach und schnell, aber Konflikte, wenn zwei oft genutzte Adressen denselben Platz belegen |
+| **vollassoziativ**           | an jedem Platz                             | keine Konflikte, aber alle Plätze müssen parallel verglichen werden, teuer |
+| **$n$-fach satzassoziativ** (_n-way set associative_) | an einem von $n$ Plätzen eines Satzes | Kompromiss, bei heutigen CPUs üblich (8- bis 16-fach) |
+
+Die Speicheradresse wird dazu in drei Teile zerlegt: **Offset** (Byte innerhalb der Zeile), **Index** (welcher Satz) und **Tag** (der Rest, wird mit dem gespeicherten Tag verglichen, um zu prüfen, ob wirklich die richtige Zeile im Cache liegt).
+
+:::tip[Beispiel: 32-KiB-Cache, 8-fach satzassoziativ, 64-Byte-Zeilen, 32-Bit-Adressen]
+- Anzahl Zeilen: $32\,768 / 64 = 512$, Anzahl Sätze: $512 / 8 = 64$
+- Offset: $\log_2 64 = 6$ Bit, Index: $\log_2 64 = 6$ Bit, Tag: $32 - 6 - 6 = 20$ Bit
+
+Adresse `0x12345678`: Offset = untere 6 Bit = 56, Index = nächste 6 Bit = 25, Tag = obere 20 Bit = `0x12345`.
+:::
+
+Ist ein Satz voll, entscheidet eine **Ersetzungsstrategie**, welche Zeile verdrängt wird, meist eine Annäherung an **LRU** (_least recently used_, die am längsten nicht benutzte).
+
+**Schreibstrategien**:
+
+- **Write-Through**: Jeder Schreibzugriff geht sofort auch in den Hauptspeicher. Einfach und konsistent, aber viel Busverkehr.
+- **Write-Back**: Geschrieben wird nur in den Cache, die Zeile wird als „dirty“ markiert und erst beim Verdrängen zurückgeschrieben. Weniger Busverkehr, heute üblich.
+
+Bei Mehrkernprozessoren hat jeder Kern eigene L1- und L2-Caches. Ein **Kohärenzprotokoll** (z. B. MESI) sorgt dafür, dass alle Kerne denselben Wert einer Adresse sehen: Schreibt ein Kern, werden die Kopien in den anderen Caches ungültig.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Adresse für einen 32-KiB-Cache, 8-fach, 64-Byte-Zeilen zerlegen
+const int LineSize = 64, Ways = 8, CacheSize = 32 * 1024;
+int sets = CacheSize / LineSize / Ways;            // 64
+int offsetBits = int.Log2(LineSize);               // 6
+int indexBits = int.Log2(sets);                    // 6
+
+uint address = 0x12345678;
+uint offset = address & (LineSize - 1);
+uint index = (address >> offsetBits) & (uint)(sets - 1);
+uint tag = address >> (offsetBits + indexBits);
+Console.WriteLine($"Offset={offset} Index={index} Tag=0x{tag:X}"); // Offset=56 Index=25 Tag=0x12345
+
+// mittlere Zugriffszeit in ns
+double amat = 1.0 + 0.05 * 100.0;
+Console.WriteLine($"mittlere Zugriffszeit: {amat} ns");           // mittlere Zugriffszeit: 6 ns
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // Adresse für einen 32-KiB-Cache, 8-fach, 64-Byte-Zeilen zerlegen
+    const LINE_SIZE: u32 = 64;
+    const WAYS: u32 = 8;
+    const CACHE_SIZE: u32 = 32 * 1024;
+    let sets = CACHE_SIZE / LINE_SIZE / WAYS;          // 64
+    let offset_bits = LINE_SIZE.ilog2();               // 6
+    let index_bits = sets.ilog2();                     // 6
+
+    let address: u32 = 0x1234_5678;
+    let offset = address & (LINE_SIZE - 1);
+    let index = (address >> offset_bits) & (sets - 1);
+    let tag = address >> (offset_bits + index_bits);
+    println!("Offset={offset} Index={index} Tag=0x{tag:X}"); // Offset=56 Index=25 Tag=0x12345
+
+    // mittlere Zugriffszeit in ns
+    let amat = 1.0 + 0.05 * 100.0;
+    println!("mittlere Zugriffszeit: {amat} ns");            // mittlere Zugriffszeit: 6 ns
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Busse
+
+Ein **Bus** ist ein gemeinsamer Übertragungsweg für mehrere Teilnehmer. Der klassische Systembus besteht aus drei Teilen:
+
+| Bus             | überträgt                                     | Richtung                         | Breite bestimmt …                             |
+| --------------- | --------------------------------------------- | -------------------------------- | --------------------------------------------- |
+| **Datenbus**    | die eigentlichen Daten und Befehle            | bidirektional                    | wie viele Bits pro Zugriff übertragen werden  |
+| **Adressbus**   | die Speicher- oder Geräteadresse              | von der CPU weg                  | den adressierbaren Speicher: $2^n$ Byte bei $n$ Adressleitungen |
+| **Steuerbus**   | Lesen/Schreiben, Takt, Interruptanforderungen, Busanforderung | je nach Signal | |
+
+Mit 32 Adressleitungen sind $2^{32}$ Byte = 4 GiB adressierbar. Das war der Grund, warum 32-Bit-Systeme nicht mehr als 4 GiB Hauptspeicher nutzen konnten. Heutige x86-64-Prozessoren verwenden 48 oder 57 Bit für virtuelle Adressen.
+
+Die **Busbandbreite** (Datenrate) ist das Produkt aus Busbreite und Übertragungen pro Sekunde. Ein DDR5-4800-Modul mit 64 Bit Datenbreite schafft $4800 \cdot 10^6\,\mathrm{s^{-1}} \cdot 8\,\mathrm{B} = 38{,}4\,\mathrm{GB/s}$.
+
+Gemeinsame parallele Busse sind bei hohen Frequenzen schwer zu beherrschen (Laufzeitunterschiede, Übersprechen). Moderne Systeme verwenden deshalb **serielle Punkt-zu-Punkt-Verbindungen**: PCI Express zu Grafikkarte und SSD, DMI (Intel) oder Infinity Fabric (AMD) zwischen Prozessor und Chipsatz (siehe [Hardware](/de/computer-science/hardware/)).
+
+## Interrupts und DMA
+
+### Polling und Interrupts
+
+Ein Gerät (Tastatur, Netzwerkkarte, Timer) muss dem Prozessor mitteilen können, dass etwas passiert ist. Dafür gibt es zwei Ansätze:
+
+- **Polling**: Der Prozessor fragt das Gerät regelmäßig ab. Einfach, aber er verschwendet Zeit mit Abfragen, und Ereignisse werden erst beim nächsten Abfragen bemerkt.
+- **Interrupt** (Unterbrechung): Das Gerät meldet sich über eine Interruptleitung. Der Prozessor beendet den aktuellen Befehl, sichert den Befehlszähler und die Flags, springt in die **Interrupt-Service-Routine** (ISR) und setzt danach das unterbrochene Programm fort, als wäre nichts gewesen.
+
+Die Adresse der passenden ISR steht in der **Interruptvektortabelle**, die für jede Interruptnummer einen Eintrag hat. Man unterscheidet:
+
+| Art                         | Auslöser                                                    | Beispiele                                     |
+| --------------------------- | ----------------------------------------------------------- | --------------------------------------------- |
+| **Hardware-Interrupt**      | ein externes Gerät, asynchron zum Programm                  | Tastendruck, Paket angekommen, Timer abgelaufen |
+| **Ausnahme** (_Exception_)  | ein Fehler bei der Befehlsausführung, synchron              | Division durch 0, ungültiger Befehl, Seitenfehler |
+| **Software-Interrupt** (_Trap_) | ein eigener Befehl im Programm                         | Systemaufruf (`syscall` bei x86-64, `ecall` bei RISC-V) |
+
+Interrupts haben **Prioritäten**, und weniger wichtige können vorübergehend **maskiert** (gesperrt) werden. Ein **NMI** (_Non-Maskable Interrupt_) lässt sich nicht sperren und wird für schwere Hardwarefehler verwendet. Ein ausführliches Beispiel auf einem Mikrocontroller zeigt die Seite [Interrupts](/de/embedded-programming/interrupts/).
+
+### DMA
+
+Beim Kopieren großer Datenmengen, etwa von der SSD in den Hauptspeicher, wäre es Verschwendung, wenn der Prozessor jedes Wort selbst liest und schreibt. Beim **Direktspeicherzugriff** (DMA, _Direct Memory Access_) beauftragt die CPU einen **DMA-Controller** mit Quelle, Ziel und Länge. Dieser überträgt die Daten selbstständig über den Bus, während die CPU weiterrechnet, und meldet das Ende mit einem Interrupt. Heute haben Geräte wie NVMe-SSDs, Netzwerk- und Grafikkarten eigene DMA-Einheiten (_Bus Mastering_).
+
+## Mehrkernprozessoren
+
+Ab etwa 2005 ließ sich die Taktfrequenz kaum noch steigern, weil Leistungsaufnahme und Wärme zu stark wuchsen (die dynamische Verlustleistung steigt etwa linear mit der Frequenz und quadratisch mit der Spannung). Seitdem werden die zusätzlichen Transistoren, die das **Mooresche Gesetz** (Verdopplung der Transistoranzahl etwa alle zwei Jahre) liefert, für mehr **Kerne** verwendet.
+
+- **Mehrkernprozessor** (_Multicore_): mehrere vollständige Prozessorkerne auf einem Chip, mit eigenen L1/L2-Caches und gemeinsamem L3-Cache. Alle Kerne greifen gleichberechtigt auf den Hauptspeicher zu (**SMP**, symmetrisches Multiprocessing).
+- **Simultaneous Multithreading** (SMT, bei Intel _Hyper-Threading_): Ein Kern führt zwei Threads gleichzeitig aus, indem er ihre Befehle auf seine Recheneinheiten verteilt. Das Betriebssystem sieht doppelt so viele **logische Prozessoren**, der Gewinn liegt aber meist nur bei 10 bis 30 %.
+- **Hybride Architekturen**: Leistungskerne und Effizienzkerne auf einem Chip (ARM big.LITTLE, Intel P- und E-Kerne, Apple M-Serie). Der Scheduler des Betriebssystems verteilt die Arbeit.
+- **NUMA** (_Non-Uniform Memory Access_): In Servern mit mehreren Prozessorsockeln hat jeder Prozessor eigenen Speicher, auf den er schneller zugreift als auf den der anderen.
+
+Mehr Kerne helfen nur, wenn die Software parallel arbeitet. Wie Programme Threads nutzen, beschreiben [Prozesse und Threads](/de/computer-science/processes-and-threads/) und [Nebenläufigkeit](/de/software-development/concurrency/).
+
+## Leistungsbewertung
+
+### Taktfrequenz, CPI und IPC
+
+Die Taktfrequenz allein sagt wenig über die Leistung aus, weil Prozessoren pro Takt unterschiedlich viel erledigen. Die **CPU-Zeit** eines Programms ist:
+
+$$
+t_{\text{CPU}} = \frac{\text{Befehlsanzahl} \cdot \text{CPI}}{f}
+$$
+
+mit **CPI** (_Cycles per Instruction_, mittlere Takte pro Befehl) und der Taktfrequenz $f$. Der Kehrwert von CPI ist **IPC** (_Instructions per Cycle_), bei modernen superskalaren Kernen deutlich über 1.
+
+Beispiel: $10^9$ Befehle mit $\text{CPI} = 1{,}5$ bei $f = 3\,\mathrm{GHz}$ brauchen $\frac{10^9 \cdot 1{,}5}{3 \cdot 10^9\,\mathrm{s^{-1}}} = 0{,}5\,\mathrm{s}$.
+
+Weitere Kennzahlen sind **MIPS** (Millionen Befehle pro Sekunde, nur bei gleicher ISA vergleichbar) und **FLOPS** (Gleitkommaoperationen pro Sekunde, für Supercomputer und GPUs). In der Praxis vergleicht man mit **Benchmarks** wie SPEC CPU, Geekbench oder Cinebench, die reale Programme ausführen.
+
+### Gesetz von Amdahl
+
+Wird ein Programm auf $n$ Prozessoren verteilt, kann nur der parallelisierbare Anteil $p$ beschleunigt werden. Der serielle Rest $1 - p$ bleibt gleich lang. Das **Gesetz von Amdahl** (Gene Amdahl, 1967) gibt den maximalen **Speedup** an:
+
+$$
+S(n) = \frac{1}{(1 - p) + \dfrac{p}{n}} \qquad \lim_{n \to \infty} S(n) = \frac{1}{1 - p}
+$$
+
+Beispiel: Sind 90 % eines Programms parallelisierbar, ergeben 8 Kerne nur $S = \frac{1}{0{,}1 + 0{,}9/8} \approx 4{,}7$, und selbst unendlich viele Kerne höchstens den Faktor 10. Der serielle Anteil begrenzt die Beschleunigung. Das **Gesetz von Gustafson** betrachtet dagegen den Fall, dass mit mehr Prozessoren auch das Problem größer wird, und kommt deshalb zu optimistischeren Werten.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+static double Amdahl(double parallelPart, int cores) =>
+    1.0 / ((1.0 - parallelPart) + parallelPart / cores);
+
+foreach (int n in new[] { 1, 2, 4, 8, 64, 1024 })
+{
+    Console.WriteLine($"{n,5} Kerne: Speedup {Amdahl(0.9, n):F2}");
+}
+// Ausgabe:
+//     1 Kerne: Speedup 1.00
+//     2 Kerne: Speedup 1.82
+//     4 Kerne: Speedup 3.08
+//     8 Kerne: Speedup 4.71
+//    64 Kerne: Speedup 8.77
+//  1024 Kerne: Speedup 9.91
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn amdahl(parallel_part: f64, cores: u32) -> f64 {
+    1.0 / ((1.0 - parallel_part) + parallel_part / cores as f64)
+}
+
+fn main() {
+    for n in [1, 2, 4, 8, 64, 1024] {
+        println!("{n:>5} Kerne: Speedup {:.2}", amdahl(0.9, n));
+    }
+}
+// Ausgabe:
+//     1 Kerne: Speedup 1.00
+//     2 Kerne: Speedup 1.82
+//     4 Kerne: Speedup 3.08
+//     8 Kerne: Speedup 4.71
+//    64 Kerne: Speedup 8.77
+//  1024 Kerne: Speedup 9.91
+```
+
+</TabItem>
+</Tabs>
+
+## GPU
+
+Eine **GPU** (_Graphics Processing Unit_) ist auf **Datenparallelität** optimiert: Statt weniger komplexer Kerne mit großen Caches und Sprungvorhersage hat sie Tausende einfache Recheneinheiten, die dieselbe Operation gleichzeitig auf viele Daten anwenden (**SIMT**, _Single Instruction, Multiple Threads_). Ursprünglich für die Berechnung von Pixeln gebaut, wird sie heute über Schnittstellen wie **CUDA** (NVIDIA), OpenCL oder Vulkan Compute für allgemeine Berechnungen genutzt (**GPGPU**): Training neuronaler Netze, Simulationen, Videokodierung. Die CPU bleibt für sequenzielle, verzweigungsreiche Logik zuständig, die GPU übernimmt große, gleichförmige Rechenaufgaben. Grafikkarten haben eigenen schnellen Speicher (GDDR oder HBM) mit Bandbreiten von mehreren hundert GB/s bis über 1 TB/s.
+
+## Weiterführende Quellen
+
+- David A. Patterson, John L. Hennessy: _Computer Organization and Design: The Hardware/Software Interface_ (RISC-V Edition), Morgan Kaufmann
+- Andrew S. Tanenbaum, Todd Austin: _Rechnerarchitektur: Von der digitalen Logik zum Parallelrechner_, Pearson
+- [The RISC-V Instruction Set Manual](https://riscv.org/specifications/) (RISC-V International)

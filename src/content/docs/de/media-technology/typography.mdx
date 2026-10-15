@@ -1,0 +1,212 @@
+---
+title: Typografie
+description: Schriftanatomie, Klassifikation nach DIN 16518, Fontformate, Maßeinheiten, Zeilenabstand und Zeilenlänge, Laufweite, Satzarten, Lizenzen und Webfonts.
+sidebar:
+  order: 3
+---
+
+**Typografie** ist die Gestaltung mit Schrift: die Wahl der Schrift, ihrer Größe und Abstände und die Anordnung von Text auf Seite oder Bildschirm. Gute Typografie fällt kaum auf, weil sie das Lesen leicht macht. Schlechte Typografie ermüdet, verwirrt oder wirkt unprofessionell. Da der größte Teil jeder Website, App und Drucksache aus Text besteht, ist Typografie die wichtigste Einzeldisziplin des Mediendesigns.
+
+## Begriffe
+
+| Begriff | Bedeutung |
+| --- | --- |
+| **Glyphe** | die konkrete Form eines Zeichens in einer Schrift (ein „a“ sieht in jeder Schrift anders aus) |
+| **Schriftart** (_Typeface_) | die Gestaltung, etwa Helvetica oder Garamond |
+| **Schriftschnitt** | eine Variante einer Schriftart: Strichstärke (Light, Regular, Bold), Lage (kursiv) oder Breite (Condensed) |
+| **Schriftfamilie** | alle Schnitte einer Schriftart |
+| **Font** | die Datei, die einen Schnitt technisch enthält, etwa `Inter-Bold.woff2` |
+
+Echte **Kursive** (_Italic_) hat eigens gezeichnete Formen, eine **Oblique** ist nur schräggestellt. Ein vom Programm künstlich erzeugter fetter oder schräger Schnitt (Faux Bold, Faux Italic) sieht schlechter aus als ein echter Schnitt, deshalb sollte man alle benötigten Schnitte einbinden.
+
+## Anatomie der Schrift
+
+Buchstaben stehen auf gedachten Linien:
+
+- **Grundlinie** (_Baseline_): Auf ihr stehen die Buchstaben.
+- **x-Höhe** (Mittellänge): Höhe der Kleinbuchstaben ohne Ober- und Unterlänge, gemessen am „x“. Eine große x-Höhe macht eine Schrift bei kleinen Größen besser lesbar.
+- **Oberlänge** (_Ascender_): der Teil von b, d, h, k, l, der über die x-Höhe hinausragt.
+- **Unterlänge** (_Descender_): der Teil von g, j, p, q, y unter der Grundlinie.
+- **Versalhöhe** (_Cap Height_): Höhe der Großbuchstaben (Versalien), meist etwas niedriger als die Oberlänge.
+- **Kegelhöhe**: Die Schriftgröße bezieht sich historisch auf den Metallkegel der Bleiletter, nicht auf die sichtbaren Buchstaben. Deshalb wirken zwei Schriften mit derselben Größe in pt oft verschieden groß.
+
+Weitere Merkmale:
+
+- **Serifen** sind kleine Querstriche an den Strichenden. Sie stammen aus der römischen Steinmetzschrift und führen das Auge im gedruckten Fließtext entlang der Zeile.
+- **Punze**: der Innenraum eines Buchstabens, ganz geschlossen wie beim „o“ oder offen wie beim „c“.
+- **Strichkontrast**: Unterschied zwischen dicken **Grundstrichen** und dünnen **Haarstrichen**. Klassizistische Schriften wie Bodoni haben starken Kontrast, serifenlose Linearschriften fast keinen.
+- **Ligatur**: zwei oder mehr Zeichen, die zu einer Glyphe verschmolzen sind, etwa „fi“ und „fl“, damit sich die Formen nicht stören.
+
+## Schriftklassifikation
+
+### Gruppen nach Formmerkmalen
+
+| Gruppe | Merkmale | Beispiele | Einsatz |
+| --- | --- | --- | --- |
+| **Serifenschrift** (Antiqua) | Serifen, wechselnde Strichstärke | Garamond, Times New Roman, Georgia | langer gedruckter Fließtext, seriöse Wirkung |
+| **Serifenlose** (Grotesk, _Sans Serif_) | keine Serifen, meist gleichmäßige Strichstärke | Helvetica, Arial, Futura, Frutiger, Inter | Bildschirm, Beschilderung, moderne Wirkung |
+| **Serifenbetonte** (_Slab Serif_) | kräftige, rechteckige Serifen, wenig Strichkontrast | Rockwell, Clarendon, Roboto Slab | Überschriften, Plakate, technische Wirkung |
+| **Schreibschrift** (_Script_) | ahmt Handschrift nach, Buchstaben oft verbunden | Brush Script, Pacifico | Einladungen, Logos, nur kurze Texte |
+| **dicktengleiche Schrift** (_Monospace_) | alle Zeichen gleich breit | Courier, Consolas, JetBrains Mono | Quellcode, Tabellen in Terminals |
+| **gebrochene Schrift** | gebrochene Bögen | Fraktur, Textura | historische Wirkung, Bier- und Zeitungslogos |
+| **Dekorschrift** (_Display_) | auffällig, für große Größen gezeichnet | Cooper Black, Bebas Neue | Überschriften, Plakate |
+
+### DIN 16518
+
+Die deutsche Norm **DIN 16518** (1964) teilt Druckschriften in **elf Gruppen** ein, die sich an der historischen Entwicklung orientieren. Sie beruht auf der Klassifikation von Maximilien Vox, die als **Vox-ATypI-Klassifikation** international verbreitet ist. Ein Entwurf zur Überarbeitung (1998) wurde zurückgezogen, die Fassung von 1964 ist weiter die Grundlage im Schulunterricht.
+
+| Gruppe | Bezeichnung | Merkmale | Beispiele |
+| --- | --- | --- | --- |
+| I | Venezianische Renaissance-Antiqua | schräge Achse, Querstrich des „e“ schräg, geringer Kontrast | Centaur, Jenson |
+| II | Französische Renaissance-Antiqua | Querstrich des „e“ waagrecht, etwas mehr Kontrast | Garamond, Palatino |
+| III | Barock-Antiqua | Achse fast senkrecht, stärkerer Kontrast | Times, Baskerville |
+| IV | Klassizistische Antiqua | senkrechte Achse, sehr starker Kontrast, dünne waagrechte Serifen | Bodoni, Didot, Walbaum |
+| V | Serifenbetonte Linear-Antiqua | betonte, oft rechteckige Serifen | Rockwell, Clarendon, Courier |
+| VI | Serifenlose Linear-Antiqua | keine Serifen, nahezu gleiche Strichstärke | Helvetica, Futura, Gill Sans |
+| VII | Antiqua-Varianten | passen in keine andere Gruppe, oft dekorativ | Optima, Peignot |
+| VIII | Schreibschriften | von geschriebenen Formen abgeleitet, verbunden | Englische Schreibschrift |
+| IX | Handschriftliche Antiqua | handschriftlich wirkende Antiqua | Post-Antiqua |
+| X | Gebrochene Schriften | gebrochene Bögen; Untergruppen Gotisch (Textura), Rundgotisch, Schwabacher, Fraktur | Fraktur, Schwabacher |
+| XI | Fremde Schriften | nicht lateinische Schriften | Griechisch, Kyrillisch, Arabisch |
+
+Für die Praxis genügt meist die einfachere Einteilung nach Formprinzip in der Tabelle oben. Die Gruppen I bis IV helfen, Antiqua-Schriften stilistisch einzuordnen und passend zu kombinieren.
+
+## Maßeinheiten
+
+| Einheit | Definition | Einsatz |
+| --- | --- | --- |
+| **DTP-Punkt** (pt) | $1\ \text{pt} = \frac{1}{72}\ \text{Zoll} \approx 0{,}353\ \text{mm}$ | Schriftgröße im Druck und in Office-Programmen |
+| Didot-Punkt | $\approx 0{,}376\ \text{mm}$ | historischer Bleisatz in Mitteleuropa |
+| **Pica** | 12 pt | Spaltenbreiten im englischsprachigen Raum |
+| **px** (CSS-Pixel) | $1\ \text{px} = \frac{1}{96}\ \text{Zoll} = 0{,}75\ \text{pt}$ | Bildschirm; entspricht bei hochauflösenden Displays mehreren Gerätepixeln |
+| **em** | die Schriftgröße des aktuellen Elements | relative Abstände, die mitwachsen |
+| **rem** | die Schriftgröße des Wurzelelements (`html`), im Browser standardmäßig 16 px | Schriftgrößen im Web |
+| **ch** | Breite der Ziffer „0“ | Zeilenlängen, etwa `max-width: 65ch` |
+
+Die Standardschriftgröße von Browsern, 16 px, entspricht 12 pt. Im Web gibt man Schriftgrößen bevorzugt in **rem** an: Ändert ein Benutzer in den Browsereinstellungen die Grundschrift, skaliert die ganze Seite mit. Das ist eine Anforderung der Barrierefreiheit (WCAG 1.4.4, Text auf 200 % vergrößerbar).
+
+In der Typografie ist das **Geviert** (_em_) die Breite eines Quadrats mit Kantenlänge gleich der Schriftgröße. Danach heißen auch die Striche: Der **Halbgeviertstrich** (Unicode U+2013) ist im Deutschen der Gedankenstrich und der Strich für Bereiche wie Uhrzeiten oder Seitenangaben, der **Geviertstrich** (U+2014) ist der Gedankenstrich im Englischen. Der kurze **Bindestrich** (U+002D) verbindet Wörter.
+
+## Zeilenabstand und Zeilenlänge
+
+Der **Zeilenabstand** (_Leading_, CSS `line-height`) ist der Abstand von Grundlinie zu Grundlinie. Der Begriff _Leading_ stammt von den Bleistreifen (_lead_), die man im Bleisatz zwischen die Zeilen legte. Den Raum zusätzlich zur Kegelhöhe nennt man **Durchschuss**.
+
+- Für Fließtext im Druck sind 120 % bis 145 % der Schriftgröße üblich, am Bildschirm etwa **1,4 bis 1,6**.
+- Lange Zeilen brauchen mehr Zeilenabstand, damit das Auge den Anfang der nächsten Zeile findet.
+- Große Überschriften brauchen weniger, oft 1,1 bis 1,2, sonst zerfallen sie optisch.
+- Der Abstand zwischen Absätzen sollte deutlich größer sein als der Zeilenabstand, damit Absätze als Einheit erkennbar sind.
+
+Die **Zeilenlänge** (Satzbreite) bestimmt maßgeblich, wie angenehm sich ein Text liest. Als gut gelten **45 bis 75 Zeichen** pro Zeile inklusive Leerzeichen, ideal rund 66 (Robert Bringhurst). Zu lange Zeilen ermüden, weil das Auge beim Zeilensprung die nächste Zeile schwer findet. Zu kurze Zeilen zerreißen den Text in viele Trennungen und Sprünge.
+
+## Laufweite und Kerning
+
+- Die **Laufweite** (_Tracking_, CSS `letter-spacing`) ändert den Abstand zwischen **allen** Zeichen eines Textes gleichmäßig. Text in Versalien (nur Großbuchstaben) und sehr kleine Schrift werden leicht gesperrt, große Überschriften leicht enger gesetzt.
+- Das **Kerning** (Unterschneidung) korrigiert den Abstand zwischen **bestimmten Zeichenpaaren**, deren Formen ungleichmäßige Lücken erzeugen, etwa „AV“, „To“, „Te“ oder „W.“. Gute Fonts enthalten Kerning-Tabellen. Bei großen Überschriften und Logos wird zusätzlich von Hand optisch ausgeglichen.
+
+Sperren (Abstand vergrößern) zur Hervorhebung von Fließtext gilt heute als veraltet. Für Hervorhebungen verwendet man kursiv oder halbfett.
+
+## Satzarten
+
+| Satzart | Beschreibung | Einsatz |
+| --- | --- | --- |
+| **linksbündiger Flattersatz** | Zeilen beginnen links bündig, rechts ungleich lang | Standard im Web und für die meisten Texte; gleichmäßige Wortabstände |
+| **Blocksatz** | beide Ränder bündig, Wortabstände werden gedehnt | Bücher, Zeitungen; braucht Silbentrennung, sonst entstehen Löcher und „Gassen“ |
+| **zentriert** (Mittelachsensatz) | Zeilen um die Mitte angeordnet | kurze Texte: Einladungen, Titel, Urkunden |
+| **rechtsbündiger Flattersatz** | rechts bündig | kurze Elemente wie Bildunterschriften oder Zahlen in Tabellen |
+
+Im Web wird Blocksatz selten verwendet, weil Browser nicht so gut trennen wie Satzprogramme. Mit `hyphens: auto` und dem richtigen `lang`-Attribut wird es besser.
+
+Satzfehler, die man vermeiden sollte:
+
+- **Schusterjunge**: die erste Zeile eines Absatzes steht allein am Ende einer Seite oder Spalte.
+- **Hurenkind**: die letzte Zeile eines Absatzes steht allein am Anfang der nächsten Seite oder Spalte. Im Englischen heißen die beiden _orphan_ und _widow_.
+- Falsche Anführungszeichen: Im Deutschen „so“ oder »so«, nicht "so" (Zollzeichen).
+- Das Apostroph ist ’ (U+2019), nicht das Zeichen für Fuß.
+
+## Hierarchie
+
+Leser überfliegen Texte zuerst, bevor sie lesen. Eine klare **typografische Hierarchie** zeigt sofort, was wichtig ist und was zusammengehört. Mittel dafür sind:
+
+- **Größe**: Überschriften deutlich größer als Fließtext. Oft verwendet man eine **modulare Skala**: Jede Stufe ist um einen festen Faktor größer, etwa 1,25 (16, 20, 25, 31,25 px).
+- **Strichstärke**: fett für Überschriften, normal für Text.
+- **Farbe und Helligkeit**: Nebentexte etwas heller, aber mit ausreichendem Kontrast.
+- **Abstand**: Mehr Abstand über einer Überschrift als darunter, damit sie zu ihrem Text gehört (Gesetz der Nähe, siehe [Layout und Gestaltung](/de/media-technology/layout-and-design/#gestaltgesetze)).
+- **Schriftart**: höchstens zwei Schriftfamilien kombinieren, etwa eine Serifenlose für Überschriften und eine Antiqua für Text. Kontrast entsteht durch deutliche Unterschiede, zwei sehr ähnliche Schriften wirken wie ein Fehler.
+
+## Lesbarkeit
+
+Man unterscheidet zwei Begriffe:
+
+- **Leserlichkeit** (_Legibility_): Wie gut lassen sich einzelne Zeichen erkennen und unterscheiden? Kritisch sind etwa großes I, kleines l und die Ziffer 1 oder O und 0. Wichtig bei Beschilderung, Passwörtern und Code.
+- **Lesbarkeit** (_Readability_): Wie leicht und ermüdungsfrei lässt sich ein ganzer Text lesen? Sie hängt von Schriftwahl, Größe, Zeilenabstand, Zeilenlänge, Kontrast und Satzart ab.
+
+Faustregeln für gut lesbaren Fließtext:
+
+- Bildschirm: mindestens 16 px, Druck: 9 bis 12 pt
+- Schrift mit großer x-Höhe und offenen Punzen
+- dunkler Text auf hellem Grund mit ausreichendem [Kontrast](/de/media-technology/colour/#kontrast-und-barrierefreiheit); ein sehr dunkles Grau statt reinem Schwarz blendet bei langen Texten weniger
+- kein langer Text in Versalien, Kursiv oder Schreibschrift
+- links ausgerichtet, 45 bis 75 Zeichen pro Zeile
+
+## Fontformate
+
+| Format | Herkunft | Eigenschaften |
+| --- | --- | --- |
+| **TrueType** (.ttf) | Apple, 1991 | quadratische Bézierkurven, aufwendiges **Hinting** für die Darstellung bei kleinen Größen |
+| **OpenType** (.otf, .ttf) | Microsoft und Adobe, 1996 | Konturen als TrueType oder als CFF (kubische Kurven); bis zu 65 536 Glyphen; **OpenType-Features** wie Ligaturen, Kapitälchen, Mediävalziffern; plattformunabhängig |
+| **Variable Fonts** | OpenType 1.8, 2016 | eine Datei mit stufenlosen Achsen, etwa Strichstärke (`wght`), Breite (`wdth`), optische Größe (`opsz`) |
+| **WOFF** | W3C, 2012 | OpenType/TrueType komprimiert für das Web |
+| **WOFF2** | W3C, 2018 | Brotli-Kompression, rund 30 % kleiner als WOFF; das heute übliche Webfont-Format |
+
+Ältere Formate wie PostScript Type 1 werden von aktuellen Programmen nicht mehr unterstützt, EOT war nur für alte Versionen des Internet Explorer gedacht.
+
+## Schriftlizenzen
+
+Eine Fontdatei ist Software. Wer eine Schrift kauft, erwirbt eine **Lizenz** (_EULA_), die genau festlegt, wofür sie verwendet werden darf:
+
+| Lizenzart | erlaubt |
+| --- | --- |
+| **Desktop-Lizenz** | Installation auf einer bestimmten Zahl von Computern, Gestaltung von Drucksachen und Bildern |
+| **Web-Lizenz** | Einbindung per `@font-face` auf Websites, oft begrenzt nach Seitenaufrufen |
+| **App-Lizenz** | Einbetten in mobile Apps oder Software |
+| **E-Book-Lizenz** | Einbetten in E-Books |
+
+Freie Schriften stehen meist unter der **SIL Open Font License** (OFL): Sie dürfen kostenlos verwendet, eingebettet, verändert und weitergegeben werden, auch kommerziell. Nur der Verkauf der Schrift selbst ist verboten, und veränderte Versionen dürfen den reservierten Namen nicht tragen. Fast alle Schriften von Google Fonts stehen unter der OFL.
+
+Schriften, die mit dem Betriebssystem oder Office mitgeliefert werden, dürfen nicht automatisch auf einem Webserver bereitgestellt werden.
+
+## Webfonts
+
+Eigene Schriften bindet man mit der CSS-Regel `@font-face` ein:
+
+```css
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-var.woff2") format("woff2");
+  font-weight: 100 900; /* Variable Font mit Gewichtsachse */
+  font-display: swap;   /* Fallback-Schrift sofort zeigen, dann tauschen */
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif; /* Fallbacks */
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+article {
+  max-width: 65ch; /* angenehme Zeilenlänge */
+}
+```
+
+- **Selbst hosten statt externer Dienste**: Wird eine Schrift direkt von den Servern von Google Fonts geladen, überträgt der Browser die IP-Adresse des Besuchers an Google. Das Landgericht München I (Urteil vom 20. 1. 2022, 3 O 17493/20) sah darin einen Verstoß gegen die DSGVO. 2022 folgte auch in Österreich eine Welle von Abmahnschreiben. Seitdem lädt man Fonts vom eigenen Server.
+- **Ladezeit**: Nur benötigte Schnitte und Zeichensätze einbinden (**Subsetting**, etwa nur Lateinisch), WOFF2 verwenden, wichtige Schriften mit `<link rel="preload">` vorladen.
+- **FOUT und FOIT**: Bis die Schrift geladen ist, zeigt der Browser entweder die Ersatzschrift (_Flash of Unstyled Text_) oder gar keinen Text (_Flash of Invisible Text_). `font-display: swap` wählt FOUT, damit Inhalte sofort lesbar sind.
+- **System-Font-Stack** (`system-ui`): verwendet die Systemschrift des Geräts und braucht keinen Download.
+
+Mehr zu CSS-Eigenschaften für Schrift steht im Kapitel [CSS](/de/web-technologies/css/#typografie).
+
+## Weiterführende Quellen
+
+- Robert Bringhurst: _The Elements of Typographic Style_. 4. Auflage, Seattle: Hartley & Marks, 2012
+- Hans Peter Willberg, Friedrich Forssman: _Lesetypografie_. Mainz: Hermann Schmidt, 2010
+- [MDN: Webfonts](https://developer.mozilla.org/de/docs/Learn_web_development/Core/Text_styling/Web_fonts)

@@ -1,0 +1,147 @@
+---
+title: AD and DA Conversion
+description: Sampling, the Nyquist-Shannon sampling theorem, aliasing, quantisation and resolution, converter types (flash, SAR, sigma-delta) and DA converters with an R-2R ladder.
+sidebar:
+  order: 14
+---
+
+The world is analogue: temperature, sound, light and sensor voltages change continuously. Computers, however, only process numbers. An **analogue-to-digital converter** (ADC) converts a voltage into a number; a **digital-to-analogue converter** (DAC) turns a number back into a voltage. Both converters are found in every smartphone, every sound card, every measuring instrument and almost every microcontroller.
+
+## From analogue to digital signal
+
+An analogue signal is **continuous in time** (defined at every moment) and **continuous in value** (any value possible). A digital signal is discrete in both respects. Conversion takes place in three steps:
+
+1. **Sampling**: a value is taken at fixed intervals $T_\mathrm{s}$. A **sample-and-hold** circuit charges a capacitor to the instantaneous value and keeps it constant during conversion.
+2. **Quantisation**: the value is assigned to the nearest of a finite number of levels.
+3. **Encoding**: the level number is output as a binary number.
+
+## Sampling
+
+The **sampling frequency** $f_\mathrm{s} = 1/T_\mathrm{s}$ indicates how often per second a sample is taken. How high it must be is answered by the **sampling theorem** of Nyquist and Shannon:
+
+$$
+f_\mathrm{s} > 2 \cdot f_\mathrm{max}
+$$
+
+A signal that contains no frequency components above $f_\mathrm{max}$ can be reconstructed without error from the samples if the sampling frequency is greater than twice $f_\mathrm{max}$. Half the sampling frequency $f_\mathrm{s}/2$ is called the **Nyquist frequency**.
+
+| Application       | Signal bandwidth      | Sampling frequency      |
+| ----------------- | --------------------- | ----------------------- |
+| Telephone (ISDN, G.711) | $300$ to $3400\,\mathrm{Hz}$ | $8\,\mathrm{kHz}$ |
+| Audio CD          | up to $20\,\mathrm{kHz}$ | $44.1\,\mathrm{kHz}$ |
+| Studio audio, video | up to $20\,\mathrm{kHz}$ | $48$ or $96\,\mathrm{kHz}$ |
+
+### Aliasing
+
+If the signal contains frequencies above the Nyquist frequency, they appear after sampling as false, lower frequencies (**aliasing**). The alias frequency is the distance to the nearest multiple of the sampling frequency:
+
+$$
+f_\mathrm{alias} = \lvert f - k \cdot f_\mathrm{s} \rvert \qquad k \in \mathbb{N} \text{ such that } f_\mathrm{alias} \le f_\mathrm{s}/2
+$$
+
+:::tip[Example]
+A $900\,\mathrm{Hz}$ signal is sampled at $1\,\mathrm{kHz}$. The samples are the same as those of a signal with $\lvert 900 - 1000 \rvert\,\mathrm{Hz} = 100\,\mathrm{Hz}$. After sampling the two can no longer be distinguished. The same effect makes wagon wheels appear to turn backwards in films.
+:::
+
+Aliasing cannot be corrected after sampling. That is why every ADC is preceded by an **anti-aliasing filter**, a [low-pass filter](/en/electrical-engineering/filters/) that sufficiently attenuates all components above the Nyquist frequency. Because real filters are not infinitely steep, the sampling frequency is chosen well above $2 f_\mathrm{max}$: for the CD $44.1$ instead of $40\,\mathrm{kHz}$.
+
+## Quantisation
+
+An $N$-bit ADC distinguishes $2^N$ levels. The smallest resolvable voltage change is the **resolution** or $1\,\mathrm{LSB}$ (least significant bit), relative to the reference voltage $U_\mathrm{ref}$:
+
+$$
+U_\mathrm{LSB} = \frac{U_\mathrm{ref}}{2^N} \qquad D = \left\lfloor \frac{U_\mathrm{in}}{U_\mathrm{ref}} \cdot 2^N \right\rfloor
+$$
+
+$D$ is the output digital value (rounded down or rounded depending on the converter, at most $2^N - 1$).
+
+:::tip[Example]
+A 10-bit ADC with $U_\mathrm{ref} = 5\,\mathrm{V}$ has $1024$ levels. One LSB corresponds to $5\,\mathrm{V}/1024 \approx 4.88\,\mathrm{mV}$. An input voltage of $2.5\,\mathrm{V}$ gives $D = 2.5/5 \cdot 1024 = 512$. Conversely, the value $D = 300$ corresponds to a voltage of $300 \cdot 4.88\,\mathrm{mV} \approx 1.46\,\mathrm{V}$.
+:::
+
+The deviation between the actual value and the level is called the **quantisation error**; for rounding converters it is at most $\pm\tfrac{1}{2}\,\mathrm{LSB}$. It acts like noise. The theoretically best **signal-to-noise ratio** of an ideal $N$-bit converter for a full-scale sine signal is:
+
+$$
+\mathrm{SNR} = 6.02 \cdot N + 1.76\,\mathrm{dB}
+$$
+
+Each additional bit therefore adds about $6\,\mathrm{dB}$. An audio CD with 16 bits reaches about $98\,\mathrm{dB}$. Real converters achieve less because of noise and non-linearity, which is why the **effective number of bits** (ENOB) is specified.
+
+The **data rate** of a digitised signal is sampling frequency times number of bits times channels. For the CD: $44\,100\,\mathrm{Hz} \cdot 16\,\mathrm{bit} \cdot 2 = 1\,411\,200\,\mathrm{bit/s} \approx 1.41\,\mathrm{Mbit/s}$.
+
+## ADC methods
+
+| Method                          | Principle                                                                   | Speed                   | Resolution       | Use                                    |
+| ------------------------------- | --------------------------------------------------------------------------- | ----------------------- | ---------------- | -------------------------------------- |
+| **Flash** (parallel converter)  | $2^N - 1$ comparators compare simultaneously with all levels of a voltage divider | very high (GS/s) | low (6 to 8 bit) | oscilloscopes, radar                 |
+| **Successive approximation** (SAR) | weighing method: $N$ comparison steps with an internal DAC              | medium (kS/s to a few MS/s) | 8 to 18 bit | microcontrollers, data acquisition  |
+| **Sigma-delta** ($\Sigma\Delta$) | 1-bit converter with very high oversampling, a digital filter calculates the mean | low to medium | very high (16 to 32 bit) | audio, precision measurement, scales |
+| **Dual slope** (integrating)    | an integrator integrates up with $U_\mathrm{in}$ and down with $U_\mathrm{ref}$; the time is counted | slow | high, rejects mains hum | digital multimeters |
+
+The flash converter already needs 255 comparators for 8 bits, and the effort doubles with every bit. The sigma-delta converter trades speed for accuracy because it averages many coarse measurements.
+
+### Successive approximation
+
+The SAR converter works like a balance with weights of $\tfrac{1}{2}$, $\tfrac{1}{4}$, $\tfrac{1}{8}$ … of the measuring range. Starting with the most significant bit, it tentatively sets a bit to 1, generates the corresponding voltage with an internal DAC and compares it with the input. If the DAC voltage is larger, the bit is cleared again. After $N$ steps the result is complete.
+
+:::tip[Example: 4-bit SAR]
+$U_\mathrm{ref} = 5\,\mathrm{V}$, so $U_\mathrm{LSB} = 0.3125\,\mathrm{V}$. The input voltage is $U_\mathrm{in} = 3.2\,\mathrm{V}$.
+
+| Step    | Trial value | DAC voltage  | Comparison        | Bit |
+| ------- | ----------- | ------------ | ----------------- | --- |
+| 1       | 1000        | $2.5\,\mathrm{V}$    | $2.5 \le 3.2$ | 1   |
+| 2       | 1100        | $3.75\,\mathrm{V}$   | $3.75 > 3.2$  | 0   |
+| 3       | 1010        | $3.125\,\mathrm{V}$  | $3.125 \le 3.2$ | 1 |
+| 4       | 1011        | $3.4375\,\mathrm{V}$ | $3.4375 > 3.2$ | 0  |
+
+Result: $1010_2 = 10$, corresponding to $3.125\,\mathrm{V}$. The remainder of $0.075\,\mathrm{V}$ is less than one LSB.
+:::
+
+The ADC of the ATmega microcontroller is a 10-bit SAR converter. Its configuration and programming are shown in [Embedded Programming: ADC](/en/embedded-programming/analogue-digital-converter/).
+
+## Digital-to-analogue converters
+
+A DAC produces the voltage from a digital value $D$:
+
+$$
+U_\mathrm{out} = D \cdot \frac{U_\mathrm{ref}}{2^N}
+$$
+
+An 8-bit DAC with $U_\mathrm{ref} = 5\,\mathrm{V}$ outputs $200 \cdot 5\,\mathrm{V}/256 \approx 3.91\,\mathrm{V}$ for $D = 200$. The output is a staircase curve that a low-pass filter (reconstruction filter) smooths.
+
+### Weighted resistors
+
+The obvious solution is a [summing amplifier](/en/electrical-engineering/operational-amplifiers/#summing-amplifier) in which each bit is fed to the virtual ground via a resistor $R$, $2R$, $4R$, $8R$ … For many bits, however, very different and yet precise resistor values are needed: for 12 bits a ratio of $1 : 2048$. This is hard to manufacture.
+
+### R-2R ladder
+
+The **R-2R ladder** needs only two resistor values. It consists of a ladder with series resistors $R$ and shunt resistors $2R$. Seen from each node, the rest of the ladder towards the least significant end has a resistance of $2R$. That is why the current splits exactly in half at each node: the branch of the most significant bit carries $I/2$, the next $I/4$ and so on.
+
+Depending on the bit, each $2R$ branch is switched either to the virtual ground of an op-amp (bit = 1) or to ground (bit = 0). Since both points are at $0\,\mathrm{V}$, switching does not change the current distribution. The total current from the reference is $U_\mathrm{ref}/R$, and with a feedback resistor $R_\mathrm{f} = R$:
+
+$$
+I_\mathrm{sum} = \frac{U_\mathrm{ref}}{R} \cdot \frac{D}{2^N} \qquad U_\mathrm{out} = -R_\mathrm{f} \cdot I_\mathrm{sum} = -U_\mathrm{ref} \cdot \frac{D}{2^N}
+$$
+
+Because only the ratio of the resistors matters and all of them are on the same chip, R-2R ladders can be manufactured very accurately.
+
+### PWM as a DAC
+
+Many microcontrollers have no DAC. A simple alternative is a [PWM signal](/en/embedded-programming/timer/) followed by an RC low-pass filter whose cut-off frequency is far below the PWM frequency. The low-pass forms the mean value: at $5\,\mathrm{V}$ and a $30\,\%$ duty cycle you get $1.5\,\mathrm{V}$ with some residual ripple. Class D audio amplifiers work on the same principle.
+
+### Converter parameters
+
+| Parameter              | Meaning                                                                   |
+| ---------------------- | ------------------------------------------------------------------------- |
+| Resolution             | number of bits                                                            |
+| Conversion time, sample rate | duration of one conversion, number of conversions per second (S/s)  |
+| Offset error           | shift of the whole characteristic                                          |
+| Gain error             | wrong slope of the characteristic                                          |
+| Non-linearity (DNL, INL) | deviations of individual steps or of the whole characteristic from the straight line |
+| Monotonicity           | a larger digital value never gives a smaller voltage (important for DACs in control loops) |
+
+## Further reading
+
+- [Analog Devices: The Data Conversion Handbook](https://www.analog.com/en/resources/technical-books/data-conversion-handbook.html)
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press (chapter on digital meets analogue).
+- [Wikipedia: Nyquist-Shannon sampling theorem](https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem)

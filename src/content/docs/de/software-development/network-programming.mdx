@@ -1,0 +1,388 @@
+---
+title: Netzwerkprogrammierung
+description: Das Client-Server-Modell, Sockets, TCP- und UDP-Kommunikation, Nachrichtenrahmen, mehrere Clients und HTTP-Anfragen in C# und Rust.
+sidebar:
+  order: 14
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Sobald Programme Daten über ein Netzwerk austauschen, etwa ein Chat, ein Multiplayer-Spiel oder eine App, die eine Webschnittstelle abfragt, braucht man Netzwerkprogrammierung. Die Grundlagen der Protokolle selbst (IP, TCP, UDP, Ports) erklärt das Kapitel [Netzwerktechnik](/de/networking/). Hier geht es darum, wie man sie im Code verwendet.
+
+## Client-Server-Modell
+
+- Ein **Server** wartet an einer bekannten **Adresse** (IP-Adresse und **Port**) auf Verbindungen und bietet einen Dienst an.
+- Ein **Client** baut eine Verbindung zum Server auf, sendet Anfragen und erhält Antworten.
+
+Ein **Socket** ist der Endpunkt einer Verbindung aus Sicht des Programms. Das Betriebssystem stellt ihn bereit, und Programme lesen und schreiben darüber Daten, ähnlich wie bei einer Datei. Ein Socket wird durch IP-Adresse, Port und Protokoll eindeutig bestimmt.
+
+| Eigenschaft           | TCP                                                     | UDP                                                  |
+| --------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| Verbindung            | verbindungsorientiert (Verbindungsaufbau vor dem Senden) | verbindungslos                                      |
+| Zuverlässigkeit       | Daten kommen vollständig und in der richtigen Reihenfolge an | Pakete können verloren gehen, doppelt oder vertauscht ankommen |
+| Datenmodell           | Bytestrom ohne Nachrichtengrenzen                       | einzelne Datagramme mit festen Grenzen               |
+| Geschwindigkeit       | etwas langsamer durch Bestätigungen                     | schnell, wenig Overhead                              |
+| Einsatz               | Web (HTTP), E-Mail, Dateitransfer, Datenbanken          | DNS, Videotelefonie, Online-Spiele, Streaming        |
+
+## TCP-Server und -Client
+
+Ein TCP-Server durchläuft immer dieselben Schritte: Socket an Adresse und Port **binden**, auf Verbindungen **lauschen** (_listen_), eine Verbindung **annehmen** (_accept_) und dann über den entstandenen Stream lesen und schreiben. Der Client **verbindet** sich (_connect_) und erhält ebenfalls einen Stream.
+
+Das folgende Programm startet einen **Echo-Server** in einem Hintergrund-Thread, der jede empfangene Zeile in Großbuchstaben zurückschickt, und verbindet sich dann als Client mit ihm. Port 0 bedeutet, dass das Betriebssystem einen freien Port auswählt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+
+// Server: an localhost binden, Port vom Betriebssystem wählen lassen
+var listener = new TcpListener(IPAddress.Loopback, 0);
+listener.Start();
+int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+var server = Task.Run(async () =>
+{
+    using TcpClient connection = await listener.AcceptTcpClientAsync();
+    using var reader = new StreamReader(connection.GetStream());
+    using var writer = new StreamWriter(connection.GetStream()) { AutoFlush = true };
+    string? line;
+    while ((line = await reader.ReadLineAsync()) is not null)
+    {
+        await writer.WriteLineAsync(line.ToUpper()); // Echo in Großbuchstaben
+    }
+});
+
+// Client
+using (var client = new TcpClient())
+{
+    await client.ConnectAsync(IPAddress.Loopback, port);
+    using var reader = new StreamReader(client.GetStream());
+    using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+
+    foreach (string message in new[] { "hallo", "htl krems" })
+    {
+        await writer.WriteLineAsync(message);
+        Console.WriteLine(await reader.ReadLineAsync()); // HALLO, HTL KREMS
+    }
+} // Verbindung schließen: der Server liest null und endet
+
+await server;
+listener.Stop();
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::io::{BufRead, BufReader, Write};
+use std::net::{TcpListener, TcpStream};
+use std::thread;
+
+fn main() -> std::io::Result<()> {
+    // Server: an localhost binden, Port vom Betriebssystem wählen lassen
+    let listener = TcpListener::bind("127.0.0.1:0")?;
+    let port = listener.local_addr()?.port();
+
+    let server = thread::spawn(move || -> std::io::Result<()> {
+        let (stream, _addr) = listener.accept()?;
+        let mut writer = stream.try_clone()?;
+        for line in BufReader::new(stream).lines() {
+            writeln!(writer, "{}", line?.to_uppercase())?; // Echo in Großbuchstaben
+        }
+        Ok(())
+    });
+
+    // Client
+    {
+        let stream = TcpStream::connect(("127.0.0.1", port))?;
+        let mut writer = stream.try_clone()?;
+        let mut reader = BufReader::new(stream);
+        for message in ["hallo", "htl krems"] {
+            writeln!(writer, "{message}")?;
+            let mut answer = String::new();
+            reader.read_line(&mut answer)?;
+            print!("{answer}"); // HALLO, HTL KREMS
+        }
+    } // Verbindung schließen: der Server liest das Ende des Streams und endet
+
+    server.join().unwrap()
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Nachrichtenrahmen
+
+TCP überträgt einen **Bytestrom** ohne Nachrichtengrenzen. Schickt der Client zweimal 10 Bytes, kann der Server einmal 20 Bytes oder dreimal einige Bytes empfangen. Das Anwendungsprotokoll muss deshalb selbst festlegen, wo eine Nachricht endet (**Framing**):
+
+- **Trennzeichen**: Jede Nachricht endet mit einem Zeilenumbruch (wie im Beispiel oben, bei SMTP und bei den Kopfzeilen von HTTP). Das Trennzeichen darf dann nicht im Inhalt vorkommen.
+- **Längenpräfix**: Vor jeder Nachricht stehen zum Beispiel 4 Bytes mit ihrer Länge. Der Empfänger liest zuerst die Länge und dann genau so viele Bytes. Das funktioniert auch für Binärdaten.
+- **Feste Länge**: Alle Nachrichten sind gleich lang.
+
+Bei Zahlen in Binärprotokollen muss die Byte-Reihenfolge festgelegt sein. Netzwerkprotokolle verwenden traditionell **Big Endian** (_Network Byte Order_).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Buffers.Binary;
+using System.Text;
+
+// Nachricht mit 4 Bytes Längenpräfix (Big Endian) kodieren
+static byte[] Encode(string message)
+{
+    byte[] payload = Encoding.UTF8.GetBytes(message);
+    byte[] frame = new byte[4 + payload.Length];
+    BinaryPrimitives.WriteInt32BigEndian(frame, payload.Length);
+    payload.CopyTo(frame, 4);
+    return frame;
+}
+
+static string Decode(Stream stream)
+{
+    byte[] header = new byte[4];
+    stream.ReadExactly(header);                         // genau 4 Bytes lesen
+    int length = BinaryPrimitives.ReadInt32BigEndian(header);
+    byte[] payload = new byte[length];
+    stream.ReadExactly(payload);
+    return Encoding.UTF8.GetString(payload);
+}
+
+var buffer = new MemoryStream();
+buffer.Write(Encode("Grüße"));
+buffer.Write(Encode("aus Krems"));
+buffer.Position = 0;
+Console.WriteLine(Decode(buffer)); // Grüße
+Console.WriteLine(Decode(buffer)); // aus Krems
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::io::{Cursor, Read};
+
+// Nachricht mit 4 Bytes Längenpräfix (Big Endian) kodieren
+fn encode(message: &str) -> Vec<u8> {
+    let payload = message.as_bytes();
+    let mut frame = (payload.len() as u32).to_be_bytes().to_vec();
+    frame.extend_from_slice(payload);
+    frame
+}
+
+fn decode(stream: &mut impl Read) -> std::io::Result<String> {
+    let mut header = [0u8; 4];
+    stream.read_exact(&mut header)?;                    // genau 4 Bytes lesen
+    let length = u32::from_be_bytes(header) as usize;
+    let mut payload = vec![0u8; length];
+    stream.read_exact(&mut payload)?;
+    Ok(String::from_utf8_lossy(&payload).into_owned())
+}
+
+fn main() -> std::io::Result<()> {
+    let mut data = encode("Grüße");
+    data.extend(encode("aus Krems"));
+    let mut stream = Cursor::new(data);
+    println!("{}", decode(&mut stream)?); // Grüße
+    println!("{}", decode(&mut stream)?); // aus Krems
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Mehrere Clients
+
+Der Echo-Server oben bedient nur einen einzigen Client. Ein echter Server muss viele Verbindungen gleichzeitig bearbeiten. Dafür gibt es zwei Ansätze (siehe [Nebenläufigkeit](/de/software-development/concurrency/)):
+
+- **Ein Thread pro Client**: Nach jedem `accept` wird ein neuer Thread gestartet. Einfach, aber bei tausenden Clients zu teuer.
+- **Asynchron**: Jede Verbindung ist eine asynchrone Aufgabe. Wenige Threads bedienen sehr viele Verbindungen, weil die meisten gerade warten. So arbeiten moderne Webserver wie ASP.NET Core (Kestrel) und Rust-Server auf Basis von Tokio.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+
+var listener = new TcpListener(IPAddress.Any, 5000);
+listener.Start();
+Console.WriteLine("Server läuft auf Port 5000");
+
+while (true)
+{
+    TcpClient client = await listener.AcceptTcpClientAsync();
+    _ = HandleAsync(client); // nicht warten: der nächste Client kann sofort verbunden werden
+}
+
+static async Task HandleAsync(TcpClient client)
+{
+    using (client)
+    using (var reader = new StreamReader(client.GetStream()))
+    using (var writer = new StreamWriter(client.GetStream()) { AutoFlush = true })
+    {
+        string? line;
+        while ((line = await reader.ReadLineAsync()) is not null)
+        {
+            await writer.WriteLineAsync(line.ToUpper());
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::net::TcpListener;
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind("0.0.0.0:5000").await?;
+    println!("Server läuft auf Port 5000");
+
+    loop {
+        let (stream, _addr) = listener.accept().await?;
+        // jede Verbindung als eigene asynchrone Aufgabe
+        tokio::spawn(async move {
+            let (read_half, mut write_half) = stream.into_split();
+            let mut lines = BufReader::new(read_half).lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                let answer = format!("{}\n", line.to_uppercase());
+                if write_half.write_all(answer.as_bytes()).await.is_err() {
+                    break;
+                }
+            }
+        });
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## UDP
+
+Bei UDP gibt es keine Verbindung. Man schickt einzelne **Datagramme** an eine Adresse und empfängt Datagramme von beliebigen Absendern. Jedes Datagramm kommt entweder vollständig oder gar nicht an.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+using var receiver = new UdpClient(new IPEndPoint(IPAddress.Loopback, 0));
+var receiverEndpoint = (IPEndPoint)receiver.Client.LocalEndPoint!;
+
+using var sender = new UdpClient();
+byte[] data = Encoding.UTF8.GetBytes("Temperatur: 21,5 °C");
+await sender.SendAsync(data, receiverEndpoint);
+
+UdpReceiveResult result = await receiver.ReceiveAsync();
+Console.WriteLine(Encoding.UTF8.GetString(result.Buffer)); // Temperatur: 21,5 °C
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::net::UdpSocket;
+
+fn main() -> std::io::Result<()> {
+    let receiver = UdpSocket::bind("127.0.0.1:0")?;
+    let receiver_addr = receiver.local_addr()?;
+
+    let sender = UdpSocket::bind("127.0.0.1:0")?;
+    sender.send_to("Temperatur: 21,5 °C".as_bytes(), receiver_addr)?;
+
+    let mut buffer = [0u8; 1500];
+    let (length, from) = receiver.recv_from(&mut buffer)?;
+    println!("{}", String::from_utf8_lossy(&buffer[..length])); // Temperatur: 21,5 °C
+    let _ = from; // Adresse des Absenders
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## HTTP-Anfragen
+
+Die meisten Programme sprechen nicht direkt TCP, sondern verwenden höhere Protokolle, vor allem [HTTP](/de/web-technologies/http/). Eine HTTP-Bibliothek kümmert sich um Verbindungsaufbau, Verschlüsselung mit TLS, Weiterleitungen und das Format der Nachrichten. In C# ist das `HttpClient`, in Rust das Crate `reqwest`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net.Http.Json;
+
+// HttpClient wird wiederverwendet, nicht für jede Anfrage neu erzeugt
+using var http = new HttpClient { BaseAddress = new Uri("https://api.github.com/") };
+http.DefaultRequestHeaders.UserAgent.ParseAdd("mutanuq-example");
+
+HttpResponseMessage response = await http.GetAsync("repos/dotnet/runtime");
+response.EnsureSuccessStatusCode();             // Exception bei 4xx oder 5xx
+
+var repo = await response.Content.ReadFromJsonAsync<Repository>();
+Console.WriteLine($"{repo!.FullName}: {repo.StargazersCount} Sterne");
+
+public record Repository(
+    [property: System.Text.Json.Serialization.JsonPropertyName("full_name")] string FullName,
+    [property: System.Text.Json.Serialization.JsonPropertyName("stargazers_count")] int StargazersCount);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Repository {
+    full_name: String,
+    stargazers_count: u32,
+}
+
+fn main() -> Result<(), reqwest::Error> {
+    let client = reqwest::blocking::Client::new();
+    let repo: Repository = client
+        .get("https://api.github.com/repos/rust-lang/rust")
+        .header("User-Agent", "mutanuq-example")
+        .send()?
+        .error_for_status()?                    // Fehler bei 4xx oder 5xx
+        .json()?;
+    println!("{}: {} Sterne", repo.full_name, repo.stargazers_count);
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Wie man selbst eine HTTP-Schnittstelle (REST-API) anbietet, zeigt die Seite [REST-APIs](/de/web-technologies/rest-apis/).
+
+## Sicherheit
+
+- Daten aus dem Netzwerk sind **nicht vertrauenswürdig**. Längenangaben, Formate und Werte müssen geprüft werden, bevor man sie verwendet. Ein Längenpräfix von 4 GB darf nicht dazu führen, dass der Server 4 GB Speicher reserviert.
+- Unverschlüsselte Verbindungen können mitgelesen und verändert werden. Für sensible Daten verwendet man immer **TLS** (siehe [PKI und TLS](/de/it-security/pki-and-tls/)).
+- Server sollten Zeitlimits (_Timeouts_) für Verbindungen setzen, damit langsame oder hängende Clients keine Ressourcen blockieren.
+
+## Weiterführende Quellen
+
+- [Network programming in .NET](https://learn.microsoft.com/de-de/dotnet/fundamentals/networking/overview) (Microsoft Learn)
+- [Building a Single-Threaded Web Server](https://doc.rust-lang.org/book/ch21-01-single-threaded.html) (The Rust Programming Language)

@@ -1,0 +1,234 @@
+---
+title: Ethernet and Switching
+description: Ethernet frame, MAC addresses, CSMA/CD, switching methods, collision and broadcast domains, ARP, VLANs, inter-VLAN routing, Spanning Tree and EtherChannel.
+sidebar:
+  order: 4
+---
+
+**Ethernet** (IEEE 802.3) is the technology behind practically every wired local area network. It was developed at Xerox PARC in the 1970s and standardised as IEEE 802.3 in 1983. Ethernet works at layers 1 and 2: layer 1 defines media and signals (see [Physical Layer](/en/networking/physical-layer/)), layer 2 the structure of frames, addressing and media access.
+
+## The Ethernet frame
+
+| Field | Length | Content |
+| --- | --- | --- |
+| Preamble | 7 bytes | `10101010` repeated so that the receiver can synchronise its clock |
+| SFD (_Start Frame Delimiter_) | 1 byte | `10101011`, marks the start of the frame |
+| **Destination MAC address** | 6 bytes | receiver |
+| **Source MAC address** | 6 bytes | sender |
+| 802.1Q tag (optional) | 4 bytes | VLAN identifier, see [VLANs](#vlans) |
+| **EtherType / length** | 2 bytes | values from 0x0600 (1536): protocol of the payload, e.g. 0x0800 IPv4, 0x86DD IPv6, 0x0806 ARP. Values up to 1500: length (old 802.3 frames with LLC) |
+| **Payload** | 46 to 1500 bytes | e.g. an IP packet. Shorter data is padded to 46 bytes |
+| **FCS** (_Frame Check Sequence_) | 4 bytes | CRC-32 checksum over the frame |
+
+A frame is therefore (without preamble and SFD) at least **64 bytes** and at most **1518 bytes** long (1522 bytes with a VLAN tag). Shorter frames are called **runts**, longer ones **giants**; both are discarded, as are frames with a wrong FCS. Ethernet detects errors but neither corrects them nor requests retransmission: it leaves that to higher layers such as TCP. The maximum payload of 1500 bytes is the **MTU** (_Maximum Transmission Unit_) of Ethernet. **Jumbo frames** of up to about 9000 bytes are not standardised but are used in data centres and storage networks.
+
+## MAC addresses
+
+A **MAC address** is 48 bits (6 bytes) long and written in hexadecimal, depending on the vendor as `00-1A-2B-3C-4D-5E` (Windows), `00:1a:2b:3c:4d:5e` (Linux) or `001a.2b3c.4d5e` (Cisco).
+
+- The first 24 bits are the **OUI** (_Organizationally Unique Identifier_), which IEEE assigns to a manufacturer.
+- The last 24 bits are assigned sequentially by the manufacturer.
+- The least significant bit of the first byte is the **I/G bit**: 0 = individual address (unicast), 1 = group address (multicast, broadcast).
+- The second least significant bit is the **U/L bit**: 0 = globally unique from the manufacturer, 1 = locally administered (for example for virtual machines or randomised MAC addresses on smartphones).
+
+| Type | Destination | Example |
+| --- | --- | --- |
+| **Unicast** | exactly one device | `00-1A-2B-3C-4D-5E` |
+| **Broadcast** | all devices in the LAN | `FF-FF-FF-FF-FF-FF` |
+| **Multicast** | a group of devices | IPv4: `01-00-5E-` + lower 23 bits of the IP address; IPv6: `33-33-` + lower 32 bits |
+
+The MAC address is often called the "hardware address" because it is stored in the ROM of the network card. The operating system can change it, however.
+
+## CSMA/CD
+
+In the original Ethernet, all stations shared a coaxial cable (10BASE5, 10BASE2) or a hub. If two transmit at the same time, the signals overlap and a **collision** occurs. The access method **CSMA/CD** (_Carrier Sense Multiple Access with Collision Detection_) controls access:
+
+1. **Carrier sense**: before transmitting, the station listens to check whether the medium is free.
+2. **Multiple access**: if it is free, it transmits. Other stations may do the same.
+3. **Collision detection**: while transmitting, the station keeps listening. If it detects a collision, it stops and sends a **jam signal** (32 bits) so that everyone notices the collision.
+4. **Backoff**: each station involved waits a random time (_binary exponential backoff_: after the $n$-th collision a random 0 to $2^n - 1$ slot times, with $n$ capped at 10) and tries again. After 16 attempts the frame is discarded.
+
+The **slot time** is 512 bit times. A frame must be long enough for the sender to still be transmitting when a collision from the far end comes back. This is where the minimum length of 64 bytes = 512 bits comes from.
+
+In today's networks every device has its own **full-duplex** connection to a switch port. Sending and receiving run on separate wire pairs or are separated electronically, collisions cannot occur and CSMA/CD is switched off. From 10 Gbit/s onwards there is no half-duplex mode at all.
+
+## Switching
+
+A **switch** forwards frames to the port where the destination is connected, using its **MAC address table** (at Cisco also CAM table, _Content Addressable Memory_).
+
+1. **Learning**: when a frame arrives on a port, the switch enters the **source MAC address** together with that port in the table. Entries that are not used for a while age out (Cisco default: 300 s).
+2. **Forwarding**: if the **destination MAC address** is in the table, the switch sends the frame only to that port. If the destination port is the same as the incoming port, the frame is discarded (**filtering**).
+3. **Flooding**: if the destination MAC is unknown (_unknown unicast_) or the frame is a broadcast or multicast, the switch sends it to all ports except the incoming port.
+
+The switch therefore learns only from source addresses, and usually does not need to flood the first reply, because the receiver made itself known when answering.
+
+### Forwarding methods
+
+| Method | Operation | Latency | Faulty frames |
+| --- | --- | --- | --- |
+| **Store-and-forward** | receive the whole frame, check FCS, then forward | higher, depends on frame length | are discarded |
+| **Cut-through: fast-forward** | forward as soon as the destination MAC has been read (after 6 bytes) | minimal | are forwarded |
+| **Cut-through: fragment-free** | forward after the first 64 bytes | low | collision fragments are detected, other errors are not |
+
+Store-and-forward is the default on most Cisco switches and is required when the input and output ports run at different speeds or when QoS is applied. Cut-through is found in data centres where microseconds matter.
+
+### Duplex and autonegotiation
+
+In **half duplex** a device can either send or receive, in **full duplex** both at once. With **autonegotiation**, both ends of a link agree on the highest common speed and full duplex. If one end is hard-set to full duplex and the other is on auto, the auto end still detects the speed but cannot negotiate the duplex mode and falls back to half duplex. This **duplex mismatch** leads to late collisions, CRC errors and very poor throughput, even though the link is "up". Rule of thumb: both ends on auto, or both fixed.
+
+### Collision and broadcast domains
+
+- A **collision domain** is the area in which frames sent at the same time can interfere with each other. A hub and all its ports form one collision domain. Each switch port is a separate collision domain (with full duplex there are no collisions at all).
+- A **broadcast domain** is the area that a broadcast reaches. Switches forward broadcasts, **routers** do not. Each router interface and each VLAN is a separate broadcast domain.
+
+:::tip[Example]
+A router has two interfaces, and a switch with 8 PCs is connected to each. One of the switches additionally has a hub with 3 PCs attached.
+
+- Broadcast domains: 2 (one per router interface).
+- Collision domains: each switch port counts separately, including the ports to the router and the hub. Switch A has 8 PCs and the uplink to the router (9), switch B has 8 PCs, the uplink and the hub (10). The hub with its 3 PCs belongs to the collision domain of the switch port it is connected to. 19 in total.
+:::
+
+Large broadcast domains are a problem: every broadcast (ARP, DHCP) has to be processed by every device. Networks are therefore divided with routers or VLANs; a few hundred devices per broadcast domain is typical.
+
+## ARP
+
+Before a computer can send a frame to an IPv4 address in its own network, it needs its MAC address. The **Address Resolution Protocol** (ARP, RFC 826) finds it:
+
+1. The computer checks its **ARP cache**. If the address is there, it uses it.
+2. Otherwise it sends an **ARP request** as a broadcast to `FF-FF-FF-FF-FF-FF`: "Who has 192.168.1.20? Tell 192.168.1.10."
+3. Only the computer with this IP address responds with an **ARP reply** as unicast.
+4. Both store the mapping in their cache (for a few minutes on Windows, by default 4 hours on Cisco routers).
+
+If the destination is in a **different network**, the computer does not ask for the destination's MAC but for the MAC of its **default gateway** and sends the frame there. Whether the destination is local is determined from the subnet mask (see [IPv4](/en/networking/ipv4/#subnet-mask-and-cidr)).
+
+Further variants are **gratuitous ARP** (a device announces its own mapping unprompted, for example after start-up or during a failover) and **proxy ARP** (a router answers on behalf of devices in another network). Since ARP has no authentication, an attacker can send forged replies and place themselves between two devices (**ARP spoofing**). On Windows, `arp -a` shows the cache, on Linux `ip neigh`. In IPv6, [NDP](/en/networking/ipv6/#neighbor-discovery-protocol) takes over this task.
+
+## VLANs
+
+A **VLAN** (_Virtual LAN_) divides a physical switch logically into several separate broadcast domains. Devices in VLAN 10 do not see frames from VLAN 20, even if they are connected to the same switch. A router is needed between VLANs.
+
+Advantages:
+
+- **Security**: departments, guests, servers or IP phones are separated from each other; transitions run through routers with [ACLs](/en/networking/nat-and-acl/#access-control-lists).
+- **Performance**: smaller broadcast domains.
+- **Flexibility**: membership does not depend on location. A device is assigned to a VLAN by the port configuration, not by re-plugging.
+- **Cost**: fewer switches and cables than with physically separate networks.
+
+### Types of VLAN
+
+| VLAN | Purpose |
+| --- | --- |
+| **Default VLAN** | VLAN 1, all ports are in it initially. It cannot be deleted |
+| **Data VLAN** | normal user traffic |
+| **Voice VLAN** | IP phones, separate segment with QoS priority |
+| **Management VLAN** | access to the management addresses of the switches |
+| **Native VLAN** | VLAN for untagged frames on a trunk |
+
+At Cisco, VLANs 1 to 1005 are the **normal range** (1002 to 1005 are reserved for Token Ring and FDDI) and 1006 to 4094 the **extended range**.
+
+### Access and trunk ports
+
+- An **access port** belongs to exactly one VLAN. Frames are sent and received without a tag; the end device knows nothing about the VLAN.
+- A **trunk port** carries frames of several VLANs over one link, typically between switches or between a switch and a router. So that the receiver knows which VLAN a frame belongs to, a **tag** is inserted.
+
+### IEEE 802.1Q
+
+The 4-byte **802.1Q tag** is inserted between the source MAC and the EtherType. Because this changes the frame, the FCS is recalculated.
+
+| Field | Bits | Content |
+| --- | --- | --- |
+| TPID (_Tag Protocol Identifier_) | 16 | 0x8100, marks a tagged frame |
+| PCP (_Priority Code Point_) | 3 | priority 0 to 7 according to IEEE 802.1p (Class of Service) |
+| DEI (_Drop Eligible Indicator_) | 1 | frame may be dropped first under congestion |
+| **VID** (_VLAN Identifier_) | 12 | VLAN number, 1 to 4094 usable (0 and 4095 reserved) |
+
+Frames in the **native VLAN** are carried on the trunk **without a tag**. The default is VLAN 1. Both ends of a trunk must have the same native VLAN, otherwise traffic ends up in the wrong VLAN (Cisco reports a _native VLAN mismatch_). For security reasons the native VLAN is set to an unused VLAN to prevent **VLAN hopping** with double-tagged frames.
+
+Cisco switches can negotiate trunks automatically with **DTP** (_Dynamic Trunking Protocol_). This is convenient but a security risk: an attacker could negotiate a trunk and see all VLANs. Ports are therefore configured statically as access or trunk, and DTP is switched off with `switchport nonegotiate`. The commands are on the [Cisco IOS](/en/networking/cisco-ios/#vlans-and-trunks) page.
+
+### Inter-VLAN routing
+
+Since every VLAN is a separate IP subnet, communication between VLANs needs a router. There are three variants:
+
+| Variant | Setup | Assessment |
+| --- | --- | --- |
+| **Legacy** | one physical router interface per VLAN, one access port each on the switch | does not scale, one cable and port per VLAN |
+| **Router-on-a-stick** | one trunk to the router, with one **subinterface** per VLAN on it (e.g. `G0/0/1.10` with `encapsulation dot1Q 10`) | cheap, but all VLANs share the bandwidth of one link. For small networks |
+| **Layer 3 switch** | the switch routes itself using **SVIs** (_Switch Virtual Interfaces_, `interface vlan 10`), routing in hardware | fast, the standard in enterprise networks |
+
+In all variants, the IP address of the router interface, subinterface or SVI is the **default gateway** of the devices in the respective VLAN.
+
+## Spanning Tree Protocol
+
+Redundant links between switches increase fault tolerance but create **loops** (_layer 2 loops_). Ethernet frames have no TTL field like IP packets and therefore circulate endlessly. Broadcasts are flooded again by every switch and multiply (**broadcast storm**), the MAC tables keep jumping between ports (**MAC table instability**), and end devices receive frames multiple times. Within seconds the network becomes unusable.
+
+The **Spanning Tree Protocol** (STP, originally IEEE 802.1D) prevents this: it deliberately blocks just enough ports to form a loop-free tree. If an active link fails, STP unblocks a blocked port. For this, the switches exchange **BPDUs** (_Bridge Protocol Data Units_), every 2 s by default.
+
+### Root bridge election
+
+Every switch has an 8-byte **bridge ID** (BID):
+
+- **Bridge priority** (4 bits, in steps of 4096, default **32768**)
+- **Extended system ID** (12 bits, the VLAN number, since Cisco runs one spanning tree per VLAN)
+- **MAC address** of the switch (48 bits)
+
+The switch with the **lowest bridge ID** becomes the **root bridge**. With equal priority, the lower MAC address decides, which is often the oldest switch and not necessarily the best one. The root bridge is therefore chosen deliberately by setting a low priority on the desired core or distribution switch (`spanning-tree vlan 10 priority 4096` or `spanning-tree vlan 10 root primary`).
+
+### Path cost
+
+Each switch calculates the **root path cost**, the sum of the port costs on the path to the root bridge.
+
+| Speed | Cost according to 802.1D-1998 (short) | Cost according to 802.1D-2004 (long, RSTP) |
+| --- | --- | --- |
+| 10 Mbit/s | 100 | 2,000,000 |
+| 100 Mbit/s | 19 | 200,000 |
+| 1 Gbit/s | 4 | 20,000 |
+| 10 Gbit/s | 2 | 2,000 |
+
+### Port roles
+
+1. **Root port** (RP): every switch except the root bridge chooses exactly one root port, the port with the lowest path cost to the root bridge.
+2. **Designated port** (DP): each segment has exactly one designated port, the port with the lowest cost to the root bridge. All ports of the root bridge are designated ports.
+3. **Alternate port** (in classic STP _non-designated_ or blocked): all remaining ports. They do not forward data but do receive BPDUs.
+
+In the event of a tie, the following decide in order: lowest path cost, lowest bridge ID of the sender, lowest port priority of the sender (default 128), lowest port number of the sender.
+
+### Port states and timers
+
+| State (802.1D) | Receive BPDUs | Learn MAC addresses | Forward data | Duration |
+| --- | --- | --- | --- | --- |
+| **Blocking** | yes | no | no | until max age (20 s) expires |
+| **Listening** | yes (and send) | no | no | forward delay, 15 s |
+| **Learning** | yes | yes | no | forward delay, 15 s |
+| **Forwarding** | yes | yes | yes | |
+| **Disabled** | no | no | no | administratively shut down |
+
+The timers are **hello time** 2 s, **forward delay** 15 s and **max age** 20 s. After a topology change it therefore takes 30 to 50 s until a blocked port forwards data. That is too slow for today's networks.
+
+### RSTP
+
+**RSTP** (_Rapid Spanning Tree Protocol_, IEEE 802.1w, today part of 802.1D-2004 and 802.1Q) usually converges in under a second. It knows only three states (**discarding**, **learning**, **forwarding**) and the roles root, designated, **alternate** (replacement for the root port) and **backup** (replacement for a designated port on the same segment). Instead of waiting for timers, neighbouring switches negotiate the transition directly using a **proposal/agreement** mechanism.
+
+**Edge ports** (at Cisco **PortFast**) are ports to end devices. They go straight to the forwarding state, because no loop can form there. To make sure no switch is connected there after all, **BPDU guard** is enabled: if the port receives a BPDU, it is shut down.
+
+By default Cisco uses **PVST+** (a separate 802.1D tree per VLAN) or **Rapid PVST+** (RSTP per VLAN). This makes it possible to choose a different root bridge per VLAN and spread the load across redundant links. **MSTP** (IEEE 802.1s) groups several VLANs into instances and is the vendor-neutral standard for large networks.
+
+## EtherChannel
+
+STP blocks redundant links, so their bandwidth stays unused. **EtherChannel** (link aggregation) bundles several physical Ethernet links into one logical link. STP sees only this one link and blocks nothing. Traffic is distributed over the individual links based on a hash (of MAC addresses, IP addresses or ports), so a single connection between two computers always uses only one physical link. If a link fails, traffic continues over the remaining ones without an STP recalculation.
+
+Up to **eight active** links can be bundled. All must have the same speed, the same duplex mode and the same VLAN configuration (access VLAN, or allowed VLANs and native VLAN).
+
+| Protocol | Standard | Modes | Channel forms with |
+| --- | --- | --- | --- |
+| **LACP** (_Link Aggregation Control Protocol_) | IEEE 802.3ad, today 802.1AX | `active`, `passive` | active/active, active/passive |
+| **PAgP** (_Port Aggregation Protocol_) | Cisco proprietary | `desirable`, `auto` | desirable/desirable, desirable/auto |
+| static | | `on` | on/on (no negotiation) |
+
+LACP can configure up to 16 ports, 8 of them active and 8 on standby. Because it is vendor-neutral, LACP is the usual choice, also for connecting servers with several network cards.
+
+## Further reading
+
+- [IEEE 802.3 Ethernet Working Group](https://www.ieee802.org/3/)
+- [IEEE 802.1 Working Group (bridging, VLANs, Spanning Tree)](https://1.ieee802.org/)
+- Radia Perlman: _Interconnections: Bridges, Routers, Switches, and Internetworking Protocols_, 2nd edition, Addison-Wesley 1999

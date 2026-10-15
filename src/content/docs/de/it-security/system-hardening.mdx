@@ -1,0 +1,148 @@
+---
+title: Systemhärtung
+description: Patchmanagement, Härtung von Windows und Linux, sichere Konfiguration, Backups gegen Ransomware, Protokollierung, Virenschutz und EDR sowie sichere Softwareentwicklung.
+sidebar:
+  order: 8
+---
+
+**Härtung** (_Hardening_) bedeutet, ein System so zu konfigurieren, dass es möglichst wenig Angriffsfläche bietet: Unnötiges entfernen, Notwendiges sicher einstellen, Lücken schnell schließen. Die meisten erfolgreichen Angriffe nutzen keine raffinierten Zero-Day-Lücken, sondern bekannte, längst behobene Schwachstellen, Standardpasswörter und Fehlkonfigurationen. Härtung ist deshalb eine der wirksamsten Maßnahmen, und sie kostet vor allem Sorgfalt.
+
+## Patchmanagement
+
+Ein **Patch** ist ein Update, das einen Fehler oder eine Sicherheitslücke behebt. Sobald ein Hersteller einen Sicherheitspatch veröffentlicht, analysieren Angreifer ihn und entwickeln oft innerhalb weniger Tage einen Exploit für ungepatchte Systeme. Der Wurm WannaCry richtete 2017 weltweit Schäden an, obwohl Microsoft die ausgenutzte Lücke zwei Monate vorher geschlossen hatte.
+
+**Patchmanagement** ist ein geregelter Prozess:
+
+1. **Inventar**: Welche Hardware, Betriebssysteme, Programme und Bibliotheken in welchen Versionen gibt es? Was man nicht kennt, kann man nicht patchen.
+2. **Informieren**: Sicherheitsmeldungen der Hersteller, Warnungen von CERT.at und Schwachstellenscanner beobachten.
+3. **Bewerten und priorisieren**: nach CVSS-Wert, ob die Lücke bereits aktiv ausgenutzt wird (etwa KEV-Katalog) und wie exponiert das System ist. Ein aus dem Internet erreichbares VPN-Gateway hat Vorrang vor einem internen Testrechner.
+4. **Testen** auf Testsystemen oder einer Pilotgruppe.
+5. **Verteilen** in einem Wartungsfenster, automatisiert mit Werkzeugen wie WSUS, Microsoft Intune, `unattended-upgrades` (Debian, Ubuntu) oder `dnf-automatic` (Red Hat).
+6. **Kontrollieren**: Ist der Patch überall angekommen?
+
+Microsoft veröffentlicht Sicherheitsupdates am zweiten Dienstag im Monat (**Patch Tuesday**). Kritische, aktiv ausgenutzte Lücken werden außerhalb des Rhythmus sofort geschlossen. Nicht vergessen werden dürfen Firmware (BIOS/UEFI, Netzwerkgeräte, Drucker), Browser-Erweiterungen und Bibliotheken in eigener Software. Wie das unter Windows Server abläuft, steht unter [Updates und Wartung](/de/deployment/windows_server/updates_and_maintenance/).
+
+Software, deren Herstellersupport ausgelaufen ist (**End of Life**), erhält keine Sicherheitsupdates mehr und muss ersetzt oder zumindest stark isoliert werden. Der reguläre Support für Windows 10 endete am 14. Oktober 2025.
+
+## Grundsätze der Härtung
+
+- **Minimierung**: nur die Rollen, Dienste, Programme und Benutzerkonten installieren und aktivieren, die wirklich gebraucht werden. Jeder abgeschaltete Dienst ist eine Angriffsfläche weniger.
+- **Standardwerte ändern**: Standardpasswörter sofort ersetzen, Standardkonten deaktivieren oder umbenennen, Beispielanwendungen entfernen.
+- **Sichere Protokolle**: SSH statt Telnet, SFTP bzw. FTPS statt FTP, HTTPS statt HTTP, SNMPv3 statt SNMPv1/v2c, LDAPS statt LDAP. Veraltete Protokolle wie SMBv1, TLS 1.0 und NTLMv1 deaktivieren.
+- **Least Privilege**: Dienste laufen unter eigenen Konten mit minimalen Rechten, Benutzer arbeiten ohne Administratorrechte.
+- **Verschlüsselung** von Datenträgern, besonders bei mobilen Geräten (BitLocker, LUKS, FileVault).
+- **Einheitliche Basiskonfiguration** (_Baseline_) für alle Systeme eines Typs, automatisch ausgerollt und regelmäßig überprüft, damit Abweichungen (_Configuration Drift_) auffallen.
+
+Statt jede Einstellung selbst zu erarbeiten, verwendet man anerkannte Vorgaben: die **CIS Benchmarks** des Center for Internet Security (für fast alle Betriebssysteme und viele Anwendungen), die **Microsoft Security Baselines**, die Härtungsempfehlungen des BSI und die Bausteine des IT-Grundschutz-Kompendiums. Mit einem Portscanner wie **nmap** prüfst du von außen, welche Dienste tatsächlich erreichbar sind:
+
+```bash
+# offene TCP-Ports und Dienstversionen eines eigenen Servers ermitteln
+nmap -sV -p- 192.168.10.30
+```
+
+Portscans fremder Systeme ohne Erlaubnis sind nicht nur unhöflich, sondern können rechtliche Folgen haben (siehe [Informationssicherheitsmanagement](/de/it-security/information-security-management/#penetrationstests-und-recht)).
+
+## Windows härten
+
+| Maßnahme                                         | Zweck                                                                                           |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| **getrennte Admin-Konten**, Arbeit ohne Adminrechte | Schadsoftware läuft nur mit Benutzerrechten; Domänen-Admins melden sich nur an Domänencontrollern an (**Tiering-Modell**) |
+| **Windows LAPS**                                 | eindeutiges, zufälliges Passwort für das lokale Administratorkonto jedes Rechners, im AD gespeichert, verhindert Lateral Movement mit einem gemeinsamen Passwort |
+| **BitLocker** mit TPM                            | Verschlüsselung der Festplatte, schützt bei Diebstahl                                          |
+| **Secure Boot**                                  | lädt nur signierte Bootloader, schützt vor Bootkits                                             |
+| **Credential Guard**                             | schützt Anmeldeinformationen im Speicher vor Werkzeugen wie Mimikatz                            |
+| **App Control for Business**, AppLocker          | nur freigegebene Programme dürfen starten (_Application Allowlisting_)                         |
+| **Microsoft Defender** mit Regeln zur Verringerung der Angriffsfläche (ASR) | blockiert typische Angriffstechniken, etwa Office-Programme, die Prozesse starten |
+| **Makros** aus dem Internet blockieren           | Office blockiert sie seit 2022 standardmäßig, per Gruppenrichtlinie absichern                  |
+| SMBv1 und NTLM deaktivieren bzw. einschränken    | veraltete, angreifbare Protokolle                                                              |
+| PowerShell-Protokollierung                       | Script Block Logging macht ausgeführte Skripte für die Analyse sichtbar                         |
+
+In einer Domäne werden diese Einstellungen zentral per [Gruppenrichtlinie](/de/deployment/windows_server/group_policies/) verteilt.
+
+## Linux härten
+
+- **SSH absichern**: Anmeldung nur mit Schlüsseln, keine direkte Root-Anmeldung, nur bestimmte Benutzer zulassen (siehe [Linux-Administration](/de/deployment/linux_server/linux_administration/)).
+- **sudo** statt Arbeiten als `root`, mit genau festgelegten Rechten in `/etc/sudoers`.
+- **Host-Firewall** mit `nftables` oder `ufw`, Default Deny für eingehenden Verkehr.
+- **Mandatory Access Control** mit **SELinux** (Red Hat, Fedora) oder **AppArmor** (Ubuntu, SUSE): Selbst ein übernommener Dienst darf nur auf die Dateien und Ressourcen zugreifen, die in seinem Profil stehen.
+- **fail2ban** sperrt Adressen nach wiederholten Fehlversuchen.
+- Dateirechte prüfen: keine für alle schreibbaren Dateien in Systemverzeichnissen, SUID-Programme auf das Nötige beschränken, Mount-Optionen wie `noexec` für `/tmp`.
+- Automatische Sicherheitsupdates und **auditd** für die Protokollierung sicherheitsrelevanter Ereignisse.
+
+```ini
+# Auszug aus /etc/ssh/sshd_config
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+AllowGroups ssh-users
+MaxAuthTries 3
+X11Forwarding no
+```
+
+Werkzeuge wie **Lynis** prüfen ein Linux-System automatisch auf typische Härtungslücken und geben Empfehlungen.
+
+## Backups
+
+Backups sind die letzte Verteidigungslinie gegen Ransomware, Hardwaredefekte und Bedienfehler. Ransomware-Gruppen suchen gezielt nach Sicherungen und löschen oder verschlüsseln sie, bevor sie zuschlagen. Deshalb gilt:
+
+- **3-2-1-Regel**: drei Kopien der Daten auf zwei verschiedenen Medien, davon eine an einem anderen Standort. Erweitert zu **3-2-1-1-0**: zusätzlich eine Kopie **offline** oder **unveränderbar** (_immutable_) und null Fehler bei der Prüfung.
+- Das Backup-System ist von der Domäne getrennt und hat eigene Zugangsdaten mit MFA, damit ein übernommenes Admin-Konto nicht auch die Sicherungen löschen kann.
+- Sicherungen werden **verschlüsselt**, weil sie alle Daten des Unternehmens enthalten.
+- **Wiederherstellung regelmäßig testen**: Ein Backup, das sich nicht zurückspielen lässt, ist wertlos. Gemessen wird auch, wie lange die Wiederherstellung dauert (siehe RTO und RPO unter [Incident Response](/de/it-security/incident-response-and-forensics/#business-continuity-und-disaster-recovery)).
+
+Sicherungsarten (voll, differenziell, inkrementell), das Generationenprinzip und Speichermedien beschreibt die Seite [Sicherungsstrategien](/de/deployment/security-strategies/).
+
+## Protokollierung und Überwachung
+
+Ohne Protokolle (_Logs_) bleiben Angriffe unbemerkt, und nach einem Vorfall lässt sich nicht rekonstruieren, was passiert ist. Im Durchschnitt vergehen oft Wochen, bis ein Einbruch entdeckt wird.
+
+- **Was**: An- und Abmeldungen (auch fehlgeschlagene), Änderungen an Konten, Gruppen und Rechten, Zugriffe auf sensible Daten, Konfigurationsänderungen, Start neuer Dienste und Prozesse, Firewall-Blockaden, Fehler von Sicherheitsmechanismen.
+- **Wohin**: zentral auf einen Logserver oder in ein SIEM, damit ein Angreifer auf einem übernommenen System seine Spuren nicht einfach löschen kann.
+- **Wie**: mit synchronisierter Uhrzeit (NTP), geschützt vor Veränderung, mit festgelegter Aufbewahrungsdauer. Personenbezogene Daten in Logs unterliegen der DSGVO, die Aufbewahrung muss also begründet und begrenzt sein.
+- **Auswerten**: Logs nützen nur, wenn jemand Alarme bearbeitet (siehe [SIEM und SOC](/de/it-security/network-security/#siem-und-soc)).
+
+Unter Windows sind etwa die Ereignis-IDs 4624 (erfolgreiche Anmeldung), 4625 (fehlgeschlagene Anmeldung), 4720 (Konto erstellt) und 4732 (Mitglied zu einer lokalen Sicherheitsgruppe hinzugefügt) relevant. Wie man Logs sammelt und Systeme überwacht, steht unter [Monitoring](/de/deployment/operations/monitoring/).
+
+## Virenschutz und EDR
+
+Ein klassischer **Virenscanner** (Antivirus) erkennt Schadsoftware auf drei Arten:
+
+- **Signaturen**: Vergleich mit Mustern bekannter Schadsoftware. Zuverlässig, aber nur für bereits bekannte Schädlinge, und durch kleine Änderungen am Code umgehbar.
+- **Heuristik**: Suche nach verdächtigen Merkmalen im Code, etwa Verschleierung oder typische Befehlsfolgen.
+- **Verhaltensanalyse**: Überwachung zur Laufzeit, etwa ein Prozess, der in kurzer Zeit tausende Dateien verschlüsselt.
+
+**Endpoint Detection and Response** (EDR) geht weiter: Ein Agent auf jedem Endgerät zeichnet laufend Prozessstarts, Netzwerkverbindungen, Datei- und Registry-Änderungen auf und sendet sie an eine zentrale Plattform. Dort werden sie auf Angriffsmuster (etwa nach MITRE ATT&CK) untersucht. Analysten können den Ablauf eines Angriffs nachvollziehen und **reagieren**: einen Rechner per Knopfdruck vom Netz isolieren, Prozesse beenden, Dateien in Quarantäne verschieben. **XDR** (_Extended Detection and Response_) bezieht zusätzlich E-Mail, Identitäten, Netzwerk und Cloud ein. Beispiele sind Microsoft Defender for Endpoint, CrowdStrike Falcon und SentinelOne.
+
+Sicherheitssoftware läuft mit höchsten Rechten tief im System und ist damit selbst ein Risiko: Im Juli 2024 legte ein fehlerhaftes Update einer EDR-Software weltweit rund 8,5 Millionen Windows-Rechner lahm, darunter Systeme von Flughäfen, Banken und Spitälern. Auch Sicherheitsupdates werden deshalb gestaffelt ausgerollt.
+
+## Sichere Softwareentwicklung
+
+Viele Schwachstellen entstehen beim Programmieren. Ein **Secure Software Development Lifecycle** (SSDLC) verankert Sicherheit in jeder Phase der Entwicklung, statt sie erst am Ende zu testen. Bekannte Modelle sind der **Microsoft Security Development Lifecycle** (SDL) und **OWASP SAMM**.
+
+| Phase           | Maßnahmen                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Anforderungen   | Sicherheitsanforderungen festlegen, etwa nach dem OWASP ASVS, Schutzbedarf der Daten klären  |
+| Entwurf         | **Bedrohungsmodellierung** (etwa STRIDE), sichere Architektur, Security by Design            |
+| Implementierung | sichere Programmierrichtlinien, **Code-Reviews** mit Blick auf Sicherheit, keine Geheimnisse im Code |
+| Test            | **SAST** (statische Codeanalyse), **DAST** (Tests der laufenden Anwendung, etwa mit OWASP ZAP), Penetrationstests |
+| Auslieferung    | signierte Artefakte, sichere Standardkonfiguration, **SBOM**                                 |
+| Betrieb         | Schwachstellenmeldungen annehmen und beheben, Abhängigkeiten aktualisieren                   |
+
+Moderne Software besteht großteils aus fremden Bibliotheken. **Dependency Scanning** (_Software Composition Analysis_, SCA) prüft sie automatisch auf bekannte Schwachstellen:
+
+```bash
+dotnet list package --vulnerable --include-transitive   # .NET
+cargo audit                                             # Rust (Werkzeug cargo-audit)
+npm audit                                               # JavaScript
+```
+
+Dienste wie GitHub Dependabot erstellen bei verwundbaren Abhängigkeiten automatisch Pull Requests mit Updates. Eine **SBOM** (_Software Bill of Materials_, Formate CycloneDX oder SPDX) listet alle enthaltenen Komponenten mit Versionen, sodass Betreiber bei einer neuen Lücke wie Log4Shell sofort wissen, ob sie betroffen sind. **Secret Scanning** findet versehentlich eingecheckte Passwörter und API-Schlüssel im Repository. Die CI/CD-Pipeline selbst ist ebenfalls schützenswert, denn wer sie übernimmt, kann Schadcode in jede ausgelieferte Version einbauen.
+
+Der europäische **Cyber Resilience Act** (CRA, Verordnung (EU) 2024/2847) macht vieles davon für Hersteller von Produkten mit digitalen Elementen verpflichtend: sichere Standardkonfiguration, Sicherheitsupdates über den Supportzeitraum, Umgang mit Schwachstellen und eine SBOM. Die Meldepflichten für aktiv ausgenutzte Schwachstellen gelten seit 11. September 2026, die übrigen Pflichten ab 11. Dezember 2027. Grundlagen zu Tests und Code-Reviews findest du unter [Testen](/de/software-development/testing/).
+
+## Weiterführende Quellen
+
+- [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) (Center for Internet Security)
+- [BSI IT-Grundschutz-Kompendium](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html), Bausteine SYS (IT-Systeme) und OPS.1.1.3 (Patch- und Änderungsmanagement)
+- [Microsoft Security Development Lifecycle](https://www.microsoft.com/de-de/securityengineering/sdl)

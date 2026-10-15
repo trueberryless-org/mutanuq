@@ -1,0 +1,178 @@
+---
+title: Barrierefreiheit und SEO
+description: WCAG 2.2 mit den Prinzipien POUR und den Konformitätsstufen, Web-Zugänglichkeits-Gesetz und Barrierefreiheitsgesetz, Prüfwerkzeuge sowie Grundlagen der Suchmaschinenoptimierung und Core Web Vitals.
+sidebar:
+  order: 9
+---
+
+**Barrierefreiheit** (_Accessibility_, kurz a11y) bedeutet, dass alle Menschen eine Website nutzen können, auch mit Seh-, Hör-, motorischen oder kognitiven Einschränkungen. Betroffen sind nicht nur wenige: Blinde Menschen nutzen einen **Screenreader**, der die Seite vorliest oder auf einer Braillezeile ausgibt, sehbehinderte Menschen vergrößern stark, Menschen mit Tremor bedienen nur mit der Tastatur oder per Sprache, gehörlose Menschen brauchen Untertitel. Dazu kommen vorübergehende und situative Einschränkungen: ein gebrochener Arm, grelles Sonnenlicht auf dem Handy, ein Video in der lauten Straßenbahn. Barrierefreiheit verbessert die Bedienbarkeit für alle und ist für viele Websites gesetzlich vorgeschrieben.
+
+## WCAG 2.2
+
+Die **Web Content Accessibility Guidelines** (WCAG) des W3C sind der international maßgebliche Standard. Die Version 2.0 erschien 2008, 2.1 im Jahr 2018 und **2.2 im Oktober 2023**. WCAG 2.2 ist seit 2025 auch als internationale Norm ISO/IEC 40500:2025 veröffentlicht. Neuere Versionen sind abwärtskompatibel: Wer WCAG 2.2 erfüllt, erfüllt auch 2.1 und 2.0. An der grundlegend überarbeiteten Version WCAG 3.0 wird gearbeitet.
+
+Die WCAG sind in vier **Prinzipien** gegliedert, darunter in 13 **Richtlinien** und diese in prüfbare **Erfolgskriterien** (_Success Criteria_). Die Prinzipien merkt man sich mit **POUR**:
+
+### Wahrnehmbar
+
+**Perceivable**: Informationen müssen so dargestellt werden, dass alle sie wahrnehmen können.
+
+- **Textalternativen** für alles, was kein Text ist: `alt`-Texte für Bilder, Beschriftungen für Symbolschaltflächen (1.1.1, A).
+- **Untertitel** für aufgezeichnete Videos (1.2.2, A) und Audiodeskription.
+- Struktur muss im Code stecken, nicht nur im Aussehen: echte Überschriften, Listen, Tabellen und Labels (1.3.1, A).
+- Information darf nicht **nur über Farbe** vermittelt werden: Ein Pflichtfeld ist nicht nur rot markiert, sondern auch mit Text oder Symbol (1.4.1, A).
+- **Kontrast**: Normaler Text braucht mindestens **4,5 : 1**, großer Text (ab 24 px bzw. ab 18,66 px fett) mindestens **3 : 1** (1.4.3, AA). Auf Stufe AAA gilt 7 : 1. Bedienelemente und Grafiken brauchen 3 : 1 zur Umgebung (1.4.11, AA).
+- Text muss sich auf **200 %** vergrößern lassen, ohne dass Inhalt verloren geht (1.4.4, AA), und bei einer Breite von 320 CSS-Pixeln ohne waagrechtes Scrollen lesbar sein (**Reflow**, 1.4.10, AA).
+
+Das Kontrastverhältnis berechnet sich aus der **relativen Leuchtdichte** $L$ der helleren Farbe $L_1$ und der dunkleren $L_2$, jeweils zwischen 0 (Schwarz) und 1 (Weiß):
+
+$$
+K = \frac{L_1 + 0{,}05}{L_2 + 0{,}05}
+$$
+
+Schwarz auf Weiß ergibt $\frac{1 + 0{,}05}{0 + 0{,}05} = 21$, also das Maximum 21 : 1. Das hellste Grau, das auf weißem Hintergrund noch 4,5 : 1 erreicht, ist etwa `#767676` (4,54 : 1). Werkzeuge wie der Kontrastprüfer in den Entwicklerwerkzeugen rechnen das automatisch.
+
+### Bedienbar
+
+**Operable**: Alle Bedienelemente müssen von allen bedient werden können.
+
+- Alles muss **mit der Tastatur** bedienbar sein (2.1.1, A), ohne dass der Fokus irgendwo gefangen ist (2.1.2, A). Mit Tab springt man durch Links und Bedienelemente, mit Enter und Leertaste löst man aus.
+- Der **Tastaturfokus muss sichtbar** sein (2.4.7, AA). `outline: none` ohne Ersatz ist deshalb ein Fehler. Seit WCAG 2.2 darf der fokussierte Inhalt außerdem nicht vollständig von anderen Elementen wie fixierten Kopfzeilen oder Cookie-Bannern verdeckt sein (2.4.11, AA).
+- Genug **Zeit**: Zeitlimits müssen sich verlängern lassen, bewegte Inhalte anhalten (2.2.1, 2.2.2, A).
+- Nichts darf öfter als dreimal pro Sekunde **blitzen**, weil das epileptische Anfälle auslösen kann (2.3.1, A).
+- **Orientierung**: aussagekräftiger Seitentitel (2.4.2, A), ein Link zum Überspringen der Navigation (2.4.1, A), verständliche Linktexte (2.4.4, A), logische Fokusreihenfolge (2.4.3, A).
+- Neu in 2.2: Klickziele mindestens **24 × 24 CSS-Pixel** groß oder mit genügend Abstand (2.5.8, AA), und Funktionen, die Ziehen erfordern, brauchen eine Alternative ohne Ziehen (2.5.7, AA).
+
+### Verständlich
+
+**Understandable**: Inhalt und Bedienung müssen verständlich sein.
+
+- Die **Sprache** der Seite ist angegeben (`<html lang="de">`, 3.1.1, A), ebenso Abschnitte in anderer Sprache (3.1.2, AA). Sonst liest ein deutscher Screenreader englischen Text mit deutscher Aussprache.
+- Die Seite verhält sich **vorhersehbar**: Fokus oder Eingabe lösen keinen unerwarteten Seitenwechsel aus (3.2.1, 3.2.2, A), Navigation ist auf allen Seiten gleich angeordnet (3.2.3, AA).
+- **Hilfe bei Eingaben**: Fehler werden erkannt und in Textform beschrieben (3.3.1, A), Felder haben Beschriftungen oder Anweisungen (3.3.2, A), bei Fehlern gibt es Korrekturvorschläge (3.3.3, AA).
+- Neu in 2.2: Bereits eingegebene Daten muss man im selben Vorgang nicht erneut eingeben (3.3.7, A), und die Anmeldung darf keinen kognitiven Test wie das Abtippen eines Rätsels verlangen, ohne Alternative wie Einfügen aus dem Passwortmanager (3.3.8, AA).
+
+### Robust
+
+**Robust**: Der Inhalt muss mit verschiedenen Browsern und Hilfsmitteln funktionieren, auch künftigen.
+
+- Jedes Bedienelement hat einen zugänglichen **Namen**, eine **Rolle** und einen **Zustand**, die Hilfsmittel auslesen können (4.1.2, A). Native HTML-Elemente erfüllen das von selbst, eigene Widgets brauchen [ARIA](/de/web-technologies/html/#barrierefreiheit).
+- Statusmeldungen wie „Gespeichert“ oder „3 Treffer“ werden Screenreadern angesagt, ohne den Fokus zu verschieben, etwa über `role="status"` (4.1.3, AA).
+
+Das Kriterium 4.1.1 (Parsing, gültiges HTML) wurde in WCAG 2.2 gestrichen, weil moderne Browser fehlerhaftes HTML einheitlich behandeln.
+
+### Konformitätsstufen
+
+| Stufe   | Bedeutung                                                                                      |
+| ------- | ---------------------------------------------------------------------------------------------- |
+| **A**   | Mindestanforderungen. Ohne sie ist die Seite für manche Menschen gar nicht nutzbar              |
+| **AA**  | A und zusätzliche Kriterien, die die größten Barrieren beseitigen. **Gesetzlich gefordert** in der EU und in Österreich |
+| **AAA** | höchste Stufe. Für ganze Websites nicht immer erreichbar, wird nicht pauschal verlangt          |
+
+Eine Seite ist nur dann konform zu einer Stufe, wenn sie **alle** Kriterien dieser und der niedrigeren Stufen erfüllt.
+
+## Rechtslage in Österreich und der EU
+
+| Regelung | Für wen | Inhalt |
+| -------- | ------- | ------ |
+| **Web-Zugänglichkeits-Gesetz** (WZG, BGBl. I Nr. 59/2019, in Kraft seit 23. Juli 2019) | Websites und mobile Anwendungen des **Bundes** und ihm zuzurechnender Einrichtungen. Die Bundesländer haben eigene Landesgesetze | setzt die EU-Richtlinie 2016/2102 um. Die Richtlinie galt für neue Websites ab 23. September 2019, für alle Websites ab 23. September 2020 und für mobile Apps ab 23. Juni 2021. Gefordert ist die harmonisierte Norm **EN 301 549**, die für Webinhalte auf **WCAG 2.1 AA** verweist. Jede Website braucht eine **Erklärung zur Barrierefreiheit** mit einer Kontaktmöglichkeit, um Barrieren zu melden. Beschwerden prüft die **Beschwerdestelle der FFG** (Österreichische Forschungsförderungsgesellschaft), die auch die Überwachung durchführt |
+| **Barrierefreiheitsgesetz** (BaFG, BGBl. I Nr. 76/2023, anwendbar seit **28. Juni 2025**) | **private Unternehmen**, die bestimmte Produkte und Dienstleistungen anbieten | setzt den **European Accessibility Act** (Richtlinie (EU) 2019/882) um. Betroffen sind unter anderem Online-Shops (_Dienstleistungen im elektronischen Geschäftsverkehr_), Bankdienstleistungen, E-Books, Ticket- und Buchungsdienste im Personenverkehr, Telefonie, Computer, Smartphones, Geldautomaten und Fahrkartenautomaten. Kleinstunternehmen (weniger als 10 Beschäftigte und höchstens 2 Mio. Euro Jahresumsatz oder Bilanzsumme) sind bei Dienstleistungen ausgenommen. Für bestehende Verträge und Automaten gibt es Übergangsfristen. Die Marktüberwachung liegt beim Sozialministeriumservice, Verstöße sind mit Verwaltungsstrafen bedroht |
+| **Bundes-Behindertengleichstellungsgesetz** (BGStG, seit 2006) | alle, die Waren und Dienstleistungen öffentlich anbieten | allgemeines Diskriminierungsverbot. Bei Barrieren kann Schadenersatz verlangt werden, vorher ist ein Schlichtungsverfahren beim Sozialministeriumservice verpflichtend |
+
+## Barrierefreiheit prüfen
+
+Automatische Werkzeuge finden nur einen Teil der Probleme, etwa fehlende `alt`-Attribute, zu geringen Kontrast oder Felder ohne Label. Ob ein Alternativtext sinnvoll ist oder ob die Bedienung logisch ist, kann nur ein Mensch beurteilen. Eine Prüfung kombiniert deshalb:
+
+| Methode                    | Werkzeuge                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| automatische Prüfung       | **Lighthouse** (in Chrome eingebaut), **axe DevTools**, **WAVE** (WebAIM), Accessibility Insights; in CI-Pipelines `axe-core` oder `pa11y` |
+| Kontrast                   | Farbwähler der Entwicklerwerkzeuge, WebAIM Contrast Checker, Colour Contrast Analyser             |
+| Tastatur                   | Maus weglegen und die Seite nur mit Tab, Umschalt+Tab, Enter, Leertaste und Pfeiltasten bedienen   |
+| Screenreader               | **NVDA** (kostenlos, Windows), JAWS, Sprachausgabe (Windows), **VoiceOver** (macOS, iOS), **TalkBack** (Android) |
+| Zoom und Darstellung       | auf 200 % und 400 % vergrößern, Bildschirmbreite 320 px, hoher Kontrast, Bewegung reduzieren        |
+| Barrierefreiheitsbaum      | Reiter „Accessibility“ in den Entwicklerwerkzeugen zeigt Name, Rolle und Zustand jedes Elements    |
+
+Am zuverlässigsten ist ein Test mit betroffenen Menschen. Barrierefreiheit lässt sich am billigsten von Anfang an einplanen: Semantisches HTML kostet nichts, nachträgliches Reparieren einer Seite aus `<div>`-Elementen sehr viel.
+
+## Suchmaschinenoptimierung
+
+**SEO** (_Search Engine Optimization_) umfasst alle Maßnahmen, damit eine Seite in den unbezahlten Ergebnissen von Suchmaschinen gut gefunden wird. Eine Suchmaschine arbeitet in drei Schritten: Ein **Crawler** (Googlebot, Bingbot) folgt Links und lädt Seiten, die Seiten werden analysiert und in den **Index** aufgenommen, und bei einer Suche werden die passenden Seiten nach Relevanz und Qualität gereiht (**Ranking**). Vieles, was einer Seite für Suchmaschinen hilft, hilft auch der Barrierefreiheit, denn ein Crawler „sieht“ eine Seite ähnlich wie ein Screenreader.
+
+### Inhalt und HTML
+
+- **Inhalt** ist der wichtigste Faktor: nützliche, eigenständige Texte, die die Fragen der Suchenden beantworten.
+- Ein eindeutiger, beschreibender **`<title>`** pro Seite (etwa 50 bis 60 Zeichen werden angezeigt) und eine **Meta-Description** (etwa 150 bis 160 Zeichen), die in den Suchergebnissen als Vorschautext erscheinen kann.
+- **Semantisches HTML** mit einer `<h1>` und logischer Überschriftenhierarchie, `alt`-Texte für Bilder, sprechende Linktexte und sprechende URLs (`/abteilungen/informationstechnologie/` statt `/page.php?id=4711`).
+- **Interne Verlinkung**, damit der Crawler alle Seiten findet und erkennt, welche wichtig sind.
+- `<link rel="canonical">` gibt bei mehreren URLs mit gleichem Inhalt die bevorzugte an, damit keine Duplikate entstehen. Bei mehrsprachigen Seiten verknüpft `hreflang` die Sprachversionen: `<link rel="alternate" hreflang="en" href="https://example.at/en/">`.
+- Eine SPA, deren Inhalt erst durch JavaScript entsteht, wird schlechter oder verzögert indexiert. [SSR oder SSG](/de/web-technologies/frontend-frameworks/#rendering-strategien) lösen das.
+
+### Technische Grundlagen
+
+Die Datei **`robots.txt`** im Wurzelverzeichnis sagt Crawlern, welche Bereiche sie nicht abrufen sollen, und verweist auf die Sitemap. Sie ist keine Zugriffssperre: Wer Inhalte schützen will, braucht eine Anmeldung. Um eine Seite aus dem Index fernzuhalten, verwendet man `<meta name="robots" content="noindex">`.
+
+```text
+User-agent: *
+Disallow: /admin/
+Sitemap: https://www.example.at/sitemap.xml
+```
+
+Die **Sitemap** (`sitemap.xml`, Protokoll von sitemaps.org) listet alle Seiten, die indexiert werden sollen, mit dem Datum der letzten Änderung. Eine Datei darf höchstens 50 000 URLs enthalten und unkomprimiert höchstens 50 MB groß sein, größere Websites verwenden einen Sitemap-Index.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.example.at/abteilungen/informationstechnologie/</loc>
+    <lastmod>2026-09-01</lastmod>
+  </url>
+</urlset>
+```
+
+**Strukturierte Daten** beschreiben den Inhalt maschinenlesbar mit dem Vokabular von **schema.org**, meist im Format **JSON-LD**. Suchmaschinen können daraus erweiterte Suchergebnisse (_Rich Results_) erzeugen, etwa mit Veranstaltungsdatum, Bewertungssternen oder Öffnungszeiten.
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Tag der offenen Tür",
+  "startDate": "2026-11-27T09:00:00+01:00",
+  "location": {
+    "@type": "Place",
+    "name": "HTL Musterstadt",
+    "address": "Schulstraße 1, 1234 Musterstadt"
+  }
+}
+</script>
+```
+
+Weitere technische Faktoren sind **HTTPS**, eine für Mobilgeräte geeignete Darstellung (Google bewertet Seiten in der **Mobile-First-Indexierung** anhand der mobilen Version) und eine kurze Ladezeit. Fortschritte und Probleme bei der Indexierung zeigt die kostenlose **Google Search Console**.
+
+### Core Web Vitals
+
+Die **Core Web Vitals** sind drei Kennzahlen von Google für die Nutzererfahrung, die auch in das Ranking einfließen. Gemessen wird an echten Besuchen, und eine Seite gilt als gut, wenn **75 %** der Seitenaufrufe den Grenzwert erreichen.
+
+| Kennzahl | misst | gut | schlecht |
+| -------- | ----- | --- | -------- |
+| **LCP** (_Largest Contentful Paint_) | Ladezeit: wann das größte sichtbare Element (Titelbild, Textblock) dargestellt ist | ≤ 2,5 s | > 4 s |
+| **INP** (_Interaction to Next Paint_) | Reaktionsfähigkeit: Zeit von einer Interaktion (Klick, Tastendruck) bis zur nächsten Darstellung, über den gesamten Besuch. Hat im März 2024 die Kennzahl FID ersetzt | ≤ 200 ms | > 500 ms |
+| **CLS** (_Cumulative Layout Shift_) | visuelle Stabilität: wie stark Inhalte während des Ladens unerwartet verrutschen | ≤ 0,1 | > 0,25 |
+
+Typische Maßnahmen:
+
+- **LCP**: Bilder komprimieren und in modernen Formaten (WebP, AVIF) und passender Größe liefern, das Titelbild nicht mit `loading="lazy"` verzögern, Caching und ein CDN verwenden, schnell antwortende Server.
+- **INP**: lange JavaScript-Aufgaben aufteilen oder in Web Worker verlagern, weniger JavaScript ausliefern.
+- **CLS**: `width` und `height` bei Bildern und Videos angeben, Platz für Werbung und eingebettete Inhalte reservieren, Schriften so laden, dass der Text beim Wechsel nicht springt.
+
+Messen kann man mit **PageSpeed Insights** (echte Felddaten und Labortest), Lighthouse und dem Reiter **Leistung** der Entwicklerwerkzeuge.
+
+:::caution[Keine Tricks]
+Versteckter Text, Keyword-Stuffing (Suchbegriffe unnatürlich oft wiederholen), gekaufte Links oder **Cloaking** (dem Crawler andere Inhalte zeigen als Menschen) verstoßen gegen die Richtlinien der Suchmaschinen und können zum Ausschluss aus dem Index führen.
+:::
+
+## Weiterführende Quellen
+
+- [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) und [WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/) (W3C WAI)
+- [Digitale Barrierefreiheit](https://www.digitalbarrierefrei.at/) (FFG, Informationen zum WZG) und [Barrierefreiheitsgesetz](https://www.sozialministerium.gv.at/Themen/Soziales/Menschen-mit-Behinderungen/Barrierefreiheitsgesetz.html) (Sozialministerium)
+- [Google Search Central: SEO-Leitfaden für Einsteiger](https://developers.google.com/search/docs/fundamentals/seo-starter-guide?hl=de) und [web.dev: Web Vitals](https://web.dev/articles/vitals)

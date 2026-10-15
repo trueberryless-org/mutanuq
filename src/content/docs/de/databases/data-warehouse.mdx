@@ -1,0 +1,160 @@
+---
+title: Data Warehouse und Business Intelligence
+description: OLTP und OLAP, Aufbau eines Data Warehouse, ETL und ELT, Stern- und Schneeflockenschema, Fakten und Dimensionen, historisierte Dimensionen, OLAP-Operationen mit ROLLUP und CUBE sowie Data Lakes.
+sidebar:
+  order: 16
+---
+
+Die Datenbanken, mit denen Anwendungen täglich arbeiten, sind für viele kleine Zugriffe gebaut: eine Bestellung anlegen, einen Kunden ändern, eine Note eintragen. Für Auswertungen wie „Wie hat sich der Umsatz pro Produktkategorie und Bundesland in den letzten drei Jahren entwickelt?“ sind sie ungeeignet. Solche Abfragen lesen Millionen Zeilen, bremsen den laufenden Betrieb und brauchen Daten aus mehreren Systemen. Dafür gibt es das **Data Warehouse** (DWH).
+
+## OLTP und OLAP
+
+| Merkmal                | OLTP (_Online Transaction Processing_)            | OLAP (_Online Analytical Processing_)                      |
+| ---------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| Zweck                  | Tagesgeschäft abwickeln                           | Entscheidungen vorbereiten, auswerten                      |
+| Benutzer               | viele Sachbearbeiter, Kunden, Anwendungen         | wenige Analysten, Management                               |
+| Zugriffe               | viele kurze Lese- und Schreibzugriffe auf wenige Zeilen | wenige lange Lesezugriffe über sehr viele Zeilen     |
+| Daten                  | aktueller Stand                                   | Historie über Jahre                                        |
+| Schema                 | [normalisiert](/de/databases/normalisation/)      | bewusst denormalisiert (Sternschema)                       |
+| Änderungen             | laufend                                           | nur durch regelmäßiges Laden                               |
+
+Bill Inmon, der den Begriff prägte, beschrieb ein Data Warehouse 1992 als **themenorientiert** (nach Geschäftsbereichen wie Verkauf oder Personal, nicht nach Anwendungen), **integriert** (einheitliche Formate und Schlüssel aus allen Quellen), **zeitbezogen** (mit Historie) und **nicht flüchtig** (Daten werden geladen, aber nicht mehr geändert).
+
+## Aufbau
+
+1. **Quellsysteme**: operative Datenbanken, ERP- und CRM-Systeme, Dateien, externe Daten.
+2. **ETL-Prozess**: Die Daten werden aus den Quellen gelesen (**Extract**), bereinigt, vereinheitlicht und mit Schlüsseln versehen (**Transform**) und in das Data Warehouse geschrieben (**Load**). Zwischenergebnisse liegen in einem **Staging-Bereich**. Das Laden läuft meist nächtlich oder stündlich.
+3. **Data Warehouse**: die zentrale, integrierte Datenbasis.
+4. **Data Marts**: Ausschnitte für einzelne Abteilungen, etwa nur Verkaufsdaten.
+5. **Auswertungswerkzeuge**: Berichte, Dashboards und Ad-hoc-Analysen mit **Business-Intelligence**-Werkzeugen wie Power BI, Tableau oder Qlik.
+
+Typische Aufgaben der Transformation sind das Vereinheitlichen von Formaten (Datum, Währung, Ländercodes), das Entfernen von Duplikaten, das Ergänzen fehlender Werte, das Zusammenführen derselben Kunden aus verschiedenen Systemen und das Berechnen abgeleiteter Werte. Bei **ELT** werden die Rohdaten zuerst geladen und erst im Zielsystem transformiert. Das ist bei leistungsfähigen Cloud-Data-Warehouses wie Snowflake, Google BigQuery oder Azure Synapse heute verbreitet.
+
+## Sternschema
+
+Das Datenmodell eines Data Warehouse ist **multidimensional**: Kennzahlen werden nach verschiedenen Gesichtspunkten betrachtet. Im **Sternschema** steht in der Mitte eine **Faktentabelle**, umgeben von **Dimensionstabellen**.
+
+- Die **Faktentabelle** enthält die **Kennzahlen** (_Measures_), also messbare, meist summierbare Werte wie Menge und Umsatz, und Fremdschlüssel auf die Dimensionen. Sie ist sehr groß: eine Zeile pro Verkauf, Buchung oder Messung.
+- Die **Dimensionstabellen** beschreiben das „wer, was, wann, wo“: Datum, Produkt, Filiale, Kunde. Sie sind vergleichsweise klein und enthalten beschreibende Attribute, oft mit **Hierarchien** wie Tag, Monat, Quartal, Jahr oder Ort, Bundesland, Land.
+- Die **Granularität** legt fest, was eine Zeile der Faktentabelle bedeutet, etwa „ein Produkt in einem Verkauf“ oder „Tagessumme pro Filiale“. Sie wird als Erstes festgelegt.
+
+```sql
+CREATE TABLE DimDatum (DatumId INT PRIMARY KEY, Datum DATE NOT NULL, Monat INT NOT NULL, Quartal INT NOT NULL, Jahr INT NOT NULL);
+CREATE TABLE DimProdukt (ProduktId INT PRIMARY KEY, Bezeichnung VARCHAR(50) NOT NULL, Kategorie VARCHAR(30) NOT NULL);
+CREATE TABLE DimFiliale (FilialeId INT PRIMARY KEY, Ort VARCHAR(30) NOT NULL, Bundesland VARCHAR(30) NOT NULL);
+CREATE TABLE FaktVerkauf (
+    DatumId   INT REFERENCES DimDatum(DatumId),
+    ProduktId INT REFERENCES DimProdukt(ProduktId),
+    FilialeId INT REFERENCES DimFiliale(FilialeId),
+    Menge     INT NOT NULL,
+    Umsatz    DECIMAL(10, 2) NOT NULL
+);
+INSERT INTO DimDatum VALUES (20250115, '2025-01-15', 1, 1, 2025), (20250410, '2025-04-10', 4, 2, 2025), (20250702, '2025-07-02', 7, 3, 2025);
+INSERT INTO DimProdukt VALUES (1, 'Laptop', 'Hardware'), (2, 'Maus', 'Zubehör'), (3, 'Monitor', 'Hardware');
+INSERT INTO DimFiliale VALUES (1, 'Krems', 'Niederösterreich'), (2, 'St. Pölten', 'Niederösterreich'), (3, 'Wien', 'Wien');
+INSERT INTO FaktVerkauf VALUES
+    (20250115, 1, 1, 2, 1800), (20250115, 2, 1, 10, 200), (20250410, 3, 2, 3, 750),
+    (20250410, 1, 3, 4, 3600), (20250702, 2, 3, 25, 500), (20250702, 3, 1, 1, 250);
+```
+
+Die Dimensionen sind nicht normalisiert: `DimFiliale` enthält zu jedem Ort das Bundesland, obwohl das Bundesland vom Ort abhängt. Diese Redundanz ist gewollt, denn jede Auswertung braucht so nur einen Join pro Dimension. Werden die Hierarchien dagegen in eigene Tabellen ausgelagert (`DimFiliale` verweist auf `DimBundesland`), entsteht ein **Schneeflockenschema**. Es spart Speicher, erfordert aber mehr Joins.
+
+Die Datumsdimension wird einmalig für alle Tage vieler Jahre befüllt und enthält Attribute wie Wochentag, Feiertag, Schulferien oder Geschäftsjahr. Ihr Schlüssel ist oft eine lesbare Zahl wie `20250115`.
+
+Eine typische Abfrage verbindet die Faktentabelle mit den benötigten Dimensionen, filtert und gruppiert:
+
+```sql
+SELECT d.Quartal, p.Kategorie, SUM(f.Umsatz) AS Umsatz
+FROM FaktVerkauf f
+JOIN DimDatum d   ON d.DatumId = f.DatumId
+JOIN DimProdukt p ON p.ProduktId = f.ProduktId
+JOIN DimFiliale o ON o.FilialeId = f.FilialeId
+WHERE o.Bundesland = 'Niederösterreich'
+GROUP BY d.Quartal, p.Kategorie
+ORDER BY d.Quartal, p.Kategorie;
+```
+
+| quartal | kategorie | umsatz  |
+| ------- | --------- | ------- |
+| 1       | Hardware  | 1800.00 |
+| 1       | Zubehör   | 200.00  |
+| 2       | Hardware  | 750.00  |
+| 3       | Hardware  | 250.00  |
+
+### Historisierte Dimensionen
+
+Zieht eine Filiale um oder wechselt ein Produkt die Kategorie, stellt sich die Frage, wie alte Verkäufe ausgewertet werden sollen. Dimensionen, deren Attribute sich langsam ändern, heißen **Slowly Changing Dimensions** (SCD):
+
+| Typ        | Vorgehen                                                                                      | Folge                                                    |
+| ---------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Typ 1**  | alten Wert überschreiben                                                                      | keine Historie, alte Verkäufe erscheinen unter der neuen Kategorie |
+| **Typ 2**  | neue Zeile mit neuem künstlichem Schlüssel und Gültigkeitszeitraum (`GueltigVon`, `GueltigBis`) anlegen | volle Historie, jeder Verkauf verweist auf die damals gültige Version |
+| **Typ 3**  | zusätzliche Spalte für den vorherigen Wert                                                     | nur eine Änderung nachvollziehbar                         |
+
+Typ 2 ist der Regelfall. Er ist der Grund, warum Dimensionen im Data Warehouse eigene künstliche Schlüssel erhalten, statt die Schlüssel der Quellsysteme zu übernehmen.
+
+## OLAP-Operationen
+
+Man stellt sich die Daten als **Würfel** (_Cube_) vor, dessen Achsen die Dimensionen sind und dessen Zellen die Kennzahlen enthalten. Auswertungen bewegen sich durch diesen Würfel:
+
+| Operation       | Bedeutung                                                    | Beispiel                                                   |
+| --------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Roll-up**     | entlang einer Hierarchie verdichten                          | von Orten zu Bundesländern                                 |
+| **Drill-down**  | entlang einer Hierarchie verfeinern                          | vom Jahr zu Quartalen und Monaten                          |
+| **Slice**       | eine Dimension auf einen Wert festlegen                      | nur das Jahr 2025                                          |
+| **Dice**        | mehrere Dimensionen auf Teilbereiche einschränken            | Hardware in Niederösterreich im 1. und 2. Quartal          |
+| **Pivot**       | Achsen vertauschen                                           | Bundesländer als Spalten statt als Zeilen                  |
+
+SQL unterstützt Roll-up direkt mit Erweiterungen von `GROUP BY`. `ROLLUP` bildet Zwischensummen entlang einer Hierarchie und eine Gesamtsumme:
+
+```sql
+SELECT o.Bundesland, o.Ort, SUM(f.Umsatz) AS Umsatz
+FROM FaktVerkauf f JOIN DimFiliale o ON o.FilialeId = f.FilialeId
+GROUP BY ROLLUP (o.Bundesland, o.Ort)
+ORDER BY o.Bundesland NULLS LAST, o.Ort NULLS LAST;
+```
+
+| bundesland       | ort        | umsatz  |
+| ---------------- | ---------- | ------- |
+| Niederösterreich | Krems      | 2250.00 |
+| Niederösterreich | St. Pölten | 750.00  |
+| Niederösterreich |            | 3000.00 |
+| Wien             | Wien       | 4100.00 |
+| Wien             |            | 4100.00 |
+|                  |            | 7100.00 |
+
+Die Zeilen mit leerem Ort sind die Zwischensummen pro Bundesland, die letzte Zeile ist die Gesamtsumme. `CUBE` bildet Summen für **alle** Kombinationen der angegebenen Spalten, `GROUPING SETS` für genau die angegebenen. Die Funktion `GROUPING(spalte)` liefert 1, wenn eine Zeile über diese Spalte zusammengefasst ist:
+
+```sql
+SELECT COALESCE(o.Bundesland, 'Gesamt') AS Bundesland, COALESCE(p.Kategorie, 'Gesamt') AS Kategorie, SUM(f.Umsatz) AS Umsatz
+FROM FaktVerkauf f JOIN DimFiliale o ON o.FilialeId = f.FilialeId JOIN DimProdukt p ON p.ProduktId = f.ProduktId
+GROUP BY CUBE (o.Bundesland, p.Kategorie)
+ORDER BY GROUPING(o.Bundesland), o.Bundesland, GROUPING(p.Kategorie), p.Kategorie;
+```
+
+| bundesland       | kategorie | umsatz  |
+| ---------------- | --------- | ------- |
+| Niederösterreich | Hardware  | 2800.00 |
+| Niederösterreich | Zubehör   | 200.00  |
+| Niederösterreich | Gesamt    | 3000.00 |
+| Wien             | Hardware  | 3600.00 |
+| Wien             | Zubehör   | 500.00  |
+| Wien             | Gesamt    | 4100.00 |
+| Gesamt           | Hardware  | 6400.00 |
+| Gesamt           | Zubehör   | 700.00  |
+| Gesamt           | Gesamt    | 7100.00 |
+
+Data Warehouses speichern ihre Tabellen meist **spaltenorientiert**: Eine Abfrage, die nur Umsatz und Kategorie braucht, liest nur diese beiden Spalten, und gleichartige Werte einer Spalte lassen sich stark komprimieren. Zusätzlich werden häufig benötigte Summen als **Aggregattabellen** oder [materialisierte Sichten](/de/databases/sql-advanced/#materialisierte-sichten) vorberechnet.
+
+## Data Lake und Lakehouse
+
+Ein **Data Lake** speichert Rohdaten in ihrem ursprünglichen Format, strukturiert (Tabellen), halbstrukturiert (JSON, Logdateien) und unstrukturiert (Bilder, Texte), meist günstig in einem Objektspeicher wie Amazon S3 oder Azure Data Lake Storage. Die Struktur wird erst beim Lesen festgelegt. Data Lakes eignen sich für Data Science und [maschinelles Lernen](/de/artificial-intelligence/machine-learning/), werden ohne Ordnung und Dokumentation aber schnell zum unübersichtlichen „Data Swamp“.
+
+Das **Lakehouse** verbindet beides: Daten liegen in offenen Dateiformaten wie Parquet im Objektspeicher, und Tabellenformate wie Delta Lake oder Apache Iceberg ergänzen Transaktionen, Schemas und Versionierung, sodass SQL-Auswertungen wie im Data Warehouse möglich sind.
+
+Aus den gesammelten Daten werden mit **Data Mining** Muster gewonnen, die nicht offensichtlich sind: Gruppen ähnlicher Kunden, Produkte, die häufig gemeinsam gekauft werden (Warenkorbanalyse), oder Vorhersagen. Die Verfahren dafür beschreibt der Bereich [Künstliche Intelligenz](/de/artificial-intelligence/).
+
+## Weiterführende Quellen
+
+- Ralph Kimball, Margy Ross: _The Data Warehouse Toolkit_, Wiley (Standardwerk zur dimensionalen Modellierung)
+- [PostgreSQL-Dokumentation: GROUPING SETS, CUBE, and ROLLUP](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-GROUPING-SETS)

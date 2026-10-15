@@ -1,0 +1,330 @@
+---
+title: Blockchain
+description: "Hashketten, Blockaufbau, Konsens mit Proof of Work und Proof of Stake, Smart Contracts, Anwendungen und Grenzen der Blockchain mit einer eigenen SHA-256-Kette in C# und Rust."
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **Blockchain** ist ein verteiltes, nur erweiterbares Register (_Distributed Ledger_), das in vielen Kopien auf vielen Knoten liegt. Einträge werden in **Blöcken** gesammelt, und jeder Block enthält den Hashwert seines Vorgängers. Dadurch entsteht eine Kette, in der nachträgliche Änderungen sofort auffallen. Die Teilnehmer einigen sich über ein **Konsensverfahren** darauf, welche Blöcke gültig sind, ohne einer zentralen Stelle wie einer Bank vertrauen zu müssen.
+
+Die erste Blockchain war **Bitcoin**: Unter dem Pseudonym Satoshi Nakamoto erschien 2008 das Whitepaper „Bitcoin: A Peer-to-Peer Electronic Cash System“, Anfang 2009 wurde der erste Block (_Genesis-Block_) erzeugt. Das gelöste Problem war das **Double Spending**: Digitales Geld lässt sich beliebig kopieren, also muss jemand festhalten, wer welche Münze bereits ausgegeben hat. Bisher war das eine Bank, bei Bitcoin ist es das gesamte Netzwerk.
+
+## Kryptografische Grundlagen
+
+### Hashfunktionen
+
+Eine **kryptografische Hashfunktion** wie **SHA-256** bildet beliebig lange Daten auf einen Wert fester Länge ab (256 Bit, als 64 Hexadezimalziffern geschrieben). Sie hat folgende Eigenschaften:
+
+- **deterministisch:** gleiche Eingabe, gleicher Hash,
+- **Einwegfunktion:** aus dem Hash lässt sich die Eingabe praktisch nicht berechnen,
+- **kollisionsresistent:** es ist praktisch unmöglich, zwei verschiedene Eingaben mit gleichem Hash zu finden,
+- **Lawineneffekt:** eine winzige Änderung der Eingabe ändert den Hash vollständig.
+
+Ein Hash ist damit ein „Fingerabdruck“ der Daten.
+
+### Digitale Signaturen
+
+Jeder Teilnehmer besitzt ein **Schlüsselpaar** aus privatem und öffentlichem Schlüssel (asymmetrische Kryptografie, bei Bitcoin und Ethereum **ECDSA** auf der Kurve secp256k1). Eine Transaktion wird mit dem **privaten Schlüssel signiert**, und jeder kann die Signatur mit dem **öffentlichen Schlüssel prüfen**. Die Adresse eines Kontos wird aus dem öffentlichen Schlüssel abgeleitet. Wer den privaten Schlüssel besitzt, verfügt über das Guthaben. Geht er verloren, ist das Guthaben unwiderruflich verloren, denn es gibt niemanden, der ihn zurücksetzen könnte.
+
+### Merkle-Baum
+
+Die Transaktionen eines Blocks werden paarweise gehasht, die Ergebnisse wieder paarweise gehasht und so weiter, bis ein einziger Hash übrig bleibt, die **Merkle-Wurzel** (_Merkle Root_). Sie steht im Blockkopf und fasst alle Transaktionen zusammen. Um zu beweisen, dass eine Transaktion in einem Block enthalten ist, braucht man nur $\log_2 n$ Hashes statt aller $n$ Transaktionen.
+
+## Aufbau einer Blockchain
+
+Ein Block besteht aus dem **Blockkopf** und den **Transaktionen**. Der Kopf enthält bei Bitcoin unter anderem:
+
+| Feld | Bedeutung |
+| ---- | --------- |
+| Hash des Vorgängerblocks | verknüpft die Blöcke zur Kette |
+| Merkle-Wurzel | Fingerabdruck aller Transaktionen |
+| Zeitstempel | Zeitpunkt der Erstellung |
+| Schwierigkeit (_Target_) | wie klein der Blockhash sein muss |
+| **Nonce** | Zahl, die beim Mining verändert wird |
+
+Ändert jemand eine Transaktion in einem alten Block, ändert sich dessen Merkle-Wurzel und damit sein Hash. Der nächste Block verweist dann auf einen Hash, den es nicht mehr gibt, und die Kette ist ab dieser Stelle ungültig. Um die Fälschung zu verbergen, müsste der Angreifer alle folgenden Blöcke neu erzeugen, und zwar schneller als das restliche Netzwerk neue Blöcke anhängt.
+
+### Beispiel: Hashkette mit Proof of Work
+
+Das folgende Programm baut eine kleine Blockchain. Jeder Block wird „gemined“: Die Nonce wird so lange erhöht, bis der SHA-256-Hash mit vier Nullen beginnt. Anschließend wird ein Block manipuliert, und die Prüfung erkennt das. In C# wird `System.Security.Cryptography` verwendet, in Rust die Crates `sha2` und `hex`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+
+var chain = new Blockchain(difficulty: 4);
+chain.Add("Alice zahlt Bob 5", timestamp: 1767268800);  // 1.1.2026, 12:00 UTC
+chain.Add("Bob zahlt Carol 2", timestamp: 1767269400);  // 1.1.2026, 12:10 UTC
+
+foreach (Block block in chain.Blocks)
+{
+    Console.WriteLine($"#{block.Index} Nonce {block.Nonce} Hash {block.Hash[..16]}");
+}
+Console.WriteLine($"Kette gültig: {(chain.IsValid() ? "ja" : "nein")}");
+
+chain.Blocks[1].Data = "Alice zahlt Bob 500";           // Manipulation
+Console.WriteLine($"Nach Manipulation gültig: {(chain.IsValid() ? "ja" : "nein")}");
+// #0 Nonce 74372 Hash 000098d0fa20b417
+// #1 Nonce 32107 Hash 00004c33ad17312d
+// #2 Nonce 10186 Hash 000036afe655b6eb
+// Kette gültig: ja
+// Nach Manipulation gültig: nein
+
+public sealed class Block(int index, long timestamp, string data, string previousHash)
+{
+    public int Index { get; } = index;
+    public long Timestamp { get; } = timestamp;   // Unix-Zeit in Sekunden
+    public string Data { get; set; } = data;      // nur für die Manipulationsdemo änderbar
+    public string PreviousHash { get; } = previousHash;
+    public long Nonce { get; private set; }
+    public string Hash { get; private set; } = "";
+
+    public string ComputeHash()
+    {
+        string content = $"{Index}|{Timestamp}|{Data}|{PreviousHash}|{Nonce}";
+        byte[] digest = SHA256.HashData(Encoding.UTF8.GetBytes(content));
+        return Convert.ToHexStringLower(digest);
+    }
+
+    // Proof of Work: Nonce erhöhen, bis der Hash mit genug Nullen beginnt
+    public void Mine(int difficulty)
+    {
+        string prefix = new('0', difficulty);
+        Nonce = 0;
+        Hash = ComputeHash();
+        while (!Hash.StartsWith(prefix))
+        {
+            Nonce++;
+            Hash = ComputeHash();
+        }
+    }
+}
+
+public sealed class Blockchain
+{
+    private readonly int _difficulty;
+
+    public List<Block> Blocks { get; } = [];
+
+    public Blockchain(int difficulty)
+    {
+        _difficulty = difficulty;
+        var genesis = new Block(0, 1767225600, "Genesis", new string('0', 64));
+        genesis.Mine(difficulty);
+        Blocks.Add(genesis);
+    }
+
+    public void Add(string data, long timestamp)
+    {
+        var block = new Block(Blocks.Count, timestamp, data, Blocks[^1].Hash);
+        block.Mine(_difficulty);
+        Blocks.Add(block);
+    }
+
+    public bool IsValid()
+    {
+        string prefix = new('0', _difficulty);
+        for (int i = 0; i < Blocks.Count; i++)
+        {
+            Block block = Blocks[i];
+            if (block.Hash != block.ComputeHash()) return false;                 // Inhalt verändert
+            if (!block.Hash.StartsWith(prefix)) return false;                    // kein Proof of Work
+            if (i > 0 && block.PreviousHash != Blocks[i - 1].Hash) return false; // Kette unterbrochen
+        }
+        return true;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+
+struct Block {
+    index: u64,
+    timestamp: i64, // Unix-Zeit in Sekunden
+    data: String,
+    previous_hash: String,
+    nonce: u64,
+    hash: String,
+}
+
+impl Block {
+    fn new(index: u64, timestamp: i64, data: &str, previous_hash: &str) -> Self {
+        Self {
+            index,
+            timestamp,
+            data: data.to_string(),
+            previous_hash: previous_hash.to_string(),
+            nonce: 0,
+            hash: String::new(),
+        }
+    }
+
+    fn compute_hash(&self) -> String {
+        let content = format!(
+            "{}|{}|{}|{}|{}",
+            self.index, self.timestamp, self.data, self.previous_hash, self.nonce
+        );
+        hex::encode(Sha256::digest(content.as_bytes()))
+    }
+
+    // Proof of Work: Nonce erhöhen, bis der Hash mit genug Nullen beginnt
+    fn mine(&mut self, difficulty: usize) {
+        let prefix = "0".repeat(difficulty);
+        self.nonce = 0;
+        self.hash = self.compute_hash();
+        while !self.hash.starts_with(&prefix) {
+            self.nonce += 1;
+            self.hash = self.compute_hash();
+        }
+    }
+}
+
+struct Blockchain {
+    difficulty: usize,
+    blocks: Vec<Block>,
+}
+
+impl Blockchain {
+    fn new(difficulty: usize) -> Self {
+        let mut genesis = Block::new(0, 1767225600, "Genesis", &"0".repeat(64));
+        genesis.mine(difficulty);
+        Self { difficulty, blocks: vec![genesis] }
+    }
+
+    fn add(&mut self, data: &str, timestamp: i64) {
+        let previous_hash = self.blocks.last().map(|b| b.hash.clone()).unwrap_or_default();
+        let mut block = Block::new(self.blocks.len() as u64, timestamp, data, &previous_hash);
+        block.mine(self.difficulty);
+        self.blocks.push(block);
+    }
+
+    fn is_valid(&self) -> bool {
+        let prefix = "0".repeat(self.difficulty);
+        self.blocks.iter().enumerate().all(|(i, block)| {
+            block.hash == block.compute_hash()                             // Inhalt unverändert
+                && block.hash.starts_with(&prefix)                         // Proof of Work
+                && (i == 0 || block.previous_hash == self.blocks[i - 1].hash) // Kette intakt
+        })
+    }
+}
+
+fn main() {
+    let mut chain = Blockchain::new(4);
+    chain.add("Alice zahlt Bob 5", 1767268800); // 1.1.2026, 12:00 UTC
+    chain.add("Bob zahlt Carol 2", 1767269400); // 1.1.2026, 12:10 UTC
+
+    for block in &chain.blocks {
+        println!("#{} Nonce {} Hash {}", block.index, block.nonce, &block.hash[..16]);
+    }
+    let yes_no = |valid: bool| if valid { "ja" } else { "nein" };
+    println!("Kette gültig: {}", yes_no(chain.is_valid()));
+
+    chain.blocks[1].data = "Alice zahlt Bob 500".to_string(); // Manipulation
+    println!("Nach Manipulation gültig: {}", yes_no(chain.is_valid()));
+    // #0 Nonce 74372 Hash 000098d0fa20b417
+    // #1 Nonce 32107 Hash 00004c33ad17312d
+    // #2 Nonce 10186 Hash 000036afe655b6eb
+    // Kette gültig: ja
+    // Nach Manipulation gültig: nein
+}
+```
+
+</TabItem>
+</Tabs>
+
+Ein Angreifer könnte Block 1 neu minen. Dann stimmt aber der Vorgänger-Hash in Block 2 nicht mehr, also müsste er auch Block 2 neu minen und so weiter. In einem echten Netzwerk müsste er dabei die Rechenleistung aller anderen Teilnehmer überholen.
+
+## Konsensverfahren
+
+In einem offenen Netzwerk, in dem jeder mitmachen darf, kann man nicht einfach abstimmen: Ein Angreifer könnte beliebig viele Knoten vortäuschen (**Sybil-Angriff**). Konsensverfahren knüpfen das Recht, Blöcke anzuhängen, deshalb an eine knappe Ressource.
+
+### Proof of Work
+
+Beim **Proof of Work** (PoW) müssen **Miner** eine Nonce finden, mit der der Blockhash unter einem Zielwert liegt. Das gelingt nur durch Ausprobieren, im Bitcoin-Netzwerk mit spezialisierter Hardware (ASICs) und unvorstellbar vielen Versuchen pro Sekunde. Das Prüfen eines gefundenen Blocks ist dagegen ein einziger Hash. Wer zuerst einen gültigen Block findet, verbreitet ihn und erhält eine **Blockbelohnung** (bei Bitcoin seit April 2024 3,125 BTC, die Belohnung halbiert sich alle 210.000 Blöcke, also etwa alle vier Jahre) sowie die Transaktionsgebühren.
+
+- Bitcoin passt die **Schwierigkeit** alle 2016 Blöcke so an, dass im Mittel alle **10 Minuten** ein Block entsteht.
+- Entstehen zwei konkurrierende Blöcke, gilt die Kette mit der **meisten kumulierten Arbeit** (vereinfacht: die längste). Deshalb gilt eine Transaktion erst nach einigen weiteren Blöcken als sicher, üblich sind sechs Bestätigungen (etwa eine Stunde).
+- Wer mehr als die Hälfte der gesamten Rechenleistung kontrolliert, könnte eigene Transaktionen rückgängig machen (**51-%-Angriff**).
+- Nachteil ist der enorme **Energieverbrauch**: Die Sicherheit beruht gerade darauf, dass Rechenarbeit teuer ist.
+
+### Proof of Stake
+
+Beim **Proof of Stake** (PoS) hinterlegen **Validatoren** einen Teil ihrer Coins als Pfand (_Stake_). Wer den nächsten Block vorschlagen darf, wird zufällig ausgewählt, gewichtet nach der Höhe des Pfands, und andere Validatoren bestätigen ihn. Wer betrügt (etwa zwei widersprüchliche Blöcke unterschreibt), verliert einen Teil seines Pfands (**Slashing**). Statt Rechenleistung steht also Kapital auf dem Spiel.
+
+**Ethereum** wechselte am 15. September 2022 mit „The Merge“ von Proof of Work auf Proof of Stake und senkte seinen Energieverbrauch dadurch nach Angaben der Ethereum Foundation um rund 99,95 %. Kritisiert wird, dass PoS Teilnehmer mit viel Kapital bevorzugt.
+
+### Weitere Verfahren
+
+In **zugangsbeschränkten** (_permissioned_) Blockchains sind die Teilnehmer bekannt, etwa die Unternehmen eines Konsortiums. Dort genügen klassische Verfahren aus [verteilten Systemen](/de/decentralised-systems/distributed-systems/#koordination-und-konsens) wie Raft oder **PBFT** (_Practical Byzantine Fault Tolerance_, verträgt $f$ böswillige Knoten bei $3f + 1$ Knoten) oder **Proof of Authority**, bei dem ausgewählte, vertrauenswürdige Knoten Blöcke erzeugen. Diese Verfahren sind schnell und energiesparend, setzen aber Vertrauen in die Betreiber voraus.
+
+| | Öffentlich (permissionless) | Zugangsbeschränkt (permissioned) |
+| --- | --- | --- |
+| Teilnahme | jeder | nur zugelassene Teilnehmer |
+| Beispiele | Bitcoin, Ethereum | Hyperledger Fabric, Unternehmenskonsortien |
+| Konsens | PoW, PoS | Raft, PBFT, Proof of Authority |
+| Vertrauen | in Kryptografie und wirtschaftliche Anreize | zusätzlich in die bekannten Betreiber |
+| Durchsatz | gering bis mittel | hoch |
+
+## Smart Contracts
+
+Ein **Smart Contract** ist ein Programm, das auf der Blockchain gespeichert ist und von allen Knoten deterministisch ausgeführt wird. Sein Code und sein Zustand sind öffentlich einsehbar und können nach der Veröffentlichung nicht mehr geändert werden. Auf **Ethereum** werden Smart Contracts meist in **Solidity** geschrieben und in der Ethereum Virtual Machine (EVM) ausgeführt. Jede Operation kostet **Gas**, das in Ether bezahlt wird. Das verhindert Endlosschleifen und belohnt die Validatoren.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+contract SimpleToken {
+    mapping(address => uint256) public balanceOf;
+
+    constructor(uint256 supply) {
+        balanceOf[msg.sender] = supply;   // Ersteller erhält alle Token
+    }
+
+    function transfer(address to, uint256 amount) external {
+        require(balanceOf[msg.sender] >= amount, "Guthaben zu gering");
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
+    }
+}
+```
+
+Weil Smart Contracts nicht nachträglich korrigiert werden können, sind Programmierfehler besonders teuer: 2016 nutzte ein Angreifer eine Schwachstelle im Smart Contract „The DAO“ und erbeutete Ether im damaligen Wert von rund 50 Millionen US-Dollar. Ein weiteres grundsätzliches Problem ist das **Orakelproblem**: Ein Smart Contract kennt nur Daten auf der Blockchain. Informationen aus der echten Welt (Wechselkurse, Wetter, Lieferstatus) muss ein **Orakel** einspeisen, dem man wiederum vertrauen muss.
+
+## Anwendungen
+
+- **Kryptowährungen** wie Bitcoin und Ether sowie **Stablecoins**, deren Wert an eine Währung wie den Euro gebunden ist,
+- **Dezentrale Finanzanwendungen** (DeFi): Kredite, Tauschbörsen ohne Bank,
+- **Tokenisierung** von Vermögenswerten (Anteile, Anleihen) und **NFTs** (_Non-Fungible Tokens_) als Nachweis über einzigartige digitale Objekte,
+- **Lieferketten:** fälschungssichere Herkunftsnachweise, etwa für Lebensmittel oder Medikamente,
+- **digitale Identitäten** und Zeugnisse, die man selbst verwaltet und überprüfbar weitergibt,
+- **Zeitstempel und Nachweise**, dass ein Dokument zu einem bestimmten Zeitpunkt existierte.
+
+In der EU regelt die **MiCA-Verordnung** (_Markets in Crypto-Assets_, Verordnung (EU) 2023/1114) seit 30. Dezember 2024 vollständig die Ausgabe von Kryptowerten und die Dienstleister, die mit ihnen handeln.
+
+## Grenzen
+
+| Problem | Erklärung |
+| ------- | --------- |
+| **Skalierbarkeit** | Bitcoin schafft nur etwa 7 Transaktionen pro Sekunde, Kartenzahlungsnetze Tausende. Abhilfe schaffen **Layer-2-Lösungen** wie das Lightning Network oder Rollups, die viele Transaktionen außerhalb der Kette abwickeln und nur Ergebnisse speichern. |
+| **Energieverbrauch** | Proof of Work verbraucht so viel Strom wie ganze Staaten. |
+| **Unveränderlichkeit** | Fehlerhafte oder betrügerische Transaktionen lassen sich nicht rückgängig machen. Das kollidiert mit dem **Recht auf Löschung** nach der DSGVO, weshalb personenbezogene Daten nie direkt auf eine Blockchain gehören. |
+| **Schlüsselverwaltung** | Verlorene oder gestohlene private Schlüssel bedeuten verlorenes Geld, ohne Möglichkeit zur Wiederherstellung. |
+| **Orakelproblem** | Die Blockchain garantiert nur, dass Daten nicht verändert wurden, nicht dass sie richtig eingegeben wurden („garbage in, garbage out“). |
+| **Volatilität und Missbrauch** | starke Kursschwankungen, Betrug, Geldwäsche |
+
+Bevor man eine Blockchain einsetzt, sollte man fragen: Gibt es mehrere Parteien, die einander **nicht vertrauen** und trotzdem gemeinsame Daten schreiben müssen, ohne dass eine vertrauenswürdige zentrale Stelle existiert? Lautet die Antwort nein, ist eine normale, replizierte [Datenbank](/de/databases/) schneller, billiger und einfacher.
+
+## Weiterführende Quellen
+
+- Satoshi Nakamoto: [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf), 2008
+- [Ethereum-Dokumentation](https://ethereum.org/de/developers/docs/) zu Konsens und Smart Contracts
+- Arvind Narayanan u. a.: _Bitcoin and Cryptocurrency Technologies_, Princeton University Press

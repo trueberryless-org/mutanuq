@@ -1,0 +1,181 @@
+---
+title: Physikalische Größen und Einheiten
+description: SI-Basiseinheiten nach der Definition von 2019, abgeleitete Einheiten, Vorsätze, Skalare und Vektoren, Messunsicherheit, signifikante Stellen und Dimensionsanalyse.
+sidebar:
+  order: 1
+---
+
+Physik beschreibt die Natur mit messbaren Größen. Damit Messwerte vergleichbar sind, braucht es ein gemeinsames Einheitensystem und eine ehrliche Angabe, wie genau gemessen wurde. Beides ist Grundlage jeder Rechnung in Mechanik, Elektrotechnik oder Chemie.
+
+## Größe, Zahlenwert und Einheit
+
+Eine **physikalische Größe** ist eine messbare Eigenschaft eines Körpers oder Vorgangs. Ihr Wert ist das Produkt aus **Zahlenwert** und **Einheit**:
+
+$$
+G = \{G\} \cdot [G], \qquad \text{z. B. } s = 3{,}5\,\mathrm{m}
+$$
+
+Dabei bezeichnet $\{G\}$ den Zahlenwert und $[G]$ die Einheit. Formelzeichen werden kursiv geschrieben ($s$, $t$, $m$), Einheiten aufrecht ($\mathrm{m}$, $\mathrm{s}$, $\mathrm{kg}$). Zwischen Zahl und Einheit steht ein Leerzeichen, auch bei Prozent und Grad Celsius ($20\,^\circ\mathrm{C}$), nicht aber bei Winkelgrad ($30^\circ$).
+
+:::tip[Merke]
+Rechne Einheiten immer mit. Steht am Ende nicht die erwartete Einheit, ist die Formel oder das Einsetzen falsch.
+:::
+
+## Das Internationale Einheitensystem (SI)
+
+Das **SI** (_Système international d'unités_) ist in Österreich durch das Maß- und Eichgesetz (MEG) verbindlich. Seit der Revision vom 20. Mai 2019 sind alle sieben Basiseinheiten über **festgelegte Naturkonstanten** definiert. Die Konstanten haben exakte Zahlenwerte, Messunsicherheit gibt es nur noch bei der Realisierung im Labor.
+
+| Größe | Formelzeichen | Einheit | Zeichen | Definiert über |
+| --- | --- | --- | --- | --- |
+| Zeit | $t$ | Sekunde | $\mathrm{s}$ | Cäsium-Hyperfeinübergang $\Delta\nu_\mathrm{Cs} = 9\,192\,631\,770\,\mathrm{Hz}$ |
+| Länge | $l$, $s$ | Meter | $\mathrm{m}$ | Lichtgeschwindigkeit $c = 299\,792\,458\,\mathrm{m/s}$ |
+| Masse | $m$ | Kilogramm | $\mathrm{kg}$ | Planck-Konstante $h = 6{,}626\,070\,15 \cdot 10^{-34}\,\mathrm{J\,s}$ |
+| elektrische Stromstärke | $I$ | Ampere | $\mathrm{A}$ | Elementarladung $e = 1{,}602\,176\,634 \cdot 10^{-19}\,\mathrm{C}$ |
+| thermodynamische Temperatur | $T$ | Kelvin | $\mathrm{K}$ | Boltzmann-Konstante $k_\mathrm{B} = 1{,}380\,649 \cdot 10^{-23}\,\mathrm{J/K}$ |
+| Stoffmenge | $n$ | Mol | $\mathrm{mol}$ | Avogadro-Konstante $N_\mathrm{A} = 6{,}022\,140\,76 \cdot 10^{23}\,\mathrm{mol^{-1}}$ |
+| Lichtstärke | $I_\mathrm{v}$ | Candela | $\mathrm{cd}$ | photometrisches Strahlungsäquivalent $K_\mathrm{cd} = 683\,\mathrm{lm/W}$ |
+
+Die Definitionen bauen aufeinander auf: Die Sekunde folgt aus der Cäsiumfrequenz, der Meter ist die Strecke, die Licht in $1/299\,792\,458$ Sekunde zurücklegt, und das Kilogramm folgt aus $h$ zusammen mit Meter und Sekunde (realisiert mit der Kibble-Waage). Vor 2019 war das Kilogramm die Masse eines Metallzylinders in Sèvres bei Paris, dessen Masse sich im Lauf der Jahrzehnte um einige Mikrogramm gegenüber seinen Kopien verändert hatte. Ein Mol enthält genau $N_\mathrm{A}$ Teilchen.
+
+### Abgeleitete Einheiten
+
+Alle anderen Einheiten sind Produkte und Quotienten der Basiseinheiten. Viele haben eigene Namen:
+
+| Größe | Einheit | Zeichen | in Basiseinheiten |
+| --- | --- | --- | --- |
+| Kraft | Newton | $\mathrm{N}$ | $\mathrm{kg\,m\,s^{-2}}$ |
+| Energie, Arbeit, Wärme | Joule | $\mathrm{J} = \mathrm{N\,m}$ | $\mathrm{kg\,m^2\,s^{-2}}$ |
+| Leistung | Watt | $\mathrm{W} = \mathrm{J/s}$ | $\mathrm{kg\,m^2\,s^{-3}}$ |
+| Druck | Pascal | $\mathrm{Pa} = \mathrm{N/m^2}$ | $\mathrm{kg\,m^{-1}\,s^{-2}}$ |
+| Frequenz | Hertz | $\mathrm{Hz}$ | $\mathrm{s^{-1}}$ |
+| elektrische Ladung | Coulomb | $\mathrm{C}$ | $\mathrm{A\,s}$ |
+| elektrische Spannung | Volt | $\mathrm{V} = \mathrm{W/A}$ | $\mathrm{kg\,m^2\,s^{-3}\,A^{-1}}$ |
+| elektrischer Widerstand | Ohm | $\Omega = \mathrm{V/A}$ | $\mathrm{kg\,m^2\,s^{-3}\,A^{-2}}$ |
+| Kapazität | Farad | $\mathrm{F} = \mathrm{C/V}$ | $\mathrm{kg^{-1}\,m^{-2}\,s^4\,A^2}$ |
+| magnetische Flussdichte | Tesla | $\mathrm{T} = \mathrm{V\,s/m^2}$ | $\mathrm{kg\,s^{-2}\,A^{-1}}$ |
+| Aktivität | Becquerel | $\mathrm{Bq}$ | $\mathrm{s^{-1}}$ |
+| Energiedosis | Gray | $\mathrm{Gy} = \mathrm{J/kg}$ | $\mathrm{m^2\,s^{-2}}$ |
+
+Daneben sind einige Nicht-SI-Einheiten zum Gebrauch mit dem SI zugelassen, etwa Minute, Stunde, Liter ($1\,\mathrm{L} = 1\,\mathrm{dm^3}$), Tonne ($1\,\mathrm{t} = 1000\,\mathrm{kg}$), Bar ($1\,\mathrm{bar} = 10^5\,\mathrm{Pa}$), Elektronvolt und die atomare Masseneinheit $\mathrm{u}$.
+
+### Vorsätze
+
+| Vorsatz | Zeichen | Faktor | Vorsatz | Zeichen | Faktor |
+| --- | --- | --- | --- | --- | --- |
+| Quetta | Q | $10^{30}$ | Dezi | d | $10^{-1}$ |
+| Ronna | R | $10^{27}$ | Zenti | c | $10^{-2}$ |
+| Yotta | Y | $10^{24}$ | Milli | m | $10^{-3}$ |
+| Zetta | Z | $10^{21}$ | Mikro | µ | $10^{-6}$ |
+| Exa | E | $10^{18}$ | Nano | n | $10^{-9}$ |
+| Peta | P | $10^{15}$ | Piko | p | $10^{-12}$ |
+| Tera | T | $10^{12}$ | Femto | f | $10^{-15}$ |
+| Giga | G | $10^{9}$ | Atto | a | $10^{-18}$ |
+| Mega | M | $10^{6}$ | Zepto | z | $10^{-21}$ |
+| Kilo | k | $10^{3}$ | Yokto | y | $10^{-24}$ |
+| Hekto | h | $10^{2}$ | Ronto | r | $10^{-27}$ |
+| Deka | da | $10^{1}$ | Quekto | q | $10^{-30}$ |
+
+Bei Potenzen gilt der Exponent für die Einheit samt Vorsatz: $1\,\mathrm{cm^2} = (10^{-2}\,\mathrm{m})^2 = 10^{-4}\,\mathrm{m^2}$, $1\,\mathrm{mm^3} = 10^{-9}\,\mathrm{m^3}$.
+
+:::caution
+In der Informatik bedeutet „Kilo“ bei Speichergrößen manchmal $1024$. Dafür gibt es die binären Vorsätze nach IEC 80000-13: $1\,\mathrm{KiB} = 1024\,\mathrm{B}$, $1\,\mathrm{MiB} = 1024^2\,\mathrm{B}$. Ein SI-Kilo ist immer genau $1000$.
+:::
+
+### Umrechnen
+
+Umrechnen heißt mit $1$ multiplizieren, etwa mit $\frac{1000\,\mathrm{m}}{1\,\mathrm{km}}$:
+
+$$
+72\,\frac{\mathrm{km}}{\mathrm{h}} = 72 \cdot \frac{1000\,\mathrm{m}}{3600\,\mathrm{s}} = 20\,\frac{\mathrm{m}}{\mathrm{s}}
+$$
+
+Merkregel: km/h durch $3{,}6$ ergibt m/s.
+
+## Skalare und Vektoren
+
+- Ein **Skalar** ist durch Zahlenwert und Einheit vollständig bestimmt: Masse, Zeit, Temperatur, Energie, Arbeit, Leistung.
+- Ein **Vektor** hat zusätzlich eine Richtung: Ort, Verschiebung, Geschwindigkeit, Beschleunigung, Kraft, Impuls, elektrische Feldstärke.
+
+Vektoren schreibt man mit Pfeil ($\vec F$) und rechnet komponentenweise (siehe [Vektoren](/de/mathematics/geometry/vectors/)). Der Betrag eines Vektors $\vec F = (F_x, F_y)$ ist $|\vec F| = \sqrt{F_x^2 + F_y^2}$. Zwei Kräfte von $3\,\mathrm{N}$ und $4\,\mathrm{N}$ ergeben je nach Richtung zwischen $1\,\mathrm{N}$ (entgegengesetzt) und $7\,\mathrm{N}$ (gleich gerichtet), im rechten Winkel genau $5\,\mathrm{N}$. Das zeigt, warum man bei Vektorgrößen nicht einfach Beträge addieren darf.
+
+## Messunsicherheit
+
+Jede Messung ist unsicher. Man gibt deshalb das Ergebnis immer mit Unsicherheit an:
+
+$$
+x = \bar x \pm \Delta x
+$$
+
+| Art | Ursache | Abhilfe |
+| --- | --- | --- |
+| **zufällige Abweichung** | Ablesen, Reaktionszeit, Rauschen; streut um den wahren Wert | viele Messungen, Mittelwert bilden |
+| **systematische Abweichung** | falsch kalibriertes Gerät, Nullpunktfehler, Methode; verschiebt alle Werte in eine Richtung | Kalibrieren, Methode verbessern; Mittelwert hilft nicht |
+| grober Fehler | Verschreiben, falscher Messbereich | Messwert verwerfen, wiederholen |
+
+Man unterscheidet die **absolute Unsicherheit** $\Delta x$ (gleiche Einheit wie $x$) und die **relative Unsicherheit** $\Delta x / \bar x$ (meist in Prozent).
+
+### Mittelwert und Standardabweichung
+
+Für $n$ Messwerte $x_1, \dots, x_n$ gilt:
+
+$$
+\bar x = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar x)^2}, \qquad
+\Delta \bar x = \frac{s}{\sqrt n}
+$$
+
+Die Standardabweichung $s$ beschreibt die Streuung einzelner Werte, die Unsicherheit des Mittelwerts $s/\sqrt n$ sinkt mit der Zahl der Messungen (siehe [Beschreibende Statistik](/de/mathematics/descriptive-statistics/)).
+
+:::tip[Beispiel: Pendelschwingung]
+Fünf Messungen der Schwingungsdauer ergeben $2{,}31$, $2{,}35$, $2{,}28$, $2{,}33$ und $2{,}30\,\mathrm{s}$. Der Mittelwert ist $\bar T = 2{,}314\,\mathrm{s}$, die Standardabweichung $s = 0{,}027\,\mathrm{s}$, die Unsicherheit des Mittelwerts $0{,}027/\sqrt 5 = 0{,}012\,\mathrm{s}$. Ergebnis: $T = (2{,}31 \pm 0{,}01)\,\mathrm{s}$.
+:::
+
+### Fortpflanzung der Unsicherheit
+
+Wird aus Messwerten ein Ergebnis berechnet, pflanzt sich die Unsicherheit fort. Für eine Abschätzung nach oben (Größtfehler) gelten zwei Faustregeln:
+
+- Bei **Summe und Differenz** addieren sich die **absoluten** Unsicherheiten: $\Delta(a \pm b) = \Delta a + \Delta b$.
+- Bei **Produkt und Quotient** addieren sich die **relativen** Unsicherheiten: $\frac{\Delta(a \cdot b)}{a \cdot b} = \frac{\Delta a}{a} + \frac{\Delta b}{b}$. Bei einer Potenz $a^n$ wird die relative Unsicherheit mit $|n|$ multipliziert.
+
+Sind die Abweichungen unabhängig und zufällig, schätzt die **Gaußsche Fehlerfortpflanzung** realistischer ab: Die Beiträge werden quadratisch addiert, etwa $\frac{\Delta A}{A} = \sqrt{\left(\frac{\Delta a}{a}\right)^2 + \left(\frac{\Delta b}{b}\right)^2}$.
+
+:::tip[Beispiel: Fläche eines Rechtecks]
+$a = (12{,}3 \pm 0{,}1)\,\mathrm{cm}$, $b = (4{,}5 \pm 0{,}1)\,\mathrm{cm}$. Die Fläche ist $A = 55{,}35\,\mathrm{cm^2}$. Relative Unsicherheiten: $0{,}1/12{,}3 = 0{,}81\,\%$ und $0{,}1/4{,}5 = 2{,}22\,\%$, zusammen $3{,}03\,\%$. Also $\Delta A = 1{,}7\,\mathrm{cm^2}$ und $A = (55 \pm 2)\,\mathrm{cm^2}$.
+:::
+
+## Signifikante Stellen
+
+Die **signifikanten Stellen** (geltenden Ziffern) einer Zahl sind alle Ziffern ab der ersten von null verschiedenen. $0{,}004\,50$ hat drei signifikante Stellen, $4{,}50$ ebenfalls. Endnullen nach dem Komma sind signifikant: $4{,}50\,\mathrm{m}$ bedeutet „auf Zentimeter genau“, $4{,}5\,\mathrm{m}$ nur „auf Dezimeter genau“. Bei großen Zahlen schafft die Gleitkommadarstellung Klarheit: $1{,}20 \cdot 10^3\,\mathrm{m}$ hat drei signifikante Stellen.
+
+Regeln für Ergebnisse:
+
+1. Bei **Multiplikation und Division** hat das Ergebnis so viele signifikante Stellen wie der ungenaueste Eingangswert.
+2. Bei **Addition und Subtraktion** bestimmt die geringste Zahl von Nachkommastellen das Ergebnis: $12{,}3\,\mathrm{m} + 0{,}456\,\mathrm{m} = 12{,}8\,\mathrm{m}$.
+3. Erst am Ende runden, Zwischenergebnisse mit mindestens einer Stelle mehr weiterrechnen.
+4. Die Unsicherheit wird auf ein bis zwei signifikante Stellen gerundet, und der Messwert endet an derselben Stelle wie die Unsicherheit.
+
+## Dimensionsanalyse
+
+Die **Dimension** einer Größe gibt an, aus welchen Basisgrößen sie sich zusammensetzt, unabhängig von der gewählten Einheit. Man schreibt $\dim v = \mathsf{L}\,\mathsf{T}^{-1}$ mit $\mathsf{L}$ für Länge, $\mathsf{M}$ für Masse, $\mathsf{T}$ für Zeit.
+
+Zwei Regeln machen die Dimensionsanalyse zu einem starken Werkzeug:
+
+1. Nur Größen gleicher Dimension dürfen addiert, subtrahiert oder gleichgesetzt werden.
+2. Argumente von $\sin$, $\exp$, $\ln$ müssen dimensionslos sein.
+
+**Kontrolle:** Ist $s = \frac{1}{2} a t^2$ dimensionsrichtig? $\mathsf{L}\,\mathsf{T}^{-2} \cdot \mathsf{T}^2 = \mathsf{L}$, ja.
+
+**Herleitung:** Die Schwingungsdauer $T$ eines Fadenpendels könnte von Länge $l$, Masse $m$ und Fallbeschleunigung $g$ abhängen. Ansatz $T = C \cdot l^\alpha m^\beta g^\gamma$:
+
+$$
+\mathsf{T} = \mathsf{L}^\alpha \, \mathsf{M}^\beta \, (\mathsf{L}\,\mathsf{T}^{-2})^\gamma
+\;\Rightarrow\; \beta = 0,\; \alpha + \gamma = 0,\; -2\gamma = 1
+$$
+
+Also $\gamma = -\frac{1}{2}$, $\alpha = \frac{1}{2}$ und $T = C\sqrt{l/g}$. Die Masse fällt heraus. Den dimensionslosen Faktor $C = 2\pi$ liefert erst die vollständige Rechnung im Kapitel [Schwingungen](/de/natural-sciences/oscillations/).
+
+## Weiterführende Quellen
+
+- BIPM: _The International System of Units (SI Brochure)_, 9. Auflage, 2019, bipm.org
+- BEV (Bundesamt für Eich- und Vermessungswesen): Informationen zum SI und zum Maß- und Eichgesetz, bev.gv.at
+- JCGM 100:2008: _Guide to the Expression of Uncertainty in Measurement_ (GUM)

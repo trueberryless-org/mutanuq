@@ -1,0 +1,283 @@
+---
+title: Authentication and Access Control
+description: Identification, authentication and authorisation, password guidelines according to NIST, MFA and TOTP, passkeys, Kerberos, OAuth 2.0, OpenID Connect, JWT, and DAC, MAC, RBAC and ABAC.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Before a system can decide what someone is allowed to do, it has to know who that someone is. Stolen or guessed credentials are one of the most common entry points for attackers. Strong authentication and carefully planned assignment of rights are therefore among the most effective protective measures of all.
+
+## Identification, authentication, authorisation
+
+| Step                   | Question                  | Example                                           |
+| ---------------------- | ------------------------- | ------------------------------------------------- |
+| **Identification**     | Who do you claim to be?   | entering the user name `anna.huber`               |
+| **Authentication**     | Can you prove it?         | password and code from the authenticator app      |
+| **Authorisation**      | What are you allowed to do? | Anna may read invoices but not approve them     |
+| **Accounting**         | What did you do?          | log entry: Anna opened invoice 4711               |
+
+The three steps authentication, authorisation and accounting are together called **AAA**, for example in the RADIUS protocol. In German the BSI additionally distinguishes: the user **authenticates themselves** („authentisiert sich“, presents proof), the system **authenticates** the user („authentifiziert“, verifies the proof).
+
+## Authentication factors
+
+| Factor        | Description                   | Examples                                            | Weakness                                     |
+| ------------- | ----------------------------- | --------------------------------------------------- | -------------------------------------------- |
+| **Knowledge** | something you know            | password, PIN, security question                    | can be guessed, spied on or passed on        |
+| **Possession** | something you have           | smartphone with app, smart card, security key       | can be lost or stolen                        |
+| **Inherence** | something you are             | fingerprint, face, iris, voice                      | cannot be changed, error rates               |
+
+Biometric methods work with probabilities. The **false acceptance rate** (FAR) states how often a stranger is accepted, the **false rejection rate** (FRR) how often the legitimate person is rejected. Both are linked through the sensitivity: lowering one raises the other. In addition, a stolen fingerprint cannot be changed like a password, so biometrics should be checked locally on the device, rather than travelling across the network as a record.
+
+**Multi-factor authentication** (MFA) combines factors from **different** categories; with exactly two one speaks of **two-factor authentication** (2FA). Two passwords are not MFA, because both can be stolen in the same way. MFA prevents the vast majority of account takeovers through stolen passwords.
+
+## Passwords
+
+### Password guidelines according to NIST
+
+In its guideline **SP 800-63B** (current revision 4 from 2025), the US agency NIST has thrown many old habits overboard, because in practice they lead to weaker passwords:
+
+| Recommendation                              | Reason                                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **minimum length 15 characters** if the password is the only factor, 8 characters as part of MFA | length determines strength the most |
+| allow at least **64 characters**, permit spaces and Unicode | enables passphrases of several words                                         |
+| **no composition rules** (upper case, lower case, digit, special character) | lead to predictable patterns such as `Password1!`                     |
+| **no periodic changes**, only when there is evidence of compromise | forced changes lead to `Summer2026!`, `Autumn2026!`                    |
+| screening against lists of **known, leaked and obvious** passwords | blocks exactly the passwords attackers try first                       |
+| no password hints, no security questions    | answers such as the place of birth can often be found publicly                                 |
+| allow pasting, support **password managers** | enables long, random and unique passwords                                                     |
+| limit failed attempts (_rate limiting_)     | slows down online attacks                                                                       |
+
+The BSI has also no longer recommended routine periodic password changes since 2020. The most important rule for users is: a **separate** password for every service, so that a data breach at one service does not endanger all other accounts (credential stuffing). In practice this is only possible with a **password manager**. How servers store passwords is explained under [Storing passwords securely](/en/it-security/cryptography/#storing-passwords-securely).
+
+## Second factor
+
+| Method                        | How it works                                            | Assessment                                                             |
+| ----------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **SMS code**                  | one-time code by text message                           | weak: SIM swapping, interception, phishing                             |
+| **TOTP**                      | time-based code from an authenticator app               | good, but can be captured by real-time phishing                        |
+| **Push approval**             | confirm a request in an app                             | good with number matching, otherwise vulnerable to **MFA fatigue** (bombarding with requests until someone confirms out of annoyance) |
+| **FIDO2 security keys, passkeys** | cryptographic signature, bound to the domain        | very good, **phishing-resistant**                                     |
+| **Smart card with certificate** | private key on a card                                 | very good, phishing-resistant, costly to operate                       |
+
+SMS and TOTP codes do not help against **adversary-in-the-middle phishing**: the fake page forwards password and code in real time to the real page and takes over the session. Only methods that are cryptographically bound to the real domain prevent this.
+
+### TOTP
+
+The **time-based one-time password** (TOTP, RFC 6238) generates a new code, usually six digits, every 30 seconds. Server and app share a secret key $K$, which is transferred at setup as a QR code (URI `otpauth://totp/...` with the key in Base32). Both compute the same code independently:
+
+1. Compute the time step: $T = \left\lfloor \dfrac{\text{Unix time} - T_0}{X} \right\rfloor$ with $T_0 = 0$ and $X = 30\,\mathrm{s}$.
+2. Compute $\mathrm{HMAC}(K, T)$, where $T$ enters as an 8-byte number (big endian). This is the **HOTP** method (RFC 4226), which uses a counter instead of the time.
+3. **Dynamic truncation**: the lower 4 bits of the last byte give an offset. From this offset, 4 bytes are read as a number and the highest bit is cleared (31 bits).
+4. Code $= \text{number} \bmod 10^{d}$ with $d$ digits.
+
+Because clocks do not run exactly alike, servers usually also accept the code of the previous and next time step. Most authenticator apps use HMAC-SHA-1 by default, which is still considered secure for HMAC, because HMAC does not require collision resistance. The example uses the equally standardised variant with HMAC-SHA-256 and checks it against the test vectors from RFC 6238 (8 digits, key `12345678901234567890123456789012`):
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Buffers.Binary;
+using System.Security.Cryptography;
+using System.Text;
+
+byte[] secret = Encoding.ASCII.GetBytes("12345678901234567890123456789012");
+foreach (long unixTime in new long[] { 59, 1111111109, 1234567890, 2000000000 })
+    Console.WriteLine($"{unixTime,10}: {Totp.Generate(secret, unixTime, digits: 8)}");
+
+public static class Totp
+{
+    public static string Generate(byte[] secret, long unixTime, int digits = 6, int stepSeconds = 30)
+    {
+        long timeStep = unixTime / stepSeconds;
+        byte[] counter = new byte[8];
+        BinaryPrimitives.WriteInt64BigEndian(counter, timeStep);
+
+        byte[] hmac = HMACSHA256.HashData(secret, counter);
+
+        // dynamic truncation
+        int offset = hmac[^1] & 0x0f;
+        int binary = BinaryPrimitives.ReadInt32BigEndian(hmac.AsSpan(offset, 4)) & 0x7fff_ffff;
+
+        int code = binary % (int)Math.Pow(10, digits);
+        return code.ToString().PadLeft(digits, '0');
+    }
+}
+
+// Output:
+//         59: 46119246
+// 1111111109: 68084774
+// 1234567890: 91819424
+// 2000000000: 90698825
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+
+fn hmac_sha256(key: &[u8], message: &[u8]) -> [u8; 32] {
+    let mut padded_key = [0u8; 64];
+    if key.len() > 64 {
+        padded_key[..32].copy_from_slice(&Sha256::digest(key));
+    } else {
+        padded_key[..key.len()].copy_from_slice(key);
+    }
+    let inner_key: Vec<u8> = padded_key.iter().map(|b| b ^ 0x36).collect();
+    let outer_key: Vec<u8> = padded_key.iter().map(|b| b ^ 0x5c).collect();
+    let inner = Sha256::new().chain_update(&inner_key).chain_update(message).finalize();
+    Sha256::new().chain_update(&outer_key).chain_update(inner).finalize().into()
+}
+
+fn totp(secret: &[u8], unix_time: u64, digits: u32, step_seconds: u64) -> String {
+    let time_step = unix_time / step_seconds;
+    let hmac = hmac_sha256(secret, &time_step.to_be_bytes());
+
+    // dynamic truncation
+    let offset = usize::from(hmac[31] & 0x0f);
+    let bytes: [u8; 4] = hmac[offset..offset + 4].try_into().expect("4 bytes");
+    let binary = u32::from_be_bytes(bytes) & 0x7fff_ffff;
+
+    let code = binary % 10u32.pow(digits);
+    format!("{code:0width$}", width = digits as usize)
+}
+
+fn main() {
+    let secret = b"12345678901234567890123456789012";
+    for unix_time in [59, 1111111109, 1234567890, 2000000000] {
+        println!("{unix_time:>10}: {}", totp(secret, unix_time, 8, 30));
+    }
+}
+
+// Output:
+//         59: 46119246
+// 1111111109: 68084774
+// 1234567890: 91819424
+// 2000000000: 90698825
+```
+
+</TabItem>
+</Tabs>
+
+You get the current code by passing the current Unix time (`DateTimeOffset.UtcNow.ToUnixTimeSeconds()` or `SystemTime::now().duration_since(UNIX_EPOCH)`). A server should accept every code only once, so that an intercepted code cannot be reused within the 30 seconds.
+
+### Passkeys, FIDO2 and WebAuthn
+
+**FIDO2** is a standard of the FIDO Alliance and the W3C for passwordless login. It consists of **WebAuthn** (JavaScript interface in the browser) and **CTAP2** (protocol between browser and external authenticator, such as a USB security key). A **passkey** is a FIDO2 credential that is either bound to a device (security key) or synchronised via an account (iCloud Keychain, Google Password Manager, password managers).
+
+**Registration:**
+
+1. The authenticator generates a **new key pair** for this one website.
+2. The public key is sent to the server and stored there. The private key never leaves the authenticator.
+
+**Login:**
+
+1. The server sends a random **challenge**.
+2. The user confirms on the device with fingerprint, face or PIN (local verification).
+3. The authenticator signs the challenge together with the **domain** of the site (_relying party ID_) using the private key.
+4. The server verifies the signature with the stored public key.
+
+The advantages follow from this: because the browser includes the real domain in the signature, a signature for `bank-login.example` is worthless on `bank.at`, so phishing fails. There is no secret on the server; a data breach reveals only public keys. And every site has its own key pair, so reuse is impossible. Passkeys combine possession (device) with inherence or knowledge (unlocking) and thus meet the requirement for MFA.
+
+## Single sign-on
+
+With **single sign-on** (SSO) the user logs in once at a central **identity provider** (IdP) and can then use many applications without logging in again. This is more convenient, reduces the number of passwords and makes it possible to enforce MFA, account blocking and logging centrally. The drawback: the IdP becomes a lucrative target and a single point of failure.
+
+| Method            | Use                                                                  |
+| ----------------- | -------------------------------------------------------------------- |
+| **Kerberos**      | login in the corporate network, standard in Active Directory        |
+| **SAML 2.0**      | XML-based web SSO in companies, for example for cloud services       |
+| **OpenID Connect** | modern web and app SSO based on OAuth 2.0                           |
+
+### Kerberos
+
+**Kerberos** (developed at MIT, named after the three-headed hound of Hades) is the standard authentication protocol in [Active Directory](/en/deployment/windows_server/active_directory/). A central **key distribution centre** (KDC, on every domain controller in AD) consists of an **authentication service** (AS) and a **ticket granting service** (TGS). The password is never sent over the network; instead Kerberos works with **tickets**:
+
+1. **AS-REQ/AS-REP**: the client logs on to the AS. The AS replies with a **ticket granting ticket** (TGT), which is encrypted with the key of the KDC account `krbtgt`, and a session key encrypted with the key derived from the user's password. Only someone who knows the password can decrypt it.
+2. **TGS-REQ/TGS-REP**: if the client wants to access a service (for example a file server), it presents its TGT to the TGS and receives a **service ticket** for that service.
+3. **AP-REQ**: the client presents the service ticket to the service, which checks it with its own key without having to ask the KDC.
+
+Tickets contain timestamps and are limited in time (TGT 10 hours by default). Clocks must therefore be synchronised; in AD a deviation of at most 5 minutes is allowed by default. Kerberos uses port 88. Well-known attacks are **Kerberoasting** (requesting service tickets for service accounts and cracking their weak passwords offline), **pass-the-ticket** and the **golden ticket** (whoever obtains the hash of the `krbtgt` account can issue any TGT themselves). The older **NTLM** method should be disabled because it allows attacks such as **pass-the-hash**.
+
+## OAuth 2.0 and OpenID Connect
+
+### OAuth 2.0
+
+**OAuth 2.0** (RFC 6749) is a protocol for **delegated authorisation**: an application receives limited access to a user's resources at another service **without learning their password**. Example: a photo printing app may read your photos in the cloud but not delete them.
+
+| Role                     | Example                                                    |
+| ------------------------ | ---------------------------------------------------------- |
+| **Resource owner**       | you as the owner of the photos                             |
+| **Client**               | the photo printing app                                     |
+| **Authorisation server** | the cloud provider's login service, issues tokens          |
+| **Resource server**      | the cloud storage API, checks the tokens                   |
+
+The client receives a short-lived **access token** with defined permissions (**scopes**, for example `photos.read`) and optionally a **refresh token** with which it fetches new access tokens.
+
+The recommended flow is the **authorisation code flow with PKCE** (_Proof Key for Code Exchange_, RFC 7636):
+
+1. The client generates a random secret (`code_verifier`) and redirects the browser to the authorisation server. It sends only the secret's hash (`code_challenge`), the desired scopes and its redirect address.
+2. The user logs in at the authorisation server and agrees to the access (_consent_).
+3. The authorisation server redirects the browser back to the client with a short-lived **authorisation code**.
+4. The client exchanges the code for the tokens directly at the authorisation server, presenting the `code_verifier`. An attacker who intercepts the code does not know the verifier and cannot redeem it.
+5. The client calls the API with the access token in the header `Authorization: Bearer <token>`.
+
+Further flows are the **client credentials flow** (service to service without a user) and the **device authorisation flow** (devices without a keyboard such as smart TVs: enter a code on your phone). The **implicit flow** and the **resource owner password credentials flow** are considered obsolete according to the current security recommendation (RFC 9700, 2025).
+
+### OpenID Connect
+
+OAuth 2.0 only says **what** a client may do, not **who** the user is. **OpenID Connect** (OIDC) adds this authentication layer to OAuth 2.0: if the client requests the scope `openid`, it additionally receives an **ID token**, a JWT with information about the user and the login. This is how buttons like "Sign in with Google" work, but also login via Microsoft Entra ID or a self-hosted IdP such as Keycloak. In Austria, **ID Austria** offers login for public and business services via OIDC and SAML, among others.
+
+### JSON Web Tokens
+
+A **JSON Web Token** (JWT, RFC 7519) consists of three Base64url-encoded parts separated by dots: `header.payload.signature`.
+
+```json
+// Header
+{ "alg": "RS256", "typ": "JWT", "kid": "2026-key-1" }
+// Payload with claims
+{
+  "iss": "https://login.example.at",
+  "sub": "248289761001",
+  "aud": "grades-portal",
+  "exp": 1791900000,
+  "iat": 1791896400,
+  "name": "Anna Huber",
+  "roles": ["student"]
+}
+```
+
+The most important standard claims are `iss` (issuer), `sub` (user ID), `aud` (for which application), `exp` (expiry time) and `iat` (time of issue). The signature (HMAC with `HS256` or asymmetric with `RS256` or `ES256`) protects integrity. For secure use:
+
+- A JWT is **signed, not encrypted**. Anyone can read the content, so no secrets belong in it.
+- The receiver must **check signature, `exp`, `iss` and `aud`** and accept only fixed, configured algorithms. Well-known attacks set `"alg": "none"` or switch from RS256 to HS256 so that the public key is used as the HMAC key.
+- A JWT cannot easily be revoked before it expires, because the server stores no state. Access tokens should therefore be valid for only a few minutes.
+
+## Access control models
+
+After authentication, **access control** (authorisation) decides which **subject** (user, process) may perform which **operation** (read, write, execute) on which **object** (file, record).
+
+| Model                                         | Who decides?                            | Example                                                        |
+| --------------------------------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| **DAC** (_discretionary access control_)      | the **owner** of the object             | NTFS and Unix file permissions: you share your file with colleagues |
+| **MAC** (_mandatory access control_)          | the **system**, according to fixed rules and security levels | military, SELinux, AppArmor                     |
+| **RBAC** (_role-based access control_)        | rights are attached to **roles**, users receive roles | AD groups "Accounting", "Teachers"                   |
+| **ABAC** (_attribute-based access control_)   | **rules** over attributes of subject, object and environment | "Doctors may read the findings of patients on their ward during their shift" |
+
+**DAC** is flexible but error-prone: every owner can pass rights on, and malware inherits all rights of the user who starts it. The rights are usually stored as an **access control list** (ACL) on the object.
+
+With **MAC**, subjects receive a **clearance** and objects a **classification**, such as "public", "confidential", "secret", "top secret". Users cannot change the rules. The **Bell-LaPadula model** protects confidentiality with two rules: **no read up** (nobody reads data above their level) and **no write down** (nobody writes data to a lower level, so that nothing leaks downwards). The **Biba model** conversely protects integrity (_no read down, no write up_).
+
+**RBAC** is the most widespread in companies, because rights are attached to tasks instead of people. If someone changes department, only the roles are swapped. In Active Directory this is implemented with the **AGDLP principle** (accounts in global groups, these in domain local groups, which receive the permissions). The risk is **role explosion**, when a new role is created for every exception.
+
+**ABAC** is the most fine-grained and also takes context such as time of day, location or device state into account, but is more costly to administer and audit. It fits well with zero trust.
+
+Regardless of the model: assign rights according to **least privilege**, adjust accounts immediately when employees join, move or leave (_joiner, mover, leaver_), review permissions regularly (**recertification**) and protect administrative accounts separately (**privileged access management**, separate admin accounts, MFA).
+
+## Further reading
+
+- [NIST SP 800-63B: Digital Identity Guidelines, Authentication and Authenticator Management](https://pages.nist.gov/800-63-4/sp800-63b.html)
+- [OAuth 2.0 Security Best Current Practice (RFC 9700)](https://www.rfc-editor.org/rfc/rfc9700) and [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html)
+- [FIDO Alliance: Passkeys](https://fidoalliance.org/passkeys/)

@@ -1,0 +1,787 @@
+---
+title: Processes and Threads
+description: Processes, process control block, process states, context switches, threads, scheduling algorithms with a worked example, inter-process communication, synchronisation and deadlocks with the banker's algorithm.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Hundreds of programs and background services run at the same time on a PC, even though the processor has only a few cores. The operating system creates this impression by giving each program a core in turn for a few milliseconds. This page describes how the operating system manages running programs, by which rules it distributes computing time and how processes cooperate without interfering with each other. How to program threads yourself in C# and Rust is covered under [Concurrency](/en/software-development/concurrency/).
+
+## Processes
+
+A **program** is a passive file containing machine code. A **process** is a program in execution. The same program can run several times at once as different processes, for example three open editor windows. A process consists of:
+
+- its own protected **address space** with code (text), global data, heap and stack,
+- the **execution state**: program counter, registers, stack pointer,
+- **resources**: open files, network connections, permissions,
+- management data such as process ID and priority.
+
+### Process control block
+
+For every process, the operating system stores a **process control block** (PCB; on Linux the structure `task_struct`). All PCBs together form the **process table**.
+
+| Content of the PCB         | Example                                                  |
+| -------------------------- | -------------------------------------------------------- |
+| Process identification     | **PID**, PID of the parent process (**PPID**), user      |
+| Process state              | ready, running, waiting                                  |
+| Saved CPU context          | program counter, registers, stack pointer, flags         |
+| Scheduling information     | priority, CPU time used, queue                           |
+| Memory management          | pointer to the page table                                |
+| Resources                  | table of open files, signals, working directory          |
+
+### Creation and termination
+
+Processes form a **tree**: every process is created by a parent process. On Linux the root is `systemd` with PID 1; `pstree` shows the tree.
+
+- On **Unix/Linux**, `fork()` creates an almost identical copy of the calling process. Both continue after the call; `fork` returns 0 in the child and the child's PID in the parent. The child then usually replaces its program with a new one using `exec()`. Thanks to **copy-on-write**, memory is only copied when one of the two writes to it.
+- On **Windows**, `CreateProcess()` creates a new process with a specified program in a single step.
+
+A process ends normally with `exit(status)`, where **exit code** 0 means success, or it is terminated by an error or a signal. A terminated process whose exit code the parent has not yet collected with `wait()` remains in the process table as a **zombie**. If the parent dies first, the child becomes an **orphan** and is adopted by PID 1.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Diagnostics;
+
+// start a child process and read its standard output through a pipe
+var psi = OperatingSystem.IsWindows()
+    ? new ProcessStartInfo("cmd", "/c echo Hello from the child process")
+    : new ProcessStartInfo("echo", "Hello from the child process");
+psi.RedirectStandardOutput = true;
+
+using var child = Process.Start(psi)!;
+string output = child.StandardOutput.ReadToEnd();
+child.WaitForExit();
+
+Console.Write(output);                                   // Hello from the child process
+Console.WriteLine($"Exit code: {child.ExitCode}");       // Exit code: 0
+Console.WriteLine(Environment.ProcessId != child.Id);    // True, own PID
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::process::Command;
+
+fn main() -> std::io::Result<()> {
+    // start a child process and read its standard output through a pipe
+    let output = if cfg!(windows) {
+        Command::new("cmd").args(["/c", "echo Hello from the child process"]).output()?
+    } else {
+        Command::new("echo").arg("Hello from the child process").output()?
+    };
+
+    print!("{}", String::from_utf8_lossy(&output.stdout)); // Hello from the child process
+    println!("Exit code: {:?}", output.status.code());     // Exit code: Some(0)
+    println!("{}", std::process::id() > 0);                // true
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Process states
+
+During its lifetime a process moves between several **states**:
+
+![State diagram: new, ready, running, waiting and terminated with the transitions admit, dispatch, time slice expired, waits for event and event occurred](/images/computer-science/process_states_en.svg)
+
+| State          | Meaning                                                                          |
+| -------------- | -------------------------------------------------------------------------------- |
+| **new**        | The process is being created.                                                    |
+| **ready**      | It could run and is only waiting to be assigned a core.                          |
+| **running**    | It is currently being executed on a core. At most one process per core is running. |
+| **waiting** (_blocked_) | It is waiting for an event: data from the SSD, a key press, a network packet, a lock becoming free. Even if a core is free, it cannot run. |
+| **terminated** | It has finished; its resources are released.                                     |
+
+The difference between **ready** and **waiting** is important: a waiting process does not go straight back to running but first into the ready queue once its event has occurred. Systems with swapping also have the states _ready, swapped out_ and _waiting, swapped out_ (see [Memory management](/en/computer-science/memory-management-os/#swapping)).
+
+### Context switch
+
+During a **context switch**, one process gives up the core and another one gets it:
+
+1. A timer interrupt, a system call or another event brings the processor into the kernel.
+2. The kernel saves the context of the previous process (registers, program counter, stack pointer) in its PCB.
+3. The **scheduler** selects the next process from the ready queue.
+4. The kernel loads its context, switches to its page table and jumps back to user mode.
+
+A context switch is **pure overhead**; no useful work is done during it. It takes a few microseconds, plus indirect costs: afterwards the caches and the TLB (see [Memory management](/en/computer-science/memory-management-os/#tlb)) contain data of the wrong process and have to be refilled.
+
+## Threads
+
+A **thread** (_lightweight process_) is an independent unit of execution **within** a process. A process has at least one thread. All threads of a process share its address space and resources, but each thread has its own registers, its own program counter and its own stack.
+
+| Feature                    | Process                                         | Thread                                         |
+| -------------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Address space              | own, protected                                  | shared with the other threads of the process   |
+| Creation and context switch | expensive (new address space, page tables)     | cheap (no change of address space)             |
+| Communication              | via the operating system (IPC)                  | directly via shared memory                     |
+| Fault isolation            | a crash only affects this process               | a crash terminates the whole process           |
+| Synchronisation            | rarely needed                                   | needed as soon as shared data is modified      |
+
+Browsers such as Chrome and Firefox use both: each website runs in its own process (security; one crash does not take down all tabs), and within a process several threads work together (rendering, JavaScript, network).
+
+**Kernel threads** are managed and scheduled by the operating system and can truly run in parallel on several cores. **User-level threads** (_green threads_) are managed by a library inside the process itself; the kernel does not know about them. They are very cheap, but if one blocks in a system call, the whole process blocks. Today the **1:1 model** is usual (every thread of the language is a kernel thread, as with .NET threads and `std::thread` in Rust). In addition, runtimes distribute many lightweight tasks over a few threads (**M:N**), for example the .NET thread pool for `Task`, the Rust runtime Tokio or goroutines in Go.
+
+## Scheduling
+
+The **scheduler** decides which ready process (more precisely: thread) gets a core next. The **dispatcher** then performs the context switch.
+
+- **Non-preemptive** (cooperative) scheduling: a process runs until it finishes, blocks or voluntarily yields. A process in an infinite loop brings the whole system to a halt (as with Windows 3.x and classic Mac OS).
+- **Preemptive** scheduling: the operating system can take the core away from a process via a timer interrupt. All current desktop and server systems work this way.
+
+### Goals and metrics
+
+| Metric                          | Definition                                                  | Goal        |
+| ------------------------------- | ----------------------------------------------------------- | ----------- |
+| **CPU utilisation**             | fraction of time in which the processor does useful work    | high        |
+| **Throughput**                  | completed processes per unit of time                        | high        |
+| **Turnaround time**             | completion time minus arrival time                          | low         |
+| **Waiting time**                | time in the ready queue = turnaround time minus CPU time (without I/O) | low |
+| **Response time**               | arrival until the first response, important for interactive systems | low |
+| **Fairness**                    | no process is permanently disadvantaged                     |             |
+
+The goals partly conflict: short time slices improve response time but increase the overhead of context switches and lower throughput.
+
+### Algorithms
+
+| Algorithm                       | Rule                                                           | Preemptive    | Pros and cons                                              |
+| ------------------------------- | -------------------------------------------------------------- | ------------- | ---------------------------------------------------------- |
+| **FCFS** (_first come, first served_) | in order of arrival                                      | no            | simple and fair, but short processes wait behind long ones (**convoy effect**) |
+| **SJF** (_shortest job first_)  | the process with the shortest CPU time first                   | no            | minimal average waiting time among non-preemptive algorithms. The CPU time must be known or estimated; long processes can **starve** |
+| **SRTF** (_shortest remaining time first_) | the process with the shortest **remaining** time; a newly arriving shorter process preempts the running one | yes | minimal average waiting time overall, same drawbacks as SJF |
+| **Round robin** (RR)            | each process gets a **time slice** (_quantum_) $q$ in turn, then goes to the back of the queue | yes | fair, good response times. Too large a $q$ gives FCFS, too small a $q$ a lot of switching overhead |
+| **Priorities**                  | the process with the highest priority first                    | either possible | important tasks first. Low priorities can starve; remedy: **ageing** (priority rises with waiting time) |
+| **Multilevel feedback queue**   | several queues with different priorities and time slices. A process that uses up its whole time slice moves down a level; one that blocks early stays up | yes | automatically favours interactive and I/O-bound processes without knowing CPU times |
+
+Real operating systems combine these ideas. Windows uses preemptive priority scheduling with 32 priority levels and dynamic priority boosts. From 2007 to 2023 Linux used the **Completely Fair Scheduler** (CFS), which gives every process a fair share, and since kernel 6.6 its successor **EEVDF**. For real-time tasks there are separate classes with fixed priorities (`SCHED_FIFO`, `SCHED_RR`).
+
+### Worked example
+
+Four processes with arrival time and CPU time (in milliseconds):
+
+| Process | Arrival | CPU time |
+| ------- | ------- | -------- |
+| P1      | 0       | 8        |
+| P2      | 1       | 4        |
+| P3      | 2       | 9        |
+| P4      | 3       | 5        |
+
+The **waiting time** of a process is completion time minus arrival minus CPU time.
+
+**FCFS**: the processes run in order of arrival.
+
+```text
+| P1             | P2      | P3                | P4        |
+0                8         12                  21          26
+```
+
+Waiting times: P1 = 0, P2 = 12 − 1 − 4 = 7, P3 = 21 − 2 − 9 = 10, P4 = 26 − 3 − 5 = 18. Average $\frac{0 + 7 + 10 + 18}{4} = 8.75$.
+
+**SJF** (non-preemptive): at time 0 only P1 is present and runs until 8. Then the shortest of P2 (4), P3 (9) and P4 (5) is chosen each time.
+
+```text
+| P1             | P2      | P4        | P3                |
+0                8         12          17                  26
+```
+
+Waiting times: P1 = 0, P2 = 12 − 1 − 4 = 7, P4 = 17 − 3 − 5 = 9, P3 = 26 − 2 − 9 = 15. Average $\frac{31}{4} = 7.75$.
+
+**SRTF**: when P2 arrives at time 1, P1 still has 7 ms remaining and P2 only 4, so P1 is preempted. P3 and P4 are not shorter than P2's remaining time when they arrive.
+
+```text
+|P1| P2      | P4        | P1            | P3                |
+0  1         5           10              17                  26
+```
+
+Waiting times: P1 = 17 − 0 − 8 = 9, P2 = 5 − 1 − 4 = 0, P4 = 10 − 3 − 5 = 2, P3 = 26 − 2 − 9 = 15. Average $\frac{26}{4} = 6.5$.
+
+**Round robin** with $q = 4$: P1 runs from 0 to 4. In the meantime P2, P3 and P4 have arrived and are queued ahead of P1. After that, the processes take turns until all are finished.
+
+```text
+| P1      | P2      | P3      | P4      | P1      | P3      |P4|P3|
+0         4         8         12        16        20        24 25 26
+```
+
+Waiting times: P1 = 20 − 0 − 8 = 12, P2 = 8 − 1 − 4 = 3, P3 = 26 − 2 − 9 = 15, P4 = 25 − 3 − 5 = 17. Average $\frac{47}{4} = 11.75$.
+
+| Algorithm      | Average waiting time |
+| -------------- | -------------------- |
+| FCFS           | 8.75 ms              |
+| SJF            | 7.75 ms              |
+| SRTF           | 6.5 ms               |
+| Round robin (q = 4) | 11.75 ms        |
+
+SRTF is optimal for average waiting time. Round robin does worst here but offers the best **response time**: every process gets its turn after at most $(n - 1) \cdot q$, which matters more for interactive programs.
+
+The following simulation recalculates the values.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Job[] jobs = [new("P1", 0, 8), new("P2", 1, 4), new("P3", 2, 9), new("P4", 3, 5)];
+
+Console.WriteLine($"FCFS: {Scheduler.Fcfs(jobs):F2}");             // FCFS: 8.75
+Console.WriteLine($"SJF:  {Scheduler.Sjf(jobs):F2}");              // SJF:  7.75
+Console.WriteLine($"SRTF: {Scheduler.Srtf(jobs):F2}");             // SRTF: 6.50
+Console.WriteLine($"RR:   {Scheduler.RoundRobin(jobs, 4):F2}");    // RR:   11.75
+
+record Job(string Name, int Arrival, int Burst);
+
+static class Scheduler
+{
+    // all algorithms return the average waiting time (completion - arrival - CPU time)
+    static double AverageWait(Job[] jobs, Dictionary<Job, int> finish) =>
+        jobs.Average(j => finish[j] - j.Arrival - j.Burst);
+
+    public static double Fcfs(Job[] jobs)
+    {
+        var finish = new Dictionary<Job, int>();
+        int time = 0;
+        foreach (var job in jobs.OrderBy(j => j.Arrival))
+        {
+            time = Math.Max(time, job.Arrival) + job.Burst;
+            finish[job] = time;
+        }
+        return AverageWait(jobs, finish);
+    }
+
+    public static double Sjf(Job[] jobs)
+    {
+        var finish = new Dictionary<Job, int>();
+        var open = jobs.ToList();
+        int time = 0;
+        while (open.Count > 0)
+        {
+            var ready = open.Where(j => j.Arrival <= time).ToList();
+            if (ready.Count == 0) { time = open.Min(j => j.Arrival); continue; }
+            var next = ready.MinBy(j => j.Burst)!;
+            time += next.Burst;
+            finish[next] = time;
+            open.Remove(next);
+        }
+        return AverageWait(jobs, finish);
+    }
+
+    public static double Srtf(Job[] jobs)
+    {
+        var finish = new Dictionary<Job, int>();
+        var remaining = jobs.ToDictionary(j => j, j => j.Burst);
+        for (int time = 0; finish.Count < jobs.Length; time++)
+        {
+            // every millisecond, choose the process with the shortest remaining time
+            var next = jobs.Where(j => j.Arrival <= time && remaining[j] > 0)
+                           .MinBy(j => remaining[j]);
+            if (next is null) continue;
+            if (--remaining[next] == 0) finish[next] = time + 1;
+        }
+        return AverageWait(jobs, finish);
+    }
+
+    public static double RoundRobin(Job[] jobs, int quantum)
+    {
+        var finish = new Dictionary<Job, int>();
+        var remaining = jobs.ToDictionary(j => j, j => j.Burst);
+        var arrivals = new Queue<Job>(jobs.OrderBy(j => j.Arrival));
+        var queue = new Queue<Job>();
+        int time = 0;
+        while (finish.Count < jobs.Length)
+        {
+            while (arrivals.Count > 0 && arrivals.Peek().Arrival <= time) queue.Enqueue(arrivals.Dequeue());
+            if (queue.Count == 0) { time = arrivals.Peek().Arrival; continue; }
+
+            var job = queue.Dequeue();
+            int slice = Math.Min(quantum, remaining[job]);
+            time += slice;
+            remaining[job] -= slice;
+            // new arrivals queue up ahead of the preempted process
+            while (arrivals.Count > 0 && arrivals.Peek().Arrival <= time) queue.Enqueue(arrivals.Dequeue());
+            if (remaining[job] > 0) queue.Enqueue(job);
+            else finish[job] = time;
+        }
+        return AverageWait(jobs, finish);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+struct Job {
+    name: &'static str,
+    arrival: u32,
+    burst: u32,
+}
+
+// all algorithms return the average waiting time (completion - arrival - CPU time)
+fn average_wait(jobs: &[Job], finish: &[u32]) -> f64 {
+    let total: u32 = jobs.iter().zip(finish).map(|(j, &f)| f - j.arrival - j.burst).sum();
+    total as f64 / jobs.len() as f64
+}
+
+fn fcfs(jobs: &[Job]) -> f64 {
+    let mut order: Vec<usize> = (0..jobs.len()).collect();
+    order.sort_by_key(|&i| jobs[i].arrival);
+    let mut finish = vec![0; jobs.len()];
+    let mut time = 0;
+    for i in order {
+        time = time.max(jobs[i].arrival) + jobs[i].burst;
+        finish[i] = time;
+    }
+    average_wait(jobs, &finish)
+}
+
+fn sjf(jobs: &[Job]) -> f64 {
+    let mut finish = vec![0; jobs.len()];
+    let mut done = vec![false; jobs.len()];
+    let mut time = 0;
+    for _ in 0..jobs.len() {
+        let next = (0..jobs.len())
+            .filter(|&i| !done[i] && jobs[i].arrival <= time)
+            .min_by_key(|&i| jobs[i].burst);
+        let i = match next {
+            Some(i) => i,
+            // nobody ready: jump to the next arrival
+            None => (0..jobs.len()).filter(|&i| !done[i]).min_by_key(|&i| jobs[i].arrival).unwrap_or(0),
+        };
+        time = time.max(jobs[i].arrival) + jobs[i].burst;
+        finish[i] = time;
+        done[i] = true;
+    }
+    average_wait(jobs, &finish)
+}
+
+fn srtf(jobs: &[Job]) -> f64 {
+    let mut remaining: Vec<u32> = jobs.iter().map(|j| j.burst).collect();
+    let mut finish = vec![0; jobs.len()];
+    let mut time = 0;
+    while remaining.iter().any(|&r| r > 0) {
+        // every millisecond, choose the process with the shortest remaining time
+        let next = (0..jobs.len())
+            .filter(|&i| jobs[i].arrival <= time && remaining[i] > 0)
+            .min_by_key(|&i| remaining[i]);
+        if let Some(i) = next {
+            remaining[i] -= 1;
+            if remaining[i] == 0 {
+                finish[i] = time + 1;
+            }
+        }
+        time += 1;
+    }
+    average_wait(jobs, &finish)
+}
+
+fn round_robin(jobs: &[Job], quantum: u32) -> f64 {
+    let mut remaining: Vec<u32> = jobs.iter().map(|j| j.burst).collect();
+    let mut finish = vec![0; jobs.len()];
+    let mut arrivals: VecDeque<usize> = (0..jobs.len()).collect(); // sorted by arrival
+    let mut queue = VecDeque::new();
+    let mut time = 0;
+    let admit = |time: u32, arrivals: &mut VecDeque<usize>, queue: &mut VecDeque<usize>| {
+        while arrivals.front().is_some_and(|&i| jobs[i].arrival <= time) {
+            queue.extend(arrivals.pop_front());
+        }
+    };
+    while remaining.iter().any(|&r| r > 0) {
+        admit(time, &mut arrivals, &mut queue);
+        let Some(i) = queue.pop_front() else {
+            time = arrivals.front().map_or(time, |&i| jobs[i].arrival);
+            continue;
+        };
+        let slice = quantum.min(remaining[i]);
+        time += slice;
+        remaining[i] -= slice;
+        // new arrivals queue up ahead of the preempted process
+        admit(time, &mut arrivals, &mut queue);
+        if remaining[i] > 0 {
+            queue.push_back(i);
+        } else {
+            finish[i] = time;
+        }
+    }
+    average_wait(jobs, &finish)
+}
+
+fn main() {
+    let jobs = [
+        Job { name: "P1", arrival: 0, burst: 8 },
+        Job { name: "P2", arrival: 1, burst: 4 },
+        Job { name: "P3", arrival: 2, burst: 9 },
+        Job { name: "P4", arrival: 3, burst: 5 },
+    ];
+    println!("FCFS: {:.2}", fcfs(&jobs));               // FCFS: 8.75
+    println!("SJF:  {:.2}", sjf(&jobs));                // SJF:  7.75
+    println!("SRTF: {:.2}", srtf(&jobs));               // SRTF: 6.50
+    println!("RR:   {:.2}", round_robin(&jobs, 4));     // RR:   11.75
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Inter-process communication
+
+Processes are isolated from each other. If they want to cooperate, they need mechanisms provided by the operating system, known as **inter-process communication** (IPC):
+
+| Mechanism              | How it works                                                                         | Example                                      |
+| ---------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- |
+| **pipe** (anonymous)   | unidirectional byte stream between related processes, buffered by the kernel         | `ls -l \| grep txt` in the shell             |
+| **named pipe** (FIFO)  | pipe with a name in the file system, also for unrelated processes                    | `mkfifo`, Windows named pipes                |
+| **message queue**      | structured messages in a queue managed by the kernel                                 | POSIX message queues                         |
+| **shared memory**      | the same physical memory region is mapped into both address spaces. Fastest, because no copy via the kernel is needed, but requires its own synchronisation | `shm_open` with `mmap`, `MemoryMappedFile` in .NET |
+| **signal**             | short asynchronous notification with a number, without data                           | `kill -15 1234`, Ctrl+C sends `SIGINT`       |
+| **socket**             | bidirectional communication, locally (Unix domain socket) or over the network (TCP/UDP) | database connection, web server (see [Network programming](/en/software-development/network-programming/)) |
+| **files**              | one process writes, another reads                                                    | log files, lock files                        |
+
+Important Unix **signals**:
+
+| Signal    | Number | Meaning                                                           |
+| --------- | ------ | ----------------------------------------------------------------- |
+| `SIGINT`  | 2      | interrupt from the keyboard (Ctrl+C)                              |
+| `SIGKILL` | 9      | immediate termination, cannot be caught                           |
+| `SIGSEGV` | 11     | invalid memory access                                             |
+| `SIGTERM` | 15     | polite request to terminate (default of `kill`), the program can clean up |
+| `SIGSTOP` / `SIGCONT` | 19 / 18 | stop and continue (numbers on Linux x86)                  |
+
+## Synchronisation
+
+### Race conditions
+
+If several threads or processes access shared data and the result depends on the random order of execution, there is a **race condition**. Even `counter++` is not atomic but consists of three machine instructions: load, increment, store. If two threads are interrupted at an unfortunate moment, one increment is lost:
+
+| Step | Thread A                 | Thread B                 | `counter` in memory   |
+| ---- | ------------------------ | ------------------------ | --------------------- |
+| 1    | loads 5 into a register  |                          | 5                     |
+| 2    |                          | loads 5 into a register  | 5                     |
+| 3    | increments to 6          |                          | 5                     |
+| 4    |                          | increments to 6          | 5                     |
+| 5    | stores 6                 |                          | 6                     |
+| 6    |                          | stores 6                 | 6 (instead of 7)      |
+
+Such bugs are treacherous because they occur rarely and cannot be reproduced reliably.
+
+### Critical section
+
+The part of the code that accesses shared data is called the **critical section**. A correct solution must satisfy three conditions:
+
+1. **Mutual exclusion**: at most one thread is in the critical section at a time.
+2. **Progress**: if the section is free, a thread that wants to enter must not be held up indefinitely by threads that do not want to enter.
+3. **Bounded waiting**: no thread waits forever (no starvation).
+
+A simple "occupied" flag is not enough, because checking and setting it can themselves be interrupted. Processors therefore provide **atomic instructions** such as _test-and-set_ and _compare-and-swap_ (x86: `lock cmpxchg`), which read and write indivisibly. All higher-level mechanisms are built on these. If a thread waits in a loop until the flag becomes free, this is called **busy waiting** (spinlock). It wastes CPU time and is only worthwhile for very short waits. It is better to **block** the thread until it is woken up.
+
+### Mutex, semaphore and monitor
+
+- A **mutex** (_mutual exclusion_) is a lock with the operations `lock` and `unlock`. Only the thread that locked it may unlock it.
+- A **semaphore** (Edsger W. Dijkstra, 1965) is an integer counter with a queue and two atomic operations:
+  - **P** (_proberen_, _wait_, _down_): decrement the counter. If it becomes negative (or is 0), the thread blocks.
+  - **V** (_verhogen_, _signal_, _up_): increment the counter and wake a waiting thread if there is one.
+
+  A **binary semaphore** (initial value 1) acts like a mutex; a **counting semaphore** with initial value $n$ lets at most $n$ threads through at a time, for example for a pool of 5 database connections.
+- A **monitor** (Brinch Hansen, Hoare, 1973/74) is a language construct that bundles shared data with the operations on it and automatically ensures that only one thread at a time is active inside it. With **condition variables** (_wait_, _signal_), a thread inside the monitor can wait until a condition is met. In C#, `lock` together with `Monitor.Wait` and `Monitor.Pulse` corresponds to a monitor; in Rust, the combination of `Mutex` and `Condvar`.
+
+### Producer-consumer problem
+
+A **producer** puts data into a buffer of limited size, and a **consumer** takes it out. The producer must wait when the buffer is full, the consumer when it is empty, and the two must not modify the buffer at the same time. The classic solution uses three semaphores:
+
+```text
+empty = N      // free slots
+full  = 0      // occupied slots
+mutex = 1      // protects the buffer
+
+Producer:                  Consumer:
+  P(empty)                   P(full)
+  P(mutex)                   P(mutex)
+  put into buffer            take from buffer
+  V(mutex)                   V(mutex)
+  V(full)                    V(empty)
+```
+
+The order matters: if the producer first executed `P(mutex)` and then `P(empty)`, it could hold the mutex while sleeping on a full buffer, and the consumer would never get to the buffer: a deadlock.
+
+Rust has no semaphore in its standard library, but one can be built from `Mutex` and `Condvar`, which also shows how a monitor works.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const int Capacity = 3;
+var buffer = new Queue<int>();
+var bufferLock = new object();
+var empty = new SemaphoreSlim(Capacity, Capacity); // free slots
+var full = new SemaphoreSlim(0, Capacity);         // occupied slots
+
+var producer = Task.Run(() =>
+{
+    for (int i = 1; i <= 10; i++)
+    {
+        empty.Wait();                              // P(empty)
+        lock (bufferLock) buffer.Enqueue(i);       // P(mutex) ... V(mutex)
+        full.Release();                            // V(full)
+    }
+});
+
+var consumer = Task.Run(() =>
+{
+    int sum = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        full.Wait();                               // P(full)
+        int item;
+        lock (bufferLock) item = buffer.Dequeue();
+        empty.Release();                           // V(empty)
+        sum += item;
+    }
+    return sum;
+});
+
+await producer;
+Console.WriteLine($"Sum: {await consumer}");       // Sum: 55
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+use std::sync::{Condvar, Mutex};
+use std::thread;
+
+// counting semaphore as a monitor made of a mutex and a condition variable
+struct Semaphore {
+    count: Mutex<usize>,
+    available: Condvar,
+}
+
+impl Semaphore {
+    fn new(initial: usize) -> Self {
+        Self { count: Mutex::new(initial), available: Condvar::new() }
+    }
+
+    // P: wait until the counter is greater than 0, then decrement it
+    fn acquire(&self) {
+        let mut count = self.count.lock().unwrap();
+        while *count == 0 {
+            count = self.available.wait(count).unwrap();
+        }
+        *count -= 1;
+    }
+
+    // V: increment the counter and wake a waiting thread
+    fn release(&self) {
+        *self.count.lock().unwrap() += 1;
+        self.available.notify_one();
+    }
+}
+
+fn main() {
+    const CAPACITY: usize = 3;
+    let buffer = Mutex::new(VecDeque::new());
+    let empty = Semaphore::new(CAPACITY); // free slots
+    let full = Semaphore::new(0);         // occupied slots
+
+    let sum = thread::scope(|s| {
+        s.spawn(|| {
+            for i in 1..=10 {
+                empty.acquire();                       // P(empty)
+                buffer.lock().unwrap().push_back(i);   // P(mutex) ... V(mutex)
+                full.release();                        // V(full)
+            }
+        });
+        let consumer = s.spawn(|| {
+            let mut sum = 0;
+            for _ in 0..10 {
+                full.acquire();                        // P(full)
+                let item = buffer.lock().unwrap().pop_front().unwrap_or(0);
+                empty.release();                       // V(empty)
+                sum += item;
+            }
+            sum
+        });
+        consumer.join().unwrap()
+    });
+    println!("Sum: {sum}");                            // Sum: 55
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Dining philosophers
+
+The **dining philosophers** problem (Dijkstra, 1965) illustrates deadlock and starvation: five philosophers sit at a round table, with one fork between each pair of plates. To eat, each needs both neighbouring forks. If all of them pick up their left fork at the same time, each waits forever for the right one.
+
+Solutions:
+
+- **Resource ordering**: the forks are numbered and everyone picks up the one with the lower number first. Then one philosopher picks up the right fork first, and the cycle is broken.
+- **Limiting**: at most four philosophers may reach for forks at the same time (semaphore with initial value 4).
+- **All or nothing**: a philosopher only takes both forks if both are free, inside a critical section (waiter solution).
+
+Other classic problems are the **readers-writers problem** (many readers at once, but writers exclusively) and the **sleeping barber problem**.
+
+## Deadlocks
+
+A **deadlock** is a state in which a group of processes waits for events that only another process in the group can trigger. None of them ever makes progress.
+
+### Coffman conditions
+
+A deadlock can only occur if **all four** conditions hold at the same time (Coffman, 1971):
+
+1. **Mutual exclusion**: resources can only be used by one process at a time.
+2. **Hold and wait**: a process holds resources and waits for further ones.
+3. **No preemption**: resources cannot be taken away from a process; it has to release them itself.
+4. **Circular wait**: there is a cycle of processes in which each waits for a resource held by the next.
+
+This can be shown in a **resource allocation graph** with processes (circles) and resources (rectangles): an edge from resource to process means "held by", an edge from process to resource means "waits for". If there is only one instance of each resource, a **cycle** means a deadlock.
+
+### Handling deadlocks
+
+| Strategy                      | Idea                                                                     | Example                                     |
+| ----------------------------- | ------------------------------------------------------------------------ | ------------------------------------------- |
+| **Prevention**                | rule out one of the four conditions in principle                         | request all resources at once (against hold and wait), request resources in a fixed order (against circular wait), take resources away |
+| **Avoidance**                 | before every allocation, check whether the system remains in a **safe state** | banker's algorithm                     |
+| **Detection and recovery**    | allow deadlocks, search for cycles regularly, then abort or roll back a process | database systems abort a transaction |
+| **Ignoring** (ostrich algorithm) | deadlocks are rare and countermeasures expensive; if necessary the user restarts | Windows and Linux for application processes |
+
+In programming, a **fixed lock order** is the most important practical rule: if all threads always request locks in the same order, no cycle can arise.
+
+### Banker's algorithm
+
+The **banker's algorithm** (Dijkstra) compares the system to a bank that only grants loans if it can still serve all customers afterwards. Every process has to declare its **maximum demand** in advance. A state is **safe** if there is an order in which all processes can receive their remaining demand and finish.
+
+- **Allocation**: what a process already has
+- **Maximum**: the most it needs
+- **Need** = maximum − allocation
+- **Available**: what is free
+
+Safety check: find a process whose need can be fully covered by what is available. Assume it runs to completion and returns everything (available += allocation). Repeat. If all processes can finish this way, the state is safe.
+
+:::tip[Example: five processes, three resource types A, B, C with 10, 5, 7 instances in total]
+| Process | Allocation (A B C) | Maximum (A B C) | Need (A B C) |
+| ------- | ------------------ | --------------- | ------------ |
+| P0      | 0 1 0              | 7 5 3           | 7 4 3        |
+| P1      | 2 0 0              | 3 2 2           | 1 2 2        |
+| P2      | 3 0 2              | 9 0 2           | 6 0 0        |
+| P3      | 2 1 1              | 2 2 2           | 0 1 1        |
+| P4      | 0 0 2              | 4 3 3           | 4 3 1        |
+
+In total (7 2 5) is allocated, so (10 5 7) − (7 2 5) = **(3 3 2)** is available.
+
+| Step | Process | Need ≤ available?   | new available     |
+| ---- | ------- | ------------------- | ----------------- |
+| 1    | P1      | (1 2 2) ≤ (3 3 2) ✓ | (3 3 2) + (2 0 0) = (5 3 2) |
+| 2    | P3      | (0 1 1) ≤ (5 3 2) ✓ | (5 3 2) + (2 1 1) = (7 4 3) |
+| 3    | P4      | (4 3 1) ≤ (7 4 3) ✓ | (7 4 3) + (0 0 2) = (7 4 5) |
+| 4    | P0      | (7 4 3) ≤ (7 4 5) ✓ | (7 4 5) + (0 1 0) = (7 5 5) |
+| 5    | P2      | (6 0 0) ≤ (7 5 5) ✓ | (7 5 5) + (3 0 2) = (10 5 7) |
+
+The safe sequence ⟨P1, P3, P4, P0, P2⟩ exists, so the state is safe. When a process requests resources, the system pretends to have granted them and runs the check. The request is only granted if the new state is safe; otherwise the process has to wait.
+:::
+
+An unsafe state is not yet a deadlock, but a deadlock can no longer be ruled out. In practice the algorithm is rarely used, because processes hardly ever know their maximum demand and the check is expensive for every request.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] available = [3, 3, 2];
+int[][] allocation = [[0, 1, 0], [2, 0, 0], [3, 0, 2], [2, 1, 1], [0, 0, 2]];
+int[][] maximum = [[7, 5, 3], [3, 2, 2], [9, 0, 2], [2, 2, 2], [4, 3, 3]];
+
+var order = Banker.SafeSequence(available, allocation, maximum);
+Console.WriteLine(order is null
+    ? "unsafe state"
+    : "safe sequence: " + string.Join(", ", order.Select(p => $"P{p}"))); // safe sequence: P1, P3, P4, P0, P2
+
+static class Banker
+{
+    public static List<int>? SafeSequence(int[] available, int[][] allocation, int[][] maximum)
+    {
+        int n = allocation.Length, m = available.Length;
+        var work = (int[])available.Clone();
+        var finished = new bool[n];
+        var sequence = new List<int>();
+
+        bool progress = true;
+        while (progress)
+        {
+            progress = false;
+            for (int p = 0; p < n; p++)
+            {
+                if (finished[p]) continue;
+                bool canRun = Enumerable.Range(0, m).All(r => maximum[p][r] - allocation[p][r] <= work[r]);
+                if (!canRun) continue;
+                for (int r = 0; r < m; r++) work[r] += allocation[p][r]; // returns everything
+                finished[p] = true;
+                sequence.Add(p);
+                progress = true;
+            }
+        }
+        return finished.All(f => f) ? sequence : null;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn safe_sequence(available: &[u32], allocation: &[Vec<u32>], maximum: &[Vec<u32>]) -> Option<Vec<usize>> {
+    let mut work = available.to_vec();
+    let mut finished = vec![false; allocation.len()];
+    let mut sequence = Vec::new();
+
+    let mut progress = true;
+    while progress {
+        progress = false;
+        for p in 0..allocation.len() {
+            if finished[p] {
+                continue;
+            }
+            let can_run = (0..work.len()).all(|r| maximum[p][r] - allocation[p][r] <= work[r]);
+            if !can_run {
+                continue;
+            }
+            for r in 0..work.len() {
+                work[r] += allocation[p][r]; // returns everything
+            }
+            finished[p] = true;
+            sequence.push(p);
+            progress = true;
+        }
+    }
+    finished.iter().all(|&f| f).then_some(sequence)
+}
+
+fn main() {
+    let available = [3, 3, 2];
+    let allocation = vec![vec![0, 1, 0], vec![2, 0, 0], vec![3, 0, 2], vec![2, 1, 1], vec![0, 0, 2]];
+    let maximum = vec![vec![7, 5, 3], vec![3, 2, 2], vec![9, 0, 2], vec![2, 2, 2], vec![4, 3, 3]];
+
+    match safe_sequence(&available, &allocation, &maximum) {
+        Some(order) => {
+            let names: Vec<String> = order.iter().map(|p| format!("P{p}")).collect();
+            println!("safe sequence: {}", names.join(", ")); // safe sequence: P1, P3, P4, P0, P2
+        }
+        None => println!("unsafe state"),
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Further reading
+
+- Abraham Silberschatz, Peter B. Galvin, Greg Gagne: _Operating System Concepts_, chapters "Processes", "CPU Scheduling", "Synchronization" and "Deadlocks", Wiley
+- Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/) (freely available)
+- Andrew S. Tanenbaum, Herbert Bos: _Modern Operating Systems_, Pearson

@@ -1,0 +1,308 @@
+---
+title: Views, Indexes, Functions and Triggers
+description: Views and materialised views, indexes with B-trees, composite keys and EXPLAIN, stored functions and procedures, and triggers.
+sidebar:
+  label: "SQL: Views, Indexes, Triggers"
+  order: 8
+---
+
+Besides tables, a database system knows further objects: **views** simplify queries and restrict access, **indexes** make queries fast, **stored functions and procedures** run logic directly in the database, and **triggers** react automatically to changes. The examples use PostgreSQL and these tables:
+
+```sql
+CREATE TABLE Class (Id INT PRIMARY KEY, Name VARCHAR(10) NOT NULL UNIQUE);
+
+CREATE TABLE Student (
+    Id        INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    ClassId   INT REFERENCES Class(Id)
+);
+
+CREATE TABLE Grade (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    StudentId INT NOT NULL REFERENCES Student(Id),
+    Subject   VARCHAR(10) NOT NULL,
+    Value     INT NOT NULL CHECK (Value BETWEEN 1 AND 5)
+);
+
+INSERT INTO Class VALUES (1, '3AHIT'), (2, '4AHIT');
+INSERT INTO Student VALUES (1, 'Anna', 'Huber', 1), (2, 'Ben', 'Wolf', 1), (3, 'Clara', 'Berger', 2);
+INSERT INTO Grade (StudentId, Subject, Value) VALUES
+    (1, 'AM', 2), (1, 'SEW', 1), (2, 'AM', 4), (2, 'SEW', 3), (3, 'SEW', 2);
+```
+
+## Views
+
+A **view** is a stored query that can be used like a table. It stores no data. On every access, the database runs the underlying query.
+
+```sql
+CREATE VIEW Report AS
+SELECT s.Id AS StudentId, s.FirstName, s.LastName, c.Name AS Class,
+       g.Subject, ROUND(AVG(g.Value), 1) AS Average
+FROM Student s
+JOIN Class c ON c.Id = s.ClassId
+JOIN Grade g ON g.StudentId = s.Id
+GROUP BY s.Id, s.FirstName, s.LastName, c.Name, g.Subject;
+
+SELECT FirstName, Subject, Average FROM Report WHERE Class = '3AHIT' ORDER BY FirstName, Subject;
+```
+
+Views are used to
+
+- **simplify complex queries**: joins and calculations are in one place, and applications only query the view,
+- **restrict access**: a user only receives permissions on a view that shows certain columns or rows (see [Database Security](/en/databases/database-security/)),
+- **decouple applications from structural changes**: if the table schema changes, only the view is adjusted. This is the external level of the [ANSI/SPARC architecture](/en/databases/schema/#schema-levels).
+
+A view is **updatable** if each of its rows corresponds to exactly one row of a base table: only one table in `FROM`, no `GROUP BY`, no `DISTINCT`, no aggregate functions. Then `INSERT`, `UPDATE` and `DELETE` on the view act directly on the table. With `WITH CHECK OPTION`, the database prevents changes through the view to rows that would no longer be visible in the view afterwards.
+
+```sql
+CREATE VIEW Class3AHIT AS
+SELECT Id, FirstName, LastName, ClassId FROM Student WHERE ClassId = 1
+WITH CHECK OPTION;
+
+UPDATE Class3AHIT SET LastName = 'Wolff' WHERE Id = 2;    -- allowed
+```
+
+An `UPDATE Class3AHIT SET ClassId = 2`, on the other hand, would be rejected because the row would disappear from the view afterwards.
+
+### Materialised views
+
+A **materialised view** actually stores the result of the query. Reading is therefore as fast as from a table, but the data is only as current as the last refresh. It is suitable for expensive evaluations that do not have to be accurate to the second.
+
+```sql
+CREATE MATERIALIZED VIEW SubjectAverage AS
+SELECT Subject, ROUND(AVG(Value), 2) AS Average, COUNT(*) AS Count
+FROM Grade
+GROUP BY Subject;
+
+INSERT INTO Grade (StudentId, Subject, Value) VALUES (3, 'AM', 1);
+REFRESH MATERIALIZED VIEW SubjectAverage;     -- only now is the new grade included
+
+SELECT * FROM SubjectAverage ORDER BY Subject;
+```
+
+SQL Server achieves the same with **indexed views**, Oracle has materialised views, MySQL does not.
+
+## Indexes
+
+Without an index, the database has to read and check every row of the table for `WHERE SensorId = 42` (**full table scan**, in PostgreSQL _Seq Scan_). With millions of rows, this takes seconds. An **index** is an additional, sorted data structure that contains the storage locations of the matching rows for every key value, similar to the index at the back of a book.
+
+### B-tree
+
+Almost all relational databases use a **B-tree** (more precisely a B+ tree) by default. It is a balanced search tree whose nodes each fill a whole storage page and therefore contain hundreds of keys:
+
+- All leaves are at the same depth. A search therefore always needs the same number of steps, namely $O(\log n)$. With 300 keys per node, four levels are enough for more than eight billion entries.
+- The leaves are linked with each other. Range queries (`BETWEEN`, `<`, `>`) and sorting (`ORDER BY`) therefore simply read the leaves in order.
+- When inserting and deleting, the tree stays balanced by splitting and merging nodes.
+
+How search trees work in general is described on the page [Data Structures](/en/software-development/data-structures/). There are also **hash indexes** (only for equality, $O(1)$), **bitmap indexes** for columns with few different values (data warehouses), **full-text indexes** for searching for words and **spatial indexes** (R-tree, GiST) for geodata.
+
+### Creating indexes
+
+```sql
+CREATE TABLE Measurement (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    SensorId  INT NOT NULL,
+    Time      TIMESTAMP NOT NULL,
+    Value     NUMERIC(6, 2)
+);
+
+-- 200,000 test rows: 100 sensors, one measurement per minute
+INSERT INTO Measurement (SensorId, Time, Value)
+SELECT g % 100, TIMESTAMP '2025-01-01' + g * INTERVAL '1 minute', (g % 400) / 10.0
+FROM generate_series(1, 200000) AS g;
+
+CREATE INDEX ix_measurement_sensor_time ON Measurement (SensorId, Time);
+CREATE INDEX ix_grade_student ON Grade (StudentId);   -- index the foreign key
+```
+
+The database automatically creates an index for primary keys and `UNIQUE` constraints. Most systems do not do this for **foreign keys** (MySQL with InnoDB is an exception). Since foreign keys appear in almost every join, you should index them yourself.
+
+### Composite indexes
+
+An index across several columns is sorted first by the first column, for equal values by the second and so on, like a telephone directory sorted by last name and then first name. This results in the **leftmost prefix rule**: the index `(SensorId, Time)` helps with queries by `SensorId` alone and by `SensorId` and `Time` together, but not with queries by `Time` alone. A telephone directory does not help with finding all people with the first name Anna either.
+
+If all columns a query needs are in the index, the table itself does not have to be read at all (**covering index**, _index-only scan_).
+
+### Reading execution plans
+
+With `EXPLAIN`, the database shows how it intends to run a query; with `EXPLAIN ANALYZE`, it also runs it and measures the actual time.
+
+```sql
+ANALYZE Measurement;   -- update the statistics for the optimiser
+
+EXPLAIN SELECT * FROM Measurement
+WHERE SensorId = 42 AND Time >= TIMESTAMP '2025-03-01';
+
+EXPLAIN SELECT * FROM Measurement
+WHERE Time >= TIMESTAMP '2025-03-01' AND Time < TIMESTAMP '2025-03-02';
+```
+
+Shortened, the result looks like this:
+
+```text
+Bitmap Heap Scan on measurement
+  ->  Bitmap Index Scan on ix_measurement_sensor_time
+        Index Cond: ((sensorid = 42) AND ("time" >= '2025-03-01 00:00:00'))
+
+Parallel Seq Scan on measurement
+  Filter: (("time" >= '2025-03-01 00:00:00') AND ("time" < '2025-03-02 00:00:00'))
+```
+
+The first query uses the index, the second reads the whole table because of the prefix rule. An additional index on `Time` would change this.
+
+### When an index makes sense
+
+Indexes speed up reading, but they cost time on every `INSERT`, `UPDATE` and `DELETE` because the index also has to be updated, and they take up storage. Create indexes deliberately:
+
+- on columns that frequently appear in `WHERE`, `JOIN ... ON` and `ORDER BY`, especially foreign keys,
+- on columns with high **selectivity**, that is, many different values. An index on a column `Gender` hardly helps because the database would have to read a large part of the table anyway,
+- not on small tables that fit into a few storage pages anyway.
+
+An index is not used if the column in the condition is changed by a function: `WHERE UPPER(LastName) = 'HUBER'` cannot use an index on `LastName`. For this, there are **function-based indexes**: `CREATE INDEX ON Student (UPPER(LastName))`. Likewise, `LIKE '%huber'` with a leading wildcard cannot use a B-tree, but `LIKE 'Hub%'` can.
+
+### Clustered indexes
+
+In SQL Server and MySQL (InnoDB), the table itself is stored sorted by the primary key. This **clustered index** contains the complete rows in its leaves; every table has at most one. All other indexes are called **non-clustered** and refer to the primary key. PostgreSQL, by contrast, stores tables unsorted as a _heap_, and all indexes refer directly to the row position.
+
+## Stored functions and procedures
+
+Database systems have their own procedural languages with variables, branches and loops: **PL/pgSQL** in PostgreSQL, **T-SQL** in SQL Server and **PL/SQL** in Oracle. Programs written in them are stored and run in the database.
+
+- A **function** returns a value or a table and can be used in queries.
+- A **procedure** is called with `CALL`, returns no value and, in PostgreSQL, may control transactions itself (`COMMIT`, `ROLLBACK`).
+
+```sql
+CREATE FUNCTION GradeAverage(p_student_id INT)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_average NUMERIC;
+BEGIN
+    SELECT AVG(Value) INTO v_average FROM Grade WHERE StudentId = p_student_id;
+    IF v_average IS NULL THEN
+        RAISE EXCEPTION 'Student % has no grades', p_student_id;
+    END IF;
+    RETURN ROUND(v_average, 2);
+END;
+$$;
+
+SELECT FirstName, GradeAverage(Id) AS Average FROM Student ORDER BY Average;
+```
+
+```sql
+CREATE PROCEDURE ChangeClass(p_student_id INT, p_class VARCHAR)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_class_id INT;
+BEGIN
+    SELECT Id INTO v_class_id FROM Class WHERE Name = p_class;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Class % does not exist', p_class;
+    END IF;
+    UPDATE Student SET ClassId = v_class_id WHERE Id = p_student_id;
+END;
+$$;
+
+CALL ChangeClass(2, '4AHIT');
+```
+
+The text between `$$` and `$$` is the function body. In SQL Server, the same procedure looks like this:
+
+{/* check: skip */}
+```sql
+CREATE PROCEDURE ChangeClass @StudentId INT, @Class VARCHAR(10)
+AS
+BEGIN
+    DECLARE @ClassId INT = (SELECT Id FROM Class WHERE Name = @Class);
+    IF @ClassId IS NULL
+        THROW 50000, 'Class does not exist', 1;
+    UPDATE Student SET ClassId = @ClassId WHERE Id = @StudentId;
+END;
+
+EXEC ChangeClass @StudentId = 2, @Class = '4AHIT';
+```
+
+| Advantages                                                                      | Disadvantages                                                                    |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| less network traffic: many statements with one call                             | logic is spread across the application and the database                          |
+| rules apply to all applications that access the database                        | vendor-specific language, hard to port to another system                         |
+| users can be granted permissions on a procedure instead of the tables           | harder to test, debug and version than application code                          |
+
+## Triggers
+
+A **trigger** is a function that the database runs automatically on `INSERT`, `UPDATE` or `DELETE` on a table.
+
+| Property             | Options                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| **Timing**           | `BEFORE` (before the change, can modify or prevent it), `AFTER` (afterwards), `INSTEAD OF` (instead of the change, only for views) |
+| **Event**            | `INSERT`, `UPDATE` (optionally only certain columns: `UPDATE OF Value`), `DELETE`           |
+| **Granularity**      | `FOR EACH ROW` (once per changed row) or `FOR EACH STATEMENT` (once per statement)          |
+| **Access to data**   | `NEW` contains the new row (for `INSERT` and `UPDATE`), `OLD` the old one (for `UPDATE` and `DELETE`) |
+
+A typical use is an **audit log**: every grade change should be recorded with the old and new value, user and time.
+
+```sql
+CREATE TABLE GradeLog (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    GradeId   INT NOT NULL,
+    OldValue  INT,
+    NewValue  INT,
+    UserName  TEXT NOT NULL DEFAULT CURRENT_USER,
+    ChangedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE FUNCTION LogGrade()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO GradeLog (GradeId, OldValue, NewValue)
+    VALUES (NEW.Id, OLD.Value, NEW.Value);
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_grade_log
+AFTER UPDATE OF Value ON Grade
+FOR EACH ROW
+WHEN (OLD.Value IS DISTINCT FROM NEW.Value)
+EXECUTE FUNCTION LogGrade();
+
+UPDATE Grade SET Value = 3 WHERE StudentId = 2 AND Subject = 'AM';
+SELECT GradeId, OldValue, NewValue FROM GradeLog;
+```
+
+A `BEFORE` trigger can check or complete values. If it returns `NULL` instead of `NEW`, the change for this row is discarded; with `RAISE EXCEPTION`, it aborts the whole statement:
+
+```sql
+CREATE FUNCTION NormaliseNames()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.FirstName := INITCAP(TRIM(NEW.FirstName));
+    NEW.LastName  := INITCAP(TRIM(NEW.LastName));
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_student_names
+BEFORE INSERT OR UPDATE ON Student
+FOR EACH ROW
+EXECUTE FUNCTION NormaliseNames();
+
+INSERT INTO Student VALUES (4, '  david ', 'NOVAK', 2);
+SELECT FirstName, LastName FROM Student WHERE Id = 4;   -- David, Novak
+```
+
+:::caution[Use triggers sparingly]
+Triggers are invisible when reading the application code. A simple change can thus trigger a chain of further changes that is hard to follow. Use triggers for tasks that really must apply to **every** change, such as logging or keeping redundant data consistent. Rules that can be expressed as a constraint belong in a constraint.
+:::
+
+## Further reading
+
+- [PostgreSQL documentation: Indexes](https://www.postgresql.org/docs/current/indexes.html), [PL/pgSQL](https://www.postgresql.org/docs/current/plpgsql.html) and [Triggers](https://www.postgresql.org/docs/current/triggers.html)
+- Markus Winand: [Use The Index, Luke](https://use-the-index-luke.com/), an introduction to indexes for developers

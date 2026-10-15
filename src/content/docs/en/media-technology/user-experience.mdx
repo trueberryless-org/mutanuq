@@ -1,0 +1,293 @@
+---
+title: User Experience and Usability
+description: UX and usability, ISO 9241-110, Nielsen's heuristics, human-centred design, personas, prototypes, usability tests with SUS and design systems.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A piece of software can have every function the client asked for and still fail because nobody understands how to use it. **User experience design** ensures that products are useful, understandable and pleasant for their users. It is not based on taste but on standards, empirically derived rules and, above all, tests with real users.
+
+## UX, UI and usability
+
+| Term | Meaning | Question |
+| --- | --- | --- |
+| **Usability** | extent to which a system can be used by specified users to achieve specified goals with **effectiveness**, **efficiency** and **satisfaction** in a specified context of use (ISO 9241-11:2018) | Can I do my task well? |
+| **User experience** (UX) | a person's perceptions and responses resulting from the use or anticipated use of a product (ISO 9241-210) | How do I experience the product before, during and after use? |
+| **User interface** (UI) | the concrete interface: screens, controls, texts, colours, icons | What does it look like and how do I operate it? |
+
+The three criteria of usability according to ISO 9241-11:
+
+- **Effectiveness**: is the goal achieved completely and accurately? (measure: success rate, errors)
+- **Efficiency**: how much effort does it take? (time, clicks, mental effort)
+- **Satisfaction**: how pleasant does the user find the use? (questionnaires such as SUS)
+
+UX is the broadest term: it includes usability but also expectations before use, emotions, brand perception and memories afterwards. UI design is part of it. Closely related is **accessibility**: a product should also be usable by people with disabilities.
+
+## Dialogue principles of ISO 9241-110
+
+The standard **ISO 9241-110** describes general principles for the interaction between people and systems. The 2006 edition lists seven **dialogue principles** that are frequently asked in exams:
+
+| Principle | Meaning | Example |
+| --- | --- | --- |
+| **Suitability for the task** | the system supports the task without unnecessary steps | sensible defaults, no required field for unnecessary data |
+| **Self-descriptiveness** | users always know where they are, what they can do and what is happening | labels, status display, step 2 of 4 |
+| **Controllability** | users can influence the sequence, direction and pace | cancel, back, pausing a video |
+| **Conformity with user expectations** | the system behaves consistently and as expected | logo at top left leads to the home page, Ctrl+S saves |
+| **Error tolerance** | errors are prevented or can be corrected with little effort | validation during input, undo, understandable error message |
+| **Suitability for individualisation** | the system can be adapted to needs and abilities | font size, dark mode, keyboard shortcuts |
+| **Suitability for learning** | the system supports learning | introduction on first start, tooltips |
+
+The revised edition **ISO 9241-110:2020** speaks of **interaction principles** and rearranges them: suitability for the user's tasks, self-descriptiveness, conformity with user expectations, learnability, controllability, use error robustness and **user engagement**. Individualisation is no longer a separate principle and is absorbed into the others; user engagement is new: the system should motivate people to use it and build trust.
+
+## Nielsen's ten heuristics
+
+In 1994 Jakob Nielsen published ten general rules (**heuristics**) for user interface design. They are the basis of **heuristic evaluation**: three to five experts independently check an interface against the heuristics and rate each problem found by severity (0 no problem to 4 catastrophe).
+
+| No. | Heuristic | Example |
+| --- | --- | --- |
+| 1 | **Visibility of system status**: timely feedback about what is going on | progress bar during upload |
+| 2 | **Match between system and the real world**: the users' language and concepts | "basket" instead of "order object list" |
+| 3 | **User control and freedom**: a clearly marked "emergency exit" | undo, cancel, back |
+| 4 | **Consistency and standards**: the same things look the same, follow platform conventions | same button styles, settings where you expect them |
+| 5 | **Error prevention**: make errors impossible in the first place | date picker instead of free text, confirmation before deleting |
+| 6 | **Recognition rather than recall**: make options visible | recently used files, autocomplete |
+| 7 | **Flexibility and efficiency of use**: shortcuts for experienced users | keyboard shortcuts, favourites |
+| 8 | **Aesthetic and minimalist design**: nothing superfluous | only relevant information on screen |
+| 9 | **Help users recognise, diagnose and recover from errors**: clear error messages | "The password must have at least 12 characters" instead of "Error 0x80004005" |
+| 10 | **Help and documentation**: easy to find, task-focused | context help, FAQ, search |
+
+## Human-centred design
+
+**ISO 9241-210** describes **human-centred design** (often called _user-centred design_). Its principles: the design is based on an explicit understanding of users, tasks and environments; users are involved throughout design and development; the design is driven and refined by user-centred evaluation; the process is iterative; the design addresses the whole user experience; the team includes multidisciplinary skills and perspectives.
+
+The process consists of four activities which, after planning, are repeated until the requirements are met:
+
+1. **Understand and specify the context of use**: who are the users, what tasks do they have, in which environment (office, on the move, noisy, wearing gloves)?
+2. **Specify the user requirements**: what must the system do so that users achieve their goals?
+3. **Produce design solutions**: concepts, wireframes, prototypes.
+4. **Evaluate the design solutions**: test with users and check against the requirements.
+
+Similar models are **design thinking** (understand, observe, define the point of view, ideate, prototype, test) and the **Double Diamond** of the British Design Council (2005), which alternates twice between opening up and narrowing down: Discover, Define, Develop, Deliver.
+
+### User research methods
+
+| Method | Purpose |
+| --- | --- |
+| **Interview** | understand the goals, habits and problems of individual users in detail |
+| **Questionnaire** (survey) | capture the opinions of many users quantitatively |
+| **Observation** (_contextual inquiry_) | watch users at work in their real environment |
+| **Card sorting** | users sort terms on cards into groups; basis for navigation and menu structure (information architecture) |
+| **Analytics** | evaluate usage data: bounce rates, click paths, search terms |
+
+## Personas and user journeys
+
+### Personas
+
+A **persona** is a fictional but research-based typical user. The method was popularised by Alan Cooper (_The Inmates Are Running the Asylum_, 1999). Instead of designing for "the user", whom every team member imagines differently, the team designs for a concrete person. A persona usually contains:
+
+- name, photo, age, occupation, place of residence
+- **goals** and motivation
+- **frustrations** and problems (_pain points_)
+- technical skills, devices used
+- a typical quote and a short daily routine
+
+:::tip[Example]
+**Lena, 16**, a pupil at an HTL in Lower Austria, commutes 45 minutes by train every day. Goal: quickly see on her phone whether a lesson is cancelled and which homework is due. Frustration: the school app loads slowly on the train and hides the timetable behind three menus. "I want to know within two seconds whether I have to get up earlier."
+:::
+
+Usually two to four personas are created and one **primary persona** is chosen whose needs take priority in case of conflict.
+
+### User journey map
+
+A **user journey map** shows how a persona reaches a goal over time, for example from the first contact with an online shop to delivery. It shows in rows:
+
+- **phases** (awareness, research, purchase, delivery, use)
+- **actions** of the persona in each phase
+- **touchpoints**: website, app, email, hotline, parcel
+- **thoughts** and **feelings** as a curve from positive to negative
+- **pain points** and the **opportunities** derived from them
+
+Low points in the emotion curve show where an improvement pays off most. The findings lead to requirements, often in the form of **user stories** ("As a commuter I want to receive lesson cancellations as a push notification so that I don't get up early for nothing.").
+
+## Wireframes, mock-ups and prototypes
+
+| Artefact | Fidelity | Content | Purpose |
+| --- | --- | --- | --- |
+| **Sketch**, paper prototype | very low | pencil drawings, cut-out paper screens | try many ideas quickly and cheaply |
+| **Wireframe** | low (_low fidelity_) | layout of elements as grey boxes, placeholder text, no colours or images | clarify structure, content, navigation |
+| **Mock-up** | high (_high fidelity_) | static, fully designed image with colours, typefaces, images | agree on the visual design |
+| **Prototype** | low to high | clickable, interactive simulation | test flows with users before programming |
+
+The earlier an error in the concept is found, the cheaper it is to fix: a paper prototype is changed in minutes, a programmed feature is not. Low-fidelity prototypes have another advantage: test participants criticise unfinished-looking designs more openly and focus on flows rather than colours.
+
+The most widely used tool is **Figma**, a browser-based design program in which several people work at the same time. Important features:
+
+- **Frames** for screens in fixed device sizes
+- **Components** and **variants**: reusable elements (a button with the states normal, hover, disabled); changes to the main component apply everywhere
+- **Auto layout**: elements arrange themselves automatically, like with CSS Flexbox
+- **Prototyping**: connections between frames with transitions, clickable in the browser or on a phone
+- **Dev Mode**: developers read dimensions, colours and CSS values directly from the design
+
+Alternatives are Penpot (open source), Sketch (macOS only) and Balsamiq for wireframes.
+
+## Usability testing
+
+In a **usability test**, real users solve realistic tasks with the product or prototype while a moderator observes. According to Jakob Nielsen, a test with **five people** already finds about 85 % of the usability problems. It is therefore more sensible to test several times with few people and improve in between than once with many.
+
+### Procedure
+
+1. Define **goals and tasks**: "Find out whether the first lesson tomorrow is cancelled." Tasks describe a goal, not the path (not: "Click on timetable").
+2. Recruit **participants** from the target group, not colleagues from the development team.
+3. **Conduct**: the participant solves the tasks; the moderator does not help and asks no leading questions.
+4. **Measure**: success rate, time on task, errors, satisfaction (questionnaire).
+5. **Analyse**: collect problems, rank them by severity, derive improvements.
+
+### Methods
+
+- **Thinking aloud**: the participant constantly says what they are thinking, looking for and expecting. This reveals not only that they fail, but why.
+- **Moderated or unmoderated**, on site or **remote** via video conference or testing platforms.
+- **Eye tracking**: a camera measures where the participant looks. The results are heatmaps and gaze paths.
+- **A/B test**: two variants of a page (A and B, for example different button labels) are shown randomly to different visitors of a live website. You measure a metric such as the **conversion rate** (share of visitors who buy or sign up) and check with a statistical test whether the difference is significant. A/B tests show _which_ variant works better, but not _why_. They need many visitors.
+
+### System Usability Scale (SUS)
+
+The **System Usability Scale** by John Brooke (1986) is the most widely used questionnaire for perceived usability. It consists of ten statements that alternate between positive and negative wording. Each is rated on a scale from 1 (strongly disagree) to 5 (strongly agree):
+
+1. I think that I would like to use this system frequently.
+2. I found the system unnecessarily complex.
+3. I thought the system was easy to use.
+4. I think that I would need the support of a technical person to be able to use this system.
+5. I found the various functions in this system were well integrated.
+6. I thought there was too much inconsistency in this system.
+7. I would imagine that most people would learn to use this system very quickly.
+8. I found the system very cumbersome to use.
+9. I felt very confident using the system.
+10. I needed to learn a lot of things before I could get going with this system.
+
+**Scoring**: for the odd-numbered (positive) statements, the answer minus 1 counts; for the even-numbered (negative) ones, 5 minus the answer. Each statement thus contributes 0 to 4 points. The sum is multiplied by 2.5:
+
+$$
+\text{SUS} = 2.5 \cdot \left( \sum_{i \in \{1,3,5,7,9\}} (x_i - 1) + \sum_{i \in \{2,4,6,8,10\}} (5 - x_i) \right)
+$$
+
+The result lies between 0 and 100 but is **not a percentage**. The average across many studies is about **68**. Scores above that are considered above average, from about 80 good.
+
+:::tip[Example]
+Answers 4, 2, 5, 1, 4, 2, 4, 2, 5, 1. Odd: $3 + 4 + 3 + 3 + 4 = 17$. Even: $3 + 4 + 3 + 3 + 4 = 17$. SUS $= 2.5 \cdot 34 = 85$.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // decimal point
+
+// calculate the SUS score from ten answers (each 1 to 5)
+static double SusScore(int[] answers)
+{
+    if (answers.Length != 10 || answers.Any(a => a is < 1 or > 5))
+        throw new ArgumentException("Expected 10 answers between 1 and 5.");
+
+    int sum = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        // index 0, 2, 4 ... corresponds to statements 1, 3, 5 ... (positively worded)
+        sum += i % 2 == 0 ? answers[i] - 1 : 5 - answers[i];
+    }
+    return sum * 2.5;
+}
+
+int[][] participants =
+[
+    [4, 2, 5, 1, 4, 2, 4, 2, 5, 1],
+    [3, 3, 4, 2, 3, 3, 4, 3, 3, 2],
+    [5, 1, 5, 2, 4, 1, 5, 1, 4, 2],
+];
+
+var scores = participants.Select(SusScore).ToList();
+Console.WriteLine(string.Join(", ", scores));               // 85, 60, 90
+Console.WriteLine($"Mean: {scores.Average():0.#}");   // Mean: 78.3
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// calculate the SUS score from ten answers (each 1 to 5)
+fn sus_score(answers: &[u8]) -> Result<f64, String> {
+    if answers.len() != 10 || answers.iter().any(|a| !(1..=5).contains(a)) {
+        return Err("Expected 10 answers between 1 and 5.".to_string());
+    }
+    let sum: u32 = answers
+        .iter()
+        .enumerate()
+        // index 0, 2, 4 ... corresponds to statements 1, 3, 5 ... (positively worded)
+        .map(|(i, &a)| if i % 2 == 0 { a as u32 - 1 } else { 5 - a as u32 })
+        .sum();
+    Ok(sum as f64 * 2.5)
+}
+
+fn main() -> Result<(), String> {
+    let participants = [
+        [4, 2, 5, 1, 4, 2, 4, 2, 5, 1],
+        [3, 3, 4, 2, 3, 3, 4, 3, 3, 2],
+        [5, 1, 5, 2, 4, 1, 5, 1, 4, 2],
+    ];
+    let scores = participants
+        .iter()
+        .map(|p| sus_score(p))
+        .collect::<Result<Vec<_>, _>>()?;
+    println!("{scores:?}"); // [85.0, 60.0, 90.0]
+    let mean = scores.iter().sum::<f64>() / scores.len() as f64;
+    println!("Mean: {mean:.1}"); // Mean: 78.3
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Accessibility
+
+According to the WHO (2023), around 16 % of the world's population, about 1.3 billion people, live with a significant disability, plus temporary impairments (a broken arm) and situational ones (bright sunlight, a noisy environment). Accessible design therefore helps everyone. The basis is the **WCAG** with its four principles: perceivable, operable, understandable, robust. The details and the legal situation in Austria are in the chapter [Web Accessibility and SEO](/en/web-technologies/web-accessibility-and-seo/), the contrast calculation in the chapter [Colour](/en/media-technology/colour/#contrast-and-accessibility).
+
+Particularly important for design are sufficient colour contrast, never conveying information through colour alone, a visible keyboard focus, sufficiently large touch targets, alternative text for images, captions for videos and plain language.
+
+## Design systems
+
+A **design system** is a collection of reusable building blocks with rules for their use. It is the digital evolution of the style guide in [corporate design](/en/media-technology/layout-and-design/#corporate-design) and ensures that many teams build consistent interfaces. It usually consists of:
+
+- **Design tokens**: named basic values such as `color-primary`, `spacing-4`, `font-size-lg`, used identically in Figma and in code (CSS variables)
+- **Component library**: buttons, form fields, cards, dialogues in all states, both in the design tool and as code
+- **Patterns**: proven solutions for recurring tasks such as forms, search or empty states
+- **Guidelines**: tone of voice, accessibility, use of animation
+
+Well-known public design systems are **Material Design** (Google), the **Human Interface Guidelines** (Apple), **Fluent** (Microsoft) and **Carbon** (IBM).
+
+With **Atomic Design**, Brad Frost describes a hierarchical structure: **atoms** (button, label, input field) form **molecules** (search field from label, input and button), these form **organisms** (header with logo, navigation and search), from which **templates** (page structure) and finally **pages** with real content are built.
+
+## Mobile UX
+
+Smartphones are used differently from desktop computers: with a finger instead of a mouse, often one-handed, on the move, distracted and with a fluctuating connection.
+
+- **Mobile first**: design for the small screen first and limit content to the essentials, then extend for larger screens (**responsive design**).
+- **Touch targets**: Apple recommends at least 44 × 44 pt, Google 48 × 48 dp. WCAG 2.2 requires at least 24 × 24 CSS pixels for level AA (criterion 2.5.8), 44 × 44 for AAA (2.5.5).
+- **Thumb zone**: in one-handed use, the thumb reaches the lower half of the screen best. Important actions and navigation (tab bar) therefore belong at the bottom.
+- **Gestures** such as swiping are invisible and must have a visible alternative.
+- **Simplify input**: suitable keyboard types (`type="email"`, `inputmode="numeric"`), autocomplete, few required fields.
+- **Performance**: short loading times even over mobile networks, do not lose state when the connection drops.
+
+Two laws from psychology help with sizing:
+
+- **Fitts's law**: the time $T$ to hit a target grows with the distance $D$ and falls with the size $W$ of the target: $T = a + b \cdot \log_2\left(\frac{D}{W} + 1\right)$. Frequent actions therefore need large, nearby buttons. Screen edges and corners are particularly quick to reach on desktop systems because the mouse pointer stops there.
+- **Hick's law**: decision time grows logarithmically with the number $n$ of choices: $T = b \cdot \log_2(n + 1)$. Long menus are therefore divided into groups.
+
+## Further reading
+
+- [Nielsen Norman Group: 10 Usability Heuristics for User Interface Design](https://www.nngroup.com/articles/ten-usability-heuristics/)
+- Steve Krug: _Don't Make Me Think, Revisited_. 3rd edition, Berkeley: New Riders, 2014
+- [ISO 9241-210:2019: Human-centred design for interactive systems](https://www.iso.org/standard/77520.html)

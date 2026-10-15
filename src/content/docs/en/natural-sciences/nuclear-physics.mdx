@@ -1,0 +1,213 @@
+---
+title: Nuclear Physics and Radioactivity
+description: Atomic nucleus and isotopes, alpha, beta and gamma radiation, decay law and half-life, activity, dose quantities Gy and Sv, radiation protection, mass defect, nuclear fission, fusion and nuclear power.
+sidebar:
+  order: 15
+---
+
+**Nuclear physics** studies the structure and transformations of atomic nuclei. Its applications range from carbon-14 dating through radiotherapy and positron emission tomography to energy production in nuclear power stations and in the Sun.
+
+## The atomic nucleus
+
+The nucleus consists of **protons** (charge $+e$) and **neutrons** (uncharged), together called **nucleons**. It contains over 99.9 % of the atom's mass, but with a radius of about $r = r_0 \sqrt[3]{A}$, $r_0 \approx 1.2\,\mathrm{fm}$ ($1\,\mathrm{fm} = 10^{-15}\,\mathrm{m}$), it is around ten thousand times smaller than the atom.
+
+| Quantity | Symbol | Meaning |
+| --- | --- | --- |
+| atomic number (proton number) | $Z$ | number of protons, determines the element |
+| neutron number | $N$ | number of neutrons |
+| mass number (nucleon number) | $A = Z + N$ | number of nucleons |
+
+Notation: ${}^{A}_{Z}\mathrm{X}$, for example ${}^{12}_{6}\mathrm{C}$ (6 protons, 6 neutrons) or ${}^{235}_{92}\mathrm{U}$. A nucleus of a particular composition is called a **nuclide**.
+
+**Isotopes** are atoms of the same element (same $Z$) with different numbers of neutrons. They behave the same chemically but differ in mass and stability. Carbon has the stable isotopes ${}^{12}\mathrm{C}$ (98.9 %) and ${}^{13}\mathrm{C}$ as well as the radioactive ${}^{14}\mathrm{C}$; hydrogen has protium ${}^{1}\mathrm{H}$, deuterium ${}^{2}\mathrm{H}$ and the radioactive tritium ${}^{3}\mathrm{H}$.
+
+The nucleus is held together by the **strong interaction** (nuclear force). At short distances (about $1\,\mathrm{fm}$) it is far stronger than the electrical repulsion between protons, but it only has a range of a few femtometres. Heavy nuclei therefore need an excess of neutrons; all nuclei with more than 83 protons are unstable.
+
+Masses in nuclear physics are given in **atomic mass units**: $1\,\mathrm{u} = \frac{1}{12} m({}^{12}\mathrm{C}) = 1.660\,539 \times 10^{-27}\,\mathrm{kg}$, which corresponds to an energy of $931.494\,\mathrm{MeV}$.
+
+## Radioactivity
+
+Unstable nuclei transform spontaneously into other nuclei while emitting radiation (**radioactive decay**). Henri Becquerel discovered this in 1896 with uranium salts; Marie and Pierre Curie found polonium and radium. The moment at which an individual nucleus decays is purely random and cannot be influenced by temperature, pressure or chemical bonding.
+
+| Radiation | Particle | Decay equation | Range in air | Shielding |
+| --- | --- | --- | --- | --- |
+| **alpha** ($\alpha$) | helium nucleus ${}^{4}_{2}\mathrm{He}$ | ${}^{A}_{Z}\mathrm{X} \to {}^{A-4}_{Z-2}\mathrm{Y} + {}^{4}_{2}\mathrm{He}$ | a few cm | sheet of paper, outer layer of skin |
+| **beta minus** ($\beta^-$) | electron (and antineutrino) | ${}^{A}_{Z}\mathrm{X} \to {}^{A}_{Z+1}\mathrm{Y} + e^- + \bar\nu_e$ | a few m | a few mm of aluminium or acrylic glass |
+| **beta plus** ($\beta^+$) | positron (and neutrino) | ${}^{A}_{Z}\mathrm{X} \to {}^{A}_{Z-1}\mathrm{Y} + e^+ + \nu_e$ | a few m | as $\beta^-$; the positron annihilates with an electron into two gamma photons |
+| **gamma** ($\gamma$) | high-energy photon | ${}^{A}_{Z}\mathrm{X}^* \to {}^{A}_{Z}\mathrm{X} + \gamma$ | very far, decreases exponentially | thick layers of lead or concrete |
+
+In every nuclear reaction, the sum of the mass numbers and the sum of the charge numbers are conserved. In $\beta^-$ decay, a neutron in the nucleus turns into a proton; in $\beta^+$ decay, a proton turns into a neutron. Gamma radiation is emitted when a nucleus is still excited after an alpha or beta decay and drops to its ground state; the nuclide does not change.
+
+Examples:
+
+$$
+{}^{238}_{92}\mathrm{U} \to {}^{234}_{90}\mathrm{Th} + {}^{4}_{2}\mathrm{He}, \qquad
+{}^{14}_{6}\mathrm{C} \to {}^{14}_{7}\mathrm{N} + e^- + \bar\nu_e
+$$
+
+Heavy nuclei such as uranium-238 decay through a **decay chain** of many steps down to stable lead. One intermediate product is the noble gas **radon-222**, which seeps from the ground into buildings.
+
+Ionising radiation is detected with the **Geiger-Müller counter**, scintillation counters, semiconductor detectors, film badges or the cloud chamber.
+
+## Decay law and half-life
+
+The number of decays per unit time is proportional to the number $N$ of nuclei still present:
+
+$$
+\frac{\mathrm{d}N}{\mathrm{d}t} = -\lambda N \quad\Rightarrow\quad N(t) = N_0 \cdot e^{-\lambda t} = N_0 \cdot \left(\frac{1}{2}\right)^{t/T_{1/2}}
+$$
+
+The **decay constant** $\lambda$ (in $\mathrm{s^{-1}}$) is the probability of decay per unit time. The **half-life** $T_{1/2}$ is the time after which half of the nuclei have decayed:
+
+$$
+T_{1/2} = \frac{\ln 2}{\lambda} \approx \frac{0.693}{\lambda}
+$$
+
+After one half-life, half is left; after two, a quarter; after ten, about a thousandth. The solution is an [exponential function](/en/mathematics/functions/exponential-and-logarithmic-functions/).
+
+| Nuclide | Half-life | Significance |
+| --- | --- | --- |
+| radon-222 | $3.8$ days | largest natural radiation source in buildings |
+| iodine-131 | $8.0$ days | thyroid, fallout after reactor accidents |
+| cobalt-60 | $5.3$ years | irradiation, sterilisation |
+| caesium-137 | $30$ years | main component of the Chernobyl fallout of 1986 |
+| carbon-14 | $5730$ years | radiocarbon dating |
+| plutonium-239 | $24\,100$ years | fissile material, long-lived nuclear waste |
+| uranium-238 | $4.5 \times 10^9$ years | about as old as the Earth |
+
+:::tip[Example: radiocarbon dating]
+Living organisms constantly take up ${}^{14}\mathrm{C}$, which is produced in the atmosphere by cosmic rays; the ratio ${}^{14}\mathrm{C}/{}^{12}\mathrm{C}$ is in equilibrium. After death, ${}^{14}\mathrm{C}$ decays without being replenished.
+
+- A piece of wood still has 25 % of the original proportion: that is two half-lives, so $2 \cdot 5730 = 11\,460$ years.
+- With 60 %: $t = T_{1/2} \cdot \frac{\ln(N_0/N)}{\ln 2} = 5730 \cdot \frac{\ln(1/0.6)}{0.693} = 4220$ years.
+
+The method reaches back about 50 000 years. Ötzi the Iceman was dated this way to around 5300 years.
+:::
+
+:::tip[Example: iodine-131]
+After $30$ days, $\left(\frac{1}{2}\right)^{30/8.02} = 0.075$, i.e. $7.5\,\%$, of iodine-131 ($T_{1/2} = 8.02\,\mathrm{d}$) remains. Of the caesium-137 deposited in Austria in 1986, around $40\,\%$ is still present 40 years later.
+:::
+
+## Activity
+
+**Activity** is the number of decays per second:
+
+$$
+A = -\frac{\mathrm{d}N}{\mathrm{d}t} = \lambda N, \qquad [A] = \mathrm{s^{-1}} = \mathrm{Bq} \;(\text{becquerel})
+$$
+
+It decreases with the same half-life as $N$. The old unit curie ($1\,\mathrm{Ci} = 3.7 \times 10^{10}\,\mathrm{Bq}$) corresponds roughly to the activity of $1\,\mathrm{g}$ of radium-226.
+
+:::tip[Example: 1 g of radium-226]
+$N = \frac{1\,\mathrm{g}}{226\,\mathrm{g/mol}} \cdot 6.022 \times 10^{23}\,\mathrm{mol^{-1}} = 2.66 \times 10^{21}$ nuclei, $T_{1/2} = 1600\,\mathrm{a} = 5.05 \times 10^{10}\,\mathrm{s}$, so $\lambda = 1.37 \times 10^{-11}\,\mathrm{s^{-1}}$ and
+
+$$
+A = \lambda N = 1.37 \times 10^{-11} \cdot 2.66 \times 10^{21} = 3.66 \times 10^{10}\,\mathrm{Bq}
+$$
+:::
+
+For comparison: the human body has an activity of several thousand becquerels due to natural potassium-40 and carbon-14.
+
+## Dose and biological effects
+
+Ionising radiation can damage molecules, in particular DNA. Three dose quantities are used to describe its effect:
+
+| Quantity | Formula | Unit | Meaning |
+| --- | --- | --- | --- |
+| **absorbed dose** $D$ | $D = \frac{E}{m}$ | gray, $1\,\mathrm{Gy} = 1\,\mathrm{J/kg}$ | absorbed energy per mass |
+| **equivalent dose** $H$ | $H = w_\mathrm{R} \cdot D$ | sievert, $\mathrm{Sv}$ | takes the type of radiation into account |
+| **effective dose** $E$ | $E = \sum w_\mathrm{T} H_\mathrm{T}$ | sievert, $\mathrm{Sv}$ | weights the sensitivity of the organs, measure of the overall risk |
+
+The **radiation weighting factor** $w_\mathrm{R}$ is $1$ for photons and electrons, $20$ for alpha particles and $2.5$ to $20$ for neutrons depending on their energy. Alpha emitters are therefore almost harmless from outside but dangerous when inhaled or swallowed (radon, polonium).
+
+| Effect | Occurrence | Example |
+| --- | --- | --- |
+| **deterministic** | only above a threshold dose (about $0.5$ to $1\,\mathrm{Sv}$ in a short time), severity increases with dose | radiation sickness, skin reddening, cataract |
+| **stochastic** | no known threshold, probability increases with dose | cancer, genetic damage |
+
+### Radiation exposure in Austria
+
+According to the annual report "Radioaktivität und Strahlung in Österreich" (Radioactivity and Radiation in Austria) of the responsible federal ministry (2023 report), the average effective dose of the population is around $6\,\mathrm{mSv}$ per year. About $4.3\,\mathrm{mSv}$ of this is of natural origin, with indoor radon as the largest single contribution (around $3\,\mathrm{mSv}$), plus terrestrial and cosmic radiation and radionuclides in food. Most of the artificial exposure comes from medical diagnostics (X-rays, computed tomography). A return flight Vienna-New York adds about $0.1\,\mathrm{mSv}$.
+
+## Radiation protection
+
+The basic rules can be remembered as the **"4 A"** of the German mnemonic:
+
+- **Distance** (_Abstand_): for point sources, the dose rate falls with $1/r^2$. Twice the distance, a quarter of the dose.
+- **Shielding** (_Abschirmung_): suitable material between source and body (see the table above). Gamma radiation is attenuated exponentially; for lead, about $1\,\mathrm{cm}$ halves the intensity at $1\,\mathrm{MeV}$.
+- **Time** (_Aufenthaltsdauer_): the dose is proportional to the time.
+- **Activity** (_Aktivität_): use sources that are as weak as possible.
+
+In addition: no incorporation (no eating, drinking or smoking in controlled areas). In Austria, the **Radiation Protection Act 2020** (Strahlenschutzgesetz 2020) and the General Radiation Protection Ordinance 2020 govern the handling of radiation. The limit for the effective dose is $1\,\mathrm{mSv}$ per year for members of the public (from planned activities, excluding natural and medical exposure) and $20\,\mathrm{mSv}$ per year for occupationally exposed persons. For radon in living spaces, a reference level of $300\,\mathrm{Bq/m^3}$ applies.
+
+## Mass defect and binding energy
+
+A nucleus is lighter than the sum of its individual protons and neutrons. This **mass defect** $\Delta m$ corresponds, via $E = mc^2$, to the **binding energy** released when the nucleons combine into the nucleus (and which must be supplied to take it apart):
+
+$$
+E_\mathrm{B} = \Delta m \cdot c^2, \qquad \Delta m = Z m_\mathrm{p} + N m_\mathrm{n} - m_\mathrm{nucleus}
+$$
+
+:::tip[Example: helium-4]
+Using atomic masses (the electron masses then cancel): $m({}^{1}\mathrm{H}) = 1.007\,825\,\mathrm{u}$, $m_\mathrm{n} = 1.008\,665\,\mathrm{u}$, $m({}^{4}\mathrm{He}) = 4.002\,603\,\mathrm{u}$.
+
+$$
+\Delta m = 2 \cdot 1.007\,825 + 2 \cdot 1.008\,665 - 4.002\,603 = 0.030\,377\,\mathrm{u}
+$$
+
+$$
+E_\mathrm{B} = 0.030\,377 \cdot 931.494\,\mathrm{MeV} = 28.3\,\mathrm{MeV}, \qquad \frac{E_\mathrm{B}}{A} = 7.07\,\mathrm{MeV}
+$$
+
+That is millions of times more than the binding energy of electrons in atoms or molecules (a few eV); this is why nuclear reactions deliver so much more energy per mass than chemical ones.
+:::
+
+The **binding energy per nucleon** rises steeply from light nuclei, reaches its maximum of about $8.8\,\mathrm{MeV}$ at iron and nickel (${}^{56}\mathrm{Fe}$, ${}^{62}\mathrm{Ni}$) and falls slowly towards heavy nuclei (uranium about $7.6\,\mathrm{MeV}$). This gives two ways of releasing energy:
+
+- **Nuclear fission**: heavy nuclei split into medium-heavy, more tightly bound nuclei.
+- **Nuclear fusion**: light nuclei fuse into heavier, more tightly bound nuclei.
+
+## Nuclear fission
+
+Otto Hahn and Fritz Strassmann discovered the fission of uranium in 1938; the Viennese physicist Lise Meitner, together with Otto Frisch, provided the physical explanation. A slow (thermal) neutron is captured by uranium-235, the nucleus splits into two medium-heavy fragments and releases two to three new neutrons, for example:
+
+$$
+{}^{235}_{92}\mathrm{U} + {}^{1}_{0}\mathrm{n} \to {}^{141}_{56}\mathrm{Ba} + {}^{92}_{36}\mathrm{Kr} + 3\,{}^{1}_{0}\mathrm{n} + \approx 200\,\mathrm{MeV}
+$$
+
+Most of the energy is in the kinetic energy of the fragments and is released as heat. The complete fission of $1\,\mathrm{kg}$ of uranium-235 yields about $8.2 \times 10^{13}\,\mathrm{J} = 23\,\mathrm{GWh}$ of heat, as much as burning around $1900\,\mathrm{t}$ of crude oil.
+
+The released neutrons can split further nuclei: a **chain reaction**. In a **nuclear reactor**, it is controlled so that on average exactly one neutron per fission triggers another fission (critical state):
+
+| Component | Function |
+| --- | --- |
+| fuel rods | uranium enriched to 3 to 5 % U-235 |
+| moderator (water, graphite) | slows down fast neutrons, because slow ones split U-235 much better |
+| control rods (boron, cadmium) | absorb neutrons and regulate the power |
+| coolant | removes the heat, which drives a turbine via steam |
+
+An uncontrolled chain reaction with highly enriched material is the principle of the atomic bomb.
+
+### Nuclear power and Austria
+
+Nuclear power stations generate electricity with almost no CO₂ emissions during operation. On the other hand, there are accident risks (Chernobyl 1986, Fukushima 2011), highly radioactive waste with half-lives of up to tens of thousands of years, for which only a few final repositories are being built worldwide, and the danger of nuclear weapons proliferation.
+
+Austria has decided against nuclear power: the completed **Zwentendorf** nuclear power station never went into operation after the referendum of 5 November 1978 (50.5 % against). The **Nuclear Ban Act** (Atomsperrgesetz) of 1978 and the Federal Constitutional Act for a Nuclear-Free Austria of 1999 prohibit electricity generation by nuclear fission. Austria only operates research reactors, such as the TRIGA reactor of the Atominstitut at TU Wien.
+
+## Nuclear fusion
+
+In **nuclear fusion**, light nuclei merge. For them to come close enough despite their electrical repulsion, temperatures of many millions of kelvin are required. In the **Sun**, at about 15 million kelvin in the core, four hydrogen nuclei fuse into one helium nucleus in several steps (proton-proton chain), releasing $26.7\,\mathrm{MeV}$.
+
+For fusion power stations, the reaction of deuterium and tritium is the most promising:
+
+$$
+{}^{2}_{1}\mathrm{H} + {}^{3}_{1}\mathrm{H} \to {}^{4}_{2}\mathrm{He} + {}^{1}_{0}\mathrm{n} + 17.6\,\mathrm{MeV}
+$$
+
+The plasma of over 100 million kelvin is confined in magnetic fields (tokamak, stellarator). The international experimental reactor **ITER** in southern France is to demonstrate that more fusion power is produced than is needed to heat the plasma. The advantages would be plentiful fuel, no chain reaction and no long-lived fission products; a commercial power station is, however, not expected before the second half of the century.
+
+## Further reading
+
+- Austrian federal ministry (radiation protection): annual report _Radioaktivität und Strahlung in Österreich_
+- Kenneth S. Krane: _Introductory Nuclear Physics_, Wiley
+- IAEA: _Radiation Protection of the Public and the Environment_, iaea.org

@@ -1,0 +1,183 @@
+---
+title: Electric Field and Capacitors
+description: Electric field, field strength, capacitance, parallel-plate capacitor, dielectrics, capacitor circuits, stored energy, and charging and discharging with the time constant.
+sidebar:
+  order: 3
+---
+
+Forces act between separated charges even when no current flows. This effect is described by the **electric field**. A capacitor uses the field between two plates to store charge and energy. After the resistor it is the most common component in electronic circuits: it smooths voltages, buffers supplies, blocks DC and determines frequencies and times in filters and timing circuits.
+
+## Electric field
+
+An **electric field** is the space around a charge in which a force acts on other charges. It is represented by **field lines**. They start at positive and end at negative charges, never cross and are perpendicular to conducting surfaces. The denser the field lines, the stronger the field.
+
+The force between two point charges is described by **Coulomb's law**:
+
+$$
+F = \frac{1}{4\pi\varepsilon_0} \cdot \frac{Q_1 \cdot Q_2}{r^2}
+$$
+
+Between two parallel, oppositely charged plates a **uniform field** forms: the field lines are parallel and equally spaced, and the field strength is the same everywhere.
+
+### Field strength
+
+The **electric field strength** $E$ is the force per charge. In a uniform field it depends only on the voltage and the plate separation $d$:
+
+$$
+E = \frac{F}{Q} \qquad E = \frac{U}{d} \qquad [E] = \mathrm{\frac{V}{m}} = \mathrm{\frac{N}{C}}
+$$
+
+:::tip[Example]
+Two plates $2\,\mathrm{mm}$ apart have $500\,\mathrm{V}$ across them. The field strength is $E = 500\,\mathrm{V} / 0.002\,\mathrm{m} = 250\,\mathrm{kV/m} = 0.25\,\mathrm{kV/mm}$.
+:::
+
+If the field strength exceeds the **dielectric strength** of the insulating material, it becomes conductive and a flashover occurs. Dry air withstands about $3\,\mathrm{kV/mm}$. That is why components and printed circuit boards have minimum distances (clearance and creepage distances), and capacitors have a maximum rated voltage.
+
+### Electrostatic induction and shielding
+
+If a conductor is placed in an electric field, its free electrons shift until the inside is field-free (**electrostatic induction**). A closed conducting enclosure therefore shields external electric fields (**Faraday cage**). Cable shields and device housings use this, and it is why you are protected in a car during a lightning strike.
+
+## Capacitance
+
+If a voltage is applied to two conductors insulated from each other, they take on equal and opposite charges. The stored charge is proportional to the voltage. The constant of proportionality is called **capacitance**:
+
+$$
+C = \frac{Q}{U} \qquad [C] = \mathrm{\frac{C}{V}} = \mathrm{F}\ (\text{farad})
+$$
+
+One farad is a lot. Typical capacitors range from a few picofarads to a few thousand microfarads. Only **supercapacitors** (double-layer capacitors) reach several farads.
+
+### Parallel-plate capacitor
+
+The capacitance of a parallel-plate capacitor increases with the plate area $A$ and decreases with the separation $d$:
+
+$$
+C = \varepsilon_0 \cdot \varepsilon_\mathrm{r} \cdot \frac{A}{d} \qquad \varepsilon_0 \approx 8.854 \cdot 10^{-12}\,\mathrm{\frac{F}{m}}
+$$
+
+$\varepsilon_0$ is the **electric constant** (vacuum permittivity), $\varepsilon_\mathrm{r}$ the **relative permittivity** (dielectric constant) of the insulating material between the plates.
+
+:::tip[Example]
+Two plates of $100\,\mathrm{cm^2} = 0.01\,\mathrm{m^2}$ each are $1\,\mathrm{mm}$ apart in air:
+
+$$
+C = 8.854 \cdot 10^{-12}\,\mathrm{\frac{F}{m}} \cdot \frac{0.01\,\mathrm{m^2}}{0.001\,\mathrm{m}} \approx 88.5\,\mathrm{pF}
+$$
+
+With glass ($\varepsilon_\mathrm{r} = 5$) between them the capacitance rises to $443\,\mathrm{pF}$. Large capacitances therefore require large areas, small separations and insulating materials with high $\varepsilon_\mathrm{r}$.
+:::
+
+### Dielectrics
+
+The insulating material between the plates is called the **dielectric**. In the field its molecules are polarised; their charges align against the external field. This allows the capacitor to hold more charge at the same voltage.
+
+| Dielectric              | $\varepsilon_\mathrm{r}$ (approx.) | Use                                  |
+| ----------------------- | ----------------- | ------------------------------------ |
+| Vacuum, air             | $1$               | variable capacitors                  |
+| PTFE (Teflon)           | $2.1$             | RF cables and boards                 |
+| Polypropylene           | $2.2$             | film capacitors                      |
+| FR4 (circuit board)     | $4.5$             | printed circuit boards               |
+| Glass                   | $5$ to $10$       | insulators                           |
+| Aluminium oxide         | about $9$         | aluminium electrolytic capacitors    |
+| Tantalum pentoxide      | about $27$        | tantalum electrolytic capacitors     |
+| Water                   | $80$              |                                      |
+| Barium titanate ceramic | $1000$ to over $10\,000$ | multilayer ceramic capacitors (MLCC) |
+
+### Types
+
+| Type                           | Capacitance range | Properties                                                             |
+| ------------------------------ | ----------------- | ---------------------------------------------------------------------- |
+| Ceramic (MLCC)                 | pF to about $100\,\mathrm{\mu F}$ | small, cheap, good at high frequencies; with high permittivity the capacitance depends on voltage and temperature |
+| Film                           | nF to µF          | accurate, low loss, for filters and mains applications                 |
+| Aluminium electrolytic         | µF to the F range | large capacitance, **polarised**, limited lifetime, higher series resistance (ESR) |
+| Tantalum                       | µF                | compact, polarised, sensitive to overvoltage                            |
+| Supercapacitor                 | F to kF           | buffering, low voltage per cell (about $2.7\,\mathrm{V}$)              |
+
+:::danger
+Electrolytic capacitors are polarised. Connected the wrong way round or operated at too high a voltage, they can heat up and burst. Large capacitors in power supplies can store dangerous voltages long after switching off.
+:::
+
+An important use is the **decoupling capacitor** (bypass capacitor): typically $100\,\mathrm{nF}$ ceramic directly at the supply pins of every IC briefly supply current during fast switching and prevent voltage dips from disturbing other components.
+
+## Capacitor circuits
+
+In a **parallel connection** all capacitors have the same voltage and the charges add up. This acts like a larger plate area:
+
+$$
+C_\mathrm{total} = C_1 + C_2 + \ldots + C_n
+$$
+
+In a **series connection** all capacitors carry the same charge and the voltages add up. This acts like a larger plate separation:
+
+$$
+\frac{1}{C_\mathrm{total}} = \frac{1}{C_1} + \frac{1}{C_2} + \ldots + \frac{1}{C_n}
+$$
+
+The rules are therefore exactly the opposite of those for resistors. In series the voltage divides in the inverse ratio of the capacitances: the smaller capacitor has the larger voltage. $10\,\mathrm{\mu F}$ and $40\,\mathrm{\mu F}$ in series give $8\,\mathrm{\mu F}$, in parallel $50\,\mathrm{\mu F}$.
+
+## Energy in a capacitor
+
+During charging the voltage rises from $0$ to $U$. The energy supplied is stored in the electric field:
+
+$$
+W = \frac{1}{2} C U^2 = \frac{1}{2} Q U = \frac{Q^2}{2C}
+$$
+
+:::tip[Example]
+A $1000\,\mathrm{\mu F}$ electrolytic capacitor is charged to $25\,\mathrm{V}$. It stores $Q = 1000 \cdot 10^{-6}\,\mathrm{F} \cdot 25\,\mathrm{V} = 25\,\mathrm{mC}$ and $W = \tfrac{1}{2} \cdot 10^{-3}\,\mathrm{F} \cdot (25\,\mathrm{V})^2 \approx 0.31\,\mathrm{J}$.
+:::
+
+Because the voltage enters squared, a capacitor at twice the voltage stores four times the energy.
+
+## Charging and discharging
+
+If a capacitor is connected to a DC voltage $U_0$ via a resistor $R$, it does not charge instantly. At first it is empty, acts like a short circuit, and the full current $U_0/R$ flows. As the capacitor voltage rises, the voltage across the resistor and thus the current decrease. The result is an **exponential function**. Its speed is determined by the **time constant**:
+
+$$
+\tau = R \cdot C \qquad [\tau] = \Omega \cdot \mathrm{F} = \mathrm{s}
+$$
+
+![Charging and discharging curve of a capacitor](/images/electrical-engineering/rc-charging_en.svg)
+
+| Process     | Capacitor voltage                                 | Current                                    |
+| ----------- | ------------------------------------------------- | ------------------------------------------ |
+| Charging    | $u_C(t) = U_0 \cdot \left(1 - e^{-t/\tau}\right)$ | $i(t) = \dfrac{U_0}{R} \cdot e^{-t/\tau}$  |
+| Discharging | $u_C(t) = U_0 \cdot e^{-t/\tau}$                  | $i(t) = -\dfrac{U_0}{R} \cdot e^{-t/\tau}$ |
+
+During discharging the current flows in the opposite direction, hence the minus sign.
+
+| Time     | Charging: $u_C / U_0$ | Discharging: $u_C / U_0$ |
+| -------- | --------------------- | ------------------------ |
+| $1\tau$  | $63.2\,\%$            | $36.8\,\%$               |
+| $2\tau$  | $86.5\,\%$            | $13.5\,\%$               |
+| $3\tau$  | $95.0\,\%$            | $5.0\,\%$                |
+| $4\tau$  | $98.2\,\%$            | $1.8\,\%$                |
+| $5\tau$  | $99.3\,\%$            | $0.7\,\%$                |
+
+:::tip[Remember]
+After $1\tau$ the capacitor is about $63\,\%$ charged. After $5\tau$ the process is considered complete. The tangent to the curve at the starting point meets the final value exactly at $t = \tau$; this is how you read $\tau$ from an oscilloscope trace.
+:::
+
+To calculate the time until a certain voltage $u$ is reached, solve the charging equation for $t$ using the natural logarithm:
+
+$$
+t = -\tau \cdot \ln\left(1 - \frac{u}{U_0}\right) \qquad \text{(charging)} \qquad t = -\tau \cdot \ln\frac{u}{U_0} \qquad \text{(discharging)}
+$$
+
+:::tip[Example]
+$R = 10\,\mathrm{k\Omega}$, $C = 100\,\mathrm{\mu F}$, $U_0 = 12\,\mathrm{V}$. The time constant is $\tau = 10^4\,\Omega \cdot 10^{-4}\,\mathrm{F} = 1\,\mathrm{s}$. After $5\,\mathrm{s}$ the capacitor is practically full. The initial current is $1.2\,\mathrm{mA}$.
+
+When does the voltage reach $5\,\mathrm{V}$?
+
+$$
+t = -1\,\mathrm{s} \cdot \ln\left(1 - \frac{5}{12}\right) = -1\,\mathrm{s} \cdot \ln\frac{7}{12} \approx 0.54\,\mathrm{s}
+$$
+:::
+
+Applications of RC networks are delays (reset circuit of a microcontroller), debouncing push buttons, timers such as the [555](/en/electrical-engineering/sequential-circuits/#timers-and-oscillators) and [filters](/en/electrical-engineering/filters/).
+
+## Further reading
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- [Wikipedia: Capacitor](https://en.wikipedia.org/wiki/Capacitor)
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.

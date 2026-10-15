@@ -1,0 +1,258 @@
+---
+title: Routing
+description: Routing table, longest prefix match, administrative distance, metrics, static routes, distance vector and link-state protocols, RIP, OSPF, EIGRP, BGP, HSRP and VRRP.
+sidebar:
+  order: 7
+---
+
+**Routing** is the selection of paths for IP packets between different networks. A **router** receives a packet, reads the destination address, looks up the best entry in its **routing table** and forwards the packet via the appropriate interface to the next router (**next hop**) or directly to the destination. Each router only decides on the next step (_hop-by-hop_); none of them knows the whole path.
+
+## The routing table
+
+A router learns about networks from three sources:
+
+- **directly connected networks**: as soon as an interface has an IP address and is active (`up/up`), its network appears in the table.
+- **static routes**: entered by the administrator.
+- **dynamic routes**: learnt from other routers via routing protocols.
+
+An excerpt from `show ip route` on a Cisco router:
+
+```text
+Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 203.0.113.1
+      10.0.0.0/8 is variably subnetted, 4 subnets, 3 masks
+C        10.1.1.0/24 is directly connected, GigabitEthernet0/0/0
+L        10.1.1.1/32 is directly connected, GigabitEthernet0/0/0
+O        10.2.0.0/16 [110/2] via 10.1.1.2, 00:12:31, GigabitEthernet0/0/0
+S        10.3.0.0/24 [1/0] via 10.1.1.3
+```
+
+| Code | Meaning |
+| --- | --- |
+| C | _connected_, directly connected network |
+| L | _local_, the interface's own address as a /32 host route |
+| S | static route, `S*` candidate default route |
+| O | OSPF |
+| D | EIGRP (from DUAL) |
+| R | RIP |
+| B | BGP |
+
+The numbers in square brackets are **[administrative distance / metric]**. The **gateway of last resort** is the default route.
+
+## Longest prefix match
+
+If several entries match a destination address, the entry with the **longest prefix**, i.e. the most specific one, always wins. Only if no other entry matches is the default route `0.0.0.0/0` used, which matches every address.
+
+:::tip[Example]
+The routing table contains 10.0.0.0/8, 10.1.0.0/16, 10.1.1.0/24 and 0.0.0.0/0.
+
+| Destination address | Matching entries | Chosen |
+| --- | --- | --- |
+| 10.1.1.5 | /8, /16, /24, /0 | 10.1.1.0/24 |
+| 10.1.2.5 | /8, /16, /0 | 10.1.0.0/16 |
+| 10.2.0.1 | /8, /0 | 10.0.0.0/8 |
+| 8.8.8.8 | /0 | default route |
+:::
+
+## Administrative distance and metric
+
+If a router learns the same network (with the same prefix) from several sources, the **administrative distance** (AD) decides how trustworthy the source is. Lower is better. The values are Cisco-specific; other vendors use similar concepts with different numbers.
+
+| Source | AD |
+| --- | --- |
+| directly connected | 0 |
+| static route | 1 |
+| EIGRP summary route | 5 |
+| external BGP (eBGP) | 20 |
+| internal EIGRP | 90 |
+| OSPF | 110 |
+| IS-IS | 115 |
+| RIP | 120 |
+| external EIGRP | 170 |
+| internal BGP (iBGP) | 200 |
+| unknown, untrusted | 255 (never used) |
+
+Within **one** routing protocol, the **metric** decides which path is best. Each protocol measures differently:
+
+| Protocol | Metric |
+| --- | --- |
+| RIP | hop count (number of routers to the destination) |
+| OSPF | cost (calculated from the bandwidth of the links) |
+| EIGRP | composite of bandwidth and delay (optionally load and reliability) |
+| BGP | path attributes (AS path length, local preference and others) |
+
+If two paths have the same metric, the router shares the load between them (**ECMP**, _Equal-Cost Multi-Path_).
+
+The order of decision is therefore: first the longest prefix, with equal prefixes the lowest AD, with the same source the lowest metric.
+
+## Static routes
+
+A **static route** is entered manually: destination network, mask and next hop or exit interface.
+
+```text
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+```
+
+| Advantages | Disadvantages |
+| --- | --- |
+| no CPU load and no bandwidth for routing updates | does not adapt to failures |
+| predictable, secure (no updates that can be forged) | unmaintainable and error-prone in large networks |
+| ideal for stub networks with only one exit | every change has to be repeated on all routers |
+
+Variants:
+
+- **Next-hop route**: specifies the IP address of the next router. The router has to look up recursively which interface it reaches the next hop through.
+- **Directly connected route**: specifies only the exit interface. Useful on point-to-point lines, problematic on Ethernet, because the router then makes ARP requests for every destination.
+- **Fully specified route**: exit interface and next hop. Mandatory for IPv6 with a link-local next hop.
+- **Default route** (`0.0.0.0/0`, IPv6 `::/0`): matches everything and is used when no more specific entry exists. Typical at the transition to the internet.
+- **Summary route**: one static route for several summarised networks (see [route summarisation](/en/networking/ipv4/#route-summarisation)).
+- **Floating static route**: a backup route with an **increased AD**. As long as the main route exists (static with AD 1 or dynamic, for example OSPF with AD 110), it is not used. If the main route disappears, the backup route "floats" into the table.
+
+```text
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+ip route 0.0.0.0 0.0.0.0 198.51.100.1 5
+```
+
+The second route with AD 5 is a floating static route via a second provider. It only becomes active if the interface to the first provider fails. As a backup for an OSPF route, the AD would have to be above 110.
+
+## Dynamic routing
+
+**Routing protocols** exchange information about reachable networks, calculate the best paths from it and adapt automatically to failures. The time until all routers again have a consistent, correct picture is called the **convergence time**.
+
+| Classification | Meaning |
+| --- | --- |
+| **IGP** (_Interior Gateway Protocol_) | routing within an **autonomous system** (AS), i.e. the network of one organisation: RIP, OSPF, EIGRP, IS-IS |
+| **EGP** (_Exterior Gateway Protocol_) | routing between autonomous systems, the protocol of the internet: BGP |
+| **classless** | sends the subnet mask along, supports VLSM: all current protocols |
+| **classful** | sends no mask: only historical (RIPv1, IGRP) |
+
+### Distance vector and link state
+
+| Feature | **Distance vector** | **Link state** |
+| --- | --- | --- |
+| Knowledge | each router only knows the distance and direction (vector) to each destination, "routing by rumour" | each router knows the complete topology of its area |
+| Exchange | routers send their routing table to their neighbours (classically periodically, in full) | routers send state messages about their links (**LSAs**) to all routers in the area, only when something changes |
+| Calculation | Bellman-Ford | each router calculates the shortest path with [Dijkstra's algorithm](/en/software-development/graphs/#dijkstras-algorithm) (SPF, _Shortest Path First_) |
+| Convergence | slow, risk of loops | fast |
+| Resources | little CPU and memory | more CPU and memory (topology database) |
+| Examples | RIP, (EIGRP as an "advanced distance vector") | OSPF, IS-IS |
+
+Distance vector protocols suffer from the **count-to-infinity problem**: if a network fails, two routers may keep reporting a path to it to each other and count up the metric. Countermeasures are:
+
+- **Split horizon**: a route is not advertised back out of the interface on which it was learnt.
+- **Route poisoning**: a failed network is advertised with an infinite metric (16 for RIP).
+- **Hold-down timer**: after a failure, no worse updates for that network are accepted for a while.
+- **Triggered updates**: changes are reported immediately, not only with the next periodic update.
+
+## RIP
+
+The **Routing Information Protocol** is the oldest IGP still in use and a pure distance vector protocol. The metric is the **hop count**, at most 15; 16 means unreachable. This limits RIP to small networks. Routers send their whole table every **30 s**. **RIPv2** (RFC 2453) is classless, sends to the multicast address 224.0.0.9 over UDP port 520 and supports authentication. **RIPng** is the IPv6 variant. Because the hop count ignores bandwidth, RIP prefers two hops over 100 Mbit/s to three hops over 10 Gbit/s. RIP is hardly used in new networks.
+
+## OSPF
+
+**Open Shortest Path First** (OSPF) is the most widely used vendor-neutral IGP. **OSPFv2** (RFC 2328) is for IPv4, **OSPFv3** (RFC 5340) for IPv6. OSPF is a **link-state protocol**, is carried directly in IP (protocol number **89**) and uses the multicast addresses **224.0.0.5** (all OSPF routers) and **224.0.0.6** (DR and BDR).
+
+### Operation
+
+1. **Form adjacencies**: routers send **hello packets** on every OSPF interface and thereby find their neighbours.
+2. **Exchange databases**: neighbouring routers synchronise their **link-state database** (LSDB). In the end, all routers in an area have the same LSDB.
+3. **Run SPF**: each router uses Dijkstra to calculate a shortest-path tree with itself as the root.
+4. **Populate the routing table**: the best paths are entered.
+5. **Maintain**: hellos keep the adjacency alive; changes are flooded immediately as LSAs, otherwise every LSA is refreshed every 30 minutes.
+
+### Packet types and states
+
+| Type | Packet | Purpose |
+| --- | --- | --- |
+| 1 | **Hello** | discover neighbours, maintain adjacencies, elect DR/BDR |
+| 2 | **DBD** (_Database Description_) | summary of the own LSDB |
+| 3 | **LSR** (_Link-State Request_) | request missing entries |
+| 4 | **LSU** (_Link-State Update_) | contains LSAs |
+| 5 | **LSAck** | acknowledge receipt |
+
+The adjacency goes through the states **Down**, **Init** (hello received), **Two-Way** (own router ID seen in the neighbour's hello), **ExStart** and **Exchange** (exchange DBDs), **Loading** (request missing LSAs) and **Full** (databases synchronised).
+
+Two routers only become neighbours if the following match: area ID, subnet and mask of the link, **hello and dead intervals** (default on Ethernet **10 s** and **40 s**), authentication and network type. The router IDs must be different, and for the transition to Full the MTU must be the same. These are the usual sources of error when an adjacency does not form.
+
+### Router ID
+
+Every OSPF router needs a unique **router ID** in the format of an IPv4 address (also for OSPFv3). It is determined in this order:
+
+1. configured manually with `router-id 1.1.1.1`,
+2. otherwise the highest IPv4 address of a **loopback interface**,
+3. otherwise the highest IPv4 address of an active physical interface.
+
+The router ID is fixed when the OSPF process starts. A change only takes effect after `clear ip ospf process`. It is therefore always set manually so that it is stable and traceable in the plan.
+
+### DR and BDR
+
+On a **multiaccess network** such as Ethernet, all routers would otherwise have to form a full adjacency with all others: with $n$ routers that is $n(n-1)/2$ adjacencies, and every change would be flooded many times. The routers therefore elect a **Designated Router** (DR) and a **Backup Designated Router** (BDR). All others (**DROTHERs**) form a full adjacency (Full) only with the DR and BDR; among themselves they remain in the Two-Way state. DROTHERs send their LSAs to 224.0.0.6, and the DR distributes them to everyone via 224.0.0.5.
+
+The election:
+
+1. highest **OSPF interface priority** (default 1, range 0 to 255; **0** means: never becomes DR or BDR),
+2. in a tie, the highest **router ID**.
+
+The election is **non-preemptive**: if a router with a higher priority joins later, the current DR stays in office until it fails. There is no DR on point-to-point links.
+
+### Cost
+
+The OSPF metric is called **cost**. For each interface,
+
+$$
+\text{cost} = \frac{\text{reference bandwidth}}{\text{interface bandwidth}}
+$$
+
+with a minimum of 1. The cost of a path is the sum of the costs of all **outgoing** interfaces up to the destination. On Cisco the reference bandwidth is **100 Mbit/s** by default:
+
+| Interface | Cost (reference 100 Mbit/s) | Cost (reference 10 Gbit/s) |
+| --- | --- | --- |
+| 10 Mbit/s Ethernet | 10 | 1000 |
+| 100 Mbit/s Fast Ethernet | 1 | 100 |
+| 1 Gbit/s | 1 | 10 |
+| 10 Gbit/s | 1 | 1 |
+
+With the default value, Fast Ethernet, Gigabit and 10 Gigabit cost the same, and OSPF cannot tell them apart. The reference bandwidth is therefore raised uniformly on **all** routers (`auto-cost reference-bandwidth 10000` for 10 Gbit/s, given in Mbit/s), or the cost is set directly on the interface with `ip ospf cost`.
+
+### Areas
+
+OSPF divides large networks into **areas**. Each area has its own LSDB, and SPF is only calculated within the area. Changes in one area do not trigger recalculation in others, and routing tables stay small thanks to summarisation at area boundaries.
+
+- **Area 0** is the **backbone area**. All other areas must be connected directly to it.
+- An **ABR** (_Area Border Router_) connects an area to area 0 and can summarise routes.
+- An **ASBR** (_Autonomous System Boundary Router_) brings external routes into OSPF, for example a default route to the internet.
+
+In **single-area OSPF** all routers are in area 0. This is usual for small and medium networks and is the CCNA syllabus. In **multi-area OSPF**, different LSA types describe the information: type 1 (router LSA, every router), type 2 (network LSA, from the DR), type 3 (summary LSA, from the ABR into other areas), types 4 and 5 (ASBR and external routes).
+
+The configuration is covered under [Cisco IOS](/en/networking/cisco-ios/#ospf).
+
+## EIGRP
+
+The **Enhanced Interior Gateway Routing Protocol** (EIGRP) was developed by Cisco and published in 2016 as the informational RFC 7868, but it is used almost exclusively on Cisco devices. It is an **advanced distance vector** protocol: it sends no periodic updates, only changes, and with the **DUAL** algorithm (_Diffusing Update Algorithm_) it calculates, alongside the best path (**successor**), a loop-free backup path (**feasible successor**) in advance. If the best path fails, the backup is used immediately without recalculation. By default the metric is made up of the lowest bandwidth and the sum of the delays along the path. EIGRP uses IP protocol 88 and the multicast address 224.0.0.10; its AD is 90 (internal) or 170 (external).
+
+## BGP
+
+The **Border Gateway Protocol** (BGP-4, RFC 4271) connects the roughly 75,000 autonomous systems of the internet and is thus the routing protocol of the internet. Every AS (a provider, a large company, a university) has an **AS number**. BGP is a **path vector protocol**: for each prefix, the list of ASes through which the path leads (AS path) is transmitted. This prevents loops and allows decisions based on policies, for example "prefer traffic via the cheaper provider". BGP runs over **TCP port 179**. Between ASes it is called **eBGP**, within an AS **iBGP**. In companies BGP is mainly needed when connecting to several providers (_multihoming_).
+
+## First-hop redundancy
+
+End devices have exactly one **default gateway**. If that router fails, all devices in the subnet are cut off from the rest of the network, even if a second router is present. **FHRPs** (_First Hop Redundancy Protocols_) solve this: several routers share a **virtual IP address** and a **virtual MAC address**. The end devices use the virtual IP as their gateway. If the active router fails, another takes over the virtual address within a few seconds, without the end devices having to change anything.
+
+| Feature | **HSRP** | **VRRP** | **GLBP** |
+| --- | --- | --- | --- |
+| Standard | Cisco proprietary (RFC 2281 informational) | open standard (VRRPv3, RFC 5798) | Cisco proprietary |
+| Roles | active, standby | master, backup | AVG and several AVFs |
+| Default priority | 100 | 100 (255 for the address owner) | 100 |
+| Preemption | off by default | on by default | off by default |
+| Virtual MAC | `0000.0c07.acXX` (v1), `0000.0c9f.fXXX` (v2) | `0000.5e00.01XX` | several |
+| Multicast | 224.0.0.2 (v1), 224.0.0.102 (v2), UDP 1985 | 224.0.0.18, IP protocol 112 | 224.0.0.102 |
+| Load balancing | only via several groups | only via several groups | yes, within one group |
+
+The router with the highest priority (in a tie, the highest IP address) becomes active. With **preemption**, a router with a higher priority takes over the active role even if another router is already active, for example after it restarts. With **interface tracking**, a router lowers its priority when its uplink fails so that the other one takes over.
+
+## Further reading
+
+- [RFC 2328: OSPF Version 2](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 4271: A Border Gateway Protocol 4 (BGP-4)](https://www.rfc-editor.org/rfc/rfc4271)
+- Wendell Odom: _CCNA 200-301 Official Cert Guide_, Volumes 1 and 2, Cisco Press

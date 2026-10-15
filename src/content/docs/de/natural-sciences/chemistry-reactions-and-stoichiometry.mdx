@@ -1,0 +1,183 @@
+---
+title: Reaktionen und Stöchiometrie
+description: Reaktionsgleichungen aufstellen und ausgleichen, Stoffmenge, molare Masse, Avogadro-Konstante, molares Volumen, Konzentration und stöchiometrisches Rechnen mit Beispielen.
+sidebar:
+  order: 34
+---
+
+Bei einer **chemischen Reaktion** werden Stoffe (**Edukte**, Ausgangsstoffe) in neue Stoffe (**Produkte**) umgewandelt. Dabei werden Bindungen gelöst und neu geknüpft, die Atome selbst bleiben erhalten. Die **Stöchiometrie** ist das Rechnen mit den Mengenverhältnissen in solchen Reaktionen. Sie beantwortet Fragen wie: Wie viel Kohlenstoffdioxid entsteht beim Verbrennen von 1 kg Erdgas?
+
+## Massenerhaltung
+
+Antoine Lavoisier zeigte im 18. Jahrhundert durch genaues Wägen in geschlossenen Gefäßen: Bei einer chemischen Reaktion ist die Gesamtmasse der Produkte gleich der Gesamtmasse der Edukte (**Gesetz von der Erhaltung der Masse**). Der Grund: Atome werden weder erzeugt noch vernichtet, nur umgruppiert. (Die Massenänderung durch die umgesetzte Energie nach $E = mc^2$ ist bei chemischen Reaktionen unmessbar klein.)
+
+Dass ein Holzstück beim Verbrennen „leichter“ wird, widerspricht dem nicht: Die Produkte Kohlenstoffdioxid und Wasserdampf entweichen in die Luft. Eisenwolle wird beim Verbrennen schwerer, weil Sauerstoff aus der Luft gebunden wird.
+
+## Reaktionsgleichungen
+
+Eine **Reaktionsgleichung** beschreibt eine Reaktion mit chemischen Formeln:
+
+$$
+\mathrm{2\,H_2 + O_2 \rightarrow 2\,H_2O}
+$$
+
+- Die **Indizes** (tiefgestellte Zahlen) gehören zur Formel und dürfen beim Ausgleichen **nie** verändert werden. $\mathrm{H_2O}$ ist Wasser, $\mathrm{H_2O_2}$ ein anderer Stoff (Wasserstoffperoxid).
+- Die **Koeffizienten** (Zahlen davor) geben die Teilchenzahlverhältnisse an und werden so gewählt, dass links und rechts von jeder Atomsorte gleich viele Atome stehen. Bei Ionen muss auch die Gesamtladung übereinstimmen.
+- Zustände werden bei Bedarf angegeben: (s) fest, (l) flüssig, (g) gasförmig, (aq) in Wasser gelöst.
+- $\rightleftharpoons$ kennzeichnet ein [Gleichgewicht](/de/natural-sciences/chemistry-energy-and-kinetics/#chemisches-gleichgewicht).
+
+### Ausgleichen Schritt für Schritt
+
+:::tip[Beispiel: Verbrennung von Propan]
+Propan verbrennt mit Sauerstoff zu Kohlenstoffdioxid und Wasser.
+
+1. Wortgleichung und Formeln: $\mathrm{C_3H_8 + O_2 \rightarrow CO_2 + H_2O}$
+2. Kohlenstoff ausgleichen (3 links): $\mathrm{C_3H_8 + O_2 \rightarrow 3\,CO_2 + H_2O}$
+3. Wasserstoff ausgleichen (8 links, also 4 Wasser): $\mathrm{C_3H_8 + O_2 \rightarrow 3\,CO_2 + 4\,H_2O}$
+4. Sauerstoff zuletzt, weil er als Element vorkommt: rechts $3 \cdot 2 + 4 = 10$ O-Atome, links also $5\,\mathrm{O_2}$.
+
+$$
+\mathrm{C_3H_8 + 5\,O_2 \rightarrow 3\,CO_2 + 4\,H_2O}
+$$
+
+Kontrolle: links 3 C, 8 H, 10 O; rechts 3 C, 8 H, 10 O.
+:::
+
+Kommt man auf halbe Koeffizienten, multipliziert man die ganze Gleichung mit 2: $\mathrm{C_8H_{18} + 12{,}5\,O_2 \rightarrow \dots}$ wird zu
+
+$$
+\mathrm{2\,C_8H_{18} + 25\,O_2 \rightarrow 16\,CO_2 + 18\,H_2O}
+$$
+
+## Reaktionstypen
+
+| Typ                            | Schema                             | Beispiel                                                 |
+| ------------------------------ | ---------------------------------- | -------------------------------------------------------- |
+| **Synthese** (Vereinigung)     | $\mathrm{A + B \rightarrow AB}$    | $\mathrm{Fe + S \rightarrow FeS}$                        |
+| **Analyse** (Zersetzung)       | $\mathrm{AB \rightarrow A + B}$    | $\mathrm{CaCO_3 \rightarrow CaO + CO_2}$ (Kalkbrennen)    |
+| **Austausch** (Verdrängung)    | $\mathrm{A + BC \rightarrow AC + B}$ | $\mathrm{Fe_2O_3 + 2\,Al \rightarrow Al_2O_3 + 2\,Fe}$ (Thermitverfahren) |
+| **Fällung**                    | gelöste Ionen bilden schwerlöslichen Feststoff | $\mathrm{Ag^+ + Cl^- \rightarrow AgCl \downarrow}$ (Chloridnachweis) |
+| **Verbrennung**                | Stoff + $\mathrm{O_2}$             | $\mathrm{CH_4 + 2\,O_2 \rightarrow CO_2 + 2\,H_2O}$      |
+| **Säure-Base-Reaktion**        | Protonenübertragung                | $\mathrm{HCl + NaOH \rightarrow NaCl + H_2O}$, siehe [Säuren und Basen](/de/natural-sciences/chemistry-acids-and-bases/) |
+| **Redoxreaktion**              | Elektronenübertragung              | $\mathrm{Zn + Cu^{2+} \rightarrow Zn^{2+} + Cu}$, siehe [Redox](/de/natural-sciences/chemistry-redox-and-electrochemistry/) |
+
+## Stoffmenge und Mol
+
+Atome sind so klein, dass man nicht mit einzelnen Teilchen rechnet, sondern mit Paketen. Die **Stoffmenge** $n$ mit der SI-Einheit **Mol** (mol) ist seit 2019 so definiert: Ein Mol enthält genau $6{,}02214076 \cdot 10^{23}$ Teilchen. Diese Zahl ist die **Avogadro-Konstante**:
+
+$$
+N_A = 6{,}02214076 \cdot 10^{23}\,\mathrm{mol^{-1}}, \qquad n = \frac{N}{N_A}
+$$
+
+Die Zahl ist so gewählt, dass ein Mol eines Stoffs ziemlich genau so viele Gramm wiegt, wie die relative Teilchenmasse angibt: 1 mol Kohlenstoff-12 hat $12\,\mathrm{g}$.
+
+### Molare Masse
+
+Die **molare Masse** $M$ ist die Masse von einem Mol eines Stoffs. Man liest sie aus den Atommassen im Periodensystem ab und addiert:
+
+$$
+M = \frac{m}{n} \quad \text{in } \mathrm{g/mol}
+$$
+
+| Stoff                 | Rechnung                                     | $M$ in $\mathrm{g/mol}$ |
+| --------------------- | -------------------------------------------- | ----------------------- |
+| $\mathrm{H_2O}$       | $2 \cdot 1{,}008 + 16{,}00$                  | $18{,}02$               |
+| $\mathrm{CO_2}$       | $12{,}01 + 2 \cdot 16{,}00$                  | $44{,}01$               |
+| $\mathrm{CH_4}$       | $12{,}01 + 4 \cdot 1{,}008$                  | $16{,}04$               |
+| $\mathrm{NaCl}$       | $22{,}99 + 35{,}45$                          | $58{,}44$               |
+| $\mathrm{Fe_2O_3}$    | $2 \cdot 55{,}85 + 3 \cdot 16{,}00$          | $159{,}7$               |
+| $\mathrm{H_2SO_4}$    | $2 \cdot 1{,}008 + 32{,}06 + 4 \cdot 16{,}00$ | $98{,}08$              |
+
+### Molares Volumen von Gasen
+
+Nach dem Satz von Avogadro enthalten gleiche Volumina aller (idealen) Gase bei gleichem Druck und gleicher Temperatur gleich viele Teilchen. Ein Mol eines Gases nimmt deshalb unabhängig von der Gasart dasselbe **molare Volumen** $V_m = \frac{V}{n}$ ein:
+
+| Bedingungen                                          | $V_m$                       |
+| ---------------------------------------------------- | --------------------------- |
+| Normbedingungen $0\,\mathrm{°C}$, $1013{,}25\,\mathrm{hPa}$ | $22{,}414\,\mathrm{L/mol}$ |
+| $25\,\mathrm{°C}$, $1013{,}25\,\mathrm{hPa}$         | $24{,}47\,\mathrm{L/mol}$   |
+
+Allgemein gilt das **ideale Gasgesetz** $p \cdot V = n \cdot R \cdot T$ mit der Gaskonstante $R = 8{,}314\,\mathrm{J/(mol \cdot K)}$ und der Temperatur in Kelvin.
+
+### Konzentration und Verdünnen
+
+Die **Stoffmengenkonzentration** (Molarität) gibt an, wie viel Mol eines Stoffs in einem Liter Lösung gelöst sind:
+
+$$
+c = \frac{n}{V_\text{Lösung}} \quad \text{in } \mathrm{mol/L}
+$$
+
+Beim **Verdünnen** bleibt die Stoffmenge des gelösten Stoffs gleich, deshalb gilt $c_1 \cdot V_1 = c_2 \cdot V_2$.
+
+## Stöchiometrisches Rechnen
+
+Der Lösungsweg ist immer derselbe:
+
+1. Reaktionsgleichung aufstellen und ausgleichen.
+2. Gegebene Größe in Stoffmenge umrechnen ($n = \frac{m}{M}$, $n = \frac{V}{V_m}$ oder $n = c \cdot V$).
+3. Mit dem Verhältnis der Koeffizienten die Stoffmenge des gesuchten Stoffs bestimmen.
+4. Stoffmenge in die gesuchte Größe zurückrechnen.
+
+:::tip[Beispiel 1: Verbrennung von Methan]
+Wie viel Sauerstoff wird zum Verbrennen von $100\,\mathrm{g}$ Methan gebraucht, und wie viel Kohlenstoffdioxid entsteht?
+
+$$
+\mathrm{CH_4 + 2\,O_2 \rightarrow CO_2 + 2\,H_2O}
+$$
+
+$$
+n(\mathrm{CH_4}) = \frac{100\,\mathrm{g}}{16{,}04\,\mathrm{g/mol}} = 6{,}234\,\mathrm{mol}
+$$
+
+Nach der Gleichung gilt $n(\mathrm{O_2}) = 2 \cdot n(\mathrm{CH_4}) = 12{,}47\,\mathrm{mol}$ und $n(\mathrm{CO_2}) = n(\mathrm{CH_4}) = 6{,}234\,\mathrm{mol}$:
+
+$$
+m(\mathrm{O_2}) = 12{,}47\,\mathrm{mol} \cdot 32{,}00\,\mathrm{g/mol} = 399\,\mathrm{g}
+$$
+
+$$
+m(\mathrm{CO_2}) = 6{,}234\,\mathrm{mol} \cdot 44{,}01\,\mathrm{g/mol} = 274\,\mathrm{g}
+$$
+
+Aus $100\,\mathrm{g}$ Methan entstehen also $274\,\mathrm{g}$ $\mathrm{CO_2}$. Das entspricht bei $25\,\mathrm{°C}$ einem Volumen von $6{,}234\,\mathrm{mol} \cdot 24{,}47\,\mathrm{L/mol} \approx 153\,\mathrm{L}$.
+:::
+
+:::tip[Beispiel 2: Lösung herstellen]
+Für ein Experiment brauchst du $250\,\mathrm{mL}$ Kochsalzlösung mit $c = 0{,}100\,\mathrm{mol/L}$.
+
+$$
+n = c \cdot V = 0{,}100\,\mathrm{mol/L} \cdot 0{,}250\,\mathrm{L} = 0{,}0250\,\mathrm{mol}
+$$
+
+$$
+m = n \cdot M = 0{,}0250\,\mathrm{mol} \cdot 58{,}44\,\mathrm{g/mol} = 1{,}46\,\mathrm{g}
+$$
+
+$1{,}46\,\mathrm{g}$ NaCl einwiegen, im Messkolben lösen und bis zur Marke auffüllen.
+:::
+
+:::tip[Beispiel 3: limitierender Reaktionspartner]
+$10{,}0\,\mathrm{g}$ Wasserstoff reagieren mit $64{,}0\,\mathrm{g}$ Sauerstoff. Wie viel Wasser entsteht höchstens?
+
+$$
+n(\mathrm{H_2}) = \frac{10{,}0}{2{,}016}\,\mathrm{mol} = 4{,}96\,\mathrm{mol}, \qquad n(\mathrm{O_2}) = \frac{64{,}0}{32{,}00}\,\mathrm{mol} = 2{,}00\,\mathrm{mol}
+$$
+
+Für $2{,}00\,\mathrm{mol}$ $\mathrm{O_2}$ braucht man $4{,}00\,\mathrm{mol}$ $\mathrm{H_2}$. Wasserstoff ist im Überschuss, Sauerstoff ist der **limitierende** Reaktionspartner. Es entstehen $4{,}00\,\mathrm{mol}$ Wasser, also $4{,}00 \cdot 18{,}02\,\mathrm{g} = 72{,}1\,\mathrm{g}$. Übrig bleiben $0{,}96\,\mathrm{mol}$ $\mathrm{H_2}$, das sind $1{,}9\,\mathrm{g}$. Massenbilanz: $10{,}0 + 64{,}0 = 72{,}1 + 1{,}9$.
+:::
+
+:::tip[Beispiel 4: Massenanteil eines Elements]
+Welchen Massenanteil Eisen enthält Hämatit $\mathrm{Fe_2O_3}$?
+
+$$
+w(\mathrm{Fe}) = \frac{2 \cdot 55{,}85\,\mathrm{g/mol}}{159{,}7\,\mathrm{g/mol}} = 0{,}699 = 69{,}9\,\%
+$$
+:::
+
+Die tatsächlich gewonnene Produktmenge ist meist kleiner als die berechnete (Nebenreaktionen, Verluste). Die **Ausbeute** ist das Verhältnis von tatsächlicher zu theoretischer Produktmenge in Prozent.
+
+## Weiterführende Quellen
+
+- [SI-Broschüre: Definition des Mol](https://www.bipm.org/en/publications/si-brochure) (BIPM)
+- [Atomgewichte der Elemente](https://iupac.qmul.ac.uk/AtWt/) (IUPAC)
+- Charles E. Mortimer, Ulrich Müller: _Chemie. Das Basiswissen der Chemie_, Thieme

@@ -1,0 +1,141 @@
+---
+title: Software Engineering
+description: Der Lebenszyklus von Software, Anforderungsanalyse mit User Stories und Anwendungsfällen, Priorisierung, Aufwandsschätzung, Wartung, Dokumentation, DevOps und Softwarelizenzen.
+sidebar:
+  order: 23
+---
+
+**Software Engineering** (Softwaretechnik) ist die ingenieurmäßige Entwicklung von Software: geplant, mit bewährten Methoden, messbar und im Team. Der Begriff wurde 1968 auf einer NATO-Konferenz in Garmisch-Partenkirchen bekannt, auf der die **Softwarekrise** diskutiert wurde: Projekte wurden immer größer, überschritten Zeit und Budget und lieferten fehlerhafte Ergebnisse. Bis heute scheitern viele IT-Projekte nicht an der Technik, sondern an unklaren Anforderungen, schlechter Kommunikation und fehlender Planung.
+
+## Lebenszyklus von Software
+
+Unabhängig vom [Vorgehensmodell](/de/project_management/basics/process_models/) durchläuft jede Software dieselben Tätigkeiten (_Software Development Life Cycle_, SDLC):
+
+| Phase                    | Fragen und Ergebnisse                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| **Anforderungsanalyse**  | Was soll das System leisten? Lastenheft, Pflichtenheft, User Stories, Anwendungsfälle       |
+| **Entwurf**              | Wie wird es aufgebaut? [Architektur](/de/software-development/software-architecture/), [UML-Diagramme](/de/software-development/uml/), Datenbankmodell |
+| **Implementierung**      | Programmieren nach [Clean-Code](/de/software-development/clean-code/)-Grundsätzen, Code-Reviews |
+| **Test**                 | Erfüllt es die Anforderungen? [Unit-, Integrations-, System- und Abnahmetests](/de/software-development/testing/) |
+| **Auslieferung**         | Installation, Migration der Daten, Schulung der Benutzer                                   |
+| **Betrieb und Wartung**  | Fehler beheben, anpassen, erweitern; oft der größte Teil der Gesamtkosten                   |
+
+Beim Wasserfallmodell laufen diese Phasen einmal nacheinander ab, bei agilen Methoden wie Scrum in jedem Sprint im Kleinen.
+
+### Wartung
+
+Die meisten Kosten einer Software entstehen nicht bei der Entwicklung, sondern im jahrelangen Betrieb danach. Man unterscheidet vier Arten der Wartung (nach ISO/IEC 14764):
+
+- **Korrektiv**: gemeldete Fehler beheben.
+- **Adaptiv**: an eine veränderte Umgebung anpassen, etwa an ein neues Betriebssystem, eine neue Gesetzeslage oder eine neue Version einer Bibliothek.
+- **Perfektiv**: verbessern und erweitern, etwa neue Funktionen oder bessere Performance.
+- **Präventiv**: künftigen Problemen vorbeugen, etwa durch [Refactoring](/de/software-development/clean-code/#refactoring) oder das Aktualisieren von Abhängigkeiten.
+
+**Technische Schulden** (_Technical Debt_) entstehen, wenn man bewusst oder unbewusst schnelle, unsaubere Lösungen wählt. Wie bei einem Kredit muss man später „Zinsen“ zahlen: Jede weitere Änderung wird aufwendiger, bis man die Schulden durch Aufräumen tilgt.
+
+## Anforderungsanalyse
+
+Fehler in den Anforderungen sind die teuersten, weil sie erst spät auffallen und dann viel bereits Gebautes betreffen. Das **Requirements Engineering** umfasst das Ermitteln, Dokumentieren, Prüfen und Verwalten von Anforderungen.
+
+### Arten von Anforderungen
+
+- **Funktionale Anforderungen** beschreiben, **was** das System tun soll: „Lehrkräfte können Noten eintragen.“
+- **Nichtfunktionale Anforderungen** (Qualitätsanforderungen) beschreiben, **wie gut** es das tun soll: Antwortzeit unter einer Sekunde, 500 gleichzeitige Benutzer, Bedienbarkeit auf dem Smartphone, Verschlüsselung aller Verbindungen. Sie orientieren sich an den Qualitätsmerkmalen der ISO/IEC 25010 (siehe [Softwarequalität](/de/project_management/quality_management/software_quality/)).
+- **Randbedingungen** (_Constraints_) schränken die Lösung ein: vorgegebene Programmiersprache, Budget, Termine, gesetzliche Vorgaben wie die [DSGVO](/de/economy_and_law/law/internet_law/#datenschutz).
+
+### Lastenheft und Pflichtenheft
+
+- Das **Lastenheft** beschreibt aus Sicht des **Auftraggebers**, **was** und **wofür** etwas gebraucht wird.
+- Das **Pflichtenheft** beschreibt aus Sicht des **Auftragnehmers**, **wie** und **womit** die Anforderungen umgesetzt werden.
+
+Beide Dokumente werden auf der Seite [Projektstart](/de/project_management/basics/project_start/#lastenheft-und-pflichtenheft) genauer erklärt. In agilen Projekten ersetzt ein laufend gepflegtes Product Backlog aus User Stories die großen Dokumente.
+
+### Ermittlungstechniken
+
+| Technik                | Beschreibung                                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| **Interview**          | Gespräch mit Auftraggebern und künftigen Benutzern, vorbereitet mit offenen Fragen              |
+| **Workshop**           | mehrere Beteiligte erarbeiten Anforderungen gemeinsam, etwa mit [Kreativitätstechniken](/de/project_management/basics/creativity_techniques/) |
+| **Beobachtung**        | Benutzer bei ihrer echten Arbeit beobachten, um unausgesprochenes Wissen zu entdecken           |
+| **Fragebogen**         | viele Personen strukturiert befragen                                                            |
+| **Dokumentenanalyse**  | bestehende Formulare, Altsysteme und Vorschriften auswerten                                     |
+| **Prototyping**        | Skizzen, Mock-ups oder klickbare Prototypen zeigen und Rückmeldungen sammeln                    |
+
+Das **Kano-Modell** teilt Anforderungen nach ihrer Wirkung auf die Zufriedenheit ein: **Basisanforderungen** werden als selbstverständlich erwartet und fallen nur auf, wenn sie fehlen. **Leistungsanforderungen** steigern die Zufriedenheit proportional zu ihrer Erfüllung. **Begeisterungsanforderungen** erwartet niemand, sie überraschen positiv.
+
+### User Stories
+
+In agilen Projekten formuliert man Anforderungen als **User Stories** aus Sicht eines Benutzers:
+
+> **Als** Klassenvorstand **möchte ich** die Fehlstunden meiner Klasse als Liste exportieren, **damit** ich sie bei der Klassenkonferenz besprechen kann.
+
+Zu jeder Story gehören **Akzeptanzkriterien**, die festlegen, wann sie erfüllt ist. Oft schreibt man sie im Format _Given, When, Then_:
+
+> **Angenommen** die Klasse 3AHIT hat 40 Fehlstunden im Semester, **wenn** der Klassenvorstand auf „Exportieren“ klickt, **dann** wird eine CSV-Datei mit allen Fehlstunden der Klasse heruntergeladen.
+
+Gute User Stories erfüllen die **INVEST**-Kriterien: _Independent_ (unabhängig), _Negotiable_ (verhandelbar), _Valuable_ (wertvoll für den Benutzer), _Estimable_ (schätzbar), _Small_ (klein genug für einen Sprint) und _Testable_ (testbar). Große Stories, die noch zerlegt werden müssen, heißen **Epics**.
+
+Ausführlichere Abläufe beschreibt man als **Anwendungsfälle** (_Use Cases_) mit Akteur, Vorbedingung, Standardablauf, Alternativabläufen und Nachbedingung, grafisch zusammengefasst im [Anwendungsfalldiagramm](/de/software-development/uml/#anwendungsfalldiagramm).
+
+### Qualität von Anforderungen
+
+Eine gute Anforderung ist **eindeutig**, **vollständig**, **konsistent** (widerspricht keiner anderen), **prüfbar**, **realisierbar** und **verfolgbar** (man weiß, woher sie stammt und welcher Code und welche Tests sie umsetzen). „Das System soll schnell sein“ ist nicht prüfbar, „95 % der Suchanfragen werden in unter 500 ms beantwortet“ schon.
+
+### Priorisierung
+
+Nicht alle Anforderungen sind gleich wichtig. Bei der **MoSCoW**-Methode ordnet man jede Anforderung einer Kategorie zu:
+
+- **Must have**: unverzichtbar, ohne sie ist das Produkt wertlos.
+- **Should have**: wichtig, aber notfalls später lieferbar.
+- **Could have**: wünschenswert, wenn Zeit bleibt.
+- **Won't have (this time)**: bewusst ausgeschlossen, vielleicht in einer späteren Version.
+
+## Aufwandsschätzung
+
+Wie lange die Umsetzung dauert, ist schwer vorherzusagen. Neben den allgemeinen Methoden auf der Seite [Aufwandsschätzung und Kostenplanung](/de/project_management/planning/cost_planning_and_estimation/) gibt es Verfahren speziell für Software:
+
+- **Story Points** und **Planning Poker**: Das Team schätzt den relativen Umfang von User Stories (oft in Fibonacci-Zahlen 1, 2, 3, 5, 8, 13). Alle legen gleichzeitig eine Karte, und große Abweichungen werden besprochen. Aus den in vergangenen Sprints erledigten Punkten (**Velocity**) lässt sich abschätzen, wie viel in künftige Sprints passt.
+- **Function-Point-Analyse**: zählt Eingaben, Ausgaben, Abfragen, interne Datenbestände und Schnittstellen eines Systems und gewichtet sie nach Komplexität. Das Ergebnis ist unabhängig von der Programmiersprache.
+- **COCOMO** (_Constructive Cost Model_, Barry Boehm): schätzt den Aufwand in Personenmonaten aus der erwarteten Programmgröße und Einflussfaktoren.
+
+## Dokumentation
+
+| Art                          | Zielgruppe          | Inhalt                                                                              |
+| ---------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
+| **Benutzerdokumentation**    | Anwender            | Bedienungsanleitung, Hilfe, Tutorials, häufige Fragen                               |
+| **Installations- und Betriebshandbuch** | Administratoren | Systemvoraussetzungen, Installation, Konfiguration, Sicherung              |
+| **Entwicklerdokumentation**  | Entwickler          | Architektur ([arc42](/de/software-development/software-architecture/#architektur-dokumentieren)), Datenmodell, Build-Anleitung, Konventionen |
+| **API-Dokumentation**        | Nutzer einer Schnittstelle | Endpunkte, Parameter, Beispiele; oft automatisch erzeugt (OpenAPI, `cargo doc`) |
+| **README**                   | alle                | Zweck, Installation, erste Schritte, Lizenz; die erste Datei, die man in einem Repository liest |
+| **Changelog**                | alle                | Änderungen jeder Version                                                            |
+
+Dokumentation, die neben dem Code in der [Versionsverwaltung](/de/software-development/version-control/) liegt und mit ihm gemeinsam geändert wird (_Docs as Code_), bleibt am ehesten aktuell.
+
+## DevOps
+
+**DevOps** verbindet Entwicklung (_Development_) und Betrieb (_Operations_). Statt Software über eine Abteilungsgrenze „über den Zaun zu werfen“, sind Teams für ihre Anwendung von der Entwicklung bis zum Betrieb verantwortlich. Wichtige Praktiken sind:
+
+- **Continuous Integration und Continuous Delivery** (CI/CD): jede Änderung automatisch bauen, testen und ausliefern (siehe [Versionsverwaltung](/de/software-development/version-control/#continuous-integration)).
+- **Infrastructure as Code**: Server und Netzwerke werden in Dateien beschrieben (etwa mit Terraform, Ansible oder Dockerfiles) und automatisch eingerichtet.
+- **Monitoring** und Protokollierung im laufenden Betrieb (siehe [Monitoring](/de/deployment/operations/monitoring/)).
+- **Container** für gleiche Umgebungen in Entwicklung, Test und Produktion (siehe [Virtualisierung](/de/deployment/virtualisation/)).
+
+## Softwarelizenzen
+
+Wer Software veröffentlicht oder fremde Bibliotheken verwendet, muss Lizenzen beachten. Ohne Lizenz darf niemand den Code verwenden, denn das **Urheberrecht** liegt automatisch beim Autor (siehe [Recht im Internet](/de/economy_and_law/law/internet_law/#urheberrecht)).
+
+| Lizenzart                     | Beispiele                  | Bedingungen                                                                    |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------ |
+| **Proprietär**                | Windows, Microsoft Office  | Nutzung nur nach den Bedingungen des Herstellers, Quelltext meist nicht verfügbar |
+| **Freizügige Open-Source-Lizenzen** (_permissive_) | MIT, Apache 2.0, BSD | Nutzung, Änderung und Weitergabe auch in geschlossener Software erlaubt; Lizenztext und Urheberangabe müssen erhalten bleiben. Apache 2.0 enthält zusätzlich eine Patentlizenz. |
+| **Copyleft-Lizenzen**         | GPL, AGPL                  | abgeleitete Werke müssen unter derselben Lizenz und mit Quelltext weitergegeben werden. Die AGPL gilt auch, wenn Software nur über ein Netzwerk angeboten wird. |
+| **Schwaches Copyleft**        | LGPL, MPL                  | Änderungen an der Bibliothek selbst müssen offengelegt werden, Programme, die sie nur verwenden, nicht |
+| **Gemeinfrei** (_Public Domain_) | Unlicense, CC0          | keine Bedingungen                                                              |
+
+Freie Software im Sinne der Free Software Foundation garantiert vier Freiheiten: das Programm für jeden Zweck auszuführen, es zu untersuchen und anzupassen, es weiterzugeben und verbesserte Versionen zu veröffentlichen. Mutanuq selbst steht unter der MIT-Lizenz.
+
+## Weiterführende Quellen
+
+- [IREB](https://www.ireb.org/de) (International Requirements Engineering Board) und sein Lehrplan zum Certified Professional for Requirements Engineering
+- [Choose a License](https://choosealicense.com/) zur Auswahl einer Open-Source-Lizenz
+- Ian Sommerville: _Software Engineering_, Pearson (Standardlehrbuch)

@@ -1,0 +1,119 @@
+---
+title: NoSQL-Datenbanken
+description: "Die Arten von NoSQL-Datenbanken im Überblick: Schlüssel-Wert-Speicher, spaltenorientierte und Wide-Column-Datenbanken, Graphdatenbanken mit Cypher, Zeitreihen- und Suchdatenbanken sowie die Auswahl des passenden Systems."
+sidebar:
+  label: NoSQL im Überblick
+  order: 12
+---
+
+Der Begriff **NoSQL** (heute meist als „Not only SQL“ gelesen) fasst Datenbanken zusammen, die nicht dem relationalen Modell folgen. Sie entstanden in den 2000er-Jahren bei großen Internetunternehmen, als Datenmengen und Zugriffszahlen die Grenzen einzelner relationaler Server überschritten. Google veröffentlichte 2006 Bigtable, Amazon 2007 Dynamo. Daraus gingen viele der heutigen Systeme hervor.
+
+NoSQL-Datenbanken haben einige gemeinsame Eigenschaften:
+
+- **Flexibles oder kein festes Schema** (_Schema-on-Read_): Die Struktur wird erst beim Lesen interpretiert.
+- **Horizontale Skalierung**: Statt eines größeren Servers (_Scale-up_) kommen weitere Server hinzu (_Scale-out_). Die Daten werden auf sie verteilt (siehe [Verteilte Datenbanken](/de/databases/distributed-databases/)).
+- **Gelockerte Konsistenz**: Viele Systeme verzichten zugunsten von Verfügbarkeit und Geschwindigkeit auf volle [ACID-Garantien](/de/databases/transactions/#acid) und folgen dem [BASE-Modell](/de/databases/document-oriented-databases/#base).
+- **Datenmodell nach Zugriffsmuster**: Daten werden so gespeichert, wie sie gelesen werden, auch wenn das Redundanz bedeutet. Joins gibt es kaum.
+
+## Arten von NoSQL-Datenbanken
+
+| Art                          | Datenmodell                                              | Typische Verwendung                                      | Beispiele                                |
+| ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| **Schlüssel-Wert**           | Schlüssel zeigt auf einen beliebigen Wert                | Cache, Sitzungen, Warenkörbe, Zähler                     | Redis, Valkey, Amazon DynamoDB, etcd      |
+| **Dokumentenorientiert**     | Schlüssel zeigt auf ein strukturiertes Dokument (JSON)   | Produktkataloge, Inhalte, Benutzerprofile                | MongoDB, CouchDB, Azure Cosmos DB         |
+| **Wide-Column**              | Zeilen mit vielen, je Zeile verschiedenen Spalten, nach Partitionsschlüssel verteilt | sehr große Schreiblasten, Messwerte, Ereignisprotokolle | Apache Cassandra, HBase, ScyllaDB |
+| **Graph**                    | Knoten und Kanten mit Eigenschaften                      | soziale Netze, Empfehlungen, Betrugserkennung, Netzwerke | Neo4j, Amazon Neptune, ArangoDB          |
+| **Zeitreihen**               | Messwerte mit Zeitstempel                                | Monitoring, IoT-Sensoren, Börsenkurse                    | InfluxDB, TimescaleDB, Prometheus         |
+| **Suchmaschinen**            | invertierter Index über Texte                            | Volltextsuche, Logauswertung                             | Elasticsearch, OpenSearch, Apache Solr    |
+
+Dokumentenorientierte Datenbanken behandelt eine [eigene Seite](/de/databases/document-oriented-databases/).
+
+## Schlüssel-Wert-Speicher
+
+Ein **Schlüssel-Wert-Speicher** (_Key-Value Store_) ist im Grunde eine große, dauerhafte Hashtabelle: Zu einem Schlüssel wird ein Wert gespeichert und über genau diesen Schlüssel wieder gelesen. Die Datenbank kennt den Inhalt des Werts meist nicht und kann daher nicht danach suchen. Dafür sind Lese- und Schreibzugriffe extrem schnell, typischerweise unter einer Millisekunde.
+
+**Redis** hält alle Daten im Arbeitsspeicher und schreibt sie zusätzlich auf Wunsch auf den Datenträger. Neben einfachen Zeichenketten kennt es Listen, Mengen, sortierte Mengen und Hashes. Ein Schlüssel kann eine Lebensdauer erhalten, nach der er automatisch gelöscht wird. Das macht Redis zum Standard für **Caches** und **Sitzungsdaten** in Webanwendungen.
+
+```text
+SET sitzung:8f3a "{\"benutzer\": \"anna\"}" EX 1800   # gilt 30 Minuten
+GET sitzung:8f3a
+INCR besuche:startseite                              # atomarer Zähler
+ZADD bestenliste 1250 "anna" 980 "ben"               # sortierte Menge
+ZREVRANGE bestenliste 0 9 WITHSCORES                 # die besten zehn
+```
+
+Der Schlüsselname `sitzung:8f3a` folgt einer verbreiteten Konvention, Namensräume mit Doppelpunkten zu trennen. 2024 änderte Redis seine Lizenz. Daraufhin entstand unter der Linux Foundation der quelloffene Fork **Valkey**. Seit Redis 8 (2025) ist Redis zusätzlich wieder unter einer Open-Source-Lizenz (AGPL) erhältlich.
+
+## Wide-Column-Datenbanken
+
+**Wide-Column-Datenbanken** wie **Apache Cassandra** speichern Zeilen in Tabellen, verteilen sie aber über einen **Partitionsschlüssel** auf viele Server. Alle Zeilen mit demselben Partitionsschlüssel liegen gemeinsam auf denselben Knoten und sind nach einem **Clustering-Schlüssel** sortiert. Eine Abfrage ist nur effizient, wenn sie den Partitionsschlüssel angibt.
+
+Deshalb wird das Schema in Cassandra **nach den Abfragen** entworfen, nicht nach den Entitäten: Für jede häufige Abfrage gibt es eine passende Tabelle, auch wenn dieselben Daten dann mehrfach gespeichert sind. Die Abfragesprache CQL sieht SQL ähnlich, kennt aber keine Joins und keine beliebigen `WHERE`-Bedingungen.
+
+```text
+CREATE TABLE messwerte_nach_sensor (
+    sensor_id  text,
+    zeitpunkt  timestamp,
+    temperatur double,
+    PRIMARY KEY ((sensor_id), zeitpunkt)      -- Partitionsschlüssel, Clustering-Schlüssel
+) WITH CLUSTERING ORDER BY (zeitpunkt DESC);
+
+SELECT zeitpunkt, temperatur FROM messwerte_nach_sensor
+WHERE sensor_id = 'labor-3' LIMIT 10;         -- die zehn neuesten Werte
+```
+
+Cassandra hat keinen zentralen Knoten, jeder Knoten kann Anfragen entgegennehmen. Wie viele Kopien bestätigen müssen, legt jede Anfrage über die **Konsistenzstufe** fest (`ONE`, `QUORUM`, `ALL`). So kann man je Anfrage zwischen Geschwindigkeit und Konsistenz wählen.
+
+Davon zu unterscheiden sind **spaltenorientierte** relationale Datenbanken wie ClickHouse oder DuckDB. Sie speichern die Werte einer Spalte hintereinander statt die Werte einer Zeile. Auswertungen, die über Millionen Zeilen nur wenige Spalten summieren, werden dadurch sehr schnell, und gleichartige Werte lassen sich gut komprimieren (siehe [Data Warehouse](/de/databases/data-warehouse/)).
+
+## Graphdatenbanken
+
+**Graphdatenbanken** speichern Daten als **Knoten** (_Nodes_) und **Kanten** (_Relationships_). Beide können Eigenschaften und Bezeichnungen (_Labels_) haben. Dieses Modell heißt **Property Graph**. In relationalen Datenbanken kostet jeder Schritt über eine Beziehung einen Join, und Abfragen über viele Stufen („Freunde von Freunden von Freunden“) werden schnell langsam. Eine Graphdatenbank folgt den Kanten dagegen direkt von Knoten zu Knoten. Die Kosten hängen nur von der Zahl der besuchten Knoten ab, nicht von der Größe der gesamten Datenbank.
+
+Die verbreitetste Graphdatenbank ist **Neo4j** mit der Abfragesprache **Cypher**. Muster werden darin als ASCII-Grafik geschrieben: Knoten in runden Klammern, Kanten als Pfeile mit eckigen Klammern. Seit 2024 gibt es mit **GQL** (ISO/IEC 39075) einen internationalen Standard für Graphabfragen, der stark auf Cypher aufbaut.
+
+```text
+// Knoten und Kanten anlegen
+CREATE (anna:Schueler {name: 'Anna'}), (ben:Schueler {name: 'Ben'}),
+       (clara:Schueler {name: 'Clara'}), (robotik:Kurs {name: 'Robotik'}),
+       (anna)-[:KENNT]->(ben), (ben)-[:KENNT]->(clara),
+       (clara)-[:BESUCHT]->(robotik);
+
+// Welche Kurse besuchen Bekannte von Bekannten von Anna?
+MATCH (a:Schueler {name: 'Anna'})-[:KENNT*1..2]->(p:Schueler)-[:BESUCHT]->(k:Kurs)
+RETURN p.name, k.name;
+
+// kürzester Weg zwischen zwei Personen
+MATCH weg = shortestPath((a:Schueler {name: 'Anna'})-[:KENNT*]-(c:Schueler {name: 'Clara'}))
+RETURN length(weg);
+```
+
+`[:KENNT*1..2]` steht für ein bis zwei Schritte über `KENNT`-Kanten. Graphdatenbanken eignen sich für Empfehlungen („Kunden, die das kauften, kauften auch“), Betrugserkennung (Ringe verbundener Konten), Netzwerk- und Abhängigkeitsanalysen sowie Wissensgraphen. Die zugrunde liegenden Algorithmen wie Breitensuche und Dijkstra beschreibt die Seite [Graphen](/de/software-development/graphs/).
+
+## Zeitreihen- und Suchdatenbanken
+
+**Zeitreihendatenbanken** sind auf Messwerte mit Zeitstempel spezialisiert: sehr viele Schreibzugriffe, die fast nur angehängt werden, und Abfragen über Zeitbereiche mit Aggregation („Durchschnittstemperatur pro Stunde der letzten Woche“). Sie komprimieren die Daten stark, verdichten alte Werte automatisch (_Downsampling_) und löschen sie nach einer festgelegten Aufbewahrungsdauer. **Prometheus** ist der Standard für das [Monitoring](/de/deployment/operations/monitoring/) von Servern und Containern, **InfluxDB** und **TimescaleDB** (eine Erweiterung für PostgreSQL) werden für IoT und Industrie eingesetzt.
+
+**Suchmaschinen** wie **Elasticsearch** und **OpenSearch** bauen einen **invertierten Index** auf: Für jedes Wort wird gespeichert, in welchen Dokumenten es vorkommt, wie bei einem Stichwortverzeichnis. Sie zerlegen Texte in Wörter, führen sie auf Grundformen zurück und bewerten die Treffer nach Relevanz. Damit sind fehlertolerante Volltextsuchen möglich, die mit `LIKE '%wort%'` in einer relationalen Datenbank weder schnell noch gut wären. Zusammen mit Logstash und Kibana bilden sie den **ELK-Stack** für die zentrale Auswertung von Logdateien.
+
+## Auswahl der passenden Datenbank
+
+| Anforderung                                                    | Geeignet                                   |
+| -------------------------------------------------------------- | ------------------------------------------ |
+| strukturierte Geschäftsdaten, viele Beziehungen, Transaktionen | relationale Datenbank                      |
+| schnelle Zugriffe über einen Schlüssel, Caching                | Schlüssel-Wert-Speicher                    |
+| wechselnde Struktur, Objekte werden als Ganzes gelesen         | Dokumentdatenbank                          |
+| sehr hohe Schreiblast, verteilt über Rechenzentren             | Wide-Column-Datenbank                      |
+| stark vernetzte Daten, Abfragen über viele Beziehungsstufen    | Graphdatenbank                             |
+| Messwerte über die Zeit                                        | Zeitreihendatenbank                        |
+| Volltextsuche, Logauswertung                                   | Suchmaschine                               |
+| große Auswertungen über historische Daten                      | spaltenorientiertes Data Warehouse         |
+
+Größere Anwendungen kombinieren oft mehrere Systeme, je nach Aufgabe (**Polyglot Persistence**): Ein Webshop speichert Bestellungen relational, den Produktkatalog in einer Dokumentdatenbank, Warenkörbe in Redis und den Suchindex in Elasticsearch. Jedes zusätzliche System erhöht aber den Betriebsaufwand und erfordert, die Daten zwischen den Systemen konsistent zu halten.
+
+Die Grenzen verschwimmen zunehmend: PostgreSQL speichert mit `jsonb` Dokumente samt Indizes, MongoDB unterstützt Transaktionen über mehrere Dokumente, und **NewSQL**-Systeme wie CockroachDB oder Google Spanner verbinden SQL und ACID mit horizontaler Skalierung. Für die meisten Projekte ist eine relationale Datenbank weiterhin der richtige Ausgangspunkt. Eine NoSQL-Datenbank lohnt sich dann, wenn eine konkrete Anforderung sie verlangt.
+
+## Weiterführende Quellen
+
+- Pramod J. Sadalage, Martin Fowler: _NoSQL Distilled_, Addison-Wesley
+- [Neo4j Cypher Manual](https://neo4j.com/docs/cypher-manual/current/) und [Apache Cassandra Documentation](https://cassandra.apache.org/doc/latest/)

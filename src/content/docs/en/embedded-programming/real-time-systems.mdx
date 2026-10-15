@@ -1,0 +1,234 @@
+---
+title: Real-Time Systems
+description: "Hard and soft real time, determinism, RTOS concepts such as tasks and scheduling (RMS, EDF), priority inversion, semaphores, queues, FreeRTOS and the watchdog."
+sidebar:
+  order: 16
+---
+
+A **real-time system** is a system in which a result is only correct if it is **logically right** and available **in time**. An airbag controller that detects the crash correctly but only fires the airbag after $100\,\mathrm{ms}$ has failed. Every task therefore has a **deadline**, a latest point in time by which it must be completed.
+
+:::tip[Remember]
+Real time does not mean "fast" but **predictable**. A system that is guaranteed to respond within one second is real-time capable. A PC that usually responds within a millisecond but sometimes only after two seconds is not.
+:::
+
+## Hard, firm and soft real time
+
+| Type | Consequence of a missed deadline | Examples |
+| ---- | -------------------------------- | -------- |
+| **Hard real time** | system failure, possible danger to people and machines. The deadline must **always** be met. | airbag, ABS, pacemaker, press control, flight control |
+| **Firm real time** | the late result is worthless and is discarded, but no damage occurs. | data acquisition in which individual readings may be missing |
+| **Soft real time** | quality drops, but the result is still usable. | video and audio streaming, VoIP, user interfaces |
+
+## Important terms
+
+- **Determinism:** With the same inputs and the same state, the system always behaves the same in terms of timing. The maximum response time is known and guaranteed.
+- **Latency:** time between an event (e.g. an interrupt) and the reaction to it.
+- **Jitter:** variation in latency or in the period. For a control loop that should run every $10\,\mathrm{ms}$ but sometimes runs after 9 and sometimes after $12\,\mathrm{ms}$, the jitter is $3\,\mathrm{ms}$.
+- **WCET** (_worst case execution time_): the longest possible execution time of a task. For hard real time you have to calculate with the WCET, not the average.
+- **Periodic tasks** run at fixed intervals (period $T$); **aperiodic** and **sporadic tasks** are triggered by events.
+
+What disturbs predictability: caches, pipelines and branch prediction of modern processors, dynamic memory management (`malloc`), garbage collection, virtual memory with paging, and operating systems that distribute work according to fairness instead of urgency. That is why simple microcontrollers or special real-time operating systems are used for hard real time.
+
+## Program structures
+
+### Superloop
+
+The simplest structure is the **main loop** (_superloop_) used so far: all tasks are processed one after another in `while(1)`. The response time is the duration of a whole loop iteration. It is easy to understand, but becomes unpredictable as soon as a task takes a long time or waits with `_delay_ms()`.
+
+### Superloop with interrupts
+
+Time-critical events are captured in [interrupts](/en/embedded-programming/interrupts/) (foreground); the ISR only sets a flag and the actual work is done in the loop (background). With a [timer](/en/embedded-programming/timer/) in CTC mode as the time base, simple periodic sequences can be achieved. For several independent tasks with different periods and priorities, this quickly becomes confusing.
+
+### Real-time operating system
+
+A **real-time operating system** (RTOS) splits the application into several **tasks** that appear to run in parallel and decides according to fixed, predictable rules which task gets the CPU next. Well-known RTOSes are **FreeRTOS** (MIT licence, very common on microcontrollers), **Zephyr** (Linux Foundation), **VxWorks** and **QNX** (commercial, e.g. in aerospace and vehicles) as well as **RTEMS**. Since version 6.12 (2024), the real-time extension **PREEMPT_RT** is also part of the Linux kernel, which means Linux can be used for many soft and some hard real-time applications.
+
+## RTOS concepts
+
+### Tasks and their states
+
+A **task** is a function with an endless loop, its own stack and its own **priority**. Each task is in one of several states:
+
+| State         | Meaning |
+| ------------- | ------- |
+| **Running**   | The task is currently executing (on a single-core processor always exactly one). |
+| **Ready**     | The task could run but is waiting because a task with higher or equal priority is running. |
+| **Blocked**   | The task is waiting for an event: a time to elapse, data in a queue, release of a semaphore. It uses no CPU time. |
+| **Suspended** | The task has been explicitly stopped and does not take part in scheduling. |
+
+Switching from one task to another is called a **context switch**: the scheduler saves the registers of the old task on its stack and loads those of the new one. The scheduler is triggered by a periodic timer interrupt (**tick**, typically $1\,\mathrm{ms}$) or when a task blocks or an event wakes a task.
+
+If no task is ready, the **idle task** with the lowest priority runs. It can put the processor into a power-saving mode.
+
+### Scheduling methods
+
+- **Cooperative:** A task runs until it voluntarily gives up the CPU. Simple, but one faulty task blocks all the others.
+- **Pre-emptive, priority-based:** The ready task with the highest priority always runs. If a higher-priority task becomes ready, the running one is interrupted immediately (**pre-emption**). This is the standard method in an RTOS.
+- **Round robin / time slicing:** Tasks with the **same** priority take turns in time slices.
+
+Two classic methods answer how to assign priorities so that all deadlines are met. Here $C_i$ is the WCET and $T_i$ the period (equal to the deadline) of task $i$. The **utilisation** is
+
+$$
+U = \sum_{i=1}^{n} \frac{C_i}{T_i}
+$$
+
+If $U > 1$, the CPU is overloaded and no method can meet all deadlines.
+
+#### Rate monotonic scheduling (RMS)
+
+In **rate monotonic scheduling**, the task with the **shortest period gets the highest priority**. The priorities are static, i.e. fixed at run time. Liu and Layland showed in 1973 that all deadlines are guaranteed to be met if
+
+$$
+U \le n \cdot \left(2^{1/n} - 1\right)
+$$
+
+For $n = 1$ the bound is 1, for $n = 2$ about $0.828$, for $n = 3$ about $0.780$, and for very many tasks it approaches $\ln 2 \approx 0.693$. The condition is **sufficient but not necessary**: if $U$ is above it, the system may still work, but it must then be analysed more precisely (response time analysis).
+
+**Example:** Three tasks with $(C, T)$ = $(1\,\mathrm{ms}, 4\,\mathrm{ms})$, $(2\,\mathrm{ms}, 6\,\mathrm{ms})$, $(1\,\mathrm{ms}, 10\,\mathrm{ms})$:
+
+$$
+U = \frac{1}{4} + \frac{2}{6} + \frac{1}{10} \approx 0.683 \le 0.780
+$$
+
+With RMS (priority: task 1 before task 2 before task 3), all deadlines are met.
+
+#### Earliest deadline first (EDF)
+
+With **earliest deadline first**, the task whose deadline is **nearest** always runs. The priorities therefore change at run time (dynamic). For independent periodic tasks on one processor:
+
+$$
+U \le 1
+$$
+
+EDF can therefore use the CPU fully. In return it is more complex to implement, and under overload many tasks may miss their deadline (domino effect), whereas with RMS only the low-priority ones are affected. In practice, most RTOSes use fixed priorities.
+
+### Communication and synchronisation
+
+Tasks share data and peripherals. Without protection, the same problems arise as with threads on a PC (see [concurrency](/en/software-development/concurrency/)). An RTOS provides:
+
+| Mechanism | Purpose |
+| --------- | ------- |
+| **Queue** | Pass data between tasks or from an ISR to a task (FIFO, copy of the data). A task can block while waiting for new data. |
+| **Binary semaphore** | Signal an event, typically from an ISR to a task (**deferred interrupt processing**: the ISR stays short, a task does the work). |
+| **Counting semaphore** | Manages several resources of the same kind or counts events. |
+| **Mutex** | Mutual exclusion when accessing a shared resource (e.g. UART, SPI bus). Only the task that took the mutex may give it back. |
+| **Event groups / task notifications** | Wait for one or more events (bits) |
+
+### Priority inversion
+
+In **priority inversion**, a high-priority task has to wait for a low-priority one, and a medium-priority task prolongs this waiting time without limit:
+
+1. Task **L** (low priority) takes a mutex, for example for the SPI bus.
+2. Task **H** (high priority) becomes ready, interrupts L and wants the same mutex. It blocks and waits for L.
+3. Task **M** (medium priority) becomes ready. Since M is more important than L, M interrupts task L.
+4. As long as M runs, L cannot release the mutex, and H waits although it has the highest priority.
+
+The problem became famous in 1997 through the Mars rover mission **Mars Pathfinder**, whose computer repeatedly restarted via the watchdog because of a priority inversion. The fix was uploaded from Earth as a configuration change.
+
+Solutions:
+
+- **Priority inheritance:** As long as L holds a mutex that H is waiting for, L temporarily receives H's priority. M can then no longer pre-empt L. FreeRTOS mutexes use this method automatically; binary semaphores do not.
+- **Priority ceiling:** Each mutex has a fixed ceiling, namely the highest priority of all tasks that use it. Whoever takes the mutex immediately runs at this priority. This additionally prevents deadlocks.
+
+## Example with FreeRTOS
+
+A sensor task measures the temperature every $100\,\mathrm{ms}$ and puts the value into a queue. A display task waits for new values and outputs them via the UART, which is protected by a mutex. The functions `read_temperature()`, `uart_init()` and `uart_print_int()` stand for your own hardware access.
+
+```c
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+
+static QueueHandle_t temperatureQueue;
+static SemaphoreHandle_t uartMutex;
+
+static void vSensorTask(void *pvParameters) {
+    TickType_t lastWake = xTaskGetTickCount();
+    for (;;) {
+        int16_t value = read_temperature();
+        xQueueSend(temperatureQueue, &value, 0);              // do not wait if full
+        xTaskDelayUntil(&lastWake, pdMS_TO_TICKS(100));       // exactly every 100 ms
+    }
+}
+
+static void vDisplayTask(void *pvParameters) {
+    int16_t value;
+    for (;;) {
+        // blocks until a value is in the queue
+        if (xQueueReceive(temperatureQueue, &value, portMAX_DELAY) == pdPASS) {
+            xSemaphoreTake(uartMutex, portMAX_DELAY);
+            uart_print_int(value);
+            xSemaphoreGive(uartMutex);
+        }
+    }
+}
+
+int main(void) {
+    uart_init();
+    temperatureQueue = xQueueCreate(10, sizeof(int16_t)); // room for 10 values
+    uartMutex = xSemaphoreCreateMutex();                  // with priority inheritance
+
+    // function, name, stack size (in words), parameter, priority, handle
+    xTaskCreate(vSensorTask, "Sensor", 128, NULL, 2, NULL);
+    xTaskCreate(vDisplayTask, "Display", 128, NULL, 1, NULL);
+
+    vTaskStartScheduler();   // only returns if there is not enough memory
+    for (;;);
+}
+```
+
+The difference between `vTaskDelay()` and `xTaskDelayUntil()` is important: `vTaskDelay(100)` waits 100 ticks from **now**, so the period becomes longer by the task's execution time and varies. `xTaskDelayUntil()` waits until an **absolute** point in time and keeps the period exact. Unlike `_delay_ms()`, the task blocks while waiting, so other tasks can run.
+
+Only functions ending in `FromISR` may be called from an ISR, because an ISR must not block:
+
+```c
+static SemaphoreHandle_t buttonSemaphore;   // created with xSemaphoreCreateBinary()
+
+// The name and form of the ISR depend on the platform
+void button_isr(void) {
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    xSemaphoreGiveFromISR(buttonSemaphore, &higherPriorityTaskWoken);
+    // switch to the woken task immediately if it is more important
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+static void vButtonTask(void *pvParameters) {
+    for (;;) {
+        xSemaphoreTake(buttonSemaphore, portMAX_DELAY);  // waits for the ISR
+        handle_button();                                 // the actual work
+    }
+}
+```
+
+## Watchdog
+
+A **watchdog** is an independent hardware timer that resets the microcontroller when it expires. The program must reset it regularly ("feed the dog"). If the program hangs in an endless loop or a deadlock, the reset does not happen, and the watchdog triggers a **reset**. The system thus returns to a defined state.
+
+The ATmega328P has a watchdog with its own 128 kHz oscillator and timeouts from $16\,\mathrm{ms}$ to $8\,\mathrm{s}$:
+
+```c
+#include <avr/io.h>
+#include <avr/wdt.h>
+
+int main(void) {
+    if (MCUSR & (1<<WDRF)) {
+        // the last reset came from the watchdog: log the error
+    }
+    MCUSR = 0;
+    wdt_enable(WDTO_500MS);   // reset if not fed for 500 ms
+
+    while (1) {
+        do_work();            // must be guaranteed to take less than 500 ms
+        wdt_reset();          // feed the watchdog
+    }
+}
+```
+
+You must not simply reset the watchdog in a timer interrupt, because the interrupt usually keeps running even when the main program hangs. In an RTOS, it is therefore reset in a dedicated supervisor task, and only if all other tasks have checked in within their time.
+
+## Further reading
+
+- Richard Barry: _Mastering the FreeRTOS Real Time Kernel_ (free on [freertos.org](https://www.freertos.org/)) and the API documentation there
+- C. L. Liu, J. W. Layland: _Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment_, Journal of the ACM, 1973
+- Giorgio Buttazzo: _Hard Real-Time Computing Systems_, Springer

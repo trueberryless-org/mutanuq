@@ -1,0 +1,213 @@
+---
+title: Electricity and Magnetism
+description: The physics of charge, Coulomb's law, electric field and potential, capacitors, current and resistance, magnetic field, Lorentz force, induction and electromagnetic waves.
+sidebar:
+  order: 13
+---
+
+Electric and magnetic phenomena are two sides of a single interaction, **electromagnetism**. It holds atoms and molecules together, governs chemistry and is the basis of all electrical engineering and electronics. This page covers the physical fundamentals; circuits, networks and AC engineering are the subject of electrical engineering.
+
+## Electric charge
+
+**Electric charge** $Q$ is a property of particles. There are two kinds, positive and negative: like charges repel, unlike charges attract. The unit is the **coulomb**, $1\,\mathrm{C} = 1\,\mathrm{A\,s}$.
+
+- Charge is **quantised**: every freely observable charge is an integer multiple of the **elementary charge** $e = 1.602\,176\,634 \times 10^{-19}\,\mathrm{C}$. An electron carries $-e$, a proton $+e$. Millikan determined $e$ in 1909 with his oil-drop experiment.
+- Charge is **conserved**: in a closed system, the sum of all charges remains constant. Rubbing a balloon on a jumper only moves electrons around.
+- A body is neutral if it contains equal amounts of positive and negative charge.
+
+**Conductors** (metals, electrolytes) contain freely mobile charge carriers; **insulators** (glass, plastic) do not. Semiconductors lie in between (see [Modern Physics](/en/natural-sciences/modern-physics/#semiconductors)). Bringing a charged body close to a conductor shifts the conductor's charges (**electrostatic induction**).
+
+## Coulomb's law
+
+Two point charges $Q_1$ and $Q_2$ at a distance $r$ exert the force
+
+$$
+F = \frac{1}{4\pi\varepsilon_0} \cdot \frac{Q_1 \cdot Q_2}{r^2}
+$$
+
+on each other. The **electric constant** (vacuum permittivity) is $\varepsilon_0 = 8.854 \times 10^{-12}\,\mathrm{A\,s/(V\,m)}$, and the prefactor $\frac{1}{4\pi\varepsilon_0} = 8.988 \times 10^9\,\mathrm{N\,m^2/C^2}$. The law has the same form as the [law of gravitation](/en/natural-sciences/gravitation/) but is vastly stronger: between a proton and an electron, the electric attraction is about $10^{39}$ times as large as gravitation.
+
+:::tip[Example]
+Two charges of $1\,\mathrm{\mu C}$ each at a distance of $10\,\mathrm{cm}$:
+
+$$
+F = 8.988 \times 10^9 \cdot \frac{(10^{-6})^2}{0.1^2} = 0.899\,\mathrm{N}
+$$
+:::
+
+In a material with relative permittivity $\varepsilon_\mathrm{r}$ (water about 80), the force is smaller by this factor. That is why salts dissolve so well in water.
+
+## Electric field
+
+A charge creates an **electric field** around it. The **electric field strength** is the force on a positive test charge $q$, divided by that charge:
+
+$$
+\vec E = \frac{\vec F}{q}, \qquad [E] = \mathrm{N/C} = \mathrm{V/m}
+$$
+
+For a point charge, $E = \frac{1}{4\pi\varepsilon_0}\frac{Q}{r^2}$; at $10\,\mathrm{cm}$ from $1\,\mathrm{\mu C}$ this is $8.99 \times 10^5\,\mathrm{V/m}$.
+
+**Field lines** illustrate the field: they start at positive and end at negative charges, point in the direction of the force on a positive charge, never cross and are perpendicular to conductor surfaces. Their density shows the field strength. Between two parallel, oppositely charged plates, the field is **uniform**.
+
+Inside a conductor, the electrostatic field is zero and the charges sit on the surface. A closed metal cage therefore shields external fields (**Faraday cage**): cars and aircraft protect their occupants from lightning strikes, and microwave ovens and shielding plates keep radiation in.
+
+## Potential and voltage
+
+When a charge is moved in a field, the field does work, analogous to lifting in the gravitational field. The **electric potential** $\varphi$ is potential energy per charge. **Voltage** is the potential difference between two points:
+
+$$
+U = \varphi_\mathrm{A} - \varphi_\mathrm{B} = \frac{W}{q}, \qquad [U] = \mathrm{J/C} = \mathrm{V} \;(\text{volt})
+$$
+
+In the uniform field of a parallel-plate capacitor with plate separation $d$:
+
+$$
+E = \frac{U}{d}
+$$
+
+When a charge $q$ passes through the voltage $U$, it gains the energy $W = q U$. For an electron and $1\,\mathrm{V}$, this is one **electronvolt**.
+
+:::tip[Example: electron gun]
+An electron is accelerated from rest through $U = 1\,\mathrm{kV}$. It gains $1\,\mathrm{keV}$, so
+
+$$
+\frac{1}{2} m_\mathrm{e} v^2 = e U \quad\Rightarrow\quad v = \sqrt{\frac{2 e U}{m_\mathrm{e}}} = \sqrt{\frac{2 \cdot 1.602 \times 10^{-19} \cdot 1000}{9.109 \times 10^{-31}}} = 1.88 \times 10^7\,\mathrm{m/s}
+$$
+
+That is over 6 % of the speed of light; above a few tens of kilovolts, relativistic calculation is required.
+:::
+
+**Equipotential surfaces** connect points of equal potential and are perpendicular to the field lines. Moving a charge along an equipotential surface requires no work.
+
+## Capacitor
+
+A **capacitor** consists of two conductors (plates) insulated from each other, which store opposite charges $+Q$ and $-Q$. The stored charge is proportional to the voltage; the constant of proportionality is the **capacitance**:
+
+$$
+C = \frac{Q}{U}, \qquad [C] = \mathrm{C/V} = \mathrm{F} \;(\text{farad})
+$$
+
+For a parallel-plate capacitor with area $A$, separation $d$ and dielectric $\varepsilon_\mathrm{r}$:
+
+$$
+C = \varepsilon_0 \varepsilon_\mathrm{r} \frac{A}{d}, \qquad W = \frac{1}{2} C U^2
+$$
+
+:::tip[Example]
+Two plates of $100\,\mathrm{cm^2}$ each, $1\,\mathrm{mm}$ apart in air: $C = 8.854 \times 10^{-12} \cdot \frac{0.01}{0.001} = 88.5\,\mathrm{pF}$. At $100\,\mathrm{V}$ it stores $Q = 8.85\,\mathrm{nC}$ and $W = 0.44\,\mathrm{\mu J}$. One farad is a huge capacitance; common components range from pF to mF, while supercapacitors reach several thousand farads.
+:::
+
+The energy is stored in the electric field between the plates. Capacitors smooth voltages in power supplies, store energy for camera flashes and form the memory cells in DRAM.
+
+## Electric current and resistance
+
+**Electric current** is moving charge. The **current** states how much charge flows through a conductor's cross-section per unit time:
+
+$$
+I = \frac{\mathrm{d}Q}{\mathrm{d}t}, \qquad [I] = \mathrm{A} \;(\text{ampere})
+$$
+
+In metals electrons move; in electrolytes and gases ions move as well. The **conventional current direction** is defined from plus to minus; electrons flow the other way. Their drift velocity is only a fraction of a millimetre per second; the signal, however, propagates at almost the speed of light, because the field pushes all electrons in the conductor at the same time.
+
+A current only flows if a voltage is applied and the circuit is closed. For many conductors (metals at constant temperature), the current is proportional to the voltage; this is **Ohm's law**:
+
+$$
+U = R \cdot I, \qquad R = \rho \frac{l}{A}, \qquad [R] = \mathrm{V/A} = \Omega
+$$
+
+The **resistivity** $\rho$ is a material property: copper $1.72 \times 10^{-8}\,\Omega\,\mathrm{m}$ ($0.0172\,\Omega\,\mathrm{mm^2/m}$), aluminium $2.7 \times 10^{-8}\,\Omega\,\mathrm{m}$. A $100\,\mathrm{m}$ copper cable with $1.5\,\mathrm{mm^2}$ has $R = 0.0172 \cdot 100/1.5 = 1.15\,\Omega$. The resistance of metals increases with temperature because lattice vibrations scatter the electrons more strongly.
+
+Electrical **power** is $P = U \cdot I = R I^2 = \frac{U^2}{R}$. In a resistor it is converted into heat (**Joule heating**), which heating elements and fuses make use of.
+
+## Magnetism and magnetic field
+
+**Permanent magnets** have a north and a south pole; like poles repel, unlike poles attract. Magnetic poles always come in pairs: if you break a magnet, you get two complete magnets. Iron, nickel and cobalt are **ferromagnetic** and are attracted by magnets.
+
+In 1820, Hans Christian Ørsted discovered that a current-carrying conductor also deflects a compass needle: **every electric current produces a magnetic field.** Permanent magnetism, too, ultimately goes back to the motion and spin of electrons.
+
+The magnetic field is described by the **magnetic flux density** $\vec B$, unit **tesla** ($1\,\mathrm{T} = 1\,\mathrm{V\,s/m^2}$). **Magnetic field lines** are closed: outside a magnet they run from the north to the south pole, and back inside.
+
+| Arrangement | Flux density |
+| --- | --- |
+| long straight conductor, distance $r$ | $B = \frac{\mu_0 I}{2\pi r}$, field lines are concentric circles |
+| long solenoid, $N$ turns, length $l$ | $B = \mu_0 \mu_\mathrm{r} \frac{N I}{l}$, uniform inside |
+
+The **magnetic constant** (vacuum permeability) is $\mu_0 = 1.257 \times 10^{-6}\,\mathrm{V\,s/(A\,m)}$. An iron core with a large relative permeability $\mu_\mathrm{r}$ (up to several thousand) strengthens the field of a coil enormously (**electromagnet**).
+
+:::tip[Example]
+A conductor carrying $10\,\mathrm{A}$ produces $B = \frac{1.257 \times 10^{-6} \cdot 10}{2\pi \cdot 0.05} = 40\,\mathrm{\mu T}$ at a distance of $5\,\mathrm{cm}$, similar to the Earth's magnetic field (around $48\,\mathrm{\mu T}$ in Austria). An air-cored solenoid with $500$ turns over $20\,\mathrm{cm}$ reaches $B = 1.257 \times 10^{-6} \cdot 500 \cdot 2/0.2 = 6.3\,\mathrm{mT}$ inside at $2\,\mathrm{A}$.
+:::
+
+The **Earth's magnetic field** is produced by currents in the liquid outer core. Its magnetic south pole lies near the geographic North Pole, which is why the north pole of a compass needle points north. It shields charged particles of the solar wind; where they penetrate near the poles, auroras form.
+
+## Lorentz force
+
+A charge $q$ moving with velocity $\vec v$ through a magnetic field experiences the **Lorentz force**:
+
+$$
+\vec F_\mathrm{L} = q \cdot (\vec v \times \vec B), \qquad F_\mathrm{L} = q v B \sin\alpha
+$$
+
+It is perpendicular to $\vec v$ and $\vec B$ (right-hand rule for positive charges: thumb $\vec v$, index finger $\vec B$, middle finger $\vec F$). Because it acts perpendicular to the motion, it does no work; it only changes the direction. A charged particle flying perpendicular to a uniform field moves on a circular path:
+
+$$
+q v B = \frac{m v^2}{r} \quad\Rightarrow\quad r = \frac{m v}{q B}
+$$
+
+The electron from the example above ($1.88 \times 10^7\,\mathrm{m/s}$) describes a circle with $r = 10.7\,\mathrm{cm}$ in $B = 1\,\mathrm{mT}$. This is used to determine the specific charge $e/m$ in a fine-beam tube; mass spectrometers and particle accelerators work on the same principle.
+
+A current-carrying conductor of length $l$ perpendicular to the field experiences the force
+
+$$
+F = I \cdot l \cdot B
+$$
+
+A conductor carrying $5\,\mathrm{A}$, $10\,\mathrm{cm}$ long, in $0.2\,\mathrm{T}$ experiences $0.1\,\mathrm{N}$. This is the principle of the **electric motor** and the loudspeaker. The Lorentz force on the electrons in a thin conductor plate also causes the **Hall effect**: a voltage proportional to $B$ appears across the current; Hall sensors use it to measure magnetic fields and rotational speeds.
+
+## Electromagnetic induction
+
+In 1831, Michael Faraday discovered the reverse: a **changing** magnetic field produces a voltage. What matters is the **magnetic flux** $\Phi = B \cdot A \cdot \cos\alpha$ (unit weber, $1\,\mathrm{Wb} = 1\,\mathrm{V\,s}$) through a conductor loop. **Faraday's law of induction** states:
+
+$$
+U_\mathrm{ind} = -N \frac{\mathrm{d}\Phi}{\mathrm{d}t}
+$$
+
+The flux can change because $B$ changes (transformer), because the area changes or because the loop rotates (generator).
+
+The minus sign expresses **Lenz's law**: the induced current flows in such a direction that its magnetic field opposes the cause of the induction. It follows from conservation of energy; otherwise the motion would reinforce itself.
+
+:::tip[Example]
+A coil with $200$ turns and a cross-section of $10\,\mathrm{cm^2}$ is perpendicular to a field that drops uniformly from $0.5\,\mathrm{T}$ to zero in $0.1\,\mathrm{s}$: $U = 200 \cdot \frac{0.5 \times 10^{-3}}{0.1} = 1\,\mathrm{V}$.
+:::
+
+Applications:
+
+- **Generator**: a coil rotates with $\omega$ in a magnetic field, $U(t) = N B A \omega \sin(\omega t)$. This is how alternating voltage is produced in almost all power stations.
+- **Transformer**: two coils on an iron core; ideally $\frac{U_1}{U_2} = \frac{N_1}{N_2}$. High transmission voltages reduce line losses ($P_\mathrm{loss} = R I^2$).
+- **Eddy currents** in metal plates brake motion (eddy-current brakes in trains) and heat the pan base on an induction hob.
+- Wireless charging, RFID and NFC, induction loops at traffic lights, dynamic microphones.
+
+If the current in a coil changes, its own field induces a counter-voltage (**self-induction**), $U = -L \frac{\mathrm{d}I}{\mathrm{d}t}$ with the inductance $L$ in henries.
+
+## Electromagnetic waves
+
+In 1864, James Clerk Maxwell summarised all the laws of electricity and magnetism in four equations. Qualitatively, they state:
+
+1. Electric charges are sources of the electric field (Coulomb).
+2. There are no isolated magnetic charges; magnetic field lines are closed.
+3. A changing magnetic field produces a circulating electric field (induction).
+4. Electric currents **and changing electric fields** produce a magnetic field.
+
+Point 4 was Maxwell's decisive addition. From 3 and 4 it follows: a changing electric field produces a magnetic field, which in turn produces an electric field, and so on. The fields detach from their source and propagate as an **electromagnetic wave**, even in a vacuum. The electric and magnetic fields oscillate perpendicular to each other and to the direction of propagation (transverse wave). The theory predicts the speed:
+
+$$
+c = \frac{1}{\sqrt{\mu_0 \varepsilon_0}} = 2.998 \times 10^8\,\mathrm{m/s}
+$$
+
+The agreement of this value with the measured speed of light showed: **light is an electromagnetic wave.** Heinrich Hertz detected radio waves experimentally in 1886. Such waves are produced by accelerated charges, for example the oscillating electrons in an antenna (Hertzian dipole). The whole frequency range is shown in the [electromagnetic spectrum](/en/natural-sciences/optics/#the-electromagnetic-spectrum).
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- David J. Griffiths: _Introduction to Electrodynamics_, Cambridge University Press
+- OpenStax: _University Physics Volume 2_, chapters 5 to 16, openstax.org

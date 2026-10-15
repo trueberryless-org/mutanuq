@@ -1,0 +1,357 @@
+---
+title: Data Formats
+description: "XML with namespaces, DTD, XML Schema and XPath, JSON and JSON Schema, YAML, CSV according to RFC 4180 and binary formats compared, plus JSON in PostgreSQL."
+sidebar:
+  order: 17
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+When programs exchange, store or configure data, they need a common **data format**. Text formats such as XML, JSON, YAML and CSV are human-readable and platform-independent. Binary formats are more compact and faster. How to read and write these formats in C# and Rust is shown on the page [Files and Serialisation](/en/software-development/files-and-serialization/). This page describes the formats themselves.
+
+| Format     | Structure                   | Schema                      | Typical use                                                  |
+| ---------- | --------------------------- | --------------------------- | ------------------------------------------------------------ |
+| **XML**    | tree of elements and attributes | DTD, XML Schema (XSD)   | office documents, configuration (`.csproj`), SOAP, exchange with authorities and banks, SVG |
+| **JSON**   | nested objects and arrays   | JSON Schema                 | REST APIs, configuration, document databases                 |
+| **YAML**   | like JSON, indentation instead of brackets | JSON Schema  | configuration (Docker Compose, Kubernetes, CI pipelines)     |
+| **CSV**    | table                       | none                        | spreadsheets, data export and import                         |
+| **Protocol Buffers**, **Parquet** | binary   | defined in the format       | fast service communication (gRPC), data analysis             |
+
+## XML
+
+The **Extensible Markup Language** (XML) has been a W3C recommendation since 1998. An XML document is a tree of **elements**, which are written with start and end tags and can contain **attributes**, text and further elements.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<school name="HTL Krems">
+  <!-- comment -->
+  <class name="3AHIT" year="3">
+    <student id="1">
+      <firstName>Anna</firstName>
+      <lastName>Huber</lastName>
+      <grade subject="AM">2</grade>
+      <grade subject="SEW">1</grade>
+    </student>
+    <student id="2">
+      <firstName>Ben</firstName>
+      <lastName>Wolf</lastName>
+      <grade subject="AM">4</grade>
+    </student>
+  </class>
+</school>
+```
+
+### Well-formed and valid
+
+A document is **well-formed** if it follows the syntax rules of XML. An XML parser must stop processing if this is not the case.
+
+- There is exactly one **root element**.
+- Every element is closed: `<grade>2</grade>` or empty `<empty/>`.
+- Elements are correctly nested: `<a><b></b></a>`, not `<a><b></a></b>`.
+- Upper and lower case are distinguished: `<Grade>` and `<grade>` are different elements.
+- Attribute values are in quotation marks, and every attribute occurs only once in an element.
+- The characters `<` and `&` are written in text as the **entities** `&lt;` and `&amp;`, likewise `>` as `&gt;`, `"` as `&quot;` and `'` as `&apos;`. Longer passages with many special characters can be placed in a `<![CDATA[ ... ]]>` section.
+
+A document is **valid** if it additionally conforms to a **schema** that specifies which elements and attributes may occur in which order and with which data types.
+
+Whether information belongs in an element or an attribute is a design question. As a rule of thumb: attributes for metadata and identifiers (`id`, `subject`), elements for the actual data and for everything that can occur several times or have structure.
+
+### Namespaces
+
+When XML vocabularies are combined, element names can collide: `<title>` can be the title of a book or of a person. **Namespaces** assign names uniquely through a URI. The URI does not have to be reachable; it only serves as a unique name.
+
+```xml
+<order xmlns="https://example.at/shop"
+       xmlns:adr="https://example.at/address">
+  <adr:street>Alauntalstraße 29</adr:street>
+</order>
+```
+
+### DTD and XML Schema
+
+The **document type definition** (DTD) is the older, simpler schema language. It hardly has any data types and is not XML itself. Today, **XML Schema** (XSD) is usually used, which is itself written in XML and can describe data types, ranges of values and frequencies:
+
+```xml
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="student">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="firstName" type="xs:string"/>
+        <xs:element name="lastName" type="xs:string"/>
+        <xs:element name="grade" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="gradeValue">
+                <xs:attribute name="subject" type="xs:string" use="required"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="gradeValue">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="5"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+```
+
+`xs:sequence` determines the order, `minOccurs` and `maxOccurs` the frequency, and `xs:restriction` restricts a data type. Other schema languages are RELAX NG and Schematron.
+
+### XPath
+
+**XPath** is a language for selecting parts of an XML document. A path describes the way through the tree, similar to a file path.
+
+| Expression                            | Selection                                                   |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `/school/class`                       | all `class` elements directly below the root `school`        |
+| `//student`                           | all `student` elements, wherever they are                    |
+| `//student/@id`                       | the `id` attributes of all students                          |
+| `//student[lastName='Wolf']`          | students with the last name Wolf (predicate in square brackets) |
+| `//student[1]`                        | the first student of each class (counting starts at 1)       |
+| `//grade[@subject='AM' and . > 3]/../firstName` | first names of the students with an AM grade worse than 3; `.` is the current node, `..` the parent node |
+| `count(//student)`                    | number of students                                           |
+| `//class[@year >= 3]/@name`           | names of the classes from year 3 upwards                     |
+
+XPath is used by **XSLT**, a language that transforms XML documents into other XML, HTML or text documents, and by **XQuery**, a query language for XML data.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Xml.Linq;
+using System.Xml.XPath;
+
+var xml = """
+    <school name="HTL Krems">
+      <class name="3AHIT" year="3">
+        <student id="1"><firstName>Anna</firstName><lastName>Huber</lastName>
+          <grade subject="AM">2</grade><grade subject="SEW">1</grade></student>
+        <student id="2"><firstName>Ben</firstName><lastName>Wolf</lastName>
+          <grade subject="AM">4</grade></student>
+      </class>
+    </school>
+    """;
+var doc = XDocument.Parse(xml);
+
+foreach (var name in doc.XPathSelectElements("//grade[@subject='AM' and . > 3]/../firstName"))
+{
+    Console.WriteLine(name.Value);
+}
+Console.WriteLine(doc.XPathEvaluate("count(//student)"));
+// Output:
+// Ben
+// 2
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use quick_xml::de::from_str;
+use serde::Deserialize;
+
+// Rust has no XPath in the standard library. With serde, the document is
+// translated into structs, and the selection is then done with iterators.
+#[derive(Deserialize)]
+struct School {
+    class: Vec<Class>,
+}
+
+#[derive(Deserialize)]
+struct Class {
+    student: Vec<Student>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct Student {
+    first_name: String,
+    #[serde(default)]
+    grade: Vec<Grade>,
+}
+
+#[derive(Deserialize)]
+struct Grade {
+    #[serde(rename = "@subject")]
+    subject: String,
+    #[serde(rename = "$text")]
+    value: u8,
+}
+
+fn main() -> Result<(), quick_xml::DeError> {
+    let xml = r#"
+        <school name="HTL Krems">
+          <class name="3AHIT" year="3">
+            <student id="1"><firstName>Anna</firstName><lastName>Huber</lastName>
+              <grade subject="AM">2</grade><grade subject="SEW">1</grade></student>
+            <student id="2"><firstName>Ben</firstName><lastName>Wolf</lastName>
+              <grade subject="AM">4</grade></student>
+          </class>
+        </school>"#;
+    let school: School = from_str(xml)?;
+
+    let all = school.class.iter().flat_map(|c| &c.student);
+    for s in all.clone().filter(|s| s.grade.iter().any(|g| g.subject == "AM" && g.value > 3)) {
+        println!("{}", s.first_name);
+    }
+    println!("{}", all.count());
+    Ok(())
+}
+// Output:
+// Ben
+// 2
+```
+
+</TabItem>
+</Tabs>
+
+## JSON
+
+**JavaScript Object Notation** (JSON) is standardised in RFC 8259 and ECMA-404. It originated from JavaScript's object notation and is today the standard format for web APIs because it is compact, easy to read and simple to process in any language.
+
+```json
+{
+  "id": 1,
+  "firstName": "Anna",
+  "lastName": "Huber",
+  "active": true,
+  "class": { "name": "3AHIT", "year": 3 },
+  "grades": [
+    { "subject": "AM", "value": 2 },
+    { "subject": "SEW", "value": 1 }
+  ],
+  "email": null
+}
+```
+
+| Data type   | Notation                        | Note                                                                 |
+| ----------- | ------------------------------- | -------------------------------------------------------------------- |
+| **Object**  | `{ "key": value, ... }`         | keys are always strings in double quotes                             |
+| **Array**   | `[value, value, ...]`           | ordered list; values may have different types                        |
+| **String**  | `"text"`                        | only double quotes; special characters with `\`: `\"`, `\\`, `\n`, `ä` |
+| **Number**  | `42`, `-3.5`, `1.2e3`           | no distinction between integers and decimals, no `NaN` and no leading zeros |
+| **Boolean** | `true`, `false`                 | lower case                                                           |
+| **null**    | `null`                          | no value                                                             |
+
+Unlike JavaScript, JSON allows **no comments**, no trailing comma after the last element and no single quotes. There is no date type. Strings in ISO 8601 format such as `"2025-10-15T08:00:00Z"` are common. Very large integers above $2^{53}$ lose precision in JavaScript and are therefore often transmitted as strings.
+
+### JSON Schema
+
+**JSON Schema** describes how a valid JSON document is structured. It is used to validate API requests, for documentation (OpenAPI uses it) and for autocompletion in editors.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["id", "firstName", "lastName"],
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "firstName": { "type": "string", "minLength": 1 },
+    "lastName": { "type": "string", "minLength": 1 },
+    "email": { "type": ["string", "null"], "format": "email" },
+    "grades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["subject", "value"],
+        "properties": {
+          "subject": { "type": "string" },
+          "value": { "type": "integer", "minimum": 1, "maximum": 5 }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+### JSON in the database
+
+Many relational databases can store and query JSON. PostgreSQL offers the type `jsonb` for this, which stores JSON in a binary, indexable format:
+
+```sql
+CREATE TABLE Event (
+    Id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Data JSONB NOT NULL
+);
+
+INSERT INTO Event (Data) VALUES
+    ('{"type": "login", "user": "anna", "device": {"os": "Android"}}'),
+    ('{"type": "logout", "user": "anna"}'),
+    ('{"type": "login", "user": "ben", "device": {"os": "Windows"}}');
+
+SELECT Data->>'user' AS UserName, Data->'device'->>'os' AS System
+FROM Event
+WHERE Data->>'type' = 'login'               -- ->> returns text, -> returns JSON
+ORDER BY Id;
+
+SELECT COUNT(*) FROM Event WHERE Data @> '{"user": "anna"}';   -- contains
+
+CREATE INDEX ix_event_data ON Event USING GIN (Data);           -- index for @>
+```
+
+JSON columns are suitable for data whose structure changes or that is only stored and read as a whole. If fields are regularly filtered, joined or checked with constraints, they belong in columns of their own.
+
+## YAML
+
+**YAML** (_YAML Ain't Markup Language_) is a superset of JSON designed for human readability. Instead of brackets, **indentation** determines the structure, and comments with `#` are allowed. That is why YAML is the standard format for configuration files, for example for Docker Compose, Kubernetes and CI pipelines (see [Version Control](/en/software-development/version-control/#continuous-integration)).
+
+```yaml
+# configuration of a grade service
+service:
+  name: gradeservice
+  port: 8080
+  database:
+    host: db.school.at
+    name: school
+  classes:            # list
+    - 3AHIT
+    - 4AHIT
+  maintenance: false
+  description: |
+    Multi-line text,
+    line breaks are kept.
+```
+
+Pitfalls:
+
+- Indentation uses **spaces** only, never tabs. Wrong indentation changes the meaning without causing an error.
+- YAML detects types automatically. In the older version YAML 1.1, `yes`, `no`, `on` and `off` were read as Booleans, so that the country code `NO` for Norway became `false`. Version numbers such as `3.10` become the number `3.1`. Values that should stay text are therefore put in quotation marks.
+- YAML libraries can create arbitrary objects when loading. Use the safe loading functions to read data from others.
+
+## CSV
+
+**CSV** (_comma-separated values_) stores a table as text: one line per record, the fields separated by commas, usually with a header line. The format is old and simple, but only loosely described in **RFC 4180**:
+
+```text
+Id,FirstName,LastName,Remark
+1,Anna,Huber,
+2,Ben,Wolf,"class representative, 3AHIT"
+3,Clara,Berger,"nickname ""CB"""
+```
+
+- Fields that contain the separator, quotation marks or line breaks are enclosed in **double quotation marks**. A quotation mark in the field is doubled.
+- According to the RFC, lines end with CRLF; in practice, both variants occur.
+- The format has **no data types**: whether `01234` is a postcode or the number 1234 is decided by the reading program.
+- In countries where the comma is the decimal separator, such as Austria, Excel uses the **semicolon** as the separator. The character encoding (UTF-8 with or without BOM, Windows-1252) is not specified and often leads to garbled umlauts (see [Character encoding](/en/computer-science/data-representation/#character-encoding)).
+
+Therefore, never write CSV by simply joining strings, but with a library that takes care of escaping. PostgreSQL reads and writes CSV with `COPY ... WITH (FORMAT csv, HEADER)`.
+
+## Binary formats
+
+Text formats are readable, but large and slow to process. For high data volumes, there are binary formats:
+
+- **Protocol Buffers** (Google) and **Apache Avro** describe messages with a schema. Classes for many languages are generated from the schema. gRPC uses Protocol Buffers for communication between services.
+- **MessagePack** and **CBOR** are binary counterparts to JSON without a schema.
+- **Apache Parquet** stores tables column by column and highly compressed and is the standard format in [data lakes](/en/databases/data-warehouse/#data-lake-and-lakehouse).
+
+## Further reading
+
+- [W3C: Extensible Markup Language (XML) 1.0](https://www.w3.org/TR/xml/) and [XML Path Language (XPath)](https://www.w3.org/TR/xpath-31/)
+- [RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format](https://www.rfc-editor.org/rfc/rfc8259) and [json-schema.org](https://json-schema.org/)

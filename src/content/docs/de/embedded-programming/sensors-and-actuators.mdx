@@ -1,0 +1,230 @@
+---
+title: Sensoren und Aktoren
+description: "Sensortypen und Kenngrößen, Signalaufbereitung mit Spannungsteiler, Filter und 4-20 mA sowie Ansteuerung von Relais, DC-, Schritt- und Servomotoren."
+sidebar:
+  order: 14
+---
+
+Ein Mikrocontroller kann nur digitale Pegel lesen und ausgeben sowie über den ADC Spannungen messen. Damit er mit der physikalischen Welt interagieren kann, braucht er **Sensoren**, die eine physikalische Größe (Temperatur, Licht, Druck, Abstand ...) in ein elektrisches Signal umwandeln, und **Aktoren** (auch Aktuatoren), die umgekehrt ein elektrisches Signal in eine physikalische Wirkung umsetzen (Bewegung, Wärme, Licht, Schalten). Zusammen mit der Steuerung bilden sie das Prinzip **Eingabe, Verarbeitung, Ausgabe** (EVA).
+
+## Sensoren
+
+### Einteilung
+
+| Kriterium         | Varianten | Beispiel |
+| ----------------- | --------- | -------- |
+| Ausgangssignal    | **binär** (ein/aus), **analog** (Spannung, Strom, Widerstand), **digital** (Datenbus wie I²C, SPI, 1-Wire) | Endschalter, NTC, LM75 |
+| Energieversorgung | **passiv**: braucht Hilfsenergie und ändert z. B. seinen Widerstand; **aktiv**: erzeugt selbst eine Spannung | NTC, LDR bzw. Thermoelement, Fotodiode im Elementbetrieb |
+| Kontakt           | berührend oder berührungslos | Taster bzw. induktiver Näherungsschalter |
+
+Ein **intelligenter Sensor** (_Smart Sensor_) enthält bereits Signalaufbereitung, ADC und eine digitale Schnittstelle. Er liefert direkt einen kalibrierten Messwert, zum Beispiel in Grad Celsius.
+
+### Kenngrößen
+
+| Kenngröße            | Bedeutung |
+| -------------------- | --------- |
+| **Messbereich**      | kleinster und größter messbarer Wert |
+| **Empfindlichkeit**  | Änderung des Ausgangssignals pro Änderung der Messgröße, z. B. $10\,\mathrm{mV/K}$ |
+| **Auflösung**        | kleinste unterscheidbare Änderung |
+| **Genauigkeit**      | maximale Abweichung vom wahren Wert, z. B. $\pm 0{,}5\,\mathrm{K}$ |
+| **Linearität**       | wie gut die Kennlinie einer Geraden entspricht |
+| **Ansprechzeit**     | Zeit, bis der Sensor auf eine Änderung reagiert (Trägheit) |
+| **Hysterese**        | unterschiedlicher Ausgang je nachdem, ob die Messgröße steigt oder fällt |
+| **Offset und Drift** | Nullpunktfehler bzw. langsame Veränderung über Zeit und Temperatur |
+
+Auflösung und Genauigkeit sind verschiedene Dinge: Ein Sensor kann auf $0{,}01\,\mathrm{K}$ auflösen und trotzdem um $1\,\mathrm{K}$ danebenliegen.
+
+### Wichtige Sensortypen
+
+| Messgröße            | Sensor                                   | Prinzip |
+| -------------------- | ---------------------------------------- | ------- |
+| Temperatur           | **NTC** (Heißleiter)                     | Widerstand sinkt mit steigender Temperatur, stark nichtlinear |
+|                      | **PTC**, **Pt100/Pt1000**                | Widerstand steigt; Pt100 hat $100\,\mathrm{\Omega}$ bei $0\,\mathrm{°C}$, nahezu linear und genau |
+|                      | **Thermoelement** (z. B. Typ K)          | zwei Metalle erzeugen eine temperaturabhängige Spannung (Seebeck-Effekt), für hohe Temperaturen |
+|                      | Digitale Sensoren (LM75, DS18B20)        | kalibrierter Wert über [I²C](/de/embedded-programming/i2c/) bzw. 1-Wire |
+| Licht                | **LDR** (Fotowiderstand), Fotodiode, Fototransistor | Widerstand bzw. Strom ändert sich mit der Beleuchtungsstärke |
+| Abstand              | Ultraschall (HC-SR04)                    | Laufzeit eines Schallimpulses: $d = \frac{v_{Schall} \cdot t}{2}$ |
+|                      | Infrarot, Time of Flight (ToF)           | Triangulation bzw. Laufzeit eines Lichtimpulses |
+| Position, Anwesenheit | **induktiver Näherungsschalter**        | erkennt Metall über ein Magnetfeld |
+|                      | **kapazitiver Näherungsschalter**        | erkennt fast alle Materialien über Kapazitätsänderung |
+|                      | Lichtschranke, Reedkontakt, Hall-Sensor  | Unterbrechung eines Lichtstrahls bzw. Magnetfeld |
+| Drehwinkel, Drehzahl | **Inkrementalgeber** (Encoder)           | liefert Impulse pro Umdrehung, zwei versetzte Spuren A/B zeigen die Drehrichtung |
+|                      | Absolutwertgeber, Potentiometer          | liefert direkt die absolute Position |
+| Kraft, Druck         | Dehnungsmessstreifen (DMS), piezoresistive Drucksensoren | Widerstand ändert sich bei Verformung (meist in einer Wheatstone-Brücke) |
+| Beschleunigung, Drehrate | MEMS-Sensoren (z. B. MPU-6050)        | mikromechanische Strukturen, Ausgabe über I²C/SPI |
+
+In der Industrie arbeiten binäre Sensoren meist mit **24 V DC**. Man unterscheidet **PNP-Ausgänge** (schalten die positive Spannung auf den Ausgang, „plusschaltend“, in Europa üblich) und **NPN-Ausgänge** (schalten den Ausgang gegen Masse).
+
+## Signalaufbereitung
+
+Sensorsignale passen selten direkt zum Eingang des Mikrocontrollers. Die **Signalaufbereitung** wandelt sie in ein Signal um, das der [ADC](/de/embedded-programming/analogue-digital-converter/) oder ein digitaler Eingang verarbeiten kann.
+
+### Spannungsteiler für resistive Sensoren
+
+Ein NTC, LDR oder Potentiometer ändert nur seinen Widerstand. In Reihe mit einem festen Widerstand $R$ entsteht ein **Spannungsteiler**. Liegt der NTC an $V_{CC}$ und $R$ an Masse, misst der ADC:
+
+$$
+U_{ADC} = V_{CC} \cdot \frac{R}{R + R_{NTC}} \quad \Rightarrow \quad R_{NTC} = R \cdot \left(\frac{1024}{ADC} - 1\right)
+$$
+
+(mit $V_{ref} = V_{CC}$ und einem 10-Bit-ADC). Die Temperatur folgt beim NTC näherungsweise aus der **B-Parameter-Gleichung** mit dem Nennwiderstand $R_0$ bei $T_0 = 298{,}15\,\mathrm{K}$ ($25\,\mathrm{°C}$):
+
+$$
+\frac{1}{T} = \frac{1}{T_0} + \frac{1}{B} \cdot \ln\left(\frac{R_{NTC}}{R_0}\right)
+$$
+
+**Beispiel:** NTC mit $R_0 = 10\,\mathrm{k\Omega}$ und $B = 3950\,\mathrm{K}$, Festwiderstand $R = 10\,\mathrm{k\Omega}$, der ADC liefert 600:
+
+$$
+R_{NTC} = 10\,\mathrm{k\Omega} \cdot \left(\frac{1024}{600} - 1\right) \approx 7{,}07\,\mathrm{k\Omega}
+$$
+
+$$
+\frac{1}{T} = \frac{1}{298{,}15\,\mathrm{K}} + \frac{\ln(0{,}7067)}{3950\,\mathrm{K}} \approx 0{,}003266\,\mathrm{K^{-1}} \quad \Rightarrow \quad T \approx 306{,}2\,\mathrm{K} \approx 33{,}0\,\mathrm{°C}
+$$
+
+```c
+#include <math.h>
+#include <stdint.h>
+
+#define R_FIXED 10000.0
+#define R0      10000.0
+#define BETA    3950.0
+#define T0      298.15
+
+float ntc_temperature(uint16_t adc) {
+    float r_ntc = R_FIXED * (1024.0 / adc - 1.0);
+    float inv_t = 1.0 / T0 + log(r_ntc / R0) / BETA;
+    return 1.0 / inv_t - 273.15;   // in °C
+}
+```
+
+Gleitkommaberechnungen und `log()` sind auf einem 8-Bit-AVR langsam und brauchen viel Flash. Oft verwendet man deshalb eine vorab berechnete **Tabelle** (Lookup Table) mit linearer Interpolation.
+
+### Verstärken, Filtern, Pegel anpassen
+
+- **Verstärken:** Kleine Signale (Thermoelement: ca. $41\,\mathrm{\mu V/K}$, DMS-Brücke: wenige mV) werden mit einem **Operationsverstärker** bzw. Instrumentenverstärker auf den Eingangsbereich des ADC gebracht.
+- **Filtern:** Ein **RC-Tiefpass** entfernt hochfrequente Störungen. Seine Grenzfrequenz ist $f_g = \frac{1}{2 \pi R C}$. Mit $R = 10\,\mathrm{k\Omega}$ und $C = 100\,\mathrm{nF}$ ergibt sich $f_g \approx 159\,\mathrm{Hz}$. Nach dem Abtasttheorem muss die Abtastfrequenz mehr als doppelt so hoch sein wie die höchste Frequenz im Signal, sonst entstehen Aliasing-Fehler. Zusätzlich kann man in Software mehrere Messwerte mitteln.
+- **Pegel anpassen:** Ein 24-V-Industriesignal wird über einen Spannungsteiler oder einen **Optokoppler** (galvanische Trennung) an einen 5-V-Eingang angeschlossen. Zwischen 3,3-V- und 5-V-Bausteinen verwendet man **Pegelwandler** (_Level Shifter_).
+- **Schmitt-Trigger:** Macht aus einem verrauschten oder langsam ansteigenden Signal ein sauberes Digitalsignal, indem er zwei Schaltschwellen (Hysterese) verwendet.
+- **Entprellen:** Mechanische Kontakte prellen, siehe [Taster](/de/embedded-programming/button/#entprellen).
+
+### Normsignale in der Industrie
+
+Über längere Leitungen überträgt man analoge Messwerte in genormten Bereichen:
+
+| Normsignal         | Eigenschaften |
+| ------------------ | ------------- |
+| **0 bis 10 V**     | einfach, aber empfindlich gegen Spannungsabfall auf der Leitung und Störungen |
+| **4 bis 20 mA**    | Stromschleife: Leitungswiderstand spielt keine Rolle, weil der Strom überall gleich ist. Der **Live Zero** (4 mA = Messbereichsanfang) erlaubt es, einen Drahtbruch (0 mA) zu erkennen, und der Sensor kann sich aus der Schleife versorgen (Zweileitertechnik). |
+| 0 bis 20 mA        | wie oben, aber ohne Drahtbrucherkennung |
+
+Ein Strom von 4 bis 20 mA wird für den ADC über einen Bürdenwiderstand in eine Spannung umgewandelt, bei $250\,\mathrm{\Omega}$ ergibt das 1 bis 5 V. Ein Messwert von $12\,\mathrm{mA}$ entspricht bei einem Messbereich von 0 bis 100 °C genau $\frac{12 - 4}{20 - 4} = 50\,\%$, also $50\,\mathrm{°C}$.
+
+## Aktoren
+
+### Relais und Leistungsschalter
+
+Ein Pin des ATmega328P liefert nur etwa $20\,\mathrm{mA}$ (absolut maximal $40\,\mathrm{mA}$). Größere Lasten schaltet man über einen **Transistor** (bipolar oder MOSFET), ein **Relais** (galvanisch getrennt, auch für 230 V AC) oder in der Industrie über ein **Schütz**. Spulen von Relais, Magnetventilen und Motoren erzeugen beim Abschalten eine hohe Induktionsspannung. Eine **Freilaufdiode** parallel zur Spule schützt den Transistor davor.
+
+### DC-Motor
+
+Beim Gleichstrommotor ist die Drehzahl ungefähr proportional zur angelegten Spannung, das Drehmoment proportional zum Strom. Die Drehzahl stellt man deshalb mit [PWM](/de/embedded-programming/timer/#pwm---pulse-width-modulation) ein, die Drehrichtung durch Umpolen. Beides erledigt eine **H-Brücke** aus vier Schaltern (als IC z. B. L293D, L298N oder moderne MOSFET-Treiber wie DRV8833):
+
+| `IN1` | `IN2` | Wirkung |
+| ----- | ----- | ------- |
+| 1     | 0     | Rechtslauf |
+| 0     | 1     | Linkslauf |
+| 0     | 0     | Auslaufen (Freilauf) |
+| 1     | 1     | Bremsen (Motorwicklung kurzgeschlossen) |
+
+Das PWM-Signal liegt dabei am Enable-Eingang der Brücke oder wird abwechselnd auf `IN1`/`IN2` gegeben.
+
+### Schrittmotor
+
+Ein **Schrittmotor** dreht sich nicht kontinuierlich, sondern in festen Schritten, wenn seine Spulen in einer bestimmten Reihenfolge bestromt werden. Typisch sind 200 Schritte pro Umdrehung, also $1{,}8°$ pro Schritt. Im Halbschrittbetrieb halbiert sich der Winkel, mit **Mikroschritten** (z. B. 1/16) läuft der Motor feiner und leiser.
+
+Weil jeder Schritt genau definiert ist, kann man die Position durch Zählen der Schritte bestimmen, ohne sie zu messen (**gesteuerter Betrieb**, _Open Loop_). Wird der Motor überlastet, verliert er allerdings Schritte, ohne dass die Steuerung es bemerkt. Schrittmotoren findest du in 3D-Druckern, CNC-Fräsen und Plottern.
+
+Ein Treiber wie der **A4988** oder **DRV8825** übernimmt die Bestromung. Der Mikrocontroller gibt nur die Richtung (`DIR`) vor und erzeugt für jeden Schritt einen Impuls auf `STEP`:
+
+```c
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define STEP_PIN PD2
+#define DIR_PIN  PD3
+
+void stepper_move(uint16_t steps, uint8_t clockwise) {
+    if (clockwise) PORTD |= (1<<DIR_PIN);
+    else           PORTD &= ~(1<<DIR_PIN);
+
+    for (uint16_t i = 0; i < steps; i++) {
+        PORTD |= (1<<STEP_PIN);   // steigende Flanke = ein Schritt
+        _delay_us(2);
+        PORTD &= ~(1<<STEP_PIN);
+        _delay_ms(2);             // bestimmt die Drehzahl
+    }
+}
+
+int main(void) {
+    DDRD |= (1<<STEP_PIN) | (1<<DIR_PIN);
+    while (1) {
+        stepper_move(200, 1);     // eine Umdrehung im Vollschritt
+        _delay_ms(500);
+        stepper_move(200, 0);     // und zurück
+        _delay_ms(500);
+    }
+}
+```
+
+Mit $2\,\mathrm{ms}$ pro Schritt braucht eine Umdrehung $200 \cdot 2\,\mathrm{ms} = 0{,}4\,\mathrm{s}$, das sind $150\,\mathrm{min^{-1}}$. Für höhere Drehzahlen muss man langsam beschleunigen (Rampe), sonst verliert der Motor Schritte.
+
+### Servomotor
+
+Ein (Modellbau-)**Servo** besteht aus einem DC-Motor, einem Getriebe, einem Potentiometer zur Positionsmessung und einer Regelelektronik. Er fährt einen vorgegebenen Winkel an und hält ihn (**geregelter Betrieb**, _Closed Loop_). Der Sollwert wird als PWM-Signal mit einer Periode von $20\,\mathrm{ms}$ ($50\,\mathrm{Hz}$) übertragen, die **Pulsbreite** bestimmt den Winkel:
+
+| Pulsbreite | Winkel (typisch) |
+| ---------- | ---------------- |
+| 1,0 ms     | 0°               |
+| 1,5 ms     | 90° (Mitte)      |
+| 2,0 ms     | 180°             |
+
+Viele Servos nutzen einen etwas größeren Bereich (etwa 0,5 bis 2,5 ms), das Datenblatt gibt die genauen Werte an.
+
+Mit Timer 1 im **Fast PWM Mode 14** (TOP = `ICR1`) und Prescaler 8 zählt der Timer mit $2\,\mathrm{MHz}$, also $0{,}5\,\mathrm{\mu s}$ pro Schritt. Eine Periode von $20\,\mathrm{ms}$ entspricht $40\,000$ Schritten, deshalb ist `ICR1 = 39999`. Eine Pulsbreite von $1\,\mathrm{ms}$ entspricht `OCR1A = 2000`:
+
+```c
+#include <avr/io.h>
+#include <stdint.h>
+
+void servo_init(void) {
+    DDRB |= (1<<DDB1);                         // OC1A = PB1 als Ausgang
+    TCCR1A = (1<<COM1A1) | (1<<WGM11);         // nicht invertierend, Mode 14
+    TCCR1B = (1<<WGM13) | (1<<WGM12) | (1<<CS11); // Mode 14, Prescaler 8
+    ICR1 = 39999;                              // 20 ms Periode
+}
+
+// Winkel von 0 bis 180 Grad auf 1 bis 2 ms abbilden
+void servo_set_angle(uint8_t angle) {
+    OCR1A = 2000 + (uint32_t)angle * 2000 / 180;
+}
+```
+
+### Vergleich der Motoren
+
+| Motor        | Ansteuerung              | Positionierung            | Typischer Einsatz |
+| ------------ | ------------------------ | ------------------------- | ----------------- |
+| DC-Motor     | PWM + H-Brücke           | nur mit Encoder und Regelung | Lüfter, Pumpen, Fahrzeuge |
+| Schrittmotor | Schrittimpulse über Treiber | durch Zählen der Schritte (gesteuert) | 3D-Drucker, CNC |
+| Servo        | 50-Hz-PWM, Pulsbreite = Winkel | intern geregelt, meist 0 bis 180° | Modellbau, Roboterarme, Klappen |
+| BLDC (bürstenlos) | elektronische Kommutierung (ESC) | mit Sensoren/Encoder | Drohnen, Festplatten, E-Mobilität |
+
+In Industrieanlagen kommen außerdem **Drehstrom-Asynchronmotoren** mit **Frequenzumrichtern** und **Servoantriebe** zum Einsatz, die von einer SPS über einen [Feldbus](/de/embedded-programming/bus-systems/) angesteuert werden.
+
+## Weiterführende Quellen
+
+- [mikrocontroller.net: Motoransteuerung mit PWM](https://www.mikrocontroller.net/articles/Motoransteuerung_mit_PWM) und [Schrittmotoren](https://www.mikrocontroller.net/articles/Schrittmotoren)
+- Hesse, Schnell: _Sensoren für die Prozess- und Fabrikautomation_, Springer Vieweg
+- Microchip: [ATmega328P Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), Kapitel „16-bit Timer/Counter1 with PWM“

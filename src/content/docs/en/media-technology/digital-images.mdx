@@ -1,0 +1,280 @@
+---
+title: Digital Images
+description: Raster and vector graphics, resolution and file size, compression, image formats, the alpha channel, image editing and photography basics.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A digital image is a description from which a device produces a visible picture. How this description is structured determines whether an image can be enlarged without loss, how large the file becomes and what purpose it is suited for. A website, a poster and a logo therefore need different kinds of images and formats.
+
+## Raster and vector graphics
+
+A **raster graphic** (_bitmap_, pixel graphic) consists of a grid of **pixels** (_picture elements_). Each pixel stores a colour. Photos, scans and screenshots are raster graphics.
+
+A **vector graphic** describes an image with geometric objects: points, lines, Bézier curves, circles and areas with properties such as fill colour and stroke width. Only when it is displayed is the description converted into pixels (**rasterisation**, _rendering_).
+
+| Property | Raster graphic | Vector graphic |
+| --- | --- | --- |
+| Structure | pixel grid | mathematically described shapes |
+| Scaling | enlarging makes pixels visible or blurry | any size without loss of quality |
+| File size | grows with the number of pixels | grows with the number of objects |
+| Suited for | photos, fine gradients, textures | logos, icons, fonts, diagrams, plans |
+| Formats | JPEG, PNG, GIF, WebP, AVIF, TIFF, RAW | SVG, AI, EPS, PDF (can contain both) |
+| Programs | Photoshop, GIMP, Affinity Photo | Illustrator, Inkscape, Affinity Designer, Figma |
+
+A vector graphic can be converted into a raster graphic at any time. The reverse (**vectorisation**, _tracing_) only works well for simple motifs.
+
+## Resolution
+
+The **pixel dimensions** (for example 1920 × 1080 px) state how many pixels an image has. How large it is output also depends on the **resolution**:
+
+- **ppi** (_pixels per inch_): pixels per inch in the image or on the screen
+- **dpi** (_dots per inch_): printed dots per inch of a printer or imagesetter. In everyday use, the two terms are often used interchangeably.
+- **lpi** (_lines per inch_) or lines per cm: screen ruling in offset printing, how densely the halftone dots are placed
+
+One inch is 2.54 cm. Pixel count, resolution and output size are related as follows:
+
+$$
+\text{output size in inches} = \frac{\text{pixels}}{\text{ppi}}, \qquad \text{required pixels} = \frac{\text{size in cm}}{2.54} \cdot \text{ppi}
+$$
+
+| Purpose | usual resolution | Reason |
+| --- | --- | --- |
+| offset printing (brochure, magazine) | 300 ppi | twice the screen ruling of 60 lines/cm (150 lpi) |
+| large-format printing (poster, banner) | 100 to 150 ppi | viewed from a greater distance |
+| screen | only the pixel dimensions matter | an image 800 px wide is 800 screen pixels wide on every screen (at 100 % scaling) |
+
+The often quoted "72 dpi for the web" is a leftover from the first Macintosh screens. In the browser, the ppi value stored in the file has no meaning. What matters on high-resolution displays (Retina, 200 % scaling) is providing images with twice the pixel dimensions, for example via `srcset` in HTML.
+
+:::tip[Example: A4 in print quality]
+An A4 sheet measures 21 cm × 29.7 cm. At 300 ppi you need
+
+$$
+\frac{21}{2.54} \cdot 300 \approx 2480\ \text{px} \quad \text{and} \quad \frac{29.7}{2.54} \cdot 300 \approx 3508\ \text{px}
+$$
+
+A photo with 6000 × 4000 px (24 megapixels) can therefore be printed at 300 ppi up to a width of $6000 / 300 = 20$ inches $= 50.8$ cm.
+:::
+
+**Interpolation** (upscaling to more pixels) does not create new detail. The software calculates intermediate values from neighbouring pixels (methods: nearest neighbour, bilinear, bicubic, AI-based upscaling); the image becomes larger, but not sharper.
+
+## File size
+
+The size of an **uncompressed** raster image is
+
+$$
+\text{size in bytes} = \text{width} \cdot \text{height} \cdot \frac{\text{colour depth in bits}}{8}
+$$
+
+For the A4 image with 24-bit colour depth: $2480 \cdot 3508 \cdot 3 = 26\,099\,520$ bytes, i.e. about 26.1 MB or 24.9 MiB. In CMYK mode (4 channels of 8 bits) it is a third more. A Full HD image (1920 × 1080, 24 bit) is 6,220,800 bytes uncompressed, i.e. about 6.2 MB.
+
+:::note
+1 MB (megabyte) is $10^6$ bytes, 1 MiB (mebibyte) is $2^{20} = 1\,048\,576$ bytes. Operating systems often display MiB but still write "MB".
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // decimal point
+const double CmPerInch = 2.54;
+
+// required pixels for a print size in cm
+static int PixelsFor(double sizeCm, int ppi) => (int)Math.Round(sizeCm / CmPerInch * ppi);
+
+// uncompressed file size in bytes
+static long RawSize(int width, int height, int bitsPerPixel) => (long)width * height * bitsPerPixel / 8;
+
+int w = PixelsFor(21.0, 300), h = PixelsFor(29.7, 300);
+Console.WriteLine($"A4 at 300 ppi: {w} × {h} px");                     // A4 at 300 ppi: 2480 × 3508 px
+
+long rgb = RawSize(w, h, 24), cmyk = RawSize(w, h, 32);
+Console.WriteLine($"RGB:  {rgb} bytes = {rgb / 1e6:F1} MB = {rgb / 1048576.0:F1} MiB");
+Console.WriteLine($"CMYK: {cmyk} bytes = {cmyk / 1e6:F1} MB");
+// RGB:  26099520 bytes = 26.1 MB = 24.9 MiB
+// CMYK: 34799360 bytes = 34.8 MB
+
+// maximum print width of a 24-megapixel photo at 300 ppi
+Console.WriteLine($"{6000.0 / 300 * CmPerInch:F1} cm");                    // 50.8 cm
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const CM_PER_INCH: f64 = 2.54;
+
+/// required pixels for a print size in cm
+fn pixels_for(size_cm: f64, ppi: u32) -> u32 {
+    (size_cm / CM_PER_INCH * ppi as f64).round() as u32
+}
+
+/// uncompressed file size in bytes
+fn raw_size(width: u32, height: u32, bits_per_pixel: u32) -> u64 {
+    width as u64 * height as u64 * bits_per_pixel as u64 / 8
+}
+
+fn main() {
+    let (w, h) = (pixels_for(21.0, 300), pixels_for(29.7, 300));
+    println!("A4 at 300 ppi: {w} × {h} px"); // A4 at 300 ppi: 2480 × 3508 px
+
+    let (rgb, cmyk) = (raw_size(w, h, 24), raw_size(w, h, 32));
+    println!("RGB:  {rgb} bytes = {:.1} MB = {:.1} MiB", rgb as f64 / 1e6, rgb as f64 / 1048576.0);
+    println!("CMYK: {cmyk} bytes = {:.1} MB", cmyk as f64 / 1e6);
+    // RGB:  26099520 bytes = 26.1 MB = 24.9 MiB
+    // CMYK: 34799360 bytes = 34.8 MB
+
+    // maximum print width of a 24-megapixel photo at 300 ppi
+    println!("{:.1} cm", 6000.0 / 300.0 * CM_PER_INCH); // 50.8 cm
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Compression
+
+Uncompressed images are too large for the web and for sending. **Compression** reduces the amount of data by removing redundancy (repetition) and irrelevance (details that do not matter to the eye).
+
+| Type | Principle | Methods | Examples |
+| --- | --- | --- | --- |
+| **lossless** | removes only redundancy, the original can be restored bit for bit | run-length encoding (RLE), LZW, Deflate (LZ77 + Huffman) | PNG, GIF, TIFF with LZW |
+| **lossy** | also removes information the eye hardly misses | transform (DCT), quantisation, chroma subsampling | JPEG, lossy WebP, AVIF |
+
+### How JPEG works
+
+1. **Colour space conversion** from RGB to **YCbCr**: Y is the brightness (luma), Cb and Cr are the colour components (chroma).
+2. **Chroma subsampling**: the eye sees differences in brightness much more finely than differences in colour, so the colour channels are usually stored at half resolution (4:2:0).
+3. Division into **blocks of 8 × 8 pixels** and **discrete cosine transform** (DCT): each block is represented as a sum of patterns of different frequencies.
+4. **Quantisation**: high frequencies (fine details) are rounded coarsely or set to zero. This is where information is lost; the quality slider controls this step.
+5. **Entropy coding** (Huffman): the many zeros are stored compactly without loss.
+
+Typical **artefacts** are visible 8 × 8 blocks and halos at hard edges (_ringing_). This is why JPEG is poorly suited for text, screenshots and logos. Each time an image is saved again as JPEG, more quality is lost (**generation loss**), so you always edit in a lossless format and export only at the end.
+
+## Image formats
+
+| Format | Compression | Colour depth | Transparency | Animation | Typical use |
+| --- | --- | --- | --- | --- | --- |
+| **JPEG** (.jpg) | lossy (DCT) | 24 bit | no | no | photos on the web and in cameras |
+| **PNG** | lossless (Deflate) | up to 48 bit, also indexed | alpha channel | no (APNG yes) | screenshots, graphics, logos as raster |
+| **GIF** | lossless (LZW) | 8 bit indexed, 256 colours | 1 bit (on/off) | yes | simple animations |
+| **WebP** | lossy or lossless | 24 bit | alpha channel | yes | web, smaller than JPEG and PNG |
+| **AVIF** | lossy or lossless (AV1) | 8, 10 or 12 bit, HDR | alpha channel | yes | web, very good compression |
+| **HEIF** (.heic) | lossy (HEVC) | 8 or 10 bit, HDR | alpha channel | image sequences | default format on iPhones |
+| **TIFF** | none, LZW or ZIP | up to 32 bits per channel, CMYK | alpha channel, layers | no | prepress, archiving |
+| **RAW** (.cr3, .nef, .arw, .dng) | none or lossless | 12 to 14 bit sensor data | no | no | professional photography |
+| **SVG** | text (XML), optionally gzip | any | yes | yes (CSS, SMIL) | logos, icons, diagrams on the web |
+
+A **RAW** image contains the camera's unprocessed sensor data. White balance, exposure correction and sharpening can be changed later without loss because more tonal reserves are still available. The formats are manufacturer-specific; **DNG** (Adobe) is an open RAW format.
+
+A rule of thumb for the web: photos as AVIF or WebP with JPEG as a fallback, graphics with transparency as PNG or WebP, logos and icons as SVG.
+
+## Alpha channel
+
+The **alpha channel** is a fourth channel alongside R, G and B that stores the **opacity** of each pixel: 0 is fully transparent, the maximum value (255 at 8 bits) is fully opaque. This makes soft edges, shadows and semi-transparent areas possible. GIF only knows one transparent palette colour, which is why jagged edges appear there.
+
+In **alpha compositing**, the colour of a foreground pixel $C_f$ with opacity $\alpha$ (0 to 1) is laid over a background $C_b$:
+
+$$
+C = \alpha \cdot C_f + (1 - \alpha) \cdot C_b
+$$
+
+A red pixel (255, 0, 0) with $\alpha = 0.5$ over white gives (255, 128, 128), i.e. pink.
+
+## Image editing
+
+### Layers and masks
+
+- **Layers** lie on top of each other like transparent sheets. Each layer can be edited, moved and hidden separately.
+- A **layer mask** hides parts of a layer without deleting pixels: white in the mask reveals, black conceals, greys make it partially transparent. This is **non-destructive** because the mask can be changed at any time.
+- **Adjustment layers** apply corrections (brightness, colour) to the layers below without changing their pixels.
+- **Blend modes** determine how a layer is combined with the one below: _multiply_ darkens (like stacked transparencies), _screen_ lightens.
+- **Selections** (rectangle, lasso, magic wand, colour range or AI-based selection) limit where a tool takes effect.
+
+### Histogram
+
+The **histogram** shows the distribution of tonal values: the x-axis holds the brightness values from 0 (black, left) to 255 (white, right), the y-axis the number of pixels with that value.
+
+- Peaks mainly on the left: the image is rather dark (or underexposed).
+- Peaks mainly on the right: the image is rather light (or overexposed).
+- A tall bar at the very edge means **clipping**: these areas are pure black or white without detail, the information is lost.
+- A narrow histogram in the middle indicates a flat, low-contrast image.
+
+### Levels and curves
+
+With **levels** you set three sliders in the histogram: the **black point** (which value becomes 0), the **white point** (which value becomes 255) and the **midtone** slider (gamma). Moving the black and white points to the ends of the histogram makes the image use the full tonal range, and it looks more contrasty.
+
+The **curves** tool maps every input value to an output value. The diagonal leaves the image unchanged. An **S-curve** darkens shadows and lightens highlights, thus increasing contrast in the midtones. Unlike levels, curves allow any number of control points and separate curves per colour channel.
+
+### Other tools
+
+- **White balance**: light sources have different **colour temperatures** (incandescent bulb about 2700 to 3200 K, daylight about 5500 to 6500 K). White balance corrects a colour cast so that white things look white.
+- **Cropping** and **straightening** the horizon.
+- **Retouching** with the clone stamp and healing brush to remove distractions.
+- **Sharpening** (for example _unsharp mask_) increases contrast at edges. Too much sharpening produces bright halos.
+- **Resampling** when scaling: nearest neighbour (hard, for pixel art), bilinear or bicubic (smooth, for photos).
+
+## Photography
+
+### Exposure triangle
+
+Three settings determine how bright a photo becomes. Besides brightness, each has a second, creative effect:
+
+![Exposure triangle with aperture, shutter speed and ISO and their side effects](/images/media-technology/exposure_triangle_en.svg)
+
+| Setting | Controls | Side effect |
+| --- | --- | --- |
+| **Aperture** | amount of light per time through the lens | **depth of field**: a wide aperture (small f-number) gives shallow depth of field and a blurred background |
+| **Shutter speed** | how long light falls on the sensor | **motion blur**: short times freeze motion, long times show it as streaks |
+| **ISO** | amplification of the sensor signal | **image noise**: high ISO values are noisier |
+
+The **f-number** is the ratio of the focal length $f$ to the diameter $D$ of the entrance pupil:
+
+$$
+N = \frac{f}{D}
+$$
+
+The area of the opening grows with $D^2$. The standard series of f-numbers therefore increases by a factor of $\sqrt{2}$ each time: f/1.4, f/2, f/2.8, f/4, f/5.6, f/8, f/11, f/16, f/22. Each step (a **stop**) halves the amount of light. Shutter speed (1/500 s → 1/250 s) and ISO (100 → 200) are also counted in stops: doubling means one stop more light.
+
+This leads to **reciprocity**: f/8 at 1/125 s gives the same brightness as f/5.6 at 1/250 s (one stop more aperture, one stop less time). Which combination you choose determines the look of the image: for a portrait with a blurred background you choose a wide aperture, for a landscape that is sharp throughout f/8 to f/11, for sport a short shutter speed.
+
+:::tip[Handheld rule of thumb]
+Without image stabilisation, a photo hardly shows camera shake if the shutter speed is at most $1 / \text{focal length}$ (full-frame equivalent): at 50 mm, 1/50 s or shorter.
+:::
+
+**Depth of field** does not depend on the aperture alone. It becomes shallower with a longer focal length, a shorter subject distance and a larger sensor.
+
+### Focal length and angle of view
+
+The **focal length** determines the **angle of view**: the longer the focal length, the narrower the frame and the larger the subject appears. The reference is the **full-frame** format (35 mm format) with a sensor of 36 mm × 24 mm.
+
+| Focal length (full frame) | Name | Use |
+| --- | --- | --- |
+| below 24 mm | ultra-wide angle | architecture, interiors, strong perspective |
+| 24 to 35 mm | wide angle | landscape, reportage |
+| about 50 mm | normal lens | roughly matches natural vision |
+| 70 to 135 mm | short telephoto | portraits, flattering proportions |
+| above 135 mm | telephoto | sport, wildlife, compressed perspective |
+
+Smaller sensors crop part of the image. The **crop factor** (APS-C about 1.5, Micro Four Thirds 2) states which full-frame focal length gives the same angle of view: 35 mm on APS-C looks like about 52 mm.
+
+### Composition
+
+- **Rule of thirds**: two horizontal and two vertical lines divide the image into nine equal fields. Important subjects lie on the lines or their intersections, the horizon on the upper or lower third. This looks more dynamic than a central arrangement. The **golden ratio** is a similar, slightly tighter division (see [Layout and Design](/en/media-technology/layout-and-design/#golden-ratio)).
+- **Leading lines**: roads, fences or rivers guide the eye to the subject.
+- **Framing within the frame**: doors, windows or branches frame the subject.
+- **Symmetry and patterns** create calm; a break in the pattern attracts the eye.
+- **Foreground** adds depth, especially in wide-angle shots.
+- **Look room and lead room**: leave more space in front of a person or a moving car than behind it.
+- **Perspective**: a worm's-eye view makes subjects look powerful, a bird's-eye view small. At eye level, a portrait looks neutral.
+- A **level horizon** and a **calm background** without distracting elements.
+
+## Further reading
+
+- [W3C: Scalable Vector Graphics (SVG) 2](https://www.w3.org/TR/SVG2/)
+- [MDN: Image file type and format guide](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types)
+- Bryan Peterson: _Understanding Exposure_. 4th edition, New York: Amphoto Books, 2016

@@ -1,0 +1,177 @@
+---
+title: AI Ethics and Law
+description: "Bias and fairness, explainability, data protection, copyright and the environmental impact of AI, plus the EU AI Act with risk categories, obligations and deadlines and automated decisions under Art. 22 GDPR."
+sidebar:
+  order: 14
+---
+
+AI systems make or support decisions that affect people directly: who is invited to a job interview, who gets a loan, which content someone sees on social networks. As a developer, you share responsibility for ensuring that such systems are fair, comprehensible and safe. This page covers the most important ethical questions and the legal rules in the EU and Austria (as of October 2026).
+
+:::caution
+The content is for learning purposes and does not replace legal advice. AI law is developing very quickly. The current versions on [EUR-Lex](https://eur-lex.europa.eu/) and in the Austrian legal information system [RIS](https://www.ris.bka.gv.at/) are authoritative.
+:::
+
+## Principles of trustworthy AI
+
+In its 2019 ethics guidelines, the High-Level Expert Group on AI set up by the European Commission formulated seven requirements for **trustworthy AI**. They form the basis of the later AI Act:
+
+1. human agency and oversight
+2. technical robustness and safety
+3. privacy and data governance
+4. transparency (traceability, explainability, communication)
+5. diversity, non-discrimination and fairness
+6. societal and environmental well-being
+7. accountability (auditability, reporting of negative impacts)
+
+## Bias and fairness
+
+A model learns the patterns in its training data, including the unwanted ones. If the data reflects unequal treatment in the past, the model adopts and automates it. This is called **bias**.
+
+| Source | Description | Example |
+| ------ | ----------- | ------- |
+| **Historical bias** | The data is correct, but the world it reflects was unfair. | A recruiting model trained on past hiring decisions prefers men because mainly men were hired in the past. Amazon dropped such a tool in 2018. |
+| **Sampling bias** | Certain groups are under- or over-represented in the data. | Facial recognition trained mainly on images of light-skinned people makes many more errors for dark-skinned people. |
+| **Measurement bias** | A feature does not measure the same thing for different groups. | A US healthcare algorithm used past treatment costs as a measure of illness. Because less was spent on Black patients with the same illness, it rated them as healthier. |
+| **Label bias** | The "correct answers" are based on human, possibly prejudiced judgements. | supervisors' ratings as the label for "good employee" |
+| **Proxies** | A protected feature was removed but can be derived from others. | postcode, first name or gaps in a CV reveal origin, gender or parental leave |
+
+An Austrian example is the **labour market opportunities assistance system** (AMAS) of the Austrian public employment service AMS, which was meant to divide job seekers into three groups according to their calculated chances on the labour market. Because features such as gender, age, citizenship and care responsibilities had a negative effect on the calculation, it was criticised as discriminatory. The Austrian Data Protection Authority prohibited its use in 2020. In 2023, the Supreme Administrative Court confirmed that it constitutes **profiling** and made its admissibility depend on how strongly the decisions of AMS advisers are actually determined by the algorithm. The case was then heard again before the Federal Administrative Court.
+
+### Measuring fairness
+
+Fairness can be defined in different ways, and some of the definitions are mathematically mutually exclusive:
+
+| Criterion | Requirement |
+| --------- | ----------- |
+| **Demographic parity** | All groups receive a positive decision (e.g. an interview invitation) equally often. |
+| **Equal opportunity** | Among those actually suitable, the same share is recognised in every group (equal recall). |
+| **Equalised odds** | additionally the same false positive rate in all groups |
+| **Calibration** | A predicted probability of 70 % actually means 70 % in every group. |
+
+If the base rates of the groups differ, a model cannot satisfy all criteria at the same time. Which criterion applies is therefore not a purely technical decision but a societal one. Countermeasures address the data (balanced samples, reweighting), the training (fairness as a constraint) or the decision (group-specific thresholds). In any case it is necessary to evaluate the [metrics](/en/artificial-intelligence/model-evaluation/#evaluating-classification) separately for each group.
+
+## Transparency and explainability
+
+A deep neural network with billions of parameters is a **black box**: you see input and output, but not why the model decided as it did. This is a problem for those affected, for authorities and for developers, because a decision that nobody can explain can be neither checked nor challenged nor improved.
+
+- **Interpretable models:** decision trees, linear and logistic regression are comprehensible by nature. For decisions with major consequences, you should check whether a simple model is not just as good.
+- **Explainable AI** (XAI) explains complex models after the fact:
+  - **Feature importance:** which features are important overall (e.g. permutation importance)?
+  - **SHAP** (_Shapley additive explanations_): how much did each feature contribute to a **single** prediction? Based on the Shapley values of game theory.
+  - **LIME:** explains a prediction with a simple model that imitates the complex model in the neighbourhood of this data point.
+  - **Counterfactual explanations:** "The loan would have been approved if the income had been €300 higher."
+- **Documentation:** _model cards_ and _datasheets for datasets_ describe the purpose, training data, limitations and measured performance of a model.
+
+## Data protection
+
+AI systems often process large amounts of **personal data**, in training as well as in operation. The General Data Protection Regulation (GDPR) applies, whose principles are described under [internet law](/en/economy_and_law/law/internet_law/#data-protection). Particularly relevant for AI:
+
+- **Purpose limitation and data minimisation:** data collected for one purpose may not simply be used to train a different model. Only the necessary data should be processed.
+- **Legal basis:** training requires a legal basis, such as consent or an overriding legitimate interest.
+- **Anonymisation and pseudonymisation:** anonymised data is not covered by the GDPR, but pseudonymised data (name replaced by an ID number) is. True anonymisation is difficult because people can often be re-identified through combinations of features.
+- **Models can reveal data:** language models can reproduce parts of their training data verbatim, and _membership inference_ can sometimes determine whether a person was in the training data.
+- **Input into AI services:** anyone entering personal or confidential data into an external chatbot transfers it to the provider. Companies regulate this in internal policies and use services with a data processing agreement.
+
+### Automated decisions under Art. 22 GDPR
+
+**Art. 22 GDPR** gives every person the right **not to be subject to a decision based solely on automated processing** (including profiling) which produces **legal effects** concerning them or **similarly significantly affects** them. Examples are the automatic rejection of a loan application or a job application without human review.
+
+There are exceptions if the decision
+
+- is necessary for entering into or performing a **contract**,
+- is authorised by EU or member state **law** that lays down suitable safeguards, or
+- is based on the person's **explicit consent**.
+
+In the contract and consent cases, the controller must at least guarantee the right to obtain **human intervention**, to **express one's point of view** and to **contest** the decision. Special categories of data (health, ethnic origin, religion ...) may only be used within narrow limits. Under Art. 13 to 15 GDPR, data subjects are also entitled to **meaningful information about the logic involved** as well as the significance and consequences of the processing.
+
+The Court of Justice of the European Union has handed down two important judgments on this:
+
+- **SCHUFA** (C-634/21, 7 December 2023): even the automated calculation of a credit score is a decision within the meaning of Art. 22 if a third party (such as a bank) draws strongly on it when deciding whether to conclude a contract.
+- **Dun & Bradstreet Austria** (C-203/22, 27 February 2025): a mobile operator rejected a customer because of an automated credit assessment. The court ruled that the data subject must be able to find out **how** the decision was reached. The explanation must be understandable enough for her to follow and challenge the decision. A mere reference to a trade secret is not sufficient.
+
+## Copyright
+
+Generative AI raises two questions: may protected works be used for training, and who owns the results?
+
+**Training:** the EU Directive on copyright in the Digital Single Market (2019/790) permits **text and data mining**, the automated analysis of works to which one has lawful access. In Austria, this has been implemented in § 42h of the Copyright Act (UrhG) since the 2021 copyright amendment. However, rights holders can prohibit use for commercial purposes with a **machine-readable reservation** (_opt-out_, for example in the terms of use or in `robots.txt`). How far this exception covers the training of large models is disputed. In November 2025, the Munich Regional Court I ruled (not yet final) in **GEMA v OpenAI** that a language model that has memorised song lyrics and reproduces them makes copies of them, and that this is not covered by the text and data mining exception.
+
+**Results:** under Austrian law, only a **unique intellectual creation of a human being** is protected by copyright. A picture or text produced purely by an AI is therefore generally not protected. This may be different if a person substantially shapes, selects or edits the result creatively. Anyone using AI output must also check that it does not infringe other people's works, trademarks or personality rights, for example if an image strongly resembles a well-known work or shows a real person.
+
+## Environmental impact
+
+Training and running large models requires a lot of computing power and therefore energy. According to the International Energy Agency's (IEA) report "Energy and AI", data centres worldwide consumed around 415 TWh of electricity in 2024, about 1.5 % of global electricity consumption. By 2030, the IEA expects this to more than double to around 945 TWh, with AI as the main driver. On top of this comes water for cooling and resources for manufacturing the hardware.
+
+What you can do: choose the smallest model that does the job, cache results instead of recomputing them, use pre-trained models instead of training from scratch, and prefer data centres powered by renewable energy. At the same time, AI itself can contribute to climate protection, for example in controlling power grids or optimising buildings.
+
+## The EU AI Act
+
+**Regulation (EU) 2024/1689** on artificial intelligence (the _AI Act_) is the world's first comprehensive AI law. As an EU regulation, it applies directly in all member states. It does not regulate the technology as such, but its **use**, following a **risk-based approach**: the greater the risk to health, safety and fundamental rights, the stricter the rules.
+
+The obligations mainly apply to **providers** (whoever develops an AI system and places it on the market under their own name) and **deployers** (whoever uses an AI system in a professional capacity). Purely private, non-professional use is exempt, as are systems used exclusively for military purposes and for scientific research.
+
+### Risk categories
+
+| Risk | Rules | Examples |
+| ---- | ----- | -------- |
+| **Unacceptable risk** | **prohibited** (Art. 5) | social scoring; manipulative techniques that subliminally push people into harmful behaviour; exploiting the vulnerabilities of children or people in difficult situations; untargeted scraping of facial images from the internet or CCTV for facial recognition databases; emotion recognition in the workplace and in educational institutions; biometric categorisation by sensitive characteristics (e.g. political opinion, sexual orientation); predicting crimes based solely on profiling; real-time remote biometric identification in public spaces for law enforcement (with narrow exceptions) |
+| **High risk** | permitted, but with **strict requirements** | AI as a safety component of products such as medical devices, machinery, toys or lifts (Annex I); AI in the areas of Annex III: biometrics, critical infrastructure, education (admission, grading of exams), employment (selecting applicants, promotion), access to essential services (creditworthiness, social benefits, life and health insurance), law enforcement, migration and border control, justice and democratic processes |
+| **Limited risk** | **transparency obligations** (Art. 50) | chatbots must make clear that you are communicating with an AI; AI-generated content must be marked in a machine-readable way; deepfakes must be disclosed as artificially generated |
+| **Minimal risk** | no special obligations, voluntary codes of conduct | spam filters, AI in video games, spell checking, recommendations in an online shop |
+
+A system from an Annex III area is exceptionally not considered high-risk if it does not pose a significant risk, for example because it only performs a narrow auxiliary task. This exception never applies if the system profiles people.
+
+### Obligations for high-risk systems
+
+**Providers** must, among other things:
+
+- operate a **risk management system** throughout the entire life cycle,
+- ensure high-quality, representative and as far as possible error-free **training, validation and test data** (data governance, including to avoid bias),
+- draw up **technical documentation** and automatically **log** events,
+- provide **instructions for use** with the purpose, performance limits and risks,
+- enable **human oversight** (a person must be able to understand outputs, override them and stop the system),
+- ensure appropriate **accuracy, robustness and cybersecurity**,
+- introduce a **quality management system**, carry out a **conformity assessment**, affix the **CE marking** and register the system in the **EU database**,
+- monitor the system after placing it on the market and report serious incidents.
+
+**Deployers** must use the system in accordance with the instructions for use, ensure human oversight by competent people, check input data for relevance, keep logs and inform affected employees. Public bodies and providers of public services, as well as deployers that assess creditworthiness or insurance premiums, must additionally carry out a **fundamental rights impact assessment**.
+
+### General-purpose AI models
+
+Separate rules apply to **general-purpose AI models** (GPAI), i.e. foundation models such as large language models. Their providers must keep technical documentation, provide information to downstream providers, have a policy for complying with copyright (including opt-outs) and publish a **summary of the training data**. Models with **systemic risk** (presumed for training compute of more than $10^{25}$ floating-point operations) must additionally be evaluated and tested against attacks, report serious incidents and ensure adequate cybersecurity. A **code of practice** published by the European Commission in 2025 describes how providers can meet these obligations.
+
+### AI literacy
+
+Under **Art. 4**, providers and deployers must take measures to promote the **AI literacy** of their staff who work with AI systems, for example through training. The amendment by the "digital omnibus" in 2026 weakened this obligation: what is required are measures to promote literacy, no longer ensuring a sufficient level of competence for every individual.
+
+### Timeline
+
+| Date | What applies |
+| ---- | ------------ |
+| 1 August 2024 | AI Act enters into force |
+| 2 February 2025 | **prohibitions** (Art. 5) and AI literacy obligation (Art. 4) |
+| 2 August 2025 | rules for **GPAI models**, governance (AI Office, national authorities) and penalties |
+| 2 August 2026 | **general application**, in particular the transparency obligations under Art. 50 |
+| 2 December 2027 | obligations for **high-risk systems under Annex III** (originally 2 August 2026) |
+| 2 August 2028 | obligations for high-risk AI in **products under Annex I** (originally 2 August 2027) |
+
+The postponement of the high-risk deadlines is due to the so-called **digital omnibus on AI**, an amending regulation that entered into force in July 2026. The reason was that harmonised standards and guidelines for the high-risk requirements were not ready in time. The prohibitions, the GPAI rules and the transparency obligations remained on the original timetable, and the list of prohibitions was extended to AI systems for generating non-consensual intimate images of real people.
+
+### Penalties and supervision
+
+| Infringement | Maximum fine (whichever amount is higher) |
+| ------------ | ----------------------------------------- |
+| prohibited AI practices | €35 million or 7 % of worldwide annual turnover |
+| other obligations (e.g. for high-risk systems) | €15 million or 3 % |
+| incorrect or misleading information to authorities | €7.5 million or 1 % |
+
+For small and medium-sized enterprises, the lower of the two amounts applies in each case. At EU level, the Commission's **European AI Office** mainly supervises GPAI models; in the member states, national market surveillance authorities are responsible. In Austria, the **AI Service Desk** (_KI-Servicestelle_) of the regulator RTR (Rundfunk und Telekom Regulierungs-GmbH) provides information and advice on the AI Act.
+
+### Liability
+
+If an AI system causes damage, general tort law applies (see [warranty, guarantee and damages](/en/economy_and_law/law/warranty_and_damages/)). The new **Product Liability Directive (EU) 2024/2853** makes it explicit that **software and AI systems are products** for whose defects the manufacturer is liable regardless of fault. It must be transposed into national law by 9 December 2026 and applies to products placed on the market after that date. The European Commission withdrew its proposal for a separate AI Liability Directive in 2025.
+
+## Further reading
+
+- [Regulation (EU) 2024/1689 (AI Act) on EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689) and the [AI Act Explorer](https://artificialintelligenceact.eu/)
+- [RTR AI Service Desk](https://www.rtr.at/rtr/service/ki-servicestelle/KI-Servicestelle.de.html) (German)
+- High-Level Expert Group on AI: [Ethics guidelines for trustworthy AI](https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai), 2019

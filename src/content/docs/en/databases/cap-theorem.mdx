@@ -2,7 +2,7 @@
 title: CAP Theorem
 description: Why a distributed database system has to choose between consistency and availability during a network partition.
 sidebar:
-  order: 4
+  order: 15
 ---
 
 The **CAP theorem** (also known as Brewer's theorem) was formulated by Eric Brewer in 2000 and proven by Seth Gilbert and Nancy Lynch in 2002. It states that a distributed data store can guarantee at most **two of the three** following properties at the same time.
@@ -37,7 +37,7 @@ A CA system is only possible if network partitions cannot occur, which basically
 
 ## Relation to ACID and BASE
 
-- CP systems tend to follow the [ACID model](/en/databases/relational-databases/#acid-transactions) with strong consistency.
+- CP systems tend to follow the [ACID model](/en/databases/transactions/#acid) with strong consistency.
 - AP systems usually follow the [BASE model](/en/databases/document-oriented-databases/#base) with _eventual consistency_.
 
 ## Extension: PACELC

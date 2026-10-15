@@ -1,0 +1,259 @@
+---
+title: Unsupervised Learning
+description: "Finding patterns in data without labels: k-means with a worked example, hierarchical clustering, DBSCAN, principal component analysis, anomaly detection, association rules and the silhouette coefficient."
+sidebar:
+  order: 10
+---
+
+In **unsupervised learning** there are no correct answers (labels). The model only receives the input data $X$ and has to find structures in it by itself: groups of similar data points, a few meaningful directions in many features, or data points that do not fit the pattern. How it fits into the three types of learning is explained under [machine learning](/en/artificial-intelligence/machine-learning/#categories).
+
+Typical tasks:
+
+| Task | Goal | Example |
+| ---- | ---- | ------- |
+| **Clustering** | group similar data points together | customer segments for marketing, grouping documents |
+| **Dimensionality reduction** | summarise many features in a few | visualisation, compression, pre-processing for other models |
+| **Anomaly detection** | find unusual data points | credit card fraud, faulty sensors, network attacks |
+| **Association analysis** | find elements that frequently occur together | market basket analysis ("people who buy pasta often buy tomato sauce") |
+
+Because there are no labels, **evaluation** is harder than in [supervised learning](/en/artificial-intelligence/supervised-learning/): whether a clustering is "right" often depends on its interpretation in the domain.
+
+## Clustering with k-means
+
+**k-means** divides the data into $k$ groups (clusters). Each cluster is described by its centre, the **centroid**, and each point belongs to the nearest centroid. The number $k$ has to be specified.
+
+### Algorithm
+
+1. **Initialise:** choose $k$ starting centroids, for example random data points.
+2. **Assign:** assign each point to the centroid with the smallest (usually Euclidean) distance.
+3. **Update:** set each centroid to the mean of all points assigned to it.
+4. Repeat steps 2 and 3 until the assignment no longer changes.
+
+The algorithm minimises the **inertia** (_within-cluster sum of squares_, WCSS), the sum of the squared distances of all points to their centroid $\mu_j$:
+
+$$
+WCSS = \sum_{j=1}^{k} \sum_{x \in C_j} \lVert x - \mu_j \rVert^2
+$$
+
+### Worked example
+
+Six points are given: $A(1, 1)$, $B(2, 1)$, $C(1, 2)$, $D(6, 5)$, $E(7, 5)$, $F(6, 6)$. With $k = 2$, $A$ and $B$ are deliberately chosen as poor starting centroids: $\mu_1 = (1, 1)$, $\mu_2 = (2, 1)$.
+
+**Iteration 1, assign:**
+
+| Point | Distance to $\mu_1$ | Distance to $\mu_2$ | Cluster |
+| ----- | ------------------- | ------------------- | ------- |
+| $A(1, 1)$ | $0$ | $1$ | 1 |
+| $B(2, 1)$ | $1$ | $0$ | 2 |
+| $C(1, 2)$ | $1$ | $\sqrt{2} \approx 1.41$ | 1 |
+| $D(6, 5)$ | $\sqrt{41} \approx 6.40$ | $\sqrt{32} \approx 5.66$ | 2 |
+| $E(7, 5)$ | $\sqrt{52} \approx 7.21$ | $\sqrt{41} \approx 6.40$ | 2 |
+| $F(6, 6)$ | $\sqrt{50} \approx 7.07$ | $\sqrt{41} \approx 6.40$ | 2 |
+
+**Update:** $\mu_1 = \left(\frac{1 + 1}{2}, \frac{1 + 2}{2}\right) = (1, 1.5)$ and $\mu_2 = \left(\frac{2 + 6 + 7 + 6}{4}, \frac{1 + 5 + 5 + 6}{4}\right) = (5.25, 4.25)$.
+
+**Iteration 2:** Now $B$ is closer to $\mu_1$ (distance $\approx 1.12$) than to $\mu_2$ ($\approx 4.60$) and moves to cluster 1. The new centroids are $\mu_1 = (1.33, 1.33)$ and $\mu_2 = (6.33, 5.33)$.
+
+**Iteration 3:** No assignment changes any more, so the algorithm stops. The inertia is $\frac{4}{3} + \frac{4}{3} \approx 2.67$.
+
+### Properties and limitations
+
+- k-means only finds a **local minimum**; the result depends on the starting centroids. That is why it is run several times and the best result is kept (`n_init`). The **k-means++** initialisation chooses starting centroids that are far apart and therefore converges faster and more reliably.
+- k-means works with distances. Features with large values (income in euros) would dominate features with small values (age in years). The data must therefore be **scaled** first, for example with `StandardScaler` (mean 0, standard deviation 1).
+- It finds **spherical clusters of similar size** well but fails with elongated or intertwined shapes and is sensitive to outliers.
+- Every point is assigned to a cluster, even if it does not really fit any of them.
+
+### Choosing k
+
+- **Elbow method:** calculate the inertia for different values of $k$. It always decreases as the number of clusters grows. You choose the $k$ after which it only decreases a little (the "elbow" in the curve).
+- **Silhouette coefficient:** for each point, $a$ is the mean distance to the points in its own cluster and $b$ the mean distance to the points of the nearest other cluster:
+
+$$
+s = \frac{b - a}{\max(a, b)}, \qquad -1 \le s \le 1
+$$
+
+Values close to 1 mean that the point sits well in its cluster, values around 0 lie on a boundary, and negative values are probably assigned to the wrong cluster. The mean over all points evaluates the whole clustering; you choose the $k$ with the highest value.
+
+### k-means with scikit-learn
+
+```python
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# test data: 300 points around 4 centres (the "true" labels are ignored)
+X, _ = make_blobs(n_samples=300, centers=4, cluster_std=0.8, random_state=42)
+X_scaled = StandardScaler().fit_transform(X)
+
+for k in range(2, 7):
+    model = KMeans(n_clusters=k, n_init=10, random_state=42)
+    labels = model.fit_predict(X_scaled)
+    print(f"k={k}: Inertia={model.inertia_:7.1f}  Silhouette={silhouette_score(X_scaled, labels):.3f}")
+
+# k=2: Inertia=  312.7  Silhouette=0.570
+# k=3: Inertia=   66.7  Silhouette=0.764
+# k=4: Inertia=   11.3  Silhouette=0.839
+# k=5: Inertia=   10.1  Silhouette=0.708
+# k=6: Inertia=    9.0  Silhouette=0.577
+```
+
+At $k = 4$ the inertia curve bends and the silhouette coefficient is highest. Both methods therefore find the four groups from which the data was generated. `model.predict(...)` assigns new points to the nearest centroid.
+
+## Hierarchical clustering
+
+**Agglomerative** (merging) hierarchical clustering needs no predefined $k$:
+
+1. At the start, each point is a cluster of its own.
+2. The two **most similar** clusters are merged.
+3. Step 2 is repeated until only one cluster is left.
+
+How the distance between two clusters is measured is determined by the **linkage**:
+
+| Linkage | Distance between two clusters | Property |
+| ------- | ----------------------------- | -------- |
+| **Single** | smallest distance between two points | finds elongated clusters, tends to form "chains" |
+| **Complete** | largest distance between two points | compact clusters |
+| **Average** | mean distance of all pairs of points | compromise |
+| **Ward** | increase in variance caused by merging | similar to k-means, very common |
+
+The result is a tree, the **dendrogram**. The height of a link shows the distance at which two clusters were merged. Cutting the tree horizontally at a certain height gives the clusters. A large jump in the heights indicates a natural number of clusters. Drawback: the computing effort grows at least quadratically with the number of points, so the method is unsuitable for very large data sets.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+
+X = np.array([[1, 1], [2, 1], [1, 2], [6, 5], [7, 5], [6, 6]])
+Z = linkage(X, method="ward")
+
+dendrogram(Z, labels=["A", "B", "C", "D", "E", "F"])
+plt.ylabel("Distance")
+plt.show()
+
+print(fcluster(Z, t=2, criterion="maxclust"))  # cut into 2 clusters
+# [1 1 1 2 2 2]
+```
+
+## DBSCAN
+
+**DBSCAN** (_Density-Based Spatial Clustering of Applications with Noise_) sees clusters as regions of high **point density** separated by sparsely populated areas. It has two parameters: the radius `eps` and the minimum number `min_samples`.
+
+- **Core point:** has at least `min_samples` points (including itself) within `eps`.
+- **Border point:** lies near a core point but has too few neighbours itself.
+- **Noise:** neither a core nor a border point. These points get the label `-1`.
+
+Core points that are within reach of each other form a cluster together. Advantages: the number of clusters emerges by itself, clusters may have **arbitrary shapes**, and outliers are recognised as noise. It becomes difficult when clusters have very different densities, and `eps` must be chosen to match the scale of the data.
+
+```python
+import numpy as np
+from sklearn.datasets import make_moons
+from sklearn.cluster import DBSCAN, KMeans
+from sklearn.metrics import adjusted_rand_score
+
+# two intertwined half moons
+X, y = make_moons(n_samples=300, noise=0.06, random_state=0)
+
+db = DBSCAN(eps=0.2, min_samples=5).fit(X)
+km = KMeans(n_clusters=2, n_init=10, random_state=0).fit(X)
+
+print("Clusters:", np.unique(db.labels_))                       # [0 1]
+print(f"ARI DBSCAN:  {adjusted_rand_score(y, db.labels_):.2f}")  # 1.00
+print(f"ARI k-means: {adjusted_rand_score(y, km.labels_):.2f}")  # 0.23
+```
+
+Here the true groups were known, so they can be compared using the **adjusted Rand index** (ARI): 1 means perfect agreement, 0 corresponds to a random grouping. k-means simply cuts the moons through the middle, while DBSCAN follows their shape.
+
+## Dimensionality reduction
+
+Many data sets have dozens to thousands of features. This makes models slow, visualisation impossible and leads to the **curse of dimensionality**: in high-dimensional spaces, all points are roughly equally far apart and distance measures lose their meaning. In addition, features are often strongly correlated (body height and shoe size) and contain the same information.
+
+### Principal component analysis (PCA)
+
+**Principal component analysis** (PCA) rotates the coordinate system so that the first new axis (**1st principal component**) points in the direction of the greatest spread (variance) of the data, the second perpendicular to it in the direction of the greatest remaining variance, and so on. If you keep only the first principal components, you lose as little information as possible.
+
+Mathematically:
+
+1. Centre the data (subtract the mean) and usually also standardise it.
+2. Calculate the **covariance matrix** of the features.
+3. Its **eigenvectors** are the principal components, and the corresponding **eigenvalues** give the explained variance.
+4. Project the data onto the $d$ eigenvectors with the largest eigenvalues.
+
+The proportion of **explained variance** shows how much information is retained:
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+X = StandardScaler().fit_transform(load_iris().data)  # 150 flowers, 4 features
+
+pca = PCA(n_components=2)
+X_2d = pca.fit_transform(X)
+print(X_2d.shape)                               # (150, 2)
+print(pca.explained_variance_ratio_.round(3))   # [0.73  0.229]
+print(pca.explained_variance_ratio_.sum())      # about 0.958
+
+# as many components as needed to keep 95 % of the variance
+print(PCA(n_components=0.95).fit(X).n_components_)  # 2
+```
+
+Here two principal components explain almost 96 % of the variance of the four original features, and the data can be shown in a normal scatter plot. PCA is linear. For visualising complex, non-linear structures, **t-SNE** or **UMAP** are also used, but their axes can no longer be interpreted directly.
+
+## Anomaly detection
+
+An **anomaly** (outlier) is a data point that differs clearly from the rest. Because anomalies are rare and you usually have no examples of them, this is a typical task for unsupervised learning.
+
+| Method | Idea |
+| ------ | ---- |
+| **Statistical limits** | values more than e.g. 3 standard deviations from the mean ($\lvert z \rvert > 3$), or outside 1.5 times the interquartile range (box plot rule) |
+| **Density-based** | points in areas of low density, for example DBSCAN's noise or the **local outlier factor** (LOF) |
+| **Isolation forest** | random decision trees split the data. Outliers can be isolated with few cuts, normal points need many. |
+| **Reconstruction error** | an autoencoder learns to compress and restore normal data. For anomalies, the error is large. |
+
+```python
+import numpy as np
+from sklearn.ensemble import IsolationForest
+
+rng = np.random.default_rng(42)
+normal = rng.normal(loc=50, scale=5, size=(200, 2))        # e.g. temperature and pressure
+outliers = np.array([[90, 90], [10, 85], [95, 20]])
+X = np.vstack([normal, outliers])
+
+iso = IsolationForest(contamination=0.01, random_state=42)  # about 1 % anomalies expected
+labels = iso.fit_predict(X)                                  # 1 = normal, -1 = anomaly
+print(np.where(labels == -1)[0])                             # [200 201 202]
+```
+
+## Association rules
+
+**Association analysis** looks for rules of the form $X \Rightarrow Y$ ("people who buy $X$ also buy $Y$") in transaction data. Three measures evaluate a rule:
+
+$$
+\text{Support}(X) = \frac{\text{number of transactions containing } X}{\text{number of all transactions}} \qquad
+\text{Confidence}(X \Rightarrow Y) = \frac{\text{Support}(X \cup Y)}{\text{Support}(X)}
+$$
+
+$$
+\text{Lift}(X \Rightarrow Y) = \frac{\text{Confidence}(X \Rightarrow Y)}{\text{Support}(Y)}
+$$
+
+**Example:** Of 100 purchases, 20 contain pasta, 25 tomato sauce and 15 both. Then the support of the combination of pasta and tomato sauce is 15 %, the confidence of pasta ⇒ tomato sauce is $\frac{0.15}{0.20} = 75\,\%$ and the lift is $\frac{0.75}{0.25} = 3$. A lift greater than 1 means that the two products are bought together more often than would be expected if they were independent. The **Apriori algorithm** efficiently finds all frequent combinations by using the fact that every subset of a frequent set must itself be frequent.
+
+## Evaluation
+
+| Measure | Labels needed | Meaning |
+| ------- | ------------- | ------- |
+| **Inertia** (WCSS) | no | compactness; always decreases as $k$ grows, only for comparing equal $k$ or for the elbow method |
+| **Silhouette coefficient** | no | -1 to 1, higher is better |
+| **Davies-Bouldin index** | no | ratio of spread within clusters to distance between clusters, lower is better |
+| **Adjusted Rand index** | yes | agreement with known groups, 1 = perfect, 0 = random |
+| **Explained variance** | no | for PCA: how much information the components contain |
+
+The most important check remains the domain one: do the customer segments found make sense, and can the marketing department do anything with them?
+
+## Further reading
+
+- scikit-learn User Guide: [Clustering](https://scikit-learn.org/stable/modules/clustering.html), [Decomposition](https://scikit-learn.org/stable/modules/decomposition.html) and [Outlier detection](https://scikit-learn.org/stable/modules/outlier_detection.html)
+- Gareth James et al.: [_An Introduction to Statistical Learning_](https://www.statlearning.com/), chapter "Unsupervised Learning", free as a PDF
+- Aurélien Géron: _Hands-On Machine Learning with Scikit-Learn, Keras and TensorFlow_, O'Reilly

@@ -1,0 +1,219 @@
+---
+title: Generative AI
+description: "How large language models and image generators work: tokens, attention and transformers, pre-training, fine-tuning and RLHF, prompting, RAG, hallucinations and diffusion models."
+sidebar:
+  order: 13
+---
+
+**Generative AI** refers to models that create new content: text, program code, images, music, speech or video. Classic classifiers are **discriminative** models: they learn to distinguish data ("is this spam?"), i.e. the probability $P(y \mid x)$. **Generative** models, on the other hand, learn the distribution of the data itself, $P(x)$, and can draw new examples from it that resemble the training data without being identical to it.
+
+Since the release of ChatGPT in November 2022, **large language models** (LLMs) such as GPT, Claude, Gemini, Llama or Mistral have become part of everyday life. This page explains what happens inside them. The basics of neural networks are covered under [deep learning](/en/artificial-intelligence/deep-learning/), classic text processing with tokenisation and word embeddings under [natural language processing](/en/artificial-intelligence/natural-language-processing/).
+
+## Tokens
+
+A language model does not process letters or whole words but **tokens**. Modern tokenisers such as **byte pair encoding** (BPE) split text into frequent character sequences: common words are a single token, rare words are split into several parts, for example "super", "computer", "centre". This lets the model manage with a fixed vocabulary (typically 50,000 to 200,000 tokens) while still being able to represent any word.
+
+- In English, a token corresponds to about four characters on average. German usually needs more tokens for the same content because of long compounds and inflected forms.
+- Language models are usually billed per token (input and output separately).
+- The **context window** is the maximum number of tokens the model can consider at once: input, conversation history and answer together. Current models have context windows of more than 100,000 tokens, some over a million.
+
+Each token is converted into a vector, the **embedding**, via a lookup table. As with Word2Vec, similar meanings lie close together, but here the embeddings are learned together with the entire model.
+
+## Transformers and attention
+
+Almost all current language models are based on the **transformer**, introduced in 2017 in the paper "Attention Is All You Need" (Vaswani et al., Google). Its central idea is **self-attention**: for each token, the model calculates how strongly it should take the other tokens in the context into account.
+
+In the sentence "The cat chased the mouse because **it** was hungry", the model has to recognise that "it" refers to the cat. Attention allows the token "it" to look directly at "cat", no matter how far away it is. An RNN, by contrast, would have to carry this information step by step through the entire sequence and easily forgets it. In addition, all positions can be computed at the same time, which makes transformers very fast to train on GPUs.
+
+### Query, key and value
+
+Three vectors are calculated from each token's vector by multiplying it with learned matrices:
+
+- **Query** $q$: "What am I looking for?"
+- **Key** $k$: "What do I offer?"
+- **Value** $v$: "What information do I pass on?"
+
+The dot product of query and key measures how well two tokens match. The results are turned into weights summing to 1 with softmax, and these are used to form a weighted mean of the values:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V
+$$
+
+Dividing by $\sqrt{d_k}$ (the dimension of the keys) prevents the dot products from becoming so large for long vectors that softmax only returns values close to 0 or 1.
+
+```python
+import numpy as np
+
+def softmax(x):
+    e = np.exp(x - x.max(axis=-1, keepdims=True))  # subtract the maximum for numerical stability
+    return e / e.sum(axis=-1, keepdims=True)
+
+def attention(Q, K, V):
+    d_k = K.shape[-1]
+    scores = Q @ K.T / np.sqrt(d_k)     # similarity of every token with every other
+    weights = softmax(scores)           # per row, weights that sum to 1
+    return weights @ V, weights
+
+# three tokens with 4-dimensional vectors each; the matrices are normally learned
+rng = np.random.default_rng(0)
+X = rng.normal(size=(3, 4))
+W_q, W_k, W_v = (rng.normal(size=(4, 4)) for _ in range(3))
+
+output, weights = attention(X @ W_q, X @ W_k, X @ W_v)
+print(weights.round(2))
+# [[0.38 0.3  0.32]
+#  [0.32 0.21 0.47]
+#  [0.05 0.01 0.94]]
+print(output.shape)  # (3, 4): one new vector per token
+```
+
+Row $i$ of the weight matrix shows how strongly token $i$ takes every other token into account. A real transformer computes several such attention heads in parallel (**multi-head attention**) so that different heads can attend to different relationships (grammar, references, meaning). A transformer block consists of multi-head attention and a small fully connected network, and large models stack dozens of such blocks. Because attention does not know the order of the tokens, a **positional encoding** is added to each embedding.
+
+Language models such as GPT are **decoder-only** transformers: each token may only look at the tokens **before** it (_causal masking_), because when generating, the model does not yet know the future. Encoder models such as BERT, by contrast, see the whole sentence (see [transformer models](/en/artificial-intelligence/natural-language-processing/#transformer-models)).
+
+## Generating text
+
+At its core, a language model can do only one thing: it calculates a probability distribution over the entire vocabulary for the **next token**. A text is created **autoregressively**: the model chooses a token, appends it to the input and calculates the next one, until an end token appears or the length limit is reached.
+
+How the next token is chosen from the distribution is controlled by **sampling parameters**:
+
+- **Temperature** $T$: the raw values (_logits_) are divided by $T$ before the softmax. A low temperature makes the distribution sharper (predictable, factual answers), a high one flatter (more varied but also more error-prone). For logits $(2.0, 1.0, 0.1)$, $T = 0.5$ gives the probabilities $(0.86, 0.12, 0.02)$, $T = 1$ gives $(0.66, 0.24, 0.10)$ and $T = 2$ gives $(0.50, 0.30, 0.19)$.
+- **Top-k**: only choose from the $k$ most likely tokens.
+- **Top-p** (_nucleus sampling_): only choose from the most likely tokens that together reach the probability $p$ (e.g. 0.9).
+
+That is why the same question does not always produce the same answer.
+
+## Training a language model
+
+### Pre-training
+
+In **pre-training**, the model learns to predict the next token on huge amounts of text (web pages, books, Wikipedia, program code; for large models many trillions of tokens). The "labels" come from the text itself, which is called **self-supervised learning**. To solve this task well, the model has to learn grammar, factual knowledge, relationships and also simple reasoning. Training large models takes weeks to months on thousands of GPUs and costs many millions of euros.
+
+The result is a **base model** (_foundation model_) that continues texts but is not yet a helpful assistant: it might answer a question with more questions because it has seen such lists on the internet.
+
+### Fine-tuning
+
+In **fine-tuning**, the pre-trained model is trained further on much less, carefully selected data:
+
+- **Supervised fine-tuning** (SFT, _instruction tuning_): people write examples of instructions and good answers. The model learns to follow instructions and to respond in dialogue.
+- For your own tasks (a particular writing style, technical language, output format) you can fine-tune a model yourself. With methods such as **LoRA** (_low-rank adaptation_), only small additional matrices are trained instead of all billions of parameters, which drastically reduces computing time and memory.
+
+### RLHF
+
+**Reinforcement learning from human feedback** (RLHF) further adapts the model to human ideas of helpful, honest and harmless answers:
+
+1. The model generates several answers to an input.
+2. People rank the answers by quality.
+3. These rankings are used to train a **reward model** that predicts the human rating.
+4. The language model is changed with [reinforcement learning](/en/artificial-intelligence/reinforcement-learning/) (e.g. the PPO method) so that its answers receive a high reward.
+
+Simpler variants such as **DPO** (_direct preference optimisation_) learn directly from the comparison pairs without a separate reward model. Newer **reasoning models** are additionally trained with RL on tasks with verifiable results (mathematics, programming tasks with tests) and produce a longer chain of thought before the actual answer.
+
+## Prompting
+
+The **prompt** is the input to the model. For chat models it consists of a **system prompt** (role and rules, set by the provider or developer) and the messages of the conversation. The model has no memory between requests: the previous conversation is sent again with every request and counts towards the context window.
+
+| Technique | Description |
+| --------- | ----------- |
+| **Zero-shot** | state the task directly, without examples |
+| **Few-shot** | include a few examples of input and desired output so that the model adopts the pattern (_in-context learning_) |
+| **Role and context** | specify target audience, purpose, length and format ("Explain for second-year HTL students in five sentences ...") |
+| **Chain of thought** | ask the model to think step by step before answering; improves results for arithmetic and logic tasks |
+| **Structured output** | specify a format such as JSON with a fixed schema so that a program can process the answer |
+| **Decomposing tasks** | split large tasks into several smaller prompts |
+
+A security problem is **prompt injection**: if data processed by the model (a web page, an e-mail, a document) contains instructions such as "Ignore all previous instructions and ...", the model may follow them. Applications must therefore not blindly trust model output, especially when the model can perform actions.
+
+## Retrieval-augmented generation
+
+A language model only knows what was in its training data, and only up to a **cut-off date** (_knowledge cutoff_). It does not know a company's internal documents or a school's house rules. Retraining would be expensive and would have to be repeated with every change.
+
+With **retrieval-augmented generation** (RAG), matching information is searched for at run time and inserted into the prompt:
+
+1. **Index** (once): split documents into smaller sections (_chunks_), calculate a vector for each section with an embedding model and store it in a **vector database** (e.g. pgvector for PostgreSQL, Azure AI Search, Qdrant).
+2. **Retrieve:** also convert the user's question into a vector and find the sections with the highest **cosine similarity**.
+3. **Augment:** insert the sections found into the prompt as context.
+4. **Generate:** the language model answers the question based on the context and can cite the sources.
+
+The following example shows the retrieval on a small scale. Instead of a neural embedding model, TF-IDF on character n-grams is used, which also recognises "laptop" and "laptops" or "borrow" and "borrowed" as similar:
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+documents = [
+    "The school library is open Monday to Friday from 8 am to 4 pm.",
+    "Laptops can be borrowed from the school office for a maximum of two weeks.",
+    "Registration for the diploma examination must be made at the school office by the end of January.",
+    "Eating and drinking are not allowed in the lab.",
+]
+question = "How long can I borrow a laptop?"
+
+vectorizer = TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5))
+doc_vectors = vectorizer.fit_transform(documents)
+similarities = cosine_similarity(vectorizer.transform([question]), doc_vectors)[0]
+print(similarities.round(2))  # [0.   0.51 0.   0.05]
+
+best = similarities.argsort()[::-1][:2]           # the two most similar sections
+context = "\n".join(f"- {documents[i]}" for i in best)
+prompt = f"""Answer the question using only the context.
+If the answer is not in the context, say so.
+
+Context:
+{context}
+
+Question: {question}"""
+print(prompt)  # this prompt is sent to the language model
+```
+
+RAG reduces hallucinations, keeps knowledge up to date (new documents are simply indexed) and makes answers verifiable. Quality depends heavily on the retrieval, however: if it does not find the right sections, even the best model cannot answer correctly.
+
+### Tools and agents
+
+With **tool use** (_function calling_), a model can produce a structured function call instead of a text answer, for example `get_weather(city="Vienna")`. The application executes the function and returns the result to the model. This lets models calculate, query databases or search the web. An **agent** repeats this cycle of planning, calling a tool and evaluating the result on its own until a task is done, for example when programming with access to files and tests. Open standards such as the **Model Context Protocol** (MCP) standardise how tools are connected to models.
+
+## Hallucinations
+
+A **hallucination** is output that sounds convincing but is wrong or invented: made-up references, wrong figures, non-existent functions in programming libraries. Causes:
+
+- The model produces the **most probable** text, not the **true** one. It has no built-in knowledge of what it knows and what it does not.
+- Rare facts hardly appeared in the training data, and training has often rewarded confident answers more than admitting uncertainty.
+- Questions about information after the knowledge cutoff.
+
+Countermeasures are RAG with source citations, tools (calculator, search), a low temperature, explicitly allowing "I don't know" as an answer, and human review. You must always check important statements by a language model against a reliable source.
+
+## Generating images
+
+| Method | Idea |
+| ------ | ---- |
+| **GAN** (_generative adversarial network_, 2014) | Two networks play against each other: the **generator** creates images from random noise, the **discriminator** tries to tell them apart from real ones. Both improve in the process. Fast but hard to train stably. |
+| **VAE** (_variational autoencoder_) | An encoder compresses images into a small **latent space**, a decoder reconstructs them. New images are created from new points in the latent space. |
+| **Diffusion models** | today the standard method for image and video generation (see below) |
+
+### Diffusion models
+
+A **diffusion model** learns to remove noise step by step:
+
+1. **Forward process** (training only): Gaussian noise is added to a real image in many small steps until only pure noise remains.
+2. A neural network (formerly a U-Net, today often a transformer) learns to predict, for a noisy image, which noise was added.
+3. **Reverse process** (when generating): you start with pure random noise and remove the predicted noise in many steps. In the end, a new, sharp image emerges.
+
+To create a specific image, the network is guided by the **text prompt**: a text encoder (for example from the CLIP model, which maps images and texts into a shared vector space) converts the prompt into vectors that flow into every denoising step via attention. **Latent diffusion models** such as Stable Diffusion do not work on the pixels but in the compressed latent space of an autoencoder, which greatly speeds up the computation. Well-known systems are Stable Diffusion, DALL·E, Midjourney and Imagen, and for video, for example, Sora or Veo.
+
+## Limits
+
+- **No reliable knowledge:** hallucinations and outdated knowledge (see above).
+- **Logic and arithmetic:** without tools, language models make mistakes in longer calculations, in counting letters (they see tokens, not letters) or in multi-step reasoning.
+- **Bias:** models adopt prejudices and stereotypes from their training data.
+- **Non-deterministic:** the same input can produce different outputs, which makes testing harder.
+- **Security:** prompt injection, leakage of confidential information entered in prompts, and generated code with vulnerabilities.
+- **Misuse:** deepfakes, disinformation, phishing texts.
+- **Resources:** training and operation require a lot of energy, water for cooling and expensive hardware.
+
+Legal and ethical questions such as copyright, data protection and the EU AI Act are covered in [AI ethics and law](/en/artificial-intelligence/ai-ethics-and-law/).
+
+## Further reading
+
+- Ashish Vaswani et al.: [_Attention Is All You Need_](https://arxiv.org/abs/1706.03762), 2017
+- Jay Alammar: [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- Andrej Karpathy: [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) (video series that builds a GPT from scratch)

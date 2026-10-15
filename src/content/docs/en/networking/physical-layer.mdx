@@ -1,0 +1,190 @@
+---
+title: Physical Layer
+description: Twisted pair categories, shielding, T568A/B, fibre types and connectors, wireless media, line codes, structured cabling according to EN 50173 and Power over Ethernet.
+sidebar:
+  order: 3
+---
+
+The **physical layer** (layer 1) transmits individual bits as physical signals: as voltages on copper wires, as light pulses in optical fibres or as electromagnetic waves through the air. It defines cables, connectors, pin assignments, signal levels and line codes. A large share of all network problems originate here: loose connectors, wrongly terminated wires, cables that are too long or damaged.
+
+## Signal transmission basics
+
+- **Attenuation**: the signal gets weaker as the cable gets longer. This is why every medium has a maximum length.
+- **Crosstalk**: one wire pair induces interference in the neighbouring pair. A distinction is made between **NEXT** (_Near End Crosstalk_, measured at the same end) and **FEXT** (_Far End Crosstalk_, at the other end).
+- **EMI/RFI**: electromagnetic interference from outside, for example from motors, fluorescent lamps or power cables.
+- **Frequency** and **data rate**: the frequency rating of a cable (for example 500 MHz for Cat 6A) is the highest frequency up to which its transmission characteristics are specified. It is not the data rate: with multilevel line codes and four pairs, 10 Gbit/s can be carried over 500 MHz.
+
+## Copper cable: twisted pair
+
+Ethernet cables consist of four **twisted pairs** of wires. The twisting ensures that external interference affects both wires of a pair equally. Since the signal is evaluated as the **difference** between the two wires, the interference cancels out. Different twist rates for the pairs reduce crosstalk between them.
+
+### Categories
+
+The standard ISO/IEC 11801 (in Europe EN 50173) distinguishes **categories** for components (cable, outlet, connector) and **classes** for the complete installed link. Class E is only achieved if all components are at least Category 6.
+
+| Category | Class | Frequency | Typical use | Max. length (channel) |
+| --- | --- | --- | --- | --- |
+| Cat 5 | D (old) | 100 MHz | 100BASE-TX (Fast Ethernet), obsolete | 100 m |
+| **Cat 5e** | D | 100 MHz | 1000BASE-T, 2.5GBASE-T | 100 m |
+| **Cat 6** | E | 250 MHz | 1000BASE-T, 5GBASE-T, 10GBASE-T up to 55 m | 100 m |
+| **Cat 6A** | E<sub>A</sub> | 500 MHz | 10GBASE-T | 100 m |
+| **Cat 7** | F | 600 MHz | 10GBASE-T, always S/FTP | 100 m |
+| **Cat 7A** | F<sub>A</sub> | 1000 MHz | 10GBASE-T, cable for Cat 6A installations with headroom | 100 m |
+| **Cat 8.1 / 8.2** | I / II | 2000 MHz | 25GBASE-T, 40GBASE-T in the data centre | 30 m |
+
+For new installations, **Cat 6A** (class E<sub>A</sub>) is the usual standard today, because it supports 10 Gbit/s and current WLAN access points with more than 1 Gbit/s. Cat 7 cable is often combined with Cat 6A outlets; the link then only reaches class E<sub>A</sub>.
+
+### Ethernet over copper
+
+| Standard | Name | Data rate | Minimum cable | Pairs used |
+| --- | --- | --- | --- | --- |
+| 10BASE-T | Ethernet | 10 Mbit/s | Cat 3 | 2 |
+| 100BASE-TX | Fast Ethernet | 100 Mbit/s | Cat 5 | 2 |
+| 1000BASE-T | Gigabit Ethernet | 1 Gbit/s | Cat 5e | 4 |
+| 2.5GBASE-T / 5GBASE-T | NBASE-T (IEEE 802.3bz) | 2.5 / 5 Gbit/s | Cat 5e / Cat 6 | 4 |
+| 10GBASE-T | 10 Gigabit Ethernet | 10 Gbit/s | Cat 6A | 4 |
+| 25GBASE-T / 40GBASE-T | | 25 / 40 Gbit/s | Cat 8, 30 m | 4 |
+
+The name gives the data rate in Mbit/s or Gbit/s, **BASE** for baseband transmission and the rest for the medium (T = twisted pair, F/S/L for fibre).
+
+### Shielding
+
+The designation according to ISO/IEC 11801 has the form **overall shield/pair shield** + TP:
+
+| Letter | Meaning |
+| --- | --- |
+| U | unshielded |
+| F | foil shield (_foiled_) |
+| S | braided shield (_screened_) |
+| SF | braid and foil |
+
+| Designation | Overall shield | Pair shield | Note |
+| --- | --- | --- | --- |
+| **U/UTP** | none | none | common in the USA, cheap, thin |
+| **F/UTP** | foil | none | |
+| **U/FTP** | none | foil per pair | |
+| **S/FTP** | braid | foil per pair | common in Europe, Cat 7 and Cat 8.2 |
+| **SF/UTP** | braid and foil | none | |
+
+Colloquially, every shielded cable is called "STP" (_Shielded Twisted Pair_). A shield only works if it is continuous and earthed at both ends. A wrongly connected shield can even act as an antenna.
+
+### T568A and T568B pin assignment
+
+RJ45 connectors (more precisely 8P8C) are wired according to one of two standards (TIA-568). They differ only in that the green and orange pairs are swapped.
+
+| Pin | T568A | T568B |
+| --- | --- | --- |
+| 1 | white-green | white-orange |
+| 2 | green | orange |
+| 3 | white-orange | white-green |
+| 4 | blue | blue |
+| 5 | white-blue | white-blue |
+| 6 | orange | green |
+| 7 | white-brown | white-brown |
+| 8 | brown | brown |
+
+10BASE-T and 100BASE-TX use only pins 1, 2 (transmit at the end device) and 3, 6 (receive); from 1000BASE-T onwards all four pairs are used in both directions simultaneously.
+
+- A **straight-through cable** (patch cable, 1:1) has the same assignment at both ends. It connects different kinds of device: PC to switch, router to switch.
+- A **crossover cable** has T568A at one end and T568B at the other, so that the transmit and receive pairs are crossed. It connects devices of the same kind: switch to switch, PC to PC, PC directly to router.
+
+The reason: end devices and routers transmit on pins 1 and 2 (**MDI**, _Medium Dependent Interface_), switches receive there (**MDI-X**, crossed). Modern devices support **Auto-MDIX**: they detect the wiring and swap transmit and receive internally, so any cable works. For Gigabit Ethernet, Auto-MDIX is part of the standard. For the exam you still need to know which cable is required without Auto-MDIX.
+
+A **rollover cable** (console cable) is wired in mirror image at one end and connects a PC to the console port of a Cisco device. Today USB console cables are usually used.
+
+## Fibre
+
+An **optical fibre** carries light pulses in a glass core surrounded by cladding with a lower refractive index. Thanks to **total internal reflection** at the boundary, the light stays in the core. Fibre is immune to electromagnetic interference, carries no voltage (no potential problems between buildings), is harder to tap and bridges long distances. However, it is more sensitive during installation (bend radius), and termination (splicing) requires special tools.
+
+| Feature | **Multimode** (MMF) | **Single-mode** (SMF) |
+| --- | --- | --- |
+| Core diameter | 50 µm or 62.5 µm | about 9 µm |
+| Light source | LED, VCSEL laser | laser |
+| Wavelengths | 850 nm, 1300 nm | 1310 nm, 1550 nm |
+| Effect | many light paths (modes), modal dispersion limits the range | only one mode, hardly any dispersion |
+| Range | a few hundred metres at 10 Gbit/s | 10 km to over 80 km |
+| Cost | cheaper transceivers | more expensive transceivers, the fibre itself is cheap |
+| Use | inside buildings, data centre | between buildings, campus, WAN, FTTH |
+| Categories | OM1 to OM5 | OS1, OS2 |
+| Jacket colour | orange (OM1, OM2), aqua (OM3, OM4), violet (OM4 in Europe), lime green (OM5) | yellow |
+
+Examples of standards: 1000BASE-SX (multimode, up to 550 m), 1000BASE-LX (single-mode, up to 5 km), 10GBASE-SR (multimode, 300 m with OM3, 400 m with OM4), 10GBASE-LR (single-mode, 10 km), 10GBASE-ER (single-mode, 40 km).
+
+### Connectors and transceivers
+
+| Connector | Feature |
+| --- | --- |
+| **LC** (_Lucent Connector_) | small push-pull connector, the most common today, fits SFP modules |
+| **SC** (_Subscriber Connector_) | square push-pull connector, common for FTTH |
+| **ST** (_Straight Tip_) | bayonet lock, obsolete |
+| **MPO/MTP** | multi-fibre connector with 12 or 24 fibres, for 40/100 Gbit/s in the data centre |
+
+The end face is either polished flat (**UPC**, blue connector) or angled at 8° (**APC**, green connector) so that reflected light does not travel back to the transmitter. APC and UPC must not be mated with each other.
+
+For fibre, switches usually have slots for **transceiver modules**: **SFP** (up to 1 Gbit/s), **SFP+** (10 Gbit/s), **SFP28** (25 Gbit/s), **QSFP+** (40 Gbit/s) and **QSFP28** (100 Gbit/s). This way a multimode or single-mode module can be fitted depending on the link.
+
+## Wireless media
+
+Radio carries data by electromagnetic waves. No cable is needed, but all participants share the medium, the range depends on walls and sources of interference, and anyone within range can listen in, which is why encryption is mandatory.
+
+| Technology | Standard | Use |
+| --- | --- | --- |
+| WLAN | IEEE 802.11 | local networks, see [WLAN](/en/networking/wlan/) |
+| Bluetooth | IEEE 802.15.1 (today Bluetooth SIG) | PAN, peripherals |
+| Zigbee, Thread | IEEE 802.15.4 | home automation, IoT |
+| Mobile | 3GPP (LTE, 5G) | WAN access, see [WAN](/en/networking/wan-and-internet-access/) |
+| Microwave link, satellite | | wireless connections over long distances |
+
+## Line codes
+
+A **line code** defines how bits are turned into signals. It should carry the clock along (enough level transitions for the receiver to stay synchronised), produce no DC component and need as little bandwidth as possible.
+
+| Code | Principle | Use |
+| --- | --- | --- |
+| **NRZ** (_Non-Return-to-Zero_) | 1 = high level, 0 = low level | simple, but the clock is lost on long runs of identical bits |
+| **Manchester** | every bit has a level transition in the middle (in IEEE 802.3: 0 = falling, 1 = rising) | 10BASE-T, self-clocking, needs double the frequency |
+| **4B/5B** + **MLT-3** | 4 data bits are sent as a 5-bit code word with enough transitions; MLT-3 cycles through three levels | 100BASE-TX |
+| **PAM-5** | 5 voltage levels, one symbol carries about 2 bits | 1000BASE-T |
+| **8B/10B**, **64B/66B** | block codes for fibre | 1000BASE-X, 10GBASE-R |
+
+The **baud rate** (symbol rate) counts symbols per second. If a symbol carries several bits, the bit rate is higher than the baud rate: with $M$ signal levels, $R = f_\mathrm{symbol} \cdot \log_2 M$. 1000BASE-T transmits 125 MBaud per pair; with 2 bits per symbol on 4 pairs this gives $4 \cdot 125 \cdot 10^6 \cdot 2 = 10^9$ bit/s.
+
+## Structured cabling
+
+**Structured cabling** is application-neutral, hierarchically organised building cabling that is planned independently of the devices that will later be connected. In Europe it is governed by the **EN 50173** series of standards (internationally ISO/IEC 11801, in the USA TIA-568). Cabling is a long-term investment that should outlast several generations of equipment.
+
+| Subsystem | Connects | Medium | Max. length |
+| --- | --- | --- | --- |
+| **Primary cabling** (campus backbone) | campus distributor (CD) to the building distributors (BD) | single-mode fibre | 1500 m |
+| **Secondary cabling** (riser, building backbone) | building distributor to the floor distributors (FD) | fibre, rarely copper | 500 m |
+| **Tertiary cabling** (floor, horizontal cabling) | floor distributor to the outlets (TO, _Telecommunications Outlet_) | twisted pair Cat 6A | 90 m fixed |
+
+These lengths are the classic guideline values from EN 50173-1 and ISO/IEC 11801. Primary and secondary cabling together should not exceed 2000 m.
+
+In the tertiary cabling a distinction is made between:
+
+- **Permanent link**: the fixed run from the patch panel to the outlet, at most **90 m**.
+- **Channel**: the entire transmission path including patch cords at both ends, at most **100 m**. This leaves 10 m for patch and equipment cords.
+
+A floor distributor should serve at most 1000 m² of office space; larger floors get several distributors. The distributors sit in **19-inch cabinets** (racks). Their height is given in **rack units** (U), one U is 44.45 mm. In the cabinet the cables are terminated on **patch panels** and connected to the switches with short patch cords. This way any outlet can be assigned to a different switch port without tools.
+
+After installation every link is measured with a **certification tester** (length, attenuation, NEXT, return loss, wiring). Only the test report proves that the class has been achieved.
+
+## Power over Ethernet
+
+**Power over Ethernet** (PoE) supplies devices such as IP phones, access points and cameras with power over the network cable. This saves a power socket at the mounting location and allows a central UPS in the distributor. The supplying device is called **PSE** (_Power Sourcing Equipment_), usually a PoE switch (**endspan**) or an injector in between (**midspan**). The powered device is called **PD** (_Powered Device_). The voltage is around 48 V DC. Before the PSE applies voltage, it checks via a signature resistance whether a PoE-capable device is connected at all, so that normal network cards are not damaged.
+
+| Standard | Name | Type | Power at PSE | Power at PD | Pairs used |
+| --- | --- | --- | --- | --- | --- |
+| IEEE 802.3af (2003) | PoE | 1 | 15.4 W | 12.95 W | 2 |
+| IEEE 802.3at (2009) | PoE+ | 2 | 30 W | 25.5 W | 2 |
+| IEEE 802.3bt (2018) | PoE++, 4PPoE | 3 | 60 W | 51 W | 4 |
+| IEEE 802.3bt (2018) | PoE++, 4PPoE | 4 | 90 W | 71.3 W | 4 |
+
+The difference between PSE and PD is the power lost in the cable. When planning, the **PoE budget** of the switch (the total power for all ports) must match the demand: a 48-port switch with a 370 W budget cannot supply all ports with 30 W.
+
+## Further reading
+
+- [IEEE 802.3 Ethernet Working Group](https://www.ieee802.org/3/)
+- EN 50173-1, _Information technology: Generic cabling systems, Part 1: General requirements_
+- [Wikipedia: Structured cabling](https://en.wikipedia.org/wiki/Structured_cabling)

@@ -1,0 +1,186 @@
+---
+title: Rotation and Statics
+description: Torque, the law of the lever, moment of inertia and the parallel axis theorem, angular momentum and its conservation, rotational energy, equilibrium of rigid bodies and centre of mass.
+sidebar:
+  order: 6
+---
+
+So far, bodies have been treated as point masses. A **rigid body**, by contrast, has extent and can rotate. For rotational motion, every quantity of straight-line motion has a counterpart: force becomes torque, mass becomes moment of inertia, momentum becomes angular momentum.
+
+## Rotational quantities
+
+| Translation | Rotation | Relationship |
+| --- | --- | --- |
+| distance $s$ | angle of rotation $\varphi$ in $\mathrm{rad}$ | $s = \varphi r$ |
+| velocity $v$ | angular velocity $\omega$ in $\mathrm{rad/s}$ | $v = \omega r$ |
+| acceleration $a$ | angular acceleration $\alpha$ in $\mathrm{rad/s^2}$ | $a_\mathrm{T} = \alpha r$ |
+| mass $m$ | moment of inertia $J$ in $\mathrm{kg\,m^2}$ | $J = \sum m_i r_i^2$ |
+| force $F$ | torque $M$ in $\mathrm{N\,m}$ | $M = r F \sin\varphi$ |
+| momentum $p = m v$ | angular momentum $L = J \omega$ in $\mathrm{kg\,m^2/s}$ | |
+| $F = m a$ | $M = J \alpha$ | fundamental equation |
+| $E_\mathrm{kin} = \frac{1}{2} m v^2$ | $E_\mathrm{rot} = \frac{1}{2} J \omega^2$ | |
+| $P = F v$ | $P = M \omega$ | |
+
+The formulas for uniformly accelerated motion apply analogously: $\omega = \omega_0 + \alpha t$, $\varphi = \omega_0 t + \frac{1}{2} \alpha t^2$.
+
+## Torque
+
+How strongly a force turns a body about an axis depends not only on the magnitude of the force but also on where and in which direction it acts. The **torque** is
+
+$$
+\vec M = \vec r \times \vec F, \qquad M = r \cdot F \cdot \sin\varphi = F \cdot l, \qquad [M] = \mathrm{N\,m}
+$$
+
+$\vec r$ points from the axis of rotation to the point of application, $\varphi$ is the angle between $\vec r$ and $\vec F$. The **lever arm** $l = r\sin\varphi$ is the perpendicular distance between the line of action of the force and the axis. A force whose line of action passes through the axis produces no torque. Anticlockwise torques are usually counted as positive. (English texts often use $\tau$ for torque.)
+
+:::note
+Torque and work both have the unit $\mathrm{N\,m}$ but are different quantities. That is why torque is never written in joules.
+:::
+
+:::tip[Example: torque wrench]
+Car wheel bolts are typically tightened to $110$ to $120\,\mathrm{N\,m}$. With a $0.3\,\mathrm{m}$ wrench, you need $F = M/l = 120/0.3 = 400\,\mathrm{N}$ perpendicular to the handle. A lever twice as long halves the required force.
+:::
+
+## Law of the lever
+
+A **lever** is a rigid body mounted so that it can rotate. It is in equilibrium when the sum of the anticlockwise moments equals the sum of the clockwise moments:
+
+$$
+F_1 \cdot l_1 = F_2 \cdot l_2
+$$
+
+- **Two-sided lever**: the forces act on both sides of the pivot (seesaw, scissors, pliers, beam balance).
+- **One-sided lever**: both forces act on the same side (wheelbarrow, nutcracker, forearm).
+
+:::tip[Example: wheelbarrow]
+The load ($600\,\mathrm{N}$) lies $0.4\,\mathrm{m}$ behind the wheel axle, and the handles are $1.4\,\mathrm{m}$ from the axle. Required lifting force: $F = 600 \cdot 0.4/1.4 = 171\,\mathrm{N}$. The golden rule applies here too: the hands move $3.5$ times as far as the load.
+:::
+
+## Moment of inertia
+
+The **moment of inertia** $J$ (also $I$) measures a body's resistance to rotational acceleration. It depends not only on the mass but on how far the mass is from the axis:
+
+$$
+J = \sum_i m_i r_i^2 = \int r^2\,\mathrm{d}m
+$$
+
+| Body (axis through the centre of mass) | Moment of inertia |
+| --- | --- |
+| point mass at distance $r$ | $m r^2$ |
+| thin ring, thin-walled hollow cylinder (long axis) | $m r^2$ |
+| solid cylinder, disc (long axis) | $\frac{1}{2} m r^2$ |
+| solid sphere | $\frac{2}{5} m r^2$ |
+| thin-walled hollow sphere | $\frac{2}{3} m r^2$ |
+| thin rod of length $l$ (axis across its middle) | $\frac{1}{12} m l^2$ |
+
+If the axis of rotation does not pass through the centre of mass but is parallel to it at distance $d$, the **parallel axis theorem** (Steiner's theorem) applies:
+
+$$
+J = J_\mathrm{S} + m d^2
+$$
+
+A rod rotating about one end therefore has $J = \frac{1}{12} m l^2 + m \left(\frac{l}{2}\right)^2 = \frac{1}{3} m l^2$.
+
+## Fundamental equation of rotation
+
+$$
+M = J \cdot \alpha
+$$
+
+:::tip[Example: flywheel]
+A flywheel (solid disc, $m = 50\,\mathrm{kg}$, $r = 0.4\,\mathrm{m}$) has $J = \frac{1}{2} \cdot 50 \cdot 0.4^2 = 4\,\mathrm{kg\,m^2}$. A motor with $M = 20\,\mathrm{N\,m}$ accelerates it at $\alpha = 20/4 = 5\,\mathrm{rad/s^2}$. Reaching $3000\,\mathrm{min^{-1}}$ ($\omega = 2\pi \cdot 50\,\mathrm{s^{-1}} = 314\,\mathrm{rad/s}$) takes $314/5 = 62.8\,\mathrm{s}$.
+:::
+
+The power of a shaft is $P = M \omega$. An electric motor with $15\,\mathrm{kW}$ at $1450\,\mathrm{min^{-1}}$ ($\omega = 151.8\,\mathrm{rad/s}$) delivers a torque of $M = 15\,000/151.8 = 98.8\,\mathrm{N\,m}$. A gearbox trades rotational speed for torque; the power stays the same (apart from losses).
+
+## Rotational energy
+
+A rotating body stores **rotational kinetic energy**:
+
+$$
+E_\mathrm{rot} = \frac{1}{2} J \omega^2
+$$
+
+The flywheel from the example stores $\frac{1}{2} \cdot 4 \cdot 314^2 = 197\,\mathrm{kJ}$ at $314\,\mathrm{rad/s}$. Flywheel storage systems use this to buffer power for short periods.
+
+### Rolling bodies
+
+A rolling body has translational and rotational energy. If it rolls without slipping ($v = \omega r$) down a height $h$:
+
+$$
+m g h = \frac{1}{2} m v^2 + \frac{1}{2} J \omega^2 \quad\Rightarrow\quad v = \sqrt{\frac{2 g h}{1 + \frac{J}{m r^2}}}
+$$
+
+| Body | $\frac{J}{m r^2}$ | $v$ after $h = 1\,\mathrm{m}$ |
+| --- | --- | --- |
+| body sliding without friction | $0$ | $4.43\,\mathrm{m/s}$ |
+| solid sphere | $\frac{2}{5}$ | $3.74\,\mathrm{m/s}$ |
+| solid cylinder | $\frac{1}{2}$ | $3.62\,\mathrm{m/s}$ |
+| hollow cylinder (ring) | $1$ | $3.13\,\mathrm{m/s}$ |
+
+Mass and radius cancel: any solid sphere wins the race against any hollow cylinder, because a smaller share of its energy goes into rotation.
+
+## Angular momentum
+
+The **angular momentum** of a body rotating about a fixed axis is
+
+$$
+L = J \cdot \omega, \qquad \text{in general } \vec L = \vec r \times \vec p
+$$
+
+Analogous to $F = \mathrm{d}p/\mathrm{d}t$, $M = \mathrm{d}L/\mathrm{d}t$.
+
+### Conservation of angular momentum
+
+> If no external torque acts, the angular momentum of a system is conserved in magnitude and direction: $J_1 \omega_1 = J_2 \omega_2$.
+
+:::tip[Example: pirouette]
+A figure skater spins once per second with arms outstretched ($J_1 = 3.0\,\mathrm{kg\,m^2}$). When she pulls in her arms ($J_2 = 1.0\,\mathrm{kg\,m^2}$), she spins three times per second. Her rotational energy rises from $\frac{1}{2} \cdot 3 \cdot (2\pi)^2 = 59\,\mathrm{J}$ to $\frac{1}{2} \cdot 1 \cdot (6\pi)^2 = 178\,\mathrm{J}$; the difference is the work done by her arm muscles.
+:::
+
+Further examples: a spinning top or a moving bicycle keeps the direction of its axis (stability). A helicopter needs a tail rotor, otherwise the fuselage would turn opposite to the main rotor. Planets move faster near the Sun (Kepler's second law, see [Gravitation](/en/natural-sciences/gravitation/)).
+
+## Centre of mass
+
+The **centre of mass** (centre of gravity) is the point at which the entire mass can be thought to be concentrated. The weight acts there:
+
+$$
+x_\mathrm{S} = \frac{\sum m_i x_i}{\sum m_i}, \qquad y_\mathrm{S} = \frac{\sum m_i y_i}{\sum m_i}
+$$
+
+For symmetrical homogeneous bodies it lies at the centre of symmetry, but it can also lie outside the body (ring, boomerang). If you support a body exactly below its centre of mass, it is in equilibrium. Example: the common centre of mass of the Earth and the Moon lies about $4670\,\mathrm{km}$ from the Earth's centre, still inside the Earth.
+
+## Equilibrium and statics
+
+A rigid body is in **equilibrium** if it is neither displaced nor rotated. Two conditions must be met:
+
+$$
+\sum \vec F_i = \vec 0 \qquad \text{and} \qquad \sum M_i = 0 \;(\text{about any point})
+$$
+
+It is smart to choose the reference point for the moments where unknown forces act, because these then contribute no moment.
+
+:::tip[Example: beam on two supports]
+A beam of length $4\,\mathrm{m}$ rests on supports at its ends A and B. It weighs $200\,\mathrm{N}$ (acting at the middle), and a load of $600\,\mathrm{N}$ hangs $1\,\mathrm{m}$ from A.
+
+- Moments about A: $F_\mathrm{B} \cdot 4 = 200 \cdot 2 + 600 \cdot 1 = 1000\,\mathrm{N\,m}$, so $F_\mathrm{B} = 250\,\mathrm{N}$
+- Force equilibrium: $F_\mathrm{A} = 800 - 250 = 550\,\mathrm{N}$
+
+Check with moments about B: $F_\mathrm{A} \cdot 4 = 200 \cdot 2 + 600 \cdot 3 = 2200$, so $F_\mathrm{A} = 550\,\mathrm{N}$.
+:::
+
+### Types of equilibrium and stability
+
+| Equilibrium | Behaviour after a small displacement | Centre of mass when displaced | Example |
+| --- | --- | --- | --- |
+| **stable** | returns | is raised | hanging pendulum |
+| **unstable** | moves further away | is lowered | pencil balanced on its tip |
+| **neutral** | stays in the new position | stays at the same height | ball on a level table |
+
+A standing body tips over as soon as the vertical line through its centre of mass leaves the **base of support**. The lower the centre of mass and the larger the base, the more stable the body. That is why cranes have counterweights and racing cars a low centre of mass.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- Russell C. Hibbeler: _Engineering Mechanics: Statics_, Pearson
+- OpenStax: _University Physics Volume 1_, chapters 10 to 12, openstax.org

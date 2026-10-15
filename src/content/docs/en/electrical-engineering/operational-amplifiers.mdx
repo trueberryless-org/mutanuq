@@ -1,0 +1,140 @@
+---
+title: Operational Amplifiers
+description: Ideal and real operational amplifier, comparator, inverting and non-inverting amplifier, voltage follower, summing amplifier, difference amplifier, integrator and Schmitt trigger.
+sidebar:
+  order: 9
+---
+
+An **operational amplifier** (op-amp) is an integrated amplifier with two inputs and one output. It amplifies the difference between the input voltages extremely strongly. Only the external circuit with a few resistors and capacitors determines what the circuit does: amplify, add, compare, integrate or filter. The name comes from analogue computers that performed arithmetic operations with these circuits.
+
+## Structure and parameters
+
+The op-amp has a **non-inverting input** ($+$, $U_\mathrm{P}$) and an **inverting input** ($-$, $U_\mathrm{N}$). It is usually supplied with a symmetrical voltage (e.g. $\pm 15\,\mathrm{V}$) or with a single voltage. The supply terminals are often omitted in circuit diagrams. The output voltage is:
+
+$$
+U_\mathrm{out} = A_0 \cdot (U_\mathrm{P} - U_\mathrm{N}) = A_0 \cdot U_\mathrm{D}
+$$
+
+It cannot exceed the supply voltage. Depending on the type it stays one or two volts below it; only **rail-to-rail** op-amps come almost up to the supply.
+
+| Parameter                 | ideal          | real (example µA741)    |
+| ------------------------- | -------------- | ----------------------- |
+| Open-loop gain $A_0$      | $\infty$       | about $200\,000$ ($106\,\mathrm{dB}$) |
+| Input resistance          | $\infty$       | about $2\,\mathrm{M\Omega}$ (FET inputs: $10^{12}\,\Omega$) |
+| Output resistance         | $0$            | about $75\,\Omega$, much smaller with negative feedback |
+| Gain-bandwidth product    | $\infty$       | about $1\,\mathrm{MHz}$ |
+| Slew rate                 | $\infty$       | $0.5\,\mathrm{V/\mu s}$ |
+| Offset voltage            | $0$            | a few mV                |
+
+Modern op-amps are better than the historical µA741 in many respects; the principle is the same. The **gain-bandwidth product** (GBW) limits the bandwidth: with $1\,\mathrm{MHz}$ GBW a circuit with a gain of $10$ only reaches about $100\,\mathrm{kHz}$.
+
+## Negative feedback and golden rules
+
+Without feedback the gain is so large that a difference of just a few microvolts drives the output to the supply limit. If part of the output voltage is fed back to the **inverting** input (**negative feedback**), the op-amp adjusts its own output so that the differential voltage becomes practically zero. The gain then depends only on the external resistors.
+
+:::tip[Golden rules for the ideal op-amp with negative feedback]
+1. The voltage between the inputs is zero: $U_\mathrm{P} = U_\mathrm{N}$.
+2. No current flows into the inputs.
+:::
+
+All the following circuits can be derived from these two rules and the current law. If $U_\mathrm{P}$ is grounded, $U_\mathrm{N}$ is also at $0\,\mathrm{V}$ without being connected to ground. This is called a **virtual ground**.
+
+![Inverting and non-inverting amplifier](/images/electrical-engineering/opamp-amplifiers_en.svg)
+
+## Comparator
+
+Without negative feedback the op-amp works as a **comparator**. The output jumps to the positive saturation limit if $U_\mathrm{P} > U_\mathrm{N}$, otherwise to the negative one:
+
+$$
+U_\mathrm{out} = \begin{cases} +U_\mathrm{sat} & \text{if } U_\mathrm{P} > U_\mathrm{N} \\ -U_\mathrm{sat} & \text{if } U_\mathrm{P} < U_\mathrm{N} \end{cases}
+$$
+
+If a reference voltage is applied to one input, the output reports whether the signal is above or below it, for example as a twilight switch or overvoltage warning. For fast comparisons there are dedicated comparator ICs (LM393) with an open-collector output that can be adapted to logic levels. If the input signal is noisy near the threshold, a simple comparator switches back and forth several times. The remedy is the [Schmitt trigger](/en/electrical-engineering/operational-amplifiers/#schmitt-trigger).
+
+## Inverting amplifier
+
+The input signal reaches the inverting input via $R_1$, $R_2$ feeds back from the output, and the non-inverting input is grounded. Because of the virtual ground the current $U_\mathrm{in}/R_1$ flows through $R_1$. It cannot enter the op-amp, so it continues through $R_2$. It follows that:
+
+$$
+\frac{U_\mathrm{in}}{R_1} = -\frac{U_\mathrm{out}}{R_2} \quad \Rightarrow \quad A = \frac{U_\mathrm{out}}{U_\mathrm{in}} = -\frac{R_2}{R_1} \qquad R_\mathrm{in} = R_1
+$$
+
+The minus sign means a phase inversion of $180°$.
+
+:::tip[Example]
+$R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 47\,\mathrm{k\Omega}$: $A = -4.7$. $U_\mathrm{in} = 0.5\,\mathrm{V}$ becomes $U_\mathrm{out} = -2.35\,\mathrm{V}$. At $U_\mathrm{in} = 4\,\mathrm{V}$ the calculation would give $-18.8\,\mathrm{V}$. With a $\pm 15\,\mathrm{V}$ supply, however, the output saturates at about $-13.5\,\mathrm{V}$.
+:::
+
+## Non-inverting amplifier
+
+The signal is applied directly to the non-inverting input. The output is fed back to the inverting input via the voltage divider $R_2$ (from the output) and $R_1$ (to ground). Because $U_\mathrm{N} = U_\mathrm{in}$ must hold:
+
+$$
+U_\mathrm{in} = U_\mathrm{out} \cdot \frac{R_1}{R_1 + R_2} \quad \Rightarrow \quad A = 1 + \frac{R_2}{R_1}
+$$
+
+The gain is always at least $1$, the signal is not inverted, and the input resistance is very high. With $R_1 = 10\,\mathrm{k\Omega}$ and $R_2 = 47\,\mathrm{k\Omega}$, $A = 5.7$.
+
+## Voltage follower
+
+If the output is connected directly to the inverting input ($R_2 = 0$, $R_1 = \infty$), $A = 1$: $U_\mathrm{out} = U_\mathrm{in}$. The **voltage follower** (buffer, impedance converter) does not amplify, but it practically does not load the source and can supply current at its output. It buffers a high-impedance voltage divider, a sensor or a reference voltage before a load is connected.
+
+## Summing amplifier
+
+Several inputs, each led via its own resistor to the virtual ground of an inverting amplifier, form a **summing amplifier**. The currents add at the node:
+
+$$
+U_\mathrm{out} = -R_\mathrm{f} \cdot \left(\frac{U_1}{R_1} + \frac{U_2}{R_2} + \ldots + \frac{U_n}{R_n}\right)
+$$
+
+With equal resistors, $U_\mathrm{out} = -(U_1 + U_2 + \ldots)$. Since the inputs do not influence each other because of the virtual ground, the circuit is suitable as an audio mixer. If the input resistors are weighted by factors $1, 2, 4, 8$, a simple [digital-to-analogue converter](/en/electrical-engineering/ad-da-conversion/#digital-to-analogue-converters) results.
+
+## Difference amplifier
+
+The **difference amplifier** (subtractor) amplifies the difference between two voltages. $U_1$ reaches the inverting input via $R_1$ (feedback $R_2$), $U_2$ reaches the non-inverting input via the voltage divider $R_3$, $R_4$. With $R_1 = R_3$ and $R_2 = R_4$:
+
+$$
+U_\mathrm{out} = \frac{R_2}{R_1} \cdot (U_2 - U_1)
+$$
+
+Common-mode components that are the same at both inputs (such as picked-up interference) cancel out. The accuracy depends on how well the resistors match. **Instrumentation amplifiers** (e.g. INA128) contain three op-amps with matched resistors and are used to measure small bridge and sensor signals.
+
+## Integrator and differentiator
+
+If $R_2$ in the inverting amplifier is replaced by a capacitor $C$, the input current $U_\mathrm{in}/R$ charges the capacitor. The output voltage is the integral of the input voltage:
+
+$$
+U_\mathrm{out}(t) = -\frac{1}{RC} \int_0^t U_\mathrm{in}\,\mathrm{d}t + U_\mathrm{out}(0)
+$$
+
+:::tip[Example]
+$R = 10\,\mathrm{k\Omega}$, $C = 1\,\mathrm{\mu F}$, so $RC = 10\,\mathrm{ms}$. With a constant $U_\mathrm{in} = 1\,\mathrm{V}$ the output voltage changes at $-1\,\mathrm{V}/10\,\mathrm{ms} = -100\,\mathrm{V/s}$. After $10\,\mathrm{ms}$, $U_\mathrm{out} = -1\,\mathrm{V}$; after $50\,\mathrm{ms}$, $-5\,\mathrm{V}$. A square wave becomes a triangle wave.
+:::
+
+A real integrator slowly drifts into saturation because of the offset voltage. A large resistor in parallel with $C$ or a reset switch prevents this. Integrators are used in function generators, controllers (I component) and dual-slope AD converters.
+
+Swapping $R$ and $C$ gives a **differentiator** with $U_\mathrm{out} = -RC \cdot \mathrm{d}U_\mathrm{in}/\mathrm{d}t$. It is sensitive to high-frequency noise and is used less often.
+
+## Schmitt trigger
+
+A **Schmitt trigger** is a comparator with **positive feedback**: part of the output voltage is fed back to the **non-inverting** input. This creates two switching thresholds, one for switching on and one for switching off. The gap between them is called **hysteresis**. A noisy signal that slowly crosses the threshold triggers only a single clean switching event.
+
+**Inverting Schmitt trigger**: the signal is applied to the inverting input; the voltage divider of $R_2$ (from the output) and $R_1$ (to ground) supplies the threshold at the non-inverting input:
+
+$$
+U_\mathrm{th} = \pm U_\mathrm{sat} \cdot \frac{R_1}{R_1 + R_2} \qquad U_\mathrm{H} = 2 \cdot U_\mathrm{sat} \cdot \frac{R_1}{R_1 + R_2}
+$$
+
+:::tip[Example]
+$U_\mathrm{sat} = \pm 10\,\mathrm{V}$, $R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 40\,\mathrm{k\Omega}$: the thresholds are at $\pm 10\,\mathrm{V} \cdot 10/50 = \pm 2\,\mathrm{V}$, and the hysteresis is $4\,\mathrm{V}$. The output jumps to $-10\,\mathrm{V}$ when the signal exceeds $+2\,\mathrm{V}$, and only back to $+10\,\mathrm{V}$ when it falls below $-2\,\mathrm{V}$.
+:::
+
+In the **non-inverting Schmitt trigger** the signal reaches the non-inverting input via $R_1$, $R_2$ feeds back from the output to that point, and the inverting input is grounded. The thresholds are then $\pm U_\mathrm{sat} \cdot R_1/R_2$.
+
+Schmitt triggers shape sensor signals into clean square waves, debounce push buttons together with an RC network and are available as logic gates (74HC14). Many microcontroller inputs have built-in Schmitt triggers. With RC feedback the Schmitt trigger becomes a square-wave generator.
+
+## Further reading
+
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.
+- [Texas Instruments: Op Amps for Everyone (SLOD006)](https://www.ti.com/lit/an/slod006b/slod006b.pdf)
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Electronic Circuits: Handbook for Design and Application_. Springer.

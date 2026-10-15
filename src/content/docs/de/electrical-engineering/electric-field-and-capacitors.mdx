@@ -1,0 +1,183 @@
+---
+title: Elektrisches Feld und Kondensator
+description: Elektrisches Feld, Feldstärke, Kapazität, Plattenkondensator, Dielektrika, Schaltungen von Kondensatoren, gespeicherte Energie sowie Laden und Entladen mit der Zeitkonstante.
+sidebar:
+  order: 3
+---
+
+Zwischen getrennten Ladungen wirken Kräfte, auch ohne dass Strom fließt. Diese Wirkung beschreibt man mit dem **elektrischen Feld**. Ein Kondensator nutzt das Feld zwischen zwei Platten, um Ladung und Energie zu speichern. Er ist nach dem Widerstand das häufigste Bauteil in elektronischen Schaltungen: Er glättet Spannungen, puffert Versorgungen, blockt Gleichspannung und bestimmt in Filtern und Zeitgliedern Frequenzen und Zeiten.
+
+## Elektrisches Feld
+
+Ein **elektrisches Feld** ist der Raum um eine Ladung, in dem auf andere Ladungen eine Kraft wirkt. Man stellt es mit **Feldlinien** dar. Sie beginnen an positiven und enden an negativen Ladungen, schneiden einander nie und stehen senkrecht auf leitenden Oberflächen. Je dichter die Feldlinien, desto stärker das Feld.
+
+Die Kraft zwischen zwei Punktladungen beschreibt das **coulombsche Gesetz**:
+
+$$
+F = \frac{1}{4\pi\varepsilon_0} \cdot \frac{Q_1 \cdot Q_2}{r^2}
+$$
+
+Zwischen zwei parallelen, entgegengesetzt geladenen Platten entsteht ein **homogenes Feld**: Die Feldlinien verlaufen parallel und in gleichem Abstand, die Feldstärke ist überall gleich.
+
+### Feldstärke
+
+Die **elektrische Feldstärke** $E$ ist die Kraft pro Ladung. Im homogenen Feld hängt sie nur von der Spannung und dem Plattenabstand $d$ ab:
+
+$$
+E = \frac{F}{Q} \qquad E = \frac{U}{d} \qquad [E] = \mathrm{\frac{V}{m}} = \mathrm{\frac{N}{C}}
+$$
+
+:::tip[Beispiel]
+An zwei Platten im Abstand $2\,\mathrm{mm}$ liegen $500\,\mathrm{V}$. Die Feldstärke beträgt $E = 500\,\mathrm{V} / 0{,}002\,\mathrm{m} = 250\,\mathrm{kV/m} = 0{,}25\,\mathrm{kV/mm}$.
+:::
+
+Übersteigt die Feldstärke die **Durchschlagfestigkeit** des Isolierstoffs, wird er leitend und es kommt zum Überschlag. Trockene Luft hält etwa $3\,\mathrm{kV/mm}$ aus. Deshalb haben Bauteile und Leiterplatten Mindestabstände (Luft- und Kriechstrecken), und Kondensatoren eine maximale Nennspannung.
+
+### Influenz und Abschirmung
+
+Bringt man einen Leiter in ein elektrisches Feld, verschieben sich seine freien Elektronen, bis das Innere feldfrei ist (**Influenz**). Ein geschlossenes leitendes Gehäuse schirmt deshalb äußere elektrische Felder ab (**faradayscher Käfig**). Das nutzen Schirmungen von Kabeln und Gehäuse von Geräten, und deshalb ist man im Auto bei Blitzschlag geschützt.
+
+## Kapazität
+
+Legt man an zwei voneinander isolierte Leiter eine Spannung, nehmen sie entgegengesetzt gleich große Ladungen auf. Die gespeicherte Ladung ist proportional zur Spannung. Der Proportionalitätsfaktor heißt **Kapazität**:
+
+$$
+C = \frac{Q}{U} \qquad [C] = \mathrm{\frac{C}{V}} = \mathrm{F}\ (\text{Farad})
+$$
+
+Ein Farad ist sehr viel. Übliche Kondensatoren haben Kapazitäten von einigen Pikofarad bis zu einigen tausend Mikrofarad. Nur **Superkondensatoren** (Doppelschichtkondensatoren) erreichen mehrere Farad.
+
+### Plattenkondensator
+
+Die Kapazität eines Plattenkondensators steigt mit der Plattenfläche $A$ und sinkt mit dem Abstand $d$:
+
+$$
+C = \varepsilon_0 \cdot \varepsilon_\mathrm{r} \cdot \frac{A}{d} \qquad \varepsilon_0 \approx 8{,}854 \cdot 10^{-12}\,\mathrm{\frac{F}{m}}
+$$
+
+$\varepsilon_0$ ist die **elektrische Feldkonstante** (Permittivität des Vakuums), $\varepsilon_\mathrm{r}$ die **Permittivitätszahl** (relative Permittivität, Dielektrizitätszahl) des Isolierstoffs zwischen den Platten.
+
+:::tip[Beispiel]
+Zwei Platten mit je $100\,\mathrm{cm^2} = 0{,}01\,\mathrm{m^2}$ stehen $1\,\mathrm{mm}$ voneinander entfernt in Luft:
+
+$$
+C = 8{,}854 \cdot 10^{-12}\,\mathrm{\frac{F}{m}} \cdot \frac{0{,}01\,\mathrm{m^2}}{0{,}001\,\mathrm{m}} \approx 88{,}5\,\mathrm{pF}
+$$
+
+Mit Glas ($\varepsilon_\mathrm{r} = 5$) dazwischen steigt die Kapazität auf $443\,\mathrm{pF}$. Für große Kapazitäten braucht man also große Flächen, kleine Abstände und Isolierstoffe mit hohem $\varepsilon_\mathrm{r}$.
+:::
+
+### Dielektrika
+
+Der Isolierstoff zwischen den Platten heißt **Dielektrikum**. Im Feld werden seine Moleküle polarisiert, ihre Ladungen richten sich gegen das äußere Feld aus. Dadurch kann der Kondensator bei gleicher Spannung mehr Ladung aufnehmen.
+
+| Dielektrikum            | $\varepsilon_\mathrm{r}$ (ungefähr) | Verwendung                           |
+| ----------------------- | ----------------- | ------------------------------------ |
+| Vakuum, Luft            | $1$               | Drehkondensatoren                    |
+| PTFE (Teflon)           | $2{,}1$           | Hochfrequenzkabel, -platinen         |
+| Polypropylen            | $2{,}2$           | Folienkondensatoren                  |
+| FR4 (Leiterplatte)      | $4{,}5$           | Leiterplatten                        |
+| Glas                    | $5$ bis $10$      | Isolatoren                           |
+| Aluminiumoxid           | etwa $9$          | Aluminium-Elektrolytkondensatoren    |
+| Tantalpentoxid          | etwa $27$         | Tantal-Elektrolytkondensatoren       |
+| Wasser                  | $80$              |                                      |
+| Bariumtitanat-Keramik   | $1000$ bis über $10\,000$ | Keramik-Vielschichtkondensatoren (MLCC) |
+
+### Bauformen
+
+| Bauform                        | Kapazitätsbereich | Eigenschaften                                                          |
+| ------------------------------ | ----------------- | ---------------------------------------------------------------------- |
+| Keramik (MLCC)                 | pF bis etwa $100\,\mathrm{\mu F}$ | klein, billig, gut bei hohen Frequenzen; Kapazität bei hoher Permittivität spannungs- und temperaturabhängig |
+| Folie                          | nF bis µF         | genau, verlustarm, für Filter und Netzanwendungen                      |
+| Aluminium-Elektrolyt (Elko)    | µF bis F-Bereich  | große Kapazität, **gepolt**, begrenzte Lebensdauer, höherer Serienwiderstand (ESR) |
+| Tantal                         | µF                | kompakt, gepolt, empfindlich gegen Überspannung                         |
+| Superkondensator               | F bis kF          | Pufferung, geringe Spannung je Zelle (etwa $2{,}7\,\mathrm{V}$)        |
+
+:::danger
+Elektrolytkondensatoren sind gepolt. Falsch herum oder mit zu hoher Spannung betrieben können sie sich erhitzen und platzen. Große Kondensatoren in Netzteilen können noch lange nach dem Ausschalten gefährliche Spannungen speichern.
+:::
+
+Ein wichtiger Einsatz ist der **Abblockkondensator** (Entkoppelkondensator): Typisch $100\,\mathrm{nF}$ Keramik direkt an den Versorgungspins jedes ICs liefern bei schnellen Schaltvorgängen kurzzeitig Strom und verhindern, dass Spannungseinbrüche andere Bauteile stören.
+
+## Schaltungen von Kondensatoren
+
+Bei der **Parallelschaltung** liegt an allen Kondensatoren dieselbe Spannung, die Ladungen addieren sich. Das wirkt wie eine größere Plattenfläche:
+
+$$
+C_\mathrm{ges} = C_1 + C_2 + \ldots + C_n
+$$
+
+Bei der **Reihenschaltung** tragen alle Kondensatoren dieselbe Ladung, die Spannungen addieren sich. Das wirkt wie ein größerer Plattenabstand:
+
+$$
+\frac{1}{C_\mathrm{ges}} = \frac{1}{C_1} + \frac{1}{C_2} + \ldots + \frac{1}{C_n}
+$$
+
+Die Rechenregeln sind also genau umgekehrt wie bei Widerständen. In Reihe teilt sich die Spannung im umgekehrten Verhältnis der Kapazitäten auf: Am kleineren Kondensator liegt die größere Spannung. $10\,\mathrm{\mu F}$ und $40\,\mathrm{\mu F}$ in Reihe ergeben $8\,\mathrm{\mu F}$, parallel $50\,\mathrm{\mu F}$.
+
+## Energie im Kondensator
+
+Beim Laden steigt die Spannung von $0$ auf $U$. Die zugeführte Energie steckt im elektrischen Feld:
+
+$$
+W = \frac{1}{2} C U^2 = \frac{1}{2} Q U = \frac{Q^2}{2C}
+$$
+
+:::tip[Beispiel]
+Ein Elko mit $1000\,\mathrm{\mu F}$ ist auf $25\,\mathrm{V}$ geladen. Er speichert $Q = 1000 \cdot 10^{-6}\,\mathrm{F} \cdot 25\,\mathrm{V} = 25\,\mathrm{mC}$ und $W = \tfrac{1}{2} \cdot 10^{-3}\,\mathrm{F} \cdot (25\,\mathrm{V})^2 \approx 0{,}31\,\mathrm{J}$.
+:::
+
+Weil die Spannung quadratisch eingeht, speichert ein Kondensator bei doppelter Spannung die vierfache Energie.
+
+## Laden und Entladen
+
+Wird ein Kondensator über einen Widerstand $R$ an eine Gleichspannung $U_0$ gelegt, lädt er sich nicht sofort auf. Zu Beginn ist er leer, wirkt wie ein Kurzschluss, und es fließt der volle Strom $U_0/R$. Mit steigender Kondensatorspannung wird die Spannung am Widerstand und damit der Strom kleiner. Es entsteht eine **Exponentialfunktion**. Die Geschwindigkeit bestimmt die **Zeitkonstante**:
+
+$$
+\tau = R \cdot C \qquad [\tau] = \Omega \cdot \mathrm{F} = \mathrm{s}
+$$
+
+![Lade- und Entladekurve eines Kondensators](/images/electrical-engineering/rc-charging_de.svg)
+
+| Vorgang   | Kondensatorspannung                               | Strom                                      |
+| --------- | ------------------------------------------------- | ------------------------------------------ |
+| Laden     | $u_C(t) = U_0 \cdot \left(1 - e^{-t/\tau}\right)$ | $i(t) = \dfrac{U_0}{R} \cdot e^{-t/\tau}$  |
+| Entladen  | $u_C(t) = U_0 \cdot e^{-t/\tau}$                  | $i(t) = -\dfrac{U_0}{R} \cdot e^{-t/\tau}$ |
+
+Beim Entladen fließt der Strom in die Gegenrichtung, daher das Minus.
+
+| Zeit     | Ladung: $u_C / U_0$ | Entladung: $u_C / U_0$ |
+| -------- | ------------------- | ---------------------- |
+| $1\tau$  | $63{,}2\,\%$        | $36{,}8\,\%$           |
+| $2\tau$  | $86{,}5\,\%$        | $13{,}5\,\%$           |
+| $3\tau$  | $95{,}0\,\%$        | $5{,}0\,\%$            |
+| $4\tau$  | $98{,}2\,\%$        | $1{,}8\,\%$            |
+| $5\tau$  | $99{,}3\,\%$        | $0{,}7\,\%$            |
+
+:::tip[Merke]
+Nach $1\tau$ ist der Kondensator zu rund $63\,\%$ geladen. Nach $5\tau$ gilt der Vorgang als abgeschlossen. Die Tangente an die Kurve im Startpunkt schneidet den Endwert genau bei $t = \tau$, so liest man $\tau$ aus einem Oszillogramm ab.
+:::
+
+Zur Berechnung der Zeit, bis eine bestimmte Spannung $u$ erreicht ist, löst man die Ladegleichung mit dem natürlichen Logarithmus nach $t$ auf:
+
+$$
+t = -\tau \cdot \ln\left(1 - \frac{u}{U_0}\right) \qquad \text{(Laden)} \qquad t = -\tau \cdot \ln\frac{u}{U_0} \qquad \text{(Entladen)}
+$$
+
+:::tip[Beispiel]
+$R = 10\,\mathrm{k\Omega}$, $C = 100\,\mathrm{\mu F}$, $U_0 = 12\,\mathrm{V}$. Die Zeitkonstante ist $\tau = 10^4\,\Omega \cdot 10^{-4}\,\mathrm{F} = 1\,\mathrm{s}$. Nach $5\,\mathrm{s}$ ist der Kondensator praktisch voll. Der Anfangsstrom beträgt $1{,}2\,\mathrm{mA}$.
+
+Wann erreicht die Spannung $5\,\mathrm{V}$?
+
+$$
+t = -1\,\mathrm{s} \cdot \ln\left(1 - \frac{5}{12}\right) = -1\,\mathrm{s} \cdot \ln\frac{7}{12} \approx 0{,}54\,\mathrm{s}
+$$
+:::
+
+Anwendungen von RC-Gliedern sind Verzögerungen (Reset-Schaltung eines Mikrocontrollers), das Entprellen von Tastern, Zeitgeber wie der [555](/de/electrical-engineering/sequential-circuits/#timer-und-oszillatoren) und [Filter](/de/electrical-engineering/filters/).
+
+## Weiterführende Quellen
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- [Wikipedia: Kondensator (Elektrotechnik)](https://de.wikipedia.org/wiki/Kondensator_(Elektrotechnik))
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg.

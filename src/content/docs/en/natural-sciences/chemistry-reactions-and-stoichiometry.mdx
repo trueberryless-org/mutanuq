@@ -1,0 +1,183 @@
+---
+title: Reactions and Stoichiometry
+description: Writing and balancing chemical equations, amount of substance, molar mass, Avogadro constant, molar volume, concentration and stoichiometric calculations with worked examples.
+sidebar:
+  order: 34
+---
+
+In a **chemical reaction**, substances (**reactants**) are converted into new substances (**products**). Bonds are broken and new ones formed; the atoms themselves are conserved. **Stoichiometry** is calculating with the quantity ratios in such reactions. It answers questions such as: how much carbon dioxide is produced when 1 kg of natural gas is burned?
+
+## Conservation of mass
+
+Antoine Lavoisier showed in the 18th century by careful weighing in closed vessels that in a chemical reaction the total mass of the products equals the total mass of the reactants (**law of conservation of mass**). The reason: atoms are neither created nor destroyed, only rearranged. (The change in mass due to the energy released according to $E = mc^2$ is immeasurably small in chemical reactions.)
+
+That a piece of wood becomes "lighter" when it burns does not contradict this: the products carbon dioxide and water vapour escape into the air. Steel wool becomes heavier when it burns, because oxygen from the air is bound.
+
+## Chemical equations
+
+A **chemical equation** describes a reaction with chemical formulae:
+
+$$
+\mathrm{2\,H_2 + O_2 \rightarrow 2\,H_2O}
+$$
+
+- The **subscripts** belong to the formula and must **never** be changed when balancing. $\mathrm{H_2O}$ is water, $\mathrm{H_2O_2}$ a different substance (hydrogen peroxide).
+- The **coefficients** (numbers in front) give the ratios of particles and are chosen so that each kind of atom appears equally often on both sides. For ions the total charge must also match.
+- States are given where needed: (s) solid, (l) liquid, (g) gas, (aq) dissolved in water.
+- $\rightleftharpoons$ indicates an [equilibrium](/en/natural-sciences/chemistry-energy-and-kinetics/#chemical-equilibrium).
+
+### Balancing step by step
+
+:::tip[Example: combustion of propane]
+Propane burns with oxygen to form carbon dioxide and water.
+
+1. Word equation and formulae: $\mathrm{C_3H_8 + O_2 \rightarrow CO_2 + H_2O}$
+2. Balance carbon (3 on the left): $\mathrm{C_3H_8 + O_2 \rightarrow 3\,CO_2 + H_2O}$
+3. Balance hydrogen (8 on the left, so 4 water): $\mathrm{C_3H_8 + O_2 \rightarrow 3\,CO_2 + 4\,H_2O}$
+4. Oxygen last, because it occurs as an element: $3 \cdot 2 + 4 = 10$ O atoms on the right, so $5\,\mathrm{O_2}$ on the left.
+
+$$
+\mathrm{C_3H_8 + 5\,O_2 \rightarrow 3\,CO_2 + 4\,H_2O}
+$$
+
+Check: left 3 C, 8 H, 10 O; right 3 C, 8 H, 10 O.
+:::
+
+If you end up with half coefficients, multiply the whole equation by 2: $\mathrm{C_8H_{18} + 12.5\,O_2 \rightarrow \dots}$ becomes
+
+$$
+\mathrm{2\,C_8H_{18} + 25\,O_2 \rightarrow 16\,CO_2 + 18\,H_2O}
+$$
+
+## Types of reaction
+
+| Type                           | Scheme                             | Example                                                  |
+| ------------------------------ | ---------------------------------- | -------------------------------------------------------- |
+| **Synthesis** (combination)    | $\mathrm{A + B \rightarrow AB}$    | $\mathrm{Fe + S \rightarrow FeS}$                        |
+| **Decomposition**              | $\mathrm{AB \rightarrow A + B}$    | $\mathrm{CaCO_3 \rightarrow CaO + CO_2}$ (lime burning)  |
+| **Displacement**               | $\mathrm{A + BC \rightarrow AC + B}$ | $\mathrm{Fe_2O_3 + 2\,Al \rightarrow Al_2O_3 + 2\,Fe}$ (thermite process) |
+| **Precipitation**              | dissolved ions form an insoluble solid | $\mathrm{Ag^+ + Cl^- \rightarrow AgCl \downarrow}$ (test for chloride) |
+| **Combustion**                 | substance + $\mathrm{O_2}$         | $\mathrm{CH_4 + 2\,O_2 \rightarrow CO_2 + 2\,H_2O}$      |
+| **Acid-base reaction**         | proton transfer                    | $\mathrm{HCl + NaOH \rightarrow NaCl + H_2O}$, see [Acids and Bases](/en/natural-sciences/chemistry-acids-and-bases/) |
+| **Redox reaction**             | electron transfer                  | $\mathrm{Zn + Cu^{2+} \rightarrow Zn^{2+} + Cu}$, see [Redox](/en/natural-sciences/chemistry-redox-and-electrochemistry/) |
+
+## Amount of substance and the mole
+
+Atoms are so small that we do not count individual particles but packages. The **amount of substance** $n$, with the SI unit **mole** (mol), has been defined since 2019 as follows: one mole contains exactly $6.02214076 \cdot 10^{23}$ particles. This number is the **Avogadro constant**:
+
+$$
+N_A = 6.02214076 \cdot 10^{23}\,\mathrm{mol^{-1}}, \qquad n = \frac{N}{N_A}
+$$
+
+The number is chosen so that one mole of a substance weighs almost exactly as many grams as its relative particle mass: 1 mol of carbon-12 has $12\,\mathrm{g}$.
+
+### Molar mass
+
+The **molar mass** $M$ is the mass of one mole of a substance. It is read from the atomic masses in the periodic table and added up:
+
+$$
+M = \frac{m}{n} \quad \text{in } \mathrm{g/mol}
+$$
+
+| Substance             | Calculation                                  | $M$ in $\mathrm{g/mol}$ |
+| --------------------- | -------------------------------------------- | ----------------------- |
+| $\mathrm{H_2O}$       | $2 \cdot 1.008 + 16.00$                      | $18.02$                 |
+| $\mathrm{CO_2}$       | $12.01 + 2 \cdot 16.00$                      | $44.01$                 |
+| $\mathrm{CH_4}$       | $12.01 + 4 \cdot 1.008$                      | $16.04$                 |
+| $\mathrm{NaCl}$       | $22.99 + 35.45$                              | $58.44$                 |
+| $\mathrm{Fe_2O_3}$    | $2 \cdot 55.85 + 3 \cdot 16.00$              | $159.7$                 |
+| $\mathrm{H_2SO_4}$    | $2 \cdot 1.008 + 32.06 + 4 \cdot 16.00$      | $98.08$                 |
+
+### Molar volume of gases
+
+According to Avogadro's law, equal volumes of all (ideal) gases at the same pressure and temperature contain the same number of particles. One mole of a gas therefore occupies the same **molar volume** $V_m = \frac{V}{n}$ regardless of the type of gas:
+
+| Conditions                                           | $V_m$                       |
+| ---------------------------------------------------- | --------------------------- |
+| standard conditions $0\,\mathrm{°C}$, $1013.25\,\mathrm{hPa}$ | $22.414\,\mathrm{L/mol}$ |
+| $25\,\mathrm{°C}$, $1013.25\,\mathrm{hPa}$           | $24.47\,\mathrm{L/mol}$     |
+
+In general the **ideal gas law** $p \cdot V = n \cdot R \cdot T$ applies, with the gas constant $R = 8.314\,\mathrm{J/(mol \cdot K)}$ and the temperature in kelvin.
+
+### Concentration and dilution
+
+The **amount concentration** (molarity) gives how many moles of a substance are dissolved in one litre of solution:
+
+$$
+c = \frac{n}{V_\text{solution}} \quad \text{in } \mathrm{mol/L}
+$$
+
+When **diluting**, the amount of the dissolved substance stays the same, so $c_1 \cdot V_1 = c_2 \cdot V_2$.
+
+## Stoichiometric calculations
+
+The method is always the same:
+
+1. Write and balance the chemical equation.
+2. Convert the given quantity into an amount of substance ($n = \frac{m}{M}$, $n = \frac{V}{V_m}$ or $n = c \cdot V$).
+3. Use the ratio of the coefficients to determine the amount of the substance you are looking for.
+4. Convert this amount back into the required quantity.
+
+:::tip[Example 1: combustion of methane]
+How much oxygen is needed to burn $100\,\mathrm{g}$ of methane, and how much carbon dioxide is produced?
+
+$$
+\mathrm{CH_4 + 2\,O_2 \rightarrow CO_2 + 2\,H_2O}
+$$
+
+$$
+n(\mathrm{CH_4}) = \frac{100\,\mathrm{g}}{16.04\,\mathrm{g/mol}} = 6.234\,\mathrm{mol}
+$$
+
+From the equation, $n(\mathrm{O_2}) = 2 \cdot n(\mathrm{CH_4}) = 12.47\,\mathrm{mol}$ and $n(\mathrm{CO_2}) = n(\mathrm{CH_4}) = 6.234\,\mathrm{mol}$:
+
+$$
+m(\mathrm{O_2}) = 12.47\,\mathrm{mol} \cdot 32.00\,\mathrm{g/mol} = 399\,\mathrm{g}
+$$
+
+$$
+m(\mathrm{CO_2}) = 6.234\,\mathrm{mol} \cdot 44.01\,\mathrm{g/mol} = 274\,\mathrm{g}
+$$
+
+So $100\,\mathrm{g}$ of methane produces $274\,\mathrm{g}$ of $\mathrm{CO_2}$. At $25\,\mathrm{°C}$ that corresponds to a volume of $6.234\,\mathrm{mol} \cdot 24.47\,\mathrm{L/mol} \approx 153\,\mathrm{L}$.
+:::
+
+:::tip[Example 2: preparing a solution]
+For an experiment you need $250\,\mathrm{mL}$ of sodium chloride solution with $c = 0.100\,\mathrm{mol/L}$.
+
+$$
+n = c \cdot V = 0.100\,\mathrm{mol/L} \cdot 0.250\,\mathrm{L} = 0.0250\,\mathrm{mol}
+$$
+
+$$
+m = n \cdot M = 0.0250\,\mathrm{mol} \cdot 58.44\,\mathrm{g/mol} = 1.46\,\mathrm{g}
+$$
+
+Weigh out $1.46\,\mathrm{g}$ of NaCl, dissolve it in a volumetric flask and fill up to the mark.
+:::
+
+:::tip[Example 3: limiting reactant]
+$10.0\,\mathrm{g}$ of hydrogen react with $64.0\,\mathrm{g}$ of oxygen. What is the maximum mass of water produced?
+
+$$
+n(\mathrm{H_2}) = \frac{10.0}{2.016}\,\mathrm{mol} = 4.96\,\mathrm{mol}, \qquad n(\mathrm{O_2}) = \frac{64.0}{32.00}\,\mathrm{mol} = 2.00\,\mathrm{mol}
+$$
+
+$2.00\,\mathrm{mol}$ of $\mathrm{O_2}$ needs $4.00\,\mathrm{mol}$ of $\mathrm{H_2}$. Hydrogen is in excess, oxygen is the **limiting** reactant. $4.00\,\mathrm{mol}$ of water are formed, i.e. $4.00 \cdot 18.02\,\mathrm{g} = 72.1\,\mathrm{g}$. Left over are $0.96\,\mathrm{mol}$ of $\mathrm{H_2}$, which is $1.9\,\mathrm{g}$. Mass balance: $10.0 + 64.0 = 72.1 + 1.9$.
+:::
+
+:::tip[Example 4: mass fraction of an element]
+What mass fraction of iron does haematite $\mathrm{Fe_2O_3}$ contain?
+
+$$
+w(\mathrm{Fe}) = \frac{2 \cdot 55.85\,\mathrm{g/mol}}{159.7\,\mathrm{g/mol}} = 0.699 = 69.9\,\%
+$$
+:::
+
+The amount of product actually obtained is usually smaller than calculated (side reactions, losses). The **yield** is the ratio of actual to theoretical amount of product, as a percentage.
+
+## Further reading
+
+- [SI Brochure: definition of the mole](https://www.bipm.org/en/publications/si-brochure) (BIPM)
+- [Atomic weights of the elements](https://iupac.qmul.ac.uk/AtWt/) (IUPAC)
+- [OpenStax Chemistry 2e](https://openstax.org/details/books/chemistry-2e) (free textbook)

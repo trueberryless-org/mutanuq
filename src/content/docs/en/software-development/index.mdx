@@ -1,16 +1,59 @@
 ---
 title: Software Development
-description: Fundamentals of object-oriented programming, quality attributes of software and proven design patterns.
+description: Programming in C# and Rust, from the basics through algorithms, data structures and concurrency to testing, clean code, design patterns and software architecture.
 sidebar:
   label: Overview
 ---
 
-import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-Software development is the core subject of computer science at technical college. In this section, you will learn how to build programs that do not just run, but stay **understandable**, extensible and maintainable, even when many people work on them over several years.
+Software development is the core subject of information technology at the HTL and accompanies the entire course from the first to the fifth year. In this section, you will learn how to build programs that do not just run but stay **understandable**, extensible and maintainable, even when many people work on them over several years.
 
-The examples on these pages are written in **C#**, but can be transferred to Java or other object-oriented languages with only minor changes.
+All code examples are available in **C#** and **Rust**. C# is the language taught at the HTL Krems; Rust shows a modern, systems-level approach without a garbage collector. Use the tabs above each example to choose the language. Your choice is remembered on all pages. Every example has been compiled and run with .NET 10 and Rust (edition 2024).
 
-## What to expect
+## Basics
 
-<GroupPageCards directory="software-development" />
+<CardGrid>
+  <LinkCard title="Programming Basics" href="/en/software-development/programming-basics/" description="Variables, data types, operators, control structures, methods and arrays." />
+  <LinkCard title="Memory Management" href="/en/software-development/memory-management/" description="Stack and heap, value and reference types, garbage collection, ownership and borrowing." />
+  <LinkCard title="Object-Oriented Programming" href="/en/software-development/object-oriented-programming/" description="Classes, encapsulation, inheritance, polymorphism, interfaces and traits." />
+  <LinkCard title="Error Handling" href="/en/software-development/error-handling/" description="Exceptions, Result and Option, and dealing with null safely." />
+  <LinkCard title="Generics and Collections" href="/en/software-development/generics-and-collections/" description="Generic types, lists, dictionaries, sets, queues, stacks and iterators." />
+  <LinkCard title="Functional Programming" href="/en/software-development/functional-programming/" description="Lambdas, closures, LINQ and iterator adapters." />
+  <LinkCard title="Strings and Regular Expressions" href="/en/software-development/strings-and-regular-expressions/" description="Unicode, string operations, formatting and regex." />
+  <LinkCard title="Files and Serialization" href="/en/software-development/files-and-serialization/" description="Files, streams, JSON, CSV and XML." />
+</CardGrid>
+
+## Algorithms and data structures
+
+<CardGrid>
+  <LinkCard title="Algorithms" href="/en/software-development/algorithms/" description="Big O notation, searching and sorting." />
+  <LinkCard title="Recursion and Design Techniques" href="/en/software-development/recursion/" description="Divide and conquer, backtracking, dynamic programming, greedy." />
+  <LinkCard title="Data Structures" href="/en/software-development/data-structures/" description="Linked lists, hash tables, trees and heaps." />
+  <LinkCard title="Graphs" href="/en/software-development/graphs/" description="Breadth-first and depth-first search, Dijkstra, topological sorting, spanning trees." />
+</CardGrid>
+
+## Advanced programming
+
+<CardGrid>
+  <LinkCard title="Concurrency" href="/en/software-development/concurrency/" description="Threads, locks, deadlocks, channels and async and await." />
+  <LinkCard title="Network Programming" href="/en/software-development/network-programming/" description="Sockets, TCP, UDP, message framing and HTTP requests." />
+  <LinkCard title="GUI Programming" href="/en/software-development/gui-programming/" description="Events, layout, data binding, MVVM and the Elm architecture." />
+</CardGrid>
+
+## Quality and design
+
+<CardGrid>
+  <LinkCard title="Testing" href="/en/software-development/testing/" description="Test techniques, unit tests, test doubles, TDD and debugging." />
+  <LinkCard title="Version Control with Git" href="/en/software-development/version-control/" description="Commits, branches, merge, pull requests and CI." />
+  <LinkCard title="UML" href="/en/software-development/uml/" description="Class, use case, sequence, activity and state machine diagrams." />
+  <LinkCard title="Clean Code and SOLID" href="/en/software-development/clean-code/" description="Good names, small functions, SOLID, code smells and refactoring." />
+  <LinkCard title="Software Metrics" href="/en/software-development/software-metrics/" description="Scalability, transparency, coupling, cohesion and metrics." />
+  <LinkCard title="Design Patterns" href="/en/software-development/design-patterns/" description="All 23 patterns of the Gang of Four." />
+  <LinkCard title="Software Architecture" href="/en/software-development/software-architecture/" description="Layers, MVC, MVVM, hexagonal architecture, microservices and dependency injection." />
+  <LinkCard title="Software Engineering" href="/en/software-development/software-engineering/" description="Life cycle, requirements, user stories, estimation, documentation and licences." />
+</CardGrid>
+
+## Related topics
+
+Databases and SQL are covered in [Databases](/en/databases/), web applications in [Web Technologies](/en/web-technologies/), and low-level programming in C in [Embedded Systems](/en/embedded-programming/).

@@ -1,0 +1,435 @@
+---
+title: Nebenläufigkeit
+description: Threads, Race Conditions, Locks, Deadlocks, Channels, Thread-Pools, Parallelisierung sowie async und await in C# und Rust.
+sidebar:
+  order: 13
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Moderne Prozessoren haben viele Kerne, und viele Programme müssen gleichzeitig auf Benutzereingaben, Netzwerkanfragen und Dateien warten. **Nebenläufigkeit** (_Concurrency_) bedeutet, dass mehrere Aufgaben in überlappenden Zeiträumen bearbeitet werden. **Parallelität** (_Parallelism_) bedeutet, dass sie tatsächlich gleichzeitig auf mehreren Kernen laufen. Nebenläufigkeit ist auch auf einem einzigen Kern möglich, indem das Betriebssystem schnell zwischen den Aufgaben wechselt.
+
+## Prozesse und Threads
+
+- Ein **Prozess** ist ein laufendes Programm mit eigenem, geschütztem Adressraum. Prozesse können sich nicht gegenseitig in den Speicher schreiben.
+- Ein **Thread** ist ein Ausführungsstrang innerhalb eines Prozesses. Alle Threads eines Prozesses teilen sich den Heap, haben aber jeweils einen eigenen Stack. Threads zu erzeugen und zwischen ihnen zu wechseln ist billiger als bei Prozessen.
+
+Wie das Betriebssystem Threads auf die Kerne verteilt (**Scheduling**), beschreibt die Seite [Prozesse und Threads](/de/computer-science/processes-and-threads/).
+
+Einsatzgebiete:
+
+- **Reaktionsfähigkeit**: Eine grafische Oberfläche bleibt bedienbar, während im Hintergrund eine lange Berechnung läuft.
+- **Durchsatz**: Ein Webserver bearbeitet viele Anfragen gleichzeitig.
+- **Rechenleistung**: Eine aufwendige Berechnung wird auf alle Kerne aufgeteilt.
+
+## Threads starten
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var workers = new List<Thread>();
+for (int i = 1; i <= 3; i++)
+{
+    int id = i; // eigene Kopie für den Lambda-Ausdruck
+    var t = new Thread(() => Console.WriteLine($"Thread {id} arbeitet"));
+    t.Start();
+    workers.Add(t);
+}
+
+foreach (var t in workers)
+{
+    t.Join(); // warten, bis der Thread fertig ist
+}
+Console.WriteLine("Alle fertig");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::thread;
+
+fn main() {
+    let mut workers = Vec::new();
+    for id in 1..=3 {
+        // move: die Closure übernimmt id
+        workers.push(thread::spawn(move || {
+            println!("Thread {id} arbeitet");
+            id * 10 // Rückgabewert des Threads
+        }));
+    }
+
+    for handle in workers {
+        let result = handle.join().unwrap(); // warten und Ergebnis holen
+        println!("Ergebnis: {result}");
+    }
+    println!("Alle fertig");
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die Reihenfolge der Ausgaben ist bei jedem Start eine andere, denn welcher Thread wann läuft, entscheidet das Betriebssystem. Nebenläufige Programme sind deshalb **nicht deterministisch**, was die Fehlersuche erschwert.
+
+## Race Conditions
+
+Eine **Race Condition** entsteht, wenn das Ergebnis davon abhängt, in welcher Reihenfolge Threads auf gemeinsame Daten zugreifen. Das klassische Beispiel ist ein Zähler, den mehrere Threads erhöhen. Die Anweisung `counter++` besteht aus drei Schritten: Wert lesen, um 1 erhöhen, Wert zurückschreiben. Lesen zwei Threads denselben alten Wert, geht eine Erhöhung verloren.
+
+```txt
+Thread 1: liest 41
+Thread 2: liest 41
+Thread 1: schreibt 42
+Thread 2: schreibt 42      ← eine Erhöhung ist verloren
+```
+
+Der Codeabschnitt, in dem auf gemeinsame Daten zugegriffen wird, heißt **kritischer Abschnitt**. Es darf sich immer nur ein Thread darin befinden (**gegenseitiger Ausschluss**, _mutual exclusion_).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int unsafeCounter = 0;
+int safeCounter = 0;
+int atomicCounter = 0;
+var gate = new object();
+
+var threads = Enumerable.Range(0, 4).Select(_ => new Thread(() =>
+{
+    for (int i = 0; i < 100_000; i++)
+    {
+        unsafeCounter++;                          // Race Condition
+
+        lock (gate)                               // nur ein Thread gleichzeitig
+        {
+            safeCounter++;
+        }
+
+        Interlocked.Increment(ref atomicCounter); // atomare Operation, ohne Lock
+    }
+})).ToList();
+
+threads.ForEach(t => t.Start());
+threads.ForEach(t => t.Join());
+
+Console.WriteLine(unsafeCounter < 400_000);  // meist True: Erhöhungen gingen verloren
+Console.WriteLine(safeCounter);              // 400000
+Console.WriteLine(atomicCounter);            // 400000
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    // Arc: gemeinsamer Besitz über Threads hinweg
+    // Mutex: der Zähler ist nur erreichbar, wenn man den Lock hält
+    let safe_counter = Arc::new(Mutex::new(0));
+    let atomic_counter = Arc::new(AtomicUsize::new(0));
+
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let safe = Arc::clone(&safe_counter);
+            let atomic = Arc::clone(&atomic_counter);
+            thread::spawn(move || {
+                for _ in 0..100_000 {
+                    *safe.lock().unwrap() += 1;              // Lock wird am Ende der Anweisung freigegeben
+                    atomic.fetch_add(1, Ordering::Relaxed);  // atomare Operation
+                }
+            })
+        })
+        .collect();
+
+    for h in handles {
+        h.join().unwrap();
+    }
+    println!("{}", *safe_counter.lock().unwrap());           // 400000
+    println!("{}", atomic_counter.load(Ordering::Relaxed));  // 400000
+    // Eine ungeschützte gemeinsame Variable kompiliert in Rust gar nicht.
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust verhindert Race Conditions auf Daten (**Data Races**) schon beim Kompilieren. Zwei Marker-Traits regeln, was zwischen Threads erlaubt ist: Ein Typ ist **`Send`**, wenn man ihn in einen anderen Thread verschieben darf, und **`Sync`**, wenn mehrere Threads gleichzeitig über Referenzen darauf zugreifen dürfen. `Rc` ist zum Beispiel weder `Send` noch `Sync`, `Arc` dagegen schon. Logische Race Conditions, etwa eine falsche Reihenfolge von Operationen, kann aber auch Rust nicht verhindern.
+
+## Synchronisationsmittel
+
+| Mittel                    | Zweck                                                                    | C#                                     | Rust                                   |
+| ------------------------- | ------------------------------------------------------------------------ | -------------------------------------- | -------------------------------------- |
+| **Mutex / Lock**          | ein Thread zur Zeit im kritischen Abschnitt                              | `lock`, `Monitor`, `Mutex`             | `Mutex<T>`                             |
+| **Lese-Schreib-Sperre**   | viele Leser oder ein Schreiber                                           | `ReaderWriterLockSlim`                 | `RwLock<T>`                            |
+| **Semaphor**              | höchstens $n$ Threads gleichzeitig, etwa für begrenzte Verbindungen      | `SemaphoreSlim`                        | `tokio::sync::Semaphore`               |
+| **Atomare Variablen**     | einfache Zähler und Flags ohne Lock                                      | `Interlocked`                          | `AtomicUsize`, `AtomicBool` usw.       |
+| **Bedingungsvariable**    | warten, bis eine Bedingung erfüllt ist                                   | `Monitor.Wait` / `Pulse`               | `Condvar`                              |
+| **Channel**               | Nachrichten zwischen Threads senden                                      | `System.Threading.Channels`            | `std::sync::mpsc`                      |
+| **Threadsichere Collections** | gleichzeitiger Zugriff ohne eigenen Lock                            | `ConcurrentDictionary`, `ConcurrentQueue` | `Mutex<HashMap>` oder Crates wie `dashmap` |
+
+Ein **Semaphor** (nach Edsger W. Dijkstra) ist ein Zähler mit zwei Operationen: `P` (_wait_, verringern, bei 0 warten) und `V` (_signal_, erhöhen). Ein Mutex entspricht einem Semaphor mit dem Startwert 1.
+
+## Deadlocks
+
+Ein **Deadlock** (Verklemmung) entsteht, wenn Threads gegenseitig auf Ressourcen warten, die der jeweils andere hält. Keiner kann weitermachen, das Programm hängt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+var lockA = new object();
+var lockB = new object();
+
+var t1 = new Thread(() =>
+{
+    lock (lockA)
+    {
+        Thread.Sleep(100);
+        lock (lockB) { }    // wartet auf B, das Thread 2 hält
+    }
+});
+var t2 = new Thread(() =>
+{
+    lock (lockB)
+    {
+        Thread.Sleep(100);
+        lock (lockA) { }    // wartet auf A, das Thread 1 hält
+    }
+});
+t1.Start(); t2.Start();
+t1.Join(); t2.Join();       // kehrt nie zurück
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let a = Arc::new(Mutex::new(0));
+    let b = Arc::new(Mutex::new(0));
+
+    let (a1, b1) = (Arc::clone(&a), Arc::clone(&b));
+    let t1 = thread::spawn(move || {
+        let _ga = a1.lock().unwrap();
+        thread::sleep(Duration::from_millis(100));
+        let _gb = b1.lock().unwrap(); // wartet auf B, das Thread 2 hält
+    });
+    let t2 = thread::spawn(move || {
+        let _gb = b.lock().unwrap();
+        thread::sleep(Duration::from_millis(100));
+        let _ga = a.lock().unwrap();  // wartet auf A, das Thread 1 hält
+    });
+    t1.join().unwrap();               // kehrt nie zurück
+    t2.join().unwrap();
+}
+```
+
+</TabItem>
+</Tabs>
+
+Ein Deadlock kann nur auftreten, wenn alle vier **Coffman-Bedingungen** gleichzeitig erfüllt sind:
+
+1. **Gegenseitiger Ausschluss**: Eine Ressource kann nur von einem Thread gleichzeitig genutzt werden.
+2. **Halten und Warten**: Ein Thread hält eine Ressource und wartet auf eine weitere.
+3. **Keine Unterbrechung**: Ressourcen können einem Thread nicht entzogen werden.
+4. **Zyklisches Warten**: Es gibt einen Kreis von Threads, in dem jeder auf eine Ressource des nächsten wartet.
+
+Um Deadlocks zu vermeiden, bricht man eine dieser Bedingungen, am einfachsten das zyklische Warten: Alle Threads fordern Locks immer in **derselben Reihenfolge** an (im Beispiel immer zuerst A, dann B). Weitere Möglichkeiten sind Zeitlimits beim Warten (`Monitor.TryEnter` mit Timeout, `try_lock`) und Locks nur möglichst kurz zu halten. Verwandte Probleme sind der **Livelock**, bei dem Threads ständig aufeinander reagieren, ohne voranzukommen, und das **Verhungern** (_Starvation_), bei dem ein Thread nie an die Reihe kommt.
+
+## Nachrichten statt gemeinsamer Daten
+
+Statt Daten zu teilen und mit Locks zu schützen, kann man Threads auch Nachrichten über einen **Channel** schicken lassen. Jedes Datum gehört dann immer genau einem Thread. Das Muster heißt **Producer-Consumer**: Ein Erzeuger legt Aufträge in einen Channel, ein oder mehrere Verbraucher arbeiten sie ab. Die Go-Gemeinschaft fasst die Idee so zusammen: _„Do not communicate by sharing memory; instead, share memory by communicating.“_
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Threading.Channels;
+
+var channel = Channel.CreateUnbounded<int>();
+
+var producer = Task.Run(async () =>
+{
+    for (int i = 1; i <= 5; i++)
+    {
+        await channel.Writer.WriteAsync(i);
+    }
+    channel.Writer.Complete(); // keine weiteren Nachrichten
+});
+
+var consumer = Task.Run(async () =>
+{
+    int sum = 0;
+    await foreach (int value in channel.Reader.ReadAllAsync())
+    {
+        sum += value * value;
+    }
+    return sum;
+});
+
+await producer;
+Console.WriteLine(await consumer); // 55
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    // mpsc: multiple producer, single consumer
+    let (sender, receiver) = mpsc::channel();
+
+    let producer = thread::spawn(move || {
+        for i in 1..=5 {
+            sender.send(i).unwrap();
+        }
+        // sender wird hier freigegeben: der Channel ist geschlossen
+    });
+
+    let consumer = thread::spawn(move || {
+        // die Schleife endet, sobald alle Sender weg sind
+        receiver.iter().map(|v: i32| v * v).sum::<i32>()
+    });
+
+    producer.join().unwrap();
+    println!("{}", consumer.join().unwrap()); // 55
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Thread-Pools und Parallelisierung
+
+Einen Thread zu erzeugen kostet Zeit und Speicher (jeder Thread reserviert einen eigenen Stack von typischerweise 1 bis 8 MiB). Für viele kleine Aufgaben verwendet man daher einen **Thread-Pool**, der eine feste Anzahl von Threads wiederverwendet. In .NET übernimmt das die **Task Parallel Library**: Ein `Task` ist eine Arbeitseinheit, die auf dem Thread-Pool läuft. `Parallel.For` und PLINQ (`AsParallel()`) teilen Schleifen automatisch auf alle Kerne auf. In Rust bietet das Crate **Rayon** dasselbe (`par_iter()`). Mit der Standardbibliothek kann man über `thread::scope` Threads starten, die lokale Daten ausleihen dürfen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+long[] numbers = Enumerable.Range(1, 1_000_000).Select(i => (long)i).ToArray();
+
+// PLINQ: die Summe wird auf alle Kerne verteilt
+long sum = numbers.AsParallel().Sum();
+Console.WriteLine(sum); // 500000500000
+
+// Parallel.For: jeder Index wird unabhängig berechnet
+var squares = new long[10];
+Parallel.For(0, squares.Length, i => squares[i] = (long)i * i);
+Console.WriteLine(string.Join(" ", squares)); // 0 1 4 9 16 25 36 49 64 81
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::thread;
+
+fn main() {
+    let numbers: Vec<u64> = (1..=1_000_000).collect();
+    let cores = thread::available_parallelism().map_or(4, |n| n.get());
+    let chunk_size = numbers.len().div_ceil(cores);
+
+    // scoped threads dürfen numbers ausleihen, weil sie vor dem Ende des Blocks enden
+    let sum: u64 = thread::scope(|s| {
+        let handles: Vec<_> = numbers
+            .chunks(chunk_size)
+            .map(|chunk| s.spawn(move || chunk.iter().sum::<u64>()))
+            .collect();
+        handles.into_iter().map(|h| h.join().unwrap()).sum()
+    });
+    println!("{sum}"); // 500000500000
+}
+```
+
+</TabItem>
+</Tabs>
+
+Nicht jede Aufgabe lässt sich beliebig beschleunigen. Das **Gesetz von Amdahl** besagt: Ist ein Anteil $s$ des Programms sequenziell, beträgt die maximale Beschleunigung mit $n$ Kernen $\frac{1}{s + \frac{1 - s}{n}}$. Bei 10 % sequenziellem Anteil ist selbst mit unendlich vielen Kernen höchstens eine zehnfache Beschleunigung möglich.
+
+## async und await
+
+Viele Programme verbringen die meiste Zeit mit **Warten**: auf das Netzwerk, die Festplatte oder die Datenbank. Würde man für jede wartende Anfrage einen Thread blockieren, bräuchte ein Webserver tausende Threads. **Asynchrone Programmierung** löst das: Eine `async`-Funktion gibt den Thread frei, sobald sie mit `await` auf ein Ergebnis wartet. Wenn das Ergebnis da ist, wird sie fortgesetzt, eventuell auf einem anderen Thread.
+
+- **CPU-gebundene** Arbeit (Berechnungen) beschleunigt man mit Threads und Parallelisierung.
+- **I/O-gebundene** Arbeit (Warten) erledigt man mit `async` und `await`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Diagnostics;
+
+var watch = Stopwatch.StartNew();
+
+// beide Aufgaben laufen gleichzeitig, kein Thread wird blockiert
+Task<string> weather = LoadAsync("Wetter", 1000);
+Task<string> news = LoadAsync("Nachrichten", 1000);
+string[] results = await Task.WhenAll(weather, news);
+
+Console.WriteLine(string.Join(", ", results));    // Wetter geladen, Nachrichten geladen
+Console.WriteLine(watch.ElapsedMilliseconds < 1500); // True: etwa 1 statt 2 Sekunden
+
+static async Task<string> LoadAsync(string name, int milliseconds)
+{
+    await Task.Delay(milliseconds); // steht für eine Netzwerkanfrage
+    return $"{name} geladen";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::time::{Duration, Instant};
+
+async fn load(name: &str, milliseconds: u64) -> String {
+    tokio::time::sleep(Duration::from_millis(milliseconds)).await; // steht für eine Netzwerkanfrage
+    format!("{name} geladen")
+}
+
+#[tokio::main]
+async fn main() {
+    let start = Instant::now();
+
+    // join! führt beide Futures gleichzeitig aus
+    let (weather, news) = tokio::join!(load("Wetter", 1000), load("Nachrichten", 1000));
+
+    println!("{weather}, {news}");                         // Wetter geladen, Nachrichten geladen
+    println!("{}", start.elapsed() < Duration::from_millis(1500)); // true
+}
+```
+
+</TabItem>
+</Tabs>
+
+Unterschiede zwischen den Sprachen:
+
+- In C# ist ein `Task` **heiß**: Er beginnt sofort zu laufen, wenn die Methode aufgerufen wird. In Rust ist ein `Future` **träge** (_lazy_): Es tut nichts, bis es mit `.await` abgefragt wird.
+- C# bringt die Laufzeitumgebung für asynchronen Code mit. Rust hat in der Standardbibliothek nur die Sprachmittel `async` und `.await`; die **Runtime**, die Futures ausführt, kommt aus einem Crate. Am verbreitetsten ist **Tokio**.
+- In beiden Sprachen gilt: Asynchroner Code sollte nie blockierende Aufrufe wie `Thread.Sleep` oder `std::thread::sleep` enthalten, weil er sonst den Thread der Runtime blockiert.
+
+:::caution[Nicht blockieren]
+In C# sollte man auf einen `Task` nie mit `.Result` oder `.Wait()` warten, sondern immer mit `await`. In Anwendungen mit einer grafischen Oberfläche kann `.Result` sonst einen Deadlock auslösen, weil die Fortsetzung auf den blockierten UI-Thread wartet.
+:::
+
+## Weiterführende Quellen
+
+- [Asynchronous programming with async and await](https://learn.microsoft.com/de-de/dotnet/csharp/asynchronous-programming/) (Microsoft Learn)
+- [Fearless Concurrency](https://doc.rust-lang.org/book/ch16-00-concurrency.html) (The Rust Programming Language)
+- [Tokio Tutorial](https://tokio.rs/tokio/tutorial)

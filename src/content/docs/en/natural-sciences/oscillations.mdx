@@ -1,0 +1,253 @@
+---
+title: Oscillations
+description: Harmonic oscillation, mass-spring system and simple pendulum, energy of an oscillator, damping, forced oscillation and resonance, with a numerical pendulum simulation.
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+An **oscillation** is a periodic motion about an equilibrium position. Oscillations are everywhere: clock pendulums, guitar strings, shock absorbers, quartz crystals in computers, alternating current and electrical resonant circuits. They are also the basis of [waves](/en/natural-sciences/waves/).
+
+## Basic terms
+
+A system capable of oscillating (an **oscillator**) needs an equilibrium position and a **restoring force** that drives it back towards equilibrium when displaced. Because of inertia, the body overshoots the equilibrium position and the motion repeats.
+
+| Quantity | Symbol | Unit | Meaning |
+| --- | --- | --- | --- |
+| displacement (elongation) | $y(t)$ | $\mathrm{m}$ | current distance from equilibrium |
+| amplitude | $\hat y$, $A$ | $\mathrm{m}$ | maximum displacement |
+| period | $T$ | $\mathrm{s}$ | duration of one full oscillation |
+| frequency | $f = \frac{1}{T}$ | $\mathrm{Hz}$ | oscillations per second |
+| angular frequency | $\omega = 2\pi f$ | $\mathrm{s^{-1}}$ | |
+| phase | $\omega t + \varphi_0$ | $\mathrm{rad}$ | state of the oscillation |
+
+## Harmonic oscillation
+
+If the restoring force is proportional to the displacement, $F = -D y$ (**linear force law**), Newton's second law gives the **equation of motion of the oscillator**
+
+$$
+m \ddot y = -D y \quad\Longleftrightarrow\quad \ddot y + \omega_0^2 y = 0, \qquad \omega_0 = \sqrt{\frac{D}{m}}
+$$
+
+Its solution is a sine function, the **harmonic oscillation** (simple harmonic motion):
+
+$$
+y(t) = \hat y \sin(\omega_0 t + \varphi_0)
+$$
+
+Differentiating gives velocity and acceleration:
+
+$$
+v(t) = \hat y \omega_0 \cos(\omega_0 t + \varphi_0), \qquad a(t) = -\hat y \omega_0^2 \sin(\omega_0 t + \varphi_0) = -\omega_0^2 y(t)
+$$
+
+At the equilibrium position the velocity is at its maximum ($\hat v = \hat y\omega_0$) and the acceleration is zero; at the turning points it is the other way round ($\hat a = \hat y \omega_0^2$). A harmonic oscillation is the projection of uniform circular motion onto an axis.
+
+Important: the period of a harmonic oscillator does **not depend on the amplitude** (isochronism).
+
+## Mass-spring system
+
+For a mass $m$ on a spring with spring constant $D$:
+
+$$
+T = 2\pi \sqrt{\frac{m}{D}}
+$$
+
+The period does not depend on $g$; a vertically hanging spring pendulum simply oscillates about a shifted equilibrium position.
+
+:::tip[Example]
+$m = 0.5\,\mathrm{kg}$, $D = 200\,\mathrm{N/m}$: $T = 2\pi\sqrt{0.5/200} = 0.314\,\mathrm{s}$, $f = 3.18\,\mathrm{Hz}$, $\omega_0 = 20\,\mathrm{s^{-1}}$. With an amplitude of $5\,\mathrm{cm}$, $\hat v = 0.05 \cdot 20 = 1.0\,\mathrm{m/s}$ and $\hat a = 0.05 \cdot 400 = 20\,\mathrm{m/s^2}$. Four times the mass doubles the period.
+:::
+
+## Simple pendulum
+
+A **simple (mathematical) pendulum** is a point mass on a massless string of length $l$. The restoring force is $-m g \sin\varphi$. For small angles (up to about $10^\circ$), $\sin\varphi \approx \varphi$ (in radians), and the oscillation is harmonic:
+
+$$
+T = 2\pi \sqrt{\frac{l}{g}}
+$$
+
+The mass cancels. A $1\,\mathrm{m}$ pendulum has $T = 2.006\,\mathrm{s}$, so each half swing takes about one second ("seconds pendulum"). A pendulum can be used to determine $g$: $g = 4\pi^2 l/T^2$.
+
+For large swings, the approximation no longer holds and the period increases with amplitude. The non-linear equation $\ddot\varphi = -\frac{g}{l}\sin\varphi$ has no elementary solution, but it is easy to integrate numerically. The program uses the classical fourth-order Runge-Kutta method (see [Numerical Methods](/en/mathematics/analysis/numerical-methods/)): it starts at rest at angle $\varphi_0$ and measures the time until the first zero crossing, which is a quarter of the period.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double G = 9.81;
+const double Length = 1.0;
+
+static double Acceleration(double phi) => -G / Length * Math.Sin(phi);
+
+static double Period(double amplitudeDegrees)
+{
+    const double dt = 1e-4;
+    double phi = amplitudeDegrees * Math.PI / 180.0;
+    double omega = 0.0;
+    double t = 0.0;
+
+    while (true)
+    {
+        // fourth-order Runge-Kutta for (phi, omega)
+        double k1p = omega, k1o = Acceleration(phi);
+        double k2p = omega + 0.5 * dt * k1o, k2o = Acceleration(phi + 0.5 * dt * k1p);
+        double k3p = omega + 0.5 * dt * k2o, k3o = Acceleration(phi + 0.5 * dt * k2p);
+        double k4p = omega + dt * k3o, k4o = Acceleration(phi + dt * k3p);
+        double nextPhi = phi + dt / 6 * (k1p + 2 * k2p + 2 * k3p + k4p);
+        double nextOmega = omega + dt / 6 * (k1o + 2 * k2o + 2 * k3o + k4o);
+
+        if (nextPhi <= 0)
+        {
+            // interpolate linearly to the zero crossing
+            double crossing = t + dt * phi / (phi - nextPhi);
+            return 4 * crossing;
+        }
+        (phi, omega, t) = (nextPhi, nextOmega, t + dt);
+    }
+}
+
+double t0 = 2 * Math.PI * Math.Sqrt(Length / G);
+Console.WriteLine($"Small-angle approximation: T0 = {t0:F4} s");
+foreach (double amplitude in new[] { 5.0, 30.0, 60.0, 90.0 })
+{
+    double period = Period(amplitude);
+    Console.WriteLine($"{amplitude,3}°: T = {period:F4} s, T/T0 = {period / t0:F4}");
+}
+// Small-angle approximation: T0 = 2.0061 s
+//   5°: T = 2.0070 s, T/T0 = 1.0005
+//  30°: T = 2.0410 s, T/T0 = 1.0174
+//  60°: T = 2.1529 s, T/T0 = 1.0732
+//  90°: T = 2.3678 s, T/T0 = 1.1803
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const G: f64 = 9.81;
+const LENGTH: f64 = 1.0;
+
+fn acceleration(phi: f64) -> f64 {
+    -G / LENGTH * phi.sin()
+}
+
+fn period(amplitude_degrees: f64) -> f64 {
+    let dt = 1e-4;
+    let mut phi = amplitude_degrees.to_radians();
+    let mut omega = 0.0;
+    let mut t = 0.0;
+
+    loop {
+        // fourth-order Runge-Kutta for (phi, omega)
+        let (k1p, k1o) = (omega, acceleration(phi));
+        let (k2p, k2o) = (omega + 0.5 * dt * k1o, acceleration(phi + 0.5 * dt * k1p));
+        let (k3p, k3o) = (omega + 0.5 * dt * k2o, acceleration(phi + 0.5 * dt * k2p));
+        let (k4p, k4o) = (omega + dt * k3o, acceleration(phi + dt * k3p));
+        let next_phi = phi + dt / 6.0 * (k1p + 2.0 * k2p + 2.0 * k3p + k4p);
+        let next_omega = omega + dt / 6.0 * (k1o + 2.0 * k2o + 2.0 * k3o + k4o);
+
+        if next_phi <= 0.0 {
+            // interpolate linearly to the zero crossing
+            let crossing = t + dt * phi / (phi - next_phi);
+            return 4.0 * crossing;
+        }
+        phi = next_phi;
+        omega = next_omega;
+        t += dt;
+    }
+}
+
+fn main() {
+    let t0 = 2.0 * std::f64::consts::PI * (LENGTH / G).sqrt();
+    println!("Small-angle approximation: T0 = {t0:.4} s");
+    for amplitude in [5.0, 30.0, 60.0, 90.0] {
+        let period = period(amplitude);
+        println!("{amplitude:3}°: T = {period:.4} s, T/T0 = {:.4}", period / t0);
+    }
+}
+// Small-angle approximation: T0 = 2.0061 s
+//   5°: T = 2.0070 s, T/T0 = 1.0005
+//  30°: T = 2.0410 s, T/T0 = 1.0174
+//  60°: T = 2.1529 s, T/T0 = 1.0732
+//  90°: T = 2.3678 s, T/T0 = 1.1803
+```
+
+</TabItem>
+</Tabs>
+
+Up to $5^\circ$, the error of the approximation is below $0.05\,\%$; at $90^\circ$ the period is already $18\,\%$ longer. Pendulum clocks therefore swing with small amplitudes.
+
+For a **physical (compound) pendulum** (extended body, pivot at a distance $d$ from the centre of mass), $T = 2\pi\sqrt{\frac{J}{m g d}}$ with the [moment of inertia](/en/natural-sciences/rotation/#moment-of-inertia) $J$ about the pivot.
+
+## Energy of the harmonic oscillator
+
+Without friction, the energy swings back and forth between potential (elastic) energy and kinetic energy, and the sum stays constant:
+
+$$
+E = \frac{1}{2} D y^2 + \frac{1}{2} m v^2 = \frac{1}{2} D \hat y^2 = \frac{1}{2} m \hat v^2
+$$
+
+The total energy is proportional to the **square of the amplitude**. In the example above ($D = 200\,\mathrm{N/m}$, $\hat y = 5\,\mathrm{cm}$), $E = \frac{1}{2} \cdot 200 \cdot 0.05^2 = 0.25\,\mathrm{J}$, and indeed $\frac{1}{2} \cdot 0.5 \cdot 1.0^2 = 0.25\,\mathrm{J}$.
+
+## Damped oscillation
+
+Real oscillations lose energy through friction, and the amplitude decreases. For friction proportional to velocity, $F_\mathrm{R} = -b v$ (viscous friction), the equation is
+
+$$
+\ddot y + 2\delta \dot y + \omega_0^2 y = 0, \qquad \delta = \frac{b}{2m}
+$$
+
+with the **damping constant** (decay constant) $\delta$ in $\mathrm{s^{-1}}$. Depending on the strength of the damping, there are three cases:
+
+| Case | Condition | Behaviour |
+| --- | --- | --- |
+| **underdamped** | $\delta < \omega_0$ | oscillation with exponentially decreasing amplitude |
+| **critically damped** | $\delta = \omega_0$ | fastest return to equilibrium without overshooting |
+| **overdamped** | $\delta > \omega_0$ | slow creep back to equilibrium |
+
+In the underdamped case,
+
+$$
+y(t) = \hat y\, e^{-\delta t} \sin(\omega_\mathrm{d} t + \varphi_0), \qquad \omega_\mathrm{d} = \sqrt{\omega_0^2 - \delta^2}
+$$
+
+The damped oscillation is therefore slightly slower than the undamped one. Car shock absorbers and analogue meters are designed close to critical damping: the car should not keep rocking after a bump, and the pointer should settle quickly without trembling.
+
+The **quality factor** $Q = \frac{\omega_0}{2\delta}$ states how weakly an oscillator is damped; roughly, it corresponds to the number of oscillations until the energy has noticeably decayed. A quartz crystal reaches $Q \approx 10^4$ to $10^6$, which is why quartz clocks are so accurate.
+
+## Forced oscillation and resonance
+
+If an oscillator is driven periodically from outside with the **driving frequency** $\Omega$, after a transient phase it oscillates at exactly this frequency. Its amplitude depends on how close $\Omega$ is to the natural frequency $\omega_0$:
+
+$$
+\hat y(\Omega) = \frac{F_0/m}{\sqrt{(\omega_0^2 - \Omega^2)^2 + (2\delta\Omega)^2}}
+$$
+
+| Driving frequency | Amplitude | Phase of the oscillator relative to the driver |
+| --- | --- | --- |
+| $\Omega \ll \omega_0$ | about the static displacement $F_0/D$ | in phase |
+| $\Omega \approx \omega_0$ | **maximum** (resonance), larger the weaker the damping | lagging by $90^\circ$ |
+| $\Omega \gg \omega_0$ | tends to zero | in antiphase ($180^\circ$) |
+
+At **resonance**, the oscillator absorbs energy in every period. Without damping, the amplitude would grow without limit (**resonance catastrophe**).
+
+- **Desired**: pushing a swing in time, musical instruments and sound boxes, radio reception (a resonant circuit is tuned to the station's frequency), quartz crystals as clock generators, magnetic resonance imaging.
+- **Undesired**: bridges set swaying by pedestrians walking in step (Millennium Bridge in London, 2000), unbalanced washing machines during spinning, machine parts at critical speeds. Remedies are dampers, tuned mass dampers (additional masses that oscillate in opposition, for example in skyscrapers) and avoiding the critical frequency.
+
+:::note
+The collapse of the Tacoma Narrows Bridge in 1940 is often cited as an example of resonance. Strictly speaking, it was a self-excited oscillation (aeroelastic flutter) caused by the wind, not resonance with a periodic external force.
+:::
+
+## Superposition of oscillations
+
+Oscillations in the same direction add up (superposition). If two oscillations have almost the same frequency $f_1$ and $f_2$, **beats** occur: the amplitude swells and fades with the beat frequency $f_\mathrm{S} = |f_1 - f_2|$. Musicians use this when tuning: when the beats disappear, the notes match.
+
+The electrical **LC circuit** of a coil and a capacitor obeys the same equation as the mass-spring system, with charge instead of displacement. Its natural frequency is $f_0 = \frac{1}{2\pi\sqrt{LC}}$ (Thomson's formula).
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 1_, chapter 15, openstax.org
+- Anthony P. French: _Vibrations and Waves_, MIT Introductory Physics Series, CRC Press

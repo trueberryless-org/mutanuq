@@ -1,0 +1,207 @@
+---
+title: Regression and Correlation
+description: "Bivariate data: scatter plot, linear regression with the method of least squares, correlation coefficient, coefficient of determination, non-linear regression and correlation versus causation."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Often two characteristics are measured on each object, for example file size and transfer time, temperature and resistance, or advertising spend and revenue. **Regression analysis** looks for a function that describes the relationship as well as possible; **correlation analysis** measures how strong the relationship is.
+
+## Scatter plot
+
+The $n$ pairs of values $(x_i \mid y_i)$ are plotted as points in a coordinate system (**scatter plot**). A look at it already shows whether there is a relationship, whether it is linear or curved, and whether there are outliers.
+
+| Shape of the point cloud | Relationship |
+| ------------------------ | ------------ |
+| points lie close to a rising line | strong positive linear relationship |
+| points lie close to a falling line | strong negative linear relationship |
+| points lie on a curve | non-linear relationship |
+| points without recognisable structure | no relationship |
+
+## Linear regression
+
+### Method of least squares
+
+We look for the **regression line** $y = k \cdot x + d$ that fits the point cloud best. For each point, the **residual** $y_i - (k x_i + d)$ is the vertical distance to the line. The method of least squares (after Gauss) chooses $k$ and $d$ so that the sum of the squared residuals is minimal:
+
+$$
+Q(k, d) = \sum_{i=1}^{n} \big(y_i - (k x_i + d)\big)^2 \;\to\; \min
+$$
+
+The residuals are squared so that positive and negative deviations do not cancel out and large deviations count more. Setting the [partial derivatives](/en/mathematics/analysis/functions-of-several-variables/#partial-derivatives) with respect to $k$ and $d$ to zero gives:
+
+$$
+k = \frac{s_{xy}}{s_x^2} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} \qquad d = \bar{y} - k \cdot \bar{x}
+$$
+
+Here $s_{xy}$ is the **covariance** and $s_x^2$ the variance of the $x$-values (the factors $\frac{1}{n}$ or $\frac{1}{n-1}$ cancel in the quotient). The regression line always passes through the **centroid** $(\bar{x} \mid \bar{y})$.
+
+:::tip[Example: Upload time]
+For five files, size $x$ (in MB) and upload time $y$ (in s) were measured:
+
+| $x_i$ | $y_i$ | $x_i - \bar{x}$ | $y_i - \bar{y}$ | $(x_i - \bar{x})(y_i - \bar{y})$ | $(x_i - \bar{x})^2$ | $(y_i - \bar{y})^2$ |
+| ----- | ----- | --------------- | --------------- | -------------------------------- | ------------------- | ------------------- |
+| 1 | 2.1 | $-2$ | $-3.9$ | $7.8$ | 4 | $15.21$ |
+| 2 | 3.9 | $-1$ | $-2.1$ | $2.1$ | 1 | $4.41$ |
+| 3 | 6.2 | $0$ | $0.2$ | $0$ | 0 | $0.04$ |
+| 4 | 7.8 | $1$ | $1.8$ | $1.8$ | 1 | $3.24$ |
+| 5 | 10.0 | $2$ | $4.0$ | $8.0$ | 4 | $16.00$ |
+| **Sum** | | | | $19.7$ | $10$ | $38.9$ |
+
+With $\bar{x} = 3$ and $\bar{y} = 6$:
+
+$$
+k = \frac{19.7}{10} = 1.97 \qquad d = 6 - 1.97 \cdot 3 = 0.09 \qquad y = 1.97\,x + 0.09
+$$
+
+Each additional MB makes the upload take about $1.97$ s longer. Prediction for an 8 MB file: $y = 1.97 \cdot 8 + 0.09 = 15.85$ s.
+:::
+
+:::caution
+Predictions within the measured range (**interpolation**) are usually reliable. Predictions far outside it (**extrapolation**) are risky because nobody knows whether the linear relationship still holds there. For very large files, for example, timeouts or throttling could kick in.
+:::
+
+## Correlation coefficient
+
+Pearson's **correlation coefficient** measures the strength and direction of the **linear** relationship:
+
+$$
+r = \frac{s_{xy}}{s_x \cdot s_y} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \cdot \sum (y_i - \bar{y})^2}} \qquad -1 \leq r \leq 1
+$$
+
+| Value of $r$ | Meaning |
+| ------------ | ------- |
+| $r = 1$ or $r = -1$ | all points lie exactly on a rising or falling line |
+| $\lvert r \rvert$ close to $1$ (from about $0.8$) | strong linear relationship |
+| $\lvert r \rvert$ around $0.5$ | moderate relationship |
+| $r$ close to $0$ | no **linear** relationship |
+
+The sign of $r$ always matches the sign of the slope $k$.
+
+:::tip[Example]
+For the upload data:
+
+$$
+r = \frac{19.7}{\sqrt{10 \cdot 38.9}} = \frac{19.7}{19.72} \approx 0.9988
+$$
+
+The linear relationship is very strong.
+:::
+
+:::note
+$r \approx 0$ does not mean there is no relationship. Points on a parabola $y = x^2$, symmetric about $x = 0$, have $r = 0$, although $y$ depends completely on $x$. Always look at the scatter plot first.
+:::
+
+### Coefficient of determination
+
+The **coefficient of determination** $R^2 = r^2$ (for linear regression) states what proportion of the variation in the $y$-values is explained by the regression line. In the example $R^2 \approx 0.998$: 99.8 % of the variation in upload times is explained by file size; the rest is due to other influences such as network load.
+
+## Regression in code
+
+With the sum formulas, regression can be calculated in a single pass. Spreadsheets offer `SLOPE`, `INTERCEPT` and `CORREL` for this, GeoGebra the command `FitLine` or the regression analysis tool.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+static (double K, double D, double R) LinearRegression(double[] x, double[] y)
+{
+    double xMean = x.Average(), yMean = y.Average();
+    double sxy = 0, sxx = 0, syy = 0;
+    for (int i = 0; i < x.Length; i++)
+    {
+        sxy += (x[i] - xMean) * (y[i] - yMean);
+        sxx += (x[i] - xMean) * (x[i] - xMean);
+        syy += (y[i] - yMean) * (y[i] - yMean);
+    }
+    double k = sxy / sxx;
+    return (k, yMean - k * xMean, sxy / Math.Sqrt(sxx * syy));
+}
+
+double[] size = [1, 2, 3, 4, 5];           // MB
+double[] time = [2.1, 3.9, 6.2, 7.8, 10.0]; // s
+var (k, d, r) = LinearRegression(size, time);
+var inv = CultureInfo.InvariantCulture;
+Console.WriteLine(string.Create(inv, $"y = {k:F2}x + {d:F2}"));        // y = 1.97x + 0.09
+Console.WriteLine(string.Create(inv, $"r = {r:F4}, R² = {r * r:F4}")); // r = 0.9988, R² = 0.9977
+Console.WriteLine(string.Create(inv, $"Prediction 8 MB: {k * 8 + d:F2} s")); // Prediction 8 MB: 15.85 s
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Returns slope k, intercept d and correlation coefficient r
+fn linear_regression(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
+    let n = x.len() as f64;
+    let x_mean = x.iter().sum::<f64>() / n;
+    let y_mean = y.iter().sum::<f64>() / n;
+    let (mut sxy, mut sxx, mut syy) = (0.0, 0.0, 0.0);
+    for (xi, yi) in x.iter().zip(y) {
+        sxy += (xi - x_mean) * (yi - y_mean);
+        sxx += (xi - x_mean).powi(2);
+        syy += (yi - y_mean).powi(2);
+    }
+    let k = sxy / sxx;
+    (k, y_mean - k * x_mean, sxy / (sxx * syy).sqrt())
+}
+
+fn main() {
+    let size = [1.0, 2.0, 3.0, 4.0, 5.0]; // MB
+    let time = [2.1, 3.9, 6.2, 7.8, 10.0]; // s
+    let (k, d, r) = linear_regression(&size, &time);
+    println!("y = {k:.2}x + {d:.2}"); // y = 1.97x + 0.09
+    println!("r = {r:.4}, R² = {:.4}", r * r); // r = 0.9988, R² = 0.9977
+    println!("Prediction 8 MB: {:.2} s", k * 8.0 + d); // Prediction 8 MB: 15.85 s
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Non-linear regression
+
+If the relationship is not linear, it can often be made linear by a **transformation**, after which linear regression is applied:
+
+| Model | Transformation | Linear form |
+| ----- | -------------- | ----------- |
+| exponential $y = c \cdot e^{\lambda x}$ | $Y = \ln y$ | $Y = \lambda x + \ln c$ |
+| power function $y = c \cdot x^{a}$ | $Y = \ln y$, $X = \ln x$ | $Y = a X + \ln c$ |
+| logarithmic $y = a \ln x + b$ | $X = \ln x$ | $y = a X + b$ |
+
+:::tip[Example: Decay process]
+The activity of a sample (in arbitrary units) is measured every hour:
+
+| $t$ in h | 0 | 1 | 2 | 3 | 4 |
+| -------- | --- | --- | --- | --- | --- |
+| $y$ | 100 | 61 | 37 | 22 | 14 |
+| $\ln y$ | 4.605 | 4.111 | 3.611 | 3.091 | 2.639 |
+
+Linear regression of $\ln y$ on $t$ gives $\ln y \approx -0.495\,t + 4.602$ with $r \approx -0.9998$. Transformed back:
+
+$$
+y \approx e^{4.602} \cdot e^{-0.495\,t} \approx 99.7 \cdot e^{-0.495\,t}
+$$
+:::
+
+Technology (GeoGebra `FitExp`, `FitPow`, `FitPoly`, calculators) calculates these regressions directly. With the transformation, however, the squared deviations of $\ln y$ are minimised, not those of $y$; the results may therefore differ slightly from a direct non-linear fit.
+
+## Correlation and causation
+
+A high correlation only shows that two characteristics vary together, **not** that one causes the other. Possible explanations for a correlation:
+
+- **causation:** $x$ actually influences $y$ (file size determines upload time).
+- **reverse causation:** $y$ influences $x$.
+- **common cause (confounding variable):** ice cream sales and swimming accidents correlate because both depend on the temperature.
+- **chance:** among many examined pairs of characteristics, there are always some coincidentally high correlations (spurious correlation).
+
+Causal relationships are demonstrated with controlled experiments, for example A/B tests in which users are randomly assigned to two variants.
+
+## Further reading
+
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Linear Least Squares Regression](https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd141.htm)
+- [Spurious Correlations, Tyler Vigen (examples of spurious correlations)](https://www.tylervigen.com/spurious-correlations)

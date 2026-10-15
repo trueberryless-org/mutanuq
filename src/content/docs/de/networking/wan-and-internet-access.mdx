@@ -1,0 +1,137 @@
+---
+title: WAN und Internetzugang
+description: WAN-Topologien und Zugangstechniken wie DSL, Kabel, Glasfaser, Mobilfunk, Standleitungen und MPLS, VPNs mit IPsec, Grundlagen von QoS sowie SDN und Netzwerkautomatisierung.
+sidebar:
+  order: 12
+---
+
+Ein **WAN** (_Wide Area Network_) verbindet Standorte über große Entfernungen. Anders als ein LAN baut eine Organisation ihr WAN fast nie selbst, sondern mietet Leitungen oder Dienste bei einem **Provider** (Telekommunikationsunternehmen, ISP). WAN-Technologien arbeiten auf den Schichten 1 und 2: Sie bringen Bits und Frames zum nächsten Standort oder zum Provider, IP läuft darüber unverändert.
+
+## WAN-Grundbegriffe
+
+| Begriff | Bedeutung |
+| --- | --- |
+| **CPE** (_Customer Premises Equipment_) | Geräte beim Kunden, etwa Router und Modem |
+| **Demarkationspunkt** | Übergabepunkt, an dem die Verantwortung des Providers endet |
+| **Local Loop** (letzte Meile) | Leitung vom Kunden zur nächsten Vermittlungsstelle des Providers |
+| **Downstream / Upstream** | Richtung vom Netz zum Kunden bzw. vom Kunden zum Netz |
+| **symmetrisch / asymmetrisch** | gleiche bzw. unterschiedliche Datenrate in beide Richtungen |
+| **SLA** (_Service Level Agreement_) | vertraglich zugesicherte Verfügbarkeit, Bandbreite, Entstörzeit |
+
+Typische **WAN-Topologien** sind **Punkt-zu-Punkt** (zwei Standorte), **Hub-and-Spoke** (alle Filialen an die Zentrale, Verkehr zwischen Filialen läuft über die Zentrale), **Vollvermascht** und **Dual-Homed** (ein Standort an zwei Provider oder zwei Leitungen, für Ausfallsicherheit).
+
+## Zugangstechniken
+
+### DSL
+
+**DSL** (_Digital Subscriber Line_) nutzt die vorhandene Kupfer-Telefonleitung. Höhere Frequenzen als die Sprachübertragung transportieren Daten. Die Leitung endet beim Provider an einem **DSLAM** (_DSL Access Multiplexer_), in der Vermittlungsstelle oder im Straßenverteiler. Die erreichbare Datenrate sinkt stark mit der Leitungslänge, weil die Dämpfung hoher Frequenzen zunimmt.
+
+| Technik | Norm | max. Downstream | Hinweis |
+| --- | --- | --- | --- |
+| ADSL2+ | ITU-T G.992.5 | 24 Mbit/s | asymmetrisch, mehrere Kilometer Reichweite |
+| VDSL2 (Profil 17a) mit Vectoring | ITU-T G.993.2, G.993.5 | 100 Mbit/s | einige hundert Meter, Vectoring unterdrückt Übersprechen zwischen Leitungen |
+| VDSL2 (Profil 35b, Supervectoring) | ITU-T G.993.2 | 300 Mbit/s | nur kurze Leitungen |
+| G.fast | ITU-T G.9701 | bis rund 1 Gbit/s (Summe beider Richtungen) | nur sehr kurze Strecken, etwa im Gebäude |
+
+Damit kurze Kupferleitungen entstehen, bringen Provider die Glasfaser bis in den Straßenverteiler (FTTC). Die Authentifizierung beim Provider läuft bei DSL häufig über **PPPoE** (_PPP over Ethernet_).
+
+### Kabel
+
+Kabelnetzbetreiber nutzen das Koaxialnetz des Kabelfernsehens. Der Standard ist **DOCSIS** (_Data Over Cable Service Interface Specification_): DOCSIS 3.0 bündelt mehrere Kanäle, DOCSIS 3.1 erreicht theoretisch bis 10 Gbit/s im Downstream. Die Gegenstelle beim Betreiber heißt **CMTS** (_Cable Modem Termination System_). Alle Kunden eines Segments teilen sich die Bandbreite, abends kann es deshalb langsamer werden. Die Netze sind meist **HFC**-Netze (_Hybrid Fiber Coax_): Glasfaser bis zum Wohngebiet, Koaxialkabel auf den letzten Metern.
+
+### Glasfaser
+
+| Variante | Glasfaser reicht bis |
+| --- | --- |
+| **FTTC** (_Fibre to the Curb/Cabinet_) | zum Straßenverteiler, danach Kupfer (VDSL) |
+| **FTTB** (_Fibre to the Building_) | in den Keller des Gebäudes, danach Kupfer oder Ethernet im Haus |
+| **FTTH** (_Fibre to the Home_) | in die Wohnung |
+
+FTTH ist meist als **PON** (_Passive Optical Network_) aufgebaut: Vom **OLT** (_Optical Line Terminal_) des Providers führt eine Faser zu einem **passiven Splitter**, der das Licht ohne Strom auf bis zu 64 oder 128 Teilnehmer aufteilt. Beim Kunden sitzt ein **ONT** (_Optical Network Terminal_). **GPON** (ITU-T G.984) bietet 2,5 Gbit/s downstream und 1,25 Gbit/s upstream, geteilt durch alle Teilnehmer am Splitter, **XGS-PON** (ITU-T G.9807.1) symmetrisch 10 Gbit/s. Alternativ gibt es **Punkt-zu-Punkt**-Glasfaser mit einer eigenen Faser je Kunde. Glasfaser ist die zukunftssichere Technik: Die Faser bleibt, schnellere Datenraten erreicht man durch Tausch der Endgeräte. Der Ausbau wird in Österreich im Rahmen der Breitbandförderung des Bundes unterstützt.
+
+### Mobilfunk und Satellit
+
+- **4G/LTE** und **5G** werden zunehmend als Festnetzersatz genutzt (_Fixed Wireless Access_, 5G-Router zu Hause). 5G wird in Österreich unter anderem im Band 3,4 bis 3,8 GHz betrieben und erreicht deutlich geringere Latenzen als LTE. Die Bandbreite teilen sich alle Nutzer einer Funkzelle.
+- **Satelliten** im geostationären Orbit (rund 36 000 km Höhe) haben wegen der Signallaufzeit eine RTT von über 500 ms. Satelliten in niedriger Umlaufbahn (LEO, etwa 550 km, z. B. Starlink) erreichen Latenzen im Bereich von 20 bis 50 ms. Satellitenzugang ist vor allem für abgelegene Orte gedacht.
+
+### Unternehmens-WAN
+
+| Technik | Beschreibung |
+| --- | --- |
+| **Standleitung** (_Leased Line_) | dauerhaft reservierte, symmetrische Punkt-zu-Punkt-Verbindung mit garantierter Bandbreite. Teuer, aber vorhersehbar |
+| **Metro Ethernet** | Provider verbindet Standorte in einer Region über Ethernet, für den Kunden wie ein großes LAN |
+| **MPLS** (_Multiprotocol Label Switching_) | Provider-Netz, in dem Pakete anhand kurzer **Labels** statt der IP-Adresse weitergeleitet werden. Als **MPLS-VPN** trennt der Provider die Netze verschiedener Kunden und kann QoS garantieren |
+| **Internet-VPN** | Standorte verbinden sich über günstige Internetanschlüsse mit verschlüsselten Tunneln |
+| **SD-WAN** | eine Steuerungsebene verteilt den Verkehr automatisch auf mehrere Leitungen (MPLS, Internet, LTE), je nach Anwendung und Leitungsqualität |
+
+## VPN
+
+Ein **VPN** (_Virtual Private Network_) baut über ein unsicheres Netz, meist das Internet, einen **verschlüsselten Tunnel** auf. Die Daten sind vertraulich (Verschlüsselung), unverändert (Integrität) und stammen nachweislich vom Partner (Authentifizierung). Gegenüber Standleitungen ist ein VPN billig und überall verfügbar.
+
+| Art | Beschreibung | Beispiel |
+| --- | --- | --- |
+| **Site-to-Site** | zwei Gateways (Router, Firewalls) verbinden ganze Netze. Die Endgeräte merken davon nichts | Filiale mit Zentrale |
+| **Remote Access** | ein einzelner Client verbindet sich mit dem Firmennetz, entweder mit **VPN-Client-Software** oder **clientlos** über den Browser (SSL/TLS-VPN-Portal) | Homeoffice, Außendienst |
+
+### IPsec
+
+**IPsec** ist eine Protokollfamilie der Vermittlungsschicht. Sie schützt IP-Pakete unabhängig von der Anwendung.
+
+| Bestandteil | Aufgabe |
+| --- | --- |
+| **IKE** (_Internet Key Exchange_, heute IKEv2, UDP 500) | Partner authentifizieren (Pre-Shared Key oder Zertifikate) und Schlüssel aushandeln, meist per Diffie-Hellman |
+| **ESP** (_Encapsulating Security Payload_, IP-Protokoll 50) | Verschlüsselung, Integrität und Authentifizierung, das übliche Protokoll |
+| **AH** (_Authentication Header_, IP-Protokoll 51) | nur Integrität und Authentifizierung, keine Verschlüsselung. Funktioniert nicht durch NAT, kaum noch verwendet |
+| **NAT-Traversal** (UDP 4500) | kapselt ESP in UDP, damit es NAT-Router passieren kann |
+
+Im **Tunnelmodus** wird das ganze ursprüngliche Paket verschlüsselt und in ein neues IP-Paket mit den Adressen der Gateways gepackt, das ist der Standard bei Site-to-Site-VPNs. Im **Transportmodus** wird nur der Inhalt geschützt, der ursprüngliche IP-Header bleibt, das wird zwischen zwei Hosts verwendet.
+
+Weitere VPN-Techniken:
+
+- **GRE** (_Generic Routing Encapsulation_, IP-Protokoll 47) kapselt beliebige Protokolle, auch Multicast für Routingprotokolle, verschlüsselt aber nicht. Kombiniert als **GRE over IPsec** können OSPF oder EIGRP über einen verschlüsselten Tunnel laufen.
+- **DMVPN** (Cisco) baut zwischen Filialen bei Bedarf automatisch direkte Tunnel auf.
+- **SSL/TLS-VPNs** (z. B. OpenVPN, Cisco AnyConnect bzw. Secure Client) laufen über TCP oder UDP 443 und kommen gut durch Firewalls.
+- **WireGuard** ist ein schlankes, modernes VPN-Protokoll über UDP mit fest gewählten Verfahren.
+
+## Quality of Service
+
+Wenn mehr Daten über eine Leitung sollen, als sie übertragen kann, entstehen Warteschlangen. **QoS** (_Quality of Service_) legt fest, welcher Verkehr bevorzugt wird. Sie erzeugt keine zusätzliche Bandbreite, sondern verteilt die vorhandene nach Wichtigkeit, typischerweise an WAN-Übergängen, wo die Bandbreite knapp ist.
+
+Verschiedene Verkehrsarten stellen verschiedene Anforderungen. Für Sprache (VoIP) gelten als Richtwerte eine Einwegverzögerung von höchstens **150 ms**, ein Jitter von höchstens **30 ms** und höchstens **1 %** Paketverlust. Dateiübertragungen vertragen Verzögerung, aber keinen Verlust (TCP wiederholt). Video liegt dazwischen, braucht aber viel Bandbreite.
+
+### QoS-Modelle
+
+| Modell | Prinzip |
+| --- | --- |
+| **Best Effort** | keine Unterscheidung, alle Pakete gleich (Standard im Internet) |
+| **IntServ** (_Integrated Services_) | jede Anwendung reserviert per **RSVP** Ressourcen auf dem ganzen Weg. Garantiert, skaliert aber nicht |
+| **DiffServ** (_Differentiated Services_) | Pakete werden in Klassen eingeteilt und markiert, jeder Router behandelt die Klassen nach eigenen Regeln (_Per-Hop Behaviour_). Skaliert gut, in der Praxis üblich |
+
+### Werkzeuge
+
+- **Klassifizierung und Markierung**: Verkehr wird erkannt (nach ACL, Port, Anwendung) und markiert. Auf Schicht 3 im **DSCP**-Feld des IP-Headers (6 Bit, 64 Werte), etwa **EF** (_Expedited Forwarding_, DSCP 46) für Sprache, **AF**-Klassen (_Assured Forwarding_, AF11 bis AF43) für bevorzugte Daten und **CS**-Klassen. Auf Schicht 2 in den 3 PCP-Bits des 802.1Q-Tags (**CoS**, Werte 0 bis 7, Sprache meist 5). Markiert wird möglichst nah an der Quelle, an der **Vertrauensgrenze** (_Trust Boundary_): Markierungen von nicht vertrauenswürdigen Endgeräten werden überschrieben.
+- **Warteschlangen** (_Congestion Management_): **FIFO** (eine Schlange), **WFQ** (faire Verteilung auf Datenflüsse), **CBWFQ** (garantierte Bandbreite pro Klasse) und **LLQ** (_Low Latency Queuing_, CBWFQ mit einer strikten Prioritätswarteschlange für Sprache).
+- **Stauvermeidung** (_Congestion Avoidance_): Statt erst bei vollem Puffer alles zu verwerfen (**Tail Drop**), verwirft **WRED** vorher zufällig einzelne Pakete niedriger Klassen, damit deren TCP-Verbindungen langsamer werden.
+- **Policing und Shaping**: Beide begrenzen die Datenrate. **Policing** verwirft (oder ummarkiert) Pakete über dem Limit sofort, **Shaping** puffert sie und sendet sie später, glättet also den Verkehr auf Kosten von Verzögerung. Provider setzen Policing ein, Kunden shapen ihren ausgehenden Verkehr passend dazu.
+
+## SDN und Automatisierung
+
+Jedes Netzwerkgerät hat drei logische Ebenen:
+
+| Ebene | Aufgabe | Beispiel |
+| --- | --- | --- |
+| **Data Plane** (Forwarding Plane) | Pakete und Frames weiterleiten | MAC-Tabelle, Routingtabelle in Hardware (CEF), ACLs anwenden |
+| **Control Plane** | Entscheidungen treffen, wie weitergeleitet wird | OSPF, STP, ARP |
+| **Management Plane** | Verwaltung des Geräts | SSH, SNMP, Syslog |
+
+In klassischen Netzen hat jedes Gerät seine eigene Control Plane und wird einzeln über die Kommandozeile konfiguriert. Bei **SDN** (_Software-Defined Networking_) wird die Control Plane ganz oder teilweise in einen zentralen **Controller** verlagert, der eine Gesamtsicht auf das Netz hat. Über die **Southbound-API** steuert der Controller die Geräte (OpenFlow, NETCONF, RESTCONF), über die **Northbound-API** (meist REST mit JSON) greifen Anwendungen und Skripte auf den Controller zu. Beispiele sind Cisco **Catalyst Center** (früher DNA Center) für Campusnetze und Cisco **ACI** für Rechenzentren.
+
+**Netzwerkautomatisierung** ersetzt wiederkehrende manuelle Konfiguration durch Programme: Konfigurationen werden als Daten in **JSON**, **YAML** oder **XML** beschrieben, über **REST-APIs** übertragen und mit Werkzeugen wie **Ansible** (agentenlos, Playbooks in YAML über SSH), Puppet oder Chef auf viele Geräte gleichzeitig ausgerollt. Das spart Zeit, vermeidet Tippfehler und macht Konfigurationen versionierbar (siehe [Versionsverwaltung](/de/software-development/version-control/)).
+
+Verwandt ist die **Virtualisierung** von Netzfunktionen: Router, Firewalls und Switches laufen als virtuelle Maschinen (**NFV**, _Network Functions Virtualization_), und in Cloud-Rechenzentren entstehen virtuelle Netze über Overlays wie **VXLAN**.
+
+## Weiterführende Quellen
+
+- [RTR: Breitband und Telekommunikation in Österreich](https://www.rtr.at/TKP/)
+- [RFC 4301: Security Architecture for the Internet Protocol](https://www.rfc-editor.org/rfc/rfc4301)
+- [RFC 2474: Definition of the Differentiated Services Field (DS Field)](https://www.rfc-editor.org/rfc/rfc2474)

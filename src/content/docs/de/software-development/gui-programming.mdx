@@ -1,0 +1,271 @@
+---
+title: GUI-Programmierung
+description: Ereignisgesteuerte Programmierung, Events, GUI-Frameworks, Layout, Datenbindung und das MVVM-Muster in C# sowie die Elm-Architektur in Rust.
+sidebar:
+  order: 15
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **grafische Benutzeroberfläche** (GUI, _Graphical User Interface_) besteht aus Fenstern, Schaltflächen, Textfeldern und Listen. Anders als ein Konsolenprogramm, das von oben nach unten abläuft, wartet ein GUI-Programm die meiste Zeit darauf, dass der Benutzer etwas tut. Es ist **ereignisgesteuert**.
+
+## Ereignisgesteuerte Programmierung
+
+Im Kern jedes GUI-Programms läuft eine **Ereignisschleife** (_event loop_): Das Betriebssystem meldet Ereignisse wie Mausklicks, Tastendrücke oder „Fenster muss neu gezeichnet werden“ in eine Warteschlange. Die Schleife entnimmt ein Ereignis nach dem anderen und ruft die dafür registrierten **Event-Handler** auf.
+
+```txt
+solange das Fenster offen ist:
+    Ereignis aus der Warteschlange holen
+    passenden Event-Handler aufrufen
+    Oberfläche bei Bedarf neu zeichnen
+```
+
+Daraus folgen zwei wichtige Regeln:
+
+- Event-Handler müssen **schnell** sein. Solange ein Handler läuft, kann die Schleife keine weiteren Ereignisse bearbeiten, und das Fenster „friert ein“. Lange Arbeiten wie Downloads oder Berechnungen laufen deshalb asynchron oder in einem Hintergrund-Thread (siehe [Nebenläufigkeit](/de/software-development/concurrency/#async-und-await)).
+- Steuerelemente dürfen nur vom **UI-Thread** aus verändert werden, also von dem Thread, der die Ereignisschleife ausführt. Ein Hintergrund-Thread muss Änderungen an den UI-Thread übergeben (in WPF mit `Dispatcher.Invoke`). Mit `await` geschieht das automatisch.
+
+## Events in C#
+
+C# unterstützt ereignisgesteuerte Programmierung direkt in der Sprache. Ein **Event** ist ein Delegate, an das sich andere Objekte mit `+=` als Empfänger anmelden und mit `-=` wieder abmelden können. Nur die Klasse, die das Event deklariert, darf es auslösen. Das entspricht dem Entwurfsmuster [Observer](/de/software-development/design-patterns/#observer).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var sensor = new TemperatureSensor();
+sensor.TemperatureChanged += (sender, e) => Console.WriteLine($"Neue Temperatur: {e.Celsius} °C");
+sensor.TemperatureChanged += (sender, e) =>
+{
+    if (e.Celsius > 30) Console.WriteLine("Warnung: zu heiß!");
+};
+
+sensor.Measure(22.5);
+sensor.Measure(31.0);
+
+public class TemperatureEventArgs(double celsius) : EventArgs
+{
+    public double Celsius { get; } = celsius;
+}
+
+public class TemperatureSensor
+{
+    // Konvention: EventHandler<T> mit Absender und Ereignisdaten
+    public event EventHandler<TemperatureEventArgs>? TemperatureChanged;
+
+    public void Measure(double celsius)
+    {
+        // ?. löst das Event nur aus, wenn jemand angemeldet ist
+        TemperatureChanged?.Invoke(this, new TemperatureEventArgs(celsius));
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Rust hat keine Events in der Sprache. Man speichert eine Liste von Closures.
+struct TemperatureSensor {
+    listeners: Vec<Box<dyn Fn(f64)>>,
+}
+
+impl TemperatureSensor {
+    fn on_change(&mut self, listener: impl Fn(f64) + 'static) {
+        self.listeners.push(Box::new(listener));
+    }
+
+    fn measure(&self, celsius: f64) {
+        for listener in &self.listeners {
+            listener(celsius);
+        }
+    }
+}
+
+fn main() {
+    let mut sensor = TemperatureSensor { listeners: Vec::new() };
+    sensor.on_change(|c| println!("Neue Temperatur: {c} °C"));
+    sensor.on_change(|c| {
+        if c > 30.0 {
+            println!("Warnung: zu heiß!");
+        }
+    });
+
+    sensor.measure(22.5);
+    sensor.measure(31.0);
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::caution[Abmelden nicht vergessen]
+Ein Event hält eine Referenz auf jeden angemeldeten Empfänger. Lebt das Objekt mit dem Event länger als der Empfänger, kann der Garbage Collector den Empfänger nicht freigeben. Das ist eine häufige Ursache für Speicherlecks in C#-Anwendungen. Empfänger sollten sich daher mit `-=` abmelden, wenn sie nicht mehr gebraucht werden.
+:::
+
+## GUI-Frameworks
+
+| Plattform           | C# / .NET                                                    | Rust                                                     |
+| ------------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| Desktop (Windows)   | **WPF** (XAML, MVVM), **Windows Forms** (älter, Designer-basiert), **WinUI 3** | alle unten genannten                     |
+| Plattformübergreifend | **Avalonia** (XAML, ähnlich WPF), **.NET MAUI** (Desktop und Mobil) | **iced** (Elm-Architektur), **egui** (Immediate Mode), **Slint** (eigene Beschreibungssprache), **Tauri** (Oberfläche mit Webtechnologien) |
+| Web                 | **Blazor** (C# im Browser über WebAssembly oder am Server)   | **Leptos**, **Yew**, **Dioxus** (WebAssembly)            |
+
+Man unterscheidet zwei Grundansätze:
+
+- **Retained Mode**: Das Framework verwaltet einen dauerhaften Baum von Steuerelementen. Das Programm ändert Eigenschaften, und das Framework zeichnet nur, was sich geändert hat. Beispiele: WPF, Windows Forms, iced.
+- **Immediate Mode**: Das Programm beschreibt die gesamte Oberfläche bei jedem Bild neu. Das ist einfach und passt gut zu Spielen und Werkzeugen. Beispiel: egui.
+
+## Layout
+
+Fenster haben unterschiedliche Größen, und Texte sind in verschiedenen Sprachen unterschiedlich lang. Steuerelemente werden daher nicht mit festen Pixelkoordinaten platziert, sondern von **Layout-Containern** angeordnet.
+
+| Container in WPF | Anordnung                                            | Entsprechung in iced     |
+| ---------------- | ---------------------------------------------------- | ------------------------ |
+| `StackPanel`     | untereinander oder nebeneinander                     | `column!`, `row!`        |
+| `Grid`           | in Zeilen und Spalten mit festen oder relativen Größen | verschachtelte `row` und `column` |
+| `DockPanel`      | an die Ränder angedockt, Rest füllt die Mitte        | `container` mit Ausrichtung |
+| `WrapPanel`      | nebeneinander mit Zeilenumbruch                      | `row` mit `wrap()`       |
+
+## Datenbindung und MVVM
+
+Würde man in jedem Event-Handler direkt Textfelder auslesen und Beschriftungen setzen, wäre die Logik untrennbar mit der Oberfläche verwoben und kaum testbar. Das Muster **MVVM** (_Model-View-ViewModel_), das mit WPF eingeführt wurde, trennt drei Verantwortlichkeiten:
+
+| Schicht        | Aufgabe                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| **Model**      | Fachliche Daten und Regeln, zum Beispiel eine Klasse `Order` und die Preisberechnung. Kennt die Oberfläche nicht. |
+| **View**       | Die Oberfläche, in WPF in **XAML** beschrieben. Enthält möglichst keinen Code.                       |
+| **ViewModel**  | Bereitet die Daten des Models für die View auf und stellt **Befehle** (_Commands_) bereit. Kennt die View nicht. |
+
+Die View ist über **Datenbindung** (_Data Binding_) an das ViewModel gekoppelt: `Text="{Binding Name}"` zeigt die Property `Name` an und schreibt Eingaben zurück. Damit die View erfährt, dass sich ein Wert geändert hat, implementiert das ViewModel das Interface `INotifyPropertyChanged`. Schaltflächen rufen über `Command="{Binding SaveCommand}"` ein Objekt vom Typ `ICommand` auf. Weil das ViewModel keine Steuerelemente kennt, lässt es sich mit normalen [Unit-Tests](/de/software-development/testing/) prüfen.
+
+```xml
+<!-- View: MainWindow.xaml (WPF) -->
+<StackPanel Margin="16">
+    <TextBlock Text="Anzahl:" />
+    <TextBlock Text="{Binding Count}" FontSize="32" />
+    <Button Content="+" Command="{Binding IncrementCommand}" />
+    <Button Content="Zurücksetzen" Command="{Binding ResetCommand}" />
+</StackPanel>
+```
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+
+// ViewModel: ohne Abhängigkeit von WPF-Steuerelementen und daher testbar
+var vm = new CounterViewModel();
+vm.PropertyChanged += (_, e) => Console.WriteLine($"{e.PropertyName} geändert: {vm.Count}");
+vm.IncrementCommand.Execute(null);
+vm.IncrementCommand.Execute(null);
+Console.WriteLine(vm.ResetCommand.CanExecute(null)); // True
+vm.ResetCommand.Execute(null);
+
+public class CounterViewModel : INotifyPropertyChanged
+{
+    private int _count;
+
+    public int Count
+    {
+        get => _count;
+        private set
+        {
+            if (_count == value) return;
+            _count = value;
+            OnPropertyChanged(); // Name der Property wird automatisch eingesetzt
+        }
+    }
+
+    public ICommand IncrementCommand { get; }
+    public ICommand ResetCommand { get; }
+
+    public CounterViewModel()
+    {
+        IncrementCommand = new RelayCommand(() => Count++);
+        ResetCommand = new RelayCommand(() => Count = 0, () => Count > 0);
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+// einfache ICommand-Implementierung
+public class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
+{
+    public event EventHandler? CanExecuteChanged;
+    public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
+    public void Execute(object? parameter) => execute();
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+// iced verwendet die Elm-Architektur:
+// Zustand (State), Nachrichten (Message), update und view.
+use iced::widget::{button, column, text};
+use iced::Element;
+
+#[derive(Default)]
+struct Counter {
+    count: i64,
+}
+
+#[derive(Debug, Clone)]
+enum Message {
+    Increment,
+    Reset,
+}
+
+impl Counter {
+    // einzige Stelle, an der sich der Zustand ändert: gut testbar
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::Increment => self.count += 1,
+            Message::Reset => self.count = 0,
+        }
+    }
+
+    // beschreibt die Oberfläche als Funktion des Zustands
+    fn view(&self) -> Element<'_, Message> {
+        column![
+            text("Anzahl:"),
+            text(self.count).size(32),
+            button("+").on_press(Message::Increment),
+            // ohne on_press ist die Schaltfläche deaktiviert
+            button("Zurücksetzen").on_press_maybe((self.count > 0).then_some(Message::Reset)),
+        ]
+        .padding(16)
+        .spacing(8)
+        .into()
+    }
+}
+
+fn main() -> iced::Result {
+    iced::run(Counter::update, Counter::view)
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die **Elm-Architektur**, die iced, Elm und Redux im Web verwenden, ist eine Variante desselben Grundgedankens: Die Oberfläche ist eine reine Funktion des Zustands (`view`). Benutzeraktionen erzeugen **Nachrichten**, und nur die Funktion `update` verändert den Zustand. Danach wird die Oberfläche aus dem neuen Zustand erzeugt. Weitere Varianten der Trennung von Oberfläche und Logik, etwa **MVC** und **MVP**, beschreibt die Seite [Softwarearchitektur](/de/software-development/software-architecture/#mvc-mvp-und-mvvm).
+
+## Gestaltung von Oberflächen
+
+Eine Oberfläche ist gut, wenn Benutzer ihre Aufgaben schnell und ohne Fehler erledigen können. Grundsätze der **Usability**, etwa die Dialogprinzipien der Norm ISO 9241-110 und die Heuristiken von Jakob Nielsen, beschreibt die Seite [Benutzerfreundlichkeit](/de/media-technology/user-experience/).
+
+## Weiterführende Quellen
+
+- [Data binding overview (WPF)](https://learn.microsoft.com/de-de/dotnet/desktop/wpf/data/) und [MVVM Toolkit](https://learn.microsoft.com/de-de/dotnet/communitytoolkit/mvvm/) (Microsoft Learn)
+- [The iced book](https://book.iced.rs/)

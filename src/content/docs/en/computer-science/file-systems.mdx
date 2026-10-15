@@ -1,0 +1,250 @@
+---
+title: File Systems
+description: Files and directories, allocation methods, FAT, inodes, NTFS, ext4, APFS and exFAT compared, journaling, permissions and ACLs, links, mounting and partitioning with MBR and GPT.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+To the hardware, a storage device is just a long sequence of numbered **blocks** (sectors of 512 bytes or 4 KiB). A **file system** defines how named files in directories are stored on it, found, protected and recovered after a crash. The choice of file system decides how large files may be, which operating systems can read the device and how robust the data is against power failures.
+
+## Files and directories
+
+A **file** is a named sequence of bytes. The operating system does not interpret the content. Whether it is an image or text is recognised by programs from the **file extension** (Windows) or from typical leading bytes, the **magic numbers** (`%PDF`, `PNG`, `MZ` for Windows programs, `7F 45 4C 46` for Linux programs in ELF format). Every file has **metadata**: size, owner, permissions, timestamps (creation, last modification, last access) and the location of the data on the storage device.
+
+Unix follows the principle "everything is a file": besides **regular files** and **directories** there are **symbolic links**, **device files** (`/dev/sda`), **named pipes** and **sockets**, all of which are accessed with the same system calls (`open`, `read`, `write`).
+
+**Directories** (folders) form a **tree**. Internally, a directory is a special file that maps names to files. Every directory contains the entries `.` (itself) and `..` (the parent directory).
+
+- An **absolute path** starts at the root: `/home/anna/notes.txt` or `C:\Users\anna\notes.txt`.
+- A **relative path** starts from the current working directory: `../pictures/photo.jpg`.
+
+Unix systems have a **single directory tree** starting at `/`, into which all storage devices are mounted. Windows uses one tree per drive letter. How to work with paths in C# and Rust is shown in [Files and serialisation](/en/software-development/files-and-serialization/#paths).
+
+## Block allocation
+
+File systems manage space in **blocks** (called **clusters** on Windows) of usually 4 KiB. Even a file of 1 byte occupies a whole block. The methods differ in how the blocks of a file are found:
+
+| Method                    | Principle                                                         | Advantages                            | Disadvantages                                      |
+| ------------------------- | ----------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------- |
+| **contiguous**            | start block and length, all blocks directly one after another     | very fast to read                     | external fragmentation, files cannot grow easily. Used on CDs and DVDs (ISO 9660) |
+| **linked**                | every block points to the next one. With **FAT** the pointers are in a central table | no waste, files can grow | direct access to block $n$ needs $n$ steps |
+| **indexed**               | an index block (inode) contains the list of all block numbers     | fast direct access                    | management overhead for the index                  |
+| **extents**               | list of ranges (start block, length)                              | compact for large, contiguous files   | more complex to manage                             |
+
+If the blocks of a file are scattered, the file is **fragmented**. On hard disks this costs many head movements, and **defragmenting** rearranges the blocks. On SSDs the location of the blocks hardly matters; there Windows sends TRIM commands instead of defragmenting.
+
+### FAT
+
+The **File Allocation Table** file system (Microsoft, from 1977) stores a table at the start of the device with one entry per cluster. A file's directory entry contains its first cluster; the table entry of a cluster contains the number of the next cluster or an end marker.
+
+```text
+Directory entry: REPORT.TXT   start cluster 4   size 9000 bytes
+
+FAT index:   2     3     4     5     6     7     8
+Entry:       3    EOF    7     0     0     8    EOF
+
+REPORT.TXT: cluster 4 → 7 → 8 → EOF   (cluster 2 → 3 belongs to another file, 0 = free)
+```
+
+FAT is simple and understood by practically every device (cameras, car radios, microcontrollers, UEFI). However, it has no permissions and no journaling, and **FAT32** only allows files up to **4 GiB − 1 byte** because the file size is stored in a 32-bit field.
+
+### Inodes
+
+Unix file systems (ext2/3/4, UFS) store a file's metadata in an **inode** (_index node_). Every file has exactly one inode with a unique number. It contains:
+
+- file type and permissions, owner and group,
+- size and timestamps,
+- the **link count** (how many directory entries refer to it),
+- references to the data blocks.
+
+The **file name is not stored in the inode** but only in the directory, which maps names to inode numbers. That is why a file can have several names (hard links), and renaming within a file system is very fast. `ls -i` shows the inode numbers, `stat file` the content of an inode.
+
+In ext2 and ext3, an inode contains 12 **direct** block pointers, one **single indirect** pointer (a block full of pointers), one **double indirect** and one **triple indirect**. With 4 KiB blocks and 4-byte pointers, $4096 / 4 = 1024$ pointers fit into one block:
+
+$$
+12 \cdot 4\,\mathrm{KiB} + 1024 \cdot 4\,\mathrm{KiB} + 1024^2 \cdot 4\,\mathrm{KiB} + 1024^3 \cdot 4\,\mathrm{KiB} = 48\,\mathrm{KiB} + 4\,\mathrm{MiB} + 4\,\mathrm{GiB} + 4\,\mathrm{TiB}
+$$
+
+Small files manage with the direct pointers and can be accessed quickly; large files need additional accesses to indirect blocks. In practice, other fields limit the size to 2 TiB in ext3. **ext4** uses **extents** instead of block lists and allows files of up to 16 TiB.
+
+The number of inodes is fixed when formatting. Many tiny files can use up all the inodes even though there is still free space (`df -i` shows this).
+
+## File systems compared
+
+| Feature                 | FAT32                  | exFAT                      | NTFS                          | ext4                         | APFS                         |
+| ----------------------- | ---------------------- | -------------------------- | ----------------------------- | ---------------------------- | ---------------------------- |
+| Origin                  | Microsoft, 1996        | Microsoft, 2006            | Microsoft, 1993               | Linux, 2008                  | Apple, 2017                  |
+| Maximum file size       | 4 GiB − 1 byte         | practically unlimited (16 EiB) | practically unlimited     | 16 TiB (4 KiB blocks)        | 8 EiB                        |
+| Permissions             | no                     | no                         | ACLs                          | Unix permissions, POSIX ACLs | Unix permissions, ACLs       |
+| Journaling / consistency | no                    | no                         | metadata journal              | journal                      | copy-on-write                |
+| Special features        | maximum compatibility  | for flash memory, SDXC standard | compression, encryption (EFS), quotas, shadow copies | extents, delayed allocation | snapshots, clones, native encryption, optimised for SSDs |
+| Read and write on       | all                    | Windows, macOS, Linux      | Windows, Linux (kernel driver `ntfs3`), macOS read-only | Linux                  | macOS, iOS                   |
+| Typical use             | small USB sticks, EFI system partition | USB sticks, SD cards, external drives for several systems | Windows system drive | Linux system drive | Mac, iPhone                  |
+
+Other important file systems:
+
+- **XFS**: for large files and high parallelism, default on Red Hat Enterprise Linux.
+- **Btrfs** and **ZFS**: copy-on-write file systems with checksums for all data (detecting silent data corruption), snapshots, compression and integrated volume management and RAID. ZFS is widespread on storage servers (TrueNAS), Btrfs on openSUSE and Fedora.
+- **ReFS**: Windows Server file system for large storage pools with checksums.
+
+## Journaling
+
+A seemingly simple operation such as creating a file changes several structures: allocate an inode, write the directory entry, mark blocks as used. If the power fails in the middle, the file system is **inconsistent**: an allocated inode without a name, or a block that belongs to two files. Without protection, a check program (`fsck` on Linux, `chkdsk` on Windows) then has to scan the whole device, which takes hours on large disks.
+
+A **journaling file system** first writes planned changes to a separate area, the **journal** (_write-ahead logging_, as in a [database transaction](/en/databases/transactions/)):
+
+1. Write the changes to the journal as a **transaction** and finish it with a commit record.
+2. Write the changes to their actual location in the file system (_checkpoint_).
+3. Mark the transaction in the journal as done.
+
+After a crash, the system only reads the journal: completely recorded transactions are replayed (_replay_), incomplete ones are discarded. The check takes seconds instead of hours.
+
+| ext4 mode       | what goes into the journal                                           | Safety and speed                                  |
+| --------------- | -------------------------------------------------------------------- | ------------------------------------------------- |
+| `journal`       | metadata and file contents                                           | safest, all data is written twice                 |
+| `ordered` (default) | metadata only, but file contents are written first               | good compromise                                   |
+| `writeback`     | metadata only, no ordering                                           | fastest; after a crash, files may contain old garbage |
+
+**Copy-on-write** file systems (APFS, Btrfs, ZFS) never overwrite existing blocks; they write changes to a free location and then switch to the new version with a single atomic write. This keeps the file system consistent at all times, and **snapshots** (frozen states) can be created at almost no cost.
+
+Journaling protects the **structure** of the file system, not the content against user mistakes, faulty hardware or ransomware. For that you need backups.
+
+## Permissions
+
+### Unix permissions
+
+On Unix, every file has an **owner**, a **group** and three permissions each (**r**ead, **w**rite, e**x**ecute) for owner, group and everyone else. As an **octal number**, each permission is represented as a bit (r = 4, w = 2, x = 1), and each of the three classes gives one digit: `rwxr-x---` = 750. How to use `chmod` and `chown` is described under [Linux basics](/en/deployment/linux_server/linux_basics/#file-permissions).
+
+The meaning for **directories** is important: `r` allows listing the names, `w` allows creating, renaming and **deleting** files in it (even files belonging to others!), `x` allows entering it and accessing files inside it.
+
+In addition there are three **special bits**, written as a fourth, leading octal digit:
+
+| Special bit     | Octal | Effect                                                                  | Example                        |
+| --------------- | ----- | ----------------------------------------------------------------------- | ------------------------------ |
+| **setuid**      | 4000  | program runs with the permissions of the **owner** instead of the caller | `/usr/bin/passwd` (`rwsr-xr-x`), may change `/etc/shadow` as root |
+| **setgid**      | 2000  | on directories: new files inherit the directory's group                 | shared project folders         |
+| **sticky bit**  | 1000  | on directories: only the owner may delete their files                   | `/tmp` (`rwxrwxrwt`, 1777)     |
+
+The **umask** defines which permissions are removed from newly created files. Programs usually create files with 666 and directories with 777. With the usual umask of 022, this results in 644 and 755 respectively.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Permissions.ToOctal("rwxr-x---"));     // 750
+Console.WriteLine(Permissions.ToSymbolic(0b110_100_100)); // rw-r--r--
+Console.WriteLine(Permissions.ToSymbolic(0b111_111_111 & ~0b000_010_010)); // rwxr-xr-x (777 with umask 022)
+
+static class Permissions
+{
+    const string Letters = "rwx";
+
+    // "rwxr-x---" -> "750"
+    public static string ToOctal(string symbolic)
+    {
+        int mode = 0;
+        foreach (char c in symbolic) mode = (mode << 1) | (c == '-' ? 0 : 1);
+        return Convert.ToString(mode, 8);
+    }
+
+    // 0o644 -> "rw-r--r--"
+    public static string ToSymbolic(int mode) =>
+        string.Concat(Enumerable.Range(0, 9).Select(i =>
+            (mode & (1 << (8 - i))) != 0 ? Letters[i % 3] : '-'));
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// "rwxr-x---" -> 0o750
+fn to_octal(symbolic: &str) -> u32 {
+    symbolic.chars().fold(0, |mode, c| (mode << 1) | u32::from(c != '-'))
+}
+
+// 0o644 -> "rw-r--r--"
+fn to_symbolic(mode: u32) -> String {
+    (0..9)
+        .map(|i| if mode & (1 << (8 - i)) != 0 { ['r', 'w', 'x'][i % 3] } else { '-' })
+        .collect()
+}
+
+fn main() {
+    println!("{:o}", to_octal("rwxr-x---"));     // 750
+    println!("{}", to_symbolic(0o644));          // rw-r--r--
+    println!("{}", to_symbolic(0o777 & !0o022)); // rwxr-xr-x (777 with umask 022)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Access control lists
+
+With only three classes, much cannot be expressed, for example "the engineering group may write, the sales group may only read, Anna may do nothing at all". **Access control lists** (ACLs) store any number of entries for an object (_access control entries_, ACEs), each consisting of a user or group and permissions.
+
+- **NTFS** uses ACLs exclusively, with fine-grained permissions (read, write, modify, full control and special permissions), **allow** and **deny** entries and **inheritance** to subfolders. A deny entry takes precedence over an allow entry. Management on file servers is described in [File services](/en/deployment/windows_server/file_services/#ntfs-permissions).
+- On Linux, **POSIX ACLs** extend the classic permissions. `setfacl -m u:anna:rw report.txt` gives Anna read and write permission, `getfacl` shows the list. `ls -l` marks files with an ACL with a `+` after the permissions.
+
+## Links
+
+| Type                            | Principle                                                 | Properties                                                      |
+| ------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------- |
+| **hard link**                   | another directory entry that points to **the same inode** | all names are equivalent. The data is only deleted when the link count reaches 0. Only within one file system and not for directories |
+| **symbolic link** (symlink, soft link) | a small file that contains a **path**              | works across file system boundaries and for directories. If the target is deleted, the link points nowhere (_dangling link_) |
+
+```bash
+ln report.txt report-copy.txt        # hard link: same inode number, link count 2
+ln -s /srv/data/project project      # symbolic link to a directory
+ls -li                               # shows inode numbers and link targets
+```
+
+NTFS also supports hard links and symbolic links (`mklink`) as well as **junctions** for directories. A **shortcut** (`.lnk`) on Windows, by contrast, is a normal file that only Explorer interprets.
+
+## Mounting
+
+Before a file system can be used, it has to be **mounted**. On Linux it is inserted into the directory tree at an empty directory, the **mount point**:
+
+```bash
+lsblk -f                                 # show devices, partitions and file systems
+sudo mount /dev/sdb1 /mnt/usb            # mount a partition
+sudo umount /mnt/usb                     # unmount; buffers are written first
+```
+
+Permanent mounts are listed in `/etc/fstab`. There you use the file system's **UUID** instead of device names like `/dev/sdb1`, because these can change depending on the order in which devices are detected:
+
+```text
+UUID=3f1c2a7e-9b4d-4e2a-8c11-5d0e6f7a8b9c  /data  ext4  defaults,noatime  0  2
+```
+
+Windows assigns **drive letters** to file systems but can also mount them into an empty NTFS folder. If a device is unplugged without unmounting or "safely removing" it, data not yet written from the write buffer can be lost.
+
+Through a common intermediate layer, the **virtual file system** (VFS), the kernel offers the same interface for all file systems. This is also how network file systems (NFS, SMB) and pseudo file systems such as `/proc` and `/sys` work, in which the kernel provides information about processes and hardware as files (`cat /proc/cpuinfo`).
+
+## Partitioning
+
+A storage device is divided into **partitions**, each carrying its own file system, for example separate partitions for the operating system and data or for two operating systems. The layout is stored in a **partition table**.
+
+| Feature                | MBR (_master boot record_, 1983)                   | GPT (_GUID partition table_, part of the UEFI specification) |
+| ---------------------- | -------------------------------------------------- | -------------------------------------------- |
+| Location               | sector 0: 446 bytes of boot code, 4 partition entries of 16 bytes, signature `55 AA` | sector 1 (header) onwards, **backup copy at the end** of the device |
+| Number of partitions   | 4 primary, or 3 primary and one **extended** containing any number of **logical** partitions | 128 by default |
+| Maximum size           | 2 TiB (32-bit sector numbers with 512-byte sectors: $2^{32} \cdot 512\,\mathrm{B}$) | 8 ZiB (64-bit sector numbers) |
+| Identification         | type as a 1-byte code (e.g. `07` NTFS, `83` Linux)  | type and partition each with a globally unique **GUID** |
+| Error protection       | none                                               | CRC32 checksums, copy at the end             |
+| Boot process           | BIOS                                               | UEFI                                         |
+
+A GPT disk contains a **protective MBR** in sector 0 that marks the whole device as one partition of unknown type. This stops old programs from treating it as empty and overwriting it.
+
+A typical Windows installation on GPT consists of the **EFI system partition** (FAT32, about 100 to 300 MiB), a small reserved partition (MSR), the Windows partition (NTFS) and a recovery partition. Tools are **Disk Management** and `diskpart` on Windows and `fdisk`, `gdisk` and `parted` on Linux. **Formatting** creates an empty file system on a partition (`mkfs.ext4`, `format`).
+
+More flexible than fixed partitions is a **logical volume manager** (LVM on Linux, Storage Spaces on Windows): several devices are combined into a pool from which logical drives are created and can later be enlarged. Combining several devices for fault tolerance is the job of [RAID](/en/deployment/storage-systems/#raid).
+
+## Further reading
+
+- [ext4 Data Structures and Algorithms](https://docs.kernel.org/filesystems/ext4/index.html) (Linux kernel documentation)
+- [UEFI Specification](https://uefi.org/specifications), chapter "GUID Partition Table (GPT) Disk Layout" (UEFI Forum)
+- Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/), part "Persistence"

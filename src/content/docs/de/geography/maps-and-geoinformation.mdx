@@ -1,0 +1,233 @@
+---
+title: Karten und Geoinformation
+description: Kartentypen, Maßstab, Kartennetzentwürfe, geografische Koordinaten und UTM, GNSS, Geoinformationssysteme, Fernerkundung und OpenStreetMap.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Karten sind das wichtigste Werkzeug der Geografie: Sie bilden einen Ausschnitt der Erdoberfläche verkleinert, vereinfacht und mit Zeichen erklärt auf einer ebenen Fläche ab. Heute entstehen Karten fast ausschließlich digital, aus Satellitendaten, Vermessung und Datenbanken. Damit überschneidet sich die Geografie stark mit der Informatik: Navigationssysteme, Lieferdienste, Wetter-Apps und Einsatzleitstellen arbeiten mit Geodaten.
+
+## Kartentypen
+
+Jede Karte ist ein **Modell**: Sie lässt Unwichtiges weg (Generalisierung) und stellt Wichtiges mit Signaturen dar. Die Legende erklärt diese Signaturen.
+
+| Kartentyp | Inhalt | Beispiel |
+| --- | --- | --- |
+| **Topografische Karte** | Gelände (Höhenlinien), Gewässer, Siedlungen, Verkehrswege, Bodenbedeckung | Österreichische Karte ÖK50 des BEV (1:50.000) |
+| **Physische Karte** | Relief durch Höhenschichtfarben (grün für Tiefland, braun für Gebirge) | Atlaskarte „Österreich physisch“ |
+| **Politische Karte** | Staaten, Bundesländer, Hauptstädte, Grenzen | Europa mit EU-Mitgliedstaaten |
+| **Thematische Karte** | ein bestimmtes Thema auf einer Grundkarte | Bevölkerungsdichte, Klimazonen, Arbeitslosenquote nach Bezirken |
+
+Thematische Karten verwenden unterschiedliche Darstellungsmethoden:
+
+- **Choroplethenkarte** (Flächenkartogramm): Gebiete werden nach einem Wert eingefärbt, etwa der Arbeitslosenquote je Bezirk. Sie eignet sich nur für **relative** Werte (Prozent, Dichte), weil große Flächen sonst optisch überbewertet werden.
+- **Diagrammkarte**: Kreis- oder Säulendiagramme in den Gebieten zeigen absolute Werte.
+- **Punktkarte**: Jeder Punkt steht für eine Menge, etwa 1.000 Einwohner.
+- **Isolinienkarte**: Linien verbinden Orte gleicher Werte: Höhenlinien (Isohypsen), gleicher Luftdruck (Isobaren), gleiche Temperatur (Isothermen).
+- **Kartogramm** (Anamorphose): Die Fläche der Gebiete wird nach einem Wert verzerrt, etwa die Staaten nach Einwohnerzahl.
+
+Die Österreichische Karte gibt das **Bundesamt für Eich- und Vermessungswesen** (BEV) heraus. Es führt auch den Kataster, das amtliche Verzeichnis aller Grundstücke.
+
+## Maßstab
+
+Der **Maßstab** gibt an, wie stark die Wirklichkeit verkleinert ist. 1:25.000 heißt: 1 cm auf der Karte entspricht 25.000 cm, also 250 m in der Natur.
+
+$$
+\text{Strecke in der Natur} = \text{Strecke auf der Karte} \cdot \text{Maßstabszahl}
+$$
+
+Beispiel: Auf einer Karte 1:50.000 sind zwei Orte 7,4 cm voneinander entfernt. In der Natur sind das $7{,}4\,\mathrm{cm} \cdot 50\,000 = 370\,000\,\mathrm{cm} = 3{,}7\,\mathrm{km}$ Luftlinie.
+
+| Maßstab | Bezeichnung | 1 cm entspricht | Verwendung |
+| --- | --- | --- | --- |
+| 1:1.000 bis 1:10.000 | sehr groß | 10 m bis 100 m | Katasterpläne, Stadtpläne |
+| 1:25.000 bis 1:50.000 | groß | 250 m bis 500 m | Wanderkarten, topografische Karten |
+| 1:200.000 bis 1:1.000.000 | mittel | 2 km bis 10 km | Straßenkarten |
+| ab 1:1.000.000 | klein | ab 10 km | Atlaskarten von Kontinenten, Weltkarten |
+
+:::tip[Merke]
+Ein **großer** Maßstab hat eine **kleine** Maßstabszahl und zeigt ein kleines Gebiet mit vielen Details. Ein **kleiner** Maßstab (große Maßstabszahl) zeigt ein großes Gebiet mit wenig Details.
+:::
+
+Digitale Karten zeigen statt eines festen Maßstabs eine **Maßstabsleiste**, weil sich der Maßstab beim Zoomen und je nach Bildschirm ändert.
+
+## Kartennetzentwürfe
+
+Die Erde ist annähernd eine Kugel (genauer ein an den Polen abgeplattetes Rotationsellipsoid). Eine gekrümmte Fläche lässt sich nicht ohne Verzerrung in die Ebene abwickeln. Jeder **Kartennetzentwurf** (Kartenprojektion) muss deshalb Kompromisse eingehen. Eine Karte kann höchstens eine dieser Eigenschaften erfüllen:
+
+- **winkeltreu** (konform): Winkel und damit die Form kleiner Gebiete bleiben erhalten. Wichtig für Navigation.
+- **flächentreu** (äquivalent): Flächenverhältnisse stimmen. Wichtig für thematische Karten, die Verteilungen vergleichen.
+- **längentreu** (abstandstreu): Entfernungen stimmen, allerdings nur entlang bestimmter Linien oder von einem Punkt aus.
+
+Nach der Abbildungsfläche unterscheidet man Zylinder-, Kegel- und Azimutalentwürfe (Projektion auf eine Ebene).
+
+| Entwurf | Typ | Eigenschaft | Verwendung |
+| --- | --- | --- | --- |
+| **Mercator** (1569) | Zylinder | winkeltreu, Flächen zu den Polen hin stark vergrößert | Seefahrt; als **Web-Mercator** (EPSG:3857) Standard bei Google Maps, OpenStreetMap |
+| **Gall-Peters** | Zylinder | flächentreu, Formen verzerrt | Darstellung von Größenverhältnissen der Kontinente |
+| **Mollweide** | Pseudozylinder | flächentreu | thematische Weltkarten |
+| **Robinson**, **Winkel-Tripel** | vermittelnd | weder winkel- noch flächentreu, geringe Gesamtverzerrung | Atlanten, Wandkarten |
+| **Lambert-Kegelentwurf** | Kegel | winkeltreu, gut für mittlere Breiten | Österreich-Karten (Austria Lambert), Flugkarten |
+| **Azimutal** | Ebene | je nach Variante abstands- oder flächentreu vom Mittelpunkt aus | Polargebiete, Funkreichweiten |
+
+Die Verzerrung der Mercator-Projektion zeigt sich an Grönland: Auf der Karte wirkt es etwa so groß wie Afrika, tatsächlich ist Afrika mit rund 30 Mio. km² etwa vierzehnmal so groß wie Grönland (rund 2,2 Mio. km²). Online-Karten verwenden Web-Mercator trotzdem, weil die Winkeltreue beim Zoomen auf Straßenebene wichtig ist (eine Kreuzung soll rechtwinklig aussehen) und weil sich die Karte einfach in quadratische Kacheln zerlegen lässt.
+
+## Koordinaten
+
+### Geografische Koordinaten
+
+Das **Gradnetz** der Erde besteht aus Breitenkreisen und Längenhalbkreisen (Meridianen).
+
+- Die **geografische Breite** (_Latitude_, φ) ist der Winkel nördlich oder südlich des Äquators: 0° am Äquator bis 90° N oder 90° S an den Polen. Breitenkreise liegen parallel zueinander, ein Breitengrad entspricht überall etwa 111 km.
+- Die **geografische Länge** (_Longitude_, λ) ist der Winkel östlich oder westlich des **Nullmeridians** durch Greenwich (London, international festgelegt 1884): 0° bis 180° E oder 180° W. Meridiane laufen an den Polen zusammen, daher wird ein Längengrad zu den Polen hin kürzer:
+
+$$
+\text{Länge eines Längengrads} \approx 111{,}32\,\mathrm{km} \cdot \cos\varphi
+$$
+
+In Österreich (φ ≈ 48°) ist ein Längengrad nur etwa 74,5 km lang.
+
+Koordinaten werden in **Grad, Minuten, Sekunden** oder in **Dezimalgrad** angegeben. 1° hat 60 Bogenminuten, 1′ hat 60 Bogensekunden:
+
+$$
+48^\circ\,12'\,30'' = 48 + \frac{12}{60} + \frac{30}{3600} = 48{,}2083^\circ
+$$
+
+Wien liegt bei etwa 48,21° N, 16,37° E. Moderne Systeme speichern Koordinaten im Bezugssystem **WGS 84** (EPSG:4326), das auch GPS verwendet. Die Erdrotation um 360° in 24 Stunden ergibt 15° Längenunterschied pro Stunde; darauf beruhen die **Zeitzonen**. Österreich liegt in der Mitteleuropäischen Zeit (MEZ = UTC+1, Sommerzeit MESZ = UTC+2).
+
+### UTM
+
+Für Vermessung, Militär und GIS sind ebene, metrische Koordinaten praktischer. Das **UTM-System** (_Universal Transverse Mercator_) teilt die Erde zwischen 80° S und 84° N in **60 Zonen** zu je 6° Länge. Jede Zone wird mit einem eigenen, quer liegenden Mercator-Zylinder abgebildet, sodass die Verzerrung innerhalb der Zone gering bleibt. Eine Position wird als Zone, **Rechtswert** (_Easting_, Meter östlich, der Mittelmeridian hat den Wert 500.000 m) und **Hochwert** (_Northing_, Meter vom Äquator) angegeben. Österreich liegt in den Zonen 32 (6° bis 12° E, Vorarlberg und Westtirol) und 33 (12° bis 18° E).
+
+### Entfernung zweier Punkte
+
+Die kürzeste Verbindung zweier Punkte auf der Kugel ist ein Abschnitt eines **Großkreises** (Orthodrome). Sie wird mit der **Haversine-Formel** berechnet (R ≈ 6371 km mittlerer Erdradius, φ Breite, λ Länge im Bogenmaß):
+
+$$
+d = 2R \arcsin\sqrt{\sin^2\frac{\Delta\varphi}{2} + \cos\varphi_1 \cos\varphi_2 \sin^2\frac{\Delta\lambda}{2}}
+$$
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double EarthRadiusKm = 6371.0;
+
+static double ToRad(double deg) => deg * Math.PI / 180.0;
+
+static double Haversine(double lat1, double lon1, double lat2, double lon2)
+{
+    double dLat = ToRad(lat2 - lat1);
+    double dLon = ToRad(lon2 - lon1);
+    double a = Math.Pow(Math.Sin(dLat / 2), 2)
+             + Math.Cos(ToRad(lat1)) * Math.Cos(ToRad(lat2)) * Math.Pow(Math.Sin(dLon / 2), 2);
+    return 2 * EarthRadiusKm * Math.Asin(Math.Sqrt(a));
+}
+
+// Wien und Graz in Dezimalgrad (WGS 84)
+double d = Haversine(48.2082, 16.3738, 47.0707, 15.4395);
+Console.WriteLine(FormattableString.Invariant($"Luftlinie Wien-Graz: {d:F1} km"));
+// Luftlinie Wien-Graz: 144.6 km
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const EARTH_RADIUS_KM: f64 = 6371.0;
+
+fn haversine(lat1: f64, lon1: f64, lat2: f64, lon2: f64) -> f64 {
+    let d_lat = (lat2 - lat1).to_radians();
+    let d_lon = (lon2 - lon1).to_radians();
+    let a = (d_lat / 2.0).sin().powi(2)
+        + lat1.to_radians().cos() * lat2.to_radians().cos() * (d_lon / 2.0).sin().powi(2);
+    2.0 * EARTH_RADIUS_KM * a.sqrt().asin()
+}
+
+fn main() {
+    // Wien und Graz in Dezimalgrad (WGS 84)
+    let d = haversine(48.2082, 16.3738, 47.0707, 15.4395);
+    println!("Luftlinie Wien-Graz: {d:.1} km");
+    // Luftlinie Wien-Graz: 144.6 km
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die Luftlinie ist deutlich kürzer als die Straßenentfernung. Navigationsdienste rechnen deshalb zusätzlich mit dem Straßengraphen (siehe Netzwerkanalyse unten).
+
+## GNSS: satellitengestützte Positionsbestimmung
+
+**GNSS** (_Global Navigation Satellite System_) ist der Oberbegriff für Satellitennavigationssysteme:
+
+| System | Betreiber | Bemerkung |
+| --- | --- | --- |
+| **GPS** | USA (Militär) | seit 1995 voll betriebsbereit, Satelliten in rund 20.200 km Höhe |
+| **GLONASS** | Russland | |
+| **Galileo** | Europäische Union | ziviles System, Basisdienste seit 2016 |
+| **BeiDou** | China | weltweit seit 2020 |
+
+Jeder Satellit sendet laufend seine Position und die genaue Uhrzeit seiner Atomuhr. Der Empfänger misst die **Laufzeit** der Signale und berechnet daraus die Entfernung zu jedem Satelliten. Aus mehreren Entfernungen ergibt sich der Standort durch **Trilateration**. Da die Uhr im Empfänger ungenau ist, ist die Uhrzeit eine vierte Unbekannte neben den drei Raumkoordinaten. Man braucht daher **mindestens vier Satelliten**. Weil Licht in einer Mikrosekunde rund 300 m zurücklegt, sind die Satelliten mit Atomuhren ausgestattet, und sogar Effekte der Relativitätstheorie werden korrigiert.
+
+Ein Smartphone erreicht unter freiem Himmel einige Meter Genauigkeit. Abschattungen (Häuserschluchten, Wald) und Reflexionen verschlechtern sie. **Differenzielles GNSS** und **RTK** (_Real Time Kinematic_) nutzen Referenzstationen mit bekannter Position und erreichen Zentimetergenauigkeit; in Österreich betreibt das BEV dafür den Dienst APOS. Anwendungen sind Vermessung, Landwirtschaft (automatische Lenkung), Flottenmanagement, Notrufortung (eCall) und die Zeitsynchronisation von Mobilfunk- und Stromnetzen.
+
+## Geoinformationssysteme (GIS)
+
+Ein **Geoinformationssystem** erfasst, speichert, analysiert und stellt raumbezogene Daten dar. Jedes Objekt hat eine **Geometrie** (wo?) und **Sachdaten** (was?). Die Daten werden in thematischen **Ebenen** (_Layern_) übereinandergelegt: Gelände, Gewässer, Straßen, Gebäude, Flächenwidmung.
+
+| | Vektordaten | Rasterdaten |
+| --- | --- | --- |
+| Aufbau | Punkte, Linien, Polygone aus Koordinaten, dazu eine Attributtabelle | Gitter aus gleich großen Zellen (Pixeln), jede Zelle hat einen Wert |
+| Beispiele | Haltestellen (Punkte), Straßen (Linien), Grundstücke (Polygone) | Satellitenbild, digitales Höhenmodell, Temperaturverteilung |
+| Stärken | exakte Grenzen, wenig Speicher, Topologie (Nachbarschaft) | kontinuierliche Phänomene, einfache Rechenoperationen pro Zelle |
+| Formate | GeoPackage, GeoJSON, Shapefile | GeoTIFF |
+
+Typische **GIS-Analysen**:
+
+- **Pufferzone** (_Buffer_): alle Wohngebäude im Umkreis von 300 m um eine Haltestelle
+- **Verschneidung** (_Overlay_): Überlagerung von Hochwassergefahrenzonen mit Bauland zeigt gefährdete Bauflächen
+- **Räumliche Abfrage**: alle Schulen innerhalb eines Bezirks
+- **Netzwerkanalyse**: kürzester oder schnellster Weg, Einzugsgebiete einer Feuerwache
+- **Geländeanalyse**: Hangneigung, Sichtbarkeit, Abflussrichtung aus dem Höhenmodell
+
+Verbreitete Software ist das freie **QGIS** und ArcGIS. Datenbanken speichern Geometrien mit Erweiterungen wie **PostGIS** für PostgreSQL. Die EU-Richtlinie **INSPIRE** (2007/2/EG) verpflichtet Behörden, Geodaten in einheitlichen Formaten bereitzustellen. In Österreich bieten basemap.at (Verwaltungsgrundkarte) und die Landes-GIS (etwa TIRIS, DORIS, NÖ Atlas) frei nutzbare Karten.
+
+## Fernerkundung
+
+**Fernerkundung** gewinnt Informationen über die Erdoberfläche ohne direkten Kontakt, aus Flugzeugen, Drohnen oder Satelliten.
+
+- **Passive Systeme** messen die von der Sonne reflektierte oder von der Erde abgestrahlte Strahlung. **Multispektrale** Sensoren nehmen neben sichtbarem Licht auch Infrarot auf.
+- **Aktive Systeme** senden selbst Strahlung aus: **Radar** (SAR) funktioniert auch bei Wolken und Nacht, **LiDAR** (Laserscanning) misst Höhen sehr genau und erzeugt digitale Geländemodelle, auch unter Wald.
+
+Die Qualität von Fernerkundungsdaten beschreiben vier **Auflösungen**: räumlich (Pixelgröße, bei Sentinel-2 bis 10 m), spektral (Anzahl der Wellenlängenbänder), zeitlich (wie oft dasselbe Gebiet aufgenommen wird) und radiometrisch (Anzahl der Helligkeitsstufen).
+
+Gesunde Vegetation reflektiert stark im nahen Infrarot (NIR) und absorbiert rotes Licht. Darauf beruht der Vegetationsindex **NDVI**, der Werte zwischen −1 und +1 liefert; dichte, vitale Vegetation hat Werte nahe 1:
+
+$$
+\mathrm{NDVI} = \frac{\mathrm{NIR} - \mathrm{Rot}}{\mathrm{NIR} + \mathrm{Rot}}
+$$
+
+Das europäische Erdbeobachtungsprogramm **Copernicus** stellt die Daten seiner Sentinel-Satelliten frei zur Verfügung, das US-Programm **Landsat** liefert Bilder seit 1972. Anwendungen sind Ernteprognosen, Waldschadenskartierung, Gletschermonitoring, Hochwasser- und Katastrophenkartierung sowie die Beobachtung von Stadtwachstum.
+
+## OpenStreetMap
+
+**OpenStreetMap** (OSM) ist eine freie Weltkarte, die 2004 von Steve Coast gegründet wurde und von Freiwilligen nach dem Wiki-Prinzip bearbeitet wird. Die Daten stehen unter der **Open Database License** (ODbL): Jede und jeder darf sie nutzen, auch kommerziell, wenn OSM als Quelle genannt wird und veränderte Datenbanken wieder unter derselben Lizenz veröffentlicht werden.
+
+Das Datenmodell kennt drei Elementtypen:
+
+| Element | Bedeutung | Beispiel |
+| --- | --- | --- |
+| **Node** | Punkt mit Koordinaten | Bankomat, Baum, Haltestelle |
+| **Way** | geordnete Liste von Nodes, offen oder geschlossen | Straße, Fluss, Gebäudeumriss |
+| **Relation** | Gruppe von Elementen mit Rollen | Buslinie, Gemeindegrenze, Abbiegeverbot |
+
+Eigenschaften werden als **Tags** im Format Schlüssel=Wert gespeichert, etwa `highway=residential` oder `amenity=school`. Daten lassen sich über die Overpass API abfragen und mit Werkzeugen wie dem Online-Editor iD oder JOSM bearbeiten. Viele Apps und Navigationssysteme nutzen OSM-Daten, weil sie kostenlos sind und oft detaillierter als kommerzielle Karten, etwa bei Wanderwegen oder Radwegen.
+
+## Weiterführende Quellen
+
+- [BEV: Österreichische Karte und Geodaten](https://www.bev.gv.at/)
+- [Copernicus: Europäisches Erdbeobachtungsprogramm](https://www.copernicus.eu/de)
+- [OpenStreetMap Wiki](https://wiki.openstreetmap.org/wiki/DE:Hauptseite)

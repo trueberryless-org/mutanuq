@@ -1,0 +1,147 @@
+---
+title: Gravitation
+description: Newton's law of gravitation, gravitational field and field strength, potential energy, Kepler's laws, satellite orbits, geostationary orbit and escape velocity.
+sidebar:
+  order: 7
+---
+
+**Gravitation** is the attraction between masses. It makes apples fall, keeps the Moon in its orbit and shapes galaxies. Newton realised that the force causing weight on Earth is the same force that steers the planets around the Sun.
+
+## Newton's law of gravitation
+
+Two masses $m_1$ and $m_2$ at a distance $r$ (between their centres) attract each other with
+
+$$
+F = G \cdot \frac{m_1 \cdot m_2}{r^2}
+$$
+
+The **gravitational constant** is $G = 6.674\,30 \times 10^{-11}\,\mathrm{m^3\,kg^{-1}\,s^{-2}}$ (CODATA). It was first measured by Henry Cavendish in 1798 with a torsion balance and is still the least precisely known constant of nature.
+
+Properties:
+
+- The force is always attractive, acts along the line joining the bodies and obeys Newton's third law (equal on both bodies).
+- It decreases with the **square** of the distance: twice the distance, a quarter of the force.
+- For spherically symmetric bodies, the law holds as if the entire mass were concentrated at the centre.
+- Gravitation is the weakest of the four fundamental forces, but it has unlimited range and cannot be shielded. That is why it dominates on large scales.
+
+:::tip[Example: Earth and Moon]
+$m_\mathrm{E} = 5.972 \times 10^{24}\,\mathrm{kg}$, $m_\mathrm{M} = 7.342 \times 10^{22}\,\mathrm{kg}$, mean distance $r = 3.844 \times 10^8\,\mathrm{m}$:
+
+$$
+F = 6.674 \times 10^{-11} \cdot \frac{5.972 \times 10^{24} \cdot 7.342 \times 10^{22}}{(3.844 \times 10^8)^2} = 1.98 \times 10^{20}\,\mathrm{N}
+$$
+
+Two people of $70\,\mathrm{kg}$ each at a distance of $1\,\mathrm{m}$, by contrast, attract each other with only $3.3 \times 10^{-7}\,\mathrm{N}$.
+:::
+
+## Gravitational field
+
+A mass changes the space around it: it creates a **gravitational field**. The **gravitational field strength** is the force per test mass:
+
+$$
+\vec g = \frac{\vec F}{m}, \qquad g(r) = G \cdot \frac{M}{r^2}, \qquad [g] = \mathrm{N/kg} = \mathrm{m/s^2}
+$$
+
+The field strength is therefore identical to the gravitational acceleration. At the Earth's surface ($R_\mathrm{E} = 6371\,\mathrm{km}$):
+
+$$
+g = \frac{6.674 \times 10^{-11} \cdot 5.972 \times 10^{24}}{(6.371 \times 10^6)^2} = 9.82\,\mathrm{m/s^2}
+$$
+
+The actual value varies between about $9.78\,\mathrm{m/s^2}$ at the equator and $9.83\,\mathrm{m/s^2}$ at the poles, because the Earth is flattened and rotates (the centrifugal effect reduces weight at the equator). At an altitude of $420\,\mathrm{km}$, where the International Space Station (ISS) flies, $g$ is still $8.64\,\mathrm{m/s^2}$, about $88\,\%$ of the surface value.
+
+:::note[Weightlessness]
+Astronauts on the ISS are not weightless because there is no gravity there, but because they fall freely together with the station. The station constantly "falls" around the Earth. The same sensation occurs briefly in a lift whose cable snaps or on a parabolic flight.
+:::
+
+Gravitational fields are represented by **field lines**: they point in the direction of the force on a test mass, that is radially towards the central body. In small regions near the Earth's surface, the field is approximately **uniform** (parallel field lines, $g$ constant).
+
+## Potential energy in the gravitational field
+
+The formula $E_\mathrm{pot} = m g h$ only holds as long as $g$ is constant. In general, the zero level is chosen at infinity, which gives
+
+$$
+E_\mathrm{pot}(r) = -G \cdot \frac{M m}{r}
+$$
+
+The energy is negative because work must be done to bring the body to infinity. To take $1\,\mathrm{kg}$ from the Earth's surface completely out of the Earth's gravitational field requires $G M_\mathrm{E}/R_\mathrm{E} = 62.6\,\mathrm{MJ}$. The work between two distances is
+
+$$
+W = G M m \left(\frac{1}{r_1} - \frac{1}{r_2}\right)
+$$
+
+For $r_2 = r_1 + h$ with $h \ll r_1$, this again gives $W \approx m g h$.
+
+## Kepler's laws
+
+At the beginning of the 17th century, Johannes Kepler (who worked in Graz and Prague) derived three laws of planetary motion from Tycho Brahe's observational data. Newton was later able to derive them from the law of gravitation.
+
+1. **First law (law of ellipses)**: the planets move on ellipses with the Sun at one focus.
+2. **Second law (law of equal areas)**: the line from the Sun to the planet sweeps out equal areas in equal times. A planet is therefore faster near the Sun (perihelion) than far from it (aphelion). Physically, this is conservation of angular momentum.
+3. **Third law**: the squares of the orbital periods are proportional to the cubes of the semi-major axes:
+
+$$
+\frac{T_1^2}{T_2^2} = \frac{a_1^3}{a_2^3}, \qquad \text{more precisely: } \frac{T^2}{a^3} = \frac{4\pi^2}{G M}
+$$
+
+:::tip[Example: orbital period of Mars]
+Mars has a semi-major axis of $1.524\,\mathrm{AU}$ (astronomical unit, mean Earth-Sun distance, $1\,\mathrm{AU} = 1.496 \times 10^{11}\,\mathrm{m}$). Compared with the Earth: $T_\mathrm{Mars} = 1\,\mathrm{a} \cdot 1.524^{3/2} = 1.88$ years.
+:::
+
+The third law can be used to determine the masses of celestial bodies. From the Earth's orbit ($a = 1.496 \times 10^{11}\,\mathrm{m}$, $T = 1$ year $= 3.156 \times 10^7\,\mathrm{s}$), the mass of the Sun follows as $M = \frac{4\pi^2 a^3}{G T^2} = 1.99 \times 10^{30}\,\mathrm{kg}$.
+
+## Satellite orbits
+
+For a **circular orbit**, gravitation provides the centripetal force:
+
+$$
+G \frac{M m}{r^2} = m \frac{v^2}{r} \quad\Rightarrow\quad v = \sqrt{\frac{G M}{r}}, \qquad T = 2\pi \sqrt{\frac{r^3}{G M}}
+$$
+
+The satellite's mass cancels: a tool slipping from an astronaut's hand continues on the same orbit. The higher the orbit, the slower the satellite.
+
+:::tip[Example: ISS]
+The ISS orbits at an altitude of about $420\,\mathrm{km}$, so $r = 6371 + 420 = 6791\,\mathrm{km}$:
+
+$$
+v = \sqrt{\frac{6.674 \times 10^{-11} \cdot 5.972 \times 10^{24}}{6.791 \times 10^6}} = 7.66\,\mathrm{km/s}, \qquad T = \frac{2\pi r}{v} = 92.8\,\mathrm{min}
+$$
+
+It therefore circles the Earth about 15.5 times a day. The speed for a circular orbit just above the Earth's surface ($7.9\,\mathrm{km/s}$) is called the **first cosmic velocity**.
+:::
+
+### Geostationary orbit
+
+A **geostationary satellite** always appears at the same point in the sky as seen from the Earth. To achieve this, it must orbit above the equator in the direction of the Earth's rotation and make exactly one revolution per **sidereal day** ($T = 23\,\mathrm{h}\,56\,\mathrm{min}\,4\,\mathrm{s} = 86\,164\,\mathrm{s}$). The sidereal day is the rotation relative to the fixed stars; the 24-hour solar day is slightly longer because the Earth has meanwhile moved on along its orbit.
+
+From $T = 2\pi\sqrt{r^3/(GM)}$:
+
+$$
+r = \sqrt[3]{\frac{G M T^2}{4\pi^2}} = \sqrt[3]{\frac{6.674 \times 10^{-11} \cdot 5.972 \times 10^{24} \cdot 86\,164^2}{4\pi^2}} = 42\,164\,\mathrm{km}
+$$
+
+The altitude above the equator (equatorial radius $6378\,\mathrm{km}$) is $35\,786\,\mathrm{km}$, the orbital speed $v = 2\pi r/T = 3.07\,\mathrm{km/s}$. Television and weather satellites use this orbit because satellite dishes can stay fixed. A signal needs at least $2 \cdot 35\,786\,\mathrm{km}/c \approx 0.24\,\mathrm{s}$ there and back, which increases the latency of satellite internet. That is why newer systems rely on many satellites in low orbits (LEO, about $500\,\mathrm{km}$).
+
+## Escape velocity
+
+The **escape velocity** (second cosmic velocity) is the minimum speed at which a body must leave the surface to escape the gravitational field without further propulsion. Its kinetic energy must balance the (negative) potential energy:
+
+$$
+\frac{1}{2} m v^2 = G \frac{M m}{R} \quad\Rightarrow\quad v_\mathrm{esc} = \sqrt{\frac{2 G M}{R}} = \sqrt{2}\, v_\mathrm{circ}
+$$
+
+For the Earth: $v_\mathrm{esc} = \sqrt{2 \cdot 6.674 \times 10^{-11} \cdot 5.972 \times 10^{24}/6.371 \times 10^6} = 11.2\,\mathrm{km/s}$ (without air resistance). For the Moon it is $2.4\,\mathrm{km/s}$, for the Sun $618\,\mathrm{km/s}$.
+
+| Orbital energy $E = E_\mathrm{kin} + E_\mathrm{pot}$ | Shape of the path |
+| --- | --- |
+| $E < 0$ | bound: ellipse (special case circle) |
+| $E = 0$ | parabola, exactly escape velocity |
+| $E > 0$ | hyperbola, the body escapes |
+
+If a body is so compact that even light cannot reach the escape velocity, a **black hole** forms. The corresponding radius $r = 2GM/c^2$ (Schwarzschild radius) would be only about $9\,\mathrm{mm}$ for the Earth; a correct description requires general relativity.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- NIST: _CODATA Recommended Values of the Fundamental Physical Constants_, physics.nist.gov/constants
+- ESA: _Types of orbits_, esa.int

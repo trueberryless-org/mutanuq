@@ -1,0 +1,207 @@
+---
+title: Regression und Korrelation
+description: "Zweidimensionale Daten: Streudiagramm, lineare Regression mit der Methode der kleinsten Quadrate, Korrelationskoeffizient, Bestimmtheitsmaß, nichtlineare Regression und Korrelation versus Kausalität."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Oft werden an jedem Objekt zwei Merkmale gemessen, zum Beispiel Dateigröße und Übertragungszeit, Temperatur und Widerstand oder Werbeausgaben und Umsatz. Die **Regressionsrechnung** sucht eine Funktion, die den Zusammenhang möglichst gut beschreibt; die **Korrelationsrechnung** misst, wie stark der Zusammenhang ist.
+
+## Streudiagramm
+
+Die $n$ Wertepaare $(x_i \mid y_i)$ werden als Punkte in ein Koordinatensystem eingetragen (**Streudiagramm**, Punktwolke). Schon der Blick darauf zeigt, ob ein Zusammenhang besteht, ob er linear oder gekrümmt ist und ob es Ausreißer gibt.
+
+| Form der Punktwolke | Zusammenhang |
+| ------------------- | ------------ |
+| Punkte liegen nahe einer steigenden Geraden | starker positiver linearer Zusammenhang |
+| Punkte liegen nahe einer fallenden Geraden | starker negativer linearer Zusammenhang |
+| Punkte liegen auf einer gekrümmten Kurve | nichtlinearer Zusammenhang |
+| Punkte ohne erkennbare Struktur | kein Zusammenhang |
+
+## Lineare Regression
+
+### Methode der kleinsten Quadrate
+
+Gesucht ist die **Regressionsgerade** $y = k \cdot x + d$, die am besten zur Punktwolke passt. Für jeden Punkt ist das **Residuum** $y_i - (k x_i + d)$ der senkrechte Abstand zur Geraden. Die Methode der kleinsten Quadrate (nach Gauß) wählt $k$ und $d$ so, dass die Summe der quadrierten Residuen minimal wird:
+
+$$
+Q(k, d) = \sum_{i=1}^{n} \big(y_i - (k x_i + d)\big)^2 \;\to\; \min
+$$
+
+Quadriert wird, damit sich positive und negative Abweichungen nicht aufheben und große Abweichungen stärker zählen. Setzt man die [partiellen Ableitungen](/de/mathematics/analysis/functions-of-several-variables/#partielle-ableitungen) nach $k$ und $d$ null, erhält man:
+
+$$
+k = \frac{s_{xy}}{s_x^2} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} \qquad d = \bar{y} - k \cdot \bar{x}
+$$
+
+Dabei ist $s_{xy}$ die **Kovarianz** und $s_x^2$ die Varianz der $x$-Werte (die Faktoren $\frac{1}{n}$ bzw. $\frac{1}{n-1}$ kürzen sich im Quotienten). Die Regressionsgerade geht immer durch den **Schwerpunkt** $(\bar{x} \mid \bar{y})$.
+
+:::tip[Beispiel: Uploadzeit]
+Für fünf Dateien wurden Größe $x$ (in MB) und Uploadzeit $y$ (in s) gemessen:
+
+| $x_i$ | $y_i$ | $x_i - \bar{x}$ | $y_i - \bar{y}$ | $(x_i - \bar{x})(y_i - \bar{y})$ | $(x_i - \bar{x})^2$ | $(y_i - \bar{y})^2$ |
+| ----- | ----- | --------------- | --------------- | -------------------------------- | ------------------- | ------------------- |
+| 1 | 2,1 | $-2$ | $-3{,}9$ | $7{,}8$ | 4 | $15{,}21$ |
+| 2 | 3,9 | $-1$ | $-2{,}1$ | $2{,}1$ | 1 | $4{,}41$ |
+| 3 | 6,2 | $0$ | $0{,}2$ | $0$ | 0 | $0{,}04$ |
+| 4 | 7,8 | $1$ | $1{,}8$ | $1{,}8$ | 1 | $3{,}24$ |
+| 5 | 10,0 | $2$ | $4{,}0$ | $8{,}0$ | 4 | $16{,}00$ |
+| **Summe** | | | | $19{,}7$ | $10$ | $38{,}9$ |
+
+Mit $\bar{x} = 3$ und $\bar{y} = 6$:
+
+$$
+k = \frac{19{,}7}{10} = 1{,}97 \qquad d = 6 - 1{,}97 \cdot 3 = 0{,}09 \qquad y = 1{,}97\,x + 0{,}09
+$$
+
+Pro zusätzlichem MB dauert der Upload etwa $1{,}97$ s länger. Prognose für eine 8-MB-Datei: $y = 1{,}97 \cdot 8 + 0{,}09 = 15{,}85$ s.
+:::
+
+:::caution
+Prognosen innerhalb des gemessenen Bereichs (**Interpolation**) sind meist verlässlich. Prognosen weit außerhalb (**Extrapolation**) sind riskant, weil niemand weiß, ob der lineare Zusammenhang dort noch gilt. Bei sehr großen Dateien könnten etwa Zeitlimits oder Drosselung greifen.
+:::
+
+## Korrelationskoeffizient
+
+Der **Korrelationskoeffizient** nach Pearson misst die Stärke und Richtung des **linearen** Zusammenhangs:
+
+$$
+r = \frac{s_{xy}}{s_x \cdot s_y} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \cdot \sum (y_i - \bar{y})^2}} \qquad -1 \leq r \leq 1
+$$
+
+| Wert von $r$ | Bedeutung |
+| ------------ | --------- |
+| $r = 1$ bzw. $r = -1$ | alle Punkte liegen exakt auf einer steigenden bzw. fallenden Geraden |
+| $\lvert r \rvert$ nahe $1$ (etwa ab $0{,}8$) | starker linearer Zusammenhang |
+| $\lvert r \rvert$ um $0{,}5$ | mittlerer Zusammenhang |
+| $r$ nahe $0$ | kein **linearer** Zusammenhang |
+
+Das Vorzeichen von $r$ stimmt immer mit dem Vorzeichen der Steigung $k$ überein.
+
+:::tip[Beispiel]
+Für die Uploaddaten:
+
+$$
+r = \frac{19{,}7}{\sqrt{10 \cdot 38{,}9}} = \frac{19{,}7}{19{,}72} \approx 0{,}9988
+$$
+
+Der lineare Zusammenhang ist sehr stark.
+:::
+
+:::note
+$r \approx 0$ bedeutet nicht, dass es keinen Zusammenhang gibt. Punkte auf einer Parabel $y = x^2$, symmetrisch um $x = 0$, haben $r = 0$, obwohl $y$ vollständig von $x$ abhängt. Deshalb zuerst immer das Streudiagramm ansehen.
+:::
+
+### Bestimmtheitsmaß
+
+Das **Bestimmtheitsmaß** $R^2 = r^2$ (bei linearer Regression) gibt an, welcher Anteil der Streuung der $y$-Werte durch die Regressionsgerade erklärt wird. Im Beispiel ist $R^2 \approx 0{,}998$: 99,8 % der Schwankung der Uploadzeiten werden durch die Dateigröße erklärt, der Rest sind andere Einflüsse wie Netzwerkauslastung.
+
+## Regression im Programm
+
+Mit den Summenformeln lässt sich die Regression in einem Durchlauf berechnen. Tabellenkalkulationen bieten dafür `STEIGUNG`, `ACHSENABSCHNITT` und `KORREL`, GeoGebra den Befehl `TrendLinie` bzw. die Regressionsanalyse.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+static (double K, double D, double R) LinearRegression(double[] x, double[] y)
+{
+    double xMean = x.Average(), yMean = y.Average();
+    double sxy = 0, sxx = 0, syy = 0;
+    for (int i = 0; i < x.Length; i++)
+    {
+        sxy += (x[i] - xMean) * (y[i] - yMean);
+        sxx += (x[i] - xMean) * (x[i] - xMean);
+        syy += (y[i] - yMean) * (y[i] - yMean);
+    }
+    double k = sxy / sxx;
+    return (k, yMean - k * xMean, sxy / Math.Sqrt(sxx * syy));
+}
+
+double[] size = [1, 2, 3, 4, 5];           // MB
+double[] time = [2.1, 3.9, 6.2, 7.8, 10.0]; // s
+var (k, d, r) = LinearRegression(size, time);
+var inv = CultureInfo.InvariantCulture;
+Console.WriteLine(string.Create(inv, $"y = {k:F2}x + {d:F2}"));        // y = 1.97x + 0.09
+Console.WriteLine(string.Create(inv, $"r = {r:F4}, R² = {r * r:F4}")); // r = 0.9988, R² = 0.9977
+Console.WriteLine(string.Create(inv, $"Prognose 8 MB: {k * 8 + d:F2} s")); // Prognose 8 MB: 15.85 s
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Liefert Steigung k, Achsenabschnitt d und Korrelationskoeffizient r
+fn linear_regression(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
+    let n = x.len() as f64;
+    let x_mean = x.iter().sum::<f64>() / n;
+    let y_mean = y.iter().sum::<f64>() / n;
+    let (mut sxy, mut sxx, mut syy) = (0.0, 0.0, 0.0);
+    for (xi, yi) in x.iter().zip(y) {
+        sxy += (xi - x_mean) * (yi - y_mean);
+        sxx += (xi - x_mean).powi(2);
+        syy += (yi - y_mean).powi(2);
+    }
+    let k = sxy / sxx;
+    (k, y_mean - k * x_mean, sxy / (sxx * syy).sqrt())
+}
+
+fn main() {
+    let size = [1.0, 2.0, 3.0, 4.0, 5.0]; // MB
+    let time = [2.1, 3.9, 6.2, 7.8, 10.0]; // s
+    let (k, d, r) = linear_regression(&size, &time);
+    println!("y = {k:.2}x + {d:.2}"); // y = 1.97x + 0.09
+    println!("r = {r:.4}, R² = {:.4}", r * r); // r = 0.9988, R² = 0.9977
+    println!("Prognose 8 MB: {:.2} s", k * 8.0 + d); // Prognose 8 MB: 15.85 s
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Nichtlineare Regression
+
+Ist der Zusammenhang nicht linear, kann man ihn oft durch eine **Transformation** linear machen und dann die lineare Regression anwenden:
+
+| Modell | Transformation | lineare Form |
+| ------ | -------------- | ------------ |
+| exponentiell $y = c \cdot e^{\lambda x}$ | $Y = \ln y$ | $Y = \lambda x + \ln c$ |
+| Potenzfunktion $y = c \cdot x^{a}$ | $Y = \ln y$, $X = \ln x$ | $Y = a X + \ln c$ |
+| logarithmisch $y = a \ln x + b$ | $X = \ln x$ | $y = a X + b$ |
+
+:::tip[Beispiel: Abklingvorgang]
+Die Aktivität einer Probe (in willkürlichen Einheiten) wird stündlich gemessen:
+
+| $t$ in h | 0 | 1 | 2 | 3 | 4 |
+| -------- | --- | --- | --- | --- | --- |
+| $y$ | 100 | 61 | 37 | 22 | 14 |
+| $\ln y$ | 4,605 | 4,111 | 3,611 | 3,091 | 2,639 |
+
+Die lineare Regression von $\ln y$ auf $t$ ergibt $\ln y \approx -0{,}495\,t + 4{,}602$ mit $r \approx -0{,}9998$. Zurückgerechnet:
+
+$$
+y \approx e^{4{,}602} \cdot e^{-0{,}495\,t} \approx 99{,}7 \cdot e^{-0{,}495\,t}
+$$
+:::
+
+Technologie (GeoGebra `TrendExp`, `TrendPot`, `TrendPoly`, Taschenrechner) berechnet diese Regressionen direkt. Bei der Transformation werden allerdings die Quadrate der Abweichungen von $\ln y$ minimiert, nicht von $y$; die Ergebnisse können daher leicht von einer direkten nichtlinearen Anpassung abweichen.
+
+## Korrelation und Kausalität
+
+Eine hohe Korrelation zeigt nur, dass zwei Merkmale gemeinsam variieren, **nicht**, dass das eine das andere verursacht. Mögliche Erklärungen für eine Korrelation:
+
+- **Kausalität:** $x$ beeinflusst tatsächlich $y$ (Dateigröße bestimmt Uploadzeit).
+- **umgekehrte Kausalität:** $y$ beeinflusst $x$.
+- **gemeinsame Ursache (Störvariable):** Eisverkauf und Badeunfälle korrelieren, weil beide von der Temperatur abhängen.
+- **Zufall:** Bei vielen untersuchten Merkmalspaaren finden sich immer einige zufällig hohe Korrelationen (Scheinkorrelation).
+
+Kausale Zusammenhänge weist man mit kontrollierten Experimenten nach, zum Beispiel mit A/B-Tests, bei denen die Nutzerinnen und Nutzer zufällig auf zwei Varianten aufgeteilt werden.
+
+## Weiterführende Quellen
+
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Linear Least Squares Regression](https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd141.htm)
+- [Spurious Correlations, Tyler Vigen (Beispiele für Scheinkorrelationen)](https://www.tylervigen.com/spurious-correlations)

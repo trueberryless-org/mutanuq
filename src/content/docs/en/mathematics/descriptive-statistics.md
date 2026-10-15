@@ -149,4 +149,4 @@ Sorted data: $\;2,\ 4,\ 5,\ 7,\ 8,\ 9,\ 11,\ 12,\ 15$
 - Interquartile range: $11.5 - 4.5 = 7$
 :::
 
-Drawing conclusions about the population from samples is the subject of **inferential statistics** with probability distributions, confidence intervals and hypothesis tests.
+Drawing conclusions about the population from samples is the subject of [inferential statistics](/en/mathematics/stochastics/inferential-statistics/) with [probability distributions](/en/mathematics/stochastics/random-variables/), confidence intervals and hypothesis tests. Relationships between two characteristics are described by [regression and correlation](/en/mathematics/stochastics/regression-and-correlation/).

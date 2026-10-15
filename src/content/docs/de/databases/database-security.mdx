@@ -1,0 +1,256 @@
+---
+title: Datenbanksicherheit
+description: Benutzer und Rollen, GRANT und REVOKE, Zugriffsbeschränkung mit Sichten und Row-Level Security, SQL-Injection und parametrisierte Abfragen in C# und Rust, Verschlüsselung, Protokollierung und Datenschutz.
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+In Datenbanken liegen oft die wertvollsten Daten eines Unternehmens: Kundendaten, Zahlungen, Noten, Gesundheitsdaten. Datenbanksicherheit soll ihre **Vertraulichkeit**, **Integrität** und **Verfügbarkeit** schützen. Die wichtigsten Maßnahmen sind eine durchdachte Rechtevergabe, Schutz vor SQL-Injection, Verschlüsselung und Sicherungen.
+
+## Benutzer und Rollen
+
+Jeder Zugriff auf eine Datenbank erfolgt im Namen eines **Benutzers**, der sich anmelden muss. Rechte werden aber meist nicht einzelnen Benutzern, sondern **Rollen** zugewiesen. Benutzer erhalten dann eine oder mehrere Rollen. Ändert sich eine Aufgabe, wird nur die Rolle angepasst.
+
+In PostgreSQL ist ein Benutzer eine Rolle mit dem Recht, sich anzumelden (`LOGIN`). SQL Server unterscheidet zwischen **Logins** auf Serverebene und **Benutzern** in einer Datenbank.
+
+```sql
+CREATE TABLE Schueler (Id INT PRIMARY KEY, Vorname VARCHAR(50), Nachname VARCHAR(50),
+                       Benutzername VARCHAR(50) UNIQUE, SozialversicherungsNr CHAR(10));
+CREATE TABLE Note (Id INT PRIMARY KEY, SchuelerId INT REFERENCES Schueler(Id),
+                   Fach VARCHAR(10), Wert INT);
+INSERT INTO Schueler VALUES (1, 'Anna', 'Huber', 'anna', '1234140309'),
+                            (2, 'Ben', 'Wolf', 'ben', '5678021108');
+INSERT INTO Note VALUES (1, 1, 'AM', 2), (2, 1, 'SEW', 1), (3, 2, 'AM', 4);
+
+CREATE ROLE lehrkraft;
+CREATE ROLE schueler_rolle;
+
+CREATE ROLE pichler LOGIN IN ROLE lehrkraft;
+CREATE ROLE anna    LOGIN IN ROLE schueler_rolle;
+```
+
+Das Passwort setzt der Administrator anschließend interaktiv, in `psql` etwa mit `\password pichler`. So landet es weder im Skript noch in der Versionsverwaltung oder im Befehlsverlauf.
+
+## Rechte vergeben
+
+Rechte werden mit der **Data Control Language** (DCL) verwaltet: `GRANT` vergibt ein Recht, `REVOKE` entzieht es.
+
+```sql
+GRANT SELECT, INSERT, UPDATE ON Note TO lehrkraft;
+GRANT SELECT (Id, Vorname, Nachname) ON Schueler TO lehrkraft;   -- nur diese Spalten
+REVOKE UPDATE ON Note FROM lehrkraft;
+```
+
+| Recht                  | Erlaubt                                                       |
+| ---------------------- | ------------------------------------------------------------- |
+| `SELECT`               | Lesen, optional nur bestimmter Spalten                        |
+| `INSERT`, `UPDATE`, `DELETE` | Einfügen, Ändern, Löschen                               |
+| `REFERENCES`           | einen Fremdschlüssel auf die Tabelle anlegen                  |
+| `EXECUTE`              | eine Funktion oder Prozedur aufrufen                          |
+| `CREATE`               | Objekte in einer Datenbank oder einem Schema anlegen          |
+| `ALL PRIVILEGES`       | alle Rechte auf das Objekt                                    |
+
+Wer ein Recht mit `WITH GRANT OPTION` erhält, darf es weitergeben. Der Eigentümer eines Objekts, also der Benutzer, der es angelegt hat, besitzt automatisch alle Rechte darauf. `PUBLIC` steht für alle Benutzer.
+
+Mit `SET ROLE` kann ein Administrator prüfen, was eine Rolle sehen darf:
+
+```sql
+GRANT SELECT, INSERT, UPDATE ON Note TO lehrkraft;
+GRANT SELECT (Id, Vorname, Nachname) ON Schueler TO lehrkraft;
+
+SET ROLE pichler;
+SELECT Vorname, Nachname FROM Schueler ORDER BY Id;   -- erlaubt
+-- SELECT * FROM Schueler;  -- Fehler: permission denied for table schueler
+RESET ROLE;
+```
+
+### Prinzip der minimalen Rechte
+
+Jeder Benutzer und jede Anwendung erhält nur die Rechte, die für die Aufgabe nötig sind (_Principle of Least Privilege_). Für Webanwendungen bedeutet das:
+
+- Die Anwendung meldet sich **nie** als Administrator (`postgres`, `sa`, `root`) an, sondern mit einem eigenen Benutzer.
+- Dieser Benutzer darf Daten lesen und schreiben, aber keine Tabellen anlegen oder löschen. Schemaänderungen laufen über einen eigenen Benutzer, etwa bei der Migration.
+- Lesende Teile der Anwendung, etwa Auswertungen, verwenden einen Benutzer mit reinen Leserechten.
+
+Gelingt einem Angreifer trotzdem eine SQL-Injection, begrenzen die Rechte des Anwendungsbenutzers den Schaden.
+
+## Zugriff auf Zeilen beschränken
+
+`GRANT` wirkt auf ganze Tabellen oder Spalten. Sollen Schüler nur ihre **eigenen** Noten sehen, braucht es eine Einschränkung auf Zeilenebene.
+
+Die klassische Lösung ist eine **Sicht**, die nach dem angemeldeten Benutzer filtert. Die Rolle erhält nur Rechte auf die Sicht, nicht auf die Tabellen:
+
+```sql
+CREATE VIEW MeineNoten AS
+SELECT n.Fach, n.Wert
+FROM Note n
+JOIN Schueler s ON s.Id = n.SchuelerId
+WHERE s.Benutzername = CURRENT_USER;
+
+GRANT SELECT ON MeineNoten TO schueler_rolle;
+
+SET ROLE anna;
+SELECT * FROM MeineNoten ORDER BY Fach;   -- nur Annas Noten: AM 2, SEW 1
+RESET ROLE;
+```
+
+Die Sicht wird mit den Rechten ihres Eigentümers ausgeführt, deshalb darf sie die Tabellen lesen, obwohl Anna das nicht darf.
+
+Moderne Systeme bieten dafür **Row-Level Security** (RLS): Die Regel wird direkt an der Tabelle hinterlegt und gilt für jede Abfrage, egal ob über eine Sicht, eine Anwendung oder direkt.
+
+```sql
+ALTER TABLE Note ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY eigene_noten ON Note
+    FOR SELECT TO schueler_rolle
+    USING (SchuelerId = (SELECT Id FROM Schueler WHERE Benutzername = CURRENT_USER));
+
+CREATE POLICY lehrkraft_alles ON Note
+    FOR ALL TO lehrkraft
+    USING (true);
+
+GRANT SELECT ON Note TO schueler_rolle;
+GRANT SELECT (Id, Benutzername) ON Schueler TO schueler_rolle;
+
+SET ROLE anna;
+SELECT Fach, Wert FROM Note ORDER BY Fach;   -- wieder nur Annas Noten
+RESET ROLE;
+```
+
+SQL Server unterstützt Row-Level Security seit Version 2016, Oracle unter dem Namen _Virtual Private Database_.
+
+## SQL-Injection
+
+**SQL-Injection** ist eine der häufigsten und gefährlichsten Sicherheitslücken in Webanwendungen. Sie entsteht, wenn ein Programm Benutzereingaben direkt in den Text einer SQL-Anweisung einfügt. Ein Angreifer kann dann eigene SQL-Befehle einschleusen.
+
+Ein Programm sucht Schüler nach Nachnamen und baut die Abfrage so zusammen:
+
+```text
+"SELECT Vorname, Nachname FROM Schueler WHERE Nachname = '" + eingabe + "'"
+```
+
+Gibt jemand `Huber` ein, entsteht die erwartete Abfrage. Gibt jemand dagegen `' OR '1'='1` ein, lautet die Abfrage
+
+```sql
+SELECT Vorname, Nachname FROM Schueler WHERE Nachname = '' OR '1'='1';
+```
+
+und liefert alle Schüler, weil `'1'='1'` immer wahr ist. Mit Eingaben wie `'; DROP TABLE Schueler; --` lassen sich je nach System und Schnittstelle sogar Tabellen löschen. Über `UNION SELECT` kann ein Angreifer Daten aus beliebigen anderen Tabellen auslesen, etwa Passwort-Hashes.
+
+### Schutz durch parametrisierte Abfragen
+
+Der wirksame Schutz sind **parametrisierte Abfragen** (_Prepared Statements_). Die SQL-Anweisung enthält Platzhalter, und die Werte werden getrennt davon an die Datenbank übergeben. Die Datenbank behandelt sie immer als Daten, nie als SQL-Code. Was ein Benutzer auch eingibt, es kann die Struktur der Abfrage nicht verändern.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Data.Sqlite;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+var setup = connection.CreateCommand();
+setup.CommandText = """
+    CREATE TABLE Schueler (Vorname TEXT, Nachname TEXT);
+    INSERT INTO Schueler VALUES ('Anna', 'Huber'), ('Ben', 'Wolf');
+    """;
+setup.ExecuteNonQuery();
+
+string input = "' OR '1'='1";
+
+// UNSICHER: Eingabe wird Teil des SQL-Texts
+var unsafeCommand = connection.CreateCommand();
+unsafeCommand.CommandText = $"SELECT Vorname FROM Schueler WHERE Nachname = '{input}'";
+Console.WriteLine($"Unsicher: {Count(unsafeCommand)} Treffer");
+
+// SICHER: Eingabe wird als Parameter übergeben
+var safeCommand = connection.CreateCommand();
+safeCommand.CommandText = "SELECT Vorname FROM Schueler WHERE Nachname = $lastName";
+safeCommand.Parameters.AddWithValue("$lastName", input);
+Console.WriteLine($"Sicher: {Count(safeCommand)} Treffer");
+
+static int Count(SqliteCommand command)
+{
+    using var reader = command.ExecuteReader();
+    int count = 0;
+    while (reader.Read()) count++;
+    return count;
+}
+// Ausgabe:
+// Unsicher: 2 Treffer
+// Sicher: 0 Treffer
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rusqlite::{Connection, Result, params};
+
+fn main() -> Result<()> {
+    let conn = Connection::open_in_memory()?;
+    conn.execute_batch(
+        "CREATE TABLE Schueler (Vorname TEXT, Nachname TEXT);
+         INSERT INTO Schueler VALUES ('Anna', 'Huber'), ('Ben', 'Wolf');",
+    )?;
+
+    let input = "' OR '1'='1";
+
+    // UNSICHER: Eingabe wird Teil des SQL-Texts
+    let sql = format!("SELECT Vorname FROM Schueler WHERE Nachname = '{input}'");
+    let mut unsafe_stmt = conn.prepare(&sql)?;
+    let count = unsafe_stmt.query_map([], |row| row.get::<_, String>(0))?.count();
+    println!("Unsicher: {count} Treffer");
+
+    // SICHER: Eingabe wird als Parameter übergeben
+    let mut safe_stmt = conn.prepare("SELECT Vorname FROM Schueler WHERE Nachname = ?1")?;
+    let count = safe_stmt.query_map(params![input], |row| row.get::<_, String>(0))?.count();
+    println!("Sicher: {count} Treffer");
+    Ok(())
+}
+// Ausgabe:
+// Unsicher: 2 Treffer
+// Sicher: 0 Treffer
+```
+
+</TabItem>
+</Tabs>
+
+Weitere Regeln:
+
+- **Nie** Eingaben selbst „escapen“, etwa durch Verdoppeln von Anführungszeichen. Das ist fehleranfällig und hängt vom Datenbanksystem ab.
+- Parameter funktionieren nur für **Werte**, nicht für Tabellen- oder Spaltennamen. Müssen diese variabel sein, etwa beim Sortieren nach einer gewählten Spalte, wird die Eingabe gegen eine feste Liste erlaubter Namen geprüft (_Allowlist_).
+- ORMs wie [Entity Framework](/de/databases/database-access/#entity-framework-core) erzeugen parametrisierte Abfragen automatisch. Bei roher SQL-Ausführung (`FromSqlRaw`) gilt dieselbe Vorsicht wie oben. `FromSql` mit einem interpolierten String ist dagegen sicher, weil EF die Werte in Parameter umwandelt.
+- Auch gespeicherte Prozeduren sind nicht automatisch sicher, wenn sie intern SQL-Text zusammensetzen und mit `EXECUTE` ausführen.
+- **Second-Order-Injection**: Eine Eingabe wird zunächst harmlos gespeichert und später von einem anderen Programmteil unsicher in eine Abfrage eingebaut. Deshalb gilt die Regel für **alle** Werte, auch solche aus der eigenen Datenbank.
+
+Die Seite [Websicherheit](/de/it-security/web-security/) beschreibt SQL-Injection im Zusammenhang mit den anderen häufigen Angriffen auf Webanwendungen.
+
+## Weitere Schutzmaßnahmen
+
+| Maßnahme                     | Beschreibung                                                                                                   |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Verschlüsselte Verbindung** | TLS zwischen Anwendung und Datenbank, damit niemand im Netzwerk Abfragen und Passwörter mitlesen kann          |
+| **Verschlüsselung der Daten** | _Transparent Data Encryption_ (TDE) verschlüsselt die Dateien auf dem Datenträger. Besonders sensible Spalten können zusätzlich in der Anwendung verschlüsselt werden. |
+| **Passwörter hashen**        | Benutzerpasswörter einer Anwendung werden nie im Klartext, sondern mit einem langsamen, gesalzenen Hashverfahren wie Argon2 oder bcrypt gespeichert (siehe [Kryptografie](/de/it-security/cryptography/#hashfunktionen)) |
+| **Netzwerkzugang beschränken** | Der Datenbankserver ist nicht aus dem Internet erreichbar, nur von den Anwendungsservern (Firewall, eigenes Netzsegment) |
+| **Protokollierung** (_Auditing_) | Anmeldungen, Rechteänderungen und Zugriffe auf sensible Daten werden protokolliert und ausgewertet     |
+| **Aktualisierungen**         | Sicherheitsupdates des Datenbanksystems zeitnah einspielen                                                    |
+| **Sicherungen**              | regelmäßige, getestete Sicherungen, mindestens eine davon getrennt vom Netzwerk, als Schutz vor Ransomware (siehe [Transaktionen](/de/databases/transactions/#datensicherung)) |
+
+## Datenschutz
+
+Werden personenbezogene Daten gespeichert, gilt die **Datenschutz-Grundverordnung** (DSGVO) mit dem österreichischen Datenschutzgesetz (siehe [Internetrecht](/de/economy_and_law/law/internet_law/#datenschutz)). Für den Datenbankentwurf heißt das:
+
+- **Datenminimierung**: nur Daten speichern, die für den Zweck nötig sind. Braucht eine Schulverwaltung das Religionsbekenntnis, muss es geschützt werden. Braucht sie es nicht, wird es nicht erfasst.
+- **Speicherbegrenzung**: Daten löschen, wenn der Zweck wegfällt. Das muss im Schema vorgesehen sein, etwa durch Löschfristen und durchdachte referentielle Aktionen.
+- **Pseudonymisierung**: Für Auswertungen werden Namen durch Kennungen ersetzt, die nur mit einer getrennt gespeicherten Zuordnung wieder Personen zugeordnet werden können.
+- **Auskunftsrecht**: Betroffene haben das Recht zu erfahren, welche Daten über sie gespeichert sind. Das Schema sollte es ermöglichen, alle Daten einer Person zu finden.
+- **Datenschutz durch Technikgestaltung** (_Privacy by Design_): Zugriffsrechte, Verschlüsselung und Protokollierung werden von Anfang an eingeplant.
+
+## Weiterführende Quellen
+
+- [OWASP SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+- [PostgreSQL-Dokumentation: Database Roles](https://www.postgresql.org/docs/current/user-manag.html) und [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)

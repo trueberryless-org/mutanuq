@@ -1,0 +1,177 @@
+---
+title: KI-Ethik und Recht
+description: "Bias und Fairness, Erklärbarkeit, Datenschutz, Urheberrecht und Umweltwirkung von KI sowie der EU AI Act mit Risikoklassen, Pflichten und Fristen und automatisierte Entscheidungen nach Art. 22 DSGVO."
+sidebar:
+  order: 14
+---
+
+KI-Systeme treffen oder unterstützen Entscheidungen, die Menschen direkt betreffen: wer zum Bewerbungsgespräch eingeladen wird, wer einen Kredit bekommt, welche Inhalte jemand in sozialen Netzwerken sieht. Als Entwicklerin oder Entwickler trägst du Mitverantwortung dafür, dass solche Systeme fair, nachvollziehbar und sicher sind. Diese Seite behandelt die wichtigsten ethischen Fragen und die rechtlichen Regeln in der EU und in Österreich (Stand Oktober 2026).
+
+:::caution
+Die Inhalte dienen dem Lernen und ersetzen keine Rechtsberatung. Das KI-Recht entwickelt sich sehr schnell. Maßgeblich sind die aktuellen Fassungen auf [EUR-Lex](https://eur-lex.europa.eu/) und im [RIS](https://www.ris.bka.gv.at/).
+:::
+
+## Grundsätze vertrauenswürdiger KI
+
+Die von der EU-Kommission eingesetzte Hochrangige Expertengruppe für KI hat 2019 in ihren Ethik-Leitlinien sieben Anforderungen an **vertrauenswürdige KI** formuliert. Sie bilden die Grundlage des späteren AI Act:
+
+1. Vorrang menschlichen Handelns und menschliche Aufsicht
+2. technische Robustheit und Sicherheit
+3. Schutz der Privatsphäre und Datenqualitätsmanagement
+4. Transparenz (Nachvollziehbarkeit, Erklärbarkeit, Kommunikation)
+5. Vielfalt, Nichtdiskriminierung und Fairness
+6. gesellschaftliches und ökologisches Wohlergehen
+7. Rechenschaftspflicht (Prüfbarkeit, Meldung negativer Auswirkungen)
+
+## Bias und Fairness
+
+Ein Modell lernt die Muster seiner Trainingsdaten, auch die unerwünschten. Spiegeln die Daten Ungleichbehandlung aus der Vergangenheit wider, übernimmt und automatisiert das Modell sie. Man spricht von **Bias** (Verzerrung).
+
+| Quelle | Beschreibung | Beispiel |
+| ------ | ------------ | -------- |
+| **Historischer Bias** | Die Daten sind korrekt, aber die Welt, die sie abbilden, war ungerecht. | Ein Recruiting-Modell, das mit früheren Einstellungen trainiert wurde, bevorzugt Männer, weil früher vor allem Männer eingestellt wurden. Amazon stellte ein solches Werkzeug 2018 ein. |
+| **Stichprobenbias** | Bestimmte Gruppen sind in den Daten unter- oder überrepräsentiert. | Gesichtserkennung, die vor allem mit Bildern hellhäutiger Menschen trainiert wurde, macht bei dunkelhäutigen Menschen deutlich mehr Fehler. |
+| **Messbias** | Ein Merkmal misst bei verschiedenen Gruppen nicht dasselbe. | Ein US-Gesundheitsalgorithmus verwendete frühere Behandlungskosten als Maß für Krankheit. Weil für schwarze Patienten bei gleicher Krankheit weniger ausgegeben wurde, schätzte er sie als gesünder ein. |
+| **Label-Bias** | Die „richtigen Antworten“ beruhen auf menschlichen, möglicherweise voreingenommenen Urteilen. | Bewertungen von Vorgesetzten als Label für „guter Mitarbeiter“ |
+| **Stellvertretermerkmale** (_Proxies_) | Ein geschütztes Merkmal wurde entfernt, lässt sich aber aus anderen ableiten. | Postleitzahl, Vorname oder Lücken im Lebenslauf verraten Herkunft, Geschlecht oder Elternzeit. |
+
+Ein österreichisches Beispiel ist das **Arbeitsmarktchancen-Assistenz-System** (AMAS) des AMS, das Arbeitsuchende nach ihren berechneten Chancen auf dem Arbeitsmarkt in drei Gruppen einteilen sollte. Weil Merkmale wie Geschlecht, Alter, Staatsbürgerschaft und Betreuungspflichten negativ in die Berechnung eingingen, wurde es als diskriminierend kritisiert. Die Datenschutzbehörde untersagte den Einsatz 2020. Der Verwaltungsgerichtshof bestätigte 2023, dass es sich um **Profiling** handelt, und machte die Zulässigkeit davon abhängig, wie stark die Entscheidungen der AMS-Beraterinnen und -Berater tatsächlich vom Algorithmus bestimmt werden. Das Verfahren wurde danach erneut vor dem Bundesverwaltungsgericht verhandelt.
+
+### Fairness messen
+
+Fairness lässt sich auf verschiedene Arten definieren, und die Definitionen schließen einander teilweise mathematisch aus:
+
+| Kriterium | Forderung |
+| --------- | --------- |
+| **Demographic Parity** | Alle Gruppen erhalten gleich oft eine positive Entscheidung (z. B. Einladung zum Gespräch). |
+| **Equal Opportunity** | Von den tatsächlich Geeigneten wird in jeder Gruppe derselbe Anteil erkannt (gleicher Recall). |
+| **Equalized Odds** | zusätzlich gleiche Falsch-positiv-Rate in allen Gruppen |
+| **Kalibrierung** | Eine vorhergesagte Wahrscheinlichkeit von 70 % bedeutet in jeder Gruppe tatsächlich 70 %. |
+
+Unterscheiden sich die Grundraten der Gruppen, kann ein Modell nicht alle Kriterien gleichzeitig erfüllen. Welches Kriterium gilt, ist deshalb keine rein technische, sondern eine gesellschaftliche Entscheidung. Gegenmaßnahmen setzen an den Daten an (ausgewogene Stichproben, Neugewichtung), am Training (Fairness als Nebenbedingung) oder an der Entscheidung (gruppenspezifische Schwellenwerte). Notwendig ist in jedem Fall, die [Kennzahlen](/de/artificial-intelligence/model-evaluation/#klassifikation-bewerten) getrennt für die einzelnen Gruppen auszuwerten.
+
+## Transparenz und Erklärbarkeit
+
+Ein tiefes neuronales Netz mit Milliarden Parametern ist eine **Black Box**: Man sieht Eingabe und Ausgabe, aber nicht, warum das Modell so entschieden hat. Für Betroffene, Behörden und Entwickler ist das ein Problem, denn eine Entscheidung, die niemand erklären kann, kann man weder überprüfen noch anfechten noch verbessern.
+
+- **Interpretierbare Modelle:** Entscheidungsbäume, lineare und logistische Regression sind von sich aus nachvollziehbar. Bei Entscheidungen mit großer Tragweite sollte man prüfen, ob ein einfaches Modell nicht genauso gut ist.
+- **Erklärbare KI** (_Explainable AI_, XAI) erklärt komplexe Modelle nachträglich:
+  - **Feature Importance:** Welche Merkmale sind insgesamt wichtig (z. B. Permutation Importance)?
+  - **SHAP** (_Shapley Additive Explanations_): Wie viel hat jedes Merkmal zu einer **einzelnen** Vorhersage beigetragen? Beruht auf den Shapley-Werten der Spieltheorie.
+  - **LIME:** erklärt eine Vorhersage durch ein einfaches Modell, das das komplexe Modell in der Umgebung dieses Datenpunkts nachahmt.
+  - **Kontrafaktische Erklärungen:** „Der Kredit wäre bewilligt worden, wenn das Einkommen 300 € höher gewesen wäre.“
+- **Dokumentation:** _Model Cards_ und _Datasheets for Datasets_ beschreiben Zweck, Trainingsdaten, Grenzen und gemessene Leistung eines Modells.
+
+## Datenschutz
+
+KI-Systeme verarbeiten oft große Mengen **personenbezogener Daten**, im Training wie im Betrieb. Es gilt die Datenschutz-Grundverordnung (DSGVO), deren Grundsätze unter [Recht im Internet](/de/economy_and_law/law/internet_law/#datenschutz) beschrieben sind. Besonders relevant für KI:
+
+- **Zweckbindung und Datenminimierung:** Daten, die für einen Zweck erhoben wurden, dürfen nicht einfach für das Training eines anderen Modells verwendet werden. Es sollen nur die nötigen Daten verarbeitet werden.
+- **Rechtsgrundlage:** Für das Training braucht es eine Rechtsgrundlage, etwa eine Einwilligung oder ein überwiegendes berechtigtes Interesse.
+- **Anonymisierung und Pseudonymisierung:** Anonymisierte Daten fallen nicht unter die DSGVO, pseudonymisierte (Name durch Kennnummer ersetzt) aber schon. Echte Anonymisierung ist schwierig, weil Personen oft über Kombinationen von Merkmalen wiedererkannt werden können.
+- **Modelle können Daten preisgeben:** Sprachmodelle können Teile ihrer Trainingsdaten wörtlich wiedergeben, und mit _Membership Inference_ lässt sich manchmal feststellen, ob eine Person in den Trainingsdaten war.
+- **Eingaben in KI-Dienste:** Wer personenbezogene oder vertrauliche Daten in einen externen Chatbot eingibt, übermittelt sie an den Anbieter. Unternehmen regeln das in internen Richtlinien und setzen Dienste mit Auftragsverarbeitungsvertrag ein.
+
+### Automatisierte Entscheidungen nach Art. 22 DSGVO
+
+**Art. 22 DSGVO** gibt jeder Person das Recht, **nicht einer ausschließlich auf einer automatisierten Verarbeitung** (einschließlich Profiling) beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber **rechtliche Wirkung** entfaltet oder sie in ähnlicher Weise **erheblich beeinträchtigt**. Beispiele sind die automatische Ablehnung eines Kreditantrags oder einer Bewerbung ohne menschliche Prüfung.
+
+Ausnahmen gibt es, wenn die Entscheidung
+
+- für den Abschluss oder die Erfüllung eines **Vertrags** erforderlich ist,
+- durch eine **Rechtsvorschrift** der EU oder eines Mitgliedstaats erlaubt ist, die angemessene Schutzmaßnahmen vorsieht, oder
+- mit **ausdrücklicher Einwilligung** der Person erfolgt.
+
+In den Fällen Vertrag und Einwilligung muss der Verantwortliche zumindest das Recht auf **Eingreifen einer Person**, auf **Darlegung des eigenen Standpunkts** und auf **Anfechtung** der Entscheidung gewährleisten. Besondere Kategorien von Daten (Gesundheit, Herkunft, Religion ...) dürfen nur in engen Grenzen verwendet werden. Nach Art. 13 bis 15 DSGVO haben Betroffene außerdem Anspruch auf **aussagekräftige Informationen über die involvierte Logik** sowie die Tragweite und Auswirkungen der Verarbeitung.
+
+Der Europäische Gerichtshof hat dazu zwei wichtige Urteile gefällt:
+
+- **SCHUFA** (C-634/21, 7. Dezember 2023): Schon die automatisierte Berechnung eines Bonitäts-Scores ist eine Entscheidung im Sinne von Art. 22, wenn ein Dritter (etwa eine Bank) den Vertragsabschluss maßgeblich davon abhängig macht.
+- **Dun & Bradstreet Austria** (C-203/22, 27. Februar 2025): Ein Mobilfunkanbieter lehnte eine Kundin wegen einer automatisierten Bonitätsbewertung ab. Der EuGH entschied, dass die Betroffene erfahren muss, **wie** die Entscheidung zustande kam. Die Erklärung muss so verständlich sein, dass sie die Entscheidung nachvollziehen und anfechten kann. Ein bloßer Verweis auf ein Geschäftsgeheimnis genügt nicht.
+
+## Urheberrecht
+
+Generative KI wirft zwei Fragen auf: Darf man geschützte Werke zum Training verwenden, und wem gehören die Ergebnisse?
+
+**Training:** Die EU-Richtlinie über das Urheberrecht im digitalen Binnenmarkt (2019/790) erlaubt **Text und Data Mining**, also die automatisierte Analyse von Werken, an die man rechtmäßig gelangt ist. In Österreich ist das seit der Urheberrechts-Novelle 2021 in § 42h UrhG umgesetzt. Rechteinhaber können die Nutzung für kommerzielle Zwecke aber durch einen **maschinenlesbaren Nutzungsvorbehalt** (_Opt-out_, etwa in den Nutzungsbedingungen oder der `robots.txt`) untersagen. Wie weit diese Ausnahme das Training großer Modelle abdeckt, ist umstritten. Das Landgericht München I entschied im November 2025 (nicht rechtskräftig) im Verfahren **GEMA gegen OpenAI**, dass ein Sprachmodell, das Liedtexte auswendig gelernt hat und wiedergibt, diese vervielfältigt und dass dies nicht von der Text-und-Data-Mining-Ausnahme gedeckt ist.
+
+**Ergebnisse:** Urheberrechtlich geschützt ist nach österreichischem Recht nur eine **eigentümliche geistige Schöpfung eines Menschen**. Ein rein von einer KI erzeugtes Bild oder ein Text ist daher in der Regel nicht geschützt. Anders kann es sein, wenn ein Mensch das Ergebnis wesentlich kreativ gestaltet, auswählt oder bearbeitet. Wer KI-Ergebnisse verwendet, muss zudem prüfen, dass sie nicht fremde Werke, Marken oder Persönlichkeitsrechte verletzen, etwa wenn ein Bild einem bekannten Werk stark ähnelt oder eine reale Person zeigt.
+
+## Umweltwirkung
+
+Training und Betrieb großer Modelle benötigen viel Rechenleistung und damit Energie. Nach dem Bericht „Energy and AI“ der Internationalen Energieagentur (IEA) verbrauchten Rechenzentren weltweit 2024 rund 415 TWh Strom, etwa 1,5 % des weltweiten Stromverbrauchs. Bis 2030 erwartet die IEA mehr als eine Verdopplung auf rund 945 TWh, wobei KI der wichtigste Treiber ist. Dazu kommen Wasser für die Kühlung und Ressourcen für die Herstellung der Hardware.
+
+Was du tun kannst: das kleinste Modell wählen, das die Aufgabe erfüllt, Ergebnisse cachen statt neu zu berechnen, vortrainierte Modelle nutzen statt neu zu trainieren und Rechenzentren mit erneuerbarer Energie bevorzugen. Gleichzeitig kann KI selbst zum Klimaschutz beitragen, etwa bei der Steuerung von Stromnetzen oder der Optimierung von Gebäuden.
+
+## Der EU AI Act
+
+Die **Verordnung (EU) 2024/1689** über künstliche Intelligenz (_AI Act_, deutsch auch KI-Verordnung) ist das weltweit erste umfassende KI-Gesetz. Als EU-Verordnung gilt sie unmittelbar in allen Mitgliedstaaten. Sie regelt nicht die Technik an sich, sondern ihren **Einsatz**, und zwar nach einem **risikobasierten Ansatz**: Je größer das Risiko für Gesundheit, Sicherheit und Grundrechte, desto strenger die Regeln.
+
+Die Pflichten treffen vor allem **Anbieter** (wer ein KI-System entwickelt und unter eigenem Namen in Verkehr bringt) und **Betreiber** (wer ein KI-System beruflich einsetzt, englisch _Deployer_). Der rein private, nicht berufliche Gebrauch ist ausgenommen, ebenso Systeme ausschließlich für militärische Zwecke und für die wissenschaftliche Forschung.
+
+### Risikoklassen
+
+| Risiko | Regelung | Beispiele |
+| ------ | -------- | --------- |
+| **Unannehmbares Risiko** | **verboten** (Art. 5) | Social Scoring; manipulative Techniken, die Menschen unterschwellig zu schädlichem Verhalten bringen; Ausnutzen der Schwäche von Kindern oder Menschen in Notlagen; ungezieltes Auslesen von Gesichtsbildern aus dem Internet oder von Überwachungskameras für Gesichtserkennungsdatenbanken; Emotionserkennung am Arbeitsplatz und in Bildungseinrichtungen; biometrische Kategorisierung nach sensiblen Merkmalen (z. B. politische Meinung, sexuelle Orientierung); Vorhersage von Straftaten allein auf Basis von Profiling; biometrische Echtzeit-Fernidentifizierung im öffentlichen Raum zur Strafverfolgung (mit engen Ausnahmen) |
+| **Hohes Risiko** | erlaubt, aber mit **strengen Anforderungen** | KI als Sicherheitsbauteil von Produkten wie Medizinprodukten, Maschinen, Spielzeug oder Aufzügen (Anhang I); KI in den Bereichen des Anhangs III: Biometrie, kritische Infrastruktur, Bildung (Zulassung, Prüfungsbewertung), Beschäftigung (Bewerberauswahl, Beförderung), Zugang zu wesentlichen Leistungen (Kreditwürdigkeit, Sozialleistungen, Lebens- und Krankenversicherung), Strafverfolgung, Migration und Grenzkontrolle, Justiz und demokratische Prozesse |
+| **Begrenztes Risiko** | **Transparenzpflichten** (Art. 50) | Chatbots müssen erkennbar machen, dass man mit einer KI kommuniziert; KI-generierte Inhalte müssen maschinenlesbar gekennzeichnet sein; Deepfakes müssen als künstlich erzeugt offengelegt werden |
+| **Minimales Risiko** | keine besonderen Pflichten, freiwillige Verhaltenskodizes | Spamfilter, KI in Videospielen, Rechtschreibkorrektur, Empfehlungen in einem Onlineshop |
+
+Ein System aus einem Bereich des Anhangs III gilt ausnahmsweise nicht als hochriskant, wenn es kein erhebliches Risiko darstellt, etwa weil es nur eine eng begrenzte Hilfsaufgabe erfüllt. Diese Ausnahme gilt nie, wenn das System Profiling von Personen durchführt.
+
+### Pflichten bei Hochrisiko-Systemen
+
+**Anbieter** müssen unter anderem:
+
+- ein **Risikomanagementsystem** über den gesamten Lebenszyklus betreiben,
+- für hochwertige, repräsentative und möglichst fehlerfreie **Trainings-, Validierungs- und Testdaten** sorgen (Daten-Governance, auch zur Vermeidung von Bias),
+- eine **technische Dokumentation** erstellen und Ereignisse automatisch **protokollieren** (Logging),
+- **Gebrauchsanweisungen** mit Zweck, Leistungsgrenzen und Risiken bereitstellen,
+- **menschliche Aufsicht** ermöglichen (ein Mensch muss Ausgaben verstehen, übersteuern und das System anhalten können),
+- angemessene **Genauigkeit, Robustheit und Cybersicherheit** sicherstellen,
+- ein **Qualitätsmanagementsystem** einführen, eine **Konformitätsbewertung** durchführen, die **CE-Kennzeichnung** anbringen und das System in der **EU-Datenbank** registrieren,
+- das System nach dem Inverkehrbringen beobachten und schwerwiegende Vorfälle melden.
+
+**Betreiber** müssen das System gemäß der Gebrauchsanweisung verwenden, die menschliche Aufsicht durch kompetente Personen sicherstellen, Eingabedaten auf Relevanz prüfen, Protokolle aufbewahren und betroffene Arbeitnehmer informieren. Öffentliche Stellen und Anbieter öffentlicher Dienste sowie Betreiber, die Kreditwürdigkeit oder Versicherungsprämien bewerten, müssen zusätzlich eine **Grundrechte-Folgenabschätzung** durchführen.
+
+### KI-Modelle mit allgemeinem Verwendungszweck
+
+Für **KI-Modelle mit allgemeinem Verwendungszweck** (_General-Purpose AI_, GPAI), also Basismodelle wie große Sprachmodelle, gelten eigene Regeln. Ihre Anbieter müssen eine technische Dokumentation führen, nachgelagerten Anbietern Informationen bereitstellen, eine Strategie zur Einhaltung des Urheberrechts (einschließlich der Opt-outs) haben und eine **Zusammenfassung der Trainingsdaten** veröffentlichen. Modelle mit **systemischem Risiko** (vermutet ab einem Trainingsaufwand von mehr als $10^{25}$ Gleitkommaoperationen) müssen zusätzlich bewertet und auf Angriffe getestet werden, schwere Vorfälle melden und eine angemessene Cybersicherheit gewährleisten. Ein von der EU-Kommission 2025 veröffentlichter **Verhaltenskodex** (_Code of Practice_) beschreibt, wie Anbieter diese Pflichten erfüllen können.
+
+### KI-Kompetenz
+
+Nach **Art. 4** müssen Anbieter und Betreiber Maßnahmen ergreifen, um die **KI-Kompetenz** (_AI Literacy_) ihres Personals zu fördern, das mit KI-Systemen arbeitet, etwa durch Schulungen. Mit der Änderung durch den „digitalen Omnibus“ 2026 wurde diese Pflicht abgeschwächt: Gefordert sind Maßnahmen zur Förderung, nicht mehr die Sicherstellung eines ausreichenden Kompetenzniveaus jeder einzelnen Person.
+
+### Zeitplan
+
+| Datum | Was gilt |
+| ----- | -------- |
+| 1. August 2024 | Inkrafttreten des AI Act |
+| 2. Februar 2025 | **Verbote** (Art. 5) und Pflicht zur KI-Kompetenz (Art. 4) |
+| 2. August 2025 | Regeln für **GPAI-Modelle**, Governance (KI-Büro, nationale Behörden) und Sanktionen |
+| 2. August 2026 | **allgemeine Anwendung**, insbesondere die Transparenzpflichten nach Art. 50 |
+| 2. Dezember 2027 | Pflichten für **Hochrisiko-Systeme nach Anhang III** (ursprünglich 2. August 2026) |
+| 2. August 2028 | Pflichten für Hochrisiko-KI in **Produkten nach Anhang I** (ursprünglich 2. August 2027) |
+
+Die Verschiebung der Hochrisiko-Fristen geht auf den sogenannten **digitalen Omnibus zu KI** zurück, eine Änderungsverordnung, die im Juli 2026 in Kraft trat. Grund war, dass harmonisierte Normen und Leitlinien für die Hochrisiko-Anforderungen nicht rechtzeitig fertig wurden. Die Verbote, die GPAI-Regeln und die Transparenzpflichten blieben beim ursprünglichen Zeitplan, und das Verbot wurde um KI-Systeme zur Erzeugung nicht einvernehmlicher intimer Darstellungen echter Personen erweitert.
+
+### Sanktionen und Aufsicht
+
+| Verstoß | Höchststrafe (der jeweils höhere Betrag) |
+| ------- | ---------------------------------------- |
+| verbotene KI-Praktiken | 35 Mio. € oder 7 % des weltweiten Jahresumsatzes |
+| andere Pflichten (z. B. für Hochrisiko-Systeme) | 15 Mio. € oder 3 % |
+| falsche oder irreführende Angaben gegenüber Behörden | 7,5 Mio. € oder 1 % |
+
+Für kleine und mittlere Unternehmen gilt jeweils der niedrigere der beiden Beträge. Auf EU-Ebene überwacht das **Europäische Büro für Künstliche Intelligenz** (_AI Office_) der Kommission vor allem die GPAI-Modelle, in den Mitgliedstaaten sind nationale Marktüberwachungsbehörden zuständig. In Österreich bietet die **KI-Servicestelle** der Rundfunk und Telekom Regulierungs-GmbH (RTR) Informationen und Beratung zum AI Act an.
+
+### Haftung
+
+Verursacht ein KI-System einen Schaden, greift das allgemeine Schadenersatzrecht (siehe [Gewährleistung, Garantie und Schadenersatz](/de/economy_and_law/law/warranty_and_damages/)). Die neue **Produkthaftungsrichtlinie (EU) 2024/2853** stellt ausdrücklich klar, dass auch **Software und KI-Systeme Produkte** sind, für deren Fehler der Hersteller verschuldensunabhängig haftet. Sie muss bis 9. Dezember 2026 in nationales Recht umgesetzt werden und gilt für danach in Verkehr gebrachte Produkte. Ihren Vorschlag für eine eigene KI-Haftungsrichtlinie hat die EU-Kommission 2025 zurückgezogen.
+
+## Weiterführende Quellen
+
+- [Verordnung (EU) 2024/1689 (AI Act) auf EUR-Lex](https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689) und der [AI Act Explorer](https://artificialintelligenceact.eu/de/)
+- [KI-Servicestelle der RTR](https://www.rtr.at/rtr/service/ki-servicestelle/KI-Servicestelle.de.html)
+- Hochrangige Expertengruppe für KI: [Ethik-Leitlinien für eine vertrauenswürdige KI](https://digital-strategy.ec.europa.eu/de/library/ethics-guidelines-trustworthy-ai), 2019

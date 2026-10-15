@@ -1,0 +1,42 @@
+---
+title: Informatik
+description: Grundlagen der Informatik von der Darstellung von Daten über Rechnerarchitektur, Hardware und Betriebssysteme bis zu Automaten, Berechenbarkeit und Komplexität.
+sidebar:
+  label: Überblick
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+Dieser Bereich behandelt, wie ein Computer von innen funktioniert: wie Zahlen und Zeichen als Bits gespeichert werden, wie der Prozessor Befehle ausführt, aus welchen Komponenten ein PC besteht und wie das Betriebssystem Prozesse, Speicher und Dateien verwaltet. Dazu kommen die Grundlagen der theoretischen Informatik, die zeigen, was Computer grundsätzlich berechnen können und was nicht.
+
+An der HTL für Informationstechnologie ist dieser Stoff vor allem Teil von **Systemtechnik** (Grundlagen der Informatik, Hardware und Betriebssysteme) in den ersten Jahrgängen und wird in den höheren Jahrgängen um Betriebssystemkonzepte und theoretische Informatik ergänzt. Die Zahlensysteme stehen in der [Mathematik](/de/mathematics/algebra/number-systems/), die praktische Administration von Linux- und Windows-Systemen unter [Deployment](/de/deployment/).
+
+## Daten und Codes
+
+<CardGrid>
+  <LinkCard title="Darstellung von Daten" href="/de/computer-science/data-representation/" description="Bits, Einheiten, Zweierkomplement, IEEE 754, Byte-Reihenfolge und Zeichenkodierung." />
+  <LinkCard title="Codes und Kompression" href="/de/computer-science/codes-and-compression/" description="BCD, Gray-Code, Parität, Hamming-Code, CRC, Huffman-Kodierung und LZW." />
+</CardGrid>
+
+## Rechnerarchitektur und Hardware
+
+<CardGrid>
+  <LinkCard title="Rechnerarchitektur" href="/de/computer-science/computer-architecture/" description="Von Neumann, CPU, Befehlszyklus, Pipelining, Caches, Interrupts und Amdahl." />
+  <LinkCard title="PC-Hardware" href="/de/computer-science/hardware/" description="Mainboard, RAM, SSD, Schnittstellen, Netzteil, UEFI, Zusammenbau und Fehlersuche." />
+</CardGrid>
+
+## Betriebssysteme
+
+<CardGrid>
+  <LinkCard title="Betriebssysteme" href="/de/computer-science/operating-systems/" description="Aufgaben, Kernelarten, Systemaufrufe, Bootvorgang, Treiber und Systemvergleich." />
+  <LinkCard title="Prozesse und Threads" href="/de/computer-science/processes-and-threads/" description="Prozesszustände, Scheduling, IPC, Synchronisation und Deadlocks." />
+  <LinkCard title="Speicherverwaltung im Betriebssystem" href="/de/computer-science/memory-management-os/" description="Paging, TLB, virtueller Speicher und Seitenersetzung." />
+  <LinkCard title="Dateisysteme" href="/de/computer-science/file-systems/" description="Inodes, FAT, NTFS, ext4, Journaling, Rechte, Links und Partitionierung." />
+</CardGrid>
+
+## Theoretische Informatik
+
+<CardGrid>
+  <LinkCard title="Automaten und formale Sprachen" href="/de/computer-science/automata-and-formal-languages/" description="DEA, NEA, reguläre Ausdrücke, Grammatiken, Kellerautomaten und Turingmaschinen." />
+  <LinkCard title="Berechenbarkeit und Komplexität" href="/de/computer-science/computability-and-complexity/" description="Halteproblem, P, NP, NP-Vollständigkeit und der Umgang mit schweren Problemen." />
+</CardGrid>

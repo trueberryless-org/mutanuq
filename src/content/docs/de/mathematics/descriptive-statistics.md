@@ -147,4 +147,4 @@ Geordnete Daten: $\;2,\ 4,\ 5,\ 7,\ 8,\ 9,\ 11,\ 12,\ 15$
 - Quartilsabstand: $11{,}5 - 4{,}5 = 7$
 :::
 
-Wie man aus Stichproben auf die Grundgesamtheit schließt, ist Thema der **beurteilenden Statistik** mit Wahrscheinlichkeitsverteilungen, Konfidenzintervallen und Hypothesentests.
+Wie man aus Stichproben auf die Grundgesamtheit schließt, ist Thema der [beurteilenden Statistik](/de/mathematics/stochastics/inferential-statistics/) mit [Wahrscheinlichkeitsverteilungen](/de/mathematics/stochastics/random-variables/), Konfidenzintervallen und Hypothesentests. Zusammenhänge zwischen zwei Merkmalen beschreibt die [Regression und Korrelation](/de/mathematics/stochastics/regression-and-correlation/).

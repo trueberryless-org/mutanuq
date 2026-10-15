@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" width="760" height="470" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Exposure triangle"><title>Exposure triangle</title>
+<rect width="760" height="470" rx="14" fill="#ffffff"/>
+<polygon points="380,95 175,375 585,375" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+<text x="380" y="270" font-size="18" font-weight="700" text-anchor="middle" fill="#1f2937">Exposure</text>
+<rect x="240.0" y="14" width="280" height="92" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="380" y="36" font-size="15" font-weight="700" text-anchor="middle" fill="#1f2937">Aperture</text>
+<text x="380" y="56" font-size="12.5" text-anchor="middle" fill="#1f2937">f/1.4 … f/16</text>
+<text x="380" y="75" font-size="12.5" text-anchor="middle" fill="#334155">wide: shallow depth of field</text>
+<text x="380" y="93" font-size="12.5" text-anchor="middle" fill="#334155">narrow: deep depth of field</text>
+<rect x="25.0" y="330" width="270" height="92" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="160" y="352" font-size="15" font-weight="700" text-anchor="middle" fill="#1f2937">Shutter speed</text>
+<text x="160" y="372" font-size="12.5" text-anchor="middle" fill="#1f2937">1/1000 s … 1 s</text>
+<text x="160" y="391" font-size="12.5" text-anchor="middle" fill="#334155">short: motion frozen</text>
+<text x="160" y="409" font-size="12.5" text-anchor="middle" fill="#334155">long: motion blur</text>
+<rect x="465.0" y="330" width="270" height="92" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+<text x="600" y="352" font-size="15" font-weight="700" text-anchor="middle" fill="#1f2937">ISO</text>
+<text x="600" y="372" font-size="12.5" text-anchor="middle" fill="#1f2937">100 … 6400</text>
+<text x="600" y="391" font-size="12.5" text-anchor="middle" fill="#334155">low: little noise</text>
+<text x="600" y="409" font-size="12.5" text-anchor="middle" fill="#334155">high: more noise</text>
+<text x="380" y="452" font-size="12.5" text-anchor="middle" fill="#475569">Each stop (×2 light) on one setting can be balanced by one stop on another.</text>
+</svg>

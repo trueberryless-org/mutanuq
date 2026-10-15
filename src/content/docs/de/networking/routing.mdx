@@ -1,0 +1,258 @@
+---
+title: Routing
+description: Routingtabelle, Longest Prefix Match, administrative Distanz, Metriken, statische Routen, Distanzvektor- und Link-State-Verfahren, RIP, OSPF, EIGRP, BGP sowie HSRP und VRRP.
+sidebar:
+  order: 7
+---
+
+**Routing** ist die Wegwahl für IP-Pakete zwischen verschiedenen Netzen. Ein **Router** empfängt ein Paket, liest die Zieladresse, sucht in seiner **Routingtabelle** den besten Eintrag und leitet das Paket über das passende Interface an den nächsten Router (**Next Hop**) oder direkt an das Ziel weiter. Jeder Router entscheidet nur über den nächsten Schritt (_hop-by-hop_), keiner kennt den ganzen Weg.
+
+## Die Routingtabelle
+
+Ein Router kennt Netze aus drei Quellen:
+
+- **direkt verbundene Netze**: Sobald ein Interface eine IP-Adresse hat und aktiv ist (`up/up`), steht sein Netz in der Tabelle.
+- **statische Routen**: vom Administrator eingetragen.
+- **dynamische Routen**: über Routingprotokolle von anderen Routern gelernt.
+
+Ein Ausschnitt aus `show ip route` auf einem Cisco-Router:
+
+```text
+Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 203.0.113.1
+      10.0.0.0/8 is variably subnetted, 4 subnets, 3 masks
+C        10.1.1.0/24 is directly connected, GigabitEthernet0/0/0
+L        10.1.1.1/32 is directly connected, GigabitEthernet0/0/0
+O        10.2.0.0/16 [110/2] via 10.1.1.2, 00:12:31, GigabitEthernet0/0/0
+S        10.3.0.0/24 [1/0] via 10.1.1.3
+```
+
+| Code | Bedeutung |
+| --- | --- |
+| C | _connected_, direkt verbundenes Netz |
+| L | _local_, die eigene Adresse des Interfaces als /32-Hostroute |
+| S | statische Route, `S*` Kandidat für die Default-Route |
+| O | OSPF |
+| D | EIGRP (von DUAL) |
+| R | RIP |
+| B | BGP |
+
+Die Zahlen in eckigen Klammern sind **[administrative Distanz / Metrik]**. Das **Gateway of last resort** ist die Default-Route.
+
+## Longest Prefix Match
+
+Passen mehrere Einträge auf eine Zieladresse, gewinnt immer der Eintrag mit dem **längsten Präfix**, also der spezifischste. Erst wenn kein anderer passt, wird die Default-Route `0.0.0.0/0` verwendet, die auf jede Adresse passt.
+
+:::tip[Beispiel]
+Die Routingtabelle enthält 10.0.0.0/8, 10.1.0.0/16, 10.1.1.0/24 und 0.0.0.0/0.
+
+| Zieladresse | passende Einträge | gewählt |
+| --- | --- | --- |
+| 10.1.1.5 | /8, /16, /24, /0 | 10.1.1.0/24 |
+| 10.1.2.5 | /8, /16, /0 | 10.1.0.0/16 |
+| 10.2.0.1 | /8, /0 | 10.0.0.0/8 |
+| 8.8.8.8 | /0 | Default-Route |
+:::
+
+## Administrative Distanz und Metrik
+
+Lernt ein Router dasselbe Netz (mit gleichem Präfix) aus mehreren Quellen, entscheidet die **administrative Distanz** (AD), wie vertrauenswürdig die Quelle ist. Kleiner ist besser. Die Werte sind Cisco-spezifisch, andere Hersteller verwenden ähnliche Konzepte mit anderen Zahlen.
+
+| Quelle | AD |
+| --- | --- |
+| direkt verbunden | 0 |
+| statische Route | 1 |
+| EIGRP-Summary-Route | 5 |
+| externes BGP (eBGP) | 20 |
+| internes EIGRP | 90 |
+| OSPF | 110 |
+| IS-IS | 115 |
+| RIP | 120 |
+| externes EIGRP | 170 |
+| internes BGP (iBGP) | 200 |
+| unbekannt, nicht vertrauenswürdig | 255 (wird nie verwendet) |
+
+Innerhalb **eines** Routingprotokolls entscheidet die **Metrik**, welcher Weg der beste ist. Jedes Protokoll misst anders:
+
+| Protokoll | Metrik |
+| --- | --- |
+| RIP | Hop Count (Anzahl der Router bis zum Ziel) |
+| OSPF | Kosten (aus der Bandbreite der Links berechnet) |
+| EIGRP | zusammengesetzt aus Bandbreite und Verzögerung (optional Last und Zuverlässigkeit) |
+| BGP | Pfadattribute (AS-Path-Länge, Local Preference und weitere) |
+
+Haben zwei Wege dieselbe Metrik, verteilt der Router die Last auf beide (**ECMP**, _Equal-Cost Multi-Path_).
+
+Die Reihenfolge der Entscheidung ist also: zuerst das längste Präfix, bei gleichem Präfix die niedrigste AD, bei gleicher Quelle die niedrigste Metrik.
+
+## Statische Routen
+
+Eine **statische Route** wird manuell eingetragen: Zielnetz, Maske und Next Hop oder Ausgangsinterface.
+
+```text
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+```
+
+| Vorteile | Nachteile |
+| --- | --- |
+| keine CPU-Last und keine Bandbreite für Routing-Updates | passt sich bei Ausfällen nicht an |
+| vorhersehbar, sicher (keine Updates, die man fälschen kann) | in großen Netzen nicht wartbar, fehleranfällig |
+| ideal für Stub-Netze mit nur einem Ausgang | jede Änderung muss auf allen Routern nachgezogen werden |
+
+Varianten:
+
+- **Next-Hop-Route**: Angabe der IP-Adresse des nächsten Routers. Der Router muss rekursiv nachsehen, über welches Interface er den Next Hop erreicht.
+- **Direkt verbundene Route**: Angabe nur des Ausgangsinterfaces. Auf Punkt-zu-Punkt-Leitungen sinnvoll, auf Ethernet problematisch, weil der Router dann für jedes Ziel ARP-Anfragen stellt.
+- **Vollständig spezifizierte Route**: Ausgangsinterface und Next Hop. Für IPv6 mit Link-Local-Next-Hop zwingend.
+- **Default-Route** (`0.0.0.0/0`, IPv6 `::/0`): passt auf alles und wird verwendet, wenn kein spezifischerer Eintrag existiert. Typisch am Übergang zum Internet.
+- **Summary-Route**: eine statische Route für mehrere zusammengefasste Netze (siehe [Routenzusammenfassung](/de/networking/ipv4/#routenzusammenfassung)).
+- **Floating Static Route**: eine Backup-Route mit **erhöhter AD**. Solange die Hauptroute (statisch mit AD 1 oder dynamisch, etwa OSPF mit AD 110) existiert, wird sie nicht verwendet. Fällt die Hauptroute weg, „schwimmt“ die Backup-Route in die Tabelle.
+
+```text
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+ip route 0.0.0.0 0.0.0.0 198.51.100.1 5
+```
+
+Die zweite Route mit AD 5 ist eine Floating Static Route über einen zweiten Provider. Sie wird nur aktiv, wenn das Interface zum ersten Provider ausfällt. Als Backup für eine OSPF-Route müsste die AD über 110 liegen.
+
+## Dynamisches Routing
+
+**Routingprotokolle** tauschen Informationen über erreichbare Netze aus, berechnen daraus die besten Wege und passen sich bei Ausfällen automatisch an. Die Zeit, bis alle Router wieder ein einheitliches, korrektes Bild haben, heißt **Konvergenzzeit**.
+
+| Einteilung | Bedeutung |
+| --- | --- |
+| **IGP** (_Interior Gateway Protocol_) | Routing innerhalb eines **autonomen Systems** (AS), also des Netzes einer Organisation: RIP, OSPF, EIGRP, IS-IS |
+| **EGP** (_Exterior Gateway Protocol_) | Routing zwischen autonomen Systemen, das Protokoll des Internets: BGP |
+| **klassenlos** | überträgt die Subnetzmaske mit, unterstützt VLSM: alle heutigen Protokolle |
+| **klassenbasiert** | überträgt keine Maske: nur noch historisch (RIPv1, IGRP) |
+
+### Distanzvektor und Link-State
+
+| Merkmal | **Distanzvektor** | **Link-State** |
+| --- | --- | --- |
+| Wissen | jeder Router kennt nur Entfernung (Distanz) und Richtung (Vektor) zu jedem Ziel, „Routing nach Hörensagen“ | jeder Router kennt die vollständige Topologie seines Bereichs |
+| Austausch | Router schicken ihre Routingtabelle an die Nachbarn (klassisch periodisch, komplett) | Router schicken Zustandsmeldungen über ihre Links (**LSAs**) an alle Router im Bereich, nur bei Änderungen |
+| Berechnung | Bellman-Ford | jeder Router berechnet mit dem [Dijkstra-Algorithmus](/de/software-development/graphs/#dijkstra-algorithmus) (SPF, _Shortest Path First_) den kürzesten Weg |
+| Konvergenz | langsam, Gefahr von Schleifen | schnell |
+| Ressourcen | wenig CPU und Speicher | mehr CPU und Speicher (Topologiedatenbank) |
+| Beispiele | RIP, (EIGRP als „Advanced Distance Vector“) | OSPF, IS-IS |
+
+Distanzvektor-Protokolle leiden unter dem **Count-to-Infinity-Problem**: Fällt ein Netz aus, können sich zwei Router gegenseitig einen Weg dorthin melden und die Metrik hochzählen. Gegenmaßnahmen sind:
+
+- **Split Horizon**: Eine Route wird nicht über das Interface zurückgemeldet, über das sie gelernt wurde.
+- **Route Poisoning**: Ein ausgefallenes Netz wird mit unendlicher Metrik (bei RIP 16) gemeldet.
+- **Hold-Down-Timer**: Nach einem Ausfall werden eine Zeit lang keine schlechteren Meldungen für dieses Netz akzeptiert.
+- **Triggered Updates**: Änderungen werden sofort gemeldet, nicht erst beim nächsten periodischen Update.
+
+## RIP
+
+Das **Routing Information Protocol** ist das älteste noch verwendete IGP und ein reines Distanzvektor-Protokoll. Die Metrik ist der **Hop Count**, maximal 15, 16 bedeutet unerreichbar. Das begrenzt RIP auf kleine Netze. Router senden alle **30 s** ihre ganze Tabelle. **RIPv2** (RFC 2453) ist klassenlos, sendet an die Multicast-Adresse 224.0.0.9 über UDP-Port 520 und unterstützt Authentifizierung. **RIPng** ist die Variante für IPv6. Da die Hop-Anzahl die Bandbreite ignoriert, bevorzugt RIP zwei Hops über 100 Mbit/s gegenüber drei Hops über 10 Gbit/s. In neuen Netzen wird RIP kaum noch eingesetzt.
+
+## OSPF
+
+**Open Shortest Path First** (OSPF) ist das verbreitetste herstellerunabhängige IGP. **OSPFv2** (RFC 2328) ist für IPv4, **OSPFv3** (RFC 5340) für IPv6. OSPF ist ein **Link-State-Protokoll**, wird direkt in IP transportiert (Protokollnummer **89**) und verwendet die Multicast-Adressen **224.0.0.5** (alle OSPF-Router) und **224.0.0.6** (DR und BDR).
+
+### Ablauf
+
+1. **Nachbarschaft aufbauen**: Router senden über jedes OSPF-Interface **Hello-Pakete** und finden so ihre Nachbarn.
+2. **Datenbank austauschen**: Benachbarte Router synchronisieren ihre **Link-State-Datenbank** (LSDB). Am Ende haben alle Router eines Bereichs dieselbe LSDB.
+3. **SPF berechnen**: Jeder Router berechnet mit Dijkstra einen Baum der kürzesten Wege mit sich selbst als Wurzel.
+4. **Routingtabelle füllen**: Die besten Wege werden eingetragen.
+5. **Pflegen**: Hellos halten die Nachbarschaft aufrecht, Änderungen werden sofort per LSA geflutet, sonst wird jede LSA alle 30 Minuten aufgefrischt.
+
+### Pakettypen und Zustände
+
+| Typ | Paket | Zweck |
+| --- | --- | --- |
+| 1 | **Hello** | Nachbarn finden, Nachbarschaft aufrechterhalten, DR/BDR wählen |
+| 2 | **DBD** (_Database Description_) | Zusammenfassung der eigenen LSDB |
+| 3 | **LSR** (_Link-State Request_) | fehlende Einträge anfordern |
+| 4 | **LSU** (_Link-State Update_) | enthält LSAs |
+| 5 | **LSAck** | Empfang bestätigen |
+
+Die Nachbarschaft durchläuft die Zustände **Down**, **Init** (Hello empfangen), **Two-Way** (eigene Router-ID im Hello des Nachbarn gesehen), **ExStart** und **Exchange** (DBDs austauschen), **Loading** (fehlende LSAs anfordern) und **Full** (Datenbanken synchron).
+
+Zwei Router werden nur Nachbarn, wenn Folgendes übereinstimmt: Area-ID, Subnetz und Maske des Links, **Hello- und Dead-Intervall** (Standard auf Ethernet **10 s** und **40 s**), Authentifizierung und Netzwerktyp. Die Router-IDs müssen verschieden sein, und für den Übergang nach Full muss die MTU gleich sein. Das sind die üblichen Fehlerquellen, wenn eine Nachbarschaft nicht zustande kommt.
+
+### Router-ID
+
+Jeder OSPF-Router braucht eine eindeutige **Router-ID** im Format einer IPv4-Adresse (auch bei OSPFv3). Sie wird in dieser Reihenfolge bestimmt:
+
+1. manuell mit `router-id 1.1.1.1` konfiguriert,
+2. sonst die höchste IPv4-Adresse eines **Loopback-Interfaces**,
+3. sonst die höchste IPv4-Adresse eines aktiven physischen Interfaces.
+
+Die Router-ID wird beim Start des OSPF-Prozesses festgelegt. Eine Änderung wirkt erst nach `clear ip ospf process`. Man setzt sie deshalb immer manuell, damit sie stabil und im Plan nachvollziehbar ist.
+
+### DR und BDR
+
+Auf einem **Multiaccess-Netz** wie Ethernet müssten sonst alle Router mit allen eine volle Nachbarschaft bilden: Bei $n$ Routern sind das $n(n-1)/2$ Adjazenzen, und jede Änderung würde vielfach geflutet. Deshalb wählen die Router einen **Designated Router** (DR) und einen **Backup Designated Router** (BDR). Alle anderen (**DROTHER**) bilden nur mit DR und BDR eine volle Nachbarschaft (Full), untereinander bleiben sie im Zustand Two-Way. DROTHERs senden ihre LSAs an 224.0.0.6, der DR verteilt sie an alle über 224.0.0.5.
+
+Die Wahl:
+
+1. höchste **OSPF-Interface-Priorität** (Standard 1, Bereich 0 bis 255; **0** bedeutet: wird nie DR oder BDR),
+2. bei Gleichstand die höchste **Router-ID**.
+
+Die Wahl ist **nicht präemptiv**: Kommt später ein Router mit höherer Priorität dazu, bleibt der bisherige DR im Amt, bis er ausfällt. Auf Punkt-zu-Punkt-Links gibt es keinen DR.
+
+### Kosten
+
+Die OSPF-Metrik heißt **Kosten** (_cost_). Für jedes Interface gilt
+
+$$
+\text{Kosten} = \frac{\text{Referenzbandbreite}}{\text{Interfacebandbreite}}
+$$
+
+mit einem Mindestwert von 1. Die Kosten eines Weges sind die Summe der Kosten aller **ausgehenden** Interfaces bis zum Ziel. Die Referenzbandbreite ist bei Cisco standardmäßig **100 Mbit/s**:
+
+| Interface | Kosten (Referenz 100 Mbit/s) | Kosten (Referenz 10 Gbit/s) |
+| --- | --- | --- |
+| 10 Mbit/s Ethernet | 10 | 1000 |
+| 100 Mbit/s Fast Ethernet | 1 | 100 |
+| 1 Gbit/s | 1 | 10 |
+| 10 Gbit/s | 1 | 1 |
+
+Mit dem Standardwert sind Fast Ethernet, Gigabit und 10 Gigabit gleich teuer, OSPF kann sie nicht unterscheiden. Man erhöht deshalb auf **allen** Routern einheitlich die Referenzbandbreite (`auto-cost reference-bandwidth 10000` für 10 Gbit/s, Angabe in Mbit/s) oder setzt die Kosten am Interface direkt mit `ip ospf cost`.
+
+### Areas
+
+OSPF teilt große Netze in **Areas** ein. Jede Area hat ihre eigene LSDB, und SPF wird nur innerhalb der Area berechnet. Änderungen in einer Area lösen in anderen keine Neuberechnung aus, die Routingtabellen bleiben durch Zusammenfassung an den Areagrenzen klein.
+
+- **Area 0** ist die **Backbone-Area**. Alle anderen Areas müssen direkt mit ihr verbunden sein.
+- Ein **ABR** (_Area Border Router_) verbindet eine Area mit Area 0 und kann Routen zusammenfassen.
+- Ein **ASBR** (_Autonomous System Boundary Router_) bringt externe Routen ins OSPF, etwa eine Default-Route ins Internet.
+
+Bei **Single-Area-OSPF** liegen alle Router in Area 0. Das ist für kleine und mittlere Netze üblich und der Stoff der CCNA. In **Multi-Area-OSPF** beschreiben unterschiedliche LSA-Typen die Informationen: Typ 1 (Router-LSA, jeder Router), Typ 2 (Network-LSA, vom DR), Typ 3 (Summary-LSA, vom ABR in andere Areas), Typ 4 und 5 (ASBR und externe Routen).
+
+Die Konfiguration steht unter [Cisco IOS](/de/networking/cisco-ios/#ospf).
+
+## EIGRP
+
+Das **Enhanced Interior Gateway Routing Protocol** (EIGRP) wurde von Cisco entwickelt und 2016 als informativer RFC 7868 offengelegt, wird aber fast nur auf Cisco-Geräten eingesetzt. Es ist ein **Advanced Distance Vector**-Protokoll: Es schickt keine periodischen Updates, sondern nur Änderungen, und berechnet mit dem **DUAL**-Algorithmus (_Diffusing Update Algorithm_) neben dem besten Weg (**Successor**) schon einen schleifenfreien Ersatzweg (**Feasible Successor**). Fällt der beste Weg aus, wird der Ersatz ohne Neuberechnung sofort verwendet. Die Metrik setzt sich standardmäßig aus der kleinsten Bandbreite und der Summe der Verzögerungen auf dem Weg zusammen. EIGRP verwendet IP-Protokoll 88 und die Multicast-Adresse 224.0.0.10, die AD ist 90 (intern) bzw. 170 (extern).
+
+## BGP
+
+Das **Border Gateway Protocol** (BGP-4, RFC 4271) verbindet die rund 75 000 autonomen Systeme des Internets und ist damit das Routingprotokoll des Internets. Jedes AS (ein Provider, ein großes Unternehmen, eine Universität) hat eine **AS-Nummer**. BGP ist ein **Pfadvektor-Protokoll**: Zu jedem Präfix wird die Liste der AS übertragen, durch die der Weg führt (AS-Path). Das verhindert Schleifen und erlaubt Entscheidungen nach Richtlinien (_Policies_), etwa „Verkehr lieber über den billigeren Provider“. BGP läuft über **TCP-Port 179**. Zwischen AS spricht man von **eBGP**, innerhalb eines AS von **iBGP**. In Unternehmen braucht man BGP vor allem, wenn man an mehrere Provider angebunden ist (_Multihoming_).
+
+## First-Hop-Redundanz
+
+Endgeräte haben genau ein **Default-Gateway**. Fällt dieser Router aus, sind alle Geräte im Subnetz vom Rest des Netzes abgeschnitten, auch wenn ein zweiter Router vorhanden ist. **FHRPs** (_First Hop Redundancy Protocols_) lösen das: Mehrere Router teilen sich eine **virtuelle IP-Adresse** und eine **virtuelle MAC-Adresse**. Die Endgeräte verwenden die virtuelle IP als Gateway. Fällt der aktive Router aus, übernimmt ein anderer die virtuelle Adresse innerhalb weniger Sekunden, ohne dass die Endgeräte etwas ändern müssen.
+
+| Merkmal | **HSRP** | **VRRP** | **GLBP** |
+| --- | --- | --- | --- |
+| Norm | Cisco-proprietär (RFC 2281 informativ) | offener Standard (VRRPv3, RFC 5798) | Cisco-proprietär |
+| Rollen | Active, Standby | Master, Backup | AVG und mehrere AVF |
+| Standardpriorität | 100 | 100 (255 für den Besitzer der Adresse) | 100 |
+| Preemption | standardmäßig aus | standardmäßig ein | standardmäßig aus |
+| Virtuelle MAC | `0000.0c07.acXX` (v1), `0000.0c9f.fXXX` (v2) | `0000.5e00.01XX` | mehrere |
+| Multicast | 224.0.0.2 (v1), 224.0.0.102 (v2), UDP 1985 | 224.0.0.18, IP-Protokoll 112 | 224.0.0.102 |
+| Lastverteilung | nur über mehrere Gruppen | nur über mehrere Gruppen | ja, innerhalb einer Gruppe |
+
+Der Router mit der höchsten Priorität (bei Gleichstand der höchsten IP-Adresse) wird aktiv. Mit **Preemption** übernimmt ein Router mit höherer Priorität die aktive Rolle auch dann, wenn bereits ein anderer aktiv ist, etwa nach seinem Neustart. Mit **Interface Tracking** senkt ein Router seine Priorität, wenn sein Uplink ausfällt, damit der andere übernimmt.
+
+## Weiterführende Quellen
+
+- [RFC 2328: OSPF Version 2](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 4271: A Border Gateway Protocol 4 (BGP-4)](https://www.rfc-editor.org/rfc/rfc4271)
+- Wendell Odom: _CCNA 200-301 Official Cert Guide_, Volume 1 und 2, Cisco Press

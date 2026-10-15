@@ -1,0 +1,703 @@
+---
+title: Codes and Compression
+description: BCD and Gray code, error detection and correction with parity, Hamming code, CRC and checksums, plus lossless and lossy compression with Huffman, LZ77 and LZW.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **code** is a rule that assigns to each character of a source alphabet a sequence of characters from a target alphabet. The [character encodings](/en/computer-science/data-representation/#character-encoding) ASCII and UTF-8 are such codes. Depending on the purpose, a code is optimised for different properties: easy conversion to decimal digits (BCD), only one bit changing between neighbouring values (Gray), robustness against transmission errors (Hamming, CRC) or the shortest possible representation (compression).
+
+## Basic terms
+
+| Term                    | Meaning                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| **Code word**           | the sequence of characters assigned to one source character                                 |
+| **Block code**          | all code words have the same length (ASCII, BCD)                                            |
+| **Variable-length code** | frequent characters get shorter code words (Morse code, Huffman, UTF-8)                    |
+| **Prefix-free code**    | no code word is the start of another, so a bit sequence without separators can be decoded unambiguously (Fano condition) |
+| **Redundancy**          | additional information that is not part of the content. Compression removes redundancy, error protection adds it deliberately |
+
+## Number codes
+
+### BCD code
+
+In **BCD** (_binary-coded decimal_), every decimal digit is encoded separately as a 4-bit binary number. Only 10 of the 16 possible tetrads are used; the remaining 6 (`1010` to `1111`) are called **pseudo-tetrads**.
+
+$$
+1995_{10} = 0001\;1001\;1001\;0101_{\text{BCD}} \qquad \text{but} \qquad 1995_{10} = 0111\;1100\;1011_2
+$$
+
+BCD needs more memory than a pure binary number, but conversion to decimal digits is trivial. That is why BCD is used in seven-segment displays, clock chips (RTC), pocket calculators and in finance, where decimal rounding has to be exact. After an addition the result must be corrected: if a pseudo-tetrad or a carry occurs, 6 (`0110`) is added.
+
+Related codes are the **excess-3 code** (digit + 3, e.g. $5 \to 1000$), in which the nines' complement is obtained by simply inverting, and the **Aiken code** (weighting 2-4-2-1).
+
+### Gray code
+
+In the **Gray code**, neighbouring values differ in **exactly one bit**. This matters for rotary encoders (angle encoders) and position sensors: if a sensor using binary code reads exactly during the transition from 3 (`011`) to 4 (`100`), three bits cannot change at precisely the same moment, and a completely wrong value such as `111` can briefly appear. In Gray code a reading error can be off by at most one position. The cells of a [Karnaugh map](/en/mathematics/algebra/logic-and-boolean-algebra/#karnaugh-map) are also arranged in Gray code order.
+
+| Decimal | Binary | Gray  |
+| ------- | ------ | ----- |
+| 0       | `000`  | `000` |
+| 1       | `001`  | `001` |
+| 2       | `010`  | `011` |
+| 3       | `011`  | `010` |
+| 4       | `100`  | `110` |
+| 5       | `101`  | `111` |
+| 6       | `110`  | `101` |
+| 7       | `111`  | `100` |
+
+Conversion: $g = b \oplus (b \gg 1)$. In the other direction, each binary bit is the XOR of all Gray bits to its left and at its own position. The Gray code is **cyclic**: only one bit changes between 7 and 0 as well.
+
+## Error-detecting and error-correcting codes
+
+During every transmission and storage, bits can flip: due to electromagnetic interference, noise, scratches on a disc or radiation in RAM. To detect errors, **check bits** are added.
+
+### Parity bit
+
+A **parity bit** extends a data word so that the number of ones is even (**even parity**) or odd (**odd parity**).
+
+| Data        | Number of ones | Parity bit (even) | Parity bit (odd) |
+| ----------- | -------------- | ----------------- | ---------------- |
+| `1011 0010` | 4              | 0                 | 1                |
+| `1110 0011` | 5              | 1                 | 0                |
+
+The receiver counts the ones again. If the parity does not match, an error has occurred. A single parity bit detects any **odd** number of bit errors; two errors cancel each other out. It cannot correct anything because the position of the error is unknown. Parity is used, for example, on the serial interface ([USART](/en/embedded-programming/usart/)) and in RAID 5.
+
+If the data is arranged in a matrix and parity is computed for every row **and** every column (**two-dimensional parity**, block check), the faulty row and column intersect exactly at the wrong bit in the case of a single error, which can therefore be corrected.
+
+### Hamming distance
+
+The **Hamming distance** $d(a, b)$ between two code words of equal length is the number of positions in which they differ: $d(10110, 11100) = 2$. The **Hamming distance of a code** $d_{\min}$ is the smallest distance between any two valid code words.
+
+| Capability                  | Condition                 |
+| --------------------------- | ------------------------- |
+| **detect** $e$ errors       | $d_{\min} \geq e + 1$     |
+| **correct** $k$ errors      | $d_{\min} \geq 2k + 1$    |
+
+Intuitively: if valid code words differ in at least 3 bits, a word with one bit error is still closer to the original code word than to any other and can be assigned to it. A code without check bits (ASCII) has $d_{\min} = 1$, with a parity bit $d_{\min} = 2$.
+
+### Hamming code
+
+The **Hamming code** (Richard Hamming, 1950) can **correct** a single-bit error ($d_{\min} = 3$). In the Hamming(7,4) code, 4 data bits are encoded with 3 check bits into 7 bits. The check bits are at the positions that are powers of two (1, 2, 4), the data bits at the remaining ones (3, 5, 6, 7). Each check bit covers the positions whose binary representation has its bit set:
+
+| Check bit | covers positions | Binary representation of the positions |
+| --------- | ---------------- | -------------------------------------- |
+| $p_1$     | 1, 3, 5, 7       | bit 0 set: `001`, `011`, `101`, `111`  |
+| $p_2$     | 2, 3, 6, 7       | bit 1 set: `010`, `011`, `110`, `111`  |
+| $p_4$     | 4, 5, 6, 7       | bit 2 set: `100`, `101`, `110`, `111`  |
+
+In general, $m$ data bits need $r$ check bits with $2^r \geq m + r + 1$. For 64 data bits, 7 check bits are enough; with an additional overall parity bit it is 8. This is the **SECDED** code (_single error correction, double error detection_) used in ECC memory.
+
+:::tip[Example: encoding the data word 1011]
+Distribute the data bits to positions 3, 5, 6, 7: $d_3 = 1$, $d_5 = 0$, $d_6 = 1$, $d_7 = 1$. Check bits with even parity:
+
+$$
+\begin{aligned}
+p_1 &= d_3 \oplus d_5 \oplus d_7 = 1 \oplus 0 \oplus 1 = 0 \\
+p_2 &= d_3 \oplus d_6 \oplus d_7 = 1 \oplus 1 \oplus 1 = 1 \\
+p_4 &= d_5 \oplus d_6 \oplus d_7 = 0 \oplus 1 \oplus 1 = 0
+\end{aligned}
+$$
+
+| Position | 1     | 2     | 3     | 4     | 5     | 6     | 7     |
+| -------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| Bit      | $p_1$ | $p_2$ | $d_3$ | $p_4$ | $d_5$ | $d_6$ | $d_7$ |
+| Value    | 0     | 1     | 1     | 0     | 0     | 1     | 1     |
+
+`0110011` is transmitted.
+:::
+
+:::tip[Example: correcting an error]
+`0110001` is received; bit 6 has flipped. The receiver evaluates the check equations over all positions including the check bits:
+
+$$
+\begin{aligned}
+s_1 &= b_1 \oplus b_3 \oplus b_5 \oplus b_7 = 0 \oplus 1 \oplus 0 \oplus 1 = 0 \\
+s_2 &= b_2 \oplus b_3 \oplus b_6 \oplus b_7 = 1 \oplus 1 \oplus 0 \oplus 1 = 1 \\
+s_4 &= b_4 \oplus b_5 \oplus b_6 \oplus b_7 = 0 \oplus 0 \oplus 0 \oplus 1 = 1
+\end{aligned}
+$$
+
+The **syndrome** $s_4 s_2 s_1 = 110_2 = 6$ points directly to the faulty position. Bit 6 is inverted, and the data bits at positions 3, 5, 6, 7 give `1011` again. If the syndrome is 0, the transmission was error-free.
+:::
+
+An elegant property: the syndrome is the XOR of the position numbers of all set bits. The following code makes use of exactly that.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] data = [1, 0, 1, 1];
+int[] code = Hamming.Encode(data);
+Console.WriteLine(string.Concat(code));            // 0110011
+
+code[5] ^= 1;                                      // flip the bit at position 6
+Console.WriteLine(string.Concat(code));            // 0110001
+
+int syndrome = Hamming.Syndrome(code);
+Console.WriteLine($"Syndrome: {syndrome}");        // Syndrome: 6
+if (syndrome != 0) code[syndrome - 1] ^= 1;        // correct
+Console.WriteLine(string.Concat(Hamming.Decode(code))); // 1011
+
+Console.WriteLine(Parity.EvenParityBit(0b1110_0011)); // 1
+
+static class Hamming
+{
+    // data bits at positions 3, 5, 6, 7; check bits at 1, 2, 4 (index = position - 1)
+    public static int[] Encode(int[] d)
+    {
+        var c = new int[7];
+        (c[2], c[4], c[5], c[6]) = (d[0], d[1], d[2], d[3]);
+        c[0] = c[2] ^ c[4] ^ c[6];
+        c[1] = c[2] ^ c[5] ^ c[6];
+        c[3] = c[4] ^ c[5] ^ c[6];
+        return c;
+    }
+
+    // XOR of the positions of all ones; 0 means error-free
+    public static int Syndrome(int[] c)
+    {
+        int s = 0;
+        for (int pos = 1; pos <= c.Length; pos++)
+        {
+            if (c[pos - 1] == 1) s ^= pos;
+        }
+        return s;
+    }
+
+    public static int[] Decode(int[] c) => [c[2], c[4], c[5], c[6]];
+}
+
+static class Parity
+{
+    public static int EvenParityBit(uint value) => int.PopCount((int)value) % 2;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// data bits at positions 3, 5, 6, 7; check bits at 1, 2, 4 (index = position - 1)
+fn hamming_encode(d: [u8; 4]) -> [u8; 7] {
+    let mut c = [0u8; 7];
+    (c[2], c[4], c[5], c[6]) = (d[0], d[1], d[2], d[3]);
+    c[0] = c[2] ^ c[4] ^ c[6];
+    c[1] = c[2] ^ c[5] ^ c[6];
+    c[3] = c[4] ^ c[5] ^ c[6];
+    c
+}
+
+// XOR of the positions of all ones; 0 means error-free
+fn hamming_syndrome(c: &[u8; 7]) -> usize {
+    (1..=7).filter(|&pos| c[pos - 1] == 1).fold(0, |s, pos| s ^ pos)
+}
+
+fn hamming_decode(c: &[u8; 7]) -> [u8; 4] {
+    [c[2], c[4], c[5], c[6]]
+}
+
+fn even_parity_bit(value: u32) -> u32 {
+    value.count_ones() % 2
+}
+
+fn bits(b: &[u8]) -> String {
+    b.iter().map(|x| x.to_string()).collect()
+}
+
+fn main() {
+    let mut code = hamming_encode([1, 0, 1, 1]);
+    println!("{}", bits(&code));                   // 0110011
+
+    code[5] ^= 1;                                  // flip the bit at position 6
+    println!("{}", bits(&code));                   // 0110001
+
+    let syndrome = hamming_syndrome(&code);
+    println!("Syndrome: {syndrome}");              // Syndrome: 6
+    if syndrome != 0 {
+        code[syndrome - 1] ^= 1;                   // correct
+    }
+    println!("{}", bits(&hamming_decode(&code)));  // 1011
+
+    println!("{}", even_parity_bit(0b1110_0011));  // 1
+}
+```
+
+</TabItem>
+</Tabs>
+
+### CRC
+
+The **cyclic redundancy check** (CRC) also detects burst errors (several consecutive flipped bits) very reliably and can be implemented in hardware with a few shift registers and XOR gates. It is used in Ethernet (CRC-32 in the frame check sequence), USB, SATA, ZIP, PNG and CAN.
+
+Bit sequences are treated as **polynomials** over $\{0, 1\}$: `1011` corresponds to $x^3 + x + 1$. Sender and receiver agree on a **generator polynomial** $G(x)$ of degree $r$. The calculation uses **polynomial division modulo 2**, in which subtraction and addition are the same operation, namely XOR, and there are no carries.
+
+1. Append $r$ zeros to the message.
+2. Divide the result by the generator polynomial (position-wise XOR).
+3. The remainder ($r$ bits) is the **checksum**. It replaces the appended zeros.
+4. The receiver divides the whole received sequence by $G(x)$. If the remainder is 0, the transmission is assumed to be error-free.
+
+:::tip[Example: message 110101, generator 1011 (x³ + x + 1)]
+Degree $r = 3$, so append three zeros: `110101000`. Whenever the leading position of the intermediate result is 1, the generator is written underneath and subtracted with XOR. Positions with 0 are skipped:
+
+```text
+  110101000
+⊕ 1011
+= 011001000
+⊕  1011
+= 001111000
+⊕   1011
+= 000100000
+⊕    1011
+= 000001100
+⊕      1011
+= 000000111   →  remainder 111
+```
+
+`110101` + `111` = `110101111` is transmitted. The receiver divides `110101111` by `1011` and gets the remainder `000`.
+:::
+
+A CRC with a generator of degree $r$ detects all single-bit and double-bit errors (with a suitable polynomial), all errors with an odd number of bits if $(x + 1)$ is a factor of $G(x)$, and all burst errors up to length $r$. CRC protects against **random** errors, not against deliberate tampering: that requires cryptographic hash functions such as SHA-256.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string message = "110101";
+string generator = "1011";
+
+string remainder = Crc.Remainder(message + new string('0', generator.Length - 1), generator);
+Console.WriteLine($"Checksum: {remainder}");                // Checksum: 111
+
+string sent = message + remainder;
+Console.WriteLine(Crc.Remainder(sent, generator));          // 000
+Console.WriteLine(Crc.Remainder("110001111", generator));   // 111 (error detected)
+
+static class Crc
+{
+    // polynomial division modulo 2 on bit strings
+    public static string Remainder(string bits, string generator)
+    {
+        char[] d = bits.ToCharArray();
+        for (int i = 0; i + generator.Length <= d.Length; i++)
+        {
+            if (d[i] == '0') continue;
+            for (int j = 0; j < generator.Length; j++)
+            {
+                d[i + j] = d[i + j] == generator[j] ? '0' : '1';   // XOR
+            }
+        }
+        return new string(d[^(generator.Length - 1)..]);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// polynomial division modulo 2 on bit strings
+fn crc_remainder(bits: &str, generator: &str) -> String {
+    let mut d: Vec<u8> = bits.bytes().map(|b| b - b'0').collect();
+    let g: Vec<u8> = generator.bytes().map(|b| b - b'0').collect();
+    for i in 0..=d.len() - g.len() {
+        if d[i] == 1 {
+            for (j, &gb) in g.iter().enumerate() {
+                d[i + j] ^= gb;
+            }
+        }
+    }
+    d[d.len() - (g.len() - 1)..].iter().map(|b| b.to_string()).collect()
+}
+
+fn main() {
+    let message = "110101";
+    let generator = "1011";
+
+    let padded = format!("{message}{}", "0".repeat(generator.len() - 1));
+    let remainder = crc_remainder(&padded, generator);
+    println!("Checksum: {remainder}");                       // Checksum: 111
+
+    let sent = format!("{message}{remainder}");
+    println!("{}", crc_remainder(&sent, generator));         // 000
+    println!("{}", crc_remainder("110001111", generator));   // 111 (error detected)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Checksums and check digits
+
+Simpler methods add up the data and append the result:
+
+- **Internet checksum** (IPv4 header, TCP, UDP): ones' complement sum of all 16-bit words, then its complement. Quick to compute, but it does not detect swapped words, for example.
+- **Check digits** protect numbers typed in by people against typos and transposed digits. In **ISBN-13** and **EAN-13**, the digits are weighted alternately with 1 and 3, and the check digit tops the sum up to a multiple of 10. For 978-3-16-148410-? the weighted sum is $9 + 21 + 8 + 9 + 1 + 18 + 1 + 12 + 8 + 12 + 1 + 0 = 100$, so the check digit is 0.
+- The **IBAN** uses two check digits computed with the modulo 97 method (ISO 7064), which detects all single errors and almost all transpositions.
+- **Cryptographic hash values** (SHA-256) serve as checksums for downloads and also detect deliberate modifications.
+
+| Method           | detects                                     | corrects   | Typical use                        |
+| ---------------- | ------------------------------------------- | ---------- | ---------------------------------- |
+| parity bit       | odd number of bit errors                    | no         | UART, simple buses                 |
+| two-dimensional parity | single errors, many multiple errors   | 1 bit      | historical tape drives             |
+| Hamming (SECDED) | 2 bit errors                                | 1 bit      | ECC RAM, caches                    |
+| CRC              | burst errors up to degree $r$, almost all others | no (retransmission) | Ethernet, USB, file formats |
+| Reed-Solomon     | burst errors                                | yes, several symbols | QR code, CD, DVD, DSL, RAID 6 |
+
+## Compression
+
+**Data compression** makes data smaller by removing redundancy. This saves storage space and transmission time but costs computing time. The **compression ratio** is the ratio of the original size to the compressed size.
+
+- **Lossless compression**: the original can be restored bit for bit. Mandatory for text, programs and databases. Examples: ZIP, gzip, PNG, FLAC.
+- **Lossy compression**: information that people hardly perceive is discarded. Much higher compression ratios, but not reversible. Examples: JPEG, MP3, AAC, H.264.
+
+### Information content and entropy
+
+According to Claude Shannon (1948), a character that occurs with probability $p$ has an **information content** of $I = -\log_2 p$ bits. Rare characters carry more information. **Entropy** is the average information content per character:
+
+$$
+H = -\sum_{i} p_i \cdot \log_2 p_i \quad \text{in bits per character}
+$$
+
+Entropy is the **lower bound** for the average code word length of any lossless encoding that encodes characters individually. If all $n$ characters are equally likely, $H = \log_2 n$ is at its maximum and compression achieves nothing. That is why data that is already compressed or encrypted (and looks like random data) cannot be made any smaller.
+
+### Run-length encoding
+
+**Run-length encoding** (RLE) replaces runs of identical characters by count and character: `AAAABBBCCD` becomes `4A3B2C1D`. This pays off with long repetitions, for example in simple graphics with single-coloured areas (BMP RLE, PCX, fax transmission). With text that has no repetitions, however, the output becomes **longer** than the original.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text;
+
+string encoded = Rle.Encode("AAAABBBCCD");
+Console.WriteLine(encoded);                 // 4A3B2C1D
+Console.WriteLine(Rle.Decode(encoded));     // AAAABBBCCD
+Console.WriteLine(Rle.Encode("ABC"));       // 1A1B1C (longer than the original)
+
+static class Rle
+{
+    public static string Encode(string input)
+    {
+        var sb = new StringBuilder();
+        for (int i = 0; i < input.Length;)
+        {
+            int run = 1;
+            while (i + run < input.Length && input[i + run] == input[i]) run++;
+            sb.Append(run).Append(input[i]);
+            i += run;
+        }
+        return sb.ToString();
+    }
+
+    public static string Decode(string input)
+    {
+        var sb = new StringBuilder();
+        int count = 0;
+        foreach (char c in input)
+        {
+            if (char.IsDigit(c)) count = count * 10 + (c - '0');
+            else { sb.Append(c, count); count = 0; }
+        }
+        return sb.ToString();
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn rle_encode(input: &str) -> String {
+    let chars: Vec<char> = input.chars().collect();
+    let mut out = String::new();
+    let mut i = 0;
+    while i < chars.len() {
+        let run = chars[i..].iter().take_while(|&&c| c == chars[i]).count();
+        out.push_str(&format!("{run}{}", chars[i]));
+        i += run;
+    }
+    out
+}
+
+fn rle_decode(input: &str) -> String {
+    let mut out = String::new();
+    let mut count = 0;
+    for c in input.chars() {
+        match c.to_digit(10) {
+            Some(d) => count = count * 10 + d as usize,
+            None => {
+                out.extend(std::iter::repeat_n(c, count));
+                count = 0;
+            }
+        }
+    }
+    out
+}
+
+fn main() {
+    let encoded = rle_encode("AAAABBBCCD");
+    println!("{encoded}");                  // 4A3B2C1D
+    println!("{}", rle_decode(&encoded));   // AAAABBBCCD
+    println!("{}", rle_encode("ABC"));      // 1A1B1C (longer than the original)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Huffman coding
+
+**Huffman coding** (David A. Huffman, 1952) produces a **prefix-free variable-length code** in which frequent characters get short code words and rare characters long ones. Among all codes that encode each character individually, it is **optimal**, which means it achieves the smallest possible average code word length.
+
+Algorithm:
+
+1. Determine the frequency of every character. Each character is a leaf with its frequency as its weight.
+2. Remove the two nodes with the **smallest weight** and combine them into a new node whose weight is their sum.
+3. Repeat step 2 until only one node is left: the root.
+4. Label edges to the left child with 0 and to the right child with 1. The code word of a character is the sequence of labels on the path from the root to its leaf.
+
+Because characters only appear in the leaves, no code word can be a prefix of another. The decoder reads bit by bit, moves left or right in the tree and outputs the character when it reaches a leaf.
+
+:::tip[Example: AAAAAAAABBBCCDDDDE]
+Frequencies: A = 8, D = 4, B = 3, C = 2, E = 1 (18 characters in total).
+
+| Step | smallest nodes   | new node     | remaining                         |
+| ---- | ---------------- | ------------ | --------------------------------- |
+| 1    | E (1), C (2)     | EC (3)       | A 8, D 4, B 3, EC 3               |
+| 2    | B (3), EC (3)    | BEC (6)      | A 8, BEC 6, D 4                   |
+| 3    | D (4), BEC (6)   | DBEC (10)    | DBEC 10, A 8                      |
+| 4    | A (8), DBEC (10) | root (18)    |                                   |
+
+```text
+            (18)
+          0/    \1
+        A 8     (10)
+              0/    \1
+             D 4    (6)
+                  0/   \1
+                 B 3   (3)
+                      0/  \1
+                     E 1  C 2
+```
+
+| Character | Frequency | Code word | Total bits |
+| --------- | --------- | --------- | ---------- |
+| A         | 8         | `0`       | 8          |
+| D         | 4         | `10`      | 8          |
+| B         | 3         | `110`     | 9          |
+| E         | 1         | `1110`    | 4          |
+| C         | 2         | `1111`    | 8          |
+| **Sum**   | 18        |           | **37**     |
+
+A block code would need 3 bits per character for 5 characters, so 54 bits (in ASCII even 144 bits). The average code word length is $37 / 18 \approx 2.06$ bits; the entropy is $H \approx 2.02$ bits per character.
+:::
+
+With equal weights the choice is arbitrary, so there are often several equally good Huffman codes. The code word lengths and the total length are always optimal, though. So that the receiver can decode, the code (or the frequency table) has to be sent along. Huffman coding is part of DEFLATE (ZIP, PNG), JPEG and MP3.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string text = "AAAAAAAABBBCCDDDDE";
+var codes = Huffman.BuildCodes(text);
+
+foreach (var (symbol, code) in codes)
+{
+    Console.WriteLine($"{symbol}: {code}");
+}
+string encoded = string.Concat(text.Select(c => codes[c]));
+Console.WriteLine($"{encoded.Length} bits instead of {text.Length * 8} bits");
+
+// Output:
+// A: 0
+// B: 110
+// C: 1111
+// D: 10
+// E: 1110
+// 37 bits instead of 144 bits
+
+record HuffmanNode(char? Symbol, int Weight, HuffmanNode? Left = null, HuffmanNode? Right = null);
+
+static class Huffman
+{
+    public static SortedDictionary<char, string> BuildCodes(string text)
+    {
+        // priority: weight, ties broken by insertion order
+        var queue = new PriorityQueue<HuffmanNode, (int Weight, int Order)>();
+        int order = 0;
+        foreach (var group in text.GroupBy(c => c).OrderBy(g => g.Key))
+        {
+            queue.Enqueue(new HuffmanNode(group.Key, group.Count()), (group.Count(), order++));
+        }
+
+        while (queue.Count > 1)
+        {
+            var left = queue.Dequeue();
+            var right = queue.Dequeue();
+            var parent = new HuffmanNode(null, left.Weight + right.Weight, left, right);
+            queue.Enqueue(parent, (parent.Weight, order++));
+        }
+
+        var codes = new SortedDictionary<char, string>();
+        Assign(queue.Dequeue(), "", codes);
+        return codes;
+    }
+
+    private static void Assign(HuffmanNode node, string prefix, SortedDictionary<char, string> codes)
+    {
+        if (node.Symbol is char symbol)
+        {
+            codes[symbol] = prefix == "" ? "0" : prefix; // special case: only one character
+            return;
+        }
+        Assign(node.Left!, prefix + "0", codes);
+        Assign(node.Right!, prefix + "1", codes);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cmp::Reverse;
+use std::collections::{BTreeMap, BinaryHeap};
+
+enum Node {
+    Leaf(char),
+    Inner(usize, usize), // indices of the left and right child
+}
+
+fn huffman_codes(text: &str) -> BTreeMap<char, String> {
+    let mut freq = BTreeMap::new();
+    for c in text.chars() {
+        *freq.entry(c).or_insert(0usize) += 1;
+    }
+
+    // nodes live in a Vec; the index breaks ties by insertion order
+    let mut nodes = Vec::new();
+    let mut heap = BinaryHeap::new();
+    for (&c, &n) in &freq {
+        heap.push(Reverse((n, nodes.len())));
+        nodes.push(Node::Leaf(c));
+    }
+
+    while heap.len() > 1 {
+        let Some(Reverse((w1, left))) = heap.pop() else { break };
+        let Some(Reverse((w2, right))) = heap.pop() else { break };
+        heap.push(Reverse((w1 + w2, nodes.len())));
+        nodes.push(Node::Inner(left, right));
+    }
+
+    let mut codes = BTreeMap::new();
+    if let Some(Reverse((_, root))) = heap.pop() {
+        assign(&nodes, root, String::new(), &mut codes);
+    }
+    codes
+}
+
+fn assign(nodes: &[Node], i: usize, prefix: String, codes: &mut BTreeMap<char, String>) {
+    match nodes[i] {
+        Node::Leaf(c) => {
+            let code = if prefix.is_empty() { "0".to_string() } else { prefix }; // only one character
+            codes.insert(c, code);
+        }
+        Node::Inner(left, right) => {
+            assign(nodes, left, format!("{prefix}0"), codes);
+            assign(nodes, right, format!("{prefix}1"), codes);
+        }
+    }
+}
+
+fn main() {
+    let text = "AAAAAAAABBBCCDDDDE";
+    let codes = huffman_codes(text);
+    for (symbol, code) in &codes {
+        println!("{symbol}: {code}");
+    }
+    let bits: usize = text.chars().map(|c| codes[&c].len()).sum();
+    println!("{bits} bits instead of {} bits", text.len() * 8);
+}
+
+// Output:
+// A: 0
+// B: 110
+// C: 1111
+// D: 10
+// E: 1110
+// 37 bits instead of 144 bits
+```
+
+</TabItem>
+</Tabs>
+
+### Dictionary methods: LZ77 and LZW
+
+Huffman only exploits the frequency of individual characters. Text, however, contains recurring **sequences** ("the", "ing", whole words). Dictionary methods replace repetitions with references.
+
+**LZ77** (Lempel and Ziv, 1977) uses a sliding window over the data already read. Each repetition is encoded as a triple (distance back, length, next character). For `ABABABA`:
+
+| Position | match found                    | output         |
+| -------- | ------------------------------ | -------------- |
+| 0        | none                           | (0, 0, `A`)    |
+| 1        | none                           | (0, 0, `B`)    |
+| 2        | `ABAB` starts 2 characters back | (2, 4, `A`)   |
+
+The copy may overlap with the text that is just being produced: the length 4 is greater than the distance 2, so while copying, the characters just written are read again.
+
+**LZW** (Lempel, Ziv, Welch, 1984) instead builds a **dictionary** that sender and receiver maintain identically without transmitting it. Initially it contains all single characters. The encoder extends the current sequence $w$ as long as $w$ plus the next character is in the dictionary. Otherwise it outputs the code of $w$, adds $w$ plus the character as a new entry and starts again with that character.
+
+:::tip[Example: LZW for ABABABA, initial dictionary A = 0, B = 1]
+| read  | $w$ + character | in dictionary? | output  | new entry     | new $w$   |
+| ----- | --------------- | -------------- | ------- | ------------- | --------- |
+| A     | A               | yes            |         |               | A         |
+| B     | AB              | no             | 0 (A)   | AB = 2        | B         |
+| A     | BA              | no             | 1 (B)   | BA = 3        | A         |
+| B     | AB              | yes            |         |               | AB        |
+| A     | ABA             | no             | 2 (AB)  | ABA = 4       | A         |
+| B     | AB              | yes            |         |               | AB        |
+| A     | ABA             | yes            |         |               | ABA       |
+| end   |                 |                | 4 (ABA) |               |           |
+
+Output: `0 1 2 4`, four codes for seven characters. The longer the text, the longer the entries that are created.
+:::
+
+LZW was used in GIF and TIFF. The method was patented until 2003/2004, which triggered the development of PNG.
+
+### DEFLATE and formats in practice
+
+**DEFLATE** combines LZ77 (window of up to 32 KiB) with subsequent Huffman coding of the literals, lengths and distances. It is the method behind ZIP, gzip, PNG and HTTP compression with `Content-Encoding: gzip`. Newer methods such as **Brotli** (web), **Zstandard** (Linux kernel, file systems, packages) and **LZMA** (7-Zip, xz) achieve better ratios or speeds with larger windows and better entropy coding.
+
+| Medium | lossless               | lossy                       |
+| ------ | ---------------------- | --------------------------- |
+| text, archives | ZIP, gzip, 7z, zstd | not sensible            |
+| image  | PNG, GIF (256 colours), WebP lossless | JPEG, WebP, AVIF |
+| audio  | FLAC, ALAC             | MP3, AAC, Opus              |
+| video  | (rare, in editing)     | H.264/AVC, H.265/HEVC, AV1  |
+
+### Lossy compression
+
+Lossy methods exploit weaknesses of human perception and discard what is hardly noticeable. This is usually followed by lossless entropy coding.
+
+**JPEG** (photos):
+
+1. Conversion from RGB to the **YCbCr** colour model (brightness and two colour differences). The eye is more sensitive to brightness than to colour, so the colour channels are usually stored at half resolution (**chroma subsampling** 4:2:0).
+2. Division into blocks of 8 × 8 pixels and **discrete cosine transform** (DCT): the block is represented as a sum of frequency patterns.
+3. **Quantisation**: the coefficients are divided by values from a table and rounded. High frequencies (fine details) are rounded more coarsely and often become 0. This is where the loss occurs; the quality setting determines the table.
+4. Zigzag readout, run-length and Huffman coding of the many zeros.
+
+With strong compression the 8 × 8 blocks become visible (**block artefacts**). PNG is better suited to graphics with sharp edges and text.
+
+**MP3** and **AAC** (audio) use a **psychoacoustic model**: tones below the threshold of hearing and quiet tones that are **masked** by loud tones of a neighbouring frequency are omitted or coarsely quantised. An MP3 file at 128 kbit/s is around eleven times smaller than CD quality at 1411.2 kbit/s.
+
+**Video codecs** additionally compress **over time**: only some frames are stored completely (I-frames); in between, only the differences and motion vectors are stored (P- and B-frames).
+
+## Further reading
+
+- Claude E. Shannon: [A Mathematical Theory of Communication](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) (1948)
+- [RFC 1951: DEFLATE Compressed Data Format Specification](https://www.rfc-editor.org/rfc/rfc1951)
+- Andrew S. Tanenbaum, David Wetherall: _Computer Networks_, chapter on the data link layer (error detection and correction), Pearson

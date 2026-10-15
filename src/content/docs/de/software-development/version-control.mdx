@@ -1,0 +1,184 @@
+---
+title: Versionsverwaltung mit Git
+description: Grundbegriffe der Versionsverwaltung, die wichtigsten Git-Befehle, Branches, Merge und Rebase, Konflikte, Zusammenarbeit mit Pull Requests, Branching-Strategien, Semantic Versioning und Continuous Integration.
+sidebar:
+  order: 17
+---
+
+Eine **Versionsverwaltung** (_Version Control System_, VCS) speichert jeden Stand eines Projekts mit Autor, Zeitpunkt und Beschreibung. Man kann jederzeit nachvollziehen, wer was warum geändert hat, zu früheren Ständen zurückkehren und parallel an verschiedenen Funktionen arbeiten. Für Teamarbeit ist sie unverzichtbar. Das heute mit Abstand am weitesten verbreitete System ist **Git**, das Linus Torvalds 2005 für die Entwicklung des Linux-Kernels geschrieben hat.
+
+## Zentral und verteilt
+
+- **Zentrale Systeme** (zum Beispiel Subversion): Die Versionsgeschichte liegt nur auf einem Server. Ohne Verbindung zum Server kann man keine Versionen anlegen.
+- **Verteilte Systeme** (zum Beispiel Git, Mercurial): Jede Kopie eines Repositorys enthält die vollständige Geschichte. Man arbeitet lokal und gleicht Änderungen bei Bedarf mit anderen ab. Plattformen wie **GitHub**, **GitLab** oder **Azure DevOps** stellen ein gemeinsames Repository und Werkzeuge für Zusammenarbeit bereit.
+
+## Grundbegriffe
+
+| Begriff                  | Bedeutung                                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| **Repository** (Repo)    | das Projektverzeichnis mit der gesamten Versionsgeschichte (im Unterordner `.git`)            |
+| **Arbeitsverzeichnis**   | die Dateien, wie sie gerade auf der Festplatte liegen und bearbeitet werden                   |
+| **Staging Area** (Index) | Zwischenbereich, in dem man die Änderungen für den nächsten Commit sammelt                    |
+| **Commit**               | ein gespeicherter Stand des Projekts mit Nachricht, Autor, Zeitpunkt und Verweis auf den Vorgänger; eindeutig identifiziert durch einen Hashwert (SHA-1, künftig SHA-256) |
+| **Branch**               | ein beweglicher Zeiger auf einen Commit, der eine eigene Entwicklungslinie darstellt          |
+| **HEAD**                 | Zeiger auf den aktuell ausgecheckten Branch bzw. Commit                                       |
+| **Remote**               | eine entfernte Kopie des Repositorys, standardmäßig `origin` genannt                          |
+| **Tag**                  | ein fester Name für einen Commit, meist für Versionen wie `v1.2.0`                            |
+
+Eine Datei durchläuft in Git diese Zustände: **untracked** (Git kennt sie noch nicht), **modified** (geändert, aber nicht vorgemerkt), **staged** (für den nächsten Commit vorgemerkt) und **committed** (im Repository gespeichert).
+
+## Die wichtigsten Befehle
+
+```sh
+# einmalig: eigene Identität festlegen
+git config --global user.name "Lena Muster"
+git config --global user.email "lena@example.com"
+
+git init                      # neues Repository im aktuellen Verzeichnis
+git clone <url>               # bestehendes Repository kopieren
+
+git status                    # Zustand des Arbeitsverzeichnisses anzeigen
+git diff                      # noch nicht vorgemerkte Änderungen anzeigen
+git add Program.cs            # Änderung vormerken (git add . für alle)
+git commit -m "Add login form" # Commit mit Nachricht erstellen
+git log --oneline --graph     # Versionsgeschichte kompakt anzeigen
+
+git branch feature/login      # neuen Branch anlegen
+git switch feature/login      # auf den Branch wechseln (git switch -c legt an und wechselt)
+git merge feature/login       # Branch in den aktuellen Branch zusammenführen
+
+git fetch                     # Änderungen vom Remote holen, ohne sie einzuarbeiten
+git pull                      # holen und in den aktuellen Branch einarbeiten
+git push                      # eigene Commits zum Remote hochladen
+```
+
+### Änderungen rückgängig machen
+
+| Ziel                                                        | Befehl                                 |
+| ----------------------------------------------------------- | -------------------------------------- |
+| Änderungen an einer Datei im Arbeitsverzeichnis verwerfen   | `git restore datei`                    |
+| Datei aus der Staging Area nehmen                           | `git restore --staged datei`           |
+| letzte Commit-Nachricht ändern oder Datei nachreichen       | `git commit --amend`                   |
+| einen Commit durch einen neuen Gegen-Commit rückgängig machen | `git revert <commit>`                |
+| Branch auf einen früheren Commit zurücksetzen               | `git reset --hard <commit>` (Vorsicht: verwirft Änderungen) |
+| angefangene Arbeit kurz beiseitelegen                       | `git stash`, später `git stash pop`    |
+
+:::caution[Geteilte Geschichte nicht umschreiben]
+`git commit --amend`, `git reset` und `git rebase` erzeugen neue Commits und ersetzen alte. Für Commits, die bereits gepusht wurden und die andere verwenden, darf man das nicht tun, weil deren Kopien dann nicht mehr zusammenpassen. Für bereits geteilte Commits verwendet man `git revert`.
+:::
+
+### .gitignore
+
+Kompilierte Dateien, Abhängigkeiten, Protokolle und vor allem Passwörter und Schlüssel gehören nicht ins Repository. Die Datei `.gitignore` listet Muster für Dateien, die Git ignorieren soll:
+
+```txt
+# Build-Ausgaben
+bin/
+obj/
+target/
+
+# Umgebungsvariablen und Geheimnisse
+.env
+*.pfx
+```
+
+Ein einmal committetes Passwort bleibt in der Versionsgeschichte, auch wenn man die Datei später löscht. Es muss dann sofort geändert werden.
+
+## Branches, Merge und Rebase
+
+Ein **Branch** erlaubt es, an einer Funktion zu arbeiten, ohne den Hauptzweig (`main`) zu stören. Ist die Funktion fertig, wird der Branch zurückgeführt.
+
+- **Fast-Forward-Merge**: Hat sich `main` seit dem Abzweigen nicht verändert, wird der Zeiger von `main` einfach nach vorne geschoben.
+- **Drei-Wege-Merge**: Haben sich beide Zweige verändert, erzeugt Git einen **Merge-Commit** mit zwei Vorgängern. Grundlage sind der gemeinsame Vorfahre und die beiden Endstände.
+- **Rebase**: `git rebase main` setzt die Commits des eigenen Branches neu auf den aktuellen Stand von `main` auf. Die Geschichte bleibt linear, die Commits erhalten aber neue Hashwerte.
+
+```txt
+Vor dem Merge:              Nach dem Merge:             Nach dem Rebase:
+
+      C---D  feature              C---D                       C'--D'  feature
+     /                           /     \                     /
+A---B---E  main             A---B---E---M  main         A---B---E  main
+```
+
+### Konflikte
+
+Haben beide Zweige dieselbe Stelle einer Datei unterschiedlich geändert, kann Git nicht automatisch entscheiden. Es entsteht ein **Merge-Konflikt**, und Git markiert die Stelle in der Datei:
+
+```txt
+<<<<<<< HEAD
+Console.WriteLine("Willkommen!");
+=======
+Console.WriteLine("Herzlich willkommen!");
+>>>>>>> feature/greeting
+```
+
+Man entscheidet sich für eine Variante oder kombiniert beide, entfernt die Markierungen, merkt die Datei mit `git add` vor und schließt den Merge mit `git commit` ab. Kleine Commits und häufiges Zusammenführen halten Konflikte klein.
+
+## Zusammenarbeit
+
+Auf Plattformen wie GitHub arbeitet man meist mit **Pull Requests** (bei GitLab _Merge Requests_):
+
+1. Einen Branch für die Änderung anlegen und Commits pushen.
+2. Einen Pull Request eröffnen, der beschreibt, was und warum geändert wurde.
+3. Automatische Prüfungen (Build, Tests, Linter) laufen.
+4. Kolleginnen und Kollegen prüfen den Code im **Code-Review** und kommentieren.
+5. Nach der Freigabe wird der Branch in `main` zusammengeführt.
+
+Wer an einem fremden Projekt mitarbeiten will, erstellt zuerst einen **Fork**, also eine eigene Kopie auf der Plattform, und stellt von dort einen Pull Request.
+
+### Branching-Strategien
+
+| Strategie              | Ablauf                                                                                                | Geeignet für                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **GitHub Flow**        | `main` ist immer auslieferbar; jede Änderung in einem kurzlebigen Feature-Branch mit Pull Request     | Webanwendungen mit laufender Auslieferung |
+| **Git Flow**           | dauerhafte Branches `main` und `develop`, dazu Feature-, Release- und Hotfix-Branches                 | Software mit festen Versionen             |
+| **Trunk-Based Development** | alle arbeiten direkt auf dem Hauptzweig oder mit sehr kurzen Branches; unfertige Funktionen werden mit Feature-Flags versteckt | große Teams mit starker Testautomatisierung |
+
+### Commit-Nachrichten
+
+Eine gute Commit-Nachricht hat eine kurze Betreffzeile im Imperativ (etwa 50 Zeichen, „Add login form“, nicht „Added ...“), eine Leerzeile und bei Bedarf einen Text, der erklärt, **warum** die Änderung nötig war. Viele Projekte verwenden die Konvention **Conventional Commits** mit Präfixen wie `feat:`, `fix:`, `docs:` oder `refactor:`, aus denen sich Versionsnummern und Änderungsprotokolle automatisch erzeugen lassen.
+
+## Semantic Versioning
+
+**Semantic Versioning** (SemVer) vergibt Versionsnummern der Form `MAJOR.MINOR.PATCH`:
+
+- **MAJOR** wird erhöht bei inkompatiblen Änderungen der Schnittstelle.
+- **MINOR** bei neuen, rückwärtskompatiblen Funktionen.
+- **PATCH** bei rückwärtskompatiblen Fehlerbehebungen.
+
+Versionen vor `1.0.0` gelten als instabil. NuGet und Cargo verwenden SemVer, um zu entscheiden, welche Versionen einer Abhängigkeit kompatibel sind. In Git markiert man Versionen mit Tags (`git tag v1.4.2`).
+
+## Continuous Integration
+
+Bei **Continuous Integration** (CI) wird jede Änderung sofort automatisch gebaut und getestet. **Continuous Delivery** geht weiter: Jeder erfolgreiche Stand ist auslieferbar. Bei **Continuous Deployment** wird er sogar automatisch ausgeliefert. Eine einfache CI-Pipeline mit GitHub Actions für ein .NET- und ein Rust-Projekt:
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+
+jobs:
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet build
+      - run: dotnet test
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cargo fmt --check
+      - run: cargo clippy -- -D warnings
+      - run: cargo test
+```
+
+## Weiterführende Quellen
+
+- [Pro Git](https://git-scm.com/book/de/v2), das kostenlose Buch zu Git (auch auf Deutsch)
+- [Semantic Versioning](https://semver.org/lang/de/)
+- [Conventional Commits](https://www.conventionalcommits.org/de/)

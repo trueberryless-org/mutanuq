@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" width="680" height="360" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker>
+<marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d97706"/></marker>
+<marker id="ak" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/></marker>
+</defs>
+<rect x="1" y="1" width="678" height="358" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+<line x1="30" y1="200" x2="650" y2="200" stroke="#64748b" stroke-width="1.5"/>
+<path d="M380,95 Q404,200 380,305 Q356,200 380,95 z" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="380" y="88" font-size="14" text-anchor="middle" fill="#1e3a8a">lens</text>
+<g fill="#0f172a">
+<circle cx="280" cy="200" r="4"/><circle cx="480" cy="200" r="4"/>
+<circle cx="180" cy="200" r="3" fill="#94a3b8"/><circle cx="580" cy="200" r="3" fill="#94a3b8"/>
+</g>
+<text x="280" y="222" font-size="15" text-anchor="middle" font-style="italic">F</text>
+<text x="480" y="186" font-size="15" text-anchor="middle" font-style="italic">F′</text>
+<text x="180" y="222" font-size="13" text-anchor="middle" fill="#64748b">2F</text>
+<text x="580" y="222" font-size="13" text-anchor="middle" fill="#64748b">2F′</text>
+<line x1="80" y1="200" x2="80" y2="142" stroke="#0f172a" stroke-width="3" marker-end="url(#ak)"/>
+<text x="68" y="176" font-size="15" text-anchor="end" font-style="italic">G</text>
+<line x1="530" y1="200" x2="530" y2="228" stroke="#dc2626" stroke-width="3" marker-end="url(#ak)"/>
+<text x="542" y="222" font-size="15" font-style="italic" fill="#dc2626">B</text>
+<polyline points="80,140 380,140 575,257" fill="none" stroke="#2563eb" stroke-width="2"/>
+<line x1="80" y1="140" x2="230" y2="140" stroke="#2563eb" stroke-width="2" marker-end="url(#ab)"/>
+<line x1="80" y1="140" x2="600" y2="244" stroke="#16a34a" stroke-width="2"/>
+<line x1="80" y1="140" x2="230" y2="170" stroke="#16a34a" stroke-width="2" marker-end="url(#ag)"/>
+<polyline points="80,140 380,230 610,230" fill="none" stroke="#d97706" stroke-width="2"/>
+<line x1="380" y1="230" x2="460" y2="230" stroke="#d97706" stroke-width="2" marker-end="url(#aa)"/>
+<line x1="80" y1="262" x2="380" y2="262" stroke="#64748b" marker-start="url(#ak)" marker-end="url(#ak)"/>
+<text x="230" y="278" font-size="14" text-anchor="middle" font-style="italic" fill="#334155">g</text>
+<line x1="380" y1="262" x2="530" y2="262" stroke="#64748b" marker-start="url(#ak)" marker-end="url(#ak)"/>
+<text x="455" y="278" font-size="14" text-anchor="middle" font-style="italic" fill="#334155">b</text>
+<line x1="380" y1="292" x2="480" y2="292" stroke="#94a3b8" marker-start="url(#ak)" marker-end="url(#ak)"/>
+<text x="430" y="308" font-size="14" text-anchor="middle" font-style="italic" fill="#334155">f</text>
+<text x="80" y="300" font-size="13" text-anchor="middle" fill="#0f172a">object</text>
+<text x="520" y="186" font-size="13" fill="#dc2626">image</text>
+<rect x="30" y="22" width="12" height="4" fill="#2563eb"/><text x="48" y="29" font-size="13" fill="#0f172a">parallel ray → focal ray</text>
+<rect x="30" y="42" width="12" height="4" fill="#16a34a"/><text x="48" y="49" font-size="13" fill="#0f172a">central ray</text>
+<rect x="30" y="62" width="12" height="4" fill="#d97706"/><text x="48" y="69" font-size="13" fill="#0f172a">focal ray → parallel ray</text>
+</svg>

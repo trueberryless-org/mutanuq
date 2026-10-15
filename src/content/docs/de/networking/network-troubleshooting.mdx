@@ -1,0 +1,167 @@
+---
+title: Fehlersuche im Netzwerk
+description: Systematische Fehlersuche nach Schichten, Werkzeuge wie ping, traceroute, ipconfig, ip, nslookup, dig, netstat, ss, arp, Wireshark und iperf sowie typische Fehlerbilder.
+sidebar:
+  order: 14
+---
+
+„Das Netz geht nicht“ ist die häufigste und ungenaueste Fehlermeldung. Wer planlos an Einstellungen dreht, verschlimmert die Lage oft. Gute Fehlersuche ist systematisch: Problem eingrenzen, Hypothese aufstellen, gezielt prüfen, eine Änderung nach der anderen vornehmen und das Ergebnis dokumentieren.
+
+## Vorgehensmodell
+
+1. **Informationen sammeln**: Was genau funktioniert nicht? Seit wann? Wer ist betroffen (ein Benutzer, ein Raum, alle)? Was wurde zuletzt geändert? Fehlermeldungen wörtlich notieren.
+2. **Problem eingrenzen**: Mit Werkzeugen prüfen, bis zu welchem Punkt die Kommunikation funktioniert.
+3. **Ursache bestimmen**: Hypothese aufstellen und prüfen.
+4. **Lösung umsetzen**: eine Änderung, dann testen. Vorher die Konfiguration sichern, damit man zurück kann.
+5. **Ergebnis prüfen**: Ist das Problem für den Benutzer wirklich behoben, ohne neue Probleme?
+6. **Dokumentieren**: Ursache und Lösung festhalten, Netzwerkdokumentation aktualisieren.
+
+## Vorgehen nach Schichten
+
+Das [OSI-Modell](/de/networking/reference-models/) gibt eine Struktur für die Eingrenzung vor:
+
+| Methode | Vorgehen | geeignet, wenn |
+| --- | --- | --- |
+| **Bottom-up** | bei Schicht 1 beginnen (Kabel, Link-LED) und nach oben arbeiten | physisches Problem vermutet wird, bei komplexen Fehlern. Gründlich, aber langsam |
+| **Top-down** | bei der Anwendung beginnen und nach unten arbeiten | ein einzelnes Programm betroffen ist, alles andere geht |
+| **Divide and Conquer** | in der Mitte beginnen, meist mit `ping` auf Schicht 3. Klappt es, liegt der Fehler darüber, sonst darunter | häufigster und schnellster Einstieg mit Erfahrung |
+| **Follow the Path** | den Weg des Pakets Gerät für Gerät verfolgen | Fehler auf dem Weg durch mehrere Netze |
+| **Substitution** | verdächtige Komponente gegen eine funktionierende tauschen (Kabel, Switchport, Netzwerkkarte) | Hardwarefehler vermutet wird |
+| **Vergleich** | Konfiguration mit einem funktionierenden Gerät vergleichen | ein ähnliches Gerät funktioniert |
+| **Educated Guess** | auf Erfahrung beruhende Vermutung prüfen | bekannte Fehlerbilder |
+
+### Typische Fragen pro Schicht
+
+| Schicht | Prüfen | Werkzeuge |
+| --- | --- | --- |
+| 1 | Kabel steckt? Link-LED leuchtet? Richtige Kabelart? WLAN-Signal? | Augen, Kabeltester, `show interfaces`, Fehlerzähler |
+| 2 | Richtiges VLAN? Port nicht err-disabled? Duplex passt? MAC gelernt? ARP-Eintrag vorhanden? | `show vlan brief`, `show mac address-table`, `arp -a` |
+| 3 | Richtige IP, Maske, Gateway? Route vorhanden, auch zurück? ACL blockiert? | `ipconfig`, `ping`, `tracert`, `show ip route` |
+| 4 | Port offen? Firewall blockiert? Dienst läuft? | `netstat`, `ss`, `Test-NetConnection` |
+| 7 | DNS funktioniert? Zertifikat gültig? Anwendung richtig konfiguriert? | `nslookup`, `dig`, Browser-Entwicklertools |
+
+:::tip[Bewährter Ablauf am Client]
+1. `ipconfig /all`: Hat der Rechner eine gültige Adresse? Eine Adresse aus **169.254.0.0/16** bedeutet, dass kein DHCP-Server geantwortet hat.
+2. `ping 127.0.0.1`: Funktioniert der TCP/IP-Stack?
+3. `ping` auf das **Default-Gateway**: Funktioniert das lokale Netz?
+4. `ping 8.8.8.8` oder eine andere bekannte IP im Internet: Funktionieren Routing und NAT?
+5. `ping www.example.com`: Funktioniert DNS? Klappt Schritt 4, aber Schritt 5 nicht, liegt es an DNS.
+:::
+
+## Werkzeuge
+
+### ping
+
+`ping` sendet **ICMP Echo Requests** und misst die Zeit bis zum Echo Reply. Es zeigt Erreichbarkeit, Round-Trip-Time und Paketverlust.
+
+```text
+ping 192.168.1.1            Windows: 4 Pakete, Linux: endlos bis Strg+C
+ping -t 192.168.1.1         Windows: endlos
+ping -c 4 192.168.1.1       Linux: 4 Pakete
+ping -6 www.example.com     IPv6 erzwingen (Windows)
+ping -f -l 1472 10.0.0.1    Windows: Don't Fragment, 1472 Byte Nutzdaten, MTU testen
+```
+
+Bleibt eine Antwort aus, heißt das nicht zwingend, dass das Ziel nicht erreichbar ist: Viele Firewalls (auch die Windows-Firewall im Standard) blockieren eingehende Echo Requests. 1472 Byte Nutzdaten plus 8 Byte ICMP-Header plus 20 Byte IP-Header ergeben genau die Ethernet-MTU von 1500 Byte.
+
+### traceroute und tracert
+
+`tracert` (Windows) bzw. `traceroute` (Linux, Cisco) zeigt jeden Router auf dem Weg zum Ziel. Das Verfahren nutzt die **TTL**: Das erste Paket wird mit TTL 1 gesendet, der erste Router verwirft es und schickt ICMP **Time Exceeded** zurück, damit ist er bekannt. Dann TTL 2, und so weiter, bis das Ziel antwortet. Windows sendet dazu ICMP Echo Requests, Linux standardmäßig UDP-Pakete an hohe Ports (ab 33434), das Ziel antwortet dann mit „Port Unreachable“.
+
+```text
+tracert www.example.com
+traceroute -n www.example.com     Linux, ohne DNS-Auflösung der Router
+```
+
+Sternchen (`* * *`) bedeuten, dass ein Router nicht antwortet. Das ist oft gewollt und kein Fehler, solange spätere Hops antworten. Hört die Liste an einem Punkt auf, liegt das Problem dort oder auf dem Rückweg. `pathping` (Windows) und `mtr` (Linux) kombinieren traceroute mit Statistiken über Paketverlust je Hop.
+
+### ipconfig und ip
+
+| Windows | Linux | Zweck |
+| --- | --- | --- |
+| `ipconfig` | `ip address` (`ip a`) | IP-Adressen anzeigen |
+| `ipconfig /all` | `ip a`, `resolvectl status` | zusätzlich MAC, DHCP, DNS-Server, Lease |
+| `ipconfig /release`, `/renew` | `dhclient -r`, `dhclient` (bzw. NetworkManager) | DHCP-Adresse freigeben, neu anfordern |
+| `ipconfig /flushdns` | `resolvectl flush-caches` | DNS-Cache leeren |
+| `route print` | `ip route` | Routingtabelle |
+| `arp -a` | `ip neigh` | ARP- bzw. Nachbar-Cache |
+| `Get-NetIPConfiguration` | | PowerShell-Übersicht |
+
+Das ältere Linux-Werkzeug `ifconfig` aus dem Paket net-tools ist auf vielen Systemen nicht mehr installiert, `ip` aus iproute2 ersetzt es.
+
+### nslookup und dig
+
+```text
+nslookup www.example.com
+nslookup www.example.com 1.1.1.1        bestimmten DNS-Server fragen
+nslookup -type=MX example.com
+dig www.example.com AAAA
+dig +short example.com MX
+dig +trace www.example.com              iterative Auflösung ab Root anzeigen
+dig -x 203.0.113.10                      Rückwärtsauflösung
+```
+
+Liefert ein öffentlicher Server (etwa 1.1.1.1) die richtige Antwort, der eigene aber nicht, liegt das Problem beim eigenen DNS-Server. Unter Windows bietet PowerShell `Resolve-DnsName`.
+
+### netstat und ss
+
+`netstat` zeigt Verbindungen und offene Ports, unter Linux ersetzt durch `ss`.
+
+```text
+netstat -ano              Windows: alle Verbindungen, numerisch, mit Prozess-ID
+netstat -r                Routingtabelle
+ss -tulpn                 Linux: TCP- und UDP-Ports im Zustand LISTEN mit Prozess
+ss -tn state established  Linux: aktive TCP-Verbindungen
+```
+
+Damit prüft man, ob ein Dienst überhaupt lauscht und auf welcher Adresse: Lauscht ein Server nur auf `127.0.0.1:5432`, ist er von außen nicht erreichbar, auch wenn die Firewall offen ist. Ob ein Port auf einem entfernten Rechner erreichbar ist, prüft man unter Windows mit `Test-NetConnection server -Port 443`, unter Linux mit `nc -zv server 443`.
+
+### arp
+
+`arp -a` zeigt den ARP-Cache. Fehlt der Eintrag für das Gateway oder steht dort eine unerwartete MAC-Adresse, liegt das Problem in Schicht 2 (falsches VLAN, ARP-Spoofing, doppelte IP-Adresse). `arp -d *` (Windows, Administrator) löscht den Cache.
+
+### Wireshark
+
+**Wireshark** zeichnet Pakete an einer Netzwerkkarte auf und zerlegt sie in ihre Header, Schicht für Schicht. Damit sieht man, was wirklich übertragen wird, statt zu raten. Auf der Kommandozeile gibt es `tcpdump` (Linux) und `tshark`.
+
+- **Aufzeichnungsfilter** (_Capture Filter_, BPF-Syntax) begrenzen, was aufgezeichnet wird: `host 192.168.1.10`, `port 53`, `net 10.0.0.0/8`.
+- **Anzeigefilter** (_Display Filter_) filtern eine Aufzeichnung: `ip.addr == 192.168.1.10`, `tcp.port == 443`, `dns`, `arp`, `dhcp`, `tcp.flags.syn == 1`, `tcp.analysis.retransmission`, `icmp`.
+- **Follow TCP Stream** setzt eine ganze Verbindung zusammen.
+- **Statistics, Conversations** zeigt, wer mit wem wie viel kommuniziert.
+
+An einem Switch sieht ein Rechner nur seinen eigenen Verkehr, Broadcasts und Multicasts. Um fremden Verkehr aufzuzeichnen, spiegelt man einen Port mit **SPAN** (_Port Mirroring_) auf den Analyse-Port. Mitschnitte enthalten möglicherweise Passwörter und personenbezogene Daten und dürfen nur mit Berechtigung angefertigt werden.
+
+### iperf
+
+**iperf3** misst den tatsächlichen Durchsatz zwischen zwei Rechnern, unabhängig von Festplatten oder Anwendungen:
+
+```text
+iperf3 -s                   auf dem Server
+iperf3 -c 192.168.1.10      auf dem Client, TCP, 10 Sekunden
+iperf3 -c 192.168.1.10 -R   umgekehrte Richtung
+iperf3 -c 192.168.1.10 -u -b 50M   UDP mit 50 Mbit/s, zeigt Jitter und Verlust
+```
+
+Erreicht eine Gigabit-Verbindung nur rund 94 Mbit/s, hat eine Stelle nur auf 100 Mbit/s ausgehandelt, häufig wegen eines defekten Adernpaars (1000BASE-T braucht alle vier, 100BASE-TX nur zwei).
+
+## Häufige Fehlerbilder
+
+| Symptom | mögliche Ursache |
+| --- | --- |
+| Adresse 169.254.x.x | DHCP-Server nicht erreichbar: Kabel, falsches VLAN, Relay (`ip helper-address`) fehlt, Pool erschöpft |
+| lokales Netz geht, Internet nicht | falsches oder fehlendes Default-Gateway, fehlende Route, NAT-Problem |
+| IP-Adressen gehen, Namen nicht | falscher oder nicht erreichbarer DNS-Server |
+| zwei Hosts im selben Switch erreichen sich nicht | verschiedene VLANs oder verschiedene Subnetze durch falsche Maske |
+| Verbindung langsam, CRC-Fehler, Late Collisions | Duplex-Mismatch, defektes Kabel, Störquelle |
+| Fehlermeldung „doppelte IP-Adresse“ | statische Adresse im DHCP-Bereich |
+| Netz bricht komplett ein, Switch-LEDs blinken im Gleichtakt | Layer-2-Schleife, STP abgeschaltet oder ein Gerät ohne STP |
+| Port geht nach Anstecken eines Geräts aus (err-disabled) | Port Security oder BPDU Guard hat ausgelöst |
+| Ping geht, Webseite nicht | Firewall oder ACL blockiert den Port, Dienst läuft nicht, MTU-Problem |
+| OSPF-Nachbarschaft kommt nicht zustande | unterschiedliche Area, Timer, Subnetz, Authentifizierung oder MTU, passive Interface |
+| Verbindung nur in eine Richtung | Route auf dem Rückweg fehlt (asymmetrisches Routing) |
+
+## Weiterführende Quellen
+
+- [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
+- [iperf3 Dokumentation](https://software.es.net/iperf/)
+- Cisco Networking Academy: _Enterprise Networking, Security, and Automation_, Modul Network Troubleshooting

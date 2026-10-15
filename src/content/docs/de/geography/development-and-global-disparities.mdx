@@ -1,0 +1,189 @@
+---
+title: Entwicklung und globale Disparitäten
+description: Entwicklungsindikatoren wie BIP pro Kopf, HDI und Gini-Koeffizient, Nord-Süd-Gefälle, Entwicklungstheorien, Entwicklungszusammenarbeit und die Ziele für nachhaltige Entwicklung.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die Lebensbedingungen auf der Erde sind sehr ungleich verteilt. Ein Kind in Norwegen hat eine Lebenserwartung von über 83 Jahren und wird im Schnitt fast 19 Jahre ausgebildet; in den ärmsten Ländern ist beides nur ein Bruchteil davon. Diese **Disparitäten** (Ungleichheiten) zu messen, zu erklären und zu verringern, ist Aufgabe der Entwicklungsgeografie und der Entwicklungspolitik.
+
+## Was ist Entwicklung?
+
+Früher wurde **Entwicklung** mit Wirtschaftswachstum gleichgesetzt. Heute versteht man darunter umfassender die Verbesserung der Lebensbedingungen: Gesundheit, Bildung, Einkommen, Sicherheit, politische Mitbestimmung und eine intakte Umwelt. Nach dem Ökonomen Amartya Sen bedeutet Entwicklung die Erweiterung der **Verwirklichungschancen** der Menschen, also ihrer Freiheit, ein Leben nach eigenen Vorstellungen zu führen.
+
+Die Begriffe für Ländergruppen haben sich gewandelt. Der Ausdruck „Dritte Welt“ stammt aus dem Kalten Krieg (Länder, die weder zum westlichen noch zum östlichen Block gehörten) und gilt als überholt. Heute spricht man von **Entwicklungsländern**, **Schwellenländern** (Länder im Übergang zur Industrialisierung, etwa Brasilien, Mexiko, Indien) und **Industrieländern**, von **Globalem Süden** und **Globalem Norden** oder von den **am wenigsten entwickelten Ländern** (_Least Developed Countries_, LDC), einer Kategorie der UN.
+
+## Entwicklungsindikatoren
+
+### BIP pro Kopf
+
+Das **Bruttoinlandsprodukt** (BIP) ist der Wert aller in einem Land in einem Jahr hergestellten Waren und Dienstleistungen. Geteilt durch die Einwohnerzahl ergibt es das **BIP pro Kopf**. Für internationale Vergleiche rechnet man in **Kaufkraftparitäten** (KKP, _PPP_) um, weil dasselbe Geld in verschiedenen Ländern unterschiedlich viel kaufen kann. Die Weltbank teilt Länder nach dem Bruttonationaleinkommen pro Kopf in Gruppen mit niedrigem, mittlerem (unteres und oberes) und hohem Einkommen ein.
+
+Österreichs nominelles BIP betrug 2024 laut Statistik Austria 494,09 Mrd. Euro, das sind rund 53.830 Euro pro Kopf.
+
+Grenzen des BIP: Es sagt nichts über die **Verteilung** aus, erfasst keine unbezahlte Arbeit (Hausarbeit, Pflege, Subsistenzwirtschaft) und keinen informellen Sektor, und es zählt auch Umweltschäden und deren Beseitigung positiv.
+
+### Human Development Index
+
+Der **Index der menschlichen Entwicklung** (HDI) des Entwicklungsprogramms der Vereinten Nationen (UNDP) wird seit 1990 berechnet. Er kombiniert drei Dimensionen:
+
+| Dimension | Indikator | Minimum | Maximum |
+| --- | --- | --- | --- |
+| langes, gesundes Leben | Lebenserwartung bei Geburt | 20 Jahre | 85 Jahre |
+| Bildung | erwartete Schuljahre eines Kindes und durchschnittliche Schuljahre Erwachsener (ab 25) | 0 | 18 bzw. 15 Jahre |
+| Lebensstandard | Bruttonationaleinkommen pro Kopf (KKP, logarithmiert) | 100 US-$ | 75.000 US-$ |
+
+Jeder Wert wird auf einen **Teilindex** zwischen 0 und 1 normiert, der HDI ist ihr **geometrisches Mittel**:
+
+$$
+I = \frac{\text{Istwert} - \text{Minimum}}{\text{Maximum} - \text{Minimum}}, \qquad \mathrm{HDI} = \sqrt[3]{I_\text{Gesundheit} \cdot I_\text{Bildung} \cdot I_\text{Einkommen}}
+$$
+
+Das geometrische Mittel bewirkt, dass sich ein schlechter Wert in einer Dimension nicht vollständig durch einen guten in einer anderen ausgleichen lässt. Der Einkommensindex wird mit dem Logarithmus berechnet, weil zusätzliches Einkommen bei niedrigem Niveau viel mehr bewirkt als bei hohem. Länder mit einem HDI ab 0,800 haben eine **sehr hohe** menschliche Entwicklung, ab 0,700 eine hohe, ab 0,550 eine mittlere, darunter eine niedrige.
+
+Im **Human Development Report 2025** (Daten von 2023) führt **Island** (0,972) vor Norwegen und der Schweiz (je 0,970). Den letzten Platz der 193 Länder belegt der **Südsudan**. Die Länder mit niedriger Entwicklung liegen überwiegend in Afrika südlich der Sahara.
+
+### Gini-Koeffizient
+
+Der **Gini-Koeffizient** misst die Ungleichheit der Einkommens- oder Vermögensverteilung innerhalb eines Landes. Er beruht auf der **Lorenzkurve**: Sie zeigt, welcher Anteil der Bevölkerung (von den Ärmsten aufwärts sortiert) welchen Anteil am Gesamteinkommen hat. Bei völliger Gleichverteilung ist sie eine Diagonale. Der Gini-Koeffizient ist die Fläche zwischen Diagonale und Lorenzkurve im Verhältnis zur gesamten Fläche unter der Diagonale.
+
+- **0** bedeutet völlige Gleichheit (alle haben dasselbe Einkommen).
+- **1** bedeutet völlige Ungleichheit (eine Person hat alles).
+
+Skandinavische Länder und Österreich haben bei den verfügbaren Haushaltseinkommen Werte unter 0,3; zu den ungleichsten Ländern gehören Südafrika (über 0,6), Namibia und Brasilien. Vermögen sind überall deutlich ungleicher verteilt als Einkommen.
+
+Für eine Liste von Einkommen $x_1, \dots, x_n$ mit dem Mittelwert $\mu$ lässt sich der Gini-Koeffizient über die mittlere absolute Differenz aller Paare berechnen:
+
+$$
+G = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} |x_i - x_j|}{2 n^2 \mu}
+$$
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+static double Gini(double[] incomes)
+{
+    int n = incomes.Length;
+    double mean = incomes.Average();
+    double sum = 0;
+    foreach (double a in incomes)
+        foreach (double b in incomes)
+            sum += Math.Abs(a - b);
+    return sum / (2.0 * n * n * mean);
+}
+
+// Monatseinkommen in Euro von fünf Haushalten
+double[] unequal = [1200, 1800, 2500, 3500, 11000];
+double[] equal = [3000, 3000, 3000, 3000, 3000];
+
+Console.WriteLine(FormattableString.Invariant($"Gini ungleich: {Gini(unequal):F3}"));
+Console.WriteLine(FormattableString.Invariant($"Gini gleich:   {Gini(equal):F3}"));
+// Gini ungleich: 0.426
+// Gini gleich:   0.000
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn gini(incomes: &[f64]) -> f64 {
+    let n = incomes.len() as f64;
+    let mean = incomes.iter().sum::<f64>() / n;
+    let sum: f64 = incomes
+        .iter()
+        .flat_map(|a| incomes.iter().map(move |b| (a - b).abs()))
+        .sum();
+    sum / (2.0 * n * n * mean)
+}
+
+fn main() {
+    // Monatseinkommen in Euro von fünf Haushalten
+    let unequal = [1200.0, 1800.0, 2500.0, 3500.0, 11000.0];
+    let equal = [3000.0; 5];
+
+    println!("Gini ungleich: {:.3}", gini(&unequal));
+    println!("Gini gleich:   {:.3}", gini(&equal));
+    // Gini ungleich: 0.426
+    // Gini gleich:   0.000
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Weitere Indikatoren
+
+| Indikator | Aussage |
+| --- | --- |
+| **extreme Armut** | Seit Juni 2025 verwendet die Weltbank eine internationale Armutsgrenze von 3,00 US-$ pro Tag (KKP von 2021). Für 2025 schätzt sie den Anteil der extrem Armen auf rund 9,9 % der Weltbevölkerung; rund drei Viertel von ihnen leben in Afrika südlich der Sahara. |
+| **Säuglings- und Kindersterblichkeit** | spiegelt Gesundheitsversorgung, sauberes Wasser, Ernährung und Bildung der Mütter |
+| **Alphabetisierungsrate** | Anteil der Erwachsenen, die lesen und schreiben können |
+| **Gender Inequality Index** | Benachteiligung von Frauen bei Gesundheit, Bildung und Teilhabe |
+| **Mehrdimensionaler Armutsindex** (MPI) | Mangel an Gesundheit, Bildung und Lebensstandard (Strom, Wasser, Wohnen) auf Haushaltsebene |
+| **Sektoraler Anteil der Erwerbstätigen** | hoher Agraranteil weist auf geringe Entwicklung hin |
+
+Kein einzelner Indikator bildet Entwicklung vollständig ab. Durchschnittswerte verdecken zudem die Unterschiede **innerhalb** eines Landes, etwa zwischen Stadt und Land oder zwischen Regionen.
+
+## Nord-Süd-Gefälle
+
+Die vereinfachte **Brandt-Linie** (1980) trennte den reichen Norden vom armen Süden. Heute ist das Bild differenzierter: China, Südkorea, Singapur oder die Golfstaaten sind wirtschaftlich aufgestiegen, viele Länder Afrikas südlich der Sahara und Südasiens liegen weiterhin zurück. Gleichzeitig wachsen in vielen Ländern die Unterschiede zwischen Arm und Reich.
+
+Typische Merkmale wenig entwickelter Länder sind ein hoher Anteil der Landwirtschaft, ein großer informeller Sektor, Export weniger Rohstoffe oder Agrarprodukte (Abhängigkeit von Weltmarktpreisen), Auslandsverschuldung, schwache staatliche Institutionen, hohes Bevölkerungswachstum und eine junge Bevölkerung.
+
+Ursachen werden auf mehreren Ebenen gesucht:
+
+- **natürliche Faktoren**: tropisches Klima mit Krankheiten wie Malaria, Dürren, Binnenlage ohne Meerzugang
+- **historische Faktoren**: Kolonialismus mit willkürlichen Grenzen, Ausrichtung der Wirtschaft auf den Rohstoffexport, Zerstörung traditioneller Strukturen
+- **politische Faktoren**: Korruption, Bürgerkriege, schwache Rechtsstaatlichkeit (**Good Governance** fehlt)
+- **wirtschaftliche Faktoren**: ungünstige **Terms of Trade** (Rohstoffpreise schwanken stark, Industriegüter werden relativ teurer), Handelsschranken und Agrarsubventionen der Industrieländer
+- **Ressourcenfluch**: Reichtum an Öl oder Mineralien führt oft nicht zu Entwicklung, sondern zu Korruption, Konflikten und einseitiger Wirtschaft (DR Kongo, Nigeria)
+
+## Entwicklungstheorien
+
+| Theorie | Hauptvertreter | Ursache der Unterentwicklung | Empfohlener Weg |
+| --- | --- | --- | --- |
+| **Modernisierungstheorie** | Walt W. Rostow (Stadien des wirtschaftlichen Wachstums, 1960) | **interne** Faktoren: traditionelle Gesellschaft, Kapitalmangel | Nachholen des westlichen Weges: Investitionen, Industrialisierung, Weltmarktöffnung; Stufen bis zum Massenkonsum |
+| **Dependenztheorie** | Raúl Prebisch, André Gunder Frank (1960er-Jahre) | **externe** Faktoren: Abhängigkeit der Peripherie vom Zentrum seit dem Kolonialismus, ungleicher Tausch | Abkopplung vom Weltmarkt, Importsubstitution durch eigene Industrie |
+| **Weltsystemtheorie** | Immanuel Wallerstein (1974) | kapitalistisches Weltsystem mit Zentrum, Semiperipherie und Peripherie | Aufstieg einzelner Länder ist möglich, das System bleibt hierarchisch |
+| **Neoliberale Ansätze** | Washington Consensus (1990er-Jahre) | Staatsversagen, Marktverzerrungen | Privatisierung, Deregulierung, Freihandel, Strukturanpassungsprogramme von IWF und Weltbank |
+| **Nachhaltige Entwicklung** | Brundtland-Bericht (1987) | Entwicklung zulasten von Umwelt und künftigen Generationen | Bedürfnisse der Gegenwart befriedigen, ohne künftige Generationen zu gefährden |
+
+Die Modernisierungstheorie erklärt den Aufstieg der ostasiatischen „Tigerstaaten“, die allerdings mit starker staatlicher Lenkung und exportorientierter Industrialisierung erfolgreich waren. Die Abkopplungsstrategien der Dependenztheorie sind in Lateinamerika weitgehend gescheitert. Die Strukturanpassungsprogramme wurden kritisiert, weil Kürzungen bei Bildung und Gesundheit die Ärmsten trafen. Heute gelten keine einheitlichen Rezepte mehr; betont werden gute Regierungsführung, Bildung, Gesundheit, Gleichstellung und lokale Eigenverantwortung.
+
+## Entwicklungszusammenarbeit
+
+**Entwicklungszusammenarbeit** (früher „Entwicklungshilfe“) umfasst staatliche und private Leistungen zur Verbesserung der Lebensbedingungen in Entwicklungsländern. Der neue Begriff betont die Partnerschaft statt eines Gefälles zwischen Gebenden und Nehmenden.
+
+- **Öffentliche Entwicklungsleistungen** (_Official Development Assistance_, ODA) sind staatliche Zuschüsse und vergünstigte Kredite. Die UN haben 1970 das Ziel formuliert, dass reiche Länder **0,7 % ihres Bruttonationaleinkommens** (BNE) dafür aufwenden. Nur wenige Länder erreichen es. Österreich lag 2024 laut OECD bei rund 0,34 % des BNE.
+- **Bilaterale** Zusammenarbeit läuft direkt zwischen zwei Staaten, **multilaterale** über internationale Organisationen (Weltbank, UN-Organisationen, EU).
+- In Österreich setzt die **Austrian Development Agency** (ADA) die bilaterale **Österreichische Entwicklungszusammenarbeit** um. Dazu kommen Nichtregierungsorganisationen (NGOs) wie Caritas, Rotes Kreuz, Licht für die Welt oder Ärzte ohne Grenzen.
+- Weitere Formen sind **Mikrokredite** (kleine Kredite an Menschen ohne Zugang zu Banken, bekannt durch die Grameen Bank in Bangladesch), **Schuldenerlass**, **fairer Handel** und Rücküberweisungen von Migrantinnen und Migranten.
+
+Kritisiert wird, dass Hilfe Abhängigkeit schaffen, korrupte Regierungen stützen oder an Interessen der Geberländer (Exportförderung, Migrationsabwehr) gebunden sein kann. Wirksam ist sie vor allem dann, wenn sie an lokale Bedürfnisse angepasst ist, langfristig angelegt ist und von den Menschen vor Ort mitgestaltet wird (**Hilfe zur Selbsthilfe**).
+
+## Ziele für nachhaltige Entwicklung
+
+Die **Agenda 2030** mit den 17 **Sustainable Development Goals** (SDGs) wurde 2015 von allen UN-Mitgliedstaaten beschlossen. Sie löste die acht **Millenniums-Entwicklungsziele** (2000 bis 2015) ab, die sich vor allem an Entwicklungsländer richteten. Die SDGs gelten dagegen für **alle** Länder, auch für Österreich, und verbinden soziale, wirtschaftliche und ökologische Ziele. Sie sind in 169 Unterziele gegliedert.
+
+| Nr. | Ziel (Kurzform) | Nr. | Ziel (Kurzform) |
+| --- | --- | --- | --- |
+| 1 | keine Armut | 10 | weniger Ungleichheiten |
+| 2 | kein Hunger | 11 | nachhaltige Städte und Gemeinden |
+| 3 | Gesundheit und Wohlergehen | 12 | nachhaltige Konsum- und Produktionsmuster |
+| 4 | hochwertige Bildung | 13 | Maßnahmen zum Klimaschutz |
+| 5 | Geschlechtergleichheit | 14 | Leben unter Wasser |
+| 6 | sauberes Wasser und Sanitäreinrichtungen | 15 | Leben an Land |
+| 7 | bezahlbare und saubere Energie | 16 | Frieden, Gerechtigkeit und starke Institutionen |
+| 8 | menschenwürdige Arbeit und Wirtschaftswachstum | 17 | Partnerschaften zur Erreichung der Ziele |
+| 9 | Industrie, Innovation und Infrastruktur | | |
+
+Die Zwischenbilanzen der UN zeigen, dass ein großer Teil der Unterziele bis 2030 voraussichtlich nicht erreicht wird; die COVID-19-Pandemie, Kriege und steigende Lebensmittel- und Energiepreise haben Fortschritte teilweise rückgängig gemacht. Statistik Austria veröffentlicht einen jährlichen Indikatorenbericht zu den SDGs in Österreich.
+
+## Weiterführende Quellen
+
+- [UNDP: Human Development Report](https://hdr.undp.org/)
+- [Weltbank: Poverty and Inequality Platform](https://pip.worldbank.org/)
+- [Austrian Development Agency](https://www.entwicklung.at/)

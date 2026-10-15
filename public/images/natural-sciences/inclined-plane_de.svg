@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" width="560" height="420" font-family="Inter, Arial, sans-serif">
+<defs><marker id="ad97706" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d97706"/></marker><marker id="adc2626" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker><marker id="a16a34a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/></marker><marker id="a2563eb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker></defs>
+<rect x="1" y="1" width="558" height="418" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+<polygon points="60,300 460,300 460,69" fill="#dbeafe" stroke="#1e3a8a" stroke-width="2"/>
+<path d="M 120,300 A 60 60 0 0 0 112,270" fill="none" stroke="#1e3a8a" stroke-width="2"/>
+<text x="128" y="292" font-size="18" fill="#1e3a8a" font-style="italic">α</text>
+<g transform="translate(249.0,165.4) rotate(-30)"><rect x="-32" y="-22" width="64" height="44" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="2"/></g>
+<line x1="249.0" y1="275.4" x2="201.4" y2="192.9" stroke="#94a3b8" stroke-dasharray="4 4"/>
+<line x1="249.0" y1="275.4" x2="296.6" y2="248.0" stroke="#94a3b8" stroke-dasharray="4 4"/>
+<line x1="249.0" y1="165.4" x2="249.0" y2="275.4" stroke="#2563eb" stroke-width="3"  marker-end="url(#a2563eb)"/>
+<line x1="249.0" y1="165.4" x2="201.4" y2="192.9" stroke="#d97706" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#ad97706)"/>
+<line x1="249.0" y1="165.4" x2="296.6" y2="248.0" stroke="#d97706" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#ad97706)"/>
+<line x1="249.0" y1="165.4" x2="201.4" y2="82.9" stroke="#16a34a" stroke-width="3"  marker-end="url(#a16a34a)"/>
+<line x1="268.7" y1="179.5" x2="312.0" y2="154.5" stroke="#dc2626" stroke-width="3"  marker-end="url(#adc2626)"/>
+<circle cx="249.0" cy="165.4" r="3.5" fill="#0f172a"/>
+<text x="257.0" y="279.4" font-size="16" fill="#2563eb" font-style="italic">F<tspan font-size="12" dy="4">G</tspan></text>
+<text x="163.4" y="200.9" font-size="16" fill="#d97706" font-style="italic">F<tspan font-size="12" dy="4">∥</tspan></text>
+<text x="304.6" y="252.0" font-size="16" fill="#d97706" font-style="italic">F<tspan font-size="12" dy="4">⊥</tspan></text>
+<text x="167.4" y="86.9" font-size="16" fill="#16a34a" font-style="italic">F<tspan font-size="12" dy="4">N</tspan></text>
+<text x="318" y="128" font-size="16" fill="#dc2626" font-style="italic">F<tspan font-size="12" dy="4">R</tspan></text>
+<text x="30" y="336" font-size="14" fill="#2563eb"><tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">G</tspan><tspan dy="-3" fill="#0f172a">  Gewichtskraft</tspan></text>
+<text x="300" y="336" font-size="14" fill="#d97706"><tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">∥</tspan><tspan dy="-3" fill="#0f172a">  Hangabtriebskraft</tspan></text>
+<text x="30" y="362" font-size="14" fill="#d97706"><tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">⊥</tspan><tspan dy="-3" fill="#0f172a">  Normalkomponente</tspan></text>
+<text x="300" y="362" font-size="14" fill="#16a34a"><tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">N</tspan><tspan dy="-3" fill="#0f172a">  Normalkraft der Ebene</tspan></text>
+<text x="30" y="388" font-size="14" fill="#dc2626"><tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">R</tspan><tspan dy="-3" fill="#0f172a">  Reibungskraft</tspan></text>
+</svg>

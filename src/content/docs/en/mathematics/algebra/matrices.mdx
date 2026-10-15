@@ -1,0 +1,485 @@
+---
+title: Matrices
+description: "Matrix algebra: operations, matrix multiplication, transpose, determinant, inverse matrix, rank, transition matrices, the Leontief model and computer graphics."
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **matrix** is a rectangular array of numbers. Matrices combine many numbers into one object that you can calculate with much like a single number. They describe [systems of linear equations](/en/mathematics/algebra/systems-of-linear-equations/), transitions between states, interdependencies in the economy, and every rotation, scaling or translation in computer graphics.
+
+## Definition and notation
+
+A matrix with $m$ rows and $n$ columns is called an $m \times n$ matrix (read "m by n"). The element in row $i$ and column $j$ is denoted $a_{ij}$; the row always comes first:
+
+$$
+A = \begin{pmatrix} a_{11} & a_{12} & \cdots & a_{1n} \\ a_{21} & a_{22} & \cdots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \cdots & a_{mn} \end{pmatrix}
+$$
+
+| Term | Meaning |
+| ---- | ------- |
+| square matrix | as many rows as columns ($n \times n$) |
+| row vector, column vector | $1 \times n$ or $m \times 1$ matrix; [vectors](/en/mathematics/geometry/vectors/) are column vectors |
+| zero matrix $O$ | all elements are $0$ |
+| main diagonal | the elements $a_{11}, a_{22}, \ldots, a_{nn}$ of a square matrix |
+| diagonal matrix | only the main diagonal contains non-zero values |
+| identity matrix $E$ (also $I$) | diagonal matrix with ones on the main diagonal |
+| upper triangular matrix | only zeros below the main diagonal |
+| symmetric matrix | $a_{ij} = a_{ji}$, i.e. $A = A^T$ |
+
+## Operations
+
+### Addition and multiplication by a scalar
+
+Matrices of the same size are added and subtracted **element by element**. When multiplying by a number (a scalar), every element is multiplied by that number:
+
+$$
+\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} + \begin{pmatrix} 2 & 0 \\ 1 & 3 \end{pmatrix} = \begin{pmatrix} 3 & 2 \\ 4 & 7 \end{pmatrix} \qquad
+3 \cdot \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} = \begin{pmatrix} 3 & 6 \\ 9 & 12 \end{pmatrix}
+$$
+
+These operations follow the same laws as numbers (commutative, associative and distributive laws).
+
+### Transpose
+
+The **transpose** $A^T$ is formed by swapping rows and columns: the $i$-th row becomes the $i$-th column. An $m \times n$ matrix becomes an $n \times m$ matrix.
+
+$$
+A = \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix} \qquad A^T = \begin{pmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{pmatrix}
+$$
+
+It holds that $(A^T)^T = A$ and $(A \cdot B)^T = B^T \cdot A^T$ (the order is reversed).
+
+### Matrix multiplication
+
+The product $C = A \cdot B$ is only defined if $A$ **has as many columns as $B$ has rows**. An $m \times n$ and an $n \times p$ matrix give an $m \times p$ matrix. Each element is the [dot product](/en/mathematics/geometry/vectors/#dot-product) of a row of $A$ and a column of $B$ ("row times column"):
+
+$$
+c_{ij} = \sum_{k=1}^{n} a_{ik} \, b_{kj} = a_{i1} b_{1j} + a_{i2} b_{2j} + \ldots + a_{in} b_{nj}
+$$
+
+:::tip[Example]
+$$
+\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \cdot \begin{pmatrix} 2 & 0 \\ 1 & 3 \end{pmatrix} = \begin{pmatrix} 1 \cdot 2 + 2 \cdot 1 & 1 \cdot 0 + 2 \cdot 3 \\ 3 \cdot 2 + 4 \cdot 1 & 3 \cdot 0 + 4 \cdot 3 \end{pmatrix} = \begin{pmatrix} 4 & 6 \\ 10 & 12 \end{pmatrix}
+$$
+
+In reverse order:
+
+$$
+\begin{pmatrix} 2 & 0 \\ 1 & 3 \end{pmatrix} \cdot \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} = \begin{pmatrix} 2 & 4 \\ 10 & 14 \end{pmatrix}
+$$
+:::
+
+:::caution
+Matrix multiplication is **not commutative**: in general $A \cdot B \neq B \cdot A$. The associative and distributive laws do hold: $(AB)C = A(BC)$ and $A(B + C) = AB + AC$. The identity matrix is the neutral element: $A \cdot E = E \cdot A = A$.
+:::
+
+A system of linear equations can therefore be written compactly as $A \cdot \vec{x} = \vec{b}$ (coefficient matrix times vector of unknowns). Multiplying two $n \times n$ matrices by definition takes $n^3$ multiplications; this is why large matrix products are computationally expensive and are calculated in parallel on graphics cards and AI accelerators.
+
+## Determinant
+
+The **determinant** $\det A$ (also $\lvert A \rvert$) is a number assigned to a square matrix. It decides whether the matrix is invertible and has a geometric meaning: its absolute value is the factor by which the mapping described by $A$ scales areas (in 2D) or volumes (in 3D).
+
+### 2×2 matrix
+
+$$
+\det \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix} = a_{11} a_{22} - a_{12} a_{21}
+$$
+
+"Main diagonal minus secondary diagonal", for example $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$.
+
+### 3×3 matrix: rule of Sarrus
+
+Write the first two columns again to the right of the matrix, add the products of the three diagonals running from top left to bottom right and subtract the products of the three diagonals running from bottom left to top right:
+
+$$
+\det A = a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32} - a_{13}a_{22}a_{31} - a_{11}a_{23}a_{32} - a_{12}a_{21}a_{33}
+$$
+
+:::tip[Example]
+$$
+\begin{vmatrix} 1 & 1 & 1 \\ 2 & -1 & 1 \\ 1 & 2 & -1 \end{vmatrix} = 1 \cdot (-1) \cdot (-1) + 1 \cdot 1 \cdot 1 + 1 \cdot 2 \cdot 2 - 1 \cdot (-1) \cdot 1 - 1 \cdot 1 \cdot 2 - 1 \cdot 2 \cdot (-1) = 1 + 1 + 4 + 1 - 2 + 2 = 7
+$$
+
+This is the coefficient matrix of the example for [Gaussian elimination](/en/mathematics/algebra/systems-of-linear-equations/#gaussian-elimination). Since $\det A \neq 0$, the system has exactly one solution.
+:::
+
+:::caution
+The rule of Sarrus applies **only to 3×3 matrices**. For larger matrices, use Laplace expansion or Gaussian elimination.
+:::
+
+### Laplace expansion
+
+You expand along any row or column. Each element $a_{ij}$ is multiplied by the determinant of the **submatrix** (minor) $A_{ij}$, obtained by deleting row $i$ and column $j$, and given the sign $(-1)^{i+j}$ (chequerboard pattern $+\,-\,+$). Expansion along the first row:
+
+$$
+\det A = \sum_{j=1}^{n} (-1)^{1+j} \, a_{1j} \, \det A_{1j}
+$$
+
+:::tip[Example]
+Expanding the same matrix along the first row:
+
+$$
+\det A = 1 \cdot \begin{vmatrix} -1 & 1 \\ 2 & -1 \end{vmatrix} - 1 \cdot \begin{vmatrix} 2 & 1 \\ 1 & -1 \end{vmatrix} + 1 \cdot \begin{vmatrix} 2 & -1 \\ 1 & 2 \end{vmatrix} = 1 \cdot (-1) - 1 \cdot (-3) + 1 \cdot 5 = 7
+$$
+
+The least work is needed when you expand along a row or column with as many zeros as possible.
+:::
+
+### Properties
+
+- $\det(A \cdot B) = \det A \cdot \det B$ and $\det A^T = \det A$.
+- Swapping two rows changes the sign.
+- Multiplying a row by $c$ multiplies the determinant by $c$.
+- Adding a multiple of one row to another leaves the determinant unchanged. This is why a matrix can be brought into triangular form with Gaussian elimination: the determinant of a **triangular matrix** is the product of its diagonal elements.
+- If two rows are equal or multiples of each other, $\det A = 0$.
+
+## Inverse matrix
+
+The **inverse matrix** $A^{-1}$ satisfies
+
+$$
+A \cdot A^{-1} = A^{-1} \cdot A = E
+$$
+
+It only exists for square matrices with $\det A \neq 0$. Such matrices are called **regular** (invertible, non-singular), matrices with $\det A = 0$ are **singular**. It holds that $(A \cdot B)^{-1} = B^{-1} \cdot A^{-1}$.
+
+### Formula for 2×2 matrices
+
+Swap the diagonal elements, change the sign of the other two elements and divide by the determinant:
+
+$$
+\begin{pmatrix} a & b \\ c & d \end{pmatrix}^{-1} = \frac{1}{ad - bc} \begin{pmatrix} d & -b \\ -c & a \end{pmatrix}
+$$
+
+:::tip[Example]
+$$
+\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}^{-1} = \frac{1}{-2} \begin{pmatrix} 4 & -2 \\ -3 & 1 \end{pmatrix} = \begin{pmatrix} -2 & 1 \\ 1.5 & -0.5 \end{pmatrix}
+$$
+
+Check: $\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \cdot \begin{pmatrix} -2 & 1 \\ 1.5 & -0.5 \end{pmatrix} = \begin{pmatrix} -2 + 3 & 1 - 1 \\ -6 + 6 & 3 - 2 \end{pmatrix} = E$
+:::
+
+### Gauss-Jordan elimination
+
+For larger matrices, write $A$ and the identity matrix side by side, $(A \mid E)$, and apply the row operations of Gaussian elimination until the identity matrix appears on the left. The right-hand side is then $A^{-1}$:
+
+$$
+(A \mid E) \;\longrightarrow\; (E \mid A^{-1})
+$$
+
+:::tip[Example]
+$$
+\left(\begin{array}{cc|cc} 2 & 1 & 1 & 0 \\ 5 & 3 & 0 & 1 \end{array}\right)
+\xrightarrow{\ 2 \cdot \text{II} - 5 \cdot \text{I}\ }
+\left(\begin{array}{cc|cc} 2 & 1 & 1 & 0 \\ 0 & 1 & -5 & 2 \end{array}\right)
+\xrightarrow{\ \text{I} - \text{II}\ }
+\left(\begin{array}{cc|cc} 2 & 0 & 6 & -2 \\ 0 & 1 & -5 & 2 \end{array}\right)
+\xrightarrow{\ \text{I} : 2\ }
+\left(\begin{array}{cc|cc} 1 & 0 & 3 & -1 \\ 0 & 1 & -5 & 2 \end{array}\right)
+$$
+
+So $A^{-1} = \begin{pmatrix} 3 & -1 \\ -5 & 2 \end{pmatrix}$. If a zero row appears on the left during elimination, $A$ is singular and has no inverse.
+:::
+
+## Solving systems with matrices
+
+If $A$ is regular, the solution of $A \cdot \vec{x} = \vec{b}$ is obtained by multiplying from the left by $A^{-1}$:
+
+$$
+A \cdot \vec{x} = \vec{b} \quad\Rightarrow\quad \vec{x} = A^{-1} \cdot \vec{b}
+$$
+
+:::tip[Example]
+$2x + y = 4$ and $5x + 3y = 11$:
+
+$$
+\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 & -1 \\ -5 & 2 \end{pmatrix} \cdot \begin{pmatrix} 4 \\ 11 \end{pmatrix} = \begin{pmatrix} 12 - 11 \\ -20 + 22 \end{pmatrix} = \begin{pmatrix} 1 \\ 2 \end{pmatrix}
+$$
+:::
+
+Using the inverse pays off mainly when the same system has to be solved for many different right-hand sides $\vec{b}$. For a single system, Gaussian elimination is faster and numerically more stable.
+
+## Rank of a matrix
+
+The **rank** $\operatorname{rk}(A)$ is the number of rows that do **not** become zero rows after reducing the matrix to row echelon form. It tells you how many rows (or columns) are linearly independent, i.e. cannot be written as a combination of the others.
+
+:::tip[Example]
+$$
+\begin{pmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \\ 1 & 0 & 1 \end{pmatrix}
+\xrightarrow{\ \text{II} - 2\,\text{I},\ \text{III} - \text{I}\ }
+\begin{pmatrix} 1 & 2 & 3 \\ 0 & 0 & 0 \\ 0 & -2 & -2 \end{pmatrix}
+$$
+
+One zero row appears, so the rank is $2$. The second row is twice the first.
+:::
+
+The rank determines whether a system with $n$ unknowns is solvable (Rouché-Capelli theorem):
+
+| Condition | Solutions |
+| --------- | --------- |
+| $\operatorname{rk}(A) = \operatorname{rk}(A \mid \vec{b}) = n$ | exactly one solution |
+| $\operatorname{rk}(A) = \operatorname{rk}(A \mid \vec{b}) < n$ | infinitely many solutions with $n - \operatorname{rk}(A)$ free parameters |
+| $\operatorname{rk}(A) < \operatorname{rk}(A \mid \vec{b})$ | no solution |
+
+An $n \times n$ matrix is regular if and only if its rank is $n$.
+
+## Matrices in code
+
+Matrix multiplication and Gauss-Jordan elimination are simple loops. When inverting, you choose the element with the largest absolute value in each column as the pivot (**partial pivoting**); this avoids division by $0$ and reduces rounding errors.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+static double[,] Multiply(double[,] a, double[,] b)
+{
+    int rows = a.GetLength(0), inner = a.GetLength(1), cols = b.GetLength(1);
+    if (inner != b.GetLength(0))
+        throw new ArgumentException("Columns of A must equal rows of B");
+    var c = new double[rows, cols];
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            for (int k = 0; k < inner; k++)
+                c[i, j] += a[i, k] * b[k, j];
+    return c;
+}
+
+// Gauss-Jordan with partial pivoting; null if the matrix is singular
+static double[,]? Inverse(double[,] a)
+{
+    int n = a.GetLength(0);
+    var m = new double[n, 2 * n];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++) m[i, j] = a[i, j];
+        m[i, n + i] = 1;
+    }
+    for (int col = 0; col < n; col++)
+    {
+        int pivot = col;
+        for (int r = col + 1; r < n; r++)
+            if (Math.Abs(m[r, col]) > Math.Abs(m[pivot, col])) pivot = r;
+        if (Math.Abs(m[pivot, col]) < 1e-12) return null;
+        for (int j = 0; j < 2 * n; j++) (m[col, j], m[pivot, j]) = (m[pivot, j], m[col, j]);
+        double p = m[col, col];
+        for (int j = 0; j < 2 * n; j++) m[col, j] /= p;
+        for (int r = 0; r < n; r++)
+        {
+            if (r == col) continue;
+            double factor = m[r, col];
+            for (int j = 0; j < 2 * n; j++) m[r, j] -= factor * m[col, j];
+        }
+    }
+    var inv = new double[n, n];
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) inv[i, j] = m[i, n + j];
+    return inv;
+}
+
+static void Print(double[,] m)
+{
+    for (int i = 0; i < m.GetLength(0); i++)
+    {
+        var row = new List<string>();
+        for (int j = 0; j < m.GetLength(1); j++)
+            row.Add((m[i, j] + 0.0).ToString("0.##", CultureInfo.InvariantCulture));
+        Console.WriteLine(string.Join(" ", row));
+    }
+}
+
+double[,] a = { { 1, 2 }, { 3, 4 } };
+double[,] b = { { 2, 0 }, { 1, 3 } };
+Print(Multiply(a, b));        // 4 6 / 10 12
+
+double[,] c = { { 2, 1 }, { 5, 3 } };
+if (Inverse(c) is { } cInv)
+{
+    Print(cInv);              // 3 -1 / -5 2
+    double[,] rhs = { { 4 }, { 11 } };
+    Print(Multiply(cInv, rhs)); // 1 / 2  (solution x = 1, y = 2)
+}
+
+double[,] singular = { { 1, 2 }, { 2, 4 } };
+Console.WriteLine(Inverse(singular) is null ? "singular" : "regular"); // singular
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+type Matrix = Vec<Vec<f64>>;
+
+fn multiply(a: &Matrix, b: &Matrix) -> Option<Matrix> {
+    let inner = b.len();
+    if a.iter().any(|row| row.len() != inner) {
+        return None; // columns of A must equal rows of B
+    }
+    let cols = b.first().map_or(0, |row| row.len());
+    let product = a
+        .iter()
+        .map(|row| {
+            (0..cols)
+                .map(|j| (0..inner).map(|k| row[k] * b[k][j]).sum())
+                .collect()
+        })
+        .collect();
+    Some(product)
+}
+
+/// Gauss-Jordan with partial pivoting; None if the matrix is singular
+fn inverse(a: &Matrix) -> Option<Matrix> {
+    let n = a.len();
+    let mut m: Matrix = a
+        .iter()
+        .enumerate()
+        .map(|(i, row)| {
+            let mut ext = row.clone();
+            ext.extend((0..n).map(|j| if i == j { 1.0 } else { 0.0 }));
+            ext
+        })
+        .collect();
+    for col in 0..n {
+        let pivot = (col..n).max_by(|&x, &y| m[x][col].abs().total_cmp(&m[y][col].abs()))?;
+        if m[pivot][col].abs() < 1e-12 {
+            return None;
+        }
+        m.swap(col, pivot);
+        let p = m[col][col];
+        m[col].iter_mut().for_each(|v| *v /= p);
+        let pivot_row = m[col].clone();
+        for (r, row) in m.iter_mut().enumerate() {
+            if r != col {
+                let factor = row[col];
+                row.iter_mut().zip(&pivot_row).for_each(|(v, pv)| *v -= factor * pv);
+            }
+        }
+    }
+    Some(m.into_iter().map(|row| row[n..].to_vec()).collect())
+}
+
+fn print(m: &Matrix) {
+    for row in m {
+        let cells: Vec<String> = row
+            .iter()
+            .map(|v| format!("{}", (v * 100.0).round() / 100.0 + 0.0))
+            .collect();
+        println!("{}", cells.join(" "));
+    }
+}
+
+fn main() {
+    let a = vec![vec![1.0, 2.0], vec![3.0, 4.0]];
+    let b = vec![vec![2.0, 0.0], vec![1.0, 3.0]];
+    if let Some(ab) = multiply(&a, &b) {
+        print(&ab); // 4 6 / 10 12
+    }
+
+    let c = vec![vec![2.0, 1.0], vec![5.0, 3.0]];
+    if let Some(c_inv) = inverse(&c) {
+        print(&c_inv); // 3 -1 / -5 2
+        let rhs = vec![vec![4.0], vec![11.0]];
+        if let Some(x) = multiply(&c_inv, &rhs) {
+            print(&x); // 1 / 2  (solution x = 1, y = 2)
+        }
+    }
+
+    let singular = vec![vec![1.0, 2.0], vec![2.0, 4.0]];
+    println!("{}", if inverse(&singular).is_none() { "singular" } else { "regular" }); // singular
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Applications
+
+### Transition matrices and Markov chains
+
+At any time a system is in one of several states and changes to other states with fixed probabilities, for example customers moving between mobile network providers. The **transition matrix** $M$ contains these probabilities. On this page, column $j$ shows where state $j$ moves to, so every **column sums to $1$**. With the state vector $\vec{x}_n$ (shares after $n$ steps):
+
+$$
+\vec{x}_{n+1} = M \cdot \vec{x}_n \qquad \vec{x}_n = M^n \cdot \vec{x}_0
+$$
+
+:::note
+Some books write the transitions row by row (each row sums to $1$) and use row vectors: $\vec{x}_{n+1}^{\,T} = \vec{x}_n^{\,T} \cdot M$. Both notations give the same result; the matrices are transposes of each other. Check which one a task uses.
+:::
+
+:::tip[Example: Market shares]
+Of provider A's customers, 80 % stay each year and 20 % switch to B. Of B's customers, 90 % stay and 10 % switch to A. Initially both have a 50 % market share.
+
+$$
+M = \begin{pmatrix} 0.8 & 0.1 \\ 0.2 & 0.9 \end{pmatrix} \qquad
+\vec{x}_1 = M \cdot \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix} = \begin{pmatrix} 0.45 \\ 0.55 \end{pmatrix} \qquad
+\vec{x}_2 = M \cdot \vec{x}_1 = \begin{pmatrix} 0.415 \\ 0.585 \end{pmatrix}
+$$
+
+In the long run a **stationary state** $\vec{x}$ is reached that no longer changes: $M \cdot \vec{x} = \vec{x}$. The first row gives $0.8a + 0.1b = a$, so $b = 2a$. With $a + b = 1$ this yields $a = \frac{1}{3}$ and $b = \frac{2}{3}$: in the long run A has about 33 % and B about 67 % of the market, regardless of the initial state.
+:::
+
+### Leontief model
+
+In Wassily Leontief's **input-output model**, sectors of an economy supply each other. The **input matrix** (technology matrix) $A$ states how many units of sector $i$ are needed to produce one unit in sector $j$. Of the total output $\vec{x}$, the part $A\vec{x}$ is consumed internally and the rest is available as **final demand** $\vec{y}$:
+
+$$
+\vec{x} = A\vec{x} + \vec{y} \quad\Rightarrow\quad (E - A)\,\vec{x} = \vec{y} \quad\Rightarrow\quad \vec{x} = (E - A)^{-1} \, \vec{y}
+$$
+
+:::tip[Example]
+$$
+A = \begin{pmatrix} 0.2 & 0.3 \\ 0.4 & 0.1 \end{pmatrix} \qquad \vec{y} = \begin{pmatrix} 90 \\ 120 \end{pmatrix}
+$$
+
+$$
+E - A = \begin{pmatrix} 0.8 & -0.3 \\ -0.4 & 0.9 \end{pmatrix} \qquad \det(E - A) = 0.72 - 0.12 = 0.6
+$$
+
+$$
+\vec{x} = \frac{1}{0.6} \begin{pmatrix} 0.9 & 0.3 \\ 0.4 & 0.8 \end{pmatrix} \begin{pmatrix} 90 \\ 120 \end{pmatrix} = \frac{1}{0.6} \begin{pmatrix} 117 \\ 132 \end{pmatrix} = \begin{pmatrix} 195 \\ 220 \end{pmatrix}
+$$
+
+Sector 1 has to produce 195 units, sector 2 220 units. Check for sector 1: $195 - 0.2 \cdot 195 - 0.3 \cdot 220 = 195 - 39 - 66 = 90$.
+:::
+
+### Transformations in computer graphics
+
+Every linear mapping of the plane can be written as a $2 \times 2$ matrix that is multiplied by the position vector of a point:
+
+| Mapping | Matrix |
+| ------- | ------ |
+| rotation about the origin by the angle $\varphi$ (anticlockwise) | $R = \begin{pmatrix} \cos\varphi & -\sin\varphi \\ \sin\varphi & \cos\varphi \end{pmatrix}$ |
+| scaling by the factors $s_x$, $s_y$ | $S = \begin{pmatrix} s_x & 0 \\ 0 & s_y \end{pmatrix}$ |
+| reflection in the $x$-axis | $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ |
+| shear in the $x$ direction | $\begin{pmatrix} 1 & k \\ 0 & 1 \end{pmatrix}$ |
+
+A **translation** is not a linear mapping because the origin does not stay fixed. So that all transformations can still be written as matrix products, **homogeneous coordinates** are used: a point $(x \mid y)$ gets a third coordinate $1$ and the matrices become $3 \times 3$:
+
+$$
+T = \begin{pmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{pmatrix} \qquad
+R = \begin{pmatrix} \cos\varphi & -\sin\varphi & 0 \\ \sin\varphi & \cos\varphi & 0 \\ 0 & 0 & 1 \end{pmatrix} \qquad
+T \cdot \begin{pmatrix} x \\ y \\ 1 \end{pmatrix} = \begin{pmatrix} x + t_x \\ y + t_y \\ 1 \end{pmatrix}
+$$
+
+Several transformations are multiplied into **one** matrix. The transformation applied first is on the **right**, because it acts on the point vector first.
+
+:::tip[Example: Rotate, then translate]
+The point $P = (2 \mid 1)$ is rotated by $90°$ and then translated by $3$ in the $x$ direction. With $\cos 90° = 0$ and $\sin 90° = 1$:
+
+$$
+T \cdot R = \begin{pmatrix} 1 & 0 & 3 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{pmatrix} = \begin{pmatrix} 0 & -1 & 3 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{pmatrix} \qquad
+\begin{pmatrix} 0 & -1 & 3 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 2 \\ 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2 \\ 2 \\ 1 \end{pmatrix}
+$$
+
+The image point is $(2 \mid 2)$. In the reverse order (translate first, then rotate) you get $R \cdot T \cdot P = (-1 \mid 5)$, a different point.
+:::
+
+A rotation about an arbitrary point $Z$ consists of three steps: translate $Z$ to the origin, rotate, translate back, i.e. $T(Z) \cdot R \cdot T(-Z)$. In space, $4 \times 4$ matrices are used accordingly. Graphics APIs such as OpenGL, Direct3D and the CSS function `matrix3d()` work exactly like this; the graphics card multiplies millions of vertices per frame by the combined transformation matrix.
+
+## Further reading
+
+- [Gilbert Strang: Introduction to Linear Algebra (MIT OpenCourseWare 18.06)](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/)
+- [Formula collection for the SRDP Angewandte Mathematik (matura.gv.at)](https://www.matura.gv.at/)

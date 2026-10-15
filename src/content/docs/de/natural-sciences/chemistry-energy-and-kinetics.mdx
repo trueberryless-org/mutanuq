@@ -1,0 +1,155 @@
+---
+title: Energie, Geschwindigkeit und Gleichgewicht
+description: Exotherme und endotherme Reaktionen, Enthalpie und Satz von Hess, Aktivierungsenergie und Katalysatoren, Reaktionsgeschwindigkeit, chemisches Gleichgewicht, Le Chatelier und Massenwirkungsgesetz.
+sidebar:
+  order: 35
+---
+
+Jede chemische Reaktion ist mit einem Energieumsatz verbunden. Drei Fragen bestimmen, ob und wie eine Reaktion abläuft: Wird Energie frei oder verbraucht (**Thermodynamik**)? Wie schnell läuft sie ab (**Kinetik**)? Wie weit läuft sie, bevor sich ein **Gleichgewicht** einstellt?
+
+## Exotherme und endotherme Reaktionen
+
+Beim Lösen von Bindungen wird Energie benötigt, beim Bilden von Bindungen wird Energie frei. Die Bilanz entscheidet:
+
+- **Exotherm**: Es wird Energie (meist als Wärme oder Licht) an die Umgebung abgegeben. Die Produkte sind energieärmer als die Edukte. Beispiele: Verbrennung, Neutralisation, Rosten, Zellatmung.
+- **Endotherm**: Es wird Energie aus der Umgebung aufgenommen. Beispiele: Fotosynthese, Kalkbrennen, Elektrolyse von Wasser, Lösen von Ammoniumnitrat in Wasser (Kühlpacks).
+
+### Enthalpie
+
+Die bei konstantem Druck ausgetauschte Wärme heißt **Reaktionsenthalpie** $\Delta_r H$ (Einheit $\mathrm{kJ/mol}$, bezogen auf den Formelumsatz der Gleichung). Das Vorzeichen ist aus Sicht des reagierenden Systems gewählt:
+
+$$
+\Delta_r H < 0 \;\Rightarrow\; \text{exotherm}, \qquad \Delta_r H > 0 \;\Rightarrow\; \text{endotherm}
+$$
+
+$$
+\mathrm{CH_4(g) + 2\,O_2(g) \rightarrow CO_2(g) + 2\,H_2O(l)} \qquad \Delta_r H^\circ = -890\,\mathrm{kJ/mol}
+$$
+
+$$
+\mathrm{CaCO_3(s) \rightarrow CaO(s) + CO_2(g)} \qquad \Delta_r H^\circ = +178\,\mathrm{kJ/mol}
+$$
+
+Der Index $^\circ$ steht für Standardbedingungen ($25\,\mathrm{°C}$, $1\,\mathrm{bar}$).
+
+### Satz von Hess
+
+Die Reaktionsenthalpie hängt nur vom Anfangs- und Endzustand ab, nicht vom Weg (**Satz von Hess**, Energieerhaltung). Deshalb kann man sie aus tabellierten **Standardbildungsenthalpien** $\Delta_f H^\circ$ berechnen; für Elemente in ihrer stabilsten Form ist $\Delta_f H^\circ = 0$.
+
+$$
+\Delta_r H^\circ = \sum \nu \cdot \Delta_f H^\circ(\text{Produkte}) - \sum \nu \cdot \Delta_f H^\circ(\text{Edukte})
+$$
+
+:::tip[Beispiel: Verbrennung von Methan]
+Tabellenwerte in $\mathrm{kJ/mol}$: $\mathrm{CH_4}$ $-74{,}8$; $\mathrm{CO_2}$ $-393{,}5$; $\mathrm{H_2O(l)}$ $-285{,}8$; $\mathrm{O_2}$ $0$.
+
+$$
+\Delta_r H^\circ = \big[-393{,}5 + 2 \cdot (-285{,}8)\big] - \big[-74{,}8 + 2 \cdot 0\big] = -890{,}3\,\mathrm{kJ/mol}
+$$
+
+Pro Kilogramm Methan ($62{,}3\,\mathrm{mol}$) sind das rund $55{,}5\,\mathrm{MJ}$.
+:::
+
+### Entropie und freiwilliger Ablauf
+
+Auch manche endotherme Vorgänge laufen von selbst ab, etwa das Schmelzen von Eis bei Raumtemperatur. Neben der Enthalpie zählt die **Entropie** $S$, ein Maß für die Zahl der möglichen Anordnungen (vereinfacht: die „Unordnung“). Ob eine Reaktion freiwillig abläuft, entscheidet die **freie Enthalpie** (Gibbs-Energie):
+
+$$
+\Delta G = \Delta H - T \cdot \Delta S
+$$
+
+Ist $\Delta G < 0$, läuft die Reaktion freiwillig ab (**exergonisch**), bei $\Delta G > 0$ nicht (**endergonisch**). Freiwillig heißt aber nicht schnell: Holz und Sauerstoff reagieren bei Raumtemperatur praktisch nicht, obwohl $\Delta G$ stark negativ ist.
+
+## Aktivierungsenergie und Katalysatoren
+
+Damit eine Reaktion startet, müssen die Teilchen zuerst eine Energiebarriere überwinden, die **Aktivierungsenergie** $E_A$. Erst dann lösen sich die alten Bindungen weit genug, um einen energiereichen **Übergangszustand** zu bilden. Ein Streichholz liefert diese Energie für das Holz, danach hält die frei werdende Reaktionswärme die Verbrennung am Laufen.
+
+![Energiediagramm einer exothermen Reaktion mit und ohne Katalysator](/images/natural-sciences/activation-energy_de.svg)
+
+Ein **Katalysator** ist ein Stoff, der einen anderen Reaktionsweg mit geringerer Aktivierungsenergie ermöglicht und dabei selbst unverändert bleibt. Er
+
+- beschleunigt Hin- und Rückreaktion gleich stark,
+- ändert **nicht** die Reaktionsenthalpie $\Delta_r H$,
+- ändert **nicht** die Lage des Gleichgewichts, es stellt sich nur schneller ein.
+
+| Katalysator                           | Anwendung                                                                   |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| Platin, Palladium, Rhodium            | **Abgaskatalysator** im Auto: $\mathrm{2\,CO + O_2 \rightarrow 2\,CO_2}$, $\mathrm{2\,NO + 2\,CO \rightarrow N_2 + 2\,CO_2}$ |
+| Eisen (mit Promotoren)                | Haber-Bosch-Verfahren zur Ammoniaksynthese                                  |
+| Vanadium(V)-oxid                      | Schwefelsäureherstellung (Kontaktverfahren)                                 |
+| Platin, Iridium                       | Brennstoffzellen, Elektrolyseure                                            |
+| **Enzyme**                            | Biokatalysatoren in Lebewesen, siehe [Biomoleküle](/de/natural-sciences/biology-biomolecules-and-metabolism/#enzyme) |
+
+## Reaktionsgeschwindigkeit
+
+Die **Reaktionsgeschwindigkeit** ist die Konzentrationsänderung pro Zeit:
+
+$$
+v = \frac{\Delta c}{\Delta t} \quad \text{in } \mathrm{mol/(L \cdot s)}
+$$
+
+Nach der **Stoßtheorie** reagieren Teilchen nur, wenn sie zusammenstoßen, und zwar mit ausreichender Energie und günstiger Orientierung. Daraus folgen die Einflussgrößen:
+
+| Faktor                    | Wirkung                                                                 |
+| ------------------------- | ----------------------------------------------------------------------- |
+| **Konzentration**, Druck  | mehr Teilchen pro Volumen, mehr Zusammenstöße                           |
+| **Temperatur**            | schnellere Teilchen, viel mehr Stöße mit $E \geq E_A$                    |
+| **Zerteilungsgrad**       | größere Oberfläche bei Feststoffen (Mehlstaubexplosion, Eisenwolle brennt) |
+| **Katalysator**           | geringere Aktivierungsenergie                                           |
+
+Die **RGT-Regel** (Reaktionsgeschwindigkeit-Temperatur-Regel, nach van ’t Hoff) besagt als Faustregel: Eine Temperaturerhöhung um $10\,\mathrm{K}$ verdoppelt bis vervierfacht die Reaktionsgeschwindigkeit. Genauer beschreibt das die **Arrhenius-Gleichung** für die Geschwindigkeitskonstante $k$:
+
+$$
+k = A \cdot e^{-\frac{E_A}{R \cdot T}}
+$$
+
+Deshalb halten Lebensmittel im Kühlschrank länger, und deshalb altern Akkus und Elektrolytkondensatoren bei hohen Temperaturen schneller.
+
+## Chemisches Gleichgewicht
+
+Viele Reaktionen laufen nicht vollständig ab, weil auch die Rückreaktion stattfindet:
+
+$$
+\mathrm{N_2 + 3\,H_2 \rightleftharpoons 2\,NH_3} \qquad \Delta_r H^\circ = -92\,\mathrm{kJ/mol}
+$$
+
+Am Anfang überwiegt die Hinreaktion. Mit steigender Produktkonzentration wird die Rückreaktion schneller, bis beide gleich schnell sind. Im **chemischen Gleichgewicht** ändern sich die Konzentrationen nicht mehr, obwohl weiterhin beide Reaktionen ablaufen (**dynamisches Gleichgewicht**). Voraussetzung ist ein geschlossenes System.
+
+### Massenwirkungsgesetz
+
+Für die allgemeine Reaktion $a\,\mathrm{A} + b\,\mathrm{B} \rightleftharpoons c\,\mathrm{C} + d\,\mathrm{D}$ gilt im Gleichgewicht (Guldberg und Waage, 1864):
+
+$$
+K_c = \frac{c(\mathrm{C})^c \cdot c(\mathrm{D})^d}{c(\mathrm{A})^a \cdot c(\mathrm{B})^b}
+$$
+
+Die **Gleichgewichtskonstante** $K_c$ hängt nur von der Temperatur ab. Ist $K_c \gg 1$, liegt das Gleichgewicht auf der Seite der Produkte; ist $K_c \ll 1$, auf der Seite der Edukte. Reine Feststoffe und das Lösungsmittel Wasser werden nicht in die Formel geschrieben.
+
+:::tip[Beispiel: Veresterung]
+Essigsäure reagiert mit Ethanol zu Ethylacetat und Wasser, $K_c \approx 4$. Man setzt je $1\,\mathrm{mol}$ Säure und Alkohol ein. Im Gleichgewicht sind $x$ mol Ester und $x$ mol Wasser entstanden, es bleiben $(1 - x)$ mol Säure und Alkohol (das Volumen kürzt sich heraus):
+
+$$
+\frac{x \cdot x}{(1 - x)(1 - x)} = 4 \;\Rightarrow\; \frac{x}{1 - x} = 2 \;\Rightarrow\; x = \frac{2}{3}
+$$
+
+Höchstens zwei Drittel der Edukte werden zu Ester umgesetzt.
+:::
+
+### Prinzip von Le Chatelier
+
+Das **Prinzip des kleinsten Zwangs** (Le Chatelier, 1884): Übt man einen Zwang auf ein System im Gleichgewicht aus, verschiebt sich das Gleichgewicht so, dass der Zwang verringert wird.
+
+| Zwang                        | Verschiebung                                               | Ammoniaksynthese                     |
+| ---------------------------- | ---------------------------------------------------------- | ------------------------------------ |
+| Konzentration eines Edukts erhöhen / Produkt entfernen | Richtung Produkte                | $\mathrm{NH_3}$ laufend auskondensieren |
+| Druck erhöhen                | zur Seite mit weniger Gasteilchen                           | 4 Teilchen links, 2 rechts: mehr $\mathrm{NH_3}$ |
+| Temperatur erhöhen           | in Richtung der endothermen Reaktion                        | Rückreaktion begünstigt: weniger $\mathrm{NH_3}$ |
+| Katalysator                  | keine Verschiebung, nur schnellere Einstellung              | Eisenkatalysator                     |
+
+Beim **Haber-Bosch-Verfahren** ist das ein Zielkonflikt: Niedrige Temperatur ergibt viel Ammoniak, aber die Reaktion wäre zu langsam. Man arbeitet deshalb bei etwa $400$ bis $500\,\mathrm{°C}$, hohem Druck (rund $150$ bis $300\,\mathrm{bar}$) und mit Katalysator. Ammoniak ist Grundstoff für Stickstoffdünger, ohne den die heutige Weltbevölkerung nicht ernährt werden könnte.
+
+## Weiterführende Quellen
+
+- Peter W. Atkins, Julio de Paula: _Physikalische Chemie_, Wiley-VCH
+- [Chemical Kinetics und Chemical Equilibria](https://chem.libretexts.org/Bookshelves/General_Chemistry) (LibreTexts)
+- [NIST Chemistry WebBook](https://webbook.nist.gov/chemistry/) (Bildungsenthalpien)

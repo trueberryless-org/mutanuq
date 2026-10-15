@@ -1,0 +1,399 @@
+---
+title: CSS
+description: Syntax, Selektoren und Spezifität, Kaskade und Vererbung, Boxmodell, Einheiten, Farben, Typografie, Positionierung, Flexbox, Grid, Responsive Design, Variablen, Animationen und Frameworks.
+sidebar:
+  order: 4
+---
+
+**CSS** (_Cascading Style Sheets_) legt fest, wie HTML-Elemente dargestellt werden: Farben, Schriften, Abstände, Layout und Animationen. Ein Stylesheet kann für viele Seiten gelten, sodass eine Änderung der Hausfarbe an einer Stelle die ganze Website betrifft. CSS wird vom W3C in einzelnen **Modulen** standardisiert (Selectors, Flexbox, Grid, Color usw.), die sich unabhängig weiterentwickeln. Eine Versionsnummer wie „CSS4“ gibt es deshalb nicht.
+
+## Syntax und Einbindung
+
+Eine **Regel** besteht aus einem **Selektor** und einem **Deklarationsblock** mit Paaren aus **Eigenschaft** und **Wert**:
+
+```css
+/* Selektor     Eigenschaft: Wert; */
+h1 {
+  color: #2563eb;
+  font-size: 2rem;
+  margin-block: 0 1rem;
+}
+```
+
+| Art                  | Beispiel                                          | Bewertung                                  |
+| -------------------- | ------------------------------------------------- | ------------------------------------------ |
+| **externes Stylesheet** | `<link rel="stylesheet" href="style.css">` im `<head>` | Standard: wiederverwendbar, vom Browser gecacht |
+| **internes Stylesheet** | `<style> ... </style>` im `<head>`             | für eine einzelne Seite oder kritisches CSS |
+| **Inline-Stil**      | `<p style="color: red">`                           | vermeiden: schwer wartbar, sehr hohe Spezifität |
+
+## Selektoren
+
+| Selektor             | wählt aus                                                               |
+| -------------------- | ----------------------------------------------------------------------- |
+| `*`                  | alle Elemente (**Universalselektor**)                                   |
+| `p`                  | alle `<p>`-Elemente (**Typselektor**)                                   |
+| `.note`           | alle Elemente mit `class="note"` (**Klassenselektor**)                |
+| `#top`              | das Element mit `id="top"` (**ID-Selektor**)                            |
+| `[type="email"]`     | Elemente mit diesem Attributwert (**Attributselektor**). Auch `[href^="https"]` (beginnt mit), `[href$=".pdf"]` (endet mit) |
+| `h1, h2`             | `h1` und `h2` (**Gruppierung**)                                          |
+| `nav a`              | `a` irgendwo innerhalb von `nav` (**Nachfahre**)                          |
+| `ul > li`            | `li`, die direkte Kinder von `ul` sind (**Kind**)                         |
+| `h2 + p`             | das `p` direkt nach einem `h2` (**benachbartes Geschwister**)             |
+| `h2 ~ p`             | alle `p` nach einem `h2` mit demselben Elternelement (**Geschwister**)    |
+| `a:hover`, `:focus`, `:focus-visible` | **Pseudoklassen** für Zustände                         |
+| `li:first-child`, `li:nth-child(2n)`, `:not(.active)` | Pseudoklassen für Position und Logik     |
+| `:is(h1, h2) a`, `:where(...)` | trifft, wenn einer der Selektoren in der Liste passt          |
+| `article:has(img)`   | Elemente, die etwas Bestimmtes enthalten (**Elternselektor**)            |
+| `p::first-line`, `::before`, `::after`, `::placeholder` | **Pseudoelemente**: Teile eines Elements oder erzeugter Inhalt |
+
+## Kaskade
+
+Oft treffen mehrere Regeln mit widersprüchlichen Werten auf dasselbe Element. Die **Kaskade** entscheidet, welche gewinnt. Die Kriterien werden der Reihe nach geprüft, das nächste nur bei Gleichstand:
+
+1. **Herkunft und Wichtigkeit**: Stylesheets des Browsers (_User-Agent_), des Benutzers und des Autors. Normale Autorenregeln schlagen die Browser-Standards. Mit `!important` markierte Deklarationen kehren die Reihenfolge um und gewinnen gegen normale Deklarationen.
+2. **Kaskadenebenen** (`@layer`): Regeln in später deklarierten Ebenen gewinnen. Regeln außerhalb jeder Ebene schlagen alle Ebenen.
+3. **Spezifität**: der genauere Selektor gewinnt.
+4. **Reihenfolge**: Bei gleicher Spezifität gewinnt die Regel, die später im Code steht.
+
+Inline-Stile im `style`-Attribut gewinnen gegen alle Selektoren. `!important` ist ein Notbehelf: Wer es verwendet, braucht später ein weiteres `!important`, um es zu überschreiben.
+
+### Spezifität berechnen
+
+Die **Spezifität** wird als Tripel **(A, B, C)** gezählt:
+
+- **A**: Anzahl der ID-Selektoren
+- **B**: Anzahl der Klassen, Attributselektoren und Pseudoklassen
+- **C**: Anzahl der Typselektoren und Pseudoelemente
+
+Verglichen wird von links nach rechts wie bei einer Versionsnummer, nicht als Dezimalzahl: Eine ID schlägt beliebig viele Klassen. Der Universalselektor `*` und die Kombinatoren (Leerzeichen, `>`, `+`, `~`) zählen nicht. `:where()` hat immer die Spezifität 0, `:is()`, `:not()` und `:has()` zählen so viel wie ihr spezifischstes Argument.
+
+| Selektor                     | A | B | C | Spezifität |
+| ---------------------------- | - | - | - | ---------- |
+| `p`                          | 0 | 0 | 1 | (0, 0, 1)  |
+| `a:hover`                    | 0 | 1 | 1 | (0, 1, 1)  |
+| `ul li.active`                | 0 | 1 | 2 | (0, 1, 2)  |
+| `input[type="email"]:focus`  | 0 | 2 | 1 | (0, 2, 1)  |
+| `nav > ul li a::before`      | 0 | 0 | 5 | (0, 0, 5)  |
+| `#menu .item a`          | 1 | 1 | 1 | (1, 1, 1)  |
+| `:where(#menu) a`           | 0 | 0 | 1 | (0, 0, 1)  |
+
+Beispiel: Welche Farbe hat der Link in `<nav id="menu"><a class="item">`?
+
+```css
+#menu a { color: blue; }      /* (1, 0, 1) */
+nav a.item { color: green; }  /* (0, 1, 2) */
+a.item { color: red; }        /* (0, 1, 1) */
+```
+
+Blau, denn (1, 0, 1) ist größer als (0, 1, 2): Schon die erste Stelle entscheidet.
+
+### Vererbung
+
+Manche Eigenschaften werden an Kindelemente **vererbt**, wenn diese keinen eigenen Wert haben. Das sind vor allem Texteigenschaften: `color`, `font-family`, `font-size`, `font-weight`, `line-height`, `text-align`, `visibility`. Eigenschaften der Box wie `margin`, `padding`, `border`, `background`, `width` werden nicht vererbt. Man setzt die Schrift deshalb einmal bei `body`, und alle Elemente übernehmen sie.
+
+Die Schlüsselwörter `inherit` (Wert des Elternelements übernehmen), `initial` (Anfangswert laut Standard), `unset` (vererben, wenn die Eigenschaft vererbbar ist, sonst `initial`) und `revert` (zurück zum Browser-Standard) funktionieren bei jeder Eigenschaft.
+
+## Boxmodell
+
+Jedes Element ist eine rechteckige **Box** aus vier Schichten, von innen nach außen:
+
+| Schicht       | Bedeutung                                                         |
+| ------------- | ----------------------------------------------------------------- |
+| **Content**   | der Inhalt, Größe über `width` und `height`                        |
+| **Padding**   | Innenabstand zwischen Inhalt und Rahmen, hat die Hintergrundfarbe |
+| **Border**    | Rahmen                                                            |
+| **Margin**    | Außenabstand zu anderen Elementen, immer durchsichtig              |
+
+Mit dem Standardwert `box-sizing: content-box` gilt `width` nur für den Inhalt. Beispiel: `width: 200px; padding: 20px; border: 2px solid` ergibt eine Gesamtbreite von $200 + 2 \cdot 20 + 2 \cdot 2 = 244$ Pixel. Mit `box-sizing: border-box` schließt `width` Padding und Rahmen ein: Die Box ist genau 200 px breit, und für den Inhalt bleiben $200 - 40 - 4 = 156$ Pixel. Weil das intuitiver ist, beginnen die meisten Stylesheets mit:
+
+```css
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+```
+
+Kurzschreibweisen geben Werte im Uhrzeigersinn ab oben an: `margin: 10px 20px 30px 40px` (oben, rechts, unten, links), `margin: 10px 20px` (oben und unten, links und rechts), `margin: 0 auto` zentriert ein Blockelement mit fester Breite horizontal. Die **logischen Eigenschaften** `margin-inline` und `margin-block` beziehen sich auf die Schreibrichtung statt auf links und rechts.
+
+:::note[Margin Collapsing]
+Vertikale Außenabstände benachbarter Blockelemente addieren sich nicht, sondern **fallen zusammen**: Ein Absatz mit `margin-bottom: 20px` gefolgt von einem mit `margin-top: 30px` hat 30 px Abstand, nicht 50 px. In Flex- und Grid-Containern passiert das nicht.
+:::
+
+## Einheiten
+
+| Einheit       | relativ zu                                                         | Einsatz                                       |
+| ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| `px`          | absolut: 1 px ist als 1/96 Zoll definiert, auf hochauflösenden Displays entspricht er mehreren Gerätepixeln | Rahmen, feine Details |
+| `em`          | Schriftgröße des Elements (bei `font-size` selbst: des Elternelements) | Abstände, die mit der Schrift wachsen sollen  |
+| `rem`         | Schriftgröße des Wurzelelements `html` (im Browser standardmäßig 16 px) | Schriftgrößen und Abstände, bevorzugt         |
+| `%`           | meist die Größe des Elternelements                                  | flexible Breiten                              |
+| `vw`, `vh`    | 1 % der Breite bzw. Höhe des Viewports                              | bildschirmfüllende Bereiche                   |
+| `dvh`         | 1 % der dynamischen Viewport-Höhe (berücksichtigt ein- und ausfahrende Browserleisten am Handy) | Vollbildbereiche auf Mobilgeräten |
+| `ch`          | Breite der Ziffer „0“ der Schrift                                   | Zeilenlänge, etwa `max-width: 65ch`           |
+| `fr`          | Anteil am freien Platz in einem Grid                                | Grid-Spalten                                  |
+
+Beispiel: Bei `html { font-size: 16px }` ist `1.5rem` = 24 px. Ein Element mit `font-size: 20px` und `padding: 2em` hat 40 px Innenabstand. `em` vervielfacht sich bei Verschachtelung (eine Liste mit `font-size: 1.2em` in einer solchen Liste hat das 1,44-fache), `rem` nicht. Verwendet man `rem` für Schriften, respektiert die Seite die im Browser eingestellte Schriftgröße, was für sehbehinderte Menschen wichtig ist.
+
+Die Funktionen `calc(100% - 2rem)`, `min()`, `max()` und `clamp(1rem, 2.5vw, 2rem)` (Minimum, bevorzugter Wert, Maximum) rechnen mit gemischten Einheiten.
+
+## Farben
+
+```css
+.box {
+  color: rebeccapurple;               /* Name, 148 sind definiert */
+  color: #2563eb;                      /* hexadezimal RRGGBB */
+  color: #2563eb80;                    /* mit Alpha (80 hex = 50 %) */
+  color: rgb(37 99 235);               /* Rot, Grün, Blau je 0 bis 255 */
+  color: rgb(37 99 235 / 0.5);         /* mit Deckkraft */
+  color: hsl(221 83% 53%);             /* Farbton (Grad), Sättigung, Helligkeit */
+  color: oklch(55% 0.2 260);           /* wahrnehmungsgleichmäßiger Farbraum */
+  background-color: transparent;
+}
+```
+
+HSL ist für Menschen leichter zu verändern: Eine hellere Variante entsteht durch Erhöhen der Helligkeit. Text muss sich ausreichend vom Hintergrund abheben. WCAG verlangt auf Stufe AA ein **Kontrastverhältnis** von mindestens 4,5 : 1 für normalen Text (siehe [Barrierefreiheit](/de/web-technologies/web-accessibility-and-seo/#wahrnehmbar)).
+
+## Typografie
+
+```css
+body {
+  font-family: "Inter", system-ui, sans-serif;  /* Ersatzschriften als Fallback */
+  font-size: 1rem;
+  line-height: 1.5;          /* ohne Einheit: Vielfaches der Schriftgröße */
+  color: #1f2937;
+}
+h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; }
+p  { max-width: 65ch; text-align: left; }
+a  { text-decoration: underline; text-underline-offset: 0.2em; }
+```
+
+Eigene Schriften bindet `@font-face` ein (Format WOFF2). Bindet man Schriften von fremden Servern wie Google Fonts direkt ein, überträgt der Browser die IP-Adresse der Besucher an diese Server. Ein deutsches Gericht (LG München I, 2022) wertete das als Verstoß gegen die DSGVO, deshalb hostet man Schriften besser selbst.
+
+## Display
+
+| Wert           | Verhalten                                                                         |
+| -------------- | --------------------------------------------------------------------------------- |
+| `block`        | beginnt in neuer Zeile, nimmt die volle Breite ein, `width` und `height` wirken (`div`, `p`, `h1`) |
+| `inline`       | fließt im Text, `width`, `height` und vertikale Margins wirken nicht (`span`, `a`, `strong`) |
+| `inline-block` | fließt im Text, aber Größe und Abstände wirken                                    |
+| `none`         | Element wird nicht dargestellt und nimmt keinen Platz ein                          |
+| `flex`, `grid` | Element wird zum Flex- bzw. Grid-Container für seine Kinder                       |
+
+`visibility: hidden` versteckt ein Element ebenfalls, es behält aber seinen Platz.
+
+## Positionierung
+
+| `position`  | Verhalten                                                                                 |
+| ----------- | ----------------------------------------------------------------------------------------- |
+| `static`    | Standard: normaler Fluss, `top`, `left` usw. wirken nicht                                   |
+| `relative`  | verschoben relativ zur eigenen normalen Position, der ursprüngliche Platz bleibt reserviert. Dient oft nur als Bezugspunkt für absolute Kinder |
+| `absolute`  | aus dem Fluss genommen, positioniert relativ zum nächsten **positionierten Vorfahren** (nicht `static`), sonst zum Dokument |
+| `fixed`     | aus dem Fluss genommen, relativ zum Viewport, scrollt nicht mit (Cookie-Banner, Chat-Knopf) |
+| `sticky`    | verhält sich normal, bis beim Scrollen ein Schwellwert wie `top: 0` erreicht ist, dann bleibt es haften (Tabellenköpfe, Navigation) |
+
+```css
+.card { position: relative; }
+.card .badge {          /* Abzeichen in der rechten oberen Ecke der Karte */
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+.site-header { position: sticky; top: 0; z-index: 10; }
+```
+
+`z-index` legt fest, welches Element bei Überlappung oben liegt. Es wirkt nur bei positionierten Elementen sowie bei Flex- und Grid-Kindern, und nur innerhalb desselben **Stapelkontexts**.
+
+## Flexbox
+
+**Flexbox** ordnet Elemente in **einer Dimension** an, als Zeile oder Spalte. Der Container erhält `display: flex`, seine direkten Kinder werden zu **Flex-Items**. Die **Hauptachse** folgt `flex-direction`, die **Querachse** steht senkrecht dazu.
+
+| Eigenschaft (Container) | Bedeutung                                                                   |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `flex-direction`        | `row` (Standard), `column`, `row-reverse`, `column-reverse`                  |
+| `justify-content`       | Verteilung entlang der **Hauptachse**: `flex-start`, `center`, `space-between`, `space-around`, `space-evenly` |
+| `align-items`           | Ausrichtung entlang der **Querachse**: `stretch` (Standard), `center`, `flex-start`, `baseline` |
+| `flex-wrap`             | `wrap` erlaubt Umbruch in mehrere Zeilen                                    |
+| `gap`                   | Abstand zwischen den Items                                                  |
+
+| Eigenschaft (Item)      | Bedeutung                                                                   |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `flex-grow`             | Anteil am **freien** Platz, den das Item zusätzlich bekommt                  |
+| `flex-shrink`           | wie stark das Item bei Platzmangel schrumpft                                 |
+| `flex-basis`            | Ausgangsgröße vor dem Verteilen                                              |
+| `flex: 1`               | Kurzform für `1 1 0%`: alle Items mit `flex: 1` werden gleich breit          |
+| `align-self`, `order`   | eigene Ausrichtung, Reihenfolge                                               |
+
+Beispiel: eine Navigationsleiste mit Logo links und Links rechts, alles vertikal zentriert, sowie eine Karte mit Fußzeile ganz unten.
+
+```css
+.navbar {
+  display: flex;
+  justify-content: space-between;  /* Logo links, Menü rechts */
+  align-items: center;             /* vertikal zentriert */
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+}
+.navbar ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+.card .content { flex: 1; }        /* füllt den Platz, Fußzeile rutscht nach unten */
+
+.centered {                       /* ein Element in beiden Richtungen zentrieren */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+}
+```
+
+## Grid
+
+**CSS Grid** ordnet Elemente in **zwei Dimensionen** an, in Zeilen und Spalten gleichzeitig. Es eignet sich für das Seitenlayout und für Kachelansichten, Flexbox für Anordnungen in einer Reihe.
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* drei gleich breite Spalten */
+  gap: 1rem;
+}
+.gallery .wide {
+  grid-column: span 2;                     /* über zwei Spalten */
+}
+```
+
+`1fr` ist ein Bruchteil des freien Platzes. `grid-template-columns: 200px 1fr 2fr` bei 1000 px Breite und ohne Lücken ergibt 200 px, dann teilen sich die restlichen 800 px im Verhältnis 1 : 2 auf, also 266,67 px und 533,33 px.
+
+Ein **responsives Kachelraster ohne Media Query**: Es passen so viele Spalten hinein, wie mindestens 15rem breit sein können.
+
+```css
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+}
+```
+
+Ein **Seitenlayout mit benannten Bereichen** (`grid-template-areas`): Jede Zeichenkette ist eine Zeile, gleiche Namen bilden einen Bereich.
+
+```css
+body {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header"
+    "nav    main"
+    "footer footer";
+  min-height: 100dvh;
+}
+header { grid-area: header; }
+nav    { grid-area: nav; }
+main   { grid-area: main; }
+footer { grid-area: footer; }
+```
+
+## Responsive Design
+
+Eine **responsive** Website passt ihr Layout an die Bildschirmgröße an, statt eine eigene Mobilversion zu haben. Die Bausteine sind das Viewport-Meta-Tag im HTML, flexible Einheiten, flexible Bilder (`img { max-width: 100%; height: auto; }`) und **Media Queries**:
+
+```css
+/* Mobile First: Grundregeln gelten für schmale Bildschirme */
+body {
+  grid-template-columns: 1fr;
+  grid-template-areas: "header" "main" "nav" "footer";
+}
+
+/* ab 48rem (768 px bei 16 px Schriftgröße): Navigation neben dem Inhalt */
+@media (min-width: 48rem) {
+  body {
+    grid-template-columns: 15rem 1fr;
+    grid-template-areas:
+      "header header"
+      "nav    main"
+      "footer footer";
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root { --background: #111827; --text: #f9fafb; }
+}
+
+@media print {
+  nav, footer { display: none; }
+}
+```
+
+Bei **Mobile First** schreibt man zuerst das Layout für kleine Bildschirme und erweitert es mit `min-width`-Abfragen. Das ergibt einfacheres CSS, weil das einspaltige Layout das einfachste ist, und zwingt dazu, sich auf das Wesentliche zu konzentrieren. Die Umbruchpunkte (_Breakpoints_) richtet man nach dem Inhalt, nicht nach bestimmten Geräten. **Container Queries** (`@container`) reagieren auf die Breite des umgebenden Containers statt des Viewports, sodass sich eine Komponente überall richtig anpasst.
+
+## Benutzerdefinierte Eigenschaften
+
+**CSS-Variablen** (_Custom Properties_) beginnen mit `--`, werden mit `var()` gelesen und vererbt. Anders als Variablen in Präprozessoren existieren sie zur Laufzeit im Browser und lassen sich mit Media Queries und JavaScript ändern.
+
+```css
+:root {
+  --color-primary: #2563eb;
+  --spacing: 1rem;
+  --radius: 0.5rem;
+}
+.button {
+  background: var(--color-primary);
+  padding: calc(var(--spacing) / 2) var(--spacing);
+  border-radius: var(--radius);
+  color: var(--text-on-primary, white);   /* Ersatzwert, falls nicht definiert */
+}
+.warning { --color-primary: #d97706; }      /* gilt für alle Buttons darin */
+```
+
+## Übergänge und Animationen
+
+**Transitions** animieren den Wechsel zwischen zwei Zuständen, etwa beim Überfahren mit der Maus. **Animationen** mit `@keyframes` laufen selbstständig ab.
+
+```css
+.button {
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+.button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  50%  { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Rücksicht auf Menschen, die Bewegung im Betriebssystem reduziert haben */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+```
+
+Flüssig laufen vor allem Animationen von `transform` und `opacity`, weil der Browser dafür kein neues Layout berechnen muss.
+
+## Präprozessoren und Frameworks
+
+| Werkzeug       | Ansatz                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------- |
+| **Sass/SCSS**  | **Präprozessor**: erweitert CSS um Variablen (`$color`), Verschachtelung, Mixins, Funktionen und Module, wird beim Bauen zu CSS übersetzt. Verschachtelung und Variablen kann modernes CSS inzwischen selbst |
+| **Tailwind CSS** | **Utility-First**: Statt eigener Klassen setzt man viele kleine Hilfsklassen direkt im HTML, etwa `class="flex items-center gap-4 p-2 text-blue-600"`. Nicht verwendete Klassen werden beim Bauen entfernt |
+| **Bootstrap**  | **Komponenten-Framework** (ursprünglich von Twitter, 2011): fertige Komponenten (Navbar, Buttons, Karten, Formulare, Modale) und ein 12-spaltiges responsives Rastersystem |
+| **PostCSS**    | Werkzeug, das CSS mit Plugins verarbeitet, etwa um Herstellerpräfixe für ältere Browser zu ergänzen (Autoprefixer) |
+
+Frameworks sparen Zeit und sorgen für Einheitlichkeit, bringen aber ein typisches Aussehen und eigene Konzepte mit, die man lernen muss. Wer CSS selbst versteht, kann jedes Framework schnell anpassen.
+
+## Weiterführende Quellen
+
+- [CSS](https://developer.mozilla.org/de/docs/Web/CSS) (MDN Web Docs)
+- [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) und [A Complete Guide to CSS Grid](https://css-tricks.com/snippets/css/complete-guide-grid/) (CSS-Tricks)
+- [Learn CSS](https://web.dev/learn/css) (web.dev, Google)

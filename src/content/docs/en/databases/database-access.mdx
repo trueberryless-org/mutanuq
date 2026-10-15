@@ -1,0 +1,549 @@
+---
+title: Database Access from Programs
+description: Connections, commands and parameters with ADO.NET and rusqlite, mapping to objects, the repository pattern, Entity Framework Core with LINQ, migrations, loading strategies and the N+1 problem.
+sidebar:
+  order: 11
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Applications access the database through a **programming interface**. There are two basic approaches: the program writes SQL itself and reads the results row by row (**direct access**), or an **object-relational mapper** (ORM) translates between objects and tables. Both are shown here with C# and Rust. The examples use in-memory SQLite so that they run without a database server. For PostgreSQL or SQL Server, only the driver and the connection string change.
+
+## Drivers and connections
+
+A **database driver** translates the program's calls into the network protocol of the respective database system.
+
+| Platform  | Interface                           | Drivers (examples)                                                      |
+| --------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| .NET      | ADO.NET (`DbConnection`, `DbCommand`, `DbDataReader`) | `Microsoft.Data.Sqlite`, `Npgsql` (PostgreSQL), `Microsoft.Data.SqlClient` (SQL Server), `MySqlConnector` |
+| Rust      | each driver has its own API, a common interface in `sqlx` | `rusqlite` (SQLite), `postgres` and `tokio-postgres`, `sqlx` (several systems) |
+| Java      | JDBC                                | vendor-specific JDBC drivers                                            |
+| general   | ODBC                                | drivers for almost every system, especially on Windows                  |
+
+A **connection string** contains the server, database and user, for example `Host=db.school.at;Database=school;Username=app` for PostgreSQL. The program only adds the password at run time from an environment variable or a secret store (in .NET, for example, _user secrets_ during development). It does not belong in the source code or in version control.
+
+Establishing a connection is expensive: TCP connection, TLS handshake, login. Drivers therefore keep a **connection pool**: after `Close` or `Dispose`, the connection is not really closed but kept for the next request. Open connections as late as possible and close them as early as possible. The pool takes care of reuse.
+
+## Direct access
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Data.Sqlite;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+
+var create = connection.CreateCommand();
+create.CommandText = """
+    CREATE TABLE Class (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL UNIQUE);
+    CREATE TABLE Student (Id INTEGER PRIMARY KEY, FirstName TEXT NOT NULL,
+                           LastName TEXT NOT NULL, ClassId INTEGER REFERENCES Class(Id));
+    INSERT INTO Class (Name) VALUES ('3AHIT'), ('4AHIT');
+    """;
+create.ExecuteNonQuery();
+
+// insert with parameters and return the new Id
+var insert = connection.CreateCommand();
+insert.CommandText = """
+    INSERT INTO Student (FirstName, LastName, ClassId) VALUES ($firstName, $lastName, $class)
+    RETURNING Id
+    """;
+insert.Parameters.Add("$firstName", SqliteType.Text);
+insert.Parameters.Add("$lastName", SqliteType.Text);
+insert.Parameters.Add("$class", SqliteType.Integer);
+
+foreach (var (firstName, lastName, classId) in new[] { ("Anna", "Huber", 1), ("Ben", "Wolf", 1), ("Clara", "Berger", 2) })
+{
+    insert.Parameters["$firstName"].Value = firstName;
+    insert.Parameters["$lastName"].Value = lastName;
+    insert.Parameters["$class"].Value = classId;
+    long id = (long)insert.ExecuteScalar()!;
+    Console.WriteLine($"{firstName} has the Id {id}");
+}
+
+// a single value
+var count = connection.CreateCommand();
+count.CommandText = "SELECT COUNT(*) FROM Student";
+Console.WriteLine($"Count: {(long)count.ExecuteScalar()!}");
+
+// several rows with a DataReader
+var query = connection.CreateCommand();
+query.CommandText = """
+    SELECT s.FirstName, s.LastName, c.Name
+    FROM Student s JOIN Class c ON c.Id = s.ClassId
+    WHERE c.Name = $class
+    ORDER BY s.LastName
+    """;
+query.Parameters.AddWithValue("$class", "3AHIT");
+using var reader = query.ExecuteReader();
+while (reader.Read())
+{
+    Console.WriteLine($"{reader.GetString(0)} {reader.GetString(1)} ({reader.GetString(2)})");
+}
+// Output:
+// Anna has the Id 1
+// Ben has the Id 2
+// Clara has the Id 3
+// Count: 3
+// Anna Huber (3AHIT)
+// Ben Wolf (3AHIT)
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rusqlite::{Connection, Result, params};
+
+fn main() -> Result<()> {
+    let conn = Connection::open_in_memory()?;
+    conn.execute_batch(
+        "CREATE TABLE Class (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL UNIQUE);
+         CREATE TABLE Student (Id INTEGER PRIMARY KEY, FirstName TEXT NOT NULL,
+                                LastName TEXT NOT NULL, ClassId INTEGER REFERENCES Class(Id));
+         INSERT INTO Class (Name) VALUES ('3AHIT'), ('4AHIT');",
+    )?;
+
+    // prepare the statement once, execute it several times
+    let mut insert = conn.prepare(
+        "INSERT INTO Student (FirstName, LastName, ClassId) VALUES (?1, ?2, ?3)",
+    )?;
+    for (first_name, last_name, class_id) in [("Anna", "Huber", 1), ("Ben", "Wolf", 1), ("Clara", "Berger", 2)] {
+        insert.execute(params![first_name, last_name, class_id])?;
+        println!("{first_name} has the Id {}", conn.last_insert_rowid());
+    }
+
+    // a single value
+    let count: i64 = conn.query_row("SELECT COUNT(*) FROM Student", [], |row| row.get(0))?;
+    println!("Count: {count}");
+
+    // several rows
+    let mut query = conn.prepare(
+        "SELECT s.FirstName, s.LastName, c.Name
+         FROM Student s JOIN Class c ON c.Id = s.ClassId
+         WHERE c.Name = ?1
+         ORDER BY s.LastName",
+    )?;
+    let rows = query.query_map(params!["3AHIT"], |row| {
+        Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?, row.get::<_, String>(2)?))
+    })?;
+    for row in rows {
+        let (first_name, last_name, class_name) = row?;
+        println!("{first_name} {last_name} ({class_name})");
+    }
+    Ok(())
+}
+// Output:
+// Anna has the Id 1
+// Ben has the Id 2
+// Clara has the Id 3
+// Count: 3
+// Anna Huber (3AHIT)
+// Ben Wolf (3AHIT)
+```
+
+</TabItem>
+</Tabs>
+
+| Task                            | ADO.NET                 | rusqlite                           |
+| ------------------------------- | ----------------------- | ---------------------------------- |
+| statement without a result      | `ExecuteNonQuery()` returns the number of changed rows | `execute()` likewise |
+| a single value                  | `ExecuteScalar()`       | `query_row()`                      |
+| several rows                    | `ExecuteReader()` and `Read()` in a loop | `query_map()` returns an iterator |
+| several statements without parameters | `ExecuteNonQuery()` with several statements | `execute_batch()`        |
+| transaction                     | `BeginTransaction()`    | `transaction()`                    |
+
+Values **always** get into the statement as parameters, never by assembling text. Otherwise, the program is vulnerable to [SQL injection](/en/databases/database-security/#sql-injection). In addition, a prepared statement that is executed several times with different parameters only has to be compiled once.
+
+Server and web applications use the asynchronous variants (`OpenAsync`, `ExecuteReaderAsync`, `ReadAsync` in .NET, `sqlx` or `tokio-postgres` in Rust) so that a thread is not blocked while waiting for the database (see [Concurrency](/en/software-development/concurrency/)).
+
+## Mapping to objects
+
+Programs work with objects, databases with tables. With direct access, every row is converted into an object by hand. So that SQL does not spread across the whole program, access is encapsulated in a **repository**: a class that offers methods such as `FindByClass` or `Add` and runs SQL internally. The rest of the code only knows the repository and its interface, can replace it with a fake in tests and knows nothing about the database (see [Software Architecture](/en/software-development/software-architecture/)).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Data.Sqlite;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+var students = new StudentRepository(connection);
+students.CreateSchema();
+students.Add(new Student(0, "Anna", "Huber", "3AHIT"));
+students.Add(new Student(0, "Ben", "Wolf", "3AHIT"));
+students.Add(new Student(0, "Clara", "Berger", "4AHIT"));
+
+foreach (var student in students.FindByClass("3AHIT"))
+{
+    Console.WriteLine(student);
+}
+// Output:
+// Student { Id = 1, FirstName = Anna, LastName = Huber, ClassName = 3AHIT }
+// Student { Id = 2, FirstName = Ben, LastName = Wolf, ClassName = 3AHIT }
+
+public record Student(long Id, string FirstName, string LastName, string ClassName);
+
+public class StudentRepository(SqliteConnection connection)
+{
+    public void CreateSchema()
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = """
+            CREATE TABLE Student (Id INTEGER PRIMARY KEY, FirstName TEXT NOT NULL,
+                                   LastName TEXT NOT NULL, Class TEXT NOT NULL)
+            """;
+        command.ExecuteNonQuery();
+    }
+
+    public long Add(Student student)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = """
+            INSERT INTO Student (FirstName, LastName, Class) VALUES ($first, $last, $class)
+            RETURNING Id
+            """;
+        command.Parameters.AddWithValue("$first", student.FirstName);
+        command.Parameters.AddWithValue("$last", student.LastName);
+        command.Parameters.AddWithValue("$class", student.ClassName);
+        return (long)command.ExecuteScalar()!;
+    }
+
+    public List<Student> FindByClass(string className)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT Id, FirstName, LastName, Class FROM Student WHERE Class = $class ORDER BY Id";
+        command.Parameters.AddWithValue("$class", className);
+        using var reader = command.ExecuteReader();
+        var result = new List<Student>();
+        while (reader.Read())
+        {
+            result.Add(new Student(reader.GetInt64(0), reader.GetString(1), reader.GetString(2), reader.GetString(3)));
+        }
+        return result;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rusqlite::{Connection, Result, Row, params};
+
+#[derive(Debug)]
+pub struct Student {
+    pub id: i64,
+    pub first_name: String,
+    pub last_name: String,
+    pub class_name: String,
+}
+
+impl Student {
+    fn from_row(row: &Row) -> Result<Self> {
+        Ok(Student {
+            id: row.get(0)?,
+            first_name: row.get(1)?,
+            last_name: row.get(2)?,
+            class_name: row.get(3)?,
+        })
+    }
+}
+
+pub struct StudentRepository<'a> {
+    conn: &'a Connection,
+}
+
+impl<'a> StudentRepository<'a> {
+    pub fn new(conn: &'a Connection) -> Self {
+        StudentRepository { conn }
+    }
+
+    pub fn create_schema(&self) -> Result<()> {
+        self.conn.execute_batch(
+            "CREATE TABLE Student (Id INTEGER PRIMARY KEY, FirstName TEXT NOT NULL,
+                                    LastName TEXT NOT NULL, Class TEXT NOT NULL)",
+        )
+    }
+
+    pub fn add(&self, first_name: &str, last_name: &str, class_name: &str) -> Result<i64> {
+        self.conn.execute(
+            "INSERT INTO Student (FirstName, LastName, Class) VALUES (?1, ?2, ?3)",
+            params![first_name, last_name, class_name],
+        )?;
+        Ok(self.conn.last_insert_rowid())
+    }
+
+    pub fn find_by_class(&self, class_name: &str) -> Result<Vec<Student>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT Id, FirstName, LastName, Class FROM Student WHERE Class = ?1 ORDER BY Id",
+        )?;
+        let students = stmt.query_map(params![class_name], Student::from_row)?;
+        students.collect()
+    }
+}
+
+fn main() -> Result<()> {
+    let conn = Connection::open_in_memory()?;
+    let students = StudentRepository::new(&conn);
+    students.create_schema()?;
+    students.add("Anna", "Huber", "3AHIT")?;
+    students.add("Ben", "Wolf", "3AHIT")?;
+    students.add("Clara", "Berger", "4AHIT")?;
+
+    for student in students.find_by_class("3AHIT")? {
+        println!("{student:?}");
+    }
+    Ok(())
+}
+// Output:
+// Student { id: 1, first_name: "Anna", last_name: "Huber", class_name: "3AHIT" }
+// Student { id: 2, first_name: "Ben", last_name: "Wolf", class_name: "3AHIT" }
+```
+
+</TabItem>
+</Tabs>
+
+**Micro-ORMs** such as Dapper (.NET) or the `FromRow` derive of `sqlx` (Rust) take over this mapping of columns to fields automatically, but you still write the SQL yourself.
+
+## Object-relational mappers
+
+There are fundamental differences between objects and tables, the so-called **object-relational impedance mismatch**:
+
+| Object-oriented                           | Relational                                               |
+| ----------------------------------------- | -------------------------------------------------------- |
+| objects refer to each other through references | rows refer to each other through foreign key values |
+| lists as a property (`schoolClass.Students`) | the relationship is stored on the n side (`Student.ClassId`); n:m needs a junction table |
+| inheritance                               | no inheritance, [three mapping strategies](/en/databases/data-modelling/#from-the-er-model-to-tables) |
+| identity through the memory address       | identity through the primary key                         |
+| navigation from object to object          | joins in a query                                         |
+
+An **ORM** bridges these differences: it generates the schema from classes, translates queries into SQL, converts results into objects and keeps track of which objects have been changed. In .NET, **Entity Framework Core** is the standard, in Java JPA with Hibernate. In Rust, **Diesel** (queries are checked at compile time), **SeaORM** and the query-oriented **sqlx** are widespread.
+
+## Entity Framework Core
+
+Entity Framework Core (EF Core) maps classes to tables. The central class is the **`DbContext`**: it represents the connection, contains a `DbSet<T>` for every table and tracks changes to loaded objects (_change tracking_). With `SaveChanges`, it writes all changes to the database in one transaction.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: standalone */}
+```csharp
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+var options = new DbContextOptionsBuilder<SchoolContext>().UseSqlite(connection).Options;
+
+using (var db = new SchoolContext(options))
+{
+    db.Database.EnsureCreated();   // create the schema from the classes
+
+    var c3 = new SchoolClass { Name = "3AHIT" };
+    c3.Students.Add(new Student { FirstName = "Anna", LastName = "Huber" });
+    c3.Students.Add(new Student { FirstName = "Ben", LastName = "Wolf" });
+    var c4 = new SchoolClass { Name = "4AHIT" };
+    c4.Students.Add(new Student { FirstName = "Clara", LastName = "Berger" });
+
+    db.Classes.AddRange(c3, c4);
+    int changes = db.SaveChanges();   // INSERTs in one transaction
+    Console.WriteLine($"{changes} rows saved");
+}
+
+using (var db = new SchoolContext(options))
+{
+    // LINQ is translated into SQL
+    var names = db.Students
+        .Where(s => s.SchoolClass!.Name == "3AHIT")
+        .OrderBy(s => s.LastName)
+        .Select(s => s.FirstName + " " + s.LastName)
+        .ToList();
+    Console.WriteLine(string.Join(", ", names));
+
+    // load relationships with Include
+    foreach (var c in db.Classes.Include(c => c.Students).OrderBy(c => c.Name))
+    {
+        Console.WriteLine($"{c.Name}: {c.Students.Count} student(s)");
+    }
+
+    // change: load the object, set the property, save
+    var ben = db.Students.Single(s => s.FirstName == "Ben");
+    ben.LastName = "Wolff";
+    db.SaveChanges();   // UPDATE only for the changed column
+
+    // delete
+    db.Students.Remove(db.Students.Single(s => s.FirstName == "Clara"));
+    db.SaveChanges();
+    Console.WriteLine($"{db.Students.Count()} students left");
+}
+
+public class SchoolClass
+{
+    public int Id { get; set; }                       // convention: Id becomes the primary key
+    public required string Name { get; set; }
+    public List<Student> Students { get; } = [];      // 1:n relationship
+}
+
+public class Student
+{
+    public int Id { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public int SchoolClassId { get; set; }            // convention: foreign key
+    public SchoolClass? SchoolClass { get; set; }     // navigation property
+}
+
+public class SchoolContext(DbContextOptions<SchoolContext> options) : DbContext(options)
+{
+    public DbSet<SchoolClass> Classes => Set<SchoolClass>();
+    public DbSet<Student> Students => Set<Student>();
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        model.Entity<SchoolClass>().ToTable("Class").HasIndex(c => c.Name).IsUnique();
+        model.Entity<Student>().ToTable("Student");
+        model.Entity<Student>().Property(s => s.LastName).HasMaxLength(50);
+    }
+}
+// Output:
+// 5 rows saved
+// Anna Huber, Ben Wolf
+// 3AHIT: 2 student(s)
+// 4AHIT: 1 student(s)
+// 2 students left
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: standalone */}
+```rust
+use rusqlite::{Connection, Result, params};
+
+// Without an ORM, you build the object structure yourself from a join.
+#[derive(Debug)]
+struct Student {
+    first_name: String,
+    last_name: String,
+}
+
+#[derive(Debug)]
+struct SchoolClass {
+    name: String,
+    students: Vec<Student>,
+}
+
+fn load_classes(conn: &Connection) -> Result<Vec<SchoolClass>> {
+    let mut stmt = conn.prepare(
+        "SELECT c.Name, s.FirstName, s.LastName
+         FROM Class c LEFT JOIN Student s ON s.ClassId = c.Id
+         ORDER BY c.Name, s.LastName",
+    )?;
+    let mut rows = stmt.query([])?;
+    let mut classes: Vec<SchoolClass> = Vec::new();
+    while let Some(row) = rows.next()? {
+        let name: String = row.get(0)?;
+        if classes.last().map(|c| c.name != name).unwrap_or(true) {
+            classes.push(SchoolClass { name, students: Vec::new() });
+        }
+        // LEFT JOIN: classes without students return NULL
+        if let Some(first_name) = row.get::<_, Option<String>>(1)? {
+            let last_name = row.get(2)?;
+            classes.last_mut().unwrap().students.push(Student { first_name, last_name });
+        }
+    }
+    Ok(classes)
+}
+
+fn main() -> Result<()> {
+    let conn = Connection::open_in_memory()?;
+    conn.execute_batch(
+        "CREATE TABLE Class (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL UNIQUE);
+         CREATE TABLE Student (Id INTEGER PRIMARY KEY, FirstName TEXT NOT NULL,
+                                LastName TEXT NOT NULL, ClassId INTEGER NOT NULL REFERENCES Class(Id));
+         INSERT INTO Class (Name) VALUES ('3AHIT'), ('4AHIT');
+         INSERT INTO Student (FirstName, LastName, ClassId)
+         VALUES ('Anna', 'Huber', 1), ('Ben', 'Wolf', 1), ('Clara', 'Berger', 2);",
+    )?;
+
+    for class in load_classes(&conn)? {
+        let names: Vec<String> = class.students.iter()
+            .map(|s| format!("{} {}", s.first_name, s.last_name))
+            .collect();
+        println!("{}: {}", class.name, names.join(", "));
+    }
+
+    conn.execute("UPDATE Student SET LastName = ?1 WHERE FirstName = ?2", params!["Wolff", "Ben"])?;
+    conn.execute("DELETE FROM Student WHERE FirstName = ?1", params!["Clara"])?;
+    let count: i64 = conn.query_row("SELECT COUNT(*) FROM Student", [], |row| row.get(0))?;
+    println!("{count} students left");
+    Ok(())
+}
+// Output:
+// 3AHIT: Anna Huber, Ben Wolf
+// 4AHIT: Clara Berger
+// 2 students left
+```
+
+</TabItem>
+</Tabs>
+
+The Rust example shows what an ORM does in the background: run the join and assemble the flat rows into nested objects. Diesel and SeaORM offer their own query languages for this, but the structure remains similar.
+
+### Configuration
+
+EF Core derives the schema from **conventions**: a property `Id` or the class name plus `Id` (`StudentId` in `Student`) becomes the primary key, `SchoolClassId` together with the navigation property `SchoolClass` becomes a foreign key, and `string` without `?` becomes `NOT NULL`. Anything that deviates from this is specified with **attributes** on the class (`[Key]`, `[MaxLength(50)]`, `[Required]`, `[Table("Student")]`) or with the **Fluent API** in `OnModelCreating`. The Fluent API can do more, such as composite keys, unique indexes and the behaviour on deletion.
+
+### Migrations
+
+`EnsureCreated` only creates the database if it does not exist yet. In real projects, the schema changes with every version. **Migrations** record these changes as code:
+
+```bash
+dotnet tool install --global dotnet-ef
+dotnet ef migrations add AddEmailToStudent   # compares the model with the last migration, generates code
+dotnet ef database update                    # runs pending migrations
+dotnet ef migrations script                  # generates the SQL, for example for the database administrator
+```
+
+Every migration has an `Up` method (apply the change) and a `Down` method (undo it). The database stores in the table `__EFMigrationsHistory` which migrations have already been run. Migrations are versioned like source code and go through code review.
+
+This approach is called **code first**: the classes are the source, and the database is generated from them. With **database first**, the database already exists, and `dotnet ef dbcontext scaffold` generates the classes from it.
+
+### Loading strategies and the N+1 problem
+
+Navigation properties such as `schoolClass.Students` are not loaded automatically. There are three strategies:
+
+| Strategy            | Approach                                                                                       |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| **Eager loading**   | `Include(c => c.Students)` loads the relationship in the same query with a join                |
+| **Explicit loading** | `db.Entry(c).Collection(c => c.Students).Load()` loads it later on purpose                    |
+| **Lazy loading**    | the relationship is loaded automatically on first access (must be enabled explicitly)          |
+
+Lazy loading is convenient but easily leads to the **N+1 problem**: one query loads $N$ classes, and the loop over them triggers another query for the students of each class. Instead of one query, $N + 1$ are run, so 501 for 500 classes. The solution is `Include` or a projection with `Select` that returns exactly the required data in one query.
+
+Further rules for good performance:
+
+- Load only the required columns with `Select` instead of whole objects.
+- Use `AsNoTracking()` for read-only access. This saves the effort of change tracking.
+- Filter in the database, not in memory: `db.Students.Where(...)` is translated into SQL, `db.Students.ToList().Where(...)` first loads all rows.
+- Use `ToQueryString()` or logging (`LogTo(Console.WriteLine)`) to check which SQL is actually generated.
+
+### Direct access or ORM
+
+| Direct access                                            | ORM                                                          |
+| -------------------------------------------------------- | ------------------------------------------------------------ |
+| full control over the SQL, all features of the system can be used | less code for simple CRUD operations                |
+| easily predictable performance                           | queries are type-safe in the programming language; errors show up at compile time |
+| mapping to objects has to be written yourself            | schema changes through migrations                            |
+| SQL text is only checked at run time                     | generated SQL is not always optimal and has to be checked when performance problems occur |
+
+In practice, both are combined: an ORM for most access and direct SQL (in EF Core with `FromSql` or `SqlQuery`) for complex evaluations.
+
+## Further reading
+
+- [Entity Framework Core documentation](https://learn.microsoft.com/en-us/ef/core/) by Microsoft
+- [rusqlite documentation](https://docs.rs/rusqlite/) on docs.rs

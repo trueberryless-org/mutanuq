@@ -1,0 +1,493 @@
+---
+title: Generics und Collections
+description: Generische Klassen und Methoden, Einschränkungen und Trait Bounds sowie Listen, Dictionaries, Mengen, Queues und Stacks in C# und Rust.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Generics** erlauben es, Klassen und Methoden zu schreiben, die mit beliebigen Datentypen funktionieren, ohne dabei die Typsicherheit aufzugeben. Die wichtigste Anwendung sind **Collections**: Datenstrukturen wie Listen oder Dictionaries, die viele Elemente eines Typs verwalten.
+
+## Warum Generics?
+
+Ohne Generics müsste man entweder für jeden Datentyp eine eigene Klasse schreiben (`IntList`, `StringList`, ...) oder alle Elemente als `object` speichern. Die zweite Variante hat drei Nachteile: Der Compiler kann nicht prüfen, ob nur passende Elemente hineinkommen, man muss beim Herausholen umwandeln (_casten_), und Werttypen müssen dabei in Objekte verpackt werden (_Boxing_).
+
+Mit einem **Typparameter** wie `T` schreibt man den Code nur einmal. Erst bei der Verwendung legt man fest, welcher Typ eingesetzt wird: `List<int>`, `List<string>`, `Vec<f64>`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var ints = new Box<int>(42);
+var text = new Box<string>("Hallo");
+Console.WriteLine(ints.Value + 1);       // 43, kein Cast nötig
+Console.WriteLine(text.Value.Length);    // 5
+
+var (a, b) = Swap(1, 2);                 // Typ wird abgeleitet
+Console.WriteLine($"{a} {b}");           // 2 1
+
+// generische Methode
+static (T, T) Swap<T>(T first, T second) => (second, first);
+
+// generische Klasse
+public class Box<T>(T value)
+{
+    public T Value { get; } = value;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// generisches Struct
+struct Wrapper<T> {
+    value: T,
+}
+
+// generische Funktion
+fn swap<T>(first: T, second: T) -> (T, T) {
+    (second, first)
+}
+
+fn main() {
+    let ints = Wrapper { value: 42 };
+    let text = Wrapper { value: "Hallo" };
+    println!("{}", ints.value + 1);     // 43
+    println!("{}", text.value.len());   // 5
+
+    let (a, b) = swap(1, 2);
+    println!("{a} {b}");                // 2 1
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Einschränkungen und Trait Bounds
+
+Innerhalb einer generischen Methode weiß der Compiler über `T` zunächst nichts. Will man zum Beispiel zwei Werte vergleichen, muss man festlegen, dass `T` vergleichbar ist. In C# heißt das **Einschränkung** (_constraint_, `where`), in Rust **Trait Bound**.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Largest([3, 9, 4]));            // 9
+Console.WriteLine(Largest(["Birne", "Apfel"]));   // Birne
+
+static T Largest<T>(IEnumerable<T> items) where T : IComparable<T>
+{
+    using var e = items.GetEnumerator();
+    if (!e.MoveNext()) throw new ArgumentException("Leere Sammlung");
+    T max = e.Current;
+    while (e.MoveNext())
+    {
+        if (e.Current.CompareTo(max) > 0) max = e.Current;
+    }
+    return max;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// T muss vergleichbar (PartialOrd) und kopierbar (Copy) sein
+fn largest<T: PartialOrd + Copy>(items: &[T]) -> Option<T> {
+    let mut iter = items.iter();
+    let mut max = *iter.next()?;
+    for &item in iter {
+        if item > max {
+            max = item;
+        }
+    }
+    Some(max)
+}
+
+fn main() {
+    println!("{:?}", largest(&[3, 9, 4]));          // Some(9)
+    println!("{:?}", largest(&["Birne", "Apfel"])); // Some("Birne")
+}
+```
+
+</TabItem>
+</Tabs>
+
+| Einschränkung in C#            | Bedeutung                                        | Entsprechung in Rust                     |
+| ------------------------------ | ------------------------------------------------ | ---------------------------------------- |
+| `where T : IComparable<T>`     | `T` implementiert ein Interface                  | `T: Ord` bzw. `T: PartialOrd`            |
+| `where T : class` / `struct`   | `T` ist ein Referenz- bzw. Werttyp               | (keine Entsprechung nötig)               |
+| `where T : new()`              | `T` hat einen parameterlosen Konstruktor         | `T: Default`                             |
+| `where T : Animal`             | `T` ist `Animal` oder davon abgeleitet           | `T: Animal` (Trait)                      |
+| `where T : notnull`            | `T` darf nicht nullable sein                     | (es gibt kein null)                      |
+
+Mehrere Bounds werden in Rust mit `+` verbunden. Bei vielen Bounds schreibt man sie übersichtlicher in eine `where`-Klausel hinter die Signatur.
+
+### Umsetzung durch den Compiler
+
+- **Rust** erzeugt für jeden verwendeten Typ eine eigene Kopie der Funktion (**Monomorphisierung**). Generischer Code ist dadurch genauso schnell wie handgeschriebener.
+- **C#** speichert Generics als echte Typen in der Assembly. Zur Laufzeit erzeugt der JIT-Compiler für jeden Werttyp eine eigene Version und teilt sich eine gemeinsame Version für alle Referenztypen. Man kann den Typparameter zur Laufzeit abfragen (`typeof(T)`).
+- **Java** verwendet dagegen _Type Erasure_: Generics existieren nur beim Kompilieren, zur Laufzeit ist aus `List<String>` eine `List` geworden.
+
+### Varianz
+
+Darf man eine `IEnumerable<string>` dort verwenden, wo eine `IEnumerable<object>` erwartet wird? In C# legt man das bei Interfaces und Delegates mit **Varianz** fest:
+
+- **Kovarianz** (`out T`): Ein Typ, der `T` nur zurückgibt, darf durch einen spezielleren Typ ersetzt werden. Beispiel: `IEnumerable<out T>`, daher ist `IEnumerable<string>` eine `IEnumerable<object>`.
+- **Kontravarianz** (`in T`): Ein Typ, der `T` nur entgegennimmt, darf durch einen allgemeineren ersetzt werden. Beispiel: `Action<in T>`, daher ist `Action<object>` eine `Action<string>`.
+- `List<T>` ist **invariant**, weil sie `T` sowohl liest als auch schreibt.
+
+## Collections im Überblick
+
+| Zweck                                | C#                              | Rust                          | Zugriff         | Einfügen         | Suchen        |
+| ------------------------------------ | ------------------------------- | ----------------------------- | --------------- | ---------------- | ------------- |
+| Dynamisches Array                    | `List<T>`                       | `Vec<T>`                      | $O(1)$ per Index | $O(1)$ am Ende*  | $O(n)$        |
+| Doppelt verkettete Liste             | `LinkedList<T>`                 | `LinkedList<T>`               | $O(n)$          | $O(1)$ an bekannter Stelle | $O(n)$ |
+| Schlüssel-Wert-Paare (Hash)          | `Dictionary<K, V>`              | `HashMap<K, V>`               | $O(1)$ per Schlüssel** | $O(1)$**  | $O(1)$**      |
+| Schlüssel-Wert-Paare (sortiert)      | `SortedDictionary<K, V>`        | `BTreeMap<K, V>`              | $O(\log n)$     | $O(\log n)$      | $O(\log n)$   |
+| Menge ohne Duplikate (Hash)          | `HashSet<T>`                    | `HashSet<T>`                  | -               | $O(1)$**         | $O(1)$**      |
+| Menge ohne Duplikate (sortiert)      | `SortedSet<T>`                  | `BTreeSet<T>`                 | -               | $O(\log n)$      | $O(\log n)$   |
+| Warteschlange (FIFO)                 | `Queue<T>`                      | `VecDeque<T>`                 | vorne/hinten $O(1)$ | $O(1)$*      | $O(n)$        |
+| Stapel (LIFO)                        | `Stack<T>`                      | `Vec<T>` (`push`, `pop`)      | oben $O(1)$     | $O(1)$*          | $O(n)$        |
+| Prioritätswarteschlange              | `PriorityQueue<T, P>` (kleinste Priorität zuerst) | `BinaryHeap<T>` (größtes Element zuerst) | oben $O(1)$ | $O(\log n)$ | - |
+
+\* amortisiert: Ist der reservierte Speicher voll, wird ein doppelt so großer Bereich angelegt und alles umkopiert. Das passiert selten genug, dass Einfügen im Durchschnitt $O(1)$ kostet.
+\*\* im Durchschnitt; im ungünstigsten Fall (viele Hash-Kollisionen) $O(n)$.
+
+Was die $O$-Notation bedeutet und wie diese Datenstrukturen intern aufgebaut sind, erklären die Seiten [Algorithmen](/de/software-development/algorithms/#laufzeitkomplexität) und [Datenstrukturen](/de/software-development/data-structures/).
+
+## Listen
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var names = new List<string> { "Mia", "Ben" };
+names.Add("Lea");                   // am Ende anhängen
+names.Insert(0, "Tim");             // an Position 0 einfügen
+names.Remove("Ben");                // erstes Vorkommen entfernen
+names.RemoveAt(names.Count - 1);    // letztes Element entfernen
+
+Console.WriteLine(names.Count);             // 2
+Console.WriteLine(names.Contains("Mia"));   // True
+Console.WriteLine(names.IndexOf("Mia"));    // 1
+
+names.AddRange(["Zoe", "Ali"]);
+names.Sort();                                // alphabetisch
+Console.WriteLine(string.Join(", ", names)); // Ali, Mia, Tim, Zoe
+
+// eigene Sortierung: nach Länge, dann alphabetisch
+names.Sort((x, y) => x.Length != y.Length ? x.Length.CompareTo(y.Length) : x.CompareTo(y));
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let mut names = vec![String::from("Mia"), String::from("Ben")];
+    names.push("Lea".to_string());       // am Ende anhängen
+    names.insert(0, "Tim".to_string());  // an Position 0 einfügen
+    if let Some(pos) = names.iter().position(|n| n == "Ben") {
+        names.remove(pos);               // Element an Position entfernen
+    }
+    names.pop();                         // letztes Element entfernen
+
+    println!("{}", names.len());                       // 2
+    println!("{}", names.contains(&"Mia".to_string())); // true
+    println!("{:?}", names.iter().position(|n| n == "Mia")); // Some(1)
+
+    names.extend(["Zoe".to_string(), "Ali".to_string()]);
+    names.sort();                                       // alphabetisch
+    println!("{}", names.join(", "));                   // Ali, Mia, Tim, Zoe
+
+    // eigene Sortierung: nach Länge, dann alphabetisch
+    names.sort_by(|x, y| x.len().cmp(&y.len()).then(x.cmp(y)));
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Dictionaries
+
+Ein **Dictionary** (in Rust **Map**) speichert Paare aus einem eindeutigen **Schlüssel** und einem **Wert**. Der Zugriff über den Schlüssel ist bei Hash-basierten Varianten im Durchschnitt in konstanter Zeit möglich, egal wie viele Einträge es gibt. Die Reihenfolge der Einträge ist bei `Dictionary` und `HashMap` **nicht** festgelegt. Braucht man eine sortierte Reihenfolge, verwendet man `SortedDictionary` beziehungsweise `BTreeMap`.
+
+Das klassische Beispiel ist das Zählen von Wörtern:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string text = "der hund und der ball und der garten";
+var counts = new SortedDictionary<string, int>();
+
+foreach (var word in text.Split(' '))
+{
+    // TryGetValue vermeidet eine KeyNotFoundException
+    counts[word] = counts.TryGetValue(word, out int n) ? n + 1 : 1;
+}
+
+foreach (var (word, count) in counts)
+{
+    Console.WriteLine($"{word}: {count}");
+}
+// ball: 1, der: 3, garten: 1, hund: 1, und: 2
+
+Console.WriteLine(counts.ContainsKey("katze")); // False
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::BTreeMap;
+
+fn main() {
+    let text = "der hund und der ball und der garten";
+    let mut counts: BTreeMap<&str, i32> = BTreeMap::new();
+
+    for word in text.split(' ') {
+        // entry legt den Eintrag an, falls er noch fehlt
+        *counts.entry(word).or_insert(0) += 1;
+    }
+
+    for (word, count) in &counts {
+        println!("{word}: {count}");
+    }
+    // ball: 1, der: 3, garten: 1, hund: 1, und: 2
+
+    println!("{}", counts.contains_key("katze")); // false
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::caution[Schlüssel müssen sich korrekt vergleichen lassen]
+Ein Hash-basiertes Dictionary findet einen Schlüssel über seinen **Hashwert** und vergleicht dann mit `Equals`. Verwendet man eigene Klassen als Schlüssel, müssen in C# `Equals` und `GetHashCode` passend überschrieben werden (Records erledigen das automatisch). Gleiche Objekte müssen denselben Hashwert liefern. In Rust leitet man dafür `PartialEq`, `Eq` und `Hash` ab. Ein Schlüssel darf außerdem nicht verändert werden, während er im Dictionary liegt.
+:::
+
+## Mengen
+
+Eine **Menge** (_Set_) enthält jedes Element höchstens einmal. Sie eignet sich zum Entfernen von Duplikaten und für schnelle `Contains`-Abfragen. Außerdem bietet sie die Mengenoperationen aus der Mathematik.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var python = new HashSet<string> { "Ana", "Ben", "Cem" };
+var rust = new HashSet<string> { "Ben", "Dora" };
+
+Console.WriteLine(python.Add("Ana"));        // False, schon vorhanden
+
+var both = new HashSet<string>(python);
+both.IntersectWith(rust);                    // Schnittmenge
+Console.WriteLine(string.Join(", ", both));  // Ben
+
+var all = new SortedSet<string>(python);
+all.UnionWith(rust);                          // Vereinigung
+Console.WriteLine(string.Join(", ", all));    // Ana, Ben, Cem, Dora
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{BTreeSet, HashSet};
+
+fn main() {
+    let mut python: HashSet<&str> = ["Ana", "Ben", "Cem"].into_iter().collect();
+    let rust: HashSet<&str> = ["Ben", "Dora"].into_iter().collect();
+
+    println!("{}", python.insert("Ana"));       // false, schon vorhanden
+
+    let both: Vec<_> = python.intersection(&rust).collect(); // Schnittmenge
+    println!("{both:?}");                       // ["Ben"]
+
+    let all: BTreeSet<_> = python.union(&rust).collect();    // Vereinigung
+    println!("{all:?}");                        // {"Ana", "Ben", "Cem", "Dora"}
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Queue und Stack
+
+- Eine **Queue** (Warteschlange) arbeitet nach dem **FIFO**-Prinzip (_first in, first out_): Wer zuerst kommt, wird zuerst bedient. Beispiele: Druckaufträge, Nachrichten zwischen Programmteilen, Breitensuche.
+- Ein **Stack** (Stapel) arbeitet nach dem **LIFO**-Prinzip (_last in, first out_): Das zuletzt abgelegte Element wird zuerst entnommen. Beispiele: Rückgängig-Funktion, Aufrufstapel, Prüfen von Klammerausdrücken, Tiefensuche.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var queue = new Queue<string>();
+queue.Enqueue("Auftrag 1");
+queue.Enqueue("Auftrag 2");
+Console.WriteLine(queue.Dequeue()); // Auftrag 1
+Console.WriteLine(queue.Peek());    // Auftrag 2 (ohne Entfernen)
+
+Console.WriteLine(IsBalanced("(a[b]{c})")); // True
+Console.WriteLine(IsBalanced("(]"));         // False
+
+// Klammern prüfen mit einem Stack
+static bool IsBalanced(string s)
+{
+    var stack = new Stack<char>();
+    var pairs = new Dictionary<char, char> { [')'] = '(', [']'] = '[', ['}'] = '{' };
+    foreach (char c in s)
+    {
+        if (c is '(' or '[' or '{') stack.Push(c);
+        else if (pairs.TryGetValue(c, out char open))
+        {
+            if (stack.Count == 0 || stack.Pop() != open) return false;
+        }
+    }
+    return stack.Count == 0;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+// Klammern prüfen mit einem Vec als Stack
+fn is_balanced(s: &str) -> bool {
+    let mut stack = Vec::new();
+    for c in s.chars() {
+        match c {
+            '(' | '[' | '{' => stack.push(c),
+            ')' | ']' | '}' => {
+                let open = match c { ')' => '(', ']' => '[', _ => '{' };
+                if stack.pop() != Some(open) {
+                    return false;
+                }
+            }
+            _ => {}
+        }
+    }
+    stack.is_empty()
+}
+
+fn main() {
+    let mut queue = VecDeque::new();
+    queue.push_back("Auftrag 1");
+    queue.push_back("Auftrag 2");
+    println!("{:?}", queue.pop_front()); // Some("Auftrag 1")
+    println!("{:?}", queue.front());     // Some("Auftrag 2")
+
+    println!("{}", is_balanced("(a[b]{c})")); // true
+    println!("{}", is_balanced("(]"));         // false
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Prioritätswarteschlange
+
+Eine **Prioritätswarteschlange** gibt immer das Element mit der höchsten Priorität zuerst heraus, unabhängig von der Reihenfolge des Einfügens. Intern ist sie als [Heap](/de/software-development/data-structures/#heap) umgesetzt. Sie wird zum Beispiel im [Dijkstra-Algorithmus](/de/software-development/graphs/#dijkstra-algorithmus) und für Aufgabenplanung verwendet.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// kleinste Priorität kommt zuerst
+var tasks = new PriorityQueue<string, int>();
+tasks.Enqueue("E-Mails lesen", 3);
+tasks.Enqueue("Server neu starten", 1);
+tasks.Enqueue("Bericht schreiben", 2);
+
+while (tasks.TryDequeue(out string? task, out int priority))
+{
+    Console.WriteLine($"{priority}: {task}");
+}
+// 1: Server neu starten, 2: Bericht schreiben, 3: E-Mails lesen
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
+
+fn main() {
+    // BinaryHeap liefert das größte Element zuerst;
+    // Reverse dreht die Ordnung um, damit die kleinste Priorität zuerst kommt.
+    let mut tasks = BinaryHeap::new();
+    tasks.push(Reverse((3, "E-Mails lesen")));
+    tasks.push(Reverse((1, "Server neu starten")));
+    tasks.push(Reverse((2, "Bericht schreiben")));
+
+    while let Some(Reverse((priority, task))) = tasks.pop() {
+        println!("{priority}: {task}");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Iteratoren
+
+Alle Collections lassen sich mit `foreach` beziehungsweise `for` durchlaufen. Möglich macht das in C# das Interface `IEnumerable<T>` und in Rust das Trait `Iterator`. Eigene Klassen werden durchlaufbar, indem man diese Schnittstelle implementiert. In C# geht das besonders einfach mit `yield return`: Der Compiler erzeugt daraus eine Zustandsmaschine, die die Werte erst bei Bedarf berechnet (**lazy evaluation**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+foreach (long n in Fibonacci().Take(10))
+{
+    Console.Write($"{n} ");
+}
+// 0 1 1 2 3 5 8 13 21 34
+
+// unendliche Folge, die Werte entstehen erst beim Abfragen
+static IEnumerable<long> Fibonacci()
+{
+    long a = 0, b = 1;
+    while (true)
+    {
+        yield return a;
+        (a, b) = (b, a + b);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Fibonacci {
+    a: u64,
+    b: u64,
+}
+
+impl Iterator for Fibonacci {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<u64> {
+        let current = self.a;
+        (self.a, self.b) = (self.b, self.a + self.b);
+        Some(current) // nie None: unendliche Folge
+    }
+}
+
+fn main() {
+    for n in (Fibonacci { a: 0, b: 1 }).take(10) {
+        print!("{n} ");
+    }
+    println!();
+    // 0 1 1 2 3 5 8 13 21 34
+}
+```
+
+</TabItem>
+</Tabs>
+
+Mit Iteratoren lassen sich Daten sehr ausdrucksstark filtern, umwandeln und zusammenfassen. Das zeigt die Seite [Funktionale Programmierung](/de/software-development/functional-programming/) mit LINQ und den Iterator-Adaptern von Rust.

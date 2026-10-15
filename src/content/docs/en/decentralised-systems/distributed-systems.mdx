@@ -1,0 +1,352 @@
+---
+title: Distributed Systems
+description: "Definition, goals and transparency, fallacies of distributed computing, Lamport and vector clocks, consensus with Paxos and Raft, replication, consistency and two-phase commit."
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+According to Andrew S. Tanenbaum, a **distributed system** is a collection of independent computers that appears to its users as a single coherent system. The computers (**nodes**) have no shared memory and no shared clock. They coordinate exclusively by exchanging **messages** over a network.
+
+Examples are the World Wide Web, DNS, online banking, search engines, distributed databases, streaming services, cloud platforms such as [Azure](/en/decentralised-systems/cloud-computing/), peer-to-peer networks and [blockchains](/en/decentralised-systems/blockchain/). Leslie Lamport jokingly described the nature of distributed systems like this: "A distributed system is one in which the failure of a computer you didn't even know existed can render your own computer unusable."
+
+## Why distribute?
+
+- **Scalability:** A single server eventually reaches its limits in CPU, memory and network. Several machines handle more load.
+- **Availability and fault tolerance:** If a node fails, others take over. A single server is a single point of failure.
+- **Geographic proximity:** Data and services are close to the users and therefore respond faster.
+- **Resource sharing:** Printers, files, computing power and data are used by many.
+- **Organisational reasons:** Different teams or companies run their own services that work together.
+
+## Goals
+
+### Transparency
+
+**Distribution transparency** means that the distribution is hidden from the user and the application programmer:
+
+| Transparency | Hides ... |
+| ------------ | --------- |
+| **Access** | how a resource is accessed and how the data is represented |
+| **Location** | where a resource is located (a URL does not name a specific server) |
+| **Migration** | that a resource may be moved to another location |
+| **Relocation** | that a resource is moved even while it is in use |
+| **Replication** | that there are several copies of a resource |
+| **Concurrency** | that several users use the same resource at the same time |
+| **Failure** | that a component fails and is recovered |
+
+Full transparency is neither possible nor always sensible: a request to a server on another continent takes longer because of the speed of light, and whether a server has failed or is merely slow cannot be told apart with certainty.
+
+### Openness
+
+An **open** system offers services via standardised, documented interfaces (such as HTTP, REST, gRPC). This allows components from different vendors to work together (**interoperability**), be moved to other platforms (**portability**) and be replaced or extended (**extensibility**).
+
+### Scalability
+
+Three dimensions are distinguished:
+
+- **Size:** more users and resources without a noticeable loss of performance,
+- **Geography:** users and resources may be far apart,
+- **Administration:** the system can be managed across several organisations.
+
+Scaling happens **vertically** (_scale up_, a more powerful machine) or **horizontally** (_scale out_, more machines), see [software metrics](/en/software-development/software-metrics/#horizontal-scaling). Horizontally scaling systems avoid central bottlenecks, distribute the load (load balancing), split up data (**partitioning**, _sharding_), keep copies (**replication**, caching) and communicate **asynchronously** wherever possible.
+
+### Fault tolerance
+
+A fault-tolerant system continues to provide its service even when individual components fail. The basic principle is **redundancy**: information redundancy (checksums, error correction), time redundancy (repeating a request) and physical redundancy (several servers, data centres and [availability zones](/en/decentralised-systems/cloud-computing/#zone-redundant-storage-zrs)). Metrics such as availability, RTO and RPO are covered under [high availability](/en/deployment/operations/high_availability/).
+
+Typical **failure models**:
+
+| Failure type | Description |
+| ------------ | ----------- |
+| **Crash** | The node halts and no longer responds. |
+| **Omission** | Messages are lost, not sent or not received. |
+| **Timing** | The response arrives too late. |
+| **Response failure** | The response is wrong. |
+| **Byzantine failure** | The node behaves arbitrarily wrongly, for example through a bug or deliberately maliciously, and sends contradictory information to different nodes. |
+
+Failures are usually detected with **heartbeats** and **timeouts**: if a node does not report for a certain time, it is considered failed. Since a slow node looks exactly like a crashed one, this detection can be wrong.
+
+## Fallacies of distributed computing
+
+In the 1990s, Peter Deutsch and other engineers at Sun Microsystems formulated eight false assumptions that developers often make when building distributed applications (_fallacies of distributed computing_):
+
+1. **The network is reliable.** Packets get lost, connections drop. You need retries, timeouts and idempotent operations.
+2. **Latency is zero.** Every network call is orders of magnitude slower than a method call. Many small ("chatty") calls are expensive.
+3. **Bandwidth is infinite.** Large amounts of data have to be compressed, filtered or transferred page by page.
+4. **The network is secure.** Data must be encrypted and communication partners authenticated.
+5. **Topology doesn't change.** Servers come and go, IP addresses change. That is why naming services and service discovery are used.
+6. **There is one administrator.** Different teams and companies manage parts of the system with their own rules.
+7. **Transport cost is zero.** Serialisation, network hardware and data traffic in the cloud cost time and money.
+8. **The network is homogeneous.** Different hardware, operating systems and protocols have to work together.
+
+## Time and clocks
+
+In a single computer there is one clock, and the order of events is clear. In a distributed system, each node has its own clock. Quartz clocks run at slightly different speeds (**drift**, typically a few millionths, i.e. a few seconds per week), and the difference between two clocks is called **skew**. Protocols such as **NTP** (_Network Time Protocol_) synchronise clocks with time servers and achieve an accuracy of a few milliseconds over the internet, but never perfect agreement.
+
+For many tasks, however, you do not need the exact time at all, only the correct **order** of events. This is what **logical clocks** are for.
+
+### Lamport clocks
+
+In 1978, Leslie Lamport defined the **happened-before relation** $a \rightarrow b$ ("$a$ happened before $b$"):
+
+- If $a$ and $b$ are events in the same process and $a$ comes before $b$, then $a \rightarrow b$.
+- If $a$ is the sending and $b$ the receiving of the same message, then $a \rightarrow b$.
+- The relation is transitive: from $a \rightarrow b$ and $b \rightarrow c$ it follows that $a \rightarrow c$.
+
+If neither $a \rightarrow b$ nor $b \rightarrow a$ holds, the events are **concurrent** ($a \parallel b$): neither can have influenced the other.
+
+A **Lamport clock** is a simple counter per process with three rules:
+
+1. Before each local event, the counter is incremented by 1.
+2. When sending, the counter is incremented and sent along as a timestamp.
+3. When receiving, the receiver sets its counter to $\max(\text{own counter}, \text{timestamp}) + 1$.
+
+This guarantees: if $a \rightarrow b$, then $L(a) < L(b)$. The converse does **not** hold: $L(a) < L(b)$ does not imply that $a$ happened before $b$. To obtain a unique **total order**, events with equal timestamps are additionally ordered by process number.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var a = new LamportClock();
+var b = new LamportClock();
+
+a.Tick();                 // A: local event -> 1
+long m1 = a.Send();       // A sends m1 with timestamp 2
+b.Tick();                 // B: local event -> 1
+b.Receive(m1);            // B receives m1: max(1, 2) + 1 = 3
+long m2 = b.Send();       // B sends m2 with timestamp 4
+a.Receive(m2);            // A receives m2: max(2, 4) + 1 = 5
+
+Console.WriteLine($"A = {a.Time}, B = {b.Time}"); // A = 5, B = 4
+
+public sealed class LamportClock
+{
+    public long Time { get; private set; }
+
+    public long Tick() => ++Time;
+
+    // Sending is an event; its timestamp travels with the message
+    public long Send() => Tick();
+
+    public long Receive(long timestamp)
+    {
+        Time = Math.Max(Time, timestamp) + 1;
+        return Time;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Debug, Default)]
+struct LamportClock {
+    time: u64,
+}
+
+impl LamportClock {
+    fn tick(&mut self) -> u64 {
+        self.time += 1;
+        self.time
+    }
+
+    // Sending is an event; its timestamp travels with the message
+    fn send(&mut self) -> u64 {
+        self.tick()
+    }
+
+    fn receive(&mut self, timestamp: u64) -> u64 {
+        self.time = self.time.max(timestamp) + 1;
+        self.time
+    }
+}
+
+fn main() {
+    let mut a = LamportClock::default();
+    let mut b = LamportClock::default();
+
+    a.tick(); // A: local event -> 1
+    let m1 = a.send(); // A sends m1 with timestamp 2
+    b.tick(); // B: local event -> 1
+    b.receive(m1); // B receives m1: max(1, 2) + 1 = 3
+    let m2 = b.send(); // B sends m2 with timestamp 4
+    a.receive(m2); // A receives m2: max(2, 4) + 1 = 5
+
+    println!("A = {}, B = {}", a.time, b.time); // A = 5, B = 4
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Vector clocks
+
+A **vector clock** fixes the weakness of the Lamport clock: each of the $n$ processes keeps a vector of $n$ counters, one per process. On a local event, process $i$ increments only its own entry $V[i]$. When receiving, it takes the component-wise maximum of its own and the received vector and then increments its entry.
+
+For two vectors, $V(a) < V(b)$ if all components of $V(a)$ are less than or equal to those of $V(b)$ and at least one is strictly less. Now the relationship holds in **both** directions: $a \rightarrow b \Leftrightarrow V(a) < V(b)$. If the vectors are not comparable, the events were concurrent. Distributed databases such as Amazon Dynamo use this to detect **write conflicts**: two concurrent changes to the same record have to be merged.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var p0 = new VectorClock(0, 2);
+var p1 = new VectorClock(1, 2);
+
+long[] e1 = p0.Tick();         // P0: [1, 0]
+long[] e2 = p1.Tick();         // P1: [0, 1]
+long[] e3 = p1.Receive(e1);    // P1 receives e1: [1, 2]
+
+Console.WriteLine($"{Format(e1)} {Format(e2)} {Format(e3)}"); // [1, 0] [0, 1] [1, 2]
+Console.WriteLine(VectorClock.HappenedBefore(e1, e3));         // True
+bool concurrent = !VectorClock.HappenedBefore(e1, e2) && !VectorClock.HappenedBefore(e2, e1);
+Console.WriteLine(concurrent);                                 // True: e1 and e2 are concurrent
+
+static string Format(long[] v) => $"[{string.Join(", ", v)}]";
+
+public sealed class VectorClock(int id, int processCount)
+{
+    private readonly long[] _time = new long[processCount];
+
+    public long[] Tick()
+    {
+        _time[id]++;
+        return (long[])_time.Clone();
+    }
+
+    public long[] Receive(long[] other)
+    {
+        for (int i = 0; i < _time.Length; i++)
+        {
+            _time[i] = Math.Max(_time[i], other[i]);
+        }
+        return Tick();
+    }
+
+    public static bool HappenedBefore(long[] x, long[] y) =>
+        x.Zip(y).All(p => p.First <= p.Second) && x.Zip(y).Any(p => p.First < p.Second);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct VectorClock {
+    id: usize,
+    time: Vec<u64>,
+}
+
+impl VectorClock {
+    fn new(id: usize, process_count: usize) -> Self {
+        Self { id, time: vec![0; process_count] }
+    }
+
+    fn tick(&mut self) -> Vec<u64> {
+        self.time[self.id] += 1;
+        self.time.clone()
+    }
+
+    fn receive(&mut self, other: &[u64]) -> Vec<u64> {
+        for (mine, theirs) in self.time.iter_mut().zip(other) {
+            *mine = (*mine).max(*theirs);
+        }
+        self.tick()
+    }
+}
+
+fn happened_before(x: &[u64], y: &[u64]) -> bool {
+    x.iter().zip(y).all(|(a, b)| a <= b) && x.iter().zip(y).any(|(a, b)| a < b)
+}
+
+fn main() {
+    let mut p0 = VectorClock::new(0, 2);
+    let mut p1 = VectorClock::new(1, 2);
+
+    let e1 = p0.tick(); // P0: [1, 0]
+    let e2 = p1.tick(); // P1: [0, 1]
+    let e3 = p1.receive(&e1); // P1 receives e1: [1, 2]
+
+    println!("{e1:?} {e2:?} {e3:?}"); // [1, 0] [0, 1] [1, 2]
+    println!("{}", happened_before(&e1, &e3)); // true
+    let concurrent = !happened_before(&e1, &e2) && !happened_before(&e2, &e1);
+    println!("{concurrent}"); // true: e1 and e2 are concurrent
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Coordination and consensus
+
+Many tasks require the nodes to **agree** on something: who is the leader? Has a transaction been confirmed? In which order are commands executed? This **consensus problem** requires:
+
+- **Agreement:** all correct nodes decide on the same value.
+- **Validity:** the chosen value was proposed by some node.
+- **Termination:** every correct node eventually decides.
+
+The **FLP theorem** (Fischer, Lynch, Paterson, 1985) shows that in a fully asynchronous network in which even a single node can crash, there is no algorithm that always guarantees reaching consensus. Practical methods get around this with timeouts: they are always **safe** (never two different decisions), but only guarantee progress as long as the network behaves reasonably normally.
+
+Consensus methods work with a **majority** (_quorum_): with $n = 2f + 1$ nodes, $f$ may fail. With 3 nodes, the system tolerates one failure, with 5 nodes two. Two majorities always overlap in at least one node, so there can never be two contradictory decisions. Against Byzantine failures you even need $n = 3f + 1$ nodes.
+
+### Paxos
+
+**Paxos** (Lamport, 1989, published in 1998) was the first practical consensus algorithm. The idea in two phases:
+
+1. **Prepare/promise:** A _proposer_ chooses a unique, increasing round number and asks a majority of _acceptors_ whether they will take part. They promise not to accept any older rounds and report any value they have already accepted.
+2. **Accept/accepted:** The proposer proposes a value (the already accepted one with the highest round number, otherwise its own). If a majority accepts it, it is decided.
+
+Paxos is considered correct but hard to understand and hard to implement.
+
+### Raft
+
+**Raft** (Ongaro and Ousterhout, 2014) was explicitly designed for understandability and is widely used today, for example in etcd (the data store of Kubernetes), Consul and Apache Kafka (KRaft).
+
+- Each node is a **follower**, **candidate** or **leader**. Time is divided into **terms** with increasing numbers.
+- **Leader election:** If a follower hears no heartbeat from the leader within a random timeout (e.g. 150 to 300 ms), it becomes a candidate, increments the term and asks the others for their vote. Whoever receives a majority becomes leader. The random timeouts prevent several candidates from repeatedly standing at the same time.
+- **Log replication:** All write requests go to the leader. It appends them to its log and replicates them to the followers. As soon as a majority has stored the entry, it is **committed** and applied.
+- All nodes execute the same commands in the same order and thus reach the same state (**replicated state machine**).
+
+## Replication
+
+**Replication** means keeping copies of the same data on several nodes to increase availability and read speed.
+
+| Method | How it works | Properties |
+| ------ | ------------ | ---------- |
+| **Primary-backup** (leader-follower) | All writes go to a primary node, which passes them on to the copies. Reads are also possible from the copies. | simple, no write conflicts; the primary is a bottleneck and needs a failover when it fails |
+| **Multi-leader** | Several nodes (e.g. one per data centre) accept writes. | fast writes in several locations, but conflicts have to be resolved |
+| **Leaderless** (quorum-based) | The client writes to $W$ and reads from $R$ of the $N$ copies. | If $W + R > N$, the read and write sets overlap and at least one up-to-date copy is read. Example: $N = 3$, $W = 2$, $R = 2$. |
+
+A further distinction is between **synchronous replication** (a write only counts as successful once the copies have confirmed: safe but slower) and **asynchronous replication** (immediate confirmation, copies catch up later: fast, but the latest changes can be lost on failure). The [redundancy levels of Azure Storage](/en/decentralised-systems/cloud-computing/#redundancy) are an example: ZRS replicates synchronously, GRS asynchronously to a second region.
+
+## Consistency models
+
+A **consistency model** defines which values a reader may see when data is replicated. From strong to weak:
+
+| Model | Guarantee |
+| ----- | --------- |
+| **Linearisability** (strict consistency) | The system behaves as if there were only one copy. Every read sees the most recently completed write. |
+| **Sequential consistency** | All nodes see all operations in the same order, which matches each process's program order but not necessarily real time. |
+| **Causal consistency** | Causally related operations ($a \rightarrow b$) are seen by everyone in the same order; concurrent ones may be ordered differently. An answer never appears before the question. |
+| **Read-your-writes** | A user always sees at least their own changes. |
+| **Eventual consistency** | If no new changes are made, all copies eventually become identical. In the meantime, stale data may be read. |
+
+Stronger consistency requires more coordination and therefore more latency. The [CAP theorem](/en/databases/cap-theorem/) shows that during a network partition a system must choose between consistency and availability.
+
+## Distributed transactions
+
+If an operation has to be carried out on several nodes **completely or not at all** (for example a transfer between two banks), a **commit protocol** is used. The best known is **two-phase commit** (2PC) with a **coordinator** and several **participants**:
+
+1. **Prepare phase:** The coordinator asks all participants whether they can carry out the transaction. Each participant executes it provisionally, saves everything in its log, locks the affected data and answers **yes** (_vote commit_) or **no** (_vote abort_).
+2. **Commit phase:** If **all** answered yes, the coordinator sends **commit**, otherwise **abort**. The participants carry out the decision, release the locks and confirm.
+
+The drawback: 2PC is a **blocking** protocol. If the coordinator fails after the first phase, the participants do not know whether to commit or abort and must hold their locks until the coordinator is back. In addition, the many message rounds and locks slow the system down.
+
+In microservice architectures, **sagas** are therefore often used: a long transaction is split into local individual transactions. If a step fails, **compensating actions** undo the previous steps (cancelling the hotel booking if the flight could not be booked). The data is only eventually consistent. With [Durable Functions](/en/decentralised-systems/durable-functions/), such workflows can be implemented in Azure.
+
+## Further reading
+
+- Maarten van Steen, Andrew S. Tanenbaum: [_Distributed Systems_](https://www.distributed-systems.net/), 4th edition, free as a PDF
+- Martin Kleppmann: _Designing Data-Intensive Applications_, O'Reilly
+- [The Raft Consensus Algorithm](https://raft.github.io/) with an interactive visualisation

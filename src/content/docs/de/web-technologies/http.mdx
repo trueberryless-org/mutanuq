@@ -1,0 +1,312 @@
+---
+title: HTTP
+description: Aufbau von Anfrage und Antwort, Methoden, Statuscodes, Header, Cookies und Sitzungen, Caching, HTTP/1.1, HTTP/2 und HTTP/3, HTTPS, CORS und Werkzeuge wie curl.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Das **Hypertext Transfer Protocol** (HTTP) ist das Protokoll, mit dem Browser und Server Daten austauschen. Es arbeitet auf der Anwendungsschicht, folgt einem einfachen **Anfrage-Antwort-Schema** und ist **zustandslos**: Jede Anfrage enthält alles, was der Server zur Bearbeitung braucht. Die Bedeutung von Methoden, Statuscodes und Headern ist seit 2022 in RFC 9110 (_HTTP Semantics_) festgelegt, das Caching in RFC 9111. Diese Semantik gilt für alle HTTP-Versionen, nur die Übertragung auf der Leitung unterscheidet sich.
+
+## Anfrage und Antwort
+
+Eine HTTP/1.1-Nachricht ist Text und besteht aus einer **Startzeile**, beliebig vielen **Headern** (`Name: Wert`), einer **Leerzeile** und einem optionalen **Body**. Zeilen enden mit `CR LF` (`\r\n`).
+
+```http
+POST /api/students HTTP/1.1
+Host: schule.example.at
+Content-Type: application/json
+Accept: application/json
+Content-Length: 43
+
+{"name":"Anna Huber","schoolClass":"3AHIT"}
+```
+
+Die Startzeile der Anfrage (_Request Line_) enthält **Methode**, **Ziel** (Pfad und Query) und **Version**. Der Header `Host` ist in HTTP/1.1 Pflicht, weil auf einer IP-Adresse viele Websites liegen können (_virtuelle Hosts_).
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Location: /api/students/17
+Content-Length: 51
+
+{"id":17,"name":"Anna Huber","schoolClass":"3AHIT"}
+```
+
+Die Startzeile der Antwort (_Status Line_) enthält **Version**, **Statuscode** und einen **Begründungstext** (_Reason Phrase_), der nur für Menschen gedacht ist. Programme werten ausschließlich den Code aus.
+
+## Methoden
+
+Die **Methode** (oft _Verb_ genannt) sagt, was mit der Ressource geschehen soll.
+
+| Methode     | Zweck                                                                    | Body in der Anfrage | sicher | idempotent |
+| ----------- | ------------------------------------------------------------------------ | ------------------- | ------ | ---------- |
+| **GET**     | Ressource abrufen                                                        | nein                | ja     | ja         |
+| **HEAD**    | wie GET, aber nur die Header ohne Body (etwa um Größe oder Änderungsdatum zu prüfen) | nein   | ja     | ja         |
+| **OPTIONS** | erlaubte Methoden und Fähigkeiten abfragen, etwa bei CORS                | nein                | ja     | ja         |
+| **POST**    | Daten zur Verarbeitung senden, meist eine neue Ressource anlegen         | ja                  | nein   | nein       |
+| **PUT**     | Ressource unter dieser URL vollständig ersetzen (oder anlegen)           | ja                  | nein   | ja         |
+| **PATCH**   | Ressource teilweise ändern                                               | ja                  | nein   | nein (kann es sein) |
+| **DELETE**  | Ressource löschen                                                         | selten              | nein   | ja         |
+
+- **Sicher** (_safe_) bedeutet, dass die Methode am Server nichts verändert, sie liest nur. Suchmaschinen-Crawler und Browser dürfen sichere Anfragen deshalb jederzeit selbst auslösen, etwa beim Vorladen von Links. Ein Link „Löschen“ als GET-Anfrage ist darum ein schwerer Fehler.
+- **Idempotent** bedeutet, dass mehrfaches Senden dieselbe Wirkung hat wie einmaliges. Zweimal `DELETE /students/17` hinterlässt denselben Zustand wie einmal (auch wenn die zweite Antwort `404` lautet), zweimal `POST /students` legt dagegen zwei Schüler an. Idempotente Anfragen darf ein Client bei einem Verbindungsabbruch gefahrlos wiederholen.
+- Alle sicheren Methoden sind auch idempotent. Daneben gibt es noch `CONNECT` (Tunnel über einen Proxy) und `TRACE` (Diagnose), die im Alltag kaum vorkommen.
+
+## Statuscodes
+
+Der dreistellige **Statuscode** teilt das Ergebnis mit. Die erste Ziffer gibt die **Klasse** an.
+
+| Klasse  | Bedeutung                       | wichtige Codes                                                              |
+| ------- | ------------------------------- | --------------------------------------------------------------------------- |
+| **1xx** | Information, Anfrage läuft weiter | `100 Continue`, `101 Switching Protocols` (etwa zu WebSocket)              |
+| **2xx** | Erfolg                          | `200 OK`, `201 Created` (neue Ressource, mit `Location`-Header), `204 No Content` (Erfolg ohne Body), `206 Partial Content` (Teilbereich, etwa beim Video-Streaming) |
+| **3xx** | Umleitung                       | `301 Moved Permanently`, `302 Found` (vorübergehend), `303 See Other` (nach POST auf eine GET-Seite weiterleiten), `304 Not Modified` (Cache ist noch gültig), `307 Temporary Redirect` und `308 Permanent Redirect` (wie 302 und 301, aber die Methode bleibt erhalten) |
+| **4xx** | Fehler des Clients              | `400 Bad Request` (ungültige Anfrage), `401 Unauthorized` (nicht angemeldet), `403 Forbidden` (angemeldet, aber keine Berechtigung), `404 Not Found`, `405 Method Not Allowed`, `409 Conflict`, `415 Unsupported Media Type`, `422 Unprocessable Content` (Daten formal richtig, aber ungültig), `429 Too Many Requests` |
+| **5xx** | Fehler des Servers              | `500 Internal Server Error`, `502 Bad Gateway` (Proxy erhielt ungültige Antwort), `503 Service Unavailable` (überlastet oder Wartung), `504 Gateway Timeout` |
+
+:::tip[401 oder 403?]
+`401 Unauthorized` ist irreführend benannt: Gemeint ist „nicht authentifiziert“, der Server weiß nicht, wer du bist, und verlangt im Header `WWW-Authenticate` eine Anmeldung. `403 Forbidden` heißt „nicht autorisiert“: Der Server kennt dich, aber du darfst das nicht.
+:::
+
+## Header
+
+Header transportieren Metadaten zur Nachricht. Ihre Namen unterscheiden nicht zwischen Groß- und Kleinschreibung.
+
+| Header              | Richtung  | Bedeutung                                                                                  |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------ |
+| `Host`              | Anfrage   | Domainname des Zielservers                                                                  |
+| `User-Agent`        | Anfrage   | Programm und Version des Clients                                                            |
+| `Accept`            | Anfrage   | gewünschte Formate, etwa `application/json` oder `text/html` (**Content Negotiation**)      |
+| `Accept-Language`   | Anfrage   | bevorzugte Sprachen, etwa `de-AT, de;q=0.9, en;q=0.8`                                       |
+| `Accept-Encoding`   | Anfrage   | unterstützte Kompression, etwa `gzip, br`                                                   |
+| `Authorization`     | Anfrage   | Zugangsdaten, etwa `Bearer eyJhbGciOi…` (Token) oder `Basic …` (Benutzer und Passwort Base64-kodiert) |
+| `Cookie`            | Anfrage   | vom Server früher gesetzte Cookies                                                          |
+| `Content-Type`      | beide     | Format des Bodys als **MIME-Typ**: `text/html; charset=utf-8`, `application/json`, `image/png`, `multipart/form-data` |
+| `Content-Length`    | beide     | Länge des Bodys in Byte                                                                     |
+| `Content-Encoding`  | Antwort   | verwendete Kompression des Bodys                                                            |
+| `Location`          | Antwort   | Ziel einer Umleitung oder URL einer neu angelegten Ressource                                |
+| `Set-Cookie`        | Antwort   | Cookie im Browser speichern                                                                 |
+| `Cache-Control`     | beide     | Regeln für das Caching                                                                      |
+| `ETag`, `Last-Modified` | Antwort | Version und Änderungszeitpunkt der Ressource                                              |
+| `Strict-Transport-Security` | Antwort | Browser soll die Seite künftig nur über HTTPS aufrufen (**HSTS**)                    |
+
+## Cookies und Sitzungen
+
+Weil HTTP zustandslos ist, braucht ein Webshop einen Weg, Anfragen demselben Besucher zuzuordnen. Dafür gibt es **Cookies** (RFC 6265): kleine Name-Wert-Paare, die der Server mit `Set-Cookie` setzt und die der Browser bei jeder weiteren Anfrage an diese Domain im Header `Cookie` mitsendet.
+
+```http
+HTTP/1.1 200 OK
+Set-Cookie: session=7f3a9c21e8b4; Path=/; Max-Age=3600; HttpOnly; Secure; SameSite=Lax
+```
+
+| Attribut            | Wirkung                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `Expires`, `Max-Age` | Ablaufzeitpunkt bzw. Lebensdauer in Sekunden. Ohne beide ist es ein **Sitzungscookie**, das beim Schließen des Browsers verschwindet |
+| `Domain`, `Path`    | für welche Hosts und Pfade das Cookie gesendet wird                                         |
+| `Secure`            | nur über HTTPS senden                                                                      |
+| `HttpOnly`          | für JavaScript unsichtbar, schützt das Cookie vor dem Auslesen durch eingeschleusten Code (XSS) |
+| `SameSite`          | `Strict`, `Lax` oder `None`: ob das Cookie bei Anfragen von fremden Seiten mitgeht, schützt gegen **CSRF** |
+
+Bei einer **Sitzung** (_Session_) erzeugt der Server nach dem Anmelden eine zufällige, nicht erratbare **Session-ID**, speichert die Daten des Benutzers bei sich und schickt dem Browser nur die ID als Cookie. Bei jeder Anfrage schlägt er die Daten unter dieser ID nach. Mehr dazu und zur Alternative mit Tokens steht unter [Serverseitige Webanwendungen](/de/web-technologies/server-side-web-applications/#sitzungen-und-authentifizierung).
+
+Cookies von Drittanbietern (_Third-Party-Cookies_) dienen oft der Verfolgung über viele Websites. Nach DSGVO und Telekommunikationsgesetz (TKG 2021) dürfen nicht unbedingt notwendige Cookies nur mit Einwilligung gesetzt werden, daher die Cookie-Banner.
+
+## Caching
+
+Ein **Cache** speichert Antworten, damit sie nicht erneut übertragen werden müssen. Caches gibt es im Browser, in Proxys und in **CDNs** (_Content Delivery Networks_). Der Server steuert sie mit `Cache-Control`:
+
+| Direktive        | Bedeutung                                                                      |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `max-age=3600`   | die Antwort ist 3600 s frisch und wird ohne Rückfrage verwendet               |
+| `no-cache`       | darf gespeichert werden, muss aber vor jeder Verwendung beim Server **revalidiert** werden |
+| `no-store`       | darf gar nicht gespeichert werden (sensible Daten)                             |
+| `private`        | nur der Browser darf speichern, nicht ein gemeinsamer Proxy                    |
+| `public`         | auch gemeinsame Caches dürfen speichern                                         |
+| `immutable`      | ändert sich nie, wird auch beim Neuladen nicht geprüft                          |
+
+Ist eine Antwort abgelaufen, fragt der Browser **bedingt** nach. Der Server hat die Ressource mit einem **ETag** versehen, einer Kennung ihrer Version (oft ein Hash des Inhalts):
+
+```http
+GET /style.css HTTP/1.1
+Host: schule.example.at
+If-None-Match: "5d8c72a5"
+```
+
+Hat sich nichts geändert, antwortet der Server mit `304 Not Modified` ohne Body, und der Browser verwendet seine Kopie. Das spart Datenvolumen, aber nicht die Anfrage selbst. Dasselbe geht mit `Last-Modified` und `If-Modified-Since`. Eine häufige Strategie ist, Dateinamen mit einem Hash zu versehen (`app.3f9a1c.js`) und sie mit `max-age=31536000, immutable` ein Jahr lang zu cachen: Eine neue Version bekommt einen neuen Namen.
+
+## HTTP-Versionen
+
+| Version     | Jahr  | Merkmale                                                                                      |
+| ----------- | ----- | --------------------------------------------------------------------------------------------- |
+| **HTTP/0.9, 1.0** | 1991, 1996 | nur GET bzw. eine TCP-Verbindung pro Anfrage                                     |
+| **HTTP/1.1** | 1997 | Textformat, **persistente Verbindungen** (_Keep-Alive_), Pflicht-Header `Host`, Chunked Transfer. Pro Verbindung nur eine Anfrage gleichzeitig (**Head-of-Line-Blocking**), Browser öffnen daher bis zu 6 Verbindungen pro Host |
+| **HTTP/2**  | 2015 (RFC 7540, heute RFC 9113) | **Binärformat** mit Frames, **Multiplexing** vieler Anfragen als Streams über eine TCP-Verbindung, Header-Kompression (HPACK), Prioritäten. Ein verlorenes TCP-Paket hält aber alle Streams auf |
+| **HTTP/3**  | 2022 (RFC 9114) | läuft über **QUIC** (RFC 9000) auf **UDP** statt TCP. QUIC bringt Zuverlässigkeit pro Stream, TLS 1.3 ist fest eingebaut, der Verbindungsaufbau braucht weniger Umläufe, und Verbindungen überleben einen Wechsel des Netzes (WLAN zu Mobilfunk) |
+
+Für Entwickler ändert sich durch HTTP/2 und HTTP/3 nichts an Methoden, Headern und Statuscodes. Browser verwenden HTTP/2 und HTTP/3 in der Praxis nur verschlüsselt. Ein Server kündigt HTTP/3 mit dem Header `Alt-Svc` oder einem DNS-Eintrag vom Typ `HTTPS` an.
+
+## HTTPS
+
+**HTTPS** ist HTTP über eine **TLS**-verschlüsselte Verbindung (Standardport 443). TLS sorgt für:
+
+- **Vertraulichkeit**: Niemand im Netz (etwa im offenen WLAN) kann Passwörter oder Inhalte mitlesen.
+- **Integrität**: Nachrichten können unterwegs nicht unbemerkt verändert werden.
+- **Authentizität**: Ein **Zertifikat** einer vertrauenswürdigen Zertifizierungsstelle beweist, dass der Server wirklich zur Domain gehört.
+
+Die Zertifizierungsstelle **Let's Encrypt** stellt Zertifikate kostenlos und automatisiert über das Protokoll ACME aus. Heute sollte jede Website ausschließlich HTTPS verwenden. Browser markieren HTTP-Seiten als „nicht sicher“, und viele Web-APIs (Geolocation, Service Worker, Kamera) funktionieren nur in einem sicheren Kontext.
+
+## CORS
+
+Die **Same-Origin-Policy** des Browsers verhindert, dass JavaScript einer Seite Antworten von einer anderen **Origin** liest. Eine Origin besteht aus **Schema, Host und Port**: `https://app.example.at` und `https://api.example.at` sind verschiedene Origins, ebenso `http://localhost:5173` und `http://localhost:5000`. So kann eine bösartige Seite nicht mit deinem eingeloggten Webmail-Cookie deine Mails abrufen.
+
+**CORS** (_Cross-Origin Resource Sharing_) lockert diese Regel gezielt. Der Server erlaubt mit Antwort-Headern, welche fremden Origins zugreifen dürfen:
+
+```http
+Access-Control-Allow-Origin: https://app.example.at
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: Content-Type, Authorization
+```
+
+Für Anfragen, die über einfache Formular-Anfragen hinausgehen (etwa `PUT` oder `Content-Type: application/json`), schickt der Browser vorher automatisch eine **Preflight-Anfrage** mit `OPTIONS` und sendet die eigentliche Anfrage nur, wenn der Server zustimmt. CORS wird **vom Browser** durchgesetzt. Es schützt Benutzer, nicht den Server: `curl` oder ein C#-Programm ignorieren es.
+
+## Werkzeuge
+
+- Die **Entwicklerwerkzeuge** des Browsers (Taste F12), Reiter **Netzwerk**, zeigen jede Anfrage mit Methode, Status, Headern, Body, Größe und Zeitverlauf. Dort sieht man auch, ob eine Antwort aus dem Cache kam und welche HTTP-Version verwendet wurde.
+- **curl** sendet HTTP-Anfragen von der Kommandozeile. Es ist unter Linux, macOS und Windows 10/11 vorinstalliert.
+- Grafische Werkzeuge wie **Postman**, **Bruno** oder die `.http`-Dateien in Visual Studio, Rider und VS Code eignen sich zum Testen von APIs.
+
+```bash
+curl https://example.com/                    # Body ausgeben
+curl -i https://example.com/                 # mit Antwort-Headern
+curl -I https://example.com/                 # nur Header (HEAD-Anfrage)
+curl -v https://example.com/                 # ausführlich: Anfrage, TLS, Antwort
+curl -L http://example.com/                  # Umleitungen folgen
+curl -X POST https://schule.example.at/api/students \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Anna Huber","schoolClass":"3AHIT"}'
+```
+
+## HTTP im Programm
+
+In C# verwendet man `HttpClient`, in Rust das Crate `reqwest`. Beide kümmern sich um Verbindungen, TLS, Umleitungen und Kompression. Ein `HttpClient` soll für viele Anfragen wiederverwendet werden, weil jede neue Instanz neue Verbindungen aufbaut.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using var http = new HttpClient();
+http.DefaultRequestHeaders.UserAgent.ParseAdd("mutanuq-example/1.0");
+
+using HttpResponseMessage response = await http.GetAsync("https://example.com/");
+
+Console.WriteLine($"Status: {(int)response.StatusCode} {response.ReasonPhrase}");
+Console.WriteLine($"Version: HTTP/{response.Version}");
+Console.WriteLine($"Content-Type: {response.Content.Headers.ContentType}");
+
+if (response.IsSuccessStatusCode)
+{
+    string html = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"{html.Length} Zeichen empfangen");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+fn main() -> Result<(), reqwest::Error> {
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("mutanuq-example/1.0")
+        .build()?;
+
+    let response = client.get("https://example.com/").send()?;
+
+    println!("Status: {}", response.status()); // etwa "200 OK"
+    println!("Version: {:?}", response.version());
+    println!("Content-Type: {:?}", response.headers().get("content-type"));
+
+    if response.status().is_success() {
+        let html = response.text()?;
+        println!("{} Zeichen empfangen", html.chars().count());
+    }
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Dass HTTP/1.1 nur Text über TCP ist, zeigt eine Anfrage ohne Bibliothek: Man öffnet eine TCP-Verbindung zu Port 80, schreibt die Anfrage als Text und liest die Antwort. Der Header `Connection: close` bittet den Server, die Verbindung nach der Antwort zu schließen, damit das Lesen bis zum Ende funktioniert. Für HTTPS müsste man zusätzlich TLS sprechen, deshalb verwendet man in der Praxis immer eine Bibliothek.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net.Sockets;
+using System.Text;
+
+using var tcp = new TcpClient();
+await tcp.ConnectAsync("example.com", 80);
+using NetworkStream stream = tcp.GetStream();
+
+string request = "GET / HTTP/1.1\r\n" +
+                 "Host: example.com\r\n" +
+                 "Connection: close\r\n" +
+                 "\r\n";                       // Leerzeile beendet die Header
+await stream.WriteAsync(Encoding.ASCII.GetBytes(request));
+
+using var reader = new StreamReader(stream, Encoding.UTF8);
+string response = await reader.ReadToEndAsync();
+
+// Statuszeile und Header stehen vor der ersten Leerzeile
+string head = response[..response.IndexOf("\r\n\r\n")];
+Console.WriteLine(head);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use std::io::{Read, Write};
+use std::net::TcpStream;
+
+fn main() -> std::io::Result<()> {
+    let mut stream = TcpStream::connect("example.com:80")?;
+
+    let request = "GET / HTTP/1.1\r\n\
+                   Host: example.com\r\n\
+                   Connection: close\r\n\
+                   \r\n"; // Leerzeile beendet die Header
+    stream.write_all(request.as_bytes())?;
+
+    let mut response = String::new();
+    stream.read_to_string(&mut response)?;
+
+    // Statuszeile und Header stehen vor der ersten Leerzeile
+    if let Some(end) = response.find("\r\n\r\n") {
+        println!("{}", &response[..end]);
+    }
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die Grundlagen von TCP-Verbindungen behandelt die Seite [Netzwerkprogrammierung](/de/software-development/network-programming/).
+
+## Weiterführende Quellen
+
+- [HTTP](https://developer.mozilla.org/de/docs/Web/HTTP) (MDN Web Docs)
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (IETF)
+- [HTTP/3 explained](https://http3-explained.haxx.se/) (Daniel Stenberg, Autor von curl)

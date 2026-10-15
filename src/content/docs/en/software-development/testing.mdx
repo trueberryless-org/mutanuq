@@ -1,0 +1,314 @@
+---
+title: Testing
+description: Test levels, test techniques such as equivalence partitioning and boundary value analysis, unit tests with xUnit and cargo test, test doubles, test-driven development, code coverage and debugging.
+sidebar:
+  order: 16
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Tests check whether software behaves as it should. They find errors before users find them, and they give confidence when changing code: with a good safety net of tests, you can restructure and extend code without fearing that you break something unnoticed. Edsger W. Dijkstra described the limit of testing aptly: testing can show the presence of bugs, but never prove their absence.
+
+## Terminology
+
+| Term             | Meaning                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| **Error** (mistake) | a human mistake, such as a misunderstanding of the requirement                             |
+| **Defect** (bug) | the faulty code that results from the error                                                   |
+| **Failure**      | the visible wrong behaviour during execution                                                  |
+| **Test case**    | input, preconditions and expected result                                                      |
+| **Test oracle**  | source of the expected result, such as the specification or a calculation by hand             |
+| **Regression test** | re-running existing tests after a change to find new errors in old code                    |
+
+The terms follow the glossary of the ISTQB (_International Software Testing Qualifications Board_), whose Certified Tester syllabus is the most widely used foundation for software testing.
+
+## Test levels
+
+| Level                    | What is tested?                                             | Who tests?                     |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------ |
+| **Component test** (unit test) | individual methods or classes, isolated from the rest | developers, automated          |
+| **Integration test**     | the interaction of several components, such as with the database | developers, automated     |
+| **System test**          | the complete system against the requirements                | test team                      |
+| **Acceptance test**      | whether the system meets the needs of the customer          | customer, users                |
+
+The **test pyramid** recommends many fast unit tests as the base, fewer integration tests above them and only a few slow end-to-end tests at the top, which operate the system through its user interface. The [V-model](/en/project_management/basics/process_models/) assigns the levels to the development phases.
+
+Besides **functional** tests (does the program do the right thing?), there are **non-functional** tests: load and performance tests, security tests, usability tests (see [Software Quality](/en/project_management/quality_management/software_quality/)).
+
+## Test techniques
+
+- **Static techniques** do not execute the code: code reviews, walkthroughs and automatic analysis by compilers and linters.
+- **Dynamic techniques** execute the code with test data. They are divided into:
+
+### Black-box techniques
+
+Test cases are derived from the **specification** without knowing the code.
+
+- **Equivalence partitioning**: inputs for which the program should behave the same form a class. One representative per class is enough. Invalid inputs form their own classes.
+- **Boundary value analysis**: errors often occur at the edges of the classes (`<` instead of `<=`). You therefore test the boundary values themselves and the values right next to them.
+- **Decision tables**: for combinations of conditions, every combination is written down as a column with the expected action.
+- **State transition testing**: for systems with states (vending machine, order), all state transitions are checked.
+
+Example: a function computes the result from a score of 0 to 100, where 50 points or more is a pass.
+
+| Class                  | Range         | Representative | Boundary values  |
+| ---------------------- | ------------- | -------------- | ---------------- |
+| invalid (too small)    | < 0           | −10            | −1               |
+| failed                 | 0 to 49       | 25             | 0, 49            |
+| passed                 | 50 to 100     | 75             | 50, 100          |
+| invalid (too large)    | > 100         | 150            | 101              |
+
+### White-box techniques
+
+Test cases are derived from the **structure of the code**. What is measured is the **code coverage**:
+
+- **Statement coverage** (C0): every statement was executed at least once.
+- **Branch coverage** (C1): every branch of every decision (`if` and `else`) was taken at least once. C1 includes C0.
+- **Condition coverage**: every sub-condition of a compound expression was true once and false once.
+- **Path coverage**: every possible path through the method was taken. With loops, this is usually unattainable.
+
+High coverage is no proof of good tests: a test without a meaningful check (_assertion_) increases the coverage but finds no errors. Tools are **Coverlet** for .NET and **cargo-llvm-cov** for Rust.
+
+## Unit tests
+
+According to the acronym **FIRST**, a good unit test is _fast_, _independent_ (of other tests and of their order), _repeatable_ (the same result on every run), _self-validating_ (passed or failed without manual checks) and _timely_ (written close to the code).
+
+Tests usually follow the structure **Arrange, Act, Assert** (AAA): prepare, execute, check. The name of a test says what is tested and what is expected.
+
+In C#, you use a test framework such as **xUnit**, NUnit or MSTest in a separate test project (`dotnet new xunit`, run with `dotnet test`). Rust has testing built into the language and Cargo: functions marked `#[test]` are run with `cargo test`. Unit tests are usually placed in a module `tests` in the same file, integration tests in the directory `tests/`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Xunit;
+
+public static class Grading
+{
+    public static string Grade(int points)
+    {
+        if (points is < 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(points));
+        return points >= 50 ? "passed" : "failed";
+    }
+}
+
+public class GradingTests
+{
+    [Fact]
+    public void Grade_With75Points_ReturnsPassed()
+    {
+        // Arrange
+        int points = 75;
+        // Act
+        string result = Grading.Grade(points);
+        // Assert
+        Assert.Equal("passed", result);
+    }
+
+    // one test, several data sets: boundary values
+    [Theory]
+    [InlineData(0, "failed")]
+    [InlineData(49, "failed")]
+    [InlineData(50, "passed")]
+    [InlineData(100, "passed")]
+    public void Grade_AtBoundaries_ReturnsExpected(int points, string expected)
+    {
+        Assert.Equal(expected, Grading.Grade(points));
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(101)]
+    public void Grade_OutOfRange_Throws(int points)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Grading.Grade(points));
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+pub fn grade(points: i32) -> Result<&'static str, String> {
+    match points {
+        0..=49 => Ok("failed"),
+        50..=100 => Ok("passed"),
+        _ => Err(format!("invalid score: {points}")),
+    }
+}
+
+// only compiled when testing
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn grade_with_75_points_returns_passed() {
+        // Arrange
+        let points = 75;
+        // Act
+        let result = grade(points);
+        // Assert
+        assert_eq!(result, Ok("passed"));
+    }
+
+    #[test]
+    fn grade_at_boundaries() {
+        for (points, expected) in [(0, "failed"), (49, "failed"), (50, "passed"), (100, "passed")] {
+            assert_eq!(grade(points), Ok(expected), "at {points} points");
+        }
+    }
+
+    #[test]
+    fn grade_out_of_range_is_error() {
+        assert!(grade(-1).is_err());
+        assert!(grade(101).is_err());
+    }
+
+    #[test]
+    #[should_panic(expected = "index out of bounds")]
+    fn invalid_index_panics() {
+        let v: Vec<i32> = Vec::new();
+        let _ = v[0];
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust also runs code examples in documentation comments (`///`) as **doc tests**. This keeps the documentation correct at all times.
+
+## Test doubles
+
+A class often depends on others: on a database, a web service or the system clock. In a unit test, such dependencies are replaced by **test doubles** (named after stunt doubles) so that the test stays fast, repeatable and independent.
+
+| Kind        | Behaviour                                                                                  |
+| ----------- | ------------------------------------------------------------------------------------------ |
+| **Dummy**   | is only passed so that the code compiles, but is never used                                |
+| **Stub**    | returns predefined answers, for example always the same time                               |
+| **Fake**    | working, simplified implementation, for example an in-memory database                     |
+| **Spy**     | a stub that also records how it was called                                                 |
+| **Mock**    | checks by itself whether it was called as expected                                         |
+
+The prerequisite is that the class receives its dependency through an **interface** (or trait) instead of creating it itself. This principle is called **dependency injection** (see [Software Architecture](/en/software-development/software-architecture/#dependency-injection)). In C#, mocks are conveniently created with libraries such as **Moq** or NSubstitute; in Rust, with the crate `mockall`, or you write simple fakes by hand.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Moq;
+using Xunit;
+
+public interface IClock
+{
+    DateTime Now { get; }
+}
+
+public class Greeter(IClock clock)
+{
+    public string Greet() => clock.Now.Hour < 12 ? "Good morning" : "Good afternoon";
+}
+
+public class GreeterTests
+{
+    [Fact]
+    public void Greet_InTheMorning_SaysGoodMorning()
+    {
+        // stub with Moq: Now always returns 8:00
+        var clock = new Mock<IClock>();
+        clock.Setup(c => c.Now).Returns(new DateTime(2026, 9, 7, 8, 0, 0));
+
+        var greeter = new Greeter(clock.Object);
+
+        Assert.Equal("Good morning", greeter.Greet());
+        clock.VerifyGet(c => c.Now, Times.Once()); // as a mock: verify the call
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+pub trait Clock {
+    fn hour(&self) -> u32;
+}
+
+pub struct Greeter<C: Clock> {
+    clock: C,
+}
+
+impl<C: Clock> Greeter<C> {
+    pub fn greet(&self) -> &'static str {
+        if self.clock.hour() < 12 { "Good morning" } else { "Good afternoon" }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // hand-written stub
+    struct FixedClock(u32);
+
+    impl Clock for FixedClock {
+        fn hour(&self) -> u32 {
+            self.0
+        }
+    }
+
+    #[test]
+    fn greet_in_the_morning() {
+        let greeter = Greeter { clock: FixedClock(8) };
+        assert_eq!(greeter.greet(), "Good morning");
+    }
+
+    #[test]
+    fn greet_in_the_afternoon() {
+        let greeter = Greeter { clock: FixedClock(15) };
+        assert_eq!(greeter.greet(), "Good afternoon");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Test-driven development
+
+In **test-driven development** (TDD, popularised by Kent Beck), the test is written **before** the code, in a short cycle:
+
+1. **Red**: write a test that describes the next small piece of behaviour. It fails because the code is still missing.
+2. **Green**: write just enough code for the test to pass.
+3. **Refactor**: clean up the code without changing its behaviour. The tests provide the safety net (see [Clean Code](/en/software-development/clean-code/#refactoring)).
+
+TDD leads to easily testable, loosely coupled code and to a comprehensive test suite as a by-product. Related approaches are **BDD** (_behaviour-driven development_), in which tests are phrased in domain language (_Given, When, Then_), and **acceptance test-driven development**.
+
+## Automation
+
+Tests only really pay off when they run automatically with every change. In **continuous integration** (CI), a server such as GitHub Actions or GitLab CI builds the project with every push and runs all tests. A failing test prevents faulty code from reaching the main branch (see [Version Control](/en/software-development/version-control/#continuous-integration)).
+
+## Debugging
+
+If a test fails or a program behaves incorrectly, you search for the cause with a **debugger** (in Visual Studio, Rider, VS Code or RustRover):
+
+| Function                 | Purpose                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| **Breakpoint**           | pauses the program at a line                                             |
+| **Conditional breakpoint** | only pauses when a condition is met, for example `i == 500`            |
+| **Step over**            | executes the current line without jumping into called methods           |
+| **Step into**            | jumps into the called method                                             |
+| **Step out**             | runs until the end of the current method                                 |
+| **Watch**                | shows the values of variables and expressions                            |
+| **Call stack**           | shows which method calls led to the current position                     |
+
+A proven approach: first **reproduce** the error reliably, then write a test that shows it, narrow down the cause with breakpoints or output, fix it and check that the new test passes and all others still pass. It often also helps to explain the problem step by step to someone else (or to a rubber duck): _rubber duck debugging_.
+
+## Further reading
+
+- [Unit testing C# with xUnit](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit) (Microsoft Learn)
+- [Writing Automated Tests](https://doc.rust-lang.org/book/ch11-00-testing.html) (The Rust Programming Language)
+- [ISTQB Certified Tester Foundation Level](https://www.istqb.org/)

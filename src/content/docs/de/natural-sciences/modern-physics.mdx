@@ -1,0 +1,222 @@
+---
+title: Moderne Physik
+description: Photoeffekt, Photonen, Welle-Teilchen-Dualismus, Atommodelle von Bohr bis zur Quantenmechanik, Energieniveaus und Spektren, Laser, Halbleiter und spezielle Relativitätstheorie mit E = mc².
+sidebar:
+  order: 14
+---
+
+Um 1900 stieß die klassische Physik an Grenzen: Sie konnte weder die Strahlung heißer Körper noch die Stabilität von Atomen oder den Photoeffekt erklären. Zwei neue Theorien lösten diese Probleme: die **Quantenphysik** für sehr kleine Dinge und die **Relativitätstheorie** für sehr große Geschwindigkeiten. Beide sind heute Grundlage von Halbleitertechnik, Laser, GPS und medizinischer Bildgebung.
+
+## Photoeffekt
+
+Bestrahlt man eine Metalloberfläche mit Licht, können Elektronen austreten (**äußerer lichtelektrischer Effekt**, Hallwachs-Effekt). Die Beobachtungen widersprechen dem Wellenmodell:
+
+- Ob Elektronen austreten, hängt nur von der **Frequenz** des Lichts ab, nicht von seiner Intensität. Unterhalb einer Grenzfrequenz $f_\mathrm{G}$ tritt auch bei sehr hellem Licht kein Elektron aus.
+- Die kinetische Energie der Elektronen steigt linear mit der Frequenz; die Intensität bestimmt nur ihre **Anzahl**.
+- Die Elektronen treten ohne messbare Verzögerung aus.
+
+Albert Einstein erklärte das 1905 (Nobelpreis 1921): Licht besteht aus Energiepaketen, **Photonen**. Ein Photon gibt seine ganze Energie an ein einzelnes Elektron ab. Davon wird die **Austrittsarbeit** $W_\mathrm{A}$ des Metalls verbraucht, der Rest ist kinetische Energie:
+
+$$
+E_\mathrm{kin,max} = h f - W_\mathrm{A}, \qquad f_\mathrm{G} = \frac{W_\mathrm{A}}{h}
+$$
+
+:::tip[Beispiel: Natrium]
+Natrium hat $W_\mathrm{A} \approx 2{,}28\,\mathrm{eV}$. Violettes Licht mit $\lambda = 400\,\mathrm{nm}$ hat die Photonenenergie
+
+$$
+E = \frac{h c}{\lambda} = \frac{1240\,\mathrm{eV\,nm}}{400\,\mathrm{nm}} = 3{,}10\,\mathrm{eV}
+$$
+
+Die schnellsten Elektronen haben $3{,}10 - 2{,}28 = 0{,}82\,\mathrm{eV}$. Rotes Licht ($700\,\mathrm{nm}$, $1{,}77\,\mathrm{eV}$) löst bei Natrium keine Elektronen aus, egal wie hell es ist.
+:::
+
+Die Merkformel $hc = 1240\,\mathrm{eV\,nm}$ spart viel Rechenarbeit. Anwendungen: Photozellen, Photomultiplier, Bildsensoren (dort als innerer Photoeffekt im Halbleiter), Solarzellen.
+
+## Photonen
+
+Ein **Photon** ist das Quant des elektromagnetischen Feldes. Es hat keine Ruhemasse, bewegt sich immer mit $c$ und trägt Energie und Impuls:
+
+$$
+E = h f = \frac{h c}{\lambda}, \qquad p = \frac{h}{\lambda} = \frac{E}{c}
+$$
+
+Die **Planck-Konstante** $h = 6{,}626\,070\,15 \cdot 10^{-34}\,\mathrm{J\,s}$ ist seit 2019 exakt festgelegt und definiert das Kilogramm. Max Planck hatte sie 1900 eingeführt, um das Spektrum schwarzer Strahler zu erklären.
+
+Ein grüner Laserpointer ($532\,\mathrm{nm}$, $1\,\mathrm{mW}$) sendet Photonen mit je $3{,}73 \cdot 10^{-19}\,\mathrm{J} = 2{,}33\,\mathrm{eV}$ aus, also $2{,}7 \cdot 10^{15}$ Photonen pro Sekunde. Weil $h$ so klein ist, merkt man die Körnigkeit des Lichts im Alltag nicht. Die Photonenenergie erklärt auch, warum UV-Licht Sonnenbrand verursacht und Infrarot nicht: Nur ausreichend energiereiche einzelne Photonen können Moleküle aufbrechen.
+
+## Welle-Teilchen-Dualismus
+
+Licht zeigt je nach Experiment Wellen- (Interferenz, Beugung) oder Teilcheneigenschaften (Photoeffekt). Louis de Broglie schlug 1924 vor, dass auch Materieteilchen Welleneigenschaften haben, mit der **De-Broglie-Wellenlänge**
+
+$$
+\lambda = \frac{h}{p} = \frac{h}{m v}
+$$
+
+:::tip[Beispiel: Elektronen und Tennisball]
+Ein Elektron, das mit $100\,\mathrm{V}$ beschleunigt wurde, hat $p = \sqrt{2 m_\mathrm{e} e U}$ und $\lambda = \frac{h}{\sqrt{2 m_\mathrm{e} e U}} = 0{,}123\,\mathrm{nm}$, vergleichbar mit Atomabständen in Kristallen. Elektronen werden deshalb an Kristallen gebeugt (Davisson-Germer-Versuch 1927), und Elektronenmikroskope lösen viel feinere Strukturen auf als Lichtmikroskope. Ein Tennisball ($0{,}145\,\mathrm{kg}$, $40\,\mathrm{m/s}$) hat dagegen $\lambda = 1{,}1 \cdot 10^{-34}\,\mathrm{m}$, unmessbar klein.
+:::
+
+Quantenobjekte sind weder klassische Teilchen noch klassische Wellen. Die Welle beschreibt die **Wahrscheinlichkeit**, das Objekt an einem Ort anzutreffen; beim Nachweis erscheint es punktförmig. Am Doppelspalt baut sich das Interferenzmuster auch dann auf, wenn die Elektronen einzeln nacheinander durchfliegen.
+
+Die **Heisenbergsche Unschärferelation** setzt der gleichzeitigen Kenntnis von Ort und Impuls eine prinzipielle Grenze:
+
+$$
+\Delta x \cdot \Delta p \ge \frac{\hbar}{2}, \qquad \hbar = \frac{h}{2\pi}
+$$
+
+Das ist keine Ungenauigkeit der Messgeräte, sondern eine Eigenschaft der Natur.
+
+## Atommodelle
+
+| Modell | Jahr | Kernaussage | Grenze |
+| --- | --- | --- | --- |
+| Dalton | 1803 | Atome sind unteilbare Kugeln, jedes Element hat eigene Atome | erklärt keine Ladungen |
+| Thomson („Rosinenkuchen“) | 1904 | positive Masse mit eingelagerten Elektronen | widerlegt durch Rutherford |
+| Rutherford | 1911 | winziger, schwerer, positiver **Kern**, Elektronen umkreisen ihn, Atom ist fast leer | kreisende Elektronen müssten strahlen und in den Kern stürzen |
+| Bohr | 1913 | Elektronen nur auf erlaubten Bahnen mit festen Energien | nur für Wasserstoff quantitativ richtig |
+| quantenmechanisch (Schrödinger) | 1926 | Elektronen als Wellenfunktionen in **Orbitalen** (Aufenthaltswahrscheinlichkeit) | heutiges Standardmodell |
+
+Rutherfords **Streuversuch** (Alphateilchen auf Goldfolie) zeigte, dass fast alle Teilchen ungehindert durchfliegen, einige aber stark abgelenkt werden: Fast die ganze Masse sitzt in einem Kern, der etwa $10^{-15}$ bis $10^{-14}\,\mathrm{m}$ groß ist, das Atom selbst etwa $10^{-10}\,\mathrm{m}$.
+
+### Bohrsches Atommodell
+
+Niels Bohr postulierte für das Wasserstoffatom:
+
+1. Elektronen bewegen sich nur auf bestimmten **stationären Bahnen** und strahlen dort nicht.
+2. Beim Übergang zwischen zwei Bahnen wird ein Photon mit genau der Energiedifferenz ausgesandt oder absorbiert: $h f = E_m - E_n$.
+
+Daraus folgen die **Energieniveaus** des Wasserstoffatoms:
+
+$$
+E_n = -\frac{13{,}6\,\mathrm{eV}}{n^2}, \qquad n = 1, 2, 3, \dots
+$$
+
+$n$ ist die **Hauptquantenzahl**. Der Grundzustand ($n = 1$) liegt bei $-13{,}6\,\mathrm{eV}$; um das Elektron ganz abzulösen (Ionisierung), braucht man $13{,}6\,\mathrm{eV}$. Der Radius der innersten Bahn, der **Bohrsche Radius**, beträgt $a_0 = 52{,}9\,\mathrm{pm}$.
+
+### Energieniveaus und Spektren
+
+Weil die Energieniveaus diskret sind, senden angeregte Atome nur Licht bestimmter Wellenlängen aus: ein **Linienspektrum**. Jedes Element hat sein eigenes Spektrum wie einen Fingerabdruck. Fällt weißes Licht durch ein kühles Gas, fehlen genau diese Linien (**Absorptionsspektrum**, Fraunhofer-Linien im Sonnenspektrum). So bestimmt man die Zusammensetzung von Sternen.
+
+| Serie | Endniveau | Spektralbereich |
+| --- | --- | --- |
+| Lyman | $n = 1$ | Ultraviolett |
+| Balmer | $n = 2$ | sichtbar (und nahes UV) |
+| Paschen | $n = 3$ | Infrarot |
+
+:::tip[Beispiel: rote Balmer-Linie]
+Übergang von $n = 3$ nach $n = 2$:
+
+$$
+\Delta E = 13{,}6\,\mathrm{eV} \cdot \left(\frac{1}{2^2} - \frac{1}{3^2}\right) = 1{,}89\,\mathrm{eV}, \qquad \lambda = \frac{1240\,\mathrm{eV\,nm}}{1{,}89\,\mathrm{eV}} = 656\,\mathrm{nm}
+$$
+
+Das ist die rote H-alpha-Linie, die Astronomen in Gasnebeln beobachten. Der Übergang $2 \to 1$ liefert $10{,}2\,\mathrm{eV}$ bei $122\,\mathrm{nm}$ (Lyman-alpha, UV).
+:::
+
+Feste Körper und dichte Gase leuchten dagegen mit einem **kontinuierlichen Spektrum** (Glühlampe, Sonne), das die Temperatur bestimmt ([Wiensches Gesetz](/de/natural-sciences/thermodynamics/#wärmestrahlung)).
+
+### Quantenmechanisches Atommodell
+
+Erwin Schrödinger beschrieb das Elektron 1926 durch eine Wellenfunktion $\psi$; $|\psi|^2$ ist die Aufenthaltswahrscheinlichkeitsdichte. Statt Bahnen gibt es **Orbitale**, räumliche Bereiche, in denen das Elektron mit hoher Wahrscheinlichkeit anzutreffen ist. Jeder Zustand wird durch vier **Quantenzahlen** beschrieben:
+
+| Quantenzahl | Werte | Bedeutung |
+| --- | --- | --- |
+| Hauptquantenzahl $n$ | $1, 2, 3, \dots$ | Schale, Energie (K, L, M, …) |
+| Nebenquantenzahl $l$ | $0$ bis $n - 1$ | Form des Orbitals (s, p, d, f) |
+| Magnetquantenzahl $m$ | $-l$ bis $+l$ | Ausrichtung |
+| Spinquantenzahl $s$ | $\pm\frac{1}{2}$ | Eigendrehimpuls |
+
+Nach dem **Pauli-Prinzip** dürfen zwei Elektronen eines Atoms nie in allen vier Quantenzahlen übereinstimmen. Daraus ergibt sich der Schalenaufbau und das Periodensystem der Elemente, das die Chemie bestimmt.
+
+## Laser
+
+**LASER** steht für _Light Amplification by Stimulated Emission of Radiation_. Grundlage ist die **stimulierte Emission**: Trifft ein Photon passender Energie auf ein angeregtes Atom, sendet dieses ein zweites, völlig gleiches Photon aus (gleiche Frequenz, Phase, Richtung, Polarisation). Neben ihr gibt es Absorption und spontane Emission.
+
+Damit Verstärkung überwiegt, müssen mehr Atome im angeregten als im Grundzustand sein (**Besetzungsinversion**). Sie wird durch **Pumpen** erreicht (Blitzlampe, elektrischer Strom, anderer Laser), meist über ein drittes, langlebiges (metastabiles) Niveau. Zwei Spiegel an den Enden (einer teildurchlässig) bilden einen **Resonator**, der das Licht viele Male durch das aktive Medium schickt.
+
+Eigenschaften des Laserlichts: monochromatisch (sehr schmales Spektrum), kohärent (feste Phasenbeziehung, interferenzfähig), stark gebündelt und sehr intensiv. Anwendungen: Glasfaserkommunikation, Barcode-Scanner, Laserschneiden und -schweißen, Augenchirurgie, LiDAR, Abstandsmessung, Lithographie in der Chipfertigung.
+
+:::caution
+Laserstrahlung kann schon bei wenigen Milliwatt die Netzhaut schädigen, weil die Augenlinse den parallelen Strahl auf einen winzigen Fleck bündelt. Laser sind deshalb nach EN 60825-1 in Klassen eingeteilt; ab Klasse 3R ist besondere Vorsicht nötig. Nie in den Strahl blicken.
+:::
+
+## Halbleiter
+
+Im Festkörper verschmelzen die Energieniveaus vieler Atome zu **Energiebändern**. Entscheidend sind das voll besetzte **Valenzband** und das darüberliegende **Leitungsband**; dazwischen liegt eine verbotene Zone, die **Bandlücke** $E_\mathrm{g}$.
+
+| Stoffklasse | Bandlücke | Leitfähigkeit |
+| --- | --- | --- |
+| Leiter (Metall) | keine, Bänder überlappen oder Leitungsband teilweise gefüllt | hoch, sinkt mit der Temperatur |
+| Halbleiter | etwa $0{,}1$ bis $3\,\mathrm{eV}$ (Silizium $1{,}12\,\mathrm{eV}$) | gering, steigt mit der Temperatur |
+| Isolator | über etwa $4\,\mathrm{eV}$ (Diamant $5{,}5\,\mathrm{eV}$) | praktisch null |
+
+In einem reinen Halbleiter heben thermische Energie oder Licht einzelne Elektronen ins Leitungsband; im Valenzband bleibt ein **Loch** zurück, das sich wie eine positive Ladung bewegt (**Eigenleitung**). Durch **Dotieren** mit Fremdatomen steuert man die Leitfähigkeit gezielt:
+
+- **n-Dotierung**: fünfwertige Atome (Phosphor) in Silizium liefern freie Elektronen.
+- **p-Dotierung**: dreiwertige Atome (Bor) erzeugen Löcher.
+
+Am Übergang zwischen n- und p-Gebiet (**pn-Übergang**) entsteht eine ladungsträgerarme Sperrschicht. Sie lässt Strom nur in eine Richtung durch: das Prinzip der **Diode**. Transistoren, die Grundbausteine jedes Prozessors, bestehen aus mehreren solchen Übergängen. In einer **Leuchtdiode** (LED) geben rekombinierende Elektronen und Löcher ihre Energie als Photon ab, dessen Energie etwa der Bandlücke entspricht; in einer **Solarzelle** läuft der Vorgang umgekehrt (siehe [Photovoltaik](/de/natural-sciences/energy-and-climate-physics/#photovoltaik)). Silizium mit $1{,}12\,\mathrm{eV}$ nutzt Licht bis etwa $1100\,\mathrm{nm}$.
+
+## Spezielle Relativitätstheorie
+
+Albert Einstein veröffentlichte 1905 die **spezielle Relativitätstheorie**. Sie beruht auf zwei Postulaten:
+
+1. **Relativitätsprinzip**: Die Naturgesetze sind in allen Inertialsystemen gleich. Kein Experiment kann eine absolute Ruhe feststellen.
+2. **Konstanz der Lichtgeschwindigkeit**: Licht hat im Vakuum in jedem Inertialsystem die Geschwindigkeit $c$, unabhängig von der Bewegung der Quelle oder des Beobachters.
+
+Das zweite Postulat widerspricht der Alltagserfahrung, ist aber vielfach bestätigt (Michelson-Morley-Experiment 1887). Daraus folgt, dass Zeit und Länge vom Bezugssystem abhängen. Die Effekte werden durch den **Lorentz-Faktor** bestimmt:
+
+$$
+\gamma = \frac{1}{\sqrt{1 - v^2/c^2}} \ge 1
+$$
+
+Bei Alltagsgeschwindigkeiten ist $\gamma$ praktisch $1$ (ein Flugzeug mit $900\,\mathrm{km/h}$: $\gamma - 1 \approx 3{,}5 \cdot 10^{-13}$). Erst nahe $c$ wird er groß; bei $v = 0{,}995\,c$ ist $\gamma = 10$.
+
+### Zeitdilatation
+
+Eine bewegte Uhr geht langsamer. Vergeht im Ruhesystem der Uhr die **Eigenzeit** $\Delta t_0$, misst ein Beobachter, gegenüber dem sie sich bewegt:
+
+$$
+\Delta t = \gamma \cdot \Delta t_0
+$$
+
+:::tip[Beispiel: Myonen aus der Höhenstrahlung]
+Myonen entstehen in etwa $10$ bis $15\,\mathrm{km}$ Höhe und haben eine mittlere Lebensdauer von $\tau = 2{,}2\,\mathrm{\mu s}$. Selbst mit $v = 0{,}995\,c$ kämen sie klassisch nur $0{,}995 \cdot 3 \cdot 10^8 \cdot 2{,}2 \cdot 10^{-6} = 656\,\mathrm{m}$ weit. Für uns lebt ein solches Myon aber $\gamma\tau = 10 \cdot 2{,}2\,\mathrm{\mu s} = 22\,\mathrm{\mu s}$ und kommt im Mittel $6{,}6\,\mathrm{km}$ weit. Tatsächlich erreichen viele Myonen den Erdboden.
+:::
+
+Auch GPS muss relativistisch korrigieren: Die Uhren der Satelliten gehen wegen ihrer Geschwindigkeit pro Tag etwa $7\,\mathrm{\mu s}$ nach, wegen des schwächeren Schwerefelds (allgemeine Relativitätstheorie) etwa $45\,\mathrm{\mu s}$ vor, netto rund $38\,\mathrm{\mu s}$ vor. Ohne Korrektur wüchse der Positionsfehler um etwa $10\,\mathrm{km}$ pro Tag.
+
+### Längenkontraktion
+
+Ein bewegter Körper ist in Bewegungsrichtung verkürzt. Ist $l_0$ seine Länge im eigenen Ruhesystem (Eigenlänge):
+
+$$
+l = \frac{l_0}{\gamma}
+$$
+
+Aus Sicht des Myons ist die Atmosphäre um den Faktor $10$ verkürzt, deshalb schafft es den Weg in seiner kurzen Eigenzeit. Beide Beschreibungen sind gleichwertig.
+
+### Relativistische Masse, Impuls und Energie
+
+Kein Körper mit Masse kann die Lichtgeschwindigkeit erreichen, weil sein Impuls $p = \gamma m v$ und seine Energie dabei über alle Grenzen wachsen. Geschwindigkeiten addieren sich relativistisch so, dass nie mehr als $c$ herauskommt.
+
+Die berühmteste Folgerung ist die **Äquivalenz von Masse und Energie**: Jede Masse $m$ entspricht einer Ruheenergie
+
+$$
+E_0 = m c^2, \qquad E = \gamma m c^2, \qquad E_\mathrm{kin} = (\gamma - 1) m c^2
+$$
+
+:::tip[Beispiel: Energie in einem Gramm Masse]
+$E = 0{,}001\,\mathrm{kg} \cdot (2{,}998 \cdot 10^8\,\mathrm{m/s})^2 = 8{,}99 \cdot 10^{13}\,\mathrm{J} = 25\,\mathrm{GWh}$
+
+Das ist etwa der Jahresstromverbrauch von rund 7000 österreichischen Haushalten. Die Sonne strahlt $3{,}83 \cdot 10^{26}\,\mathrm{W}$ ab und verliert dadurch jede Sekunde $L/c^2 = 4{,}3 \cdot 10^9\,\mathrm{kg}$ Masse. Die Ruheenergie eines Elektrons beträgt $511\,\mathrm{keV}$.
+:::
+
+Bei chemischen Reaktionen ist der Massenunterschied unmessbar klein, bei Kernreaktionen dagegen deutlich: Er ist die Quelle der Energie von [Kernspaltung und Kernfusion](/de/natural-sciences/nuclear-physics/#massendefekt-und-bindungsenergie).
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Ralph A. Llewellyn: _Moderne Physik_, Oldenbourg / De Gruyter
+- Albert Einstein: _Zur Elektrodynamik bewegter Körper_, Annalen der Physik 17, 1905
+- LEIFIphysik: Quantenphysik, Atomphysik und Relativitätstheorie, leifiphysik.de

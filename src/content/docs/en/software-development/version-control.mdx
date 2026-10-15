@@ -1,0 +1,184 @@
+---
+title: Version Control with Git
+description: Basic concepts of version control, the most important Git commands, branches, merge and rebase, conflicts, collaboration with pull requests, branching strategies, semantic versioning and continuous integration.
+sidebar:
+  order: 17
+---
+
+A **version control system** (VCS) stores every state of a project together with its author, time and description. You can trace at any time who changed what and why, return to earlier states and work on different features in parallel. It is indispensable for teamwork. By far the most widely used system today is **Git**, which Linus Torvalds wrote in 2005 for the development of the Linux kernel.
+
+## Centralised and distributed
+
+- **Centralised systems** (for example Subversion): the version history is only stored on a server. Without a connection to the server, you cannot create versions.
+- **Distributed systems** (for example Git, Mercurial): every copy of a repository contains the complete history. You work locally and synchronise changes with others when needed. Platforms such as **GitHub**, **GitLab** or **Azure DevOps** provide a shared repository and tools for collaboration.
+
+## Basic concepts
+
+| Term                     | Meaning                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| **Repository** (repo)    | the project directory with the complete version history (in the subfolder `.git`)             |
+| **Working directory**    | the files as they currently lie on disk and are being edited                                  |
+| **Staging area** (index) | intermediate area in which you collect the changes for the next commit                        |
+| **Commit**               | a saved state of the project with message, author, time and a reference to its predecessor; uniquely identified by a hash value (SHA-1, SHA-256 in the future) |
+| **Branch**               | a movable pointer to a commit that represents a separate line of development                  |
+| **HEAD**                 | pointer to the currently checked-out branch or commit                                         |
+| **Remote**               | a remote copy of the repository, named `origin` by default                                    |
+| **Tag**                  | a fixed name for a commit, usually for versions such as `v1.2.0`                              |
+
+A file goes through these states in Git: **untracked** (Git does not know it yet), **modified** (changed but not staged), **staged** (marked for the next commit) and **committed** (stored in the repository).
+
+## The most important commands
+
+```sh
+# once: set your identity
+git config --global user.name "Lena Muster"
+git config --global user.email "lena@example.com"
+
+git init                      # new repository in the current directory
+git clone <url>               # copy an existing repository
+
+git status                    # show the state of the working directory
+git diff                      # show changes that are not yet staged
+git add Program.cs            # stage a change (git add . for all)
+git commit -m "Add login form" # create a commit with a message
+git log --oneline --graph     # show the version history compactly
+
+git branch feature/login      # create a new branch
+git switch feature/login      # switch to the branch (git switch -c creates and switches)
+git merge feature/login       # merge the branch into the current branch
+
+git fetch                     # get changes from the remote without integrating them
+git pull                      # fetch and integrate into the current branch
+git push                      # upload your own commits to the remote
+```
+
+### Undoing changes
+
+| Goal                                                        | Command                                |
+| ----------------------------------------------------------- | -------------------------------------- |
+| discard changes to a file in the working directory          | `git restore file`                     |
+| remove a file from the staging area                         | `git restore --staged file`            |
+| change the last commit message or add a forgotten file      | `git commit --amend`                   |
+| undo a commit with a new counter-commit                     | `git revert <commit>`                  |
+| reset a branch to an earlier commit                         | `git reset --hard <commit>` (careful: discards changes) |
+| put unfinished work aside for a moment                      | `git stash`, later `git stash pop`     |
+
+:::caution[Do not rewrite shared history]
+`git commit --amend`, `git reset` and `git rebase` create new commits and replace old ones. You must not do this for commits that have already been pushed and that others use, because their copies would no longer match. For commits that have already been shared, use `git revert`.
+:::
+
+### .gitignore
+
+Compiled files, dependencies, logs and above all passwords and keys do not belong in the repository. The file `.gitignore` lists patterns of files that Git should ignore:
+
+```txt
+# build output
+bin/
+obj/
+target/
+
+# environment variables and secrets
+.env
+*.pfx
+```
+
+A password that has been committed once stays in the version history even if you delete the file later. It must then be changed immediately.
+
+## Branches, merge and rebase
+
+A **branch** allows you to work on a feature without disturbing the main branch (`main`). When the feature is finished, the branch is integrated back.
+
+- **Fast-forward merge**: if `main` has not changed since the branch was created, the pointer of `main` is simply moved forward.
+- **Three-way merge**: if both branches have changed, Git creates a **merge commit** with two predecessors. It is based on the common ancestor and the two end states.
+- **Rebase**: `git rebase main` replays the commits of your own branch on top of the current state of `main`. The history stays linear, but the commits get new hash values.
+
+```txt
+Before the merge:           After the merge:            After the rebase:
+
+      C---D  feature              C---D                       C'--D'  feature
+     /                           /     \                     /
+A---B---E  main             A---B---E---M  main         A---B---E  main
+```
+
+### Conflicts
+
+If both branches changed the same part of a file differently, Git cannot decide automatically. A **merge conflict** occurs, and Git marks the location in the file:
+
+```txt
+<<<<<<< HEAD
+Console.WriteLine("Welcome!");
+=======
+Console.WriteLine("A warm welcome!");
+>>>>>>> feature/greeting
+```
+
+You choose one variant or combine both, remove the markers, stage the file with `git add` and finish the merge with `git commit`. Small commits and frequent merging keep conflicts small.
+
+## Collaboration
+
+On platforms such as GitHub, you usually work with **pull requests** (_merge requests_ in GitLab):
+
+1. Create a branch for the change and push commits.
+2. Open a pull request that describes what was changed and why.
+3. Automatic checks (build, tests, linters) run.
+4. Colleagues examine the code in a **code review** and comment.
+5. After approval, the branch is merged into `main`.
+
+If you want to contribute to someone else's project, you first create a **fork**, that is, your own copy on the platform, and open a pull request from there.
+
+### Branching strategies
+
+| Strategy               | Process                                                                                               | Suitable for                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **GitHub Flow**        | `main` is always deployable; every change in a short-lived feature branch with a pull request          | web applications with continuous delivery |
+| **Git Flow**           | permanent branches `main` and `develop`, plus feature, release and hotfix branches                    | software with fixed versions              |
+| **Trunk-based development** | everyone works directly on the main branch or with very short branches; unfinished features are hidden behind feature flags | large teams with strong test automation |
+
+### Commit messages
+
+A good commit message has a short subject line in the imperative (about 50 characters, "Add login form", not "Added ..."), a blank line and, if needed, a body that explains **why** the change was necessary. Many projects use the **Conventional Commits** convention with prefixes such as `feat:`, `fix:`, `docs:` or `refactor:`, from which version numbers and changelogs can be generated automatically.
+
+## Semantic versioning
+
+**Semantic versioning** (SemVer) assigns version numbers of the form `MAJOR.MINOR.PATCH`:
+
+- **MAJOR** is increased for incompatible changes to the interface.
+- **MINOR** for new, backwards-compatible features.
+- **PATCH** for backwards-compatible bug fixes.
+
+Versions before `1.0.0` are considered unstable. NuGet and Cargo use SemVer to decide which versions of a dependency are compatible. In Git, versions are marked with tags (`git tag v1.4.2`).
+
+## Continuous integration
+
+With **continuous integration** (CI), every change is built and tested automatically right away. **Continuous delivery** goes further: every successful state is deployable. With **continuous deployment**, it is even deployed automatically. A simple CI pipeline with GitHub Actions for a .NET and a Rust project:
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+
+jobs:
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet build
+      - run: dotnet test
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cargo fmt --check
+      - run: cargo clippy -- -D warnings
+      - run: cargo test
+```
+
+## Further reading
+
+- [Pro Git](https://git-scm.com/book/en/v2), the free book about Git
+- [Semantic Versioning](https://semver.org/)
+- [Conventional Commits](https://www.conventionalcommits.org/)

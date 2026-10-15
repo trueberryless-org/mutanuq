@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 584" width="640" height="584" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Schaltzeichen der Grundgatter nach IEC und ANSI"><title>Schaltzeichen der Grundgatter nach IEC und ANSI</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect width="640" height="584" rx="14" fill="#ffffff"/>
+<rect x="10" y="12" width="620" height="44" rx="8" fill="#dbeafe"/>
+<text x="30" y="40" font-size="15" text-anchor="start" font-weight="700" fill="#1f2937">Gatter</text>
+<text x="350" y="40" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">IEC 60617</text>
+<text x="530" y="40" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">ANSI/IEEE 91</text>
+<text x="30" y="111" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">NOT (Inverter)</text>
+<polyline points="300,106 325,106" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="80" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="112" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">1</text>
+<circle cx="380" cy="106" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="385,106 410,106" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,106 505,106" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,86 L545,106 L505,126 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="550" cy="106" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="555,106 595,106" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="10" y="142" width="620" height="72" fill="#f8fafc"/>
+<text x="30" y="183" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">AND (UND)</text>
+<polyline points="300,165 325,165" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,191 325,191" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="152" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="184" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">&amp;</text>
+<polyline points="375,178 410,178" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,165 505,165" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,191 505,191" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,153 h25 a25,25 0 0 1 0,50 h-25 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="555,178 595,178" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="30" y="255" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">OR (ODER)</text>
+<polyline points="300,237 325,237" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,263 325,263" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="224" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="256" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">≥1</text>
+<polyline points="375,250 410,250" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,237 511,237" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,263 511,263" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,225 Q520,250 505,275 Q540,275 560,250 Q540,225 505,225 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="560,250 595,250" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="10" y="286" width="620" height="72" fill="#f8fafc"/>
+<text x="30" y="327" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">NAND</text>
+<polyline points="300,309 325,309" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,335 325,335" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="296" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="328" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">&amp;</text>
+<circle cx="380" cy="322" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="385,322 410,322" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,309 505,309" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,335 505,335" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,297 h25 a25,25 0 0 1 0,50 h-25 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="560" cy="322" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="565,322 595,322" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="30" y="399" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">NOR</text>
+<polyline points="300,381 325,381" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,407 325,407" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="368" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="400" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">≥1</text>
+<circle cx="380" cy="394" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="385,394 410,394" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,381 511,381" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,407 511,407" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,369 Q520,394 505,419 Q540,419 560,394 Q540,369 505,369 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="565" cy="394" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="570,394 595,394" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="10" y="430" width="620" height="72" fill="#f8fafc"/>
+<text x="30" y="471" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">XOR (Antivalenz)</text>
+<polyline points="300,453 325,453" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,479 325,479" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="440" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="472" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">=1</text>
+<polyline points="375,466 410,466" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,453 503,453" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,479 503,479" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,441 Q520,466 505,491 Q540,491 560,466 Q540,441 505,441 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M497,441 Q512,466 497,491" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="560,466 595,466" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="30" y="543" font-size="15" text-anchor="start" font-weight="600" fill="#1f2937">XNOR (Äquivalenz)</text>
+<polyline points="300,525 325,525" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="300,551 325,551" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="325" y="512" width="50" height="52" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="350" y="544" font-size="17" text-anchor="middle" font-weight="700" fill="#1f2937">=</text>
+<circle cx="380" cy="538" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="385,538 410,538" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,525 503,525" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="480,551 503,551" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M505,513 Q520,538 505,563 Q540,563 560,538 Q540,513 505,513 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<path d="M497,513 Q512,538 497,563" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="565" cy="538" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<polyline points="570,538 595,538" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+</svg>

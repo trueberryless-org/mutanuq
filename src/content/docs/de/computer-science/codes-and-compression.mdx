@@ -1,0 +1,703 @@
+---
+title: Codes und Kompression
+description: BCD- und Gray-Code, Fehlererkennung und -korrektur mit Parität, Hamming-Code, CRC und Prüfsummen sowie verlustfreie und verlustbehaftete Kompression mit Huffman, LZ77 und LZW.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **Code** ist eine Vorschrift, die jedem Zeichen eines Quellalphabets eine Folge von Zeichen eines Zielalphabets zuordnet. Die [Zeichenkodierungen](/de/computer-science/data-representation/#zeichenkodierung) ASCII und UTF-8 sind solche Codes. Je nach Zweck optimiert man einen Code auf andere Eigenschaften: leichte Umrechnung in Dezimalziffern (BCD), nur ein Bit Änderung zwischen Nachbarwerten (Gray), Robustheit gegen Übertragungsfehler (Hamming, CRC) oder möglichst kurze Darstellung (Kompression).
+
+## Grundbegriffe
+
+| Begriff                 | Bedeutung                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| **Codewort**            | die Zeichenfolge, die einem Quellzeichen zugeordnet ist                                     |
+| **Blockcode**           | alle Codewörter haben dieselbe Länge (ASCII, BCD)                                           |
+| **Code variabler Länge** | häufige Zeichen bekommen kürzere Codewörter (Morsecode, Huffman, UTF-8)                    |
+| **Präfixfreier Code**   | kein Codewort ist Anfang eines anderen, deshalb ist eine Bitfolge ohne Trennzeichen eindeutig dekodierbar (Fano-Bedingung) |
+| **Redundanz**           | zusätzliche Information, die nicht zum Inhalt gehört. Kompression entfernt Redundanz, Fehlerschutz fügt gezielt welche hinzu |
+
+## Zahlencodes
+
+### BCD-Code
+
+Beim **BCD-Code** (_Binary Coded Decimal_) wird jede Dezimalziffer einzeln als 4-Bit-Dualzahl kodiert. Von den 16 möglichen Tetraden werden nur 10 benutzt, die übrigen 6 (`1010` bis `1111`) heißen **Pseudotetraden**.
+
+$$
+1995_{10} = 0001\;1001\;1001\;0101_{\text{BCD}} \qquad \text{aber} \qquad 1995_{10} = 0111\;1100\;1011_2
+$$
+
+BCD braucht mehr Speicher als eine reine Dualzahl, die Umwandlung in Dezimalziffern ist aber trivial. Deshalb wird BCD in Siebensegmentanzeigen, Uhrenbausteinen (RTC), Taschenrechnern und im Finanzbereich verwendet, wo dezimale Rundung exakt sein muss. Bei der Addition muss das Ergebnis korrigiert werden: Entsteht eine Pseudotetrade oder ein Übertrag, addiert man 6 (`0110`).
+
+Verwandt sind der **Exzess-3-Code** (Ziffer + 3, z. B. $5 \to 1000$), bei dem das Neunerkomplement durch einfaches Invertieren entsteht, und der **Aiken-Code** (Gewichtung 2-4-2-1).
+
+### Gray-Code
+
+Beim **Gray-Code** unterscheiden sich benachbarte Werte in **genau einem Bit**. Das ist wichtig bei Drehgebern (Winkelencodern) und Positionssensoren: Liest ein Sensor im Dualcode gerade beim Übergang von 3 (`011`) auf 4 (`100`), können sich drei Bits nicht exakt gleichzeitig ändern, und kurzzeitig erscheint ein völlig falscher Wert wie `111`. Im Gray-Code kann ein Lesefehler höchstens um eine Stelle danebenliegen. Auch die Felder im [KV-Diagramm](/de/mathematics/algebra/logic-and-boolean-algebra/#kv-diagramm) sind in Gray-Code-Reihenfolge angeordnet.
+
+| Dezimal | Dual  | Gray  |
+| ------- | ----- | ----- |
+| 0       | `000` | `000` |
+| 1       | `001` | `001` |
+| 2       | `010` | `011` |
+| 3       | `011` | `010` |
+| 4       | `100` | `110` |
+| 5       | `101` | `111` |
+| 6       | `110` | `101` |
+| 7       | `111` | `100` |
+
+Umrechnung: $g = b \oplus (b \gg 1)$. Zurück wird jedes Dualbit als XOR aller Graybits links davon und an der Stelle selbst berechnet. Der Gray-Code ist **zyklisch**: Auch zwischen 7 und 0 ändert sich nur ein Bit.
+
+## Fehlererkennende und fehlerkorrigierende Codes
+
+Bei jeder Übertragung und Speicherung können Bits kippen: durch elektromagnetische Störungen, Rauschen, Kratzer auf einer Disc oder Strahlung im RAM. Um Fehler zu erkennen, fügt man **Prüfbits** hinzu.
+
+### Paritätsbit
+
+Ein **Paritätsbit** ergänzt ein Datenwort so, dass die Anzahl der Einsen gerade (**gerade Parität**, _even parity_) oder ungerade (**ungerade Parität**, _odd parity_) ist.
+
+| Daten      | Anzahl Einsen | Paritätsbit (gerade) | Paritätsbit (ungerade) |
+| ---------- | ------------- | -------------------- | ---------------------- |
+| `1011 0010` | 4            | 0                    | 1                      |
+| `1110 0011` | 5            | 1                    | 0                      |
+
+Der Empfänger zählt die Einsen erneut. Stimmt die Parität nicht, ist ein Fehler passiert. Ein einfaches Paritätsbit erkennt jede **ungerade** Anzahl von Bitfehlern, zwei Fehler heben sich auf. Korrigieren kann es nichts, weil die Fehlerstelle unbekannt ist. Verwendet wird Parität etwa bei der seriellen Schnittstelle ([USART](/de/embedded-programming/usart/)) und bei RAID 5.
+
+Ordnet man die Daten in einer Matrix an und bildet Parität für jede Zeile **und** jede Spalte (**Kreuzparität**, Blocksicherung), schneiden sich bei einem Einzelfehler die fehlerhafte Zeile und Spalte genau am falschen Bit, das damit korrigiert werden kann.
+
+### Hamming-Distanz
+
+Die **Hamming-Distanz** $d(a, b)$ zweier gleich langer Codewörter ist die Anzahl der Stellen, an denen sie sich unterscheiden: $d(10110, 11100) = 2$. Die **Hamming-Distanz eines Codes** $d_{\min}$ ist die kleinste Distanz zwischen zwei beliebigen gültigen Codewörtern.
+
+| Fähigkeit                     | Bedingung                 |
+| ----------------------------- | ------------------------- |
+| $e$ Fehler **erkennen**       | $d_{\min} \geq e + 1$     |
+| $k$ Fehler **korrigieren**    | $d_{\min} \geq 2k + 1$    |
+
+Anschaulich: Wenn sich gültige Codewörter in mindestens 3 Bit unterscheiden, liegt ein Wort mit einem Bitfehler immer noch näher am ursprünglichen Codewort als an jedem anderen und kann diesem zugeordnet werden. Ein Code ohne Prüfbits (ASCII) hat $d_{\min} = 1$, mit Paritätsbit $d_{\min} = 2$.
+
+### Hamming-Code
+
+Der **Hamming-Code** (Richard Hamming, 1950) kann einen Einzelbitfehler **korrigieren** ($d_{\min} = 3$). Beim Hamming(7,4)-Code werden 4 Datenbits mit 3 Prüfbits zu 7 Bit kodiert. Die Prüfbits stehen an den Positionen, die Zweierpotenzen sind (1, 2, 4), die Datenbits an den übrigen (3, 5, 6, 7). Jedes Prüfbit sichert die Positionen, in deren Binärdarstellung sein Bit gesetzt ist:
+
+| Prüfbit | prüft Positionen | Binärdarstellung der Positionen |
+| ------- | ---------------- | ------------------------------- |
+| $p_1$   | 1, 3, 5, 7       | Bit 0 gesetzt: `001`, `011`, `101`, `111` |
+| $p_2$   | 2, 3, 6, 7       | Bit 1 gesetzt: `010`, `011`, `110`, `111` |
+| $p_4$   | 4, 5, 6, 7       | Bit 2 gesetzt: `100`, `101`, `110`, `111` |
+
+Allgemein braucht man für $m$ Datenbits $r$ Prüfbits mit $2^r \geq m + r + 1$. Für 64 Datenbits genügen 7 Prüfbits, mit einem zusätzlichen Gesamtparitätsbit sind es 8: Das ist der **SECDED**-Code (_single error correction, double error detection_) in ECC-Speicher.
+
+:::tip[Beispiel: Datenwort 1011 kodieren]
+Datenbits auf die Positionen 3, 5, 6, 7 verteilen: $d_3 = 1$, $d_5 = 0$, $d_6 = 1$, $d_7 = 1$. Prüfbits mit gerader Parität:
+
+$$
+\begin{aligned}
+p_1 &= d_3 \oplus d_5 \oplus d_7 = 1 \oplus 0 \oplus 1 = 0 \\
+p_2 &= d_3 \oplus d_6 \oplus d_7 = 1 \oplus 1 \oplus 1 = 1 \\
+p_4 &= d_5 \oplus d_6 \oplus d_7 = 0 \oplus 1 \oplus 1 = 0
+\end{aligned}
+$$
+
+| Position | 1     | 2     | 3     | 4     | 5     | 6     | 7     |
+| -------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| Bit      | $p_1$ | $p_2$ | $d_3$ | $p_4$ | $d_5$ | $d_6$ | $d_7$ |
+| Wert     | 0     | 1     | 1     | 0     | 0     | 1     | 1     |
+
+Gesendet wird `0110011`.
+:::
+
+:::tip[Beispiel: Fehler korrigieren]
+Empfangen wird `0110001`, Bit 6 ist gekippt. Der Empfänger berechnet die Prüfgleichungen über alle Positionen inklusive der Prüfbits:
+
+$$
+\begin{aligned}
+s_1 &= b_1 \oplus b_3 \oplus b_5 \oplus b_7 = 0 \oplus 1 \oplus 0 \oplus 1 = 0 \\
+s_2 &= b_2 \oplus b_3 \oplus b_6 \oplus b_7 = 1 \oplus 1 \oplus 0 \oplus 1 = 1 \\
+s_4 &= b_4 \oplus b_5 \oplus b_6 \oplus b_7 = 0 \oplus 0 \oplus 0 \oplus 1 = 1
+\end{aligned}
+$$
+
+Das **Syndrom** $s_4 s_2 s_1 = 110_2 = 6$ zeigt direkt auf die fehlerhafte Position. Bit 6 wird invertiert, und die Datenbits an den Positionen 3, 5, 6, 7 ergeben wieder `1011`. Ist das Syndrom 0, war die Übertragung fehlerfrei.
+:::
+
+Eine elegante Eigenschaft: Das Syndrom ist das XOR der Positionsnummern aller gesetzten Bits. Genau das nutzt der folgende Code.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] data = [1, 0, 1, 1];
+int[] code = Hamming.Encode(data);
+Console.WriteLine(string.Concat(code));            // 0110011
+
+code[5] ^= 1;                                      // Bit an Position 6 kippen
+Console.WriteLine(string.Concat(code));            // 0110001
+
+int syndrome = Hamming.Syndrome(code);
+Console.WriteLine($"Syndrom: {syndrome}");         // Syndrom: 6
+if (syndrome != 0) code[syndrome - 1] ^= 1;        // korrigieren
+Console.WriteLine(string.Concat(Hamming.Decode(code))); // 1011
+
+Console.WriteLine(Parity.EvenParityBit(0b1110_0011)); // 1
+
+static class Hamming
+{
+    // Datenbits an Position 3, 5, 6, 7; Prüfbits an 1, 2, 4 (Index = Position - 1)
+    public static int[] Encode(int[] d)
+    {
+        var c = new int[7];
+        (c[2], c[4], c[5], c[6]) = (d[0], d[1], d[2], d[3]);
+        c[0] = c[2] ^ c[4] ^ c[6];
+        c[1] = c[2] ^ c[5] ^ c[6];
+        c[3] = c[4] ^ c[5] ^ c[6];
+        return c;
+    }
+
+    // XOR der Positionen aller Einsen; 0 bedeutet fehlerfrei
+    public static int Syndrome(int[] c)
+    {
+        int s = 0;
+        for (int pos = 1; pos <= c.Length; pos++)
+        {
+            if (c[pos - 1] == 1) s ^= pos;
+        }
+        return s;
+    }
+
+    public static int[] Decode(int[] c) => [c[2], c[4], c[5], c[6]];
+}
+
+static class Parity
+{
+    public static int EvenParityBit(uint value) => int.PopCount((int)value) % 2;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Datenbits an Position 3, 5, 6, 7; Prüfbits an 1, 2, 4 (Index = Position - 1)
+fn hamming_encode(d: [u8; 4]) -> [u8; 7] {
+    let mut c = [0u8; 7];
+    (c[2], c[4], c[5], c[6]) = (d[0], d[1], d[2], d[3]);
+    c[0] = c[2] ^ c[4] ^ c[6];
+    c[1] = c[2] ^ c[5] ^ c[6];
+    c[3] = c[4] ^ c[5] ^ c[6];
+    c
+}
+
+// XOR der Positionen aller Einsen; 0 bedeutet fehlerfrei
+fn hamming_syndrome(c: &[u8; 7]) -> usize {
+    (1..=7).filter(|&pos| c[pos - 1] == 1).fold(0, |s, pos| s ^ pos)
+}
+
+fn hamming_decode(c: &[u8; 7]) -> [u8; 4] {
+    [c[2], c[4], c[5], c[6]]
+}
+
+fn even_parity_bit(value: u32) -> u32 {
+    value.count_ones() % 2
+}
+
+fn bits(b: &[u8]) -> String {
+    b.iter().map(|x| x.to_string()).collect()
+}
+
+fn main() {
+    let mut code = hamming_encode([1, 0, 1, 1]);
+    println!("{}", bits(&code));                   // 0110011
+
+    code[5] ^= 1;                                  // Bit an Position 6 kippen
+    println!("{}", bits(&code));                   // 0110001
+
+    let syndrome = hamming_syndrome(&code);
+    println!("Syndrom: {syndrome}");               // Syndrom: 6
+    if syndrome != 0 {
+        code[syndrome - 1] ^= 1;                   // korrigieren
+    }
+    println!("{}", bits(&hamming_decode(&code)));  // 1011
+
+    println!("{}", even_parity_bit(0b1110_0011));  // 1
+}
+```
+
+</TabItem>
+</Tabs>
+
+### CRC
+
+Die **zyklische Redundanzprüfung** (_Cyclic Redundancy Check_, CRC) erkennt auch Bündelfehler (mehrere aufeinanderfolgende gekippte Bits) sehr zuverlässig und ist in Hardware mit wenigen Schieberegistern und XOR-Gattern umsetzbar. Sie wird in Ethernet (CRC-32 in der Frame Check Sequence), USB, SATA, ZIP, PNG und CAN verwendet.
+
+Die Bitfolgen werden als **Polynome** über $\{0, 1\}$ aufgefasst: `1011` entspricht $x^3 + x + 1$. Sender und Empfänger vereinbaren ein **Generatorpolynom** $G(x)$ vom Grad $r$. Gerechnet wird mit **Polynomdivision modulo 2**, bei der Subtraktion und Addition dasselbe sind, nämlich XOR, und es keine Überträge gibt.
+
+1. An die Nachricht $r$ Nullen anhängen.
+2. Das Ergebnis durch das Generatorpolynom dividieren (stellenweises XOR).
+3. Der Rest ($r$ Bit) ist die **Prüfsumme**. Sie ersetzt die angehängten Nullen.
+4. Der Empfänger dividiert die gesamte empfangene Folge durch $G(x)$. Ist der Rest 0, wird die Übertragung als fehlerfrei angenommen.
+
+:::tip[Beispiel: Nachricht 110101, Generator 1011 (x³ + x + 1)]
+Grad $r = 3$, also drei Nullen anhängen: `110101000`. Immer wenn die führende Stelle des Zwischenstands 1 ist, wird der Generator darunter geschrieben und per XOR abgezogen. Stellen mit 0 werden übersprungen:
+
+```text
+  110101000
+⊕ 1011
+= 011001000
+⊕  1011
+= 001111000
+⊕   1011
+= 000100000
+⊕    1011
+= 000001100
+⊕      1011
+= 000000111   →  Rest 111
+```
+
+Gesendet wird `110101` + `111` = `110101111`. Der Empfänger dividiert `110101111` durch `1011` und erhält den Rest `000`.
+:::
+
+Ein CRC mit Generator vom Grad $r$ erkennt alle Einzel- und Zweibitfehler (bei geeignetem Polynom), alle Fehler mit ungerader Bitanzahl, wenn $(x + 1)$ ein Faktor von $G(x)$ ist, und alle Bündelfehler mit einer Länge bis $r$. CRC schützt vor **zufälligen** Fehlern, nicht vor absichtlicher Manipulation: Dafür braucht man kryptografische Hashfunktionen wie SHA-256.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string message = "110101";
+string generator = "1011";
+
+string remainder = Crc.Remainder(message + new string('0', generator.Length - 1), generator);
+Console.WriteLine($"Prüfsumme: {remainder}");                // Prüfsumme: 111
+
+string sent = message + remainder;
+Console.WriteLine(Crc.Remainder(sent, generator));          // 000
+Console.WriteLine(Crc.Remainder("110001111", generator));   // 111 (Fehler erkannt)
+
+static class Crc
+{
+    // Polynomdivision modulo 2 auf Bitstrings
+    public static string Remainder(string bits, string generator)
+    {
+        char[] d = bits.ToCharArray();
+        for (int i = 0; i + generator.Length <= d.Length; i++)
+        {
+            if (d[i] == '0') continue;
+            for (int j = 0; j < generator.Length; j++)
+            {
+                d[i + j] = d[i + j] == generator[j] ? '0' : '1';   // XOR
+            }
+        }
+        return new string(d[^(generator.Length - 1)..]);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Polynomdivision modulo 2 auf Bitstrings
+fn crc_remainder(bits: &str, generator: &str) -> String {
+    let mut d: Vec<u8> = bits.bytes().map(|b| b - b'0').collect();
+    let g: Vec<u8> = generator.bytes().map(|b| b - b'0').collect();
+    for i in 0..=d.len() - g.len() {
+        if d[i] == 1 {
+            for (j, &gb) in g.iter().enumerate() {
+                d[i + j] ^= gb;
+            }
+        }
+    }
+    d[d.len() - (g.len() - 1)..].iter().map(|b| b.to_string()).collect()
+}
+
+fn main() {
+    let message = "110101";
+    let generator = "1011";
+
+    let padded = format!("{message}{}", "0".repeat(generator.len() - 1));
+    let remainder = crc_remainder(&padded, generator);
+    println!("Prüfsumme: {remainder}");                      // Prüfsumme: 111
+
+    let sent = format!("{message}{remainder}");
+    println!("{}", crc_remainder(&sent, generator));         // 000
+    println!("{}", crc_remainder("110001111", generator));   // 111 (Fehler erkannt)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Prüfsummen und Prüfziffern
+
+Einfachere Verfahren addieren die Daten und hängen das Ergebnis an:
+
+- **Internet-Prüfsumme** (IPv4-Header, TCP, UDP): Summe aller 16-Bit-Wörter im Einerkomplement, davon das Komplement. Schnell zu berechnen, erkennt aber zum Beispiel keine vertauschten Wörter.
+- **Prüfziffern** schützen von Menschen eingegebene Nummern gegen Tippfehler und Zahlendreher. Bei **ISBN-13** und **EAN-13** werden die Ziffern abwechselnd mit 1 und 3 gewichtet, die Prüfziffer ergänzt die Summe auf ein Vielfaches von 10. Für 978-3-16-148410-? ist die gewichtete Summe $9 + 21 + 8 + 9 + 1 + 18 + 1 + 12 + 8 + 12 + 1 + 0 = 100$, die Prüfziffer also 0.
+- Die **IBAN** verwendet zwei Prüfziffern nach dem Verfahren Modulo 97 (ISO 7064), das alle Einzelfehler und fast alle Vertauschungen erkennt.
+- **Kryptografische Hashwerte** (SHA-256) dienen als Prüfsumme für Downloads und erkennen auch absichtliche Veränderungen.
+
+| Verfahren        | erkennt                                     | korrigiert | typischer Einsatz                  |
+| ---------------- | ------------------------------------------- | ---------- | ---------------------------------- |
+| Paritätsbit      | ungerade Anzahl an Bitfehlern               | nein       | UART, einfache Busse               |
+| Kreuzparität     | Einzelfehler, viele Mehrfachfehler          | 1 Bit      | historische Bandlaufwerke          |
+| Hamming (SECDED) | 2 Bitfehler                                 | 1 Bit      | ECC-RAM, Caches                    |
+| CRC              | Bündelfehler bis Grad $r$, fast alle anderen | nein (Wiederholung) | Ethernet, USB, Dateiformate |
+| Reed-Solomon     | Bündelfehler                                | ja, mehrere Symbole | QR-Code, CD, DVD, DSL, RAID 6 |
+
+## Kompression
+
+**Datenkompression** verkleinert Daten, indem sie Redundanz entfernt. Das spart Speicherplatz und Übertragungszeit, kostet aber Rechenzeit. Das **Kompressionsverhältnis** ist das Verhältnis von Originalgröße zu komprimierter Größe.
+
+- **Verlustfreie Kompression** (_lossless_): Das Original lässt sich bitgenau wiederherstellen. Pflicht für Text, Programme und Datenbanken. Beispiele: ZIP, gzip, PNG, FLAC.
+- **Verlustbehaftete Kompression** (_lossy_): Informationen, die der Mensch kaum wahrnimmt, werden verworfen. Viel höhere Kompressionsraten, aber nicht umkehrbar. Beispiele: JPEG, MP3, AAC, H.264.
+
+### Informationsgehalt und Entropie
+
+Nach Claude Shannon (1948) hat ein Zeichen, das mit Wahrscheinlichkeit $p$ auftritt, den **Informationsgehalt** $I = -\log_2 p$ Bit. Seltene Zeichen tragen mehr Information. Die **Entropie** ist der mittlere Informationsgehalt pro Zeichen:
+
+$$
+H = -\sum_{i} p_i \cdot \log_2 p_i \quad \text{in Bit pro Zeichen}
+$$
+
+Die Entropie ist die **untere Grenze** für die mittlere Codewortlänge jeder verlustfreien Kodierung, die Zeichen einzeln kodiert. Sind alle $n$ Zeichen gleich wahrscheinlich, ist $H = \log_2 n$ maximal, und Kompression bringt nichts. Deshalb lassen sich bereits komprimierte oder verschlüsselte Daten (die wie Zufallsdaten aussehen) nicht weiter verkleinern.
+
+### Lauflängenkodierung
+
+Die **Lauflängenkodierung** (_Run-Length Encoding_, RLE) ersetzt Folgen gleicher Zeichen durch Anzahl und Zeichen: `AAAABBBCCD` wird zu `4A3B2C1D`. Das lohnt sich bei langen Wiederholungen, etwa in einfachen Grafiken mit einfarbigen Flächen (BMP-RLE, PCX, Faxübertragung). Bei Text ohne Wiederholungen wird die Ausgabe dagegen **länger** als das Original.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text;
+
+string encoded = Rle.Encode("AAAABBBCCD");
+Console.WriteLine(encoded);                 // 4A3B2C1D
+Console.WriteLine(Rle.Decode(encoded));     // AAAABBBCCD
+Console.WriteLine(Rle.Encode("ABC"));       // 1A1B1C (länger als das Original)
+
+static class Rle
+{
+    public static string Encode(string input)
+    {
+        var sb = new StringBuilder();
+        for (int i = 0; i < input.Length;)
+        {
+            int run = 1;
+            while (i + run < input.Length && input[i + run] == input[i]) run++;
+            sb.Append(run).Append(input[i]);
+            i += run;
+        }
+        return sb.ToString();
+    }
+
+    public static string Decode(string input)
+    {
+        var sb = new StringBuilder();
+        int count = 0;
+        foreach (char c in input)
+        {
+            if (char.IsDigit(c)) count = count * 10 + (c - '0');
+            else { sb.Append(c, count); count = 0; }
+        }
+        return sb.ToString();
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn rle_encode(input: &str) -> String {
+    let chars: Vec<char> = input.chars().collect();
+    let mut out = String::new();
+    let mut i = 0;
+    while i < chars.len() {
+        let run = chars[i..].iter().take_while(|&&c| c == chars[i]).count();
+        out.push_str(&format!("{run}{}", chars[i]));
+        i += run;
+    }
+    out
+}
+
+fn rle_decode(input: &str) -> String {
+    let mut out = String::new();
+    let mut count = 0;
+    for c in input.chars() {
+        match c.to_digit(10) {
+            Some(d) => count = count * 10 + d as usize,
+            None => {
+                out.extend(std::iter::repeat_n(c, count));
+                count = 0;
+            }
+        }
+    }
+    out
+}
+
+fn main() {
+    let encoded = rle_encode("AAAABBBCCD");
+    println!("{encoded}");                  // 4A3B2C1D
+    println!("{}", rle_decode(&encoded));   // AAAABBBCCD
+    println!("{}", rle_encode("ABC"));      // 1A1B1C (länger als das Original)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Huffman-Kodierung
+
+Die **Huffman-Kodierung** (David A. Huffman, 1952) erzeugt einen **präfixfreien Code variabler Länge**, bei dem häufige Zeichen kurze und seltene Zeichen lange Codewörter bekommen. Unter allen Codes, die jedes Zeichen einzeln kodieren, ist er **optimal**, das heißt, er erreicht die kleinstmögliche mittlere Codewortlänge.
+
+Algorithmus:
+
+1. Die Häufigkeit jedes Zeichens bestimmen. Jedes Zeichen ist ein Blatt mit seiner Häufigkeit als Gewicht.
+2. Die zwei Knoten mit dem **kleinsten Gewicht** entnehmen und zu einem neuen Knoten zusammenfassen, dessen Gewicht die Summe ist.
+3. Schritt 2 wiederholen, bis nur noch ein Knoten übrig ist: die Wurzel.
+4. Kanten zum linken Kind mit 0, zum rechten mit 1 beschriften. Das Codewort eines Zeichens ist die Beschriftung des Wegs von der Wurzel zum Blatt.
+
+Weil Zeichen nur in den Blättern stehen, kann kein Codewort Präfix eines anderen sein. Der Dekodierer liest Bit für Bit, wandert im Baum nach links oder rechts und gibt beim Erreichen eines Blattes das Zeichen aus.
+
+:::tip[Beispiel: AAAAAAAABBBCCDDDDE]
+Häufigkeiten: A = 8, D = 4, B = 3, C = 2, E = 1 (insgesamt 18 Zeichen).
+
+| Schritt | kleinste Knoten | neuer Knoten | verbleibend                       |
+| ------- | --------------- | ------------ | --------------------------------- |
+| 1       | E (1), C (2)    | EC (3)       | A 8, D 4, B 3, EC 3               |
+| 2       | B (3), EC (3)   | BEC (6)      | A 8, BEC 6, D 4                   |
+| 3       | D (4), BEC (6)  | DBEC (10)    | DBEC 10, A 8                      |
+| 4       | A (8), DBEC (10) | Wurzel (18) |                                   |
+
+```text
+            (18)
+          0/    \1
+        A 8     (10)
+              0/    \1
+             D 4    (6)
+                  0/   \1
+                 B 3   (3)
+                      0/  \1
+                     E 1  C 2
+```
+
+| Zeichen | Häufigkeit | Codewort | Bits gesamt |
+| ------- | ---------- | -------- | ----------- |
+| A       | 8          | `0`      | 8           |
+| D       | 4          | `10`     | 8           |
+| B       | 3          | `110`    | 9           |
+| E       | 1          | `1110`   | 4           |
+| C       | 2          | `1111`   | 8           |
+| **Summe** | 18       |          | **37**      |
+
+Mit einem Blockcode bräuchte man für 5 Zeichen 3 Bit pro Zeichen, also 54 Bit (in ASCII sogar 144 Bit). Die mittlere Codewortlänge beträgt $37 / 18 \approx 2{,}06$ Bit, die Entropie liegt bei $H \approx 2{,}02$ Bit pro Zeichen.
+:::
+
+Bei gleichen Gewichten ist die Wahl beliebig, deshalb gibt es oft mehrere gleich gute Huffman-Codes. Die Codewortlängen und die Gesamtlänge sind aber immer optimal. Damit der Empfänger dekodieren kann, muss der Code (oder die Häufigkeitstabelle) mitgesendet werden. Huffman-Kodierung steckt in DEFLATE (ZIP, PNG), JPEG und MP3.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string text = "AAAAAAAABBBCCDDDDE";
+var codes = Huffman.BuildCodes(text);
+
+foreach (var (symbol, code) in codes)
+{
+    Console.WriteLine($"{symbol}: {code}");
+}
+string encoded = string.Concat(text.Select(c => codes[c]));
+Console.WriteLine($"{encoded.Length} Bit statt {text.Length * 8} Bit");
+
+// Ausgabe:
+// A: 0
+// B: 110
+// C: 1111
+// D: 10
+// E: 1110
+// 37 Bit statt 144 Bit
+
+record HuffmanNode(char? Symbol, int Weight, HuffmanNode? Left = null, HuffmanNode? Right = null);
+
+static class Huffman
+{
+    public static SortedDictionary<char, string> BuildCodes(string text)
+    {
+        // Priorität: Gewicht, bei Gleichstand Reihenfolge des Einfügens
+        var queue = new PriorityQueue<HuffmanNode, (int Weight, int Order)>();
+        int order = 0;
+        foreach (var group in text.GroupBy(c => c).OrderBy(g => g.Key))
+        {
+            queue.Enqueue(new HuffmanNode(group.Key, group.Count()), (group.Count(), order++));
+        }
+
+        while (queue.Count > 1)
+        {
+            var left = queue.Dequeue();
+            var right = queue.Dequeue();
+            var parent = new HuffmanNode(null, left.Weight + right.Weight, left, right);
+            queue.Enqueue(parent, (parent.Weight, order++));
+        }
+
+        var codes = new SortedDictionary<char, string>();
+        Assign(queue.Dequeue(), "", codes);
+        return codes;
+    }
+
+    private static void Assign(HuffmanNode node, string prefix, SortedDictionary<char, string> codes)
+    {
+        if (node.Symbol is char symbol)
+        {
+            codes[symbol] = prefix == "" ? "0" : prefix; // Sonderfall: nur ein Zeichen
+            return;
+        }
+        Assign(node.Left!, prefix + "0", codes);
+        Assign(node.Right!, prefix + "1", codes);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cmp::Reverse;
+use std::collections::{BTreeMap, BinaryHeap};
+
+enum Node {
+    Leaf(char),
+    Inner(usize, usize), // Indizes des linken und rechten Kindes
+}
+
+fn huffman_codes(text: &str) -> BTreeMap<char, String> {
+    let mut freq = BTreeMap::new();
+    for c in text.chars() {
+        *freq.entry(c).or_insert(0usize) += 1;
+    }
+
+    // Knoten liegen in einem Vec; der Index dient bei Gleichstand als Reihenfolge
+    let mut nodes = Vec::new();
+    let mut heap = BinaryHeap::new();
+    for (&c, &n) in &freq {
+        heap.push(Reverse((n, nodes.len())));
+        nodes.push(Node::Leaf(c));
+    }
+
+    while heap.len() > 1 {
+        let Some(Reverse((w1, left))) = heap.pop() else { break };
+        let Some(Reverse((w2, right))) = heap.pop() else { break };
+        heap.push(Reverse((w1 + w2, nodes.len())));
+        nodes.push(Node::Inner(left, right));
+    }
+
+    let mut codes = BTreeMap::new();
+    if let Some(Reverse((_, root))) = heap.pop() {
+        assign(&nodes, root, String::new(), &mut codes);
+    }
+    codes
+}
+
+fn assign(nodes: &[Node], i: usize, prefix: String, codes: &mut BTreeMap<char, String>) {
+    match nodes[i] {
+        Node::Leaf(c) => {
+            let code = if prefix.is_empty() { "0".to_string() } else { prefix }; // nur ein Zeichen
+            codes.insert(c, code);
+        }
+        Node::Inner(left, right) => {
+            assign(nodes, left, format!("{prefix}0"), codes);
+            assign(nodes, right, format!("{prefix}1"), codes);
+        }
+    }
+}
+
+fn main() {
+    let text = "AAAAAAAABBBCCDDDDE";
+    let codes = huffman_codes(text);
+    for (symbol, code) in &codes {
+        println!("{symbol}: {code}");
+    }
+    let bits: usize = text.chars().map(|c| codes[&c].len()).sum();
+    println!("{bits} Bit statt {} Bit", text.len() * 8);
+}
+
+// Ausgabe:
+// A: 0
+// B: 110
+// C: 1111
+// D: 10
+// E: 1110
+// 37 Bit statt 144 Bit
+```
+
+</TabItem>
+</Tabs>
+
+### Wörterbuchverfahren: LZ77 und LZW
+
+Huffman nutzt nur die Häufigkeit einzelner Zeichen. Text enthält aber wiederkehrende **Zeichenfolgen** („der“, „ung“, ganze Wörter). Wörterbuchverfahren ersetzen Wiederholungen durch Verweise.
+
+**LZ77** (Lempel und Ziv, 1977) verwendet ein gleitendes Fenster über die bereits gelesenen Daten. Jede Wiederholung wird als Tripel (Abstand zurück, Länge, nächstes Zeichen) kodiert. Für `ABABABA`:
+
+| Position | gefundene Übereinstimmung      | Ausgabe        |
+| -------- | ------------------------------ | -------------- |
+| 0        | keine                          | (0, 0, `A`)    |
+| 1        | keine                          | (0, 0, `B`)    |
+| 2        | `ABAB` beginnt 2 Zeichen zurück | (2, 4, `A`)    |
+
+Die Kopie darf sich mit dem gerade erzeugten Text überlappen: Die Länge 4 ist größer als der Abstand 2, beim Kopieren wird zeichenweise das gerade Geschriebene wieder gelesen.
+
+**LZW** (Lempel, Ziv, Welch, 1984) baut stattdessen ein **Wörterbuch** auf, das Sender und Empfänger identisch und ohne Übertragung mitführen. Es enthält anfangs alle Einzelzeichen. Der Kodierer verlängert die aktuelle Zeichenfolge $w$, solange $w$ plus nächstes Zeichen im Wörterbuch steht. Andernfalls gibt er den Code von $w$ aus, nimmt $w$ plus Zeichen als neuen Eintrag auf und beginnt neu mit dem Zeichen.
+
+:::tip[Beispiel: LZW für ABABABA, Startwörterbuch A = 0, B = 1]
+| gelesen | $w$ + Zeichen | im Wörterbuch? | Ausgabe | neuer Eintrag | neues $w$ |
+| ------- | ------------- | -------------- | ------- | ------------- | --------- |
+| A       | A             | ja             |         |               | A         |
+| B       | AB            | nein           | 0 (A)   | AB = 2        | B         |
+| A       | BA            | nein           | 1 (B)   | BA = 3        | A         |
+| B       | AB            | ja             |         |               | AB        |
+| A       | ABA           | nein           | 2 (AB)  | ABA = 4       | A         |
+| B       | AB            | ja             |         |               | AB        |
+| A       | ABA           | ja             |         |               | ABA       |
+| Ende    |               |                | 4 (ABA) |               |           |
+
+Ausgabe: `0 1 2 4`, vier Codes für sieben Zeichen. Je länger der Text, desto längere Einträge entstehen.
+:::
+
+LZW wurde in GIF und TIFF verwendet. Das Verfahren war bis 2003/2004 patentiert, was die Entwicklung von PNG ausgelöst hat.
+
+### DEFLATE und Formate in der Praxis
+
+**DEFLATE** kombiniert LZ77 (Fenster bis 32 KiB) mit anschließender Huffman-Kodierung der Literale, Längen und Abstände. Es ist das Verfahren hinter ZIP, gzip, PNG und der HTTP-Kompression mit `Content-Encoding: gzip`. Neuere Verfahren wie **Brotli** (Web), **Zstandard** (Linux-Kernel, Dateisysteme, Pakete) und **LZMA** (7-Zip, xz) erreichen bessere Raten oder Geschwindigkeiten mit größeren Fenstern und besserer Entropiekodierung.
+
+| Medium | verlustfrei            | verlustbehaftet             |
+| ------ | ---------------------- | --------------------------- |
+| Text, Archive | ZIP, gzip, 7z, zstd | nicht sinnvoll         |
+| Bild   | PNG, GIF (256 Farben), WebP lossless | JPEG, WebP, AVIF |
+| Audio  | FLAC, ALAC             | MP3, AAC, Opus              |
+| Video  | (selten, im Schnitt)   | H.264/AVC, H.265/HEVC, AV1  |
+
+### Verlustbehaftete Kompression
+
+Verlustbehaftete Verfahren nutzen Schwächen der menschlichen Wahrnehmung aus und verwerfen, was kaum auffällt. Danach folgt meist eine verlustfreie Entropiekodierung.
+
+**JPEG** (Fotos):
+
+1. Umwandlung von RGB in das Farbmodell **YCbCr** (Helligkeit und zwei Farbdifferenzen). Das Auge ist für Helligkeit empfindlicher als für Farbe, deshalb werden die Farbkanäle meist mit halber Auflösung gespeichert (**Chroma-Subsampling** 4:2:0).
+2. Aufteilen in Blöcke zu 8 × 8 Pixel und **diskrete Kosinustransformation** (DCT): Der Block wird als Summe von Frequenzmustern dargestellt.
+3. **Quantisierung**: Die Koeffizienten werden durch Werte einer Tabelle geteilt und gerundet. Hohe Frequenzen (feine Details) werden stärker gerundet und oft 0. Hier entsteht der Verlust, der Qualitätsregler bestimmt die Tabelle.
+4. Zickzack-Auslesen, Lauflängen- und Huffman-Kodierung der vielen Nullen.
+
+Bei starker Kompression werden die 8 × 8-Blöcke sichtbar (**Blockartefakte**). Für Grafiken mit scharfen Kanten und Text ist PNG besser geeignet.
+
+**MP3** und **AAC** (Audio) verwenden ein **psychoakustisches Modell**: Töne unter der Hörschwelle und leise Töne, die von lauten Tönen benachbarter Frequenz **maskiert** werden, werden weggelassen oder grob quantisiert. Eine MP3-Datei mit 128 kbit/s ist rund elfmal kleiner als die CD-Qualität mit 1411,2 kbit/s.
+
+**Video-Codecs** komprimieren zusätzlich **zeitlich**: Nur einzelne Bilder werden vollständig gespeichert (I-Frames), dazwischen nur die Unterschiede und Bewegungsvektoren (P- und B-Frames).
+
+## Weiterführende Quellen
+
+- Claude E. Shannon: [A Mathematical Theory of Communication](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) (1948)
+- [RFC 1951: DEFLATE Compressed Data Format Specification](https://www.rfc-editor.org/rfc/rfc1951)
+- Andrew S. Tanenbaum, David Wetherall: _Computernetzwerke_, Kapitel zur Sicherungsschicht (Fehlererkennung und -korrektur), Pearson

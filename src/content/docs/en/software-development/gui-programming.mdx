@@ -1,0 +1,271 @@
+---
+title: GUI Programming
+description: Event-driven programming, events, GUI frameworks, layout, data binding and the MVVM pattern in C# as well as the Elm architecture in Rust.
+sidebar:
+  order: 15
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **graphical user interface** (GUI) consists of windows, buttons, text boxes and lists. Unlike a console program that runs from top to bottom, a GUI program spends most of its time waiting for the user to do something. It is **event-driven**.
+
+## Event-driven programming
+
+At the core of every GUI program runs an **event loop**: the operating system reports events such as mouse clicks, key presses or "window needs to be redrawn" into a queue. The loop takes one event after another and calls the **event handlers** registered for it.
+
+```txt
+while the window is open:
+    take an event from the queue
+    call the matching event handler
+    redraw the interface if necessary
+```
+
+Two important rules follow from this:
+
+- Event handlers must be **fast**. As long as a handler is running, the loop cannot process further events, and the window "freezes". Long tasks such as downloads or computations therefore run asynchronously or in a background thread (see [Concurrency](/en/software-development/concurrency/#async-and-await)).
+- Controls may only be changed from the **UI thread**, the thread that runs the event loop. A background thread has to hand changes over to the UI thread (in WPF with `Dispatcher.Invoke`). With `await`, this happens automatically.
+
+## Events in C#
+
+C# supports event-driven programming directly in the language. An **event** is a delegate to which other objects can subscribe as receivers with `+=` and unsubscribe with `-=`. Only the class that declares the event may raise it. This corresponds to the [Observer](/en/software-development/design-patterns/#observer) design pattern.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var sensor = new TemperatureSensor();
+sensor.TemperatureChanged += (sender, e) => Console.WriteLine($"New temperature: {e.Celsius} °C");
+sensor.TemperatureChanged += (sender, e) =>
+{
+    if (e.Celsius > 30) Console.WriteLine("Warning: too hot!");
+};
+
+sensor.Measure(22.5);
+sensor.Measure(31.0);
+
+public class TemperatureEventArgs(double celsius) : EventArgs
+{
+    public double Celsius { get; } = celsius;
+}
+
+public class TemperatureSensor
+{
+    // convention: EventHandler<T> with sender and event data
+    public event EventHandler<TemperatureEventArgs>? TemperatureChanged;
+
+    public void Measure(double celsius)
+    {
+        // ?. only raises the event if someone has subscribed
+        TemperatureChanged?.Invoke(this, new TemperatureEventArgs(celsius));
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Rust has no events in the language. You store a list of closures.
+struct TemperatureSensor {
+    listeners: Vec<Box<dyn Fn(f64)>>,
+}
+
+impl TemperatureSensor {
+    fn on_change(&mut self, listener: impl Fn(f64) + 'static) {
+        self.listeners.push(Box::new(listener));
+    }
+
+    fn measure(&self, celsius: f64) {
+        for listener in &self.listeners {
+            listener(celsius);
+        }
+    }
+}
+
+fn main() {
+    let mut sensor = TemperatureSensor { listeners: Vec::new() };
+    sensor.on_change(|c| println!("New temperature: {c} °C"));
+    sensor.on_change(|c| {
+        if c > 30.0 {
+            println!("Warning: too hot!");
+        }
+    });
+
+    sensor.measure(22.5);
+    sensor.measure(31.0);
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::caution[Do not forget to unsubscribe]
+An event holds a reference to every subscribed receiver. If the object with the event lives longer than the receiver, the garbage collector cannot release the receiver. This is a common cause of memory leaks in C# applications. Receivers should therefore unsubscribe with `-=` when they are no longer needed.
+:::
+
+## GUI frameworks
+
+| Platform            | C# / .NET                                                    | Rust                                                     |
+| ------------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| Desktop (Windows)   | **WPF** (XAML, MVVM), **Windows Forms** (older, designer-based), **WinUI 3** | all of those listed below                |
+| Cross-platform      | **Avalonia** (XAML, similar to WPF), **.NET MAUI** (desktop and mobile) | **iced** (Elm architecture), **egui** (immediate mode), **Slint** (own markup language), **Tauri** (interface built with web technologies) |
+| Web                 | **Blazor** (C# in the browser via WebAssembly or on the server) | **Leptos**, **Yew**, **Dioxus** (WebAssembly)          |
+
+There are two basic approaches:
+
+- **Retained mode**: the framework manages a persistent tree of controls. The program changes properties, and the framework only redraws what has changed. Examples: WPF, Windows Forms, iced.
+- **Immediate mode**: the program describes the entire interface anew for every frame. This is simple and fits games and tools well. Example: egui.
+
+## Layout
+
+Windows have different sizes, and texts have different lengths in different languages. Controls are therefore not placed with fixed pixel coordinates but arranged by **layout containers**.
+
+| Container in WPF | Arrangement                                          | Equivalent in iced       |
+| ---------------- | ---------------------------------------------------- | ------------------------ |
+| `StackPanel`     | below or next to each other                          | `column!`, `row!`        |
+| `Grid`           | in rows and columns with fixed or relative sizes     | nested `row` and `column` |
+| `DockPanel`      | docked to the edges, the rest fills the centre       | `container` with alignment |
+| `WrapPanel`      | next to each other with line wrapping                | `row` with `wrap()`      |
+
+## Data binding and MVVM
+
+If every event handler read text boxes and set labels directly, the logic would be inseparably intertwined with the interface and hardly testable. The **MVVM** pattern (_Model-View-ViewModel_), introduced with WPF, separates three responsibilities:
+
+| Layer          | Task                                                                                                |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| **Model**      | Domain data and rules, for example a class `Order` and the price calculation. Does not know the interface. |
+| **View**       | The interface, described in **XAML** in WPF. Contains as little code as possible.                   |
+| **ViewModel**  | Prepares the model's data for the view and provides **commands**. Does not know the view.           |
+
+The view is coupled to the view model through **data binding**: `Text="{Binding Name}"` displays the property `Name` and writes input back. So that the view learns that a value has changed, the view model implements the interface `INotifyPropertyChanged`. Buttons call an object of type `ICommand` through `Command="{Binding SaveCommand}"`. Because the view model knows no controls, it can be checked with ordinary [unit tests](/en/software-development/testing/).
+
+```xml
+<!-- View: MainWindow.xaml (WPF) -->
+<StackPanel Margin="16">
+    <TextBlock Text="Count:" />
+    <TextBlock Text="{Binding Count}" FontSize="32" />
+    <Button Content="+" Command="{Binding IncrementCommand}" />
+    <Button Content="Reset" Command="{Binding ResetCommand}" />
+</StackPanel>
+```
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+
+// view model: no dependency on WPF controls and therefore testable
+var vm = new CounterViewModel();
+vm.PropertyChanged += (_, e) => Console.WriteLine($"{e.PropertyName} changed: {vm.Count}");
+vm.IncrementCommand.Execute(null);
+vm.IncrementCommand.Execute(null);
+Console.WriteLine(vm.ResetCommand.CanExecute(null)); // True
+vm.ResetCommand.Execute(null);
+
+public class CounterViewModel : INotifyPropertyChanged
+{
+    private int _count;
+
+    public int Count
+    {
+        get => _count;
+        private set
+        {
+            if (_count == value) return;
+            _count = value;
+            OnPropertyChanged(); // the property name is filled in automatically
+        }
+    }
+
+    public ICommand IncrementCommand { get; }
+    public ICommand ResetCommand { get; }
+
+    public CounterViewModel()
+    {
+        IncrementCommand = new RelayCommand(() => Count++);
+        ResetCommand = new RelayCommand(() => Count = 0, () => Count > 0);
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+// simple ICommand implementation
+public class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
+{
+    public event EventHandler? CanExecuteChanged;
+    public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
+    public void Execute(object? parameter) => execute();
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+// iced uses the Elm architecture:
+// state, messages, update and view.
+use iced::widget::{button, column, text};
+use iced::Element;
+
+#[derive(Default)]
+struct Counter {
+    count: i64,
+}
+
+#[derive(Debug, Clone)]
+enum Message {
+    Increment,
+    Reset,
+}
+
+impl Counter {
+    // the only place where the state changes: easy to test
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::Increment => self.count += 1,
+            Message::Reset => self.count = 0,
+        }
+    }
+
+    // describes the interface as a function of the state
+    fn view(&self) -> Element<'_, Message> {
+        column![
+            text("Count:"),
+            text(self.count).size(32),
+            button("+").on_press(Message::Increment),
+            // without on_press, the button is disabled
+            button("Reset").on_press_maybe((self.count > 0).then_some(Message::Reset)),
+        ]
+        .padding(16)
+        .spacing(8)
+        .into()
+    }
+}
+
+fn main() -> iced::Result {
+    iced::run(Counter::update, Counter::view)
+}
+```
+
+</TabItem>
+</Tabs>
+
+The **Elm architecture**, used by iced, Elm and Redux on the web, is a variant of the same basic idea: the interface is a pure function of the state (`view`). User actions produce **messages**, and only the function `update` changes the state. Afterwards, the interface is generated from the new state. Other variants of separating the interface from the logic, such as **MVC** and **MVP**, are described on the page [Software Architecture](/en/software-development/software-architecture/#mvc-mvp-and-mvvm).
+
+## Designing interfaces
+
+An interface is good if users can complete their tasks quickly and without errors. Principles of **usability**, such as the dialogue principles of the standard ISO 9241-110 and Jakob Nielsen's heuristics, are described on the page [User Experience](/en/media-technology/user-experience/).
+
+## Further reading
+
+- [Data binding overview (WPF)](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/) and [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) (Microsoft Learn)
+- [The iced book](https://book.iced.rs/)

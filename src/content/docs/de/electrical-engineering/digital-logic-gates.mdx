@@ -1,0 +1,156 @@
+---
+title: Logikgatter
+description: Logikpegel von TTL und CMOS, Grundgatter mit IEC- und ANSI-Symbolen und Wahrheitstabellen, NAND als universelles Gatter, Schaltungsentwurf und Minimierung mit KV-Diagrammen.
+sidebar:
+  order: 11
+---
+
+Die **Digitaltechnik** verarbeitet Signale, die nur zwei Zustände kennen: 0 und 1, Low und High, falsch und wahr. Aus wenigen Grundgattern lassen sich alle Rechenwerke, Speicher und Steuerungen bis hin zum Prozessor aufbauen. Die mathematische Grundlage ist die [boolesche Algebra](/de/mathematics/algebra/logic-and-boolean-algebra/), die Zahlendarstellung behandelt die Seite [Zahlensysteme](/de/mathematics/algebra/number-systems/).
+
+## Analog und digital
+
+Ein **analoges** Signal kann jeden Wert innerhalb eines Bereichs annehmen. Ein **digitales** Signal ist wertdiskret, im binären Fall gibt es nur zwei Werte. Der Vorteil: Störungen, die das Signal ein wenig verändern, ändern seine Bedeutung nicht, solange es im erlaubten Bereich bleibt. Digitale Daten lassen sich deshalb verlustfrei speichern, kopieren und übertragen.
+
+## Logikpegel
+
+Den logischen Zuständen werden Spannungsbereiche zugeordnet. Bei **positiver Logik** (Normalfall) entspricht High der 1 und Low der 0. Zwischen den Bereichen liegt ein verbotener Bereich, in dem der Zustand undefiniert ist.
+
+| Logikfamilie             | Versorgung | Eingang Low $U_\mathrm{IL,max}$ | Eingang High $U_\mathrm{IH,min}$ | Ausgang Low $U_\mathrm{OL,max}$ | Ausgang High $U_\mathrm{OH,min}$ |
+| ------------------------ | ---------- | ---------------------- | ----------------------- | ---------------------- | ----------------------- |
+| TTL (74xx, 74LS)         | $5\,\mathrm{V}$   | $0{,}8\,\mathrm{V}$ | $2{,}0\,\mathrm{V}$  | $0{,}4\,\mathrm{V}$  | $2{,}4\,\mathrm{V}$  |
+| CMOS (74HC) bei $5\,\mathrm{V}$ | $2$ bis $6\,\mathrm{V}$ | $1{,}5\,\mathrm{V}$ ($0{,}3\,U_\mathrm{DD}$) | $3{,}5\,\mathrm{V}$ ($0{,}7\,U_\mathrm{DD}$) | nahe $0\,\mathrm{V}$ | nahe $U_\mathrm{DD}$ |
+| LVCMOS/LVTTL             | $3{,}3\,\mathrm{V}$ | $0{,}8\,\mathrm{V}$ | $2{,}0\,\mathrm{V}$ | $0{,}4\,\mathrm{V}$ | $2{,}4\,\mathrm{V}$ |
+
+Die Ausgangspegel sind enger als die Eingangsbereiche. Der Unterschied ist der **Störabstand**: Bei TTL dürfen Störungen bis $0{,}4\,\mathrm{V}$ ein Signal verfälschen, ohne dass der Empfänger es falsch erkennt.
+
+:::caution
+Familien lassen sich nicht immer direkt verbinden. Ein TTL-Ausgang mit $2{,}4\,\mathrm{V}$ High-Pegel wird von einem 74HC-Eingang ($3{,}5\,\mathrm{V}$ nötig) nicht sicher als High erkannt, dafür gibt es die Familie 74HCT mit TTL-kompatiblen Eingängen. Ein $5$-V-Ausgang kann einen $3{,}3$-V-Eingang zerstören, wenn dieser nicht $5\,\mathrm{V}$-tolerant ist. Dann braucht man einen **Pegelwandler**.
+:::
+
+Weitere Kenngrößen von Logikbausteinen sind die **Gatterlaufzeit** (_propagation delay_, einige Nanosekunden), der **Lastfaktor** (_fan-out_, wie viele Eingänge ein Ausgang treiben kann) und die Leistungsaufnahme. Besondere Ausgangsarten sind der **Open-Collector**- bzw. Open-Drain-Ausgang, der nur gegen Masse schalten kann und einen Pull-up-Widerstand braucht (verwendet beim I²C-Bus), und der **Tri-State**-Ausgang, der zusätzlich hochohmig werden kann, damit sich mehrere Bausteine einen Bus teilen.
+
+## Grundgatter
+
+Ein **Gatter** verknüpft einen oder mehrere Eingänge zu einem Ausgang. Für die Schaltzeichen gibt es zwei verbreitete Normen: Die europäische Norm **IEC 60617** (DIN EN 60617) verwendet Rechtecke mit einem Kennzeichen, die amerikanische **ANSI/IEEE Std 91** verwendet unterschiedliche Formen. Ein kleiner Kreis am Ausgang bedeutet Negation.
+
+![Schaltzeichen der Grundgatter nach IEC und ANSI](/images/electrical-engineering/logic-gates_de.svg)
+
+| Gatter         | Funktion                          | IEC-Kennzeichen | Ausdruck                       | Ausgang ist 1, wenn …                    |
+| -------------- | --------------------------------- | --------------- | ------------------------------ | ---------------------------------------- |
+| NOT (Inverter) | Negation                          | `1` mit Kreis   | $Y = \overline{A}$             | der Eingang 0 ist                         |
+| AND            | Konjunktion                       | `&`             | $Y = A \cdot B = A \land B$    | alle Eingänge 1 sind                      |
+| OR             | Disjunktion                       | `≥1`            | $Y = A + B = A \lor B$         | mindestens ein Eingang 1 ist              |
+| NAND           | negiertes AND                     | `&` mit Kreis   | $Y = \overline{A \cdot B}$     | nicht alle Eingänge 1 sind                |
+| NOR            | negiertes OR                      | `≥1` mit Kreis  | $Y = \overline{A + B}$         | alle Eingänge 0 sind                      |
+| XOR            | Antivalenz, exklusives Oder       | `=1`            | $Y = A \oplus B = \overline{A}B + A\overline{B}$ | die Eingänge verschieden sind |
+| XNOR           | Äquivalenz                        | `=`             | $Y = \overline{A \oplus B} = AB + \overline{A}\,\overline{B}$ | die Eingänge gleich sind |
+
+### Wahrheitstabelle
+
+Eine **Wahrheitstabelle** listet für jede Eingangskombination den Ausgang auf. Bei $n$ Eingängen hat sie $2^n$ Zeilen.
+
+| $A$ | $B$ | AND | OR | NAND | NOR | XOR | XNOR |
+| --- | --- | --- | -- | ---- | --- | --- | ---- |
+| 0   | 0   | 0   | 0  | 1    | 1   | 0   | 1    |
+| 0   | 1   | 0   | 1  | 1    | 0   | 1   | 0    |
+| 1   | 0   | 0   | 1  | 1    | 0   | 1   | 0    |
+| 1   | 1   | 1   | 1  | 0    | 0   | 0   | 1    |
+
+Ein XOR mit mehr als zwei Eingängen liefert 1, wenn eine ungerade Anzahl von Eingängen 1 ist. Deshalb bildet man damit **Paritätsbits**. Ein XOR ist außerdem ein steuerbarer Inverter: $A \oplus 0 = A$, $A \oplus 1 = \overline{A}$.
+
+Bekannte Bausteine der 74er-Reihe sind 74HC00 (vier NAND), 74HC02 (vier NOR), 74HC04 (sechs Inverter), 74HC08 (vier AND), 74HC32 (vier OR) und 74HC86 (vier XOR).
+
+## NAND als universelles Gatter
+
+Mit NAND-Gattern allein lässt sich jede logische Funktion aufbauen. Das gilt ebenso für NOR. Die Herleitung beruht auf den Gesetzen von **De Morgan**:
+
+$$
+\overline{A \cdot B} = \overline{A} + \overline{B} \qquad \overline{A + B} = \overline{A} \cdot \overline{B}
+$$
+
+| Funktion | aus NAND-Gattern                                                   | Anzahl |
+| -------- | ------------------------------------------------------------------ | ------ |
+| NOT      | $\overline{A} = \overline{A \cdot A}$ (beide Eingänge verbunden)    | 1      |
+| AND      | $A \cdot B = \overline{\overline{A \cdot B}}$ (NAND, dann NOT)      | 2      |
+| OR       | $A + B = \overline{\overline{A} \cdot \overline{B}}$ (zwei NOT, dann NAND) | 3 |
+
+In CMOS sind NAND und NOR die einfachsten Gatter (je vier Transistoren, siehe [CMOS-Technik](/de/electrical-engineering/transistors/#cmos-technik)), während AND und OR einen zusätzlichen Inverter brauchen. Eine **disjunktive Normalform** (Summe von Produkten) lässt sich direkt in eine zweistufige NAND-NAND-Schaltung umsetzen, indem man jedes AND und das abschließende OR durch NAND ersetzt.
+
+## Schaltungsentwurf
+
+Der Entwurf einer kombinatorischen Schaltung folgt immer demselben Weg:
+
+1. Aufgabe verstehen, Eingänge und Ausgänge festlegen.
+2. **Wahrheitstabelle** aufstellen.
+3. Schaltfunktion als **Normalform** ablesen: Die disjunktive Normalform (DNF) verknüpft alle Zeilen mit Ausgang 1 (Minterme) mit ODER.
+4. **Vereinfachen** mit den Rechenregeln der booleschen Algebra oder einem KV-Diagramm.
+5. Schaltung zeichnen, gegebenenfalls in NAND- oder NOR-Technik umwandeln.
+
+Die Normalformen und Rechenregeln sind in [Logik und boolesche Algebra](/de/mathematics/algebra/logic-and-boolean-algebra/#normalformen) erklärt.
+
+## KV-Diagramm
+
+Das **Karnaugh-Veitch-Diagramm** ist eine grafische Form der Wahrheitstabelle, mit der man Schaltfunktionen bis etwa vier Variablen schnell minimiert. Die Felder sind so angeordnet, dass sich benachbarte Felder in **genau einer** Variable unterscheiden. Die Zeilen- und Spaltenbeschriftung folgt deshalb dem **Gray-Code** (00, 01, 11, 10). Auch die Felder am gegenüberliegenden Rand gelten als benachbart, das Diagramm ist gedanklich ein Torus.
+
+Regeln zur Minimierung:
+
+1. Die Einsen der Wahrheitstabelle eintragen.
+2. Benachbarte Einsen zu möglichst **großen** rechteckigen Blöcken mit $1$, $2$, $4$, $8$ oder $16$ Feldern zusammenfassen. Blöcke dürfen sich überlappen und über den Rand gehen.
+3. Möglichst **wenige** Blöcke wählen, sodass jede 1 mindestens einmal erfasst ist.
+4. Jeder Block ergibt einen Produktterm. Darin bleiben nur die Variablen, die im ganzen Block gleich sind. Ein Block mit $2^k$ Feldern eliminiert $k$ Variablen.
+5. Die Produktterme mit ODER verknüpfen.
+
+### Beispiel mit vier Variablen
+
+Gegeben ist $Y = \sum m(0, 2, 5, 7, 8, 10, 13, 15)$ mit den Variablen $A$ (höchstwertig), $B$, $C$, $D$. Die Minterm-Nummer ist die Dualzahl $ABCD$.
+
+| $AB$ \ $CD$ | 00 | 01 | 11 | 10 |
+| ----------- | -- | -- | -- | -- |
+| **00**      | 1  | 0  | 0  | 1  |
+| **01**      | 0  | 1  | 1  | 0  |
+| **11**      | 0  | 1  | 1  | 0  |
+| **10**      | 1  | 0  | 0  | 1  |
+
+- Die vier Einsen in der Mitte (Zeilen 01 und 11, Spalten 01 und 11) bilden einen Block. Gleich bleiben $B = 1$ und $D = 1$, also $BD$.
+- Die vier Ecken sind über die Ränder benachbart. Gleich bleiben $B = 0$ und $D = 0$, also $\overline{B}\,\overline{D}$.
+
+$$
+Y = BD + \overline{B}\,\overline{D} = \overline{B \oplus D}
+$$
+
+Aus acht Mintermen mit je vier Variablen ist ein einziges XNOR-Gatter geworden. $A$ und $C$ haben keinen Einfluss.
+
+### Don't-Care-Terme
+
+Manche Eingangskombinationen kommen nie vor oder ihr Ausgang ist egal. Solche **Don't-Care-Terme** (Redundanzen) trägt man mit **X** ein. Man darf sie als 1 verwenden, wenn dadurch größere Blöcke entstehen, muss es aber nicht.
+
+Beispiel: Eine Schaltung soll melden, ob eine BCD-Ziffer $x_3 x_2 x_1 x_0$ mindestens 5 ist. Die Codes 10 bis 15 kommen in BCD nicht vor und sind Don't Cares.
+
+| $x_3 x_2$ \ $x_1 x_0$ | 00 | 01 | 11 | 10 |
+| --------------------- | -- | -- | -- | -- |
+| **00**                | 0  | 0  | 0  | 0  |
+| **01**                | 0  | 1  | 1  | 1  |
+| **11**                | X  | X  | X  | X  |
+| **10**                | 1  | 1  | X  | X  |
+
+- Die Zeilen 11 und 10 bilden einen Achterblock: $x_3$.
+- Zeilen 01 und 11, Spalten 01 und 11: $x_2 x_0$.
+- Zeilen 01 und 11, Spalten 11 und 10: $x_2 x_1$.
+
+$$
+Y = x_3 + x_2 x_0 + x_2 x_1
+$$
+
+Ohne Don't Cares wären die Terme länger, etwa $x_3 \overline{x_2}\,\overline{x_1}$ statt $x_3$.
+
+:::tip[Merke]
+Blöcke immer so groß wie möglich wählen, auch wenn dafür Einsen doppelt erfasst werden. Ein Block aus lauter Don't Cares wird nicht verwendet, weil er keine 1 abdeckt.
+:::
+
+Bei mehr als vier oder fünf Variablen wird das KV-Diagramm unübersichtlich. Dann verwendet man das Verfahren von **Quine-McCluskey** oder Software, wie sie in den Werkzeugen für [programmierbare Logik](/de/electrical-engineering/sequential-circuits/#programmierbare-logik) eingebaut ist.
+
+## Weiterführende Quellen
+
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- [Wikipedia: Logikgatter](https://de.wikipedia.org/wiki/Logikgatter)

@@ -1,0 +1,287 @@
+---
+title: Thermodynamics
+description: Temperature and temperature scales, thermal expansion, heat and specific heat capacity, phase changes, heat transfer, ideal gas, laws of thermodynamics, entropy, heat engines and heat pumps.
+sidebar:
+  order: 9
+---
+
+**Thermodynamics** describes temperature, heat and the conversion of heat into work. It explains why bridges need expansion joints, how a fridge works and why no power station can reach an efficiency of 100 %.
+
+## Temperature
+
+**Temperature** is a measure of the average kinetic energy of the random motion of particles. The hotter a body, the more vigorously its atoms and molecules vibrate or fly around. If two bodies are brought into contact, their temperatures equalise (thermal equilibrium, sometimes called the "zeroth law"); every thermometer is based on this.
+
+### Temperature scales
+
+| Scale | Fixed points | Conversion |
+| --- | --- | --- |
+| **kelvin** (SI) | absolute zero $0\,\mathrm{K}$, defined via $k_\mathrm{B}$ | $T = \vartheta / {}^\circ\mathrm{C} + 273.15$ (in K) |
+| **Celsius** | ice melts at $0\,^\circ\mathrm{C}$, water boils at $100\,^\circ\mathrm{C}$ (at $1013\,\mathrm{hPa}$) | $\vartheta = T/\mathrm{K} - 273.15$ (in °C) |
+| **Fahrenheit** (USA) | $32\,^\circ\mathrm{F}$ and $212\,^\circ\mathrm{F}$ | $\vartheta_\mathrm{F} = 1.8 \cdot \vartheta_\mathrm{C} + 32$ |
+
+**Absolute zero** $0\,\mathrm{K} = -273.15\,^\circ\mathrm{C}$ is the lowest possible temperature; it cannot be reached (third law). One kelvin is the same size as one degree Celsius, so temperature **differences** have the same numerical value in K and °C and are given in K. In physical formulas such as the gas law or Stefan-Boltzmann, the absolute temperature in kelvin must always be used.
+
+## Thermal expansion
+
+Almost all substances expand when heated, because the particles vibrate more strongly and need more space.
+
+$$
+\Delta l = \alpha \cdot l_0 \cdot \Delta T, \qquad \Delta V = \gamma \cdot V_0 \cdot \Delta T, \qquad \gamma \approx 3\alpha \;(\text{solids})
+$$
+
+| Material | Coefficient of linear expansion $\alpha$ in $10^{-6}\,\mathrm{K^{-1}}$ |
+| --- | --- |
+| Invar (iron-nickel) | 1.2 |
+| glass (fused silica / window glass) | 0.5 / 9 |
+| concrete | about 12 |
+| steel | 12 |
+| copper | 17 |
+| aluminium | 23 |
+
+:::tip[Example: rail]
+A $30\,\mathrm{m}$ steel rail warms from $-10\,^\circ\mathrm{C}$ to $40\,^\circ\mathrm{C}$: $\Delta l = 12 \times 10^{-6} \cdot 30 \cdot 50 = 0.018\,\mathrm{m} = 18\,\mathrm{mm}$. Without an expansion gap or pre-stressing, it would buckle. Because concrete and steel have almost the same coefficient, reinforced concrete works.
+:::
+
+Applications: bimetallic strips (thermostats, overload protection) made of two metals with different $\alpha$ bend when heated. Liquid-in-glass thermometers use volume expansion.
+
+**Anomaly of water**: water has its greatest density at $4\,^\circ\mathrm{C}$ and expands by about 9 % when it freezes. Lakes therefore freeze from the top, water at $4\,^\circ\mathrm{C}$ remains at the bottom, and fish survive. Frost weathering of rock and burst water pipes are the downside.
+
+## Heat and heat capacity
+
+**Heat** $Q$ is energy transferred because of a temperature difference, always from the warmer to the colder body. Its unit is the joule. Heat supplied increases the body's **internal energy** $U$.
+
+To heat a body you need
+
+$$
+Q = c \cdot m \cdot \Delta T
+$$
+
+The **specific heat capacity** $c$ in $\mathrm{J/(kg\,K)}$ states how much energy $1\,\mathrm{kg}$ of a substance needs to warm up by $1\,\mathrm{K}$. The product $C = c \cdot m$ is the heat capacity of the body.
+
+| Substance | $c$ in $\mathrm{J/(kg\,K)}$ |
+| --- | --- |
+| water | 4186 (about 4190) |
+| ice | 2100 |
+| air (at constant pressure) | 1005 |
+| aluminium | 900 |
+| concrete | about 880 |
+| iron, steel | 450 |
+| copper | 385 |
+
+Water has an unusually high heat capacity. That is why it is suitable as a coolant and heat store, and why the climate by the sea is milder than inland.
+
+:::tip[Example: kettle]
+$2\,\mathrm{L}$ of water ($2\,\mathrm{kg}$) from $15\,^\circ\mathrm{C}$ to $100\,^\circ\mathrm{C}$: $Q = 4186 \cdot 2 \cdot 85 = 712\,\mathrm{kJ}$. A $2\,\mathrm{kW}$ kettle at 100 % efficiency needs $712\,000/2000 = 356\,\mathrm{s} \approx 6\,\mathrm{min}$. That is $0.2\,\mathrm{kWh}$.
+:::
+
+### Method of mixtures
+
+If two bodies are mixed and no heat is lost to the surroundings, the warmer body gives off as much heat as the colder one absorbs (**Richmann's law of mixtures**):
+
+$$
+c_1 m_1 (\vartheta_1 - \vartheta_\mathrm{m}) = c_2 m_2 (\vartheta_\mathrm{m} - \vartheta_2)
+$$
+
+For two quantities of water ($c$ cancels): $0.2\,\mathrm{kg}$ at $80\,^\circ\mathrm{C}$ and $0.3\,\mathrm{kg}$ at $20\,^\circ\mathrm{C}$ give $\vartheta_\mathrm{m} = \frac{0.2 \cdot 80 + 0.3 \cdot 20}{0.5} = 44\,^\circ\mathrm{C}$.
+
+## Phase changes
+
+Substances occur in the solid, liquid and gaseous states. During a phase change, the temperature does not change even though heat is supplied or removed. The energy is needed to break bonds between particles and is called **latent heat**:
+
+$$
+Q = L \cdot m
+$$
+
+| Transition | Reverse | Water |
+| --- | --- | --- |
+| melting (solid → liquid) | freezing | specific latent heat of fusion $L_\mathrm{s} = 334\,\mathrm{kJ/kg}$ at $0\,^\circ\mathrm{C}$ |
+| vaporisation (liquid → gas) | condensation | specific latent heat of vaporisation $L_\mathrm{v} = 2257\,\mathrm{kJ/kg}$ at $100\,^\circ\mathrm{C}$ |
+| sublimation (solid → gas) | deposition | hoar frost, freeze-drying |
+
+For water, the latent heat of vaporisation is more than five times the energy needed to heat it from $0$ to $100\,^\circ\mathrm{C}$. Sweating therefore cools very effectively: evaporating water takes this energy from the skin. Conversely, steam scalds more severely than boiling water, because it releases the latent heat when it condenses on the skin.
+
+The boiling point depends on pressure. On the Großglockner, water boils at about $88\,^\circ\mathrm{C}$; in a pressure cooker only at about $120\,^\circ\mathrm{C}$.
+
+:::tip[Example: ice to water]
+$0.5\,\mathrm{kg}$ of ice at $-10\,^\circ\mathrm{C}$ is to become water at $20\,^\circ\mathrm{C}$:
+
+1. Warm the ice: $2100 \cdot 0.5 \cdot 10 = 10.5\,\mathrm{kJ}$
+2. Melt: $334\,000 \cdot 0.5 = 167\,\mathrm{kJ}$
+3. Warm the water: $4186 \cdot 0.5 \cdot 20 = 41.9\,\mathrm{kJ}$
+
+Total: $219\,\mathrm{kJ}$. Most of it goes into melting.
+:::
+
+## Heat transfer
+
+| Type | Mechanism | Examples |
+| --- | --- | --- |
+| **conduction** | energy passed from particle to particle, without transport of material | spoon in tea, house wall |
+| **convection** | heated fluid flows and carries energy with it | radiators, Gulf Stream, wind |
+| **thermal radiation** | electromagnetic radiation (infrared), also through vacuum | Sun, campfire, thermal imaging camera |
+
+### Conduction
+
+The **heat flow rate** $\Phi = Q/t$ through a wall of thickness $d$ and area $A$ is (Fourier's law):
+
+$$
+\Phi = \lambda \cdot A \cdot \frac{\Delta T}{d}, \qquad [\Phi] = \mathrm{W}
+$$
+
+The **thermal conductivity** $\lambda$ in $\mathrm{W/(m\,K)}$ is about $400$ for copper, $50$ for steel, $2$ for concrete, $1$ for glass, $0.5$ to $0.8$ for brick, $0.6$ for water, $0.13$ for wood, $0.035$ for expanded polystyrene insulation boards (EPS) and $0.026$ for still air. Good insulating materials trap a lot of still air.
+
+In construction, the **thermal transmittance** (U-value) of a building element in $\mathrm{W/(m^2\,K)}$ is used, which also includes the transfer at the surfaces: $\Phi = U \cdot A \cdot \Delta T$. The smaller the U-value, the better the insulation. Modern triple glazing reaches about $0.6$ to $0.8\,\mathrm{W/(m^2\,K)}$.
+
+:::tip[Example: insulation board]
+$10\,\mathrm{m^2}$ of EPS, $15\,\mathrm{cm}$ thick, with a temperature difference of $20\,\mathrm{K}$: $\Phi = 0.035 \cdot 10 \cdot 20/0.15 = 46.7\,\mathrm{W}$. The same area of $15\,\mathrm{cm}$ concrete ($\lambda = 2$) would let through $2.7\,\mathrm{kW}$.
+:::
+
+### Thermal radiation
+
+Every body emits electromagnetic energy depending on its temperature. An ideal **black body** radiates according to the **Stefan-Boltzmann law**
+
+$$
+P = \varepsilon \sigma A T^4, \qquad \sigma = 5.670 \times 10^{-8}\,\mathrm{\frac{W}{m^2\,K^4}}
+$$
+
+with the emissivity $\varepsilon$ ($1$ for a black body, $0.95$ for human skin, below $0.1$ for polished metal). Because of $T^4$, a body twice as hot radiates 16 times as much. $1\,\mathrm{m^2}$ of black surface at $300\,\mathrm{K}$ radiates $459\,\mathrm{W}$; a body, however, also absorbs radiation from its surroundings, so the net value is $\varepsilon\sigma A (T^4 - T_\mathrm{U}^4)$.
+
+**Wien's displacement law** gives the wavelength of maximum emission:
+
+$$
+\lambda_\mathrm{max} = \frac{b}{T}, \qquad b = 2.898 \times 10^{-3}\,\mathrm{m\,K}
+$$
+
+The Sun ($5772\,\mathrm{K}$) emits most strongly at $502\,\mathrm{nm}$ (visible light), the Earth ($288\,\mathrm{K}$) at $10\,\mathrm{\mu m}$ (infrared). This difference is the basis of the [greenhouse effect](/en/natural-sciences/energy-and-climate-physics/#greenhouse-effect).
+
+## Ideal gas
+
+An **ideal gas** is a model: point-like particles with no forces between them, which only collide elastically. Real gases behave almost ideally at low pressure and high temperature (air at room conditions very well).
+
+### Equation of state
+
+$$
+p V = n R T = N k_\mathrm{B} T
+$$
+
+- $n$: amount of substance in mol, $N = n N_\mathrm{A}$: number of particles
+- $R = N_\mathrm{A} k_\mathrm{B} = 8.314\,\mathrm{J/(mol\,K)}$: universal gas constant
+- $T$ in kelvin, $p$ in Pa, $V$ in $\mathrm{m^3}$
+
+At $0\,^\circ\mathrm{C}$ and $101\,325\,\mathrm{Pa}$, one mole of an ideal gas occupies the **molar volume** $V_\mathrm{m} = \frac{8.314 \cdot 273.15}{101\,325} = 22.4\,\mathrm{L}$, regardless of the type of gas.
+
+### Special gas laws
+
+For an enclosed quantity of gas, $\frac{p V}{T} = \text{constant}$. Keeping one quantity fixed:
+
+| Law | constant | Relationship |
+| --- | --- | --- |
+| Boyle-Mariotte (isothermal) | $T$ | $p_1 V_1 = p_2 V_2$ |
+| Charles / Gay-Lussac (isobaric) | $p$ | $\frac{V_1}{T_1} = \frac{V_2}{T_2}$ |
+| Amontons / Gay-Lussac (isochoric) | $V$ | $\frac{p_1}{T_1} = \frac{p_2}{T_2}$ |
+
+:::tip[Example: car tyre]
+At $10\,^\circ\mathrm{C}$, a tyre has a gauge pressure of $2.2\,\mathrm{bar}$, so an absolute pressure of $2.2 + 1.013 = 3.213\,\mathrm{bar}$. After driving, it is $40\,^\circ\mathrm{C}$ warm and the volume stays almost the same:
+
+$$
+p_2 = p_1 \cdot \frac{T_2}{T_1} = 3.213 \cdot \frac{313.15}{283.15} = 3.55\,\mathrm{bar}
+$$
+
+The gauge pressure rises to $2.54\,\mathrm{bar}$. Wrongly calculating with °C and gauge pressure would give far too large a value. That is why tyre pressure is measured when the tyres are cold.
+:::
+
+### Kinetic theory of gases
+
+The pressure of a gas arises from the particles hitting the wall. The average kinetic energy of a particle is proportional to the absolute temperature:
+
+$$
+\overline{E}_\mathrm{kin} = \frac{3}{2} k_\mathrm{B} T, \qquad v_\mathrm{rms} = \sqrt{\frac{3 R T}{M}}
+$$
+
+Nitrogen molecules ($M = 0.028\,\mathrm{kg/mol}$) at $300\,\mathrm{K}$ have a root-mean-square speed of $\sqrt{3 \cdot 8.314 \cdot 300/0.028} = 517\,\mathrm{m/s}$, faster than sound.
+
+## First law
+
+The **first law** is the conservation of energy for thermodynamic systems: the internal energy of a system changes only through heat supplied and work done on the system.
+
+$$
+\Delta U = Q + W
+$$
+
+Here heat and work count as positive when they are **supplied to** the system (the usual convention in physics). Engineering books also use $\Delta U = Q - W$, where $W$ is then the work done **by** the system. Both say the same. One consequence: a **perpetual motion machine of the first kind**, which produces work from nothing, is impossible.
+
+For a gas, the work is $W = -\int p\,\mathrm{d}V$ (compression: $\mathrm{d}V < 0$, work is supplied). In the $p$-$V$ diagram, the work is the area under the curve.
+
+| Process | Condition | Energy balance | Work |
+| --- | --- | --- | --- |
+| **isochoric** | $V$ constant | $\Delta U = Q$ | $W = 0$ |
+| **isobaric** | $p$ constant | $\Delta U = Q + W$ | $W = -p\,\Delta V$ |
+| **isothermal** | $T$ constant | $\Delta U = 0$, so $Q = -W$ | $W = -nRT \ln\frac{V_2}{V_1}$ |
+| **adiabatic** | no heat exchange, $Q = 0$ | $\Delta U = W$ | $p V^\kappa = \text{constant}$ |
+
+The **adiabatic index** $\kappa = c_p/c_V$ is $1.4$ for air. When air is compressed quickly, its temperature rises sharply: air at $20\,^\circ\mathrm{C}$ compressed to a tenth of its volume reaches $T_2 = T_1 \cdot 10^{\kappa - 1} = 293 \cdot 10^{0.4} = 736\,\mathrm{K}$ (about $460\,^\circ\mathrm{C}$). Self-ignition in a diesel engine is based on this. Conversely, rising air cools as it expands, which is why it is colder on mountains.
+
+:::tip[Example: isothermal expansion]
+$1\,\mathrm{mol}$ of gas expands to twice its volume at $300\,\mathrm{K}$. It does work of $nRT\ln 2 = 8.314 \cdot 300 \cdot 0.693 = 1.73\,\mathrm{kJ}$ and absorbs the same amount of heat from the surroundings so that its temperature stays constant.
+:::
+
+## Second law and entropy
+
+The first law does not forbid a glass of water from cooling down by itself while warming the table top. That this never happens is governed by the **second law**. Equivalent statements:
+
+- **Clausius**: heat flows spontaneously only from the warmer to the colder body.
+- **Kelvin-Planck**: there is no cyclically operating machine that converts heat from one reservoir completely into work (no **perpetual motion machine of the second kind**).
+- **Entropy**: in a closed system, entropy never decreases.
+
+**Entropy** $S$ is a measure of the number of microscopic arrangements that correspond to the same macroscopic state, intuitively of "disorder" and of the degradation of energy. For heat supplied at constant temperature:
+
+$$
+\Delta S = \frac{Q}{T}, \qquad [S] = \mathrm{J/K}
+$$
+
+When $1\,\mathrm{kg}$ of ice melts at $273.15\,\mathrm{K}$, its entropy increases by $334\,000/273.15 = 1223\,\mathrm{J/K}$. In all real (irreversible) processes such as friction, heat conduction or mixing, the total entropy increases. Energy is never lost, but it becomes increasingly unusable as it spreads out as low-temperature heat.
+
+The **third law** states that the entropy of a perfect crystal tends to zero as $T \to 0$ and that absolute zero cannot be reached in a finite number of steps.
+
+## Heat engines
+
+A **heat engine** (steam turbine, combustion engine) takes heat $Q_\mathrm{in}$ from a hot reservoir (temperature $T_\mathrm{h}$), converts part of it into work $W$ and gives off the rest $Q_\mathrm{out}$ to a cold reservoir ($T_\mathrm{c}$), for example to cooling water or the surroundings. By the second law, this waste heat is unavoidable.
+
+$$
+\eta = \frac{W}{Q_\mathrm{in}} = 1 - \frac{Q_\mathrm{out}}{Q_\mathrm{in}}
+$$
+
+The highest possible efficiency is achieved by the idealised, reversible **Carnot cycle** (two isotherms, two adiabats):
+
+$$
+\eta_\mathrm{C} = 1 - \frac{T_\mathrm{c}}{T_\mathrm{h}}
+$$
+
+:::tip[Example: steam power station]
+Live steam at $800\,\mathrm{K}$, cooling water at $300\,\mathrm{K}$: $\eta_\mathrm{C} = 1 - 300/800 = 62.5\,\%$. Real coal-fired power stations achieve 40 to 45 %. Higher efficiencies require higher steam temperatures, which are limited by materials. Combined heat and power (cogeneration) uses the waste heat for district heating and thus increases fuel utilisation.
+:::
+
+The **petrol engine** works on the Otto cycle (two adiabats, two isochores). Its theoretical efficiency depends on the compression ratio $\varepsilon = V_\mathrm{max}/V_\mathrm{min}$: $\eta = 1 - \varepsilon^{1-\kappa}$, so $60\,\%$ for $\varepsilon = 10$. Because of friction, heat losses and incomplete combustion, real engines reach 25 to 35 %.
+
+## Heat pumps and refrigerators
+
+A **heat pump** or **refrigerator** is a heat engine run in reverse: using work $W$ (usually electrical, via a compressor), it "pumps" heat from the cold to the warm reservoir. The second law is not violated, because work is expended.
+
+A refrigerant evaporates in the evaporator at low pressure and absorbs heat from the cold surroundings. The compressor compresses the vapour, which heats it up. In the condenser it gives off heat to the warm side and liquefies. An expansion valve lowers the pressure again.
+
+Performance is described by the **coefficient of performance** (COP):
+
+| Device | Useful output | COP | Carnot limit |
+| --- | --- | --- | --- |
+| heat pump (heating) | heat delivered $Q_\mathrm{h}$ | $\varepsilon_\mathrm{HP} = \frac{Q_\mathrm{h}}{W}$ | $\frac{T_\mathrm{h}}{T_\mathrm{h} - T_\mathrm{c}}$ |
+| fridge, air conditioner | heat removed $Q_\mathrm{c}$ | $\varepsilon_\mathrm{R} = \frac{Q_\mathrm{c}}{W}$ | $\frac{T_\mathrm{c}}{T_\mathrm{h} - T_\mathrm{c}}$ |
+
+:::tip[Example: air-to-water heat pump]
+Outside air $0\,^\circ\mathrm{C}$ ($273.15\,\mathrm{K}$), underfloor heating $35\,^\circ\mathrm{C}$ ($308.15\,\mathrm{K}$). Carnot limit: $308.15/35 = 8.8$. Real devices achieve about half of this, so a COP of around $4$: $1\,\mathrm{kWh}$ of electricity gives $4\,\mathrm{kWh}$ of heat, $3\,\mathrm{kWh}$ of which come from the outside air. The smaller the temperature difference, the more efficient the heat pump; that is why it suits underfloor heating with a low flow temperature.
+:::
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 2_, chapters 1 to 4, openstax.org
+- klimaaktiv (Austrian climate protection initiative): heat pumps, klimaaktiv.at

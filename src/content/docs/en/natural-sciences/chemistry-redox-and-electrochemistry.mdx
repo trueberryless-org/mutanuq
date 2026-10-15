@@ -1,0 +1,256 @@
+---
+title: Redox Reactions and Electrochemistry
+description: Oxidation numbers, redox equations, the electrochemical series, galvanic cells, electrolysis, batteries and accumulators with cell chemistry, fuel cells, and corrosion and corrosion protection.
+sidebar:
+  order: 37
+---
+
+In **redox reactions** electrons are transferred from one particle to another. If these electrons flow through an external conductor, their energy can be used as electric current: this is the basis of all batteries, accumulators and fuel cells. Conversely, in electrolysis an electric current drives redox reactions. **Electrochemistry** thus links chemistry and electrical engineering.
+
+## Oxidation and reduction
+
+Historically, oxidation meant "reaction with oxygen". Today the more general electron definition applies:
+
+- **Oxidation** is the **loss** of electrons. The oxidation number increases.
+- **Reduction** is the **gain** of electrons. The oxidation number decreases.
+- Both always occur together: a **reducing agent** gives up electrons and is oxidised in the process, an **oxidising agent** accepts electrons and is reduced.
+
+$$
+\begin{aligned}
+\text{Oxidation:} &\quad \mathrm{Zn \rightarrow Zn^{2+} + 2\,e^-} \\
+\text{Reduction:} &\quad \mathrm{Cu^{2+} + 2\,e^- \rightarrow Cu} \\
+\text{Redox:} &\quad \mathrm{Zn + Cu^{2+} \rightarrow Zn^{2+} + Cu}
+\end{aligned}
+$$
+
+A zinc strip in copper sulfate solution therefore becomes coated with copper while zinc dissolves.
+
+## Oxidation numbers
+
+The **oxidation number** (oxidation state) is the hypothetical charge of an atom if all bonding electrons are assigned to the more electronegative partner. It is written as a Roman numeral above the symbol or in brackets: iron(III) oxide.
+
+Rules, applied in this order:
+
+1. Elements have oxidation number 0 ($\mathrm{Fe}$, $\mathrm{O_2}$, $\mathrm{Cl_2}$).
+2. For monatomic ions it equals the charge ($\mathrm{Na^+}$: +I, $\mathrm{Cl^-}$: −I).
+3. Fluorine always has −I, alkali metals +I, alkaline earth metals +II.
+4. Hydrogen usually has +I (in metal hydrides −I).
+5. Oxygen usually has −II (in peroxides such as $\mathrm{H_2O_2}$ −I).
+6. The sum of all oxidation numbers equals the overall charge of the particle.
+
+:::tip[Examples]
+- $\mathrm{H_2SO_4}$: $2 \cdot (+1) + x + 4 \cdot (-2) = 0 \Rightarrow x = +6$ for sulfur.
+- $\mathrm{MnO_4^-}$: $x + 4 \cdot (-2) = -1 \Rightarrow x = +7$ for manganese.
+- $\mathrm{Cr_2O_7^{2-}}$: $2x + 7 \cdot (-2) = -2 \Rightarrow x = +6$ for chromium.
+- $\mathrm{CH_4}$: C has −IV, in $\mathrm{CO_2}$ +IV. So carbon is oxidised during combustion.
+:::
+
+## Writing redox equations
+
+More complex redox equations are written using half-equations:
+
+1. Determine oxidation numbers and find the oxidised and reduced particles.
+2. Write half-equations for oxidation and reduction, adding electrons according to the change in oxidation number.
+3. Balance charges: in acidic solution with $\mathrm{H^+}$ (or $\mathrm{H_3O^+}$), in basic solution with $\mathrm{OH^-}$.
+4. Balance oxygen and hydrogen with $\mathrm{H_2O}$.
+5. Multiply the half-equations so that the numbers of electrons are equal, and add them.
+
+:::tip[Example: permanganate oxidises iron(II) in acidic solution]
+Manganese goes from +VII to +II (gain of 5 electrons), iron from +II to +III (loss of 1 electron).
+
+$$
+\begin{aligned}
+\text{Red.:} &\quad \mathrm{MnO_4^- + 8\,H^+ + 5\,e^- \rightarrow Mn^{2+} + 4\,H_2O} \\
+\text{Ox.:} &\quad \mathrm{Fe^{2+} \rightarrow Fe^{3+} + e^-} \quad | \cdot 5 \\
+\text{Redox:} &\quad \mathrm{MnO_4^- + 8\,H^+ + 5\,Fe^{2+} \rightarrow Mn^{2+} + 5\,Fe^{3+} + 4\,H_2O}
+\end{aligned}
+$$
+
+Charge check: left $-1 + 8 + 10 = +17$, right $+2 + 15 = +17$. The violet permanganate becomes the almost colourless $\mathrm{Mn^{2+}}$, so the reaction is suitable for titration without an indicator (permanganometry).
+:::
+
+## Electrochemical series
+
+When a metal is immersed in a solution of its ions, a **redox couple** (half-cell) forms, for example $\mathrm{Zn/Zn^{2+}}$. How easily a metal gives up electrons is described by its **standard electrode potential** $E^\circ$, measured against the **standard hydrogen electrode** ($E^\circ = 0\,\mathrm{V}$) at $25\,\mathrm{°C}$, $c = 1\,\mathrm{mol/L}$ and $1\,\mathrm{bar}$.
+
+| Redox couple (oxidised form + $z\,\mathrm{e^-}$ ⇌ reduced form) | $E^\circ$ in V |
+| ---------------------------------------------------------------- | -------------- |
+| $\mathrm{Li^+ + e^- \rightleftharpoons Li}$                      | $-3.04$        |
+| $\mathrm{K^+ + e^- \rightleftharpoons K}$                        | $-2.93$        |
+| $\mathrm{Na^+ + e^- \rightleftharpoons Na}$                      | $-2.71$        |
+| $\mathrm{Mg^{2+} + 2\,e^- \rightleftharpoons Mg}$                | $-2.37$        |
+| $\mathrm{Al^{3+} + 3\,e^- \rightleftharpoons Al}$                | $-1.66$        |
+| $\mathrm{Zn^{2+} + 2\,e^- \rightleftharpoons Zn}$                | $-0.76$        |
+| $\mathrm{Fe^{2+} + 2\,e^- \rightleftharpoons Fe}$                | $-0.44$        |
+| $\mathrm{Ni^{2+} + 2\,e^- \rightleftharpoons Ni}$                | $-0.26$        |
+| $\mathrm{Pb^{2+} + 2\,e^- \rightleftharpoons Pb}$                | $-0.13$        |
+| $\mathrm{2\,H^+ + 2\,e^- \rightleftharpoons H_2}$                | $0.00$         |
+| $\mathrm{Cu^{2+} + 2\,e^- \rightleftharpoons Cu}$                | $+0.34$        |
+| $\mathrm{Ag^+ + e^- \rightleftharpoons Ag}$                      | $+0.80$        |
+| $\mathrm{O_2 + 4\,H^+ + 4\,e^- \rightleftharpoons 2\,H_2O}$      | $+1.23$        |
+| $\mathrm{Cl_2 + 2\,e^- \rightleftharpoons 2\,Cl^-}$              | $+1.36$        |
+| $\mathrm{Au^{3+} + 3\,e^- \rightleftharpoons Au}$                | $+1.50$        |
+| $\mathrm{F_2 + 2\,e^- \rightleftharpoons 2\,F^-}$                | $+2.87$        |
+
+- Metals with a negative potential are called **base metals**: they give up electrons easily and dissolve in acids, releasing hydrogen. Metals with a positive potential are **noble**.
+- The reduced form of a couple with a lower potential reduces the oxidised form of a couple with a higher potential: zinc deposits copper, but copper does not deposit zinc.
+
+### Nernst equation
+
+The potential depends on concentration. At $25\,\mathrm{°C}$ the **Nernst equation** applies:
+
+$$
+E = E^\circ + \frac{0.059\,\mathrm{V}}{z} \cdot \lg \frac{c(\text{Ox})}{c(\text{Red})}
+$$
+
+For metal electrodes $c(\text{Red}) = 1$ (pure solid). A copper half-cell with $c(\mathrm{Cu^{2+}}) = 0.01\,\mathrm{mol/L}$ has $E = 0.34\,\mathrm{V} + \frac{0.059\,\mathrm{V}}{2} \cdot (-2) = 0.28\,\mathrm{V}$. Two identical half-cells with different concentrations can therefore be used to build a **concentration cell**.
+
+## Galvanic cells
+
+If the two half-reactions are separated in space and connected by a wire, the electrons flow through the external circuit. Such a **galvanic cell** converts chemical energy into electrical energy. The classic example is the **Daniell cell**:
+
+![Daniell cell with zinc and copper half-cells, salt bridge and electron flow](/images/natural-sciences/daniell-cell_en.svg)
+
+- The **anode** is the electrode at which **oxidation** takes place (here zinc). In a galvanic cell it is the **negative terminal**.
+- The **cathode** is the electrode at which **reduction** takes place (here copper), the **positive terminal**.
+- The **salt bridge** (or a porous diaphragm) closes the circuit through ion migration and prevents the solutions from mixing.
+
+The **cell voltage** (open-circuit voltage) under standard conditions is the difference of the potentials:
+
+$$
+U^\circ = E^\circ(\text{cathode}) - E^\circ(\text{anode}) = 0.34\,\mathrm{V} - (-0.76\,\mathrm{V}) = 1.10\,\mathrm{V}
+$$
+
+## Electrolysis
+
+In **electrolysis** an external DC voltage source forces a redox reaction that would not proceed spontaneously. Electrical energy is converted into chemical energy. Here too, oxidation takes place at the anode, but in electrolysis the anode is the **positive terminal**.
+
+$$
+\mathrm{2\,H_2O \rightarrow 2\,H_2 + O_2}
+$$
+
+The theoretical **decomposition voltage** for water is $1.23\,\mathrm{V}$. In practice about $1.8$ to $2\,\mathrm{V}$ are needed because of the **overpotential** at the electrodes and the internal resistance.
+
+The amount of substance deposited is proportional to the charge that has flowed (**Faraday's law**):
+
+$$
+n = \frac{Q}{z \cdot F} = \frac{I \cdot t}{z \cdot F}, \qquad m = \frac{M \cdot I \cdot t}{z \cdot F}
+$$
+
+with the **Faraday constant** $F = N_A \cdot e = 96\,485\,\mathrm{C/mol}$ and the number $z$ of electrons transferred per particle.
+
+:::tip[Example: copper plating]
+A workpiece is copper-plated for $1\,\mathrm{h}$ at $I = 2.0\,\mathrm{A}$ in a copper sulfate solution ($\mathrm{Cu^{2+} + 2\,e^- \rightarrow Cu}$):
+
+$$
+m = \frac{63.55\,\mathrm{g/mol} \cdot 2.0\,\mathrm{A} \cdot 3600\,\mathrm{s}}{2 \cdot 96\,485\,\mathrm{C/mol}} = 2.37\,\mathrm{g}
+$$
+:::
+
+**Industrial applications**: aluminium production (fused-salt electrolysis of $\mathrm{Al_2O_3}$ in cryolite at about $950\,\mathrm{°C}$, very energy-intensive), refining copper to over $99.9\,\%$ purity for electrical conductors, chlor-alkali electrolysis (chlorine, sodium hydroxide, hydrogen), electroplating (gold-plating connector contacts, galvanising, chrome plating), hydrogen production, anodising aluminium.
+
+## Batteries and accumulators
+
+**Primary cells** (batteries) are not rechargeable. **Secondary cells** (accumulators, rechargeable batteries) can be recharged by electrolysis: when discharging they work as a galvanic cell, when charging as an electrolytic cell.
+
+| Type                    | Nominal voltage per cell | Energy density (guide value) | Use                                    |
+| ----------------------- | ------------------------ | ---------------------------- | -------------------------------------- |
+| alkaline manganese (primary) | $1.5\,\mathrm{V}$   | about $100$ to $150\,\mathrm{Wh/kg}$ | remote controls, low-drain devices |
+| lead-acid               | $2.0\,\mathrm{V}$        | about $30$ to $40\,\mathrm{Wh/kg}$   | starter battery, UPS systems    |
+| nickel-metal hydride (NiMH) | $1.2\,\mathrm{V}$    | about $60$ to $120\,\mathrm{Wh/kg}$  | AA rechargeables, older hybrid cars |
+| lithium-ion             | $3.6$ to $3.7\,\mathrm{V}$ (LFP $3.2\,\mathrm{V}$) | about $150$ to $270\,\mathrm{Wh/kg}$ | smartphones, laptops, electric cars |
+
+### Lead-acid battery
+
+Six cells in series give the $12\,\mathrm{V}$ of a car battery. The electrodes consist of lead and lead(IV) oxide, the electrolyte is dilute sulfuric acid. On discharge lead(II) sulfate forms at both electrodes:
+
+$$
+\begin{aligned}
+\text{negative terminal:} &\quad \mathrm{Pb + SO_4^{2-} \rightarrow PbSO_4 + 2\,e^-} \\
+\text{positive terminal:} &\quad \mathrm{PbO_2 + SO_4^{2-} + 4\,H^+ + 2\,e^- \rightarrow PbSO_4 + 2\,H_2O} \\
+\text{overall:} &\quad \mathrm{Pb + PbO_2 + 2\,H_2SO_4 \underset{\text{charge}}{\overset{\text{discharge}}{\rightleftharpoons}} 2\,PbSO_4 + 2\,H_2O}
+\end{aligned}
+$$
+
+Discharging consumes sulfuric acid and the density of the electrolyte falls. This can be used to measure the state of charge. Overcharging produces oxyhydrogen gas, so charging rooms must be ventilated.
+
+### Nickel-metal hydride battery
+
+The negative electrode is an alloy that stores hydrogen (metal hydride MH), the positive electrode nickel oxide hydroxide, the electrolyte potassium hydroxide solution. On discharge:
+
+$$
+\mathrm{MH + NiOOH \rightarrow M + Ni(OH)_2}
+$$
+
+### Lithium-ion battery
+
+In a **lithium-ion battery** lithium ions shuttle between two host structures into which they are inserted (**intercalation**): on discharge from the graphite electrode (negative) through the electrolyte to the metal oxide electrode (positive), on charge back again. The electrons flow through the external circuit. For a cell with lithium cobalt oxide (LCO), on discharge:
+
+$$
+\begin{aligned}
+\text{negative electrode:} &\quad \mathrm{Li_xC_6 \rightarrow C_6 + x\,Li^+ + x\,e^-} \\
+\text{positive electrode:} &\quad \mathrm{Li_{1-x}CoO_2 + x\,Li^+ + x\,e^- \rightarrow LiCoO_2}
+\end{aligned}
+$$
+
+| Component       | Material                                                                 |
+| --------------- | ------------------------------------------------------------------------ |
+| negative electrode | graphite on copper foil (increasingly with a silicon content)         |
+| positive electrode | lithium metal oxide on aluminium foil: LCO ($\mathrm{LiCoO_2}$), NMC (nickel manganese cobalt), NCA, LFP ($\mathrm{LiFePO_4}$) |
+| electrolyte     | conducting salt $\mathrm{LiPF_6}$ in organic carbonates (flammable, water-free) |
+| separator       | porous polyethylene or polypropylene film, separates the electrodes electrically |
+
+During the first charge a protective layer forms on the graphite (**SEI**, _Solid Electrolyte Interphase_), which slows further decomposition of the electrolyte. Its slow growth is a main cause of **ageing**. High temperatures, deep discharge, overcharging and charging in the cold damage the battery. Storage at about $40$ to $60\,\%$ charge and room temperature is favourable.
+
+:::danger[Thermal runaway]
+After mechanical damage, overcharging or an internal short circuit, a lithium-ion cell can heat itself up until the electrolyte decomposes and burns (_thermal runaway_). The reaction releases oxygen from the cathode material and is very hard to extinguish. That is why every battery pack has electronics (battery management system) protecting against over- and deep discharge, overcurrent and overtemperature. Do not charge swollen batteries any more and dispose of them properly.
+:::
+
+LFP cells have a lower energy density but are thermally more stable, last longer and need no cobalt or nickel. They are therefore increasingly used in electric cars and home storage systems.
+
+### Fuel cell
+
+In a **fuel cell** the fuel is supplied continuously instead of being stored in the cell. In the **PEM fuel cell** (_Proton Exchange Membrane_) hydrogen is oxidised at the anode, the protons migrate through a polymer membrane to the cathode, where oxygen is reduced:
+
+$$
+\begin{aligned}
+\text{anode (−):} &\quad \mathrm{H_2 \rightarrow 2\,H^+ + 2\,e^-} \\
+\text{cathode (+):} &\quad \mathrm{O_2 + 4\,H^+ + 4\,e^- \rightarrow 2\,H_2O} \\
+\text{overall:} &\quad \mathrm{2\,H_2 + O_2 \rightarrow 2\,H_2O}
+\end{aligned}
+$$
+
+The theoretical cell voltage is $1.23\,\mathrm{V}$; under load a cell delivers about $0.6$ to $0.9\,\mathrm{V}$. Platinum serves as the catalyst. The fuel cell is only climate-friendly if the hydrogen was produced with electricity from renewable sources ("green hydrogen").
+
+## Corrosion
+
+**Corrosion** is the destruction of a material, starting at its surface, by chemical or electrochemical reaction with its environment. **Rusting** of iron requires water and oxygen:
+
+$$
+\begin{aligned}
+\text{Oxidation:} &\quad \mathrm{2\,Fe \rightarrow 2\,Fe^{2+} + 4\,e^-} \\
+\text{Reduction:} &\quad \mathrm{O_2 + 2\,H_2O + 4\,e^- \rightarrow 4\,OH^-}
+\end{aligned}
+$$
+
+The resulting $\mathrm{Fe(OH)_2}$ is further oxidised to rust ($\mathrm{FeO(OH)}$ or $\mathrm{Fe_2O_3 \cdot x\,H_2O}$). Rust is porous and flakes off, so corrosion continues. Salt (road salt, seawater) accelerates it because it increases the conductivity of the water.
+
+If two different metals touch in the presence of an electrolyte, a **local cell** forms: the less noble metal becomes the anode and dissolves preferentially (**galvanic corrosion**, contact corrosion). An aluminium screw in a copper sheet therefore corrodes quickly. In electronics this affects connectors, solder joints and conductor tracks exposed to moisture.
+
+### Corrosion protection
+
+| Method                            | Principle                                                       | Example                               |
+| --------------------------------- | --------------------------------------------------------------- | ------------------------------------- |
+| **Coating**                       | keep water and oxygen away                                      | paint, powder coating, plastic, oil   |
+| **Galvanising** (hot-dip)         | zinc protects as a layer and as the less noble metal: at a scratch the zinc corrodes instead of the iron | crash barriers, car bodies |
+| **Tin plating**                   | protective layer of the more noble tin; if damaged, the iron rusts all the faster | food cans (tinplate) |
+| **Sacrificial anode**             | a less noble metal (Mg, Zn) is connected electrically and dissolves instead of the component | ship hulls, hot water tanks, pipelines |
+| **Impressed current cathodic protection** | a DC voltage makes the component the cathode            | bridges, pipelines                    |
+| **Passivation**                   | a dense oxide layer protects the metal                          | aluminium ($\mathrm{Al_2O_3}$), anodised aluminium, stainless steel with at least $10.5\,\%$ chromium |
+| **Precious metal coating**        | gold practically does not corrode                               | gold-plated connector contacts        |
+
+## Further reading
+
+- [Standard Electrode Potentials](https://chem.libretexts.org/Ancillary_Materials/Reference/Reference_Tables/Electrochemistry_Tables) (LibreTexts, tables)
+- [Batteries & Lithium-ion batteries](https://batteryuniversity.com/) (Battery University, Cadex)
+- Allen J. Bard, Larry R. Faulkner: _Electrochemical Methods_, Wiley

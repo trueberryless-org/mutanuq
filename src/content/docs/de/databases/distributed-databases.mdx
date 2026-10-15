@@ -1,0 +1,262 @@
+---
+title: Verteilte Datenbanken
+description: Replikation mit Leader und Followern, synchron und asynchron, Quoren, Partitionierung und Sharding mit konsistentem Hashing, verteilte Transaktionen mit Zwei-Phasen-Commit und Sagas, Konsistenzmodelle und Konsens.
+sidebar:
+  order: 14
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **verteilte Datenbank** speichert ihre Daten auf mehreren Rechnern (_Knoten_), die über ein Netzwerk verbunden sind, und erscheint der Anwendung trotzdem wie eine einzige Datenbank. Gründe für die Verteilung sind:
+
+- **Skalierbarkeit**: Ein einzelner Server stößt bei Speicherplatz, Arbeitsspeicher oder Anfragen pro Sekunde an Grenzen. Mehrere Server teilen sich die Last.
+- **Verfügbarkeit**: Fällt ein Knoten aus, übernehmen andere. Die Datenbank bleibt erreichbar.
+- **Geringe Latenz**: Kopien in der Nähe der Benutzer, etwa in Europa und Amerika, verkürzen die Antwortzeiten.
+
+Die beiden grundlegenden Techniken sind **Replikation** (dieselben Daten auf mehreren Knoten) und **Partitionierung** (verschiedene Daten auf verschiedenen Knoten). Meist werden sie kombiniert: Jede Partition wird auf mehrere Knoten repliziert.
+
+## Replikation
+
+### Leader und Follower
+
+Beim verbreitetsten Verfahren nimmt ein Knoten, der **Leader** (auch _Primary_, früher _Master_), alle Schreibzugriffe an. Er schreibt die Änderungen in sein Transaktionsprotokoll und schickt sie an die **Follower** (_Replicas_), die sie in derselben Reihenfolge nachvollziehen. Lesezugriffe können auch die Follower beantworten. Für Anwendungen mit vielen Lese- und wenigen Schreibzugriffen, also den meisten Webanwendungen, vervielfacht das die Leseleistung.
+
+| Replikation      | Ablauf                                                                     | Vorteil                         | Nachteil                                                      |
+| ---------------- | -------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------- |
+| **Synchron**     | Der Leader bestätigt den `COMMIT` erst, wenn die Follower die Änderung gespeichert haben. | kein Datenverlust beim Ausfall des Leaders | jeder Schreibzugriff wartet auf das Netzwerk; fällt ein Follower aus, blockiert das Schreiben |
+| **Asynchron**    | Der Leader bestätigt sofort und schickt die Änderung danach.               | schnell, unabhängig von Followern | Follower hinken hinterher (_Replication Lag_); beim Ausfall des Leaders gehen die letzten Änderungen verloren |
+| **Halbsynchron** | mindestens ein Follower synchron, die übrigen asynchron                    | Kompromiss                      |                                                               |
+
+Fällt der Leader aus, wird ein Follower zum neuen Leader befördert (**Failover**). Dabei muss sichergestellt werden, dass nicht zwei Knoten gleichzeitig glauben, Leader zu sein (**Split Brain**), sonst entstehen widersprüchliche Änderungen. Die Grundlagen von Hochverfügbarkeit und Failover beschreibt die Seite [Hochverfügbarkeit](/de/deployment/operations/high_availability/).
+
+Bei asynchroner Replikation kann eine Anwendung veraltete Daten sehen: Ein Benutzer ändert sein Profil, und die nächste Seite wird von einem Follower geladen, der die Änderung noch nicht hat. Abhilfe schafft, Daten, die der Benutzer selbst geändert hat, eine Zeit lang vom Leader zu lesen (**Read-your-writes-Konsistenz**).
+
+### Mehrere Leader und Leaderlose Replikation
+
+Bei **Multi-Leader-Replikation** nehmen mehrere Knoten, etwa einer je Rechenzentrum, Schreibzugriffe an und gleichen sich gegenseitig ab. Ändern zwei Leader gleichzeitig denselben Datensatz, entsteht ein **Konflikt**, der aufgelöst werden muss, zum Beispiel durch „die letzte Änderung gewinnt“ (_Last Write Wins_) oder durch Zusammenführen.
+
+**Leaderlose Replikation** (nach dem Vorbild von Amazon Dynamo, etwa in Cassandra) schickt jeden Schreib- und Lesezugriff an mehrere Knoten. Mit $N$ Kopien, $W$ bestätigten Schreibzugriffen und $R$ befragten Knoten beim Lesen gilt:
+
+$$
+W + R > N
+$$
+
+Dann überschneiden sich die Knoten, die geschrieben haben, und die Knoten, die gelesen werden, in mindestens einem Knoten, und das Lesen liefert den neuesten Wert. Üblich ist $N = 3$, $W = 2$, $R = 2$ (**Quorum**). Mit $W = 1$ und $R = 1$ wird das System schneller, liefert aber unter Umständen veraltete Werte.
+
+## Partitionierung
+
+Wird eine Tabelle zu groß für einen Server, wird sie aufgeteilt. Bei der **vertikalen Partitionierung** werden Spalten getrennt, etwa selten benötigte große Spalten in eine eigene Tabelle. Bei der **horizontalen Partitionierung** werden Zeilen auf mehrere Teile verteilt. Liegen die Teile auf verschiedenen Servern, spricht man von **Sharding**, die Teile heißen **Shards**.
+
+| Verfahren                 | Zuordnung                                                    | Vorteil                                    | Nachteil                                                   |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
+| **Bereiche** (_Range_)    | Schlüsselbereiche, etwa Nachnamen A bis F, G bis M, ...       | Bereichsabfragen treffen wenige Shards     | ungleiche Verteilung, **Hotspots** (etwa alle neuen Daten im Shard mit dem aktuellen Datum) |
+| **Hash**                  | Shard = Hashwert des Schlüssels modulo Anzahl der Shards     | gleichmäßige Verteilung                    | Bereichsabfragen müssen alle Shards befragen; neue Shards verschieben fast alle Daten |
+| **Konsistentes Hashing**  | Position auf einem Hash-Ring                                 | gleichmäßig, beim Hinzufügen wandert nur ein kleiner Teil | etwas aufwendiger                              |
+| **Verzeichnis**           | eine Zuordnungstabelle sagt, wo jeder Schlüssel liegt         | völlig flexibel                            | das Verzeichnis ist ein zusätzlicher Engpass               |
+
+Die Wahl des **Partitionsschlüssels** entscheidet über die Leistung. Ein guter Schlüssel verteilt die Last gleichmäßig, und die häufigsten Abfragen betreffen nur einen Shard. Für eine Schulverwaltung mit vielen Schulen ist die Schul-Id ein guter Partitionsschlüssel: Fast alle Abfragen betreffen nur eine Schule.
+
+### Partitionierung in PostgreSQL
+
+Auch auf einem einzelnen Server kann eine große Tabelle partitioniert werden. Abfragen, die den Partitionsschlüssel einschränken, lesen dann nur die betroffenen Partitionen (**Partition Pruning**), und alte Daten lassen sich durch Löschen einer ganzen Partition entfernen, statt Millionen Zeilen mit `DELETE` zu löschen.
+
+```sql
+CREATE TABLE Messwert (
+    SensorId  INT NOT NULL,
+    Zeitpunkt DATE NOT NULL,
+    Wert      NUMERIC(6, 2)
+) PARTITION BY RANGE (Zeitpunkt);
+
+CREATE TABLE Messwert_2024 PARTITION OF Messwert FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+CREATE TABLE Messwert_2025 PARTITION OF Messwert FOR VALUES FROM ('2025-01-01') TO ('2026-01-01');
+
+INSERT INTO Messwert VALUES (1, '2024-06-01', 21.5), (1, '2025-03-15', 19.0), (2, '2025-07-02', 27.3);
+
+SELECT tableoid::regclass AS Partition, * FROM Messwert ORDER BY Zeitpunkt;
+
+DROP TABLE Messwert_2024;   -- alle Daten aus 2024 auf einmal entfernen
+```
+
+### Konsistentes Hashing
+
+Bei einfachem Hashing (`hash(schluessel) % n`) ändert sich beim Hinzufügen eines Servers die Zuordnung fast aller Schlüssel, und fast alle Daten müssten verschoben werden. **Konsistentes Hashing** vermeidet das: Server und Schlüssel werden auf denselben Zahlenkreis (_Ring_) abgebildet. Ein Schlüssel gehört zum ersten Server, der im Uhrzeigersinn nach ihm kommt. Kommt ein Server dazu, übernimmt er nur die Schlüssel zwischen sich und seinem Vorgänger. Damit die Verteilung gleichmäßig wird, erhält jeder Server viele Positionen auf dem Ring (**virtuelle Knoten**). Cassandra, DynamoDB und viele verteilte Caches arbeiten so.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text;
+
+string[] keys = Enumerable.Range(1, 1000).Select(i => $"schueler:{i}").ToArray();
+
+var ring3 = new HashRing(["A", "B", "C"]);
+var ring4 = new HashRing(["A", "B", "C", "D"]);
+var before = keys.Select(ring3.NodeFor).ToArray();
+var after = keys.Select(ring4.NodeFor).ToArray();
+
+Console.WriteLine("3 Server: " + Distribution(before));
+Console.WriteLine("4 Server: " + Distribution(after));
+Console.WriteLine($"Verschoben mit Ring:   {before.Zip(after).Count(p => p.First != p.Second)}");
+Console.WriteLine($"Verschoben mit Modulo: {keys.Count(k => HashRing.Hash(k) % 3 != HashRing.Hash(k) % 4)}");
+
+static string Distribution(string[] nodes) =>
+    string.Join(", ", nodes.GroupBy(n => n).OrderBy(g => g.Key).Select(g => $"{g.Key}={g.Count()}"));
+
+public class HashRing
+{
+    private readonly List<(uint Position, string Node)> ring = [];
+
+    public HashRing(IEnumerable<string> nodes, int virtualNodes = 100)
+    {
+        foreach (var node in nodes)
+            for (int i = 0; i < virtualNodes; i++)
+                ring.Add((Hash($"{node}#{i}"), node));
+        ring.Sort();
+    }
+
+    public string NodeFor(string key)
+    {
+        uint hash = Hash(key);
+        // erster virtueller Knoten im Uhrzeigersinn, am Ende wieder von vorn
+        foreach (var (position, node) in ring)
+            if (position >= hash) return node;
+        return ring[0].Node;
+    }
+
+    // FNV-1a mit dem Finalisierer von MurmurHash3 für eine gute Durchmischung
+    public static uint Hash(string text)
+    {
+        uint h = 2166136261;
+        foreach (byte b in Encoding.UTF8.GetBytes(text))
+        {
+            h ^= b;
+            h *= 16777619;
+        }
+        h ^= h >> 16; h *= 0x85ebca6b;
+        h ^= h >> 13; h *= 0xc2b2ae35;
+        h ^= h >> 16;
+        return h;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::BTreeMap;
+
+struct HashRing {
+    ring: Vec<(u32, String)>,
+}
+
+impl HashRing {
+    fn new(nodes: &[&str], virtual_nodes: u32) -> Self {
+        let mut ring: Vec<(u32, String)> = nodes
+            .iter()
+            .flat_map(|node| (0..virtual_nodes).map(move |i| (hash(&format!("{node}#{i}")), node.to_string())))
+            .collect();
+        ring.sort();
+        HashRing { ring }
+    }
+
+    fn node_for(&self, key: &str) -> &str {
+        let h = hash(key);
+        // erster virtueller Knoten im Uhrzeigersinn, am Ende wieder von vorn
+        let index = self.ring.partition_point(|(position, _)| *position < h);
+        &self.ring[index % self.ring.len()].1
+    }
+}
+
+// FNV-1a mit dem Finalisierer von MurmurHash3 für eine gute Durchmischung
+fn hash(text: &str) -> u32 {
+    let mut h: u32 = 2166136261;
+    for b in text.bytes() {
+        h ^= b as u32;
+        h = h.wrapping_mul(16777619);
+    }
+    h ^= h >> 16;
+    h = h.wrapping_mul(0x85ebca6b);
+    h ^= h >> 13;
+    h = h.wrapping_mul(0xc2b2ae35);
+    h ^= h >> 16;
+    h
+}
+
+fn distribution(nodes: &[&str]) -> String {
+    let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for node in nodes {
+        *counts.entry(node).or_default() += 1;
+    }
+    counts.iter().map(|(node, count)| format!("{node}={count}")).collect::<Vec<_>>().join(", ")
+}
+
+fn main() {
+    let keys: Vec<String> = (1..=1000).map(|i| format!("schueler:{i}")).collect();
+    let ring3 = HashRing::new(&["A", "B", "C"], 100);
+    let ring4 = HashRing::new(&["A", "B", "C", "D"], 100);
+    let before: Vec<&str> = keys.iter().map(|k| ring3.node_for(k)).collect();
+    let after: Vec<&str> = keys.iter().map(|k| ring4.node_for(k)).collect();
+
+    println!("3 Server: {}", distribution(&before));
+    println!("4 Server: {}", distribution(&after));
+    let moved = before.iter().zip(&after).filter(|(a, b)| a != b).count();
+    println!("Verschoben mit Ring:   {moved}");
+    let moved_modulo = keys.iter().filter(|k| hash(k) % 3 != hash(k) % 4).count();
+    println!("Verschoben mit Modulo: {moved_modulo}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+```text
+3 Server: A=352, B=348, C=300
+4 Server: A=264, B=267, C=215, D=254
+Verschoben mit Ring:   254
+Verschoben mit Modulo: 765
+```
+
+Mit dem Ring wandern genau die 254 Schlüssel, die der neue Server D übernimmt, also etwa ein Viertel. Mit Modulo-Hashing müssten drei Viertel aller Daten umziehen.
+
+## Verteilte Transaktionen
+
+Betrifft eine Transaktion Daten auf mehreren Knoten, müssen alle gemeinsam bestätigen oder alle zurücknehmen. Das klassische Verfahren ist der **Zwei-Phasen-Commit** (2PC) mit einem **Koordinator**:
+
+1. **Vorbereitungsphase**: Der Koordinator fragt alle Beteiligten, ob sie bestätigen können. Jeder Beteiligte schreibt seine Änderungen dauerhaft ins Protokoll, hält die Sperren und antwortet mit „ja“ oder „nein“.
+2. **Entscheidungsphase**: Haben alle mit „ja“ geantwortet, sendet der Koordinator `COMMIT`, sonst `ROLLBACK`. Die Beteiligten führen die Entscheidung aus und geben die Sperren frei.
+
+Der Nachteil: Fällt der Koordinator nach der ersten Phase aus, wissen die Beteiligten nicht, wie sie entscheiden sollen, und halten ihre Sperren, bis er zurück ist (**blockierendes Protokoll**). 2PC ist außerdem langsam, weil mehrere Netzwerkrunden nötig sind.
+
+In Microservice-Architekturen, in denen jeder Dienst seine eigene Datenbank hat, verwendet man deshalb oft **Sagas**: Eine Geschäftstransaktion wird in lokale Transaktionen der einzelnen Dienste zerlegt. Schlägt ein Schritt fehl, machen **Ausgleichstransaktionen** (_Compensating Transactions_) die vorherigen Schritte fachlich rückgängig, etwa eine Gutschrift für eine bereits abgebuchte Zahlung. Zwischenzustände sind dabei für andere sichtbar.
+
+## Konsistenzmodelle
+
+Wie aktuell die gelesenen Daten in einem verteilten System sind, beschreibt das **Konsistenzmodell**. Von stark nach schwach:
+
+| Modell                        | Garantie                                                                                     |
+| ----------------------------- | -------------------------------------------------------------------------------------------- |
+| **Linearisierbarkeit** (_Strong Consistency_) | Das System verhält sich wie eine einzige Kopie. Jeder Lesezugriff sieht den zuletzt bestätigten Schreibzugriff. |
+| **Kausale Konsistenz**        | Zusammenhängende Änderungen werden von allen in derselben Reihenfolge gesehen: Eine Antwort erscheint nie vor der Frage. |
+| **Read-your-writes**          | Ein Benutzer sieht immer seine eigenen Änderungen.                                            |
+| **Monotones Lesen**           | Wer einen Wert gesehen hat, sieht danach nie einen älteren.                                   |
+| **Eventual Consistency**      | Ohne neue Änderungen werden alle Kopien irgendwann gleich.                                    |
+
+Je stärker das Modell, desto mehr Abstimmung zwischen den Knoten ist nötig, und desto höher sind Latenz und Ausfallrisiko. Diesen Zielkonflikt beschreiben das [CAP-Theorem](/de/databases/cap-theorem/) und seine Erweiterung PACELC.
+
+## Konsens
+
+Damit sich mehrere Knoten auf einen Leader oder die Reihenfolge von Änderungen einigen können, auch wenn einzelne ausfallen oder Nachrichten verloren gehen, braucht es ein **Konsensverfahren**. Die bekanntesten sind **Paxos** (Leslie Lamport, 1989 eingereicht, 1998 veröffentlicht) und das leichter verständliche **Raft** (Diego Ongaro und John Ousterhout, 2014):
+
+- Ein Knoten ist **Leader**, die übrigen sind Follower. Der Leader sendet regelmäßig Lebenszeichen (_Heartbeats_).
+- Bleiben sie aus, bewirbt sich ein Follower als Kandidat. Wer die Stimmen der **Mehrheit** erhält, wird neuer Leader für eine neue Amtszeit (_Term_).
+- Eine Änderung gilt als bestätigt, sobald die Mehrheit sie gespeichert hat.
+
+Weil immer eine Mehrheit nötig ist, verwendet man eine ungerade Zahl von Knoten: Drei Knoten verkraften den Ausfall von einem, fünf den Ausfall von zwei. Raft wird unter anderem in etcd (der Konfigurationsdatenbank von Kubernetes), Consul, CockroachDB und MongoDB (in einer abgewandelten Form) eingesetzt.
+
+**NewSQL**-Datenbanken wie Google Spanner, CockroachDB, YugabyteDB und TiDB kombinieren diese Techniken: Sie partitionieren automatisch, replizieren jede Partition mit Raft oder Paxos und bieten trotzdem SQL und verteilte ACID-Transaktionen.
+
+## Weiterführende Quellen
+
+- Martin Kleppmann: _Designing Data-Intensive Applications_, O'Reilly (Kapitel 5 bis 9)
+- Diego Ongaro, John Ousterhout: [In Search of an Understandable Consensus Algorithm (Raft)](https://raft.github.io/raft.pdf), 2014

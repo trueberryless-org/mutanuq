@@ -1,0 +1,442 @@
+---
+title: Memory Management in the Operating System
+description: Logical and physical addresses, contiguous allocation, fragmentation, paging with address translation and TLB, segmentation, virtual memory and page replacement algorithms.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Main memory has to be shared between the operating system and many processes running at the same time. The operating system's **memory management** ensures that every process gets enough memory, that no process can read or overwrite memory belonging to others and that programs can use more memory than is physically present. This page shows the operating system's view. How a program uses stack and heap within its address space is described on the page [Memory management](/en/software-development/memory-management/) in software development.
+
+## Address spaces
+
+A program uses **logical** (virtual) addresses. The memory chip is accessed with **physical** addresses. The translation is done on every memory access by the **MMU** (_memory management unit_) in the processor, controlled by tables that the operating system manages.
+
+This separation has three advantages:
+
+- **Relocation**: a program can be placed at any physical location without its addresses having to be changed.
+- **Protection**: every process only sees its own address space. It cannot even express addresses of other processes.
+- **Virtual memory**: parts of the address space do not need to be in RAM at all.
+
+The simplest form is a **base register** and a **limit register**: every logical address is compared with the limit register (if it is exceeded, a protection fault occurs) and then added to the base register. If a process starts at physical address 300,000 and is 120,000 bytes in size, logical address 1000 becomes physical address 301,000, while logical address 130,000 causes a fault.
+
+## Contiguous memory allocation
+
+With **contiguous allocation**, every process gets a single block. With fixed partitions this is simple but inflexible. With **variable partitions**, every process gets exactly as much as it needs. Over time a patchwork of occupied blocks and free **holes** develops. For a new request, a hole has to be chosen:
+
+| Strategy       | chooses …                                         | Property                                                         |
+| -------------- | ------------------------------------------------- | ---------------------------------------------------------------- |
+| **First fit**  | the first hole that is large enough               | fast, good in practice                                           |
+| **Next fit**   | the next suitable hole from the last position     | spreads allocations, usually slightly worse than first fit       |
+| **Best fit**   | the smallest hole that is large enough            | leaves large holes, but creates many tiny leftover holes; searches the whole list |
+| **Worst fit**  | the largest hole                                  | leftover holes stay large enough for further processes; usually worst in practice |
+
+:::tip[Example]
+Free holes (in this order, sizes in KiB): 100, 500, 200, 300, 600. Requests for 212, 417, 112 and 426 KiB arrive one after another.
+
+| Request | First fit             | Best fit              | Worst fit             |
+| ------- | --------------------- | --------------------- | --------------------- |
+| 212     | 500 → 288 left        | 300 → 88 left         | 600 → 388 left        |
+| 417     | 600 → 183 left        | 500 → 83 left         | 500 → 83 left         |
+| 112     | 288 → 176 left        | 200 → 88 left         | 388 → 276 left        |
+| 426     | **no hole large enough** | 600 → 174 left     | **no hole large enough** |
+
+Here only best fit can satisfy all four requests. With first fit, a total of $100 + 176 + 200 + 300 + 183 = 959$ KiB is still free, but no single hole is large enough.
+:::
+
+### Fragmentation
+
+- **External fragmentation**: in total, enough memory is free, but it is broken up into many small, non-contiguous holes, as with first fit in the example. Remedies are **compaction** (moving all processes together, expensive) or a method without contiguous allocation such as paging.
+- **Internal fragmentation**: a process gets more memory than it needs because memory is only allocated in fixed units. The rest inside the block is wasted. With paging, a process wastes half a page on average.
+
+The **buddy system** is a compromise used by the Linux kernel for physical pages: memory is only handed out in blocks whose sizes are powers of two. A large block is halved until it fits, and two free "buddies" are merged again when released.
+
+## Paging
+
+With **paging**, the logical address space is divided into **pages** of fixed size and physical memory into equally sized **page frames**. Every page can be placed in any frame. This eliminates external fragmentation. The usual page size is **4 KiB**; for large amounts of data there are also large pages (_huge pages_, 2 MiB or 1 GiB).
+
+For every process, the operating system keeps a **page table** that contains the frame number for each page number. An entry (_page table entry_, PTE) also contains control bits:
+
+| Bit                        | Meaning                                                            |
+| -------------------------- | ------------------------------------------------------------------ |
+| **Present/valid**          | the page is in main memory                                         |
+| **Read/write**             | writing is allowed                                                 |
+| **User/supervisor**        | also accessible in user mode                                       |
+| **Referenced** (_accessed_) | the page has been used since the bit was last cleared (for page replacement) |
+| **Dirty** (_modified_)     | the page has been changed and must be written back before eviction |
+| **NX** (_no execute_)      | code on this page must not be executed (protection against injected code) |
+
+### Address translation
+
+Because the page size is a power of two $2^k$, a logical address splits into two parts without any calculation: the upper bits are the **page number** $p$, the lower $k$ bits the **offset** $d$ within the page. The MMU replaces the page number with the frame number $f$ from the page table; the offset stays the same:
+
+$$
+p = \left\lfloor \frac{\text{logical address}}{\text{page size}} \right\rfloor \qquad d = \text{logical address} \bmod \text{page size}
+$$
+
+$$
+\text{physical address} = f \cdot \text{page size} + d
+$$
+
+:::tip[Example: page size 1 KiB = 1024 bytes]
+Page table: page 0 → frame 5, page 1 → frame 2, page 2 → frame 7, page 3 → not in memory, page 4 → frame 9.
+
+Logical address **5000**:
+
+- $p = \lfloor 5000 / 1024 \rfloor = 4$, $d = 5000 - 4 \cdot 1024 = 904$
+- Page 4 is in frame 9.
+- physical address $= 9 \cdot 1024 + 904 = 10\,120$
+
+In binary you can see that only the bits are swapped: $5000 = \underbrace{000100}_{p = 4}\,\underbrace{1110001000}_{d = 904}{}_2$ becomes $\underbrace{001001}_{f = 9}\,\underbrace{1110001000}_{d = 904}{}_2 = 10\,120$.
+
+Logical address **3100** is on page 3, which is not in memory: the MMU raises a **page fault**.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const int PageSize = 1024;
+int?[] pageTable = [5, 2, 7, null, 9];   // null = page not in memory
+
+foreach (int address in new[] { 5000, 1500, 3100 })
+{
+    int page = address / PageSize;
+    int offset = address % PageSize;
+    string result = pageTable[page] is int frame
+        ? $"physical {frame * PageSize + offset}"
+        : "page fault";
+    Console.WriteLine($"{address} -> page {page}, offset {offset}: {result}");
+}
+// Output:
+// 5000 -> page 4, offset 904: physical 10120
+// 1500 -> page 1, offset 476: physical 2524
+// 3100 -> page 3, offset 28: page fault
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    const PAGE_SIZE: u32 = 1024;
+    let page_table: [Option<u32>; 5] = [Some(5), Some(2), Some(7), None, Some(9)];
+
+    for address in [5000, 1500, 3100] {
+        let page = address / PAGE_SIZE;
+        let offset = address % PAGE_SIZE;
+        let result = match page_table[page as usize] {
+            Some(frame) => format!("physical {}", frame * PAGE_SIZE + offset),
+            None => "page fault".to_string(),
+        };
+        println!("{address} -> page {page}, offset {offset}: {result}");
+    }
+}
+// Output:
+// 5000 -> page 4, offset 904: physical 10120
+// 1500 -> page 1, offset 476: physical 2524
+// 3100 -> page 3, offset 28: page fault
+```
+
+</TabItem>
+</Tabs>
+
+### Multi-level page tables
+
+A single-level table would be huge: with 32-bit addresses and 4 KiB pages there are $2^{32} / 2^{12} = 2^{20}$ pages. With 4 bytes per entry, every process needs a 4 MiB table, even if it only uses little memory. With 64-bit addresses it would be completely impossible.
+
+**Multi-level page tables** split the page number into several parts, which serve one after another as indices into tables at different levels. Tables for unused regions are not created at all.
+
+| System             | Split of the virtual address                   | Levels |
+| ------------------ | ---------------------------------------------- | ------ |
+| x86 (32-bit)       | 10 + 10 + 12-bit offset                        | 2      |
+| x86-64 (48-bit)    | 9 + 9 + 9 + 9 + 12-bit offset                  | 4      |
+| x86-64 with 5-level paging (57-bit) | 9 + 9 + 9 + 9 + 9 + 12-bit offset | 5      |
+
+On x86-64, every table has exactly $2^9 = 512$ entries of 8 bytes, so exactly 4 KiB, and fits into one page. The drawback: one address translation needs four additional memory accesses. An alternative is the **inverted page table**, with one entry per physical frame instead of per virtual page, searched via a hash table.
+
+### TLB
+
+So that not every memory access costs several additional page table accesses, the MMU stores recently used translations in a small, very fast associative cache, the **TLB** (_translation lookaside buffer_). It typically has a few dozen to a few thousand entries, and thanks to locality the **hit rate** is usually above 99 %.
+
+The **effective access time** with a single-level page table, TLB hit rate $h$, TLB access time $t_{\text{TLB}}$ and memory access time $t_M$:
+
+$$
+t_{\text{eff}} = h \cdot (t_{\text{TLB}} + t_M) + (1 - h) \cdot (t_{\text{TLB}} + 2\,t_M)
+$$
+
+Example: $h = 0.98$, $t_{\text{TLB}} = 1\,\mathrm{ns}$, $t_M = 100\,\mathrm{ns}$ gives $0.98 \cdot 101\,\mathrm{ns} + 0.02 \cdot 201\,\mathrm{ns} = 103\,\mathrm{ns}$, only 3 % more than without address translation.
+
+On a context switch, the TLB entries belong to the wrong address space. They have to be flushed (_TLB flush_), or every entry carries an identifier of the address space (_ASID_, or _PCID_ on x86).
+
+## Segmentation
+
+With **segmentation**, the address space is not divided into equally sized pages but into logical units of different sizes: code, global data, heap, stack, libraries. A logical address consists of **segment number and offset**. The **segment table** contains the base address, length and access rights of every segment. If the offset is larger than the length, the hardware raises a protection fault.
+
+| Feature            | Paging                                     | Segmentation                                 |
+| ------------------ | ------------------------------------------ | -------------------------------------------- |
+| Units              | equal size, invisible to the programmer    | different sizes, correspond to logical parts of the program |
+| Fragmentation      | internal (half a page per region)          | external                                     |
+| Protection and sharing | per page                               | per logical unit, more natural               |
+| Today              | standard                                   | largely abolished on x86-64 (flat model)     |
+
+Historically both were combined (**segmented paging**, e.g. x86 in 32-bit mode). Today all widely used operating systems use pure paging. The term "segmentation fault" for an invalid access dates from that time.
+
+## Virtual memory
+
+**Virtual memory** allows only the pages a process currently needs to be in RAM, with the rest on the SSD or hard disk (in the **page file**, `pagefile.sys` on Windows, or a **swap partition** or swap file on Linux). As a result:
+
+- programs can be larger than physical memory,
+- more processes fit into memory at the same time,
+- a program starts faster because not everything has to be loaded immediately (**demand paging**: a page is only loaded on its first access),
+- processes can share pages (program libraries, copy-on-write after `fork`).
+
+### Page faults
+
+If a process accesses a page whose present bit is not set, the MMU raises a **page fault**. This is not a program error but a normal event:
+
+1. The MMU detects the missing present bit and raises an exception; the processor jumps into the kernel.
+2. The kernel checks whether the access is allowed at all. If not, the process is terminated (segmentation fault).
+3. It looks for a free frame. If there is none, the **page replacement policy** selects a victim. If its dirty bit is set, it is first written back to the storage device.
+4. The required page is loaded from the storage device into the frame. Meanwhile the process is blocked and another one may run.
+5. Update the page table, set the present bit.
+6. Re-execute the interrupted instruction.
+
+Page faults are expensive. With memory access time $t_M$, page fault rate $p$ and page fault service time $t_F$:
+
+$$
+t_{\text{eff}} = (1 - p) \cdot t_M + p \cdot t_F
+$$
+
+With $t_M = 100\,\mathrm{ns}$, $t_F = 8\,\mathrm{ms}$ (hard disk) and only one page fault per 1000 accesses ($p = 0.001$), the result is $0.999 \cdot 100\,\mathrm{ns} + 0.001 \cdot 8\,000\,000\,\mathrm{ns} \approx 8.1\,\mathrm{\mu s}$. The computer becomes 81 times slower. With an SSD, $t_F$ is about a hundred times smaller but still orders of magnitude larger than $t_M$.
+
+## Page replacement
+
+If no frame is free, a page has to be evicted. Ideally this is a page that will not be needed for a long time.
+
+| Algorithm                       | evicts …                                                            | Remark                                           |
+| ------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| **OPT** (optimal, Belady)       | the page that will not be needed for the longest time **in the future** | not implementable because the future is unknown. Serves as a benchmark |
+| **FIFO**                        | the page that has been in memory the longest                        | simple, but ignores whether a page is used often. Shows Belady's anomaly |
+| **LRU** (_least recently used_) | the page that has **not been used** for the longest time            | good approximation of OPT, but an exact implementation is expensive (timestamp on every access) |
+| **Clock** (_second chance_)     | like FIFO, but a page with the referenced bit set gets a second chance: clear the bit and move on | efficient LRU approximation using the hardware bit, widespread in real systems |
+| **NRU** (_not recently used_)   | a page from the lowest class according to the referenced and dirty bits | unmodified, unused pages first               |
+| **LFU** (_least frequently used_) | the least frequently used page                                    | old pages that used to be popular stay too long  |
+
+In the **clock algorithm**, the frames are arranged in a circle and a hand points to the oldest. On a page fault, the following check is made: if the referenced bit is 0, this page is replaced. If it is 1, it is set to 0 and the hand moves on. A frequently used page has its bit set again by the next round and survives.
+
+### Worked example
+
+Reference string **1 2 3 4 1 2 5 1 2 3 4 5** with **3 frames**. F marks a page fault.
+
+**FIFO**: 9 page faults
+
+| Reference | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Frame 1   | 1 | 1 | 1 | 4 | 4 | 4 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Frame 2   |   | 2 | 2 | 2 | 1 | 1 | 1 | 1 | 1 | 3 | 3 | 3 |
+| Frame 3   |   |   | 3 | 3 | 3 | 2 | 2 | 2 | 2 | 2 | 4 | 4 |
+| Fault     | F | F | F | F | F | F | F |   |   | F | F |   |
+
+**OPT**: 7 page faults. At reference 4, page 3 is evicted because 1 and 2 are needed again sooner.
+
+| Reference | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Frame 1   | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 3 | 4 | 4 |
+| Frame 2   |   | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Frame 3   |   |   | 3 | 4 | 4 | 4 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Fault     | F | F | F | F |   |   | F |   |   | F | F |   |
+
+**LRU**: 10 page faults. At reference 3, page 5 is evicted, the least recently used page.
+
+| Reference | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Frame 1   | 1 | 1 | 1 | 4 | 4 | 4 | 5 | 5 | 5 | 3 | 3 | 3 |
+| Frame 2   |   | 2 | 2 | 2 | 1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 |
+| Frame 3   |   |   | 3 | 3 | 3 | 2 | 2 | 2 | 2 | 2 | 2 | 5 |
+| Fault     | F | F | F | F | F | F | F |   |   | F | F | F |
+
+This particular string is unfavourable for LRU. For typical programs with locality, LRU comes close to OPT and is clearly ahead of FIFO.
+
+### Belady's anomaly
+
+You would expect that more frames never lead to more page faults. For FIFO this is not true: the same reference string produces **10** page faults with **4 frames** instead of 9 with 3 frames. This **Belady's anomaly** (László Bélády, 1969) cannot occur with OPT and LRU, because with them the pages in memory with $n$ frames are always a subset of the pages with $n + 1$ frames (**stack algorithms**).
+
+| Frames | FIFO | LRU | OPT |
+| ------ | ---- | --- | --- |
+| 3      | 9    | 10  | 7   |
+| 4      | 10   | 8   | 6   |
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] refs = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5];
+
+foreach (int frames in new[] { 3, 4 })
+{
+    Console.WriteLine($"{frames} frames: FIFO {Paging.Fifo(refs, frames)}, " +
+                      $"LRU {Paging.Lru(refs, frames)}, OPT {Paging.Opt(refs, frames)}");
+}
+// Output:
+// 3 frames: FIFO 9, LRU 10, OPT 7
+// 4 frames: FIFO 10, LRU 8, OPT 6
+
+static class Paging
+{
+    public static int Fifo(int[] refs, int frames)
+    {
+        var memory = new Queue<int>();
+        int faults = 0;
+        foreach (int page in refs)
+        {
+            if (memory.Contains(page)) continue;
+            faults++;
+            if (memory.Count == frames) memory.Dequeue();   // evict the oldest page
+            memory.Enqueue(page);
+        }
+        return faults;
+    }
+
+    public static int Lru(int[] refs, int frames)
+    {
+        var memory = new List<int>();                       // front: least recently used
+        int faults = 0;
+        foreach (int page in refs)
+        {
+            if (!memory.Remove(page))
+            {
+                faults++;
+                if (memory.Count == frames) memory.RemoveAt(0);
+            }
+            memory.Add(page);                               // most recently used at the end
+        }
+        return faults;
+    }
+
+    public static int Opt(int[] refs, int frames)
+    {
+        var memory = new List<int>();
+        int faults = 0;
+        for (int i = 0; i < refs.Length; i++)
+        {
+            if (memory.Contains(refs[i])) continue;
+            faults++;
+            if (memory.Count == frames)
+            {
+                // page whose next use is furthest away
+                int victim = memory.MaxBy(p =>
+                {
+                    int next = Array.IndexOf(refs, p, i + 1);
+                    return next < 0 ? int.MaxValue : next;
+                });
+                memory.Remove(victim);
+            }
+            memory.Add(refs[i]);
+        }
+        return faults;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+fn fifo(refs: &[u32], frames: usize) -> usize {
+    let mut memory = VecDeque::new();
+    let mut faults = 0;
+    for &page in refs {
+        if memory.contains(&page) {
+            continue;
+        }
+        faults += 1;
+        if memory.len() == frames {
+            memory.pop_front(); // evict the oldest page
+        }
+        memory.push_back(page);
+    }
+    faults
+}
+
+fn lru(refs: &[u32], frames: usize) -> usize {
+    let mut memory: Vec<u32> = Vec::new(); // front: least recently used
+    let mut faults = 0;
+    for &page in refs {
+        if let Some(pos) = memory.iter().position(|&p| p == page) {
+            memory.remove(pos);
+        } else {
+            faults += 1;
+            if memory.len() == frames {
+                memory.remove(0);
+            }
+        }
+        memory.push(page); // most recently used at the end
+    }
+    faults
+}
+
+fn opt(refs: &[u32], frames: usize) -> usize {
+    let mut memory: Vec<u32> = Vec::new();
+    let mut faults = 0;
+    for (i, &page) in refs.iter().enumerate() {
+        if memory.contains(&page) {
+            continue;
+        }
+        faults += 1;
+        if memory.len() == frames {
+            // page whose next use is furthest away
+            let next_use = |p: u32| refs[i + 1..].iter().position(|&r| r == p).unwrap_or(usize::MAX);
+            if let Some(pos) = (0..memory.len()).max_by_key(|&k| next_use(memory[k])) {
+                memory.remove(pos);
+            }
+        }
+        memory.push(page);
+    }
+    faults
+}
+
+fn main() {
+    let refs = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5];
+    for frames in [3, 4] {
+        println!(
+            "{frames} frames: FIFO {}, LRU {}, OPT {}",
+            fifo(&refs, frames),
+            lru(&refs, frames),
+            opt(&refs, frames)
+        );
+    }
+}
+// Output:
+// 3 frames: FIFO 9, LRU 10, OPT 7
+// 4 frames: FIFO 10, LRU 8, OPT 6
+```
+
+</TabItem>
+</Tabs>
+
+## Thrashing
+
+If a process gets fewer frames than it needs for the pages it is currently using, every page fault evicts a page that is needed again immediately. The system is busy almost exclusively with paging in and out, CPU utilisation collapses and the disk works non-stop. This state is called **thrashing**.
+
+A naive scheduler makes it even worse: it sees the low CPU utilisation and starts more processes, which leave even fewer frames. Countermeasures:
+
+- **Working set model** (Peter Denning): the set of pages a process has used within a time window is its **working set**. A process is only run if its entire working set fits into memory.
+- Monitor the **page fault frequency**: if a process has too many page faults, it gets more frames; if it has very few, frames are taken away from it.
+- Temporarily swap processes out completely, reducing the number of active processes.
+- Install more RAM.
+
+## Swapping
+
+With classic **swapping**, an entire process is moved from main memory to the storage device and brought back later when it is due to run. Before paging, this was the only way to run more processes than fit into memory. Today the term is mostly used for paging out individual pages: Linux calls the paging area "swap", and `free -h` shows how much of it is used. On Linux, the parameter `vm.swappiness` controls how early the kernel starts swapping. Windows and macOS also compress rarely used pages in RAM before paging them out (**memory compression**); Linux offers `zram` and `zswap` for this.
+
+If memory still runs out, the **OOM killer** (_out of memory_) on Linux terminates a process to save the system.
+
+## Further reading
+
+- Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/), part "Virtualization" (chapters on paging, TLB and swapping)
+- Abraham Silberschatz, Peter B. Galvin, Greg Gagne: _Operating System Concepts_, chapters "Main Memory" and "Virtual Memory", Wiley
+- [Memory Management](https://docs.kernel.org/admin-guide/mm/index.html) (Linux kernel documentation)

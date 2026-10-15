@@ -1,0 +1,189 @@
+---
+title: Development and Global Disparities
+description: Development indicators such as GDP per capita, HDI and Gini coefficient, the North-South divide, development theories, development cooperation and the Sustainable Development Goals.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Living conditions on Earth are very unequally distributed. A child in Norway has a life expectancy of over 83 years and can expect almost 19 years of education; in the poorest countries both are only a fraction of that. Measuring, explaining and reducing these **disparities** (inequalities) is the task of development geography and development policy.
+
+## What is development?
+
+In the past, **development** was equated with economic growth. Today it is understood more broadly as the improvement of living conditions: health, education, income, security, political participation and an intact environment. According to the economist Amartya Sen, development means expanding people's **capabilities**, that is their freedom to lead a life according to their own ideas.
+
+The terms for groups of countries have changed. The expression "Third World" comes from the Cold War (countries that belonged neither to the Western nor to the Eastern bloc) and is considered outdated. Today one speaks of **developing countries**, **emerging economies** (countries in transition to industrialisation, such as Brazil, Mexico, India) and **industrialised countries**, of the **Global South** and the **Global North**, or of the **Least Developed Countries** (LDCs), a UN category.
+
+## Development indicators
+
+### GDP per capita
+
+**Gross domestic product** (GDP) is the value of all goods and services produced in a country in one year. Divided by the population it gives **GDP per capita**. For international comparisons it is converted at **purchasing power parities** (PPP), because the same money buys different amounts in different countries. The World Bank divides countries into low, middle (lower and upper) and high-income groups by gross national income per capita.
+
+According to Statistics Austria, Austria's nominal GDP in 2024 was EUR 494.09 billion, which is about EUR 53,830 per capita.
+
+Limits of GDP: it says nothing about **distribution**, does not capture unpaid work (housework, care, subsistence farming) or the informal sector, and it even counts environmental damage and its repair positively.
+
+### Human Development Index
+
+The **Human Development Index** (HDI) of the United Nations Development Programme (UNDP) has been calculated since 1990. It combines three dimensions:
+
+| Dimension | Indicator | Minimum | Maximum |
+| --- | --- | --- | --- |
+| a long and healthy life | life expectancy at birth | 20 years | 85 years |
+| education | expected years of schooling of a child and mean years of schooling of adults (25 and over) | 0 | 18 and 15 years |
+| standard of living | gross national income per capita (PPP, logarithmic) | US$ 100 | US$ 75,000 |
+
+Each value is normalised to a **dimension index** between 0 and 1, and the HDI is their **geometric mean**:
+
+$$
+I = \frac{\text{actual value} - \text{minimum}}{\text{maximum} - \text{minimum}}, \qquad \mathrm{HDI} = \sqrt[3]{I_\text{health} \cdot I_\text{education} \cdot I_\text{income}}
+$$
+
+The geometric mean means that a poor value in one dimension cannot be fully compensated by a good one in another. The income index is calculated with the logarithm because additional income achieves much more at a low level than at a high one. Countries with an HDI of 0.800 or more have **very high** human development, from 0.700 high, from 0.550 medium, below that low.
+
+In the **Human Development Report 2025** (data from 2023), **Iceland** (0.972) leads ahead of Norway and Switzerland (0.970 each). **South Sudan** ranks last of the 193 countries. The countries with low development are mostly in sub-Saharan Africa.
+
+### Gini coefficient
+
+The **Gini coefficient** measures the inequality of the distribution of income or wealth within a country. It is based on the **Lorenz curve**: it shows which share of the population (sorted from the poorest upwards) has which share of total income. With complete equality it is a diagonal. The Gini coefficient is the area between the diagonal and the Lorenz curve in relation to the total area under the diagonal.
+
+- **0** means complete equality (everyone has the same income).
+- **1** means complete inequality (one person has everything).
+
+Scandinavian countries and Austria have values below 0.3 for disposable household income; among the most unequal countries are South Africa (above 0.6), Namibia and Brazil. Wealth is distributed much more unequally than income everywhere.
+
+For a list of incomes $x_1, \dots, x_n$ with mean $\mu$, the Gini coefficient can be calculated from the mean absolute difference of all pairs:
+
+$$
+G = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} |x_i - x_j|}{2 n^2 \mu}
+$$
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+static double Gini(double[] incomes)
+{
+    int n = incomes.Length;
+    double mean = incomes.Average();
+    double sum = 0;
+    foreach (double a in incomes)
+        foreach (double b in incomes)
+            sum += Math.Abs(a - b);
+    return sum / (2.0 * n * n * mean);
+}
+
+// monthly incomes in euros of five households
+double[] unequal = [1200, 1800, 2500, 3500, 11000];
+double[] equal = [3000, 3000, 3000, 3000, 3000];
+
+Console.WriteLine(FormattableString.Invariant($"Gini unequal: {Gini(unequal):F3}"));
+Console.WriteLine(FormattableString.Invariant($"Gini equal:   {Gini(equal):F3}"));
+// Gini unequal: 0.426
+// Gini equal:   0.000
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn gini(incomes: &[f64]) -> f64 {
+    let n = incomes.len() as f64;
+    let mean = incomes.iter().sum::<f64>() / n;
+    let sum: f64 = incomes
+        .iter()
+        .flat_map(|a| incomes.iter().map(move |b| (a - b).abs()))
+        .sum();
+    sum / (2.0 * n * n * mean)
+}
+
+fn main() {
+    // monthly incomes in euros of five households
+    let unequal = [1200.0, 1800.0, 2500.0, 3500.0, 11000.0];
+    let equal = [3000.0; 5];
+
+    println!("Gini unequal: {:.3}", gini(&unequal));
+    println!("Gini equal:   {:.3}", gini(&equal));
+    // Gini unequal: 0.426
+    // Gini equal:   0.000
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Further indicators
+
+| Indicator | What it shows |
+| --- | --- |
+| **extreme poverty** | Since June 2025 the World Bank has used an international poverty line of US$ 3.00 per day (2021 PPP). For 2025 it estimates the share of the extremely poor at about 9.9 % of the world population; about three quarters of them live in sub-Saharan Africa. |
+| **infant and child mortality** | reflects health care, clean water, nutrition and mothers' education |
+| **literacy rate** | share of adults who can read and write |
+| **Gender Inequality Index** | disadvantage of women in health, education and participation |
+| **Multidimensional Poverty Index** (MPI) | deprivation in health, education and living standards (electricity, water, housing) at household level |
+| **sectoral share of employment** | a high agricultural share indicates low development |
+
+No single indicator captures development completely. Averages also hide the differences **within** a country, for example between town and country or between regions.
+
+## The North-South divide
+
+The simplified **Brandt Line** (1980) separated the rich North from the poor South. Today the picture is more differentiated: China, South Korea, Singapore or the Gulf states have risen economically, while many countries of sub-Saharan Africa and South Asia are still lagging behind. At the same time the gap between rich and poor is widening in many countries.
+
+Typical features of less developed countries are a high share of agriculture, a large informal sector, exports of a few raw materials or agricultural products (dependence on world market prices), foreign debt, weak state institutions, high population growth and a young population.
+
+Causes are sought on several levels:
+
+- **natural factors**: tropical climate with diseases such as malaria, droughts, landlocked location without access to the sea
+- **historical factors**: colonialism with arbitrary borders, an economy oriented towards exporting raw materials, destruction of traditional structures
+- **political factors**: corruption, civil wars, weak rule of law (lack of **good governance**)
+- **economic factors**: unfavourable **terms of trade** (raw material prices fluctuate strongly, manufactured goods become relatively more expensive), trade barriers and agricultural subsidies of industrialised countries
+- **resource curse**: wealth in oil or minerals often leads not to development but to corruption, conflict and a one-sided economy (DR Congo, Nigeria)
+
+## Development theories
+
+| Theory | Main proponents | Cause of underdevelopment | Recommended path |
+| --- | --- | --- | --- |
+| **Modernisation theory** | Walt W. Rostow (stages of economic growth, 1960) | **internal** factors: traditional society, lack of capital | catching up along the Western path: investment, industrialisation, opening to the world market; stages up to mass consumption |
+| **Dependency theory** | Raúl Prebisch, André Gunder Frank (1960s) | **external** factors: dependence of the periphery on the centre since colonialism, unequal exchange | decoupling from the world market, import substitution through domestic industry |
+| **World-systems theory** | Immanuel Wallerstein (1974) | capitalist world system with core, semi-periphery and periphery | individual countries can rise, the system remains hierarchical |
+| **Neoliberal approaches** | Washington Consensus (1990s) | state failure, market distortions | privatisation, deregulation, free trade, structural adjustment programmes of the IMF and World Bank |
+| **Sustainable development** | Brundtland Report (1987) | development at the expense of the environment and future generations | meeting the needs of the present without compromising future generations |
+
+Modernisation theory explains the rise of the East Asian "tiger economies", which, however, succeeded with strong state guidance and export-oriented industrialisation. The decoupling strategies of dependency theory largely failed in Latin America. The structural adjustment programmes were criticised because cuts in education and health hit the poorest. Today there are no longer any uniform recipes; the emphasis is on good governance, education, health, gender equality and local ownership.
+
+## Development cooperation
+
+**Development cooperation** (formerly "development aid") comprises public and private contributions to improving living conditions in developing countries. The newer term emphasises partnership rather than a hierarchy between donors and recipients.
+
+- **Official Development Assistance** (ODA) consists of state grants and concessional loans. In 1970 the UN set the target that rich countries should spend **0.7 % of their gross national income** (GNI) on it. Only a few countries reach it. According to the OECD, Austria was at about 0.34 % of GNI in 2024.
+- **Bilateral** cooperation takes place directly between two states, **multilateral** cooperation via international organisations (World Bank, UN organisations, EU).
+- In Austria the **Austrian Development Agency** (ADA) implements bilateral **Austrian Development Cooperation**. In addition there are non-governmental organisations (NGOs) such as Caritas, the Red Cross, Light for the World or Médecins Sans Frontières.
+- Other forms are **microcredit** (small loans to people without access to banks, known through the Grameen Bank in Bangladesh), **debt relief**, **fair trade** and remittances from migrants.
+
+Critics argue that aid can create dependency, prop up corrupt governments or be tied to the interests of donor countries (export promotion, preventing migration). It is effective above all when it is adapted to local needs, designed for the long term and shaped by the people on the ground (**helping people to help themselves**).
+
+## Sustainable Development Goals
+
+The **2030 Agenda** with its 17 **Sustainable Development Goals** (SDGs) was adopted by all UN member states in 2015. It replaced the eight **Millennium Development Goals** (2000 to 2015), which were directed mainly at developing countries. The SDGs, by contrast, apply to **all** countries, including Austria, and combine social, economic and ecological goals. They are divided into 169 targets.
+
+| No. | Goal (short form) | No. | Goal (short form) |
+| --- | --- | --- | --- |
+| 1 | no poverty | 10 | reduced inequalities |
+| 2 | zero hunger | 11 | sustainable cities and communities |
+| 3 | good health and well-being | 12 | responsible consumption and production |
+| 4 | quality education | 13 | climate action |
+| 5 | gender equality | 14 | life below water |
+| 6 | clean water and sanitation | 15 | life on land |
+| 7 | affordable and clean energy | 16 | peace, justice and strong institutions |
+| 8 | decent work and economic growth | 17 | partnerships for the goals |
+| 9 | industry, innovation and infrastructure | | |
+
+The UN's interim reviews show that a large proportion of the targets are unlikely to be reached by 2030; the COVID-19 pandemic, wars and rising food and energy prices have partly reversed progress. Statistics Austria publishes an annual indicator report on the SDGs in Austria.
+
+## Further reading
+
+- [UNDP: Human Development Report](https://hdr.undp.org/)
+- [World Bank: Poverty and Inequality Platform](https://pip.worldbank.org/)
+- [Austrian Development Agency](https://www.entwicklung.at/en/)

@@ -1,0 +1,219 @@
+---
+title: Generative KI
+description: "Wie große Sprachmodelle und Bildgeneratoren funktionieren: Tokens, Attention und Transformer, Pre-Training, Fine-Tuning und RLHF, Prompting, RAG, Halluzinationen und Diffusionsmodelle."
+sidebar:
+  order: 13
+---
+
+**Generative KI** bezeichnet Modelle, die neue Inhalte erzeugen: Texte, Programmcode, Bilder, Musik, Sprache oder Videos. Bisherige Klassifikatoren sind **diskriminative** Modelle: Sie lernen, Daten zu unterscheiden („Ist das Spam?“), also die Wahrscheinlichkeit $P(y \mid x)$. **Generative** Modelle lernen dagegen die Verteilung der Daten selbst, $P(x)$, und können daraus neue Beispiele ziehen, die den Trainingsdaten ähneln, aber nicht mit ihnen identisch sind.
+
+Seit der Veröffentlichung von ChatGPT im November 2022 sind **große Sprachmodelle** (_Large Language Models_, LLMs) wie GPT, Claude, Gemini, Llama oder Mistral im Alltag angekommen. Diese Seite erklärt, was in ihnen passiert. Die Grundlagen neuronaler Netze findest du unter [Deep Learning](/de/artificial-intelligence/deep-learning/), die klassische Textverarbeitung mit Tokenisierung und Word Embeddings unter [Natural Language Processing](/de/artificial-intelligence/natural-language-processing/).
+
+## Tokens
+
+Ein Sprachmodell verarbeitet keine Buchstaben oder ganzen Wörter, sondern **Tokens**. Moderne Tokenizer wie **Byte Pair Encoding** (BPE) zerlegen Text in häufige Zeichenfolgen: Häufige Wörter sind ein einziges Token, seltene Wörter werden in mehrere Teile zerlegt, etwa „Hochleistungs“, „rechen“, „zentrum“. So kommt das Modell mit einem festen Vokabular (typischerweise 50.000 bis 200.000 Tokens) aus und kann trotzdem jedes beliebige Wort darstellen.
+
+- Im Englischen entspricht ein Token im Schnitt etwa vier Zeichen. Deutsch braucht wegen langer Komposita und Flexionsformen meist mehr Tokens für denselben Inhalt.
+- Abgerechnet wird bei Sprachmodellen meist pro Token (Eingabe und Ausgabe getrennt).
+- Das **Kontextfenster** ist die maximale Anzahl von Tokens, die das Modell gleichzeitig betrachten kann, also Eingabe, Gesprächsverlauf und Antwort zusammen. Aktuelle Modelle haben Kontextfenster von über 100.000 Tokens, einige bis über eine Million.
+
+Jedes Token wird über eine Tabelle in einen Vektor umgewandelt, das **Embedding**. Wie bei Word2Vec liegen ähnliche Bedeutungen nahe beieinander, allerdings werden die Embeddings hier zusammen mit dem gesamten Modell gelernt.
+
+## Transformer und Attention
+
+Fast alle aktuellen Sprachmodelle beruhen auf dem **Transformer**, der 2017 im Paper „Attention Is All You Need“ (Vaswani u. a., Google) vorgestellt wurde. Seine zentrale Idee ist die **Self-Attention**: Für jedes Token berechnet das Modell, wie stark es die anderen Tokens im Kontext berücksichtigen soll.
+
+Im Satz „Die Katze jagte die Maus, weil **sie** hungrig war“ muss das Modell erkennen, dass sich „sie“ auf die Katze bezieht. Die Attention erlaubt es dem Token „sie“, direkt auf „Katze“ zu schauen, egal wie weit es entfernt ist. Ein RNN müsste diese Information dagegen Schritt für Schritt durch die ganze Sequenz tragen und vergisst dabei leicht. Außerdem lassen sich alle Positionen gleichzeitig berechnen, was Transformer auf GPUs sehr schnell trainierbar macht.
+
+### Query, Key und Value
+
+Aus dem Vektor jedes Tokens werden durch Multiplikation mit gelernten Matrizen drei Vektoren berechnet:
+
+- **Query** $q$: „Wonach suche ich?“
+- **Key** $k$: „Was biete ich an?“
+- **Value** $v$: „Welche Information gebe ich weiter?“
+
+Das Skalarprodukt von Query und Key misst, wie gut zwei Tokens zueinander passen. Die Ergebnisse werden mit Softmax in Gewichte umgewandelt, die sich zu 1 summieren, und damit wird ein gewichteter Mittelwert der Values gebildet:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V
+$$
+
+Die Division durch $\sqrt{d_k}$ (Dimension der Keys) verhindert, dass die Skalarprodukte bei großen Vektoren so groß werden, dass Softmax nur noch fast 0 oder 1 liefert.
+
+```python
+import numpy as np
+
+def softmax(x):
+    e = np.exp(x - x.max(axis=-1, keepdims=True))  # Maximum abziehen für numerische Stabilität
+    return e / e.sum(axis=-1, keepdims=True)
+
+def attention(Q, K, V):
+    d_k = K.shape[-1]
+    scores = Q @ K.T / np.sqrt(d_k)     # Ähnlichkeit jedes Tokens mit jedem
+    weights = softmax(scores)           # pro Zeile Gewichte, die sich zu 1 summieren
+    return weights @ V, weights
+
+# drei Tokens mit je 4-dimensionalen Vektoren; die Matrizen werden normalerweise gelernt
+rng = np.random.default_rng(0)
+X = rng.normal(size=(3, 4))
+W_q, W_k, W_v = (rng.normal(size=(4, 4)) for _ in range(3))
+
+output, weights = attention(X @ W_q, X @ W_k, X @ W_v)
+print(weights.round(2))
+# [[0.38 0.3  0.32]
+#  [0.32 0.21 0.47]
+#  [0.05 0.01 0.94]]
+print(output.shape)  # (3, 4): ein neuer Vektor pro Token
+```
+
+Zeile $i$ der Gewichtsmatrix zeigt, wie stark Token $i$ jedes andere Token berücksichtigt. Ein echter Transformer berechnet mehrere solcher Attention-Köpfe parallel (**Multi-Head Attention**), damit verschiedene Köpfe auf verschiedene Beziehungen achten können (Grammatik, Bezüge, Bedeutung). Ein Transformer-Block besteht aus Multi-Head Attention und einem kleinen vollständig verbundenen Netz, und große Modelle stapeln Dutzende solcher Blöcke. Weil die Attention die Reihenfolge der Tokens nicht kennt, wird jedem Embedding eine **Positionskodierung** hinzugefügt.
+
+Sprachmodelle wie GPT sind **Decoder-only**-Transformer: Jedes Token darf nur auf die Tokens **vor** sich schauen (_Causal Masking_), denn beim Erzeugen kennt das Modell die Zukunft noch nicht. Encoder-Modelle wie BERT sehen dagegen den ganzen Satz (siehe [Transformer-Modelle](/de/artificial-intelligence/natural-language-processing/#transformer-modelle)).
+
+## Text erzeugen
+
+Ein Sprachmodell kann im Grunde nur eines: Es berechnet für das **nächste Token** eine Wahrscheinlichkeitsverteilung über das gesamte Vokabular. Ein Text entsteht **autoregressiv**: Das Modell wählt ein Token aus, hängt es an die Eingabe an und berechnet das nächste, so lange, bis ein Ende-Token kommt oder die Längenbegrenzung erreicht ist.
+
+Wie das nächste Token aus der Verteilung gewählt wird, steuern **Sampling-Parameter**:
+
+- **Temperatur** $T$: Die Rohwerte (_Logits_) werden vor dem Softmax durch $T$ geteilt. Eine niedrige Temperatur macht die Verteilung spitzer (vorhersehbare, sachliche Antworten), eine hohe flacher (abwechslungsreicher, aber auch fehleranfälliger). Bei Logits $(2{,}0;\ 1{,}0;\ 0{,}1)$ ergeben sich bei $T = 0{,}5$ die Wahrscheinlichkeiten $(0{,}86;\ 0{,}12;\ 0{,}02)$, bei $T = 1$ $(0{,}66;\ 0{,}24;\ 0{,}10)$ und bei $T = 2$ $(0{,}50;\ 0{,}30;\ 0{,}19)$.
+- **Top-k**: nur aus den $k$ wahrscheinlichsten Tokens wählen.
+- **Top-p** (_Nucleus Sampling_): nur aus den wahrscheinlichsten Tokens wählen, die zusammen die Wahrscheinlichkeit $p$ (z. B. 0,9) erreichen.
+
+Deshalb liefert dieselbe Frage nicht immer dieselbe Antwort.
+
+## Training eines Sprachmodells
+
+### Pre-Training
+
+Im **Pre-Training** lernt das Modell auf riesigen Textmengen (Webseiten, Bücher, Wikipedia, Programmcode; bei großen Modellen viele Billionen Tokens), jeweils das nächste Token vorherzusagen. Die „Labels“ ergeben sich aus dem Text selbst, man spricht von **selbstüberwachtem Lernen** (_Self-Supervised Learning_). Um diese Aufgabe gut zu lösen, muss das Modell Grammatik, Faktenwissen, Zusammenhänge und auch einfache Schlussfolgerungen lernen. Das Training großer Modelle dauert Wochen bis Monate auf Tausenden GPUs und kostet viele Millionen Euro.
+
+Das Ergebnis ist ein **Basismodell** (_Foundation Model_), das Texte fortsetzt, aber noch kein hilfreicher Assistent ist: Auf eine Frage antwortet es vielleicht mit weiteren Fragen, weil es solche Listen im Internet gesehen hat.
+
+### Fine-Tuning
+
+Beim **Fine-Tuning** wird das vortrainierte Modell mit deutlich weniger, gezielt ausgewählten Daten weitertrainiert:
+
+- **Supervised Fine-Tuning** (SFT, _Instruction Tuning_): Menschen schreiben Beispiele für Anweisungen und gute Antworten. Das Modell lernt, Anweisungen zu befolgen und im Dialog zu antworten.
+- Für eigene Aufgaben (bestimmter Schreibstil, Fachsprache, Ausgabeformat) kann man ein Modell selbst feinabstimmen. Mit Verfahren wie **LoRA** (_Low-Rank Adaptation_) werden dabei nur kleine Zusatzmatrizen trainiert statt aller Milliarden Parameter, was Rechenzeit und Speicher drastisch reduziert.
+
+### RLHF
+
+Beim **Reinforcement Learning from Human Feedback** (RLHF) wird das Modell weiter an menschliche Vorstellungen von hilfreichen, ehrlichen und harmlosen Antworten angepasst:
+
+1. Das Modell erzeugt zu einer Eingabe mehrere Antworten.
+2. Menschen ordnen die Antworten nach Qualität.
+3. Mit diesen Rangfolgen wird ein **Belohnungsmodell** (_Reward Model_) trainiert, das die menschliche Bewertung vorhersagt.
+4. Das Sprachmodell wird mit [Reinforcement Learning](/de/artificial-intelligence/reinforcement-learning/) (z. B. dem Verfahren PPO) so verändert, dass seine Antworten eine hohe Belohnung erhalten.
+
+Einfachere Varianten wie **DPO** (_Direct Preference Optimization_) lernen direkt aus den Vergleichspaaren ohne eigenes Belohnungsmodell. Neuere **Reasoning-Modelle** werden zusätzlich mit RL auf Aufgaben mit überprüfbaren Ergebnissen trainiert (Mathematik, Programmieraufgaben mit Tests) und erzeugen vor der eigentlichen Antwort eine längere Gedankenkette.
+
+## Prompting
+
+Der **Prompt** ist die Eingabe an das Modell. Bei Chat-Modellen besteht er aus einem **Systemprompt** (Rolle und Regeln, vom Anbieter oder Entwickler festgelegt) und den Nachrichten des Gesprächs. Das Modell hat kein Gedächtnis zwischen Anfragen: Der bisherige Verlauf wird bei jeder Anfrage erneut mitgeschickt und zählt zum Kontextfenster.
+
+| Technik | Beschreibung |
+| ------- | ------------ |
+| **Zero-Shot** | Aufgabe direkt stellen, ohne Beispiele |
+| **Few-Shot** | einige Beispiele für Eingabe und gewünschte Ausgabe mitgeben, damit das Modell das Muster übernimmt (_In-Context Learning_) |
+| **Rolle und Kontext** | Zielgruppe, Zweck, Umfang und Format angeben („Erkläre für die 2. Klasse HTL in fünf Sätzen ...“) |
+| **Chain of Thought** | das Modell auffordern, schrittweise zu denken, bevor es antwortet; verbessert Ergebnisse bei Rechen- und Logikaufgaben |
+| **Strukturierte Ausgabe** | ein Format wie JSON mit festem Schema vorgeben, damit ein Programm die Antwort weiterverarbeiten kann |
+| **Aufgaben zerlegen** | große Aufgaben in mehrere kleinere Prompts aufteilen |
+
+Ein Sicherheitsproblem ist die **Prompt Injection**: Enthalten Daten, die das Modell verarbeitet (eine Webseite, eine E-Mail, ein Dokument), Anweisungen wie „Ignoriere alle bisherigen Anweisungen und ...“, kann das Modell sie befolgen. Anwendungen dürfen Modellausgaben deshalb nicht blind vertrauen, besonders wenn das Modell Aktionen ausführen kann.
+
+## Retrieval-Augmented Generation
+
+Ein Sprachmodell kennt nur, was in seinen Trainingsdaten stand, und das nur bis zu einem **Stichtag** (_Knowledge Cutoff_). Interne Dokumente eines Unternehmens oder die Hausordnung einer Schule kennt es nicht. Neu trainieren wäre teuer und müsste bei jeder Änderung wiederholt werden.
+
+Bei **Retrieval-Augmented Generation** (RAG) werden passende Informationen zur Laufzeit gesucht und in den Prompt eingefügt:
+
+1. **Indizieren** (einmalig): Dokumente in kleinere Abschnitte (_Chunks_) zerlegen, für jeden Abschnitt mit einem Embedding-Modell einen Vektor berechnen und in einer **Vektordatenbank** speichern (z. B. pgvector für PostgreSQL, Azure AI Search, Qdrant).
+2. **Suchen:** Die Frage des Benutzers ebenfalls in einen Vektor umwandeln und die Abschnitte mit der größten **Kosinus-Ähnlichkeit** finden.
+3. **Ergänzen:** Die gefundenen Abschnitte als Kontext in den Prompt einfügen.
+4. **Generieren:** Das Sprachmodell beantwortet die Frage auf Basis des Kontexts und kann die Quellen angeben.
+
+Das folgende Beispiel zeigt die Suche im Kleinen. Statt eines neuronalen Embedding-Modells wird TF-IDF auf Zeichen-n-Grammen verwendet, das auch „Laptop“ und „Laptops“ oder „ausleihen“ und „ausgeliehen“ als ähnlich erkennt:
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+documents = [
+    "Die Schulbibliothek ist von Montag bis Freitag von 8 bis 16 Uhr geöffnet.",
+    "Laptops können im Sekretariat für maximal zwei Wochen ausgeliehen werden.",
+    "Die Anmeldung zur Diplomprüfung erfolgt bis Ende Jänner im Sekretariat.",
+    "Im Labor ist das Essen und Trinken verboten.",
+]
+question = "Wie lange kann ich einen Laptop ausleihen?"
+
+vectorizer = TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5))
+doc_vectors = vectorizer.fit_transform(documents)
+similarities = cosine_similarity(vectorizer.transform([question]), doc_vectors)[0]
+print(similarities.round(2))  # [0.01 0.37 0.01 0.06]
+
+best = similarities.argsort()[::-1][:2]           # die zwei ähnlichsten Abschnitte
+context = "\n".join(f"- {documents[i]}" for i in best)
+prompt = f"""Beantworte die Frage nur mit Hilfe des Kontexts.
+Wenn die Antwort nicht im Kontext steht, sag das.
+
+Kontext:
+{context}
+
+Frage: {question}"""
+print(prompt)  # dieser Prompt wird an das Sprachmodell geschickt
+```
+
+RAG verringert Halluzinationen, hält das Wissen aktuell (neue Dokumente werden einfach indiziert) und macht Antworten überprüfbar. Die Qualität hängt aber stark von der Suche ab: Findet sie die richtigen Abschnitte nicht, kann auch das beste Modell nicht richtig antworten.
+
+### Werkzeuge und Agenten
+
+Über **Tool Use** (_Function Calling_) kann ein Modell statt einer Textantwort einen strukturierten Funktionsaufruf erzeugen, etwa `get_weather(city="Wien")`. Die Anwendung führt die Funktion aus und gibt das Ergebnis an das Modell zurück. So können Modelle rechnen, Datenbanken abfragen oder im Web suchen. Ein **Agent** wiederholt diesen Kreislauf aus Planen, Werkzeug aufrufen und Ergebnis auswerten selbstständig, bis eine Aufgabe erledigt ist, etwa beim Programmieren mit Zugriff auf Dateien und Tests. Offene Standards wie das **Model Context Protocol** (MCP) vereinheitlichen, wie Werkzeuge an Modelle angebunden werden.
+
+## Halluzinationen
+
+Eine **Halluzination** ist eine Ausgabe, die überzeugend klingt, aber falsch oder erfunden ist: erfundene Literaturangaben, falsche Zahlen, nicht existierende Funktionen in Programmbibliotheken. Ursachen:
+
+- Das Modell erzeugt den **wahrscheinlichsten** Text, nicht den **wahren**. Es hat kein eingebautes Wissen darüber, was es weiß und was nicht.
+- Seltene Fakten kamen in den Trainingsdaten kaum vor, und das Training hat oft eher selbstsicheres Antworten belohnt als das Eingestehen von Unsicherheit.
+- Fragen nach Informationen nach dem Knowledge Cutoff.
+
+Gegenmaßnahmen sind RAG mit Quellenangaben, Werkzeuge (Rechner, Suche), niedrige Temperatur, die ausdrückliche Erlaubnis, „weiß ich nicht“ zu antworten, sowie die Prüfung durch Menschen. Wichtige Aussagen eines Sprachmodells muss man immer an einer verlässlichen Quelle überprüfen.
+
+## Bilder erzeugen
+
+| Verfahren | Idee |
+| --------- | ---- |
+| **GAN** (_Generative Adversarial Network_, 2014) | Zwei Netze spielen gegeneinander: Der **Generator** erzeugt Bilder aus Zufallsrauschen, der **Diskriminator** versucht, sie von echten zu unterscheiden. Beide werden dabei besser. Schnell, aber schwierig stabil zu trainieren. |
+| **VAE** (_Variational Autoencoder_) | Ein Encoder komprimiert Bilder in einen kleinen **latenten Raum**, ein Decoder rekonstruiert sie. Neue Bilder entstehen aus neuen Punkten im latenten Raum. |
+| **Diffusionsmodelle** | heute das Standardverfahren für Bild- und Videogenerierung (siehe unten) |
+
+### Diffusionsmodelle
+
+Ein **Diffusionsmodell** lernt, Rauschen schrittweise zu entfernen:
+
+1. **Vorwärtsprozess** (nur im Training): Einem echten Bild wird in vielen kleinen Schritten Gaußsches Rauschen hinzugefügt, bis nur noch reines Rauschen übrig ist.
+2. Ein neuronales Netz (früher ein U-Net, heute oft ein Transformer) lernt, für ein verrauschtes Bild vorherzusagen, welches Rauschen hinzugefügt wurde.
+3. **Rückwärtsprozess** (beim Erzeugen): Man startet mit reinem Zufallsrauschen und entfernt in vielen Schritten jeweils das vorhergesagte Rauschen. Am Ende entsteht ein neues, scharfes Bild.
+
+Damit ein bestimmtes Bild entsteht, wird das Netz mit dem **Text-Prompt** gesteuert: Ein Text-Encoder (etwa aus dem Modell CLIP, das Bilder und Texte in einen gemeinsamen Vektorraum abbildet) wandelt den Prompt in Vektoren um, die über Attention in jeden Entrauschungsschritt einfließen. **Latente Diffusionsmodelle** wie Stable Diffusion arbeiten nicht auf den Pixeln, sondern im komprimierten latenten Raum eines Autoencoders, was die Berechnung stark beschleunigt. Bekannte Systeme sind Stable Diffusion, DALL·E, Midjourney und Imagen, für Videos etwa Sora oder Veo.
+
+## Grenzen
+
+- **Kein verlässliches Wissen:** Halluzinationen und veraltetes Wissen (siehe oben).
+- **Logik und Rechnen:** Ohne Werkzeuge machen Sprachmodelle Fehler bei längeren Rechnungen, beim Zählen von Buchstaben (sie sehen Tokens, keine Buchstaben) oder bei mehrstufigen Schlussfolgerungen.
+- **Verzerrungen:** Modelle übernehmen Vorurteile und Stereotype aus ihren Trainingsdaten.
+- **Nicht deterministisch:** Dieselbe Eingabe kann unterschiedliche Ausgaben liefern, was das Testen erschwert.
+- **Sicherheit:** Prompt Injection, Datenabfluss vertraulicher Informationen, die in Prompts eingegeben werden, und erzeugter Code mit Sicherheitslücken.
+- **Missbrauch:** Deepfakes, Desinformation, Phishing-Texte.
+- **Ressourcen:** Training und Betrieb benötigen viel Energie, Wasser für die Kühlung und teure Hardware.
+
+Rechtliche und ethische Fragen wie Urheberrecht, Datenschutz und den EU AI Act behandelt [KI-Ethik und Recht](/de/artificial-intelligence/ai-ethics-and-law/).
+
+## Weiterführende Quellen
+
+- Ashish Vaswani u. a.: [_Attention Is All You Need_](https://arxiv.org/abs/1706.03762), 2017
+- Jay Alammar: [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- Andrej Karpathy: [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) (Videoreihe, baut ein GPT von Grund auf)

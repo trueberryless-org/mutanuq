@@ -1,0 +1,168 @@
+---
+title: Work, Energy and Power
+description: Mechanical work, kinetic, potential and elastic energy, conservation of energy, power, efficiency and the energy units J, kWh and eV.
+sidebar:
+  order: 4
+---
+
+Energy is the central conserved quantity of physics. Many problems that are tedious with the equations of motion can be solved in a few lines with an energy balance, because you do not need to know the exact course of the motion.
+
+## Work
+
+If a body is displaced along the path $\vec s$ by a force $\vec F$, the force does **mechanical work**:
+
+$$
+W = \vec F \cdot \vec s = F \cdot s \cdot \cos\varphi, \qquad [W] = \mathrm{N\,m} = \mathrm{J} \;(\text{joule})
+$$
+
+$\varphi$ is the angle between force and path. Only the force component in the direction of motion does work:
+
+- $\varphi = 0^\circ$: $W = F s$ (maximum)
+- $\varphi = 90^\circ$: $W = 0$. Carrying a suitcase horizontally does no work on the suitcase in the physical sense; neither does the centripetal force in circular motion.
+- $\varphi = 180^\circ$: $W = -F s$. Friction does negative work; it removes energy from the body.
+
+If the force is not constant, you integrate: $W = \int_{s_1}^{s_2} F(s)\,\mathrm{d}s$. In the $F$-$s$ graph, the work is the area under the curve.
+
+| Form of work | Formula | Example |
+| --- | --- | --- |
+| work against gravity (lifting) | $W = m g h$ | lifting a box onto a shelf |
+| work of acceleration | $W = \frac{1}{2} m (v_2^2 - v_1^2)$ | accelerating a car |
+| work of stretching | $W = \frac{1}{2} D s^2$ | stretching a spring (triangle under $F = Ds$) |
+| work against friction | $W = \mu F_\mathrm{N} s$ | pulling a sledge |
+
+:::tip[Example: lifting]
+A $20\,\mathrm{kg}$ box is lifted $1.5\,\mathrm{m}$: $W = 20 \cdot 9.81 \cdot 1.5 = 294\,\mathrm{J}$. If instead you push it up a frictionless ramp to the same height, the force is smaller, the distance longer and the work the same (**golden rule of mechanics**: what you save in force, you must add in distance).
+:::
+
+## Energy
+
+**Energy** is the capacity to do work (or to give off heat, emit light). Work is energy transferred by a force. Both have the unit joule.
+
+### Kinetic energy
+
+A moving body has **kinetic energy**:
+
+$$
+E_\mathrm{kin} = \frac{1}{2} m v^2
+$$
+
+It grows with the square of the speed. This explains why accidents at higher speed are so much more serious.
+
+:::tip[Example: car]
+A $1200\,\mathrm{kg}$ car at $50\,\mathrm{km/h}$ ($13.9\,\mathrm{m/s}$) has a kinetic energy of $\frac{1}{2} \cdot 1200 \cdot 13.9^2 = 116\,\mathrm{kJ}$; at $100\,\mathrm{km/h}$ four times as much, $463\,\mathrm{kJ}$. The brakes have to convert this energy into heat.
+:::
+
+The **work-energy theorem** states: the work done by the resultant force equals the change in kinetic energy, $W_\mathrm{res} = \Delta E_\mathrm{kin}$.
+
+### Potential energy
+
+A body at height $h$ above a chosen reference level has **potential energy** (gravitational potential energy):
+
+$$
+E_\mathrm{pot} = m g h
+$$
+
+The reference level can be chosen freely; only differences are physically meaningful. The formula holds near the Earth's surface, where $g$ is constant; for the general case see [Gravitation](/en/natural-sciences/gravitation/#potential-energy-in-the-gravitational-field).
+
+### Elastic energy
+
+A spring stretched or compressed by $s$ stores **elastic potential energy**:
+
+$$
+E_\mathrm{sp} = \frac{1}{2} D s^2
+$$
+
+A spring with $D = 500\,\mathrm{N/m}$, compressed by $10\,\mathrm{cm}$, stores $\frac{1}{2} \cdot 500 \cdot 0.1^2 = 2.5\,\mathrm{J}$.
+
+### Other forms of energy
+
+Besides mechanical energy, there is internal (thermal) energy, chemical energy, electrical energy, radiant energy and nuclear energy. Energy can be converted between these forms, for example in a power station or an electric motor (see [Energy and Climate](/en/natural-sciences/energy-and-climate-physics/)).
+
+## Conservation of energy
+
+> In a closed system, the total energy remains constant. Energy can be neither created nor destroyed, only converted.
+
+If only **conservative forces** act (weight, spring force), **mechanical energy** is conserved:
+
+$$
+E_\mathrm{kin} + E_\mathrm{pot} + E_\mathrm{sp} = \text{constant}
+$$
+
+A force is called conservative if its work depends only on the start and end points, not on the path. Friction is **not** conservative: it converts mechanical energy into internal energy (heat). The total energy is still conserved, only the mechanical energy is not.
+
+:::tip[Example: roller coaster]
+A car starts from rest at a height of $30\,\mathrm{m}$. Without friction, $m g h = \frac{1}{2} m v^2$, so at the lowest point
+
+$$
+v = \sqrt{2 g h} = \sqrt{2 \cdot 9.81 \cdot 30} = 24.3\,\mathrm{m/s} \approx 87\,\mathrm{km/h}
+$$
+
+The mass cancels, and the shape of the track does not matter. With the equations of motion, you would have to calculate each section separately.
+:::
+
+:::tip[Example: spring gun]
+A spring ($D = 500\,\mathrm{N/m}$, compressed by $10\,\mathrm{cm}$) fires a ball with $m = 10\,\mathrm{g}$ vertically upwards. From $\frac{1}{2} D s^2 = m g h$ it follows that $h = \frac{2.5}{0.01 \cdot 9.81} = 25.5\,\mathrm{m}$ (without air resistance).
+:::
+
+## Power
+
+**Power** states how fast work is done or energy is converted:
+
+$$
+P = \frac{W}{t} = \frac{\Delta E}{\Delta t}, \qquad [P] = \mathrm{J/s} = \mathrm{W} \;(\text{watt})
+$$
+
+For a constant force in the direction of motion, $W = F s$ and $v = s/t$ give:
+
+$$
+P = F \cdot v
+$$
+
+That is why a car needs a lot of power at high speed: air resistance grows with $v^2$, so the power needed to overcome it grows with $v^3$.
+
+:::tip[Example: crane]
+A crane lifts $500\,\mathrm{kg}$ by $12\,\mathrm{m}$ in $20\,\mathrm{s}$. Work $W = 500 \cdot 9.81 \cdot 12 = 58.9\,\mathrm{kJ}$, power $P = 58\,860/20 = 2.94\,\mathrm{kW}$.
+:::
+
+The obsolete unit metric horsepower ($1\,\mathrm{PS} = 735.5\,\mathrm{W}$) is still found for cars; the legal unit is the kilowatt.
+
+## Efficiency
+
+No machine converts the supplied energy entirely into the desired form; part of it becomes heat. The **efficiency** $\eta$ (eta) is the ratio of useful output to input:
+
+$$
+\eta = \frac{P_\mathrm{out}}{P_\mathrm{in}} = \frac{E_\mathrm{useful}}{E_\mathrm{in}} < 1
+$$
+
+For converters connected in series, the efficiencies multiply: $\eta_\mathrm{total} = \eta_1 \cdot \eta_2 \cdot \eta_3 \cdots$
+
+:::tip[Example]
+The crane motor draws $3.5\,\mathrm{kW}$ of electrical power. Its efficiency is $\eta = 2.94/3.5 = 0.84 = 84\,\%$. If it drives through a gearbox with $\eta = 0.95$, the overall efficiency is $0.84 \cdot 0.95 = 0.80$.
+:::
+
+| Converter (typical values) | Efficiency |
+| --- | --- |
+| large electric motor, transformer | 95 to 99 % |
+| hydroelectric power station | 85 to 90 % |
+| combined-cycle gas power station | about 60 % |
+| coal-fired power station | 40 to 45 % |
+| petrol engine in a car | 25 to 35 % |
+| photovoltaic module | 18 to 23 % |
+| incandescent lamp (light) | about 3 % |
+
+## Energy units
+
+| Unit | Conversion | Use |
+| --- | --- | --- |
+| joule ($\mathrm{J}$) | $1\,\mathrm{J} = 1\,\mathrm{N\,m} = 1\,\mathrm{W\,s}$ | SI unit |
+| kilowatt hour ($\mathrm{kWh}$) | $1\,\mathrm{kWh} = 1000\,\mathrm{W} \cdot 3600\,\mathrm{s} = 3.6\,\mathrm{MJ}$ | electricity bill |
+| electronvolt ($\mathrm{eV}$) | $1\,\mathrm{eV} = 1.602\,176\,634 \times 10^{-19}\,\mathrm{J}$ | atomic and nuclear physics |
+| calorie ($\mathrm{cal}$, obsolete) | $1\,\mathrm{cal} = 4.184\,\mathrm{J}$ | food energy ("kcal") |
+
+One electronvolt is the energy an electron gains when it passes through a voltage of $1\,\mathrm{V}$ ($W = e \cdot U$). An Austrian household uses roughly $3000$ to $4000\,\mathrm{kWh}$ of electricity per year, which is about $11$ to $14\,\mathrm{GJ}$.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 1_, chapters 7 and 8, openstax.org
+- Austrian Energy Agency: energy efficiency and energy units, energyagency.at

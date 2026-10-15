@@ -1,0 +1,496 @@
+---
+title: REST-APIs
+description: REST-Prinzipien nach Fielding, Entwurf von Ressourcen und URIs, CRUD mit HTTP-Methoden, Fehler, Versionierung, Paginierung, OpenAPI, Authentifizierung, GraphQL und gRPC sowie eine API in C# und Rust.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **Web-API** (_Application Programming Interface_) stellt Daten und Funktionen über HTTP für andere Programme bereit: für ein SPA-Frontend, eine Handy-App oder einen anderen Server. Statt HTML liefert sie Daten, meist als JSON. Der verbreitetste Architekturstil für solche Schnittstellen ist **REST**.
+
+## REST-Prinzipien
+
+**REST** (_Representational State Transfer_) beschrieb Roy Fielding, einer der Autoren der HTTP-Spezifikation, im Jahr 2000 in seiner Dissertation. REST ist kein Protokoll und kein Standard, sondern ein Architekturstil mit sechs **Einschränkungen** (_Constraints_):
+
+| Einschränkung           | Bedeutung                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| **Client-Server**       | Oberfläche und Datenhaltung sind getrennt und entwickeln sich unabhängig                   |
+| **Zustandslosigkeit**   | Jede Anfrage enthält alle nötigen Informationen (auch die Anmeldung). Der Server speichert keinen Sitzungszustand des Clients, deshalb kann jede Anfrage von einem beliebigen Server bearbeitet werden, was die Skalierung erleichtert |
+| **Cachefähigkeit**      | Antworten geben an, ob und wie lange sie gecacht werden dürfen                            |
+| **Einheitliche Schnittstelle** (_Uniform Interface_) | Ressourcen werden über URIs identifiziert und über **Repräsentationen** (etwa JSON) bearbeitet, Nachrichten sind selbstbeschreibend (Methode, Statuscode, `Content-Type`), und Antworten enthalten Links zu möglichen nächsten Schritten (**HATEOAS**, _Hypermedia as the Engine of Application State_) |
+| **Schichtenarchitektur** | Zwischen Client und Server können Proxys, Load Balancer und Caches liegen, ohne dass der Client es merkt |
+| **Code on Demand** (optional) | Der Server kann ausführbaren Code liefern, etwa JavaScript                          |
+
+In der Praxis nennt man fast jede JSON-API über HTTP „RESTful“, auch wenn sie HATEOAS nicht umsetzt. Das **Richardson Maturity Model** ordnet APIs in Stufen: Stufe 0 schickt alles an eine URL (wie SOAP), Stufe 1 führt Ressourcen mit eigenen URIs ein, Stufe 2 verwendet zusätzlich HTTP-Methoden und Statuscodes richtig, Stufe 3 ergänzt Hypermedia-Links. Die meisten guten APIs sind auf Stufe 2.
+
+## Ressourcen und URIs
+
+Eine **Ressource** ist alles, was einen Namen verdient: ein Schüler, eine Klasse, eine Liste von Noten. Jede Ressource hat eine **URI**. Gute URIs sind stabil, vorhersehbar und beschreiben **Dinge, nicht Tätigkeiten**: Was getan wird, sagt die HTTP-Methode.
+
+| gut                                   | schlecht                         | Grund                                  |
+| ------------------------------------- | -------------------------------- | -------------------------------------- |
+| `GET /students`                       | `GET /getAllStudents`            | Verb gehört in die Methode              |
+| `POST /students`                      | `POST /students/create`          | ebenso                                  |
+| `GET /students/17`                    | `GET /students?id=17`            | einzelne Ressource als Pfadsegment      |
+| `GET /classes/3AHIT/students`         | `GET /studentsOfClass/3AHIT`     | Hierarchie im Pfad abbilden             |
+| `GET /students?class=3AHIT&sort=name` | `GET /students/filter/3AHIT/name` | Filtern, Sortieren, Suchen über die Query |
+
+Übliche Konventionen: Substantive im **Plural** für Sammlungen, Kleinbuchstaben mit Bindestrichen (`/exam-dates`), keine Dateiendungen (`.json`), das Format wird über `Accept` und `Content-Type` ausgehandelt. Aktionen, die sich nicht als Ressource darstellen lassen, modelliert man oft als Unterressource: `POST /orders/42/cancellation`.
+
+## HTTP-Methoden und CRUD
+
+Die vier Grundoperationen auf Daten (**CRUD**: _Create, Read, Update, Delete_) bilden sich direkt auf die [HTTP-Methoden](/de/web-technologies/http/#methoden) ab:
+
+| Operation             | Methode und URI         | Erfolg                                | typische Fehler          |
+| --------------------- | ----------------------- | ------------------------------------- | ------------------------ |
+| alle lesen            | `GET /students`         | `200 OK` mit Liste (eventuell leer)   |                          |
+| einen lesen           | `GET /students/17`      | `200 OK` mit Objekt                    | `404 Not Found`          |
+| anlegen (**C**reate)  | `POST /students`        | `201 Created`, Header `Location: /students/17`, Body mit neuem Objekt | `400 Bad Request`, `409 Conflict` |
+| ersetzen (**U**pdate) | `PUT /students/17`      | `200 OK` mit Objekt oder `204 No Content` | `400`, `404`         |
+| teilweise ändern      | `PATCH /students/17`    | `200 OK`                               | `400`, `404`             |
+| löschen (**D**elete)  | `DELETE /students/17`   | `204 No Content`                       | `404`                    |
+
+Für alle Endpunkte kommen `401` (nicht angemeldet), `403` (keine Berechtigung) und `500` (Serverfehler) hinzu. Ein leeres Suchergebnis ist kein Fehler, sondern eine leere Liste mit `200`.
+
+## JSON und Fehlermeldungen
+
+Anfragen und Antworten verwenden `Content-Type: application/json`. Üblich sind Eigenschaftsnamen in **camelCase**, Datumswerte als ISO-8601-Strings (`"2026-09-07T08:00:00Z"`) und Geldbeträge als Ganzzahl in Cent oder als String, nie als Gleitkommazahl.
+
+Fehler sollten nicht nur einen Statuscode, sondern auch eine maschinenlesbare Beschreibung liefern. Das Format **Problem Details** (RFC 9457, `Content-Type: application/problem+json`) ist dafür standardisiert, und ASP.NET Core verwendet es von sich aus:
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "errors": {
+    "Name": ["Der Name darf nicht leer sein."]
+  }
+}
+```
+
+Stacktraces und interne Fehlermeldungen gehören nicht in Antworten an Clients, weil sie Angreifern Details über das System verraten.
+
+## Versionierung
+
+Eine veröffentlichte API wird von Programmen verwendet, die man nicht kontrolliert. Inkompatible Änderungen (Feld umbenennen oder entfernen, Typ ändern) dürfen deshalb nicht einfach eingespielt werden. Kompatible Änderungen (neues optionales Feld, neuer Endpunkt) sind dagegen erlaubt, wenn Clients unbekannte Felder ignorieren.
+
+| Variante          | Beispiel                                     |
+| ----------------- | -------------------------------------------- |
+| im Pfad (am häufigsten) | `/api/v1/students`, `/api/v2/students` |
+| als Query-Parameter | `/api/students?api-version=2`              |
+| als Header        | `Api-Version: 2`                              |
+| über den Medientyp | `Accept: application/vnd.schule.v2+json`     |
+
+Alte Versionen werden eine Zeit lang parallel betrieben und erst nach Ankündigung abgeschaltet.
+
+## Paginierung
+
+Eine Sammlung mit 100 000 Einträgen liefert man nicht auf einmal aus. **Paginierung** teilt sie in Seiten:
+
+- **Offset-basiert**: `GET /students?page=3&pageSize=20` oder `?offset=40&limit=20`. Einfach, man kann direkt zu Seite 3 springen. Bei großen Offsets wird die Datenbankabfrage langsam, und wenn zwischendurch Einträge eingefügt werden, verschieben sich die Seiten.
+- **Cursor-basiert**: `GET /students?after=eyJpZCI6NDB9&limit=20`. Der Server liefert mit jeder Seite einen undurchsichtigen Cursor auf den letzten Eintrag. Stabil und schnell, aber kein Springen zu beliebigen Seiten.
+
+Die Antwort enthält die Einträge und Metadaten, etwa die Gesamtzahl und Links zur nächsten Seite (im Body oder im Header `Link`):
+
+```json
+{
+  "items": [{ "id": 41, "name": "Anna Huber", "schoolClass": "3AHIT" }],
+  "page": 3,
+  "pageSize": 20,
+  "totalCount": 512,
+  "next": "/api/students?page=4&pageSize=20"
+}
+```
+
+## OpenAPI und Swagger
+
+**OpenAPI** ist ein Standard, um REST-APIs maschinenlesbar in JSON oder YAML zu beschreiben: Endpunkte, Parameter, Datentypen der Anfragen und Antworten, Statuscodes und Authentifizierung. Er ging 2015 aus der **Swagger**-Spezifikation hervor und wird von der OpenAPI Initiative der Linux Foundation weiterentwickelt (Version 3.1 seit 2021, 3.2 seit 2025). Der Name Swagger lebt in Werkzeugen weiter: **Swagger UI** erzeugt aus der Beschreibung eine interaktive Dokumentationsseite, auf der man Endpunkte direkt ausprobieren kann.
+
+```yaml
+openapi: 3.1.0
+info:
+  title: Schul-API
+  version: 1.0.0
+paths:
+  /api/students/{id}:
+    get:
+      summary: Einen Schüler abrufen
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: gefunden
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Student" }
+        "404":
+          description: nicht gefunden
+```
+
+Man unterscheidet zwei Vorgehensweisen: **Code First** (die Beschreibung wird aus dem Code erzeugt, in ASP.NET Core mit dem Paket `Microsoft.AspNetCore.OpenApi` durch `builder.Services.AddOpenApi()` und `app.MapOpenApi()`, in Rust etwa mit dem Crate `utoipa`) und **API First** (zuerst wird die Beschreibung entworfen und abgestimmt, daraus werden Server-Gerüste und Client-Bibliotheken generiert).
+
+## Authentifizierung
+
+Weil REST zustandslos ist, muss jede Anfrage zeigen, wer sie stellt. Die Zugangsdaten gehören in Header, nie in die URL, da URLs in Logdateien und im Browserverlauf landen. Alle Verfahren setzen **HTTPS** voraus.
+
+| Verfahren      | Funktionsweise                                                                               | Einsatz                               |
+| -------------- | -------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **API-Schlüssel** | geheimer, zufälliger String im Header, etwa `X-API-Key: 9f2c...`. Identifiziert die aufrufende Anwendung | Server-zu-Server, öffentliche Daten-APIs mit Kontingent |
+| **JWT** (_JSON Web Token_, RFC 7519) | Nach der Anmeldung stellt der Server ein **signiertes** Token aus: `Header.Payload.Signatur`, jeweils Base64url-kodiert. Der Payload enthält **Claims** wie Benutzer-ID, Rollen und Ablaufzeit (`exp`). Der Client sendet es als `Authorization: Bearer <token>`, der Server prüft nur die Signatur und braucht keine Sitzungsdatenbank | SPAs, mobile Apps, Microservices |
+| **OAuth 2.0** (RFC 6749) | Rahmenwerk für **delegierte Autorisierung**: Ein Benutzer erlaubt einer Anwendung, in seinem Namen auf eine API zuzugreifen, ohne ihr sein Passwort zu geben. Ein **Autorisierungsserver** stellt dafür ein Zugriffstoken aus. **OpenID Connect** ergänzt die Anmeldung („Mit Microsoft anmelden“) | Fremdzugriffe, Single Sign-on |
+
+:::caution[JWT ist nicht verschlüsselt]
+Den Payload eines JWT kann jeder lesen, der das Token hat, denn Base64url ist nur eine Kodierung. Die Signatur verhindert nur Veränderungen. Passwörter oder andere Geheimnisse gehören deshalb nicht hinein, und die Ablaufzeit sollte kurz sein, weil ein gestohlenes Token bis dahin gültig bleibt.
+:::
+
+## GraphQL und gRPC
+
+| Merkmal          | REST                                  | GraphQL                                          | gRPC                                           |
+| ---------------- | ------------------------------------- | ------------------------------------------------ | ---------------------------------------------- |
+| Herkunft         | Fielding, 2000                        | Facebook, veröffentlicht 2015                     | Google, veröffentlicht 2015                     |
+| Endpunkte        | viele, einer pro Ressource            | **einer** (`POST /graphql`)                       | Methoden eines Dienstes, wie Funktionsaufrufe  |
+| Datenformat      | meist JSON                             | JSON                                              | **Protocol Buffers** (binär, kompakt)          |
+| Schnittstellenbeschreibung | optional (OpenAPI)          | verpflichtendes **Schema** mit Typen              | verpflichtende `.proto`-Datei, Code wird generiert |
+| Wer bestimmt die Felder? | der Server                      | der **Client** fragt genau die Felder ab, die er braucht | der Server                              |
+| Transport        | HTTP/1.1, HTTP/2, HTTP/3               | HTTP                                              | **HTTP/2**, Streaming in beide Richtungen      |
+| HTTP-Caching     | einfach (GET-URLs)                     | schwierig (alles über POST)                       | nicht vorgesehen                                |
+| Einsatz          | öffentliche APIs, einfache CRUD-Dienste | Frontends mit vielen verschiedenen Datenbedürfnissen | schnelle Kommunikation zwischen Microservices |
+
+Bei REST entstehen zwei typische Probleme: **Overfetching** (der Endpunkt liefert mehr Felder als gebraucht) und **Underfetching** (für eine Ansicht sind mehrere Anfragen nötig, etwa Schüler, dann deren Klasse, dann deren Noten). GraphQL löst beides mit einer Abfrage:
+
+```graphql
+query {
+  student(id: 17) {
+    name
+    schoolClass { name teacher { name } }
+    grades(subject: "SEW") { value }
+  }
+}
+```
+
+Dafür ist der Server aufwendiger, und man muss teure, tief verschachtelte Abfragen begrenzen. gRPC ist durch das Binärformat und HTTP/2 sehr effizient, Browser können es aber nur über den Umweg **gRPC-Web** ansprechen.
+
+## Eine REST-API implementieren
+
+Das folgende Beispiel implementiert dieselbe API in C# und Rust: Schüler werden in einer Liste im Arbeitsspeicher verwaltet (in einer echten Anwendung stünde hier eine Datenbank, siehe [Datenbanken](/de/databases/)).
+
+| Endpunkt                     | Wirkung                          |
+| ---------------------------- | -------------------------------- |
+| `GET /api/students`          | alle Schüler                      |
+| `GET /api/students/{id}`     | ein Schüler oder `404`            |
+| `POST /api/students`         | anlegen, `201` mit `Location`     |
+| `PUT /api/students/{id}`     | ersetzen, `200` oder `404`         |
+| `DELETE /api/students/{id}`  | löschen, `204` oder `404`          |
+
+In C# verwendet man **ASP.NET Core** mit den **Minimal APIs**: `WebApplication` erzeugt den Server (Kestrel), `MapGet`, `MapPost` usw. ordnen URL-Muster Lambda-Funktionen zu. Parameter werden automatisch aus Pfad, Query und JSON-Body gebunden. In Rust verwendet man das Web-Framework **axum** auf der asynchronen Laufzeit **tokio**, mit **serde** für JSON. Handler sind `async`-Funktionen, deren Parameter **Extraktoren** sind (`Path`, `State`, `Json`).
+
+Weil der Server mehrere Anfragen gleichzeitig bearbeitet, wird die gemeinsame Liste mit einer Sperre geschützt (siehe [Nebenläufigkeit](/de/software-development/concurrency/)).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
+// im Projekt mit "dotnet new web" sind diese usings bereits implizit vorhanden
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+var store = new StudentStore();
+var students = app.MapGroup("/api/students");
+
+students.MapGet("/", () => store.GetAll());
+
+students.MapGet("/{id:int}", (int id) =>
+    store.Find(id) is Student student ? Results.Ok(student) : Results.NotFound());
+
+students.MapPost("/", (StudentInput input) =>
+{
+    if (string.IsNullOrWhiteSpace(input.Name))
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["Name"] = ["Der Name darf nicht leer sein."],
+        });
+    Student created = store.Add(input);
+    return Results.Created($"/api/students/{created.Id}", created);
+});
+
+students.MapPut("/{id:int}", (int id, StudentInput input) =>
+    store.Replace(id, input) is Student updated ? Results.Ok(updated) : Results.NotFound());
+
+students.MapDelete("/{id:int}", (int id) =>
+    store.Remove(id) ? Results.NoContent() : Results.NotFound());
+
+app.Run("http://localhost:5000");
+
+public record Student(int Id, string Name, string SchoolClass);
+
+public record StudentInput(string Name, string SchoolClass);
+
+public class StudentStore
+{
+    private readonly Lock gate = new();
+    private readonly List<Student> students =
+        [new(1, "Anna Huber", "3AHIT"), new(2, "Lukas Gruber", "3BHIT")];
+    private int nextId = 3;
+
+    public List<Student> GetAll()
+    {
+        lock (gate) return [.. students];   // Kopie, damit niemand die Liste von außen ändert
+    }
+
+    public Student? Find(int id)
+    {
+        lock (gate) return students.Find(s => s.Id == id);
+    }
+
+    public Student Add(StudentInput input)
+    {
+        lock (gate)
+        {
+            var student = new Student(nextId++, input.Name, input.SchoolClass);
+            students.Add(student);
+            return student;
+        }
+    }
+
+    public Student? Replace(int id, StudentInput input)
+    {
+        lock (gate)
+        {
+            int index = students.FindIndex(s => s.Id == id);
+            if (index < 0) return null;
+            students[index] = new Student(id, input.Name, input.SchoolClass);
+            return students[index];
+        }
+    }
+
+    public bool Remove(int id)
+    {
+        lock (gate) return students.RemoveAll(s => s.Id == id) > 0;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use axum::{
+    Json, Router,
+    extract::{Path, State},
+    http::{StatusCode, header},
+    response::IntoResponse,
+    routing::get,
+};
+use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Student {
+    id: u32,
+    name: String,
+    school_class: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct StudentInput {
+    name: String,
+    school_class: String,
+}
+
+struct Store {
+    students: Vec<Student>,
+    next_id: u32,
+}
+
+// gemeinsamer Zustand für alle Anfragen
+type AppState = Arc<Mutex<Store>>;
+
+async fn list(State(state): State<AppState>) -> Json<Vec<Student>> {
+    // lock() schlägt nur fehl, wenn ein anderer Thread mit der Sperre abgestürzt ist
+    Json(state.lock().unwrap().students.clone())
+}
+
+async fn get_one(State(state): State<AppState>, Path(id): Path<u32>) -> Result<Json<Student>, StatusCode> {
+    let store = state.lock().unwrap();
+    store.students.iter().find(|s| s.id == id).cloned().map(Json).ok_or(StatusCode::NOT_FOUND)
+}
+
+async fn create(State(state): State<AppState>, Json(input): Json<StudentInput>) -> impl IntoResponse {
+    if input.name.trim().is_empty() {
+        return Err((StatusCode::BAD_REQUEST, "Der Name darf nicht leer sein."));
+    }
+    let mut store = state.lock().unwrap();
+    let student = Student { id: store.next_id, name: input.name, school_class: input.school_class };
+    store.next_id += 1;
+    store.students.push(student.clone());
+    let location = format!("/api/students/{}", student.id);
+    Ok((StatusCode::CREATED, [(header::LOCATION, location)], Json(student)))
+}
+
+async fn replace(
+    State(state): State<AppState>,
+    Path(id): Path<u32>,
+    Json(input): Json<StudentInput>,
+) -> Result<Json<Student>, StatusCode> {
+    let mut store = state.lock().unwrap();
+    let student = store.students.iter_mut().find(|s| s.id == id).ok_or(StatusCode::NOT_FOUND)?;
+    student.name = input.name;
+    student.school_class = input.school_class;
+    Ok(Json(student.clone()))
+}
+
+async fn remove(State(state): State<AppState>, Path(id): Path<u32>) -> StatusCode {
+    let mut store = state.lock().unwrap();
+    let before = store.students.len();
+    store.students.retain(|s| s.id != id);
+    if store.students.len() < before { StatusCode::NO_CONTENT } else { StatusCode::NOT_FOUND }
+}
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let state: AppState = Arc::new(Mutex::new(Store {
+        students: vec![
+            Student { id: 1, name: "Anna Huber".into(), school_class: "3AHIT".into() },
+            Student { id: 2, name: "Lukas Gruber".into(), school_class: "3BHIT".into() },
+        ],
+        next_id: 3,
+    }));
+
+    let app = Router::new()
+        .route("/api/students", get(list).post(create))
+        .route("/api/students/{id}", get(get_one).put(replace).delete(remove))
+        .with_state(state);
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:5000").await?;
+    println!("Server läuft auf http://localhost:5000");
+    axum::serve(listener, app).await
+}
+```
+
+</TabItem>
+</Tabs>
+
+Beide Frameworks prüfen die Anfrage schon vor dem Handler: Fehlt der Body, ist das JSON ungültig oder passt ein Pfadparameter nicht zum Typ (`/api/students/abc`), antworten sie automatisch mit einem 4xx-Statuscode. In ASP.NET Core sorgt die Routenbedingung `{id:int}` dafür, dass `/api/students/abc` gar nicht zu diesem Endpunkt passt (`404`). axum antwortet bei JSON, das nicht zum Typ passt, mit `422 Unprocessable Entity`, bei fehlendem `Content-Type: application/json` mit `415`.
+
+Die `std::sync::Mutex` darf in axum verwendet werden, solange die Sperre nicht über ein `.await` hinweg gehalten wird. Sonst braucht man `tokio::sync::Mutex`.
+
+## Die API aufrufen
+
+Mit **curl** von der Kommandozeile:
+
+```bash
+curl http://localhost:5000/api/students
+curl -i http://localhost:5000/api/students/1
+curl -i -X POST http://localhost:5000/api/students \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Clara Bauer","schoolClass":"3AHIT"}'
+curl -X PUT http://localhost:5000/api/students/3 \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Clara Bauer","schoolClass":"4AHIT"}'
+curl -i -X DELETE http://localhost:5000/api/students/3
+```
+
+Die Antwort auf den POST lautet:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Location: /api/students/3
+
+{"id":3,"name":"Clara Bauer","schoolClass":"3AHIT"}
+```
+
+Aus einem Programm ruft man die API mit einem HTTP-Client auf. Die Methoden `GetFromJsonAsync` und `PostAsJsonAsync` bzw. `.json()` in reqwest serialisieren und deserialisieren automatisch. Im Browser verwendet man [`fetch`](/de/web-technologies/javascript/#asynchrone-programmierung). Läuft das Frontend auf einer anderen Origin als die API, muss der Server [CORS](/de/web-technologies/http/#cors) erlauben.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net;
+using System.Net.Http.Json;
+
+using var http = new HttpClient { BaseAddress = new Uri("http://localhost:5000/") };
+
+// neuen Schüler anlegen
+var response = await http.PostAsJsonAsync("api/students", new StudentInput("Clara Bauer", "3AHIT"));
+Student? created = await response.Content.ReadFromJsonAsync<Student>();
+Console.WriteLine($"{(int)response.StatusCode}, neu unter {response.Headers.Location}");
+
+// alle lesen
+List<Student>? all = await http.GetFromJsonAsync<List<Student>>("api/students");
+foreach (var s in all ?? []) Console.WriteLine($"{s.Id}: {s.Name} ({s.SchoolClass})");
+
+// löschen
+var deleted = await http.DeleteAsync($"api/students/{created!.Id}");
+Console.WriteLine(deleted.StatusCode == HttpStatusCode.NoContent ? "gelöscht" : "nicht gefunden");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct Student {
+    id: u32,
+    name: String,
+    school_class: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StudentInput<'a> {
+    name: &'a str,
+    school_class: &'a str,
+}
+
+fn main() -> Result<(), reqwest::Error> {
+    let client = reqwest::blocking::Client::new();
+    let base = "http://localhost:5000/api/students";
+
+    // neuen Schüler anlegen
+    let response = client.post(base).json(&StudentInput { name: "Clara Bauer", school_class: "3AHIT" }).send()?;
+    println!("{}, neu unter {:?}", response.status(), response.headers().get("location"));
+    let created: Student = response.json()?;
+
+    // alle lesen
+    let all: Vec<Student> = client.get(base).send()?.error_for_status()?.json()?;
+    for s in &all {
+        println!("{}: {} ({})", s.id, s.name, s.school_class);
+    }
+
+    // löschen
+    let deleted = client.delete(format!("{base}/{}", created.id)).send()?;
+    println!("{}", if deleted.status() == reqwest::StatusCode::NO_CONTENT { "gelöscht" } else { "nicht gefunden" });
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Weiterführende Quellen
+
+- [Architectural Styles and the Design of Network-based Software Architectures](https://ics.uci.edu/~fielding/pubs/dissertation/top.htm), Kapitel 5 (Roy Fielding, 2000)
+- [Minimal APIs in ASP.NET Core](https://learn.microsoft.com/de-de/aspnet/core/fundamentals/minimal-apis/overview) (Microsoft Learn) und [axum](https://docs.rs/axum/latest/axum/) (docs.rs)
+- [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) (OpenAPI Initiative)

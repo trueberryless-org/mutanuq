@@ -1,0 +1,184 @@
+---
+title: Waves and Acoustics
+description: Transverse and longitudinal waves, wavelength, frequency and wave speed, superposition, interference, standing waves, Doppler effect, sound, sound levels in dB and ultrasound.
+sidebar:
+  order: 11
+---
+
+A **wave** is an oscillation that propagates through space. It **transports energy but not matter**: a buoy on the water rises and falls while the wave passes by. Sound, water waves, seismic waves and light all follow the same basic laws.
+
+## Formation and types
+
+A **mechanical wave** arises when coupled oscillators (particles of a medium) pass their oscillation on to their neighbours with a time delay. It needs a medium; there is no sound in a vacuum. **Electromagnetic waves** (light, radio) need no medium.
+
+| Type | Direction of oscillation | Examples |
+| --- | --- | --- |
+| **transverse wave** | perpendicular to the direction of propagation | wave on a rope, string, light, seismic S-waves |
+| **longitudinal wave** | parallel to the direction of propagation, compressions and rarefactions | sound in air, seismic P-waves |
+
+Gases and liquids only transmit longitudinal waves because they have no resistance to shear; solids transmit both types. Surface water waves are a mixed form: the particles move on circular paths. Only transverse waves can be **polarised** (direction of oscillation fixed).
+
+## Wave quantities
+
+| Quantity | Symbol | Unit | Meaning |
+| --- | --- | --- | --- |
+| wavelength | $\lambda$ | $\mathrm{m}$ | distance between two neighbouring points of equal phase (two crests) |
+| period | $T$ | $\mathrm{s}$ | time in which the wave advances by $\lambda$ |
+| frequency | $f$ | $\mathrm{Hz}$ | oscillations per second at one place |
+| wave speed | $c$ | $\mathrm{m/s}$ | speed at which a crest moves |
+| wave number | $k = \frac{2\pi}{\lambda}$ | $\mathrm{m^{-1}}$ | |
+
+The **fundamental wave equation**:
+
+$$
+c = \lambda \cdot f = \frac{\lambda}{T}
+$$
+
+The frequency is set by the source, the speed by the medium. When a wave passes into another medium, $f$ stays the same and $\lambda$ changes.
+
+A harmonic wave travelling in the $x$ direction is described by
+
+$$
+y(x, t) = \hat y \sin(\omega t - k x)
+$$
+
+The intensity (power per area) of a wave is proportional to the square of the amplitude.
+
+## Wave speed
+
+| Wave | Speed |
+| --- | --- |
+| wave on a rope or string (tension $F$, mass per length $\mu$) | $c = \sqrt{F/\mu}$ |
+| sound in gases | $c = \sqrt{\kappa R T/M}$, in air $c \approx 331.3\,\mathrm{m/s} \cdot \sqrt{1 + \vartheta/273.15\,^\circ\mathrm{C}}$ |
+| sound in air at $20\,^\circ\mathrm{C}$ | $343\,\mathrm{m/s}$ |
+| sound in water | about $1480\,\mathrm{m/s}$ |
+| sound in steel (longitudinal) | about $5900\,\mathrm{m/s}$ |
+| light in vacuum | $c = 299\,792\,458\,\mathrm{m/s}$ |
+
+The speed of sound in air depends on temperature, not on air pressure. Rule of thumb for thunderstorms: the seconds between lightning and thunder divided by 3 give the distance in kilometres.
+
+## Propagation phenomena
+
+**Huygens' principle** states: every point on a wavefront is the source of a spherical secondary wavelet; the envelope of all wavelets gives the new wavefront. All of the following phenomena can be explained with it:
+
+- **Reflection**: angle of incidence equals angle of reflection. Echo, echo sounder, radar.
+- **Refraction**: when passing into a medium with a different wave speed, the wave changes direction: $\frac{\sin\alpha}{\sin\beta} = \frac{c_1}{c_2}$ (see [Optics](/en/natural-sciences/optics/#refraction)).
+- **Diffraction**: waves also spread into the geometric shadow behind obstacles and slits. This becomes noticeable when the obstacle is about as large as the wavelength. That is why you can hear round the corner of a house (sound wavelengths in the metre range) but not see round it (light below one micrometre).
+- **Interference**: superposition of several waves (see below).
+
+## Superposition and interference
+
+When waves meet, their displacements add (**principle of superposition**), and afterwards they continue undisturbed. If two waves have the same frequency and a fixed phase relationship (**coherent** waves), a stable interference pattern forms. What matters is the **path difference** $\Delta s$, the difference in the distances from the two sources:
+
+| Interference | Condition | Result |
+| --- | --- | --- |
+| **constructive** | $\Delta s = k \cdot \lambda$, $k = 0, 1, 2, \dots$ | reinforcement (crest meets crest) |
+| **destructive** | $\Delta s = (2k + 1) \cdot \frac{\lambda}{2}$ | cancellation (crest meets trough) |
+
+Applications: active noise cancellation (ANC) in headphones produces a signal in antiphase, anti-reflective coatings on spectacle lenses, interferometers for measuring length, double slit and grating (see [Wave optics](/en/natural-sciences/optics/#wave-optics)).
+
+## Standing waves
+
+When a wave is reflected at one end, the incoming and reflected waves superpose to form a **standing wave**. It has fixed **nodes** (always at rest) and **antinodes** (maximum oscillation). The distance between two nodes is $\lambda/2$. A standing wave transports no energy.
+
+Standing waves only form at certain frequencies (natural frequencies) that fit the length $L$ of the oscillator:
+
+| Oscillator | Ends | Natural frequencies |
+| --- | --- | --- |
+| string fixed at both ends | nodes at both ends | $f_n = n \cdot \frac{c}{2L}$, $n = 1, 2, 3, \dots$ |
+| pipe open at both ends (flute) | antinodes at both ends | $f_n = n \cdot \frac{c}{2L}$ |
+| pipe closed at one end (clarinet, pan pipe) | node at the closed end, antinode at the open end | $f_n = (2n - 1) \cdot \frac{c}{4L}$, odd multiples only |
+
+The lowest frequency ($n = 1$) is the **fundamental frequency**; the higher ones are called **overtones** (harmonics). Their mixture determines the timbre of an instrument.
+
+:::tip[Example: guitar string]
+The A string of a guitar has a vibrating length of $L = 0.65\,\mathrm{m}$ and a fundamental frequency of $110\,\mathrm{Hz}$. The wave speed on the string is $c = 2 L f_1 = 2 \cdot 0.65 \cdot 110 = 143\,\mathrm{m/s}$. Pressing the string at the 12th fret (half the length) gives the octave at $220\,\mathrm{Hz}$. Tightening the string increases $F$ and thus $c$ and the pitch.
+:::
+
+:::tip[Example: pipe]
+A $50\,\mathrm{cm}$ pipe closed at one end: fundamental $f_1 = \frac{343}{4 \cdot 0.5} = 171.5\,\mathrm{Hz}$, overtones $514.5\,\mathrm{Hz}$, $857.5\,\mathrm{Hz}$. If it is open at both ends, the fundamental is $343\,\mathrm{Hz}$.
+:::
+
+## Doppler effect
+
+If the source or the observer moves relative to the medium, the perceived frequency changes. An ambulance sounds higher as it approaches and lower as it drives away, although the siren always sounds the same.
+
+$$
+f_\mathrm{B} = f_\mathrm{Q} \cdot \frac{c \pm v_\mathrm{B}}{c \mp v_\mathrm{Q}}
+$$
+
+The upper signs apply to **approach**, the lower ones to moving apart. $v_\mathrm{B}$ is the speed of the observer, $v_\mathrm{Q}$ that of the source, each relative to the air.
+
+:::tip[Example: ambulance]
+Siren $f_\mathrm{Q} = 700\,\mathrm{Hz}$, speed $v_\mathrm{Q} = 25\,\mathrm{m/s}$ ($90\,\mathrm{km/h}$), stationary observer, $c = 343\,\mathrm{m/s}$:
+
+- Approaching: $f = 700 \cdot \frac{343}{343 - 25} = 755\,\mathrm{Hz}$
+- Moving away: $f = 700 \cdot \frac{343}{343 + 25} = 652\,\mathrm{Hz}$
+:::
+
+Applications: speed cameras using radar, Doppler ultrasound (measuring blood flow), weather radar, redshift of light from distant galaxies (expansion of the universe). For light, a relativistic formula applies that depends only on the relative velocity.
+
+If a source moves faster than sound ($v_\mathrm{Q} > c$), the wavefronts pile up into a **Mach cone** with half-angle $\sin\alpha = c/v_\mathrm{Q}$. On the ground you hear a sonic boom. The **Mach number** is $Ma = v/c$.
+
+## Sound
+
+**Sound** consists of mechanical longitudinal waves in a medium. Humans hear frequencies from about $16\,\mathrm{Hz}$ to $20\,\mathrm{kHz}$; the upper limit decreases with age.
+
+| Range | Frequency | Examples |
+| --- | --- | --- |
+| infrasound | below $16\,\mathrm{Hz}$ | earthquakes, wind turbines, elephants |
+| audible sound | $16\,\mathrm{Hz}$ to $20\,\mathrm{kHz}$ | speech (about $100\,\mathrm{Hz}$ to $8\,\mathrm{kHz}$), music |
+| ultrasound | above $20\,\mathrm{kHz}$ | bats, sonography, cleaning |
+| hypersound | above $1\,\mathrm{GHz}$ | lattice vibrations in solids |
+
+**Pitch** corresponds to frequency, **loudness** to amplitude. Concert pitch A4 has $440\,\mathrm{Hz}$ and a wavelength in air of $343/440 = 0.78\,\mathrm{m}$. An octave is a doubling of frequency.
+
+### Sound intensity and sound level
+
+**Sound intensity** is power per area, $I = P/A$ in $\mathrm{W/m^2}$. A point source spreads its power over the surface of a sphere, so the **inverse square law** $I = \frac{P}{4\pi r^2}$ applies: twice the distance, a quarter of the intensity.
+
+The ear perceives loudness roughly logarithmically and covers a huge range from $10^{-12}$ to over $1\,\mathrm{W/m^2}$. That is why the **sound intensity level** in decibels is used:
+
+$$
+L = 10 \cdot \lg\frac{I}{I_0}\,\mathrm{dB}, \qquad I_0 = 10^{-12}\,\mathrm{W/m^2} \;(\text{threshold of hearing at } 1\,\mathrm{kHz})
+$$
+
+| Sound source | Level |
+| --- | --- |
+| threshold of hearing | $0\,\mathrm{dB}$ |
+| rustling leaves, whispering | $20$ to $30\,\mathrm{dB}$ |
+| normal conversation | $60\,\mathrm{dB}$ |
+| heavy road traffic | $80\,\mathrm{dB}$ |
+| nightclub, concert | $100$ to $110\,\mathrm{dB}$ |
+| threshold of pain | about $130\,\mathrm{dB}$ |
+
+Rules of calculation:
+
+- Ten times the intensity: $+10\,\mathrm{dB}$. An intensity of $10^{-5}\,\mathrm{W/m^2}$ corresponds to $10 \cdot \lg 10^7 = 70\,\mathrm{dB}$.
+- Twice the intensity (two equally loud sources): $+3\,\mathrm{dB}$, not twice the level.
+- Twice the distance from a point source: $-6\,\mathrm{dB}$.
+- About $+10\,\mathrm{dB}$ is perceived as "twice as loud".
+
+:::tip[Example]
+A loudspeaker radiates $1\,\mathrm{W}$ of acoustic power evenly in all directions. At a distance of $10\,\mathrm{m}$: $I = \frac{1}{4\pi \cdot 10^2} = 7.96 \times 10^{-4}\,\mathrm{W/m^2}$, $L = 10 \cdot \lg(7.96 \times 10^8) = 89\,\mathrm{dB}$. At $20\,\mathrm{m}$ it is $83\,\mathrm{dB}$.
+:::
+
+Because the ear is less sensitive to low and very high tones, noise protection uses the **A-weighted level** in dB(A). Long-term exposure above about $85\,\mathrm{dB(A)}$ damages hearing. In Austria, the Ordinance on Noise and Vibrations (VOLV) regulates the workplace: from $80\,\mathrm{dB(A)}$ (daily average) the employer must provide hearing protection, from $85\,\mathrm{dB(A)}$ it must be worn.
+
+## Ultrasound
+
+Because of its high frequency, ultrasound has a small wavelength and can therefore be focused well and used for fine structures. It is usually generated with **piezoelectric crystals**, which deform when an alternating voltage is applied and, conversely, produce a voltage under pressure; the same crystal serves as transmitter and receiver.
+
+The **pulse-echo method** measures the travel time $t$ of a reflected pulse. The depth of the reflecting boundary is $d = \frac{c \cdot t}{2}$ (there and back).
+
+:::tip[Example: sonography]
+In soft tissue $c \approx 1540\,\mathrm{m/s}$. At $5\,\mathrm{MHz}$, $\lambda = 1540/(5 \times 10^6) = 0.31\,\mathrm{mm}$, which is roughly the achievable resolution. An echo after $65\,\mathrm{\mu s}$ comes from a depth of $d = 1540 \cdot 65 \times 10^{-6}/2 = 5.0\,\mathrm{cm}$. Higher frequencies resolve finer detail but penetrate less deeply.
+:::
+
+Further applications: echo sounders and sonar, non-destructive testing (cracks in welds), ultrasonic cleaning, parking sensors, breaking up kidney stones.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 1_, chapters 16 and 17, openstax.org
+- AUVA (Austrian workers' compensation board): noise at the workplace, auva.at
