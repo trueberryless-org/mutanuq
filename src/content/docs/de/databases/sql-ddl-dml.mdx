@@ -1,0 +1,196 @@
+---
+title: "SQL: Daten definieren und ändern"
+description: Datentypen, CREATE, ALTER und DROP, automatische Schlüssel, INSERT, UPDATE, DELETE, TRUNCATE und MERGE mit den Unterschieden zwischen den wichtigsten Datenbanksystemen.
+sidebar:
+  label: "SQL: DDL und DML"
+  order: 6
+---
+
+Mit der **Data Definition Language** (DDL) legst du die Struktur einer Datenbank an: Tabellen, Spalten, Constraints und Indizes. Mit der **Data Manipulation Language** (DML) fügst du Daten ein, änderst und löschst sie. Die Beispiele verwenden PostgreSQL. Wo andere Systeme eine eigene Syntax haben, steht sie dabei.
+
+SQL unterscheidet bei Schlüsselwörtern und nicht in Anführungszeichen gesetzten Namen **nicht** zwischen Groß- und Kleinschreibung. Üblich ist, Schlüsselwörter groß zu schreiben. Zeichenketten stehen in einfachen Anführungszeichen (`'Anna'`), Namen mit Sonderzeichen oder Leerzeichen in doppelten (`"Klassen Name"`, in SQL Server `[Klassen Name]`, in MySQL `` `Klassen Name` ``). Kommentare beginnen mit `--` oder stehen zwischen `/*` und `*/`.
+
+## Datentypen
+
+| Kategorie         | Standard-SQL                          | Beschreibung                                                                                      |
+| ----------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Ganze Zahlen**  | `SMALLINT`, `INTEGER` (`INT`), `BIGINT` | 2, 4 und 8 Byte                                                                                 |
+| **Festkomma**     | `DECIMAL(p, s)`, `NUMERIC(p, s)`      | exakt, $p$ Stellen insgesamt, davon $s$ nach dem Komma. `DECIMAL(8, 2)` reicht bis 999 999,99      |
+| **Gleitkomma**    | `REAL`, `DOUBLE PRECISION`, `FLOAT`   | ungenau wie `float` und `double` in Programmiersprachen                                            |
+| **Zeichenketten** | `CHAR(n)`, `VARCHAR(n)`               | `CHAR` wird mit Leerzeichen auf genau $n$ Zeichen aufgefüllt, `VARCHAR` speichert bis zu $n$ Zeichen |
+| **Langer Text**   | `CLOB`, in PostgreSQL `TEXT`          | Text ohne feste Obergrenze                                                                        |
+| **Datum und Zeit** | `DATE`, `TIME`, `TIMESTAMP`, `TIMESTAMP WITH TIME ZONE`, `INTERVAL` | Datum, Uhrzeit, beides, mit Zeitzone, Zeitspanne                     |
+| **Wahrheitswert** | `BOOLEAN`                             | `TRUE`, `FALSE` oder `NULL`                                                                       |
+| **Binärdaten**    | `BLOB`, `BINARY`, `VARBINARY`         | Bilder, Dateien. In PostgreSQL `BYTEA`                                                            |
+| **Sonstige**      | `JSON`, `XML`, `UUID`                 | strukturierte Daten und global eindeutige Kennungen                                               |
+
+:::caution[Geldbeträge]
+Speichere Geldbeträge nie als `REAL` oder `DOUBLE`, sondern als `DECIMAL`. Gleitkommazahlen können 0,1 nicht exakt darstellen (siehe [Datendarstellung](/de/computer-science/data-representation/)), und Rundungsfehler summieren sich.
+:::
+
+Die Produkte weichen bei den Namen ab: SQL Server kennt `NVARCHAR` für Unicode-Text, `DATETIME2` und `BIT` statt `BOOLEAN`. MySQL verwendet `TINYINT(1)` als Wahrheitswert und `DATETIME`. Oracle speichert Zahlen als `NUMBER` und Text als `VARCHAR2`. SQLite hat nur fünf Speicherklassen (`NULL`, `INTEGER`, `REAL`, `TEXT`, `BLOB`) und akzeptiert in normalen Tabellen jeden Wert in jeder Spalte.
+
+## Tabellen anlegen
+
+```sql
+CREATE TABLE Klasse (
+    Id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Name     VARCHAR(10) NOT NULL UNIQUE,
+    Jahrgang INT NOT NULL CHECK (Jahrgang BETWEEN 1 AND 5)
+);
+
+CREATE TABLE Schueler (
+    Id           INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Vorname      VARCHAR(50) NOT NULL,
+    Nachname     VARCHAR(50) NOT NULL,
+    Email        VARCHAR(100),
+    Geburtsdatum DATE NOT NULL,
+    KlasseId     INT,
+    Angelegt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_schueler_email  UNIQUE (Email),
+    CONSTRAINT fk_schueler_klasse FOREIGN KEY (KlasseId) REFERENCES Klasse(Id)
+);
+```
+
+Constraints können direkt bei der Spalte (**Spalten-Constraint**) oder am Ende der Tabelle (**Tabellen-Constraint**) stehen. Constraints über mehrere Spalten, etwa ein zusammengesetzter Primärschlüssel, müssen als Tabellen-Constraint geschrieben werden. Mit `CONSTRAINT name` gibst du ihnen einen Namen, der in Fehlermeldungen erscheint und mit dem du sie später ändern oder löschen kannst.
+
+### Automatisch vergebene Schlüssel
+
+Künstliche Schlüssel werden von der Datenbank fortlaufend vergeben. Die Syntax ist unterschiedlich:
+
+| System        | Syntax                                                    |
+| ------------- | --------------------------------------------------------- |
+| SQL-Standard, PostgreSQL, Oracle, Db2 | `INT GENERATED ALWAYS AS IDENTITY` |
+| PostgreSQL (älter) | `SERIAL`                                             |
+| SQL Server    | `INT IDENTITY(1, 1)`                                      |
+| MySQL, MariaDB | `INT AUTO_INCREMENT`                                     |
+| SQLite        | `INTEGER PRIMARY KEY`                                     |
+
+Intern verwenden viele Systeme eine **Sequenz**, ein Datenbankobjekt, das bei jedem Aufruf die nächste Zahl liefert. Weil die Nummern nach einem `ROLLBACK` nicht zurückgegeben werden, können in den Schlüsseln Lücken entstehen. Das ist normal und kein Fehler.
+
+## Tabellen ändern und löschen
+
+Mit `ALTER TABLE` wird die Struktur einer bestehenden Tabelle geändert:
+
+```sql
+ALTER TABLE Schueler ADD COLUMN Telefon VARCHAR(30);
+ALTER TABLE Schueler ALTER COLUMN Telefon TYPE VARCHAR(40);
+ALTER TABLE Schueler RENAME COLUMN Telefon TO Mobilnummer;
+ALTER TABLE Schueler ADD CONSTRAINT ck_schueler_geburtsdatum CHECK (Geburtsdatum > DATE '1900-01-01');
+ALTER TABLE Schueler DROP COLUMN Mobilnummer;
+```
+
+In SQL Server lautet die Typänderung `ALTER COLUMN Telefon VARCHAR(40)`, in MySQL `MODIFY COLUMN Telefon VARCHAR(40)`. Eine neue Spalte mit `NOT NULL` braucht einen `DEFAULT`, wenn die Tabelle schon Zeilen enthält, weil die bestehenden Zeilen sonst gegen den Constraint verstoßen würden.
+
+Zum Löschen gibt es drei Befehle, die oft verwechselt werden:
+
+| Befehl                 | Wirkung                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `DELETE FROM Schueler` | DML: löscht Zeilen, auf Wunsch nur bestimmte (`WHERE`). Trigger werden ausgelöst, jede Zeile wird protokolliert. |
+| `TRUNCATE TABLE Schueler` | DDL: leert die ganze Tabelle sehr schnell, ohne einzelne Zeilen zu protokollieren. Die Struktur bleibt erhalten. |
+| `DROP TABLE Schueler`  | DDL: löscht die Tabelle samt Struktur, Daten, Indizes und Constraints.                             |
+
+`DROP TABLE` schlägt fehl, solange ein Fremdschlüssel einer anderen Tabelle darauf verweist. `DROP TABLE IF EXISTS` vermeidet einen Fehler, wenn die Tabelle nicht existiert.
+
+## Daten einfügen
+
+```sql
+INSERT INTO Klasse (Name, Jahrgang) VALUES ('3AHIT', 3);
+
+INSERT INTO Klasse (Name, Jahrgang)
+VALUES ('4AHIT', 4),
+       ('5AHIT', 5);
+
+INSERT INTO Schueler (Vorname, Nachname, Email, Geburtsdatum, KlasseId)
+VALUES ('Anna', 'Huber', 'anna.huber@example.at', DATE '2009-03-14', 1),
+       ('Ben',  'Wolf',  NULL,                    DATE '2008-11-02', 1),
+       ('Clara', 'Berger', 'clara.berger@example.at', DATE '2008-06-30', 2);
+```
+
+Gib die Spaltenliste immer an. Ohne sie müssen die Werte in der Reihenfolge der Tabellendefinition stehen, und das Programm bricht, sobald jemand eine Spalte hinzufügt. Spalten, die nicht genannt werden, erhalten ihren `DEFAULT` oder `NULL`.
+
+Den automatisch vergebenen Schlüssel liefert PostgreSQL mit `RETURNING` zurück (SQL Server: `OUTPUT INSERTED.Id`, MySQL: `LAST_INSERT_ID()`):
+
+```sql
+INSERT INTO Schueler (Vorname, Nachname, Geburtsdatum, KlasseId)
+VALUES ('David', 'Novak', DATE '2009-01-20', 1)
+RETURNING Id;
+```
+
+Mit `INSERT INTO ... SELECT` werden Zeilen aus einer Abfrage übernommen, etwa beim Archivieren:
+
+```sql
+CREATE TABLE SchuelerArchiv (Id INT PRIMARY KEY, Name VARCHAR(101), Archiviert DATE);
+
+INSERT INTO SchuelerArchiv (Id, Name, Archiviert)
+SELECT Id, Vorname || ' ' || Nachname, CURRENT_DATE
+FROM Schueler
+WHERE KlasseId = 2;
+```
+
+`||` verbindet Zeichenketten. SQL Server verwendet dafür `+`, MySQL die Funktion `CONCAT`.
+
+## Daten ändern
+
+```sql
+UPDATE Schueler
+SET Email = 'ben.wolf@example.at'
+WHERE Id = 2;
+
+-- alle Schüler der 3AHIT steigen in die 4AHIT auf
+UPDATE Schueler
+SET KlasseId = (SELECT Id FROM Klasse WHERE Name = '4AHIT')
+WHERE KlasseId = (SELECT Id FROM Klasse WHERE Name = '3AHIT');
+```
+
+:::danger[UPDATE und DELETE ohne WHERE]
+Ohne `WHERE` betrifft `UPDATE` oder `DELETE` **jede Zeile** der Tabelle. Prüfe die Bedingung vorher mit einem `SELECT` und führe heikle Änderungen in einer [Transaktion](/de/databases/transactions/) aus, damit du sie mit `ROLLBACK` zurücknehmen kannst.
+:::
+
+## Daten löschen
+
+```sql
+DELETE FROM Schueler WHERE Id = 4;
+
+DELETE FROM Schueler
+WHERE KlasseId IN (SELECT Id FROM Klasse WHERE Jahrgang = 5);
+```
+
+Ob abhängige Zeilen mitgelöscht werden, bestimmt die [referentielle Aktion](/de/databases/relational-databases/#integritätsbedingungen) des Fremdschlüssels.
+
+## Einfügen oder aktualisieren
+
+Oft soll eine Zeile eingefügt werden, wenn sie noch nicht existiert, und sonst aktualisiert werden (**Upsert**). Der SQL-Standard sieht dafür `MERGE` vor, das PostgreSQL ab Version 15, SQL Server und Oracle unterstützen:
+
+```sql
+CREATE TABLE Note (
+    SchuelerId INT REFERENCES Schueler(Id),
+    Fach       VARCHAR(10),
+    Wert       INT NOT NULL CHECK (Wert BETWEEN 1 AND 5),
+    PRIMARY KEY (SchuelerId, Fach)
+);
+
+MERGE INTO Note n
+USING (VALUES (1, 'SEW', 2)) AS neu (SchuelerId, Fach, Wert)
+ON n.SchuelerId = neu.SchuelerId AND n.Fach = neu.Fach
+WHEN MATCHED THEN
+    UPDATE SET Wert = neu.Wert
+WHEN NOT MATCHED THEN
+    INSERT (SchuelerId, Fach, Wert) VALUES (neu.SchuelerId, neu.Fach, neu.Wert);
+```
+
+Kürzer ist die PostgreSQL- und SQLite-Variante `ON CONFLICT`. MySQL verwendet `ON DUPLICATE KEY UPDATE`.
+
+```sql
+INSERT INTO Note (SchuelerId, Fach, Wert) VALUES (1, 'SEW', 1)
+ON CONFLICT (SchuelerId, Fach) DO UPDATE SET Wert = EXCLUDED.Wert;
+
+SELECT * FROM Note;
+```
+
+`EXCLUDED` bezeichnet die Zeile, deren Einfügen den Konflikt ausgelöst hat. Das Ergebnis ist eine einzige Zeile mit dem Wert 1.
+
+## Weiterführende Quellen
+
+- [PostgreSQL-Dokumentation: Data Definition](https://www.postgresql.org/docs/current/ddl.html) und [Data Manipulation](https://www.postgresql.org/docs/current/dml.html)
+- [Modern SQL](https://modern-sql.com/) von Markus Winand, Vergleich der SQL-Funktionen verschiedener Systeme

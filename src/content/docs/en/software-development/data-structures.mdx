@@ -1,0 +1,457 @@
+---
+title: Data Structures
+description: Arrays, linked lists, stacks, queues, hash tables, trees, binary search trees and heaps with implementations in C# and Rust.
+sidebar:
+  order: 11
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **data structure** defines how data is arranged in memory and which operations are possible on it. Choosing the right data structure often has a bigger impact on the speed of a program than any other optimisation. An **abstract data type** (ADT) such as "stack" or "set" is described only through its operations. A data structure is a concrete implementation of it. How to use the data structures of the standard libraries is shown on the page [Generics and Collections](/en/software-development/generics-and-collections/). This page is about how they work internally.
+
+## Array and dynamic array
+
+An **array** occupies a contiguous area of memory. The address of the element with index $i$ is calculated as $\text{start address} + i \cdot \text{element size}$. That is why access is possible in $O(1)$. Inserting or deleting in the middle, on the other hand, is expensive because all subsequent elements have to be moved: $O(n)$.
+
+A **dynamic array** (`List<T>`, `Vec<T>`) internally manages an array with a certain **capacity**. When it is full, a new array with twice the capacity is allocated and everything is copied over. Because the capacity doubles every time, appending still costs only $O(1)$ on average (**amortised** runtime).
+
+## Linked list
+
+A **linked list** consists of **nodes**. Every node contains a value and a reference (pointer) to the next node. In a **doubly linked list**, every node also points to its predecessor. The last node points to `null`.
+
+```txt
+head -> [ 3 | • ] -> [ 7 | • ] -> [ 1 | • ] -> null
+```
+
+| Operation                          | Array / dynamic array     | Linked list                       |
+| ---------------------------------- | ------------------------- | --------------------------------- |
+| Access to the $i$-th element       | $O(1)$                    | $O(n)$, you have to walk through  |
+| Insert / delete at the beginning   | $O(n)$                    | $O(1)$                            |
+| Insert / delete at the end         | $O(1)$ amortised          | $O(1)$ with a pointer to the end  |
+| Insert at a known position         | $O(n)$                    | $O(1)$                            |
+| Memory usage                       | compact                   | one or two extra pointers per element |
+| Cache behaviour                    | very good, data lies next to each other | poor, nodes are scattered |
+
+In practice, a dynamic array is almost always faster because modern processors read contiguous memory very efficiently. Linked lists are still important because many other structures such as trees and graphs are based on the same principle.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var list = new SinglyLinkedList<int>();
+list.AddFirst(1);
+list.AddFirst(7);
+list.AddFirst(3);
+Console.WriteLine(string.Join(" -> ", list)); // 3 -> 7 -> 1
+Console.WriteLine(list.RemoveFirst());        // 3
+
+public class SinglyLinkedList<T> : IEnumerable<T>
+{
+    private class Node(T value, Node? next)
+    {
+        public T Value { get; } = value;
+        public Node? Next { get; } = next;
+    }
+
+    private Node? _head;
+
+    public void AddFirst(T value) => _head = new Node(value, _head); // O(1)
+
+    public T RemoveFirst()
+    {
+        if (_head is null) throw new InvalidOperationException("The list is empty");
+        T value = _head.Value;
+        _head = _head.Next;
+        return value;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        for (var node = _head; node is not null; node = node.Next)
+        {
+            yield return node.Value;
+        }
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Option<Box<Node>> is either a pointer to a node or None (end)
+struct Node<T> {
+    value: T,
+    next: Option<Box<Node<T>>>,
+}
+
+struct SinglyLinkedList<T> {
+    head: Option<Box<Node<T>>>,
+}
+
+impl<T> SinglyLinkedList<T> {
+    fn new() -> Self {
+        SinglyLinkedList { head: None }
+    }
+
+    fn push_front(&mut self, value: T) {        // O(1)
+        let old = self.head.take();
+        self.head = Some(Box::new(Node { value, next: old }));
+    }
+
+    fn pop_front(&mut self) -> Option<T> {
+        self.head.take().map(|node| {
+            self.head = node.next;
+            node.value
+        })
+    }
+
+    fn iter(&self) -> impl Iterator<Item = &T> {
+        std::iter::successors(self.head.as_deref(), |n| n.next.as_deref()).map(|n| &n.value)
+    }
+}
+
+fn main() {
+    let mut list = SinglyLinkedList::new();
+    list.push_front(1);
+    list.push_front(7);
+    list.push_front(3);
+    let items: Vec<String> = list.iter().map(|v| v.to_string()).collect();
+    println!("{}", items.join(" -> "));   // 3 -> 7 -> 1
+    println!("{:?}", list.pop_front());   // Some(3)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Stack and queue
+
+A **stack** (LIFO) only needs the operations `Push`, `Pop` and `Peek` at one end. It is very easy to implement with a dynamic array where you always insert and remove at the end.
+
+A **queue** (FIFO) inserts at the back and removes at the front. If you used a normal array and removed at the front, all elements would have to move up. Instead, you use a **ring buffer**: an array with two indices for the start and the end that wrap around to 0 when they reach the end of the array (arithmetic modulo the capacity). This way, both operations cost $O(1)$. `Queue<T>` in C# and `VecDeque<T>` in Rust are built exactly like this.
+
+## Hash table
+
+A **hash table** stores key-value pairs in an array of **buckets**. A **hash function** computes a number from the key, the **hash value**. The index of the bucket is then $\text{hash}(k) \bmod m$ for $m$ buckets. If the hash function is good, the keys are distributed evenly, and inserting, searching and deleting are possible in $O(1)$ on average.
+
+If two different keys end up in the same bucket, this is called a **collision**. There are two common strategies:
+
+- **Chaining**: every bucket contains a list of all entries that end up there.
+- **Open addressing**: in the event of a collision, another free bucket is searched for according to a fixed rule, for example the next one (**linear probing**).
+
+The **load factor** is the ratio of entries to buckets. If it exceeds a threshold (often around 0.75), the array is enlarged and all entries are redistributed (**rehashing**). In the worst case, when all keys collide, performance drops to $O(n)$. So that attackers cannot trigger this deliberately, Rust uses the hash function SipHash with a random seed by default.
+
+A good hash function must always return the same value for equal keys (deterministic), be fast and distribute the values as evenly as possible. Cryptographic hash functions such as SHA-256 meet additional security requirements (see [Cryptography](/en/it-security/cryptography/#hash-functions)), but they are usually too slow for hash tables.
+
+## Trees
+
+A **tree** is a hierarchical structure of nodes connected by edges. It contains no cycles.
+
+| Term            | Meaning                                                                        |
+| --------------- | ------------------------------------------------------------------------------ |
+| **Root**        | the topmost node without a parent                                              |
+| **Leaf**        | a node without children                                                        |
+| **Inner node**  | a node with at least one child                                                 |
+| **Depth**       | number of edges from the root to the node                                      |
+| **Height**      | largest depth of a leaf in the tree                                            |
+| **Subtree**     | a node together with all its descendants                                       |
+| **Binary tree** | every node has at most two children (left and right)                           |
+
+Trees are everywhere: the file system, the DOM of a web page, the organisational structure of a company, the syntax tree that a compiler creates from the source code.
+
+### Traversal
+
+To visit all nodes of a binary tree, there are four common orders:
+
+| Order                        | Sequence                                     | Use                                                            |
+| ---------------------------- | -------------------------------------------- | -------------------------------------------------------------- |
+| **Preorder**                 | node, left, right                            | copying a tree, printing a directory structure                 |
+| **Inorder**                  | left, node, right                            | returns the values of a search tree in sorted order            |
+| **Postorder**                | left, right, node                            | deleting a tree, computing directory sizes, evaluating arithmetic expressions |
+| **Level order** (breadth-first) | level by level from top to bottom         | shortest paths, output by level; requires a queue              |
+
+### Binary search tree
+
+In a **binary search tree** (BST), the following holds for every node: all values in the left subtree are smaller, all values in the right subtree are larger. Searching, inserting and deleting therefore follow a path from the root downwards and cost $O(h)$, where $h$ is the height of the tree.
+
+- If the tree is **balanced**, $h \approx \log_2 n$, and all operations are possible in $O(\log n)$.
+- If you insert the values already sorted, the tree degenerates into a list with $h = n$, and the operations cost $O(n)$.
+
+**Self-balancing trees** such as the **AVL tree** and the **red-black tree** use **rotations** after every change to ensure that the height stays logarithmic. `SortedDictionary` in .NET is a red-black tree. Databases and file systems use **B-trees**, in which each node contains many keys so that as few disk accesses as possible are needed (see [Indexes](/en/databases/sql-advanced/#indexes)). Rust's `BTreeMap` is also a B-tree.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var tree = new BinarySearchTree();
+foreach (int v in new[] { 50, 30, 70, 20, 40, 60, 80 })
+{
+    tree.Insert(v);
+}
+Console.WriteLine(tree.Contains(60));                // True
+Console.WriteLine(tree.Contains(65));                // False
+Console.WriteLine(string.Join(" ", tree.InOrder())); // 20 30 40 50 60 70 80
+Console.WriteLine(tree.Height());                    // 3
+
+public class BinarySearchTree
+{
+    private class Node(int value)
+    {
+        public int Value { get; } = value;
+        public Node? Left { get; set; }
+        public Node? Right { get; set; }
+    }
+
+    private Node? _root;
+
+    public void Insert(int value) => _root = Insert(_root, value);
+
+    private static Node Insert(Node? node, int value)
+    {
+        if (node is null) return new Node(value);
+        if (value < node.Value) node.Left = Insert(node.Left, value);
+        else if (value > node.Value) node.Right = Insert(node.Right, value);
+        return node; // duplicates are ignored
+    }
+
+    public bool Contains(int value)
+    {
+        var node = _root;
+        while (node is not null)
+        {
+            if (value == node.Value) return true;
+            node = value < node.Value ? node.Left : node.Right;
+        }
+        return false;
+    }
+
+    public IEnumerable<int> InOrder() => InOrder(_root);
+
+    private static IEnumerable<int> InOrder(Node? node)
+    {
+        if (node is null) yield break;
+        foreach (int v in InOrder(node.Left)) yield return v;
+        yield return node.Value;
+        foreach (int v in InOrder(node.Right)) yield return v;
+    }
+
+    public int Height() => Height(_root);
+
+    private static int Height(Node? node) =>
+        node is null ? 0 : 1 + Math.Max(Height(node.Left), Height(node.Right));
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Default)]
+struct Tree {
+    root: Option<Box<Node>>,
+}
+
+struct Node {
+    value: i32,
+    left: Option<Box<Node>>,
+    right: Option<Box<Node>>,
+}
+
+impl Tree {
+    fn insert(&mut self, value: i32) {
+        let mut slot = &mut self.root;
+        // descend to a free slot
+        while let Some(node) = slot {
+            if value == node.value {
+                return; // duplicates are ignored
+            }
+            slot = if value < node.value { &mut node.left } else { &mut node.right };
+        }
+        *slot = Some(Box::new(Node { value, left: None, right: None }));
+    }
+
+    fn contains(&self, value: i32) -> bool {
+        let mut current = &self.root;
+        while let Some(node) = current {
+            if value == node.value {
+                return true;
+            }
+            current = if value < node.value { &node.left } else { &node.right };
+        }
+        false
+    }
+
+    fn in_order(&self) -> Vec<i32> {
+        fn walk(node: &Option<Box<Node>>, out: &mut Vec<i32>) {
+            if let Some(n) = node {
+                walk(&n.left, out);
+                out.push(n.value);
+                walk(&n.right, out);
+            }
+        }
+        let mut out = Vec::new();
+        walk(&self.root, &mut out);
+        out
+    }
+
+    fn height(&self) -> usize {
+        fn h(node: &Option<Box<Node>>) -> usize {
+            node.as_ref().map_or(0, |n| 1 + h(&n.left).max(h(&n.right)))
+        }
+        h(&self.root)
+    }
+}
+
+fn main() {
+    let mut tree = Tree::default();
+    for v in [50, 30, 70, 20, 40, 60, 80] {
+        tree.insert(v);
+    }
+    println!("{}", tree.contains(60));   // true
+    println!("{}", tree.contains(65));   // false
+    println!("{:?}", tree.in_order());   // [20, 30, 40, 50, 60, 70, 80]
+    println!("{}", tree.height());       // 3
+}
+```
+
+</TabItem>
+</Tabs>
+
+When **deleting** a node, there are three cases: a leaf is simply removed. If the node has one child, the child takes its place. If it has two children, you replace its value with the smallest value of the right subtree (the **inorder successor**) and then delete that one.
+
+## Heap
+
+A **heap** is a complete binary tree that satisfies the **heap property**: in a **max heap**, every parent node is greater than or equal to its children; in a **min heap**, less than or equal. The largest (or smallest) element is therefore always at the root. Heaps are the basis for [priority queues](/en/software-development/generics-and-collections/#priority-queue) and [heapsort](/en/software-development/algorithms/#heapsort).
+
+Because the tree is complete (all levels except the last are full, and the last one is filled from the left), it is stored compactly in an array. For the node with index $i$:
+
+- left child: $2i + 1$, right child: $2i + 2$
+- parent: $\lfloor (i - 1) / 2 \rfloor$
+
+```txt
+            90                 Index:  0   1   2   3   4   5
+          /    \               Value: 90  40  70  10  30  50
+        40      70
+       /  \    /
+      10  30  50
+```
+
+- **Insert**: the new element is appended at the end and swapped with its parent until the heap property holds again (**sift up**): $O(\log n)$.
+- **Remove the root**: the last element is moved to the root and swapped with the larger child until the heap property holds again (**sift down**): $O(\log n)$.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var heap = new MaxHeap();
+foreach (int v in new[] { 30, 90, 10, 70, 40, 50 }) heap.Push(v);
+while (heap.Count > 0) Console.Write($"{heap.Pop()} "); // 90 70 50 40 30 10
+
+public class MaxHeap
+{
+    private readonly List<int> _items = [];
+
+    public int Count => _items.Count;
+
+    public void Push(int value)
+    {
+        _items.Add(value);
+        int i = _items.Count - 1;
+        while (i > 0)                                  // sift up
+        {
+            int parent = (i - 1) / 2;
+            if (_items[parent] >= _items[i]) break;
+            (_items[parent], _items[i]) = (_items[i], _items[parent]);
+            i = parent;
+        }
+    }
+
+    public int Pop()
+    {
+        int top = _items[0];
+        _items[0] = _items[^1];
+        _items.RemoveAt(_items.Count - 1);
+        int i = 0;
+        while (true)                                   // sift down
+        {
+            int left = 2 * i + 1, right = 2 * i + 2, largest = i;
+            if (left < _items.Count && _items[left] > _items[largest]) largest = left;
+            if (right < _items.Count && _items[right] > _items[largest]) largest = right;
+            if (largest == i) break;
+            (_items[i], _items[largest]) = (_items[largest], _items[i]);
+            i = largest;
+        }
+        return top;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct MaxHeap {
+    items: Vec<i32>,
+}
+
+impl MaxHeap {
+    fn push(&mut self, value: i32) {
+        self.items.push(value);
+        let mut i = self.items.len() - 1;
+        while i > 0 {                                  // sift up
+            let parent = (i - 1) / 2;
+            if self.items[parent] >= self.items[i] {
+                break;
+            }
+            self.items.swap(parent, i);
+            i = parent;
+        }
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        if self.items.is_empty() {
+            return None;
+        }
+        let top = self.items.swap_remove(0);           // last element moves to the root
+        let n = self.items.len();
+        let mut i = 0;
+        loop {                                         // sift down
+            let (left, right) = (2 * i + 1, 2 * i + 2);
+            let mut largest = i;
+            if left < n && self.items[left] > self.items[largest] {
+                largest = left;
+            }
+            if right < n && self.items[right] > self.items[largest] {
+                largest = right;
+            }
+            if largest == i {
+                break;
+            }
+            self.items.swap(i, largest);
+            i = largest;
+        }
+        Some(top)
+    }
+}
+
+fn main() {
+    let mut heap = MaxHeap { items: Vec::new() };
+    for v in [30, 90, 10, 70, 40, 50] {
+        heap.push(v);
+    }
+    while let Some(v) = heap.pop() {
+        print!("{v} "); // 90 70 50 40 30 10
+    }
+    println!();
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Graphs
+
+A **graph** generalises the tree: nodes can be connected to each other arbitrarily, even in cycles. Graphs model road networks, computer networks and social networks. They have their own page: [Graphs](/en/software-development/graphs/).

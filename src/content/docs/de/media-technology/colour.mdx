@@ -1,0 +1,431 @@
+---
+title: Farbe
+description: Farbwahrnehmung, Farbmodelle RGB, CMYK, HSL und Lab, Farbräume, Farbtiefe, Farbmanagement, Gamma, Farbenlehre nach Itten und Kontrast nach WCAG.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Farbe ist keine Eigenschaft eines Gegenstands, sondern ein Sinneseindruck: Licht trifft auf das Auge, und das Gehirn deutet das Signal als Farbe. Wer Medien gestaltet, muss deshalb zwei Seiten kennen. Die technische Seite beschreibt, wie Bildschirme, Drucker und Dateien Farben darstellen und speichern. Die gestalterische Seite beschreibt, wie Farben wirken und wie man sie kombiniert, damit eine Gestaltung lesbar, stimmig und für alle zugänglich ist.
+
+## Licht und Farbwahrnehmung
+
+Licht ist elektromagnetische Strahlung. Das menschliche Auge nimmt Wellenlängen von etwa **380 nm** (Violett) bis **780 nm** (Rot) wahr. Weißes Licht, etwa Sonnenlicht, enthält alle Wellenlängen dieses Bereichs. Ein Gegenstand wirkt rot, weil er vor allem die langen Wellenlängen reflektiert und die übrigen absorbiert.
+
+Die Netzhaut enthält zwei Arten von Sinneszellen:
+
+- **Stäbchen** (rund 120 Millionen) sind sehr lichtempfindlich, unterscheiden aber keine Farben. Sie dienen dem Sehen bei Dämmerung, deshalb wirkt nachts alles grau.
+- **Zapfen** (rund 6 Millionen) sind für das Farbsehen zuständig. Es gibt drei Typen mit unterschiedlicher Empfindlichkeit: für kurze (S, Blau), mittlere (M, Grün) und lange (L, Rot) Wellenlängen.
+
+Aus dem Verhältnis, in dem die drei Zapfentypen gereizt werden, berechnet das Gehirn den Farbeindruck (**Dreifarbentheorie** nach Young und Helmholtz). Darauf beruht die ganze Farbtechnik: Ein Bildschirm braucht keine Lichtquelle für jede Wellenlänge, drei Grundfarben genügen, um fast jeden Farbeindruck zu erzeugen. Zwei verschiedene Spektren, die gleich aussehen, heißen **metamer**.
+
+Rund 8 % der Männer und 0,5 % der Frauen haben eine **Farbsehschwäche**, meist eine Rot-Grün-Schwäche. Eine Gestaltung darf Informationen deshalb nie allein über Farbe vermitteln.
+
+## Farbmodelle
+
+Ein **Farbmodell** beschreibt, wie eine Farbe durch Zahlen ausgedrückt wird. Es legt nur die Art der Beschreibung fest, nicht, welche Farbe ein bestimmter Zahlenwert genau ergibt (dafür braucht es einen Farbraum, siehe unten).
+
+![Additive Farbmischung mit Rot, Grün und Blau sowie subtraktive Farbmischung mit Cyan, Magenta und Gelb](/images/media-technology/colour_mixing_de.svg)
+
+### RGB: additive Farbmischung
+
+Bei der **additiven Farbmischung** wird Licht addiert. Ausgangspunkt ist Schwarz (kein Licht), die Grundfarben sind **Rot, Grün und Blau**. Alle drei mit voller Intensität ergeben Weiß.
+
+- Rot + Grün = Gelb
+- Grün + Blau = Cyan
+- Rot + Blau = Magenta
+- Rot + Grün + Blau = Weiß
+
+RGB ist das Modell aller selbst leuchtenden Geräte: Bildschirme, Beamer, Smartphones, Digitalkameras und Scanner. Jeder Kanal wird meist mit 8 Bit gespeichert, also mit Werten von 0 bis 255.
+
+### CMY und CMYK: subtraktive Farbmischung
+
+Bei der **subtraktiven Farbmischung** wird Licht weggenommen. Ausgangspunkt ist weißes Papier, das alles Licht reflektiert. Jede Druckfarbe wirkt als Filter und absorbiert einen Teil des Spektrums: **Cyan** absorbiert Rot, **Magenta** absorbiert Grün, **Gelb** (_Yellow_) absorbiert Blau. CMY ist damit genau das Gegenstück zu RGB.
+
+- Cyan + Magenta = Blau
+- Magenta + Gelb = Rot
+- Cyan + Gelb = Grün
+- Cyan + Magenta + Gelb = theoretisch Schwarz
+
+In der Praxis ergeben die drei Buntfarben nur ein schmutziges Dunkelbraun. Deshalb druckt man zusätzlich **Schwarz** (**K** für _Key_, die Schlüsselplatte, an der die anderen ausgerichtet werden). Schwarz bringt tiefere Schatten, gestochen scharfen Text ohne Passerprobleme, spart teure Buntfarbe und verringert die Farbmenge auf dem Papier, das so schneller trocknet.
+
+Eine einfache Umrechnung von RGB (Werte von 0 bis 1) nach CMYK lautet:
+
+$$
+K = 1 - \max(R, G, B), \qquad C = \frac{1 - R - K}{1 - K}, \quad M = \frac{1 - G - K}{1 - K}, \quad Y = \frac{1 - B - K}{1 - K}
+$$
+
+Diese Formel ist nur ein Lehrbeispiel. Echte Druckvorstufen rechnen mit ICC-Profilen, weil das Ergebnis von Papier, Druckverfahren und Druckfarben abhängt.
+
+### HSV und HSL
+
+RGB ist technisch praktisch, aber für Menschen unanschaulich: Welche Werte ergeben ein etwas blasseres Orange? **HSV** und **HSL** beschreiben eine Farbe so, wie Menschen über sie sprechen:
+
+| Größe | Bedeutung | Wertebereich |
+| --- | --- | --- |
+| **H** (_Hue_, Farbton) | Winkel auf dem Farbkreis: 0° Rot, 120° Grün, 240° Blau | 0° bis 360° |
+| **S** (_Saturation_, Sättigung) | Reinheit der Farbe, 0 % ist Grau | 0 % bis 100 % |
+| **V** (_Value_, Hellwert) bei HSV | 100 % ist die reinste, hellste Farbe | 0 % bis 100 % |
+| **L** (_Lightness_, Helligkeit) bei HSL | 0 % Schwarz, 50 % reine Farbe, 100 % Weiß | 0 % bis 100 % |
+
+HSV ist in Farbwählern von Bildbearbeitungsprogrammen üblich, HSL in CSS (`hsl(221 83% 53%)`). Beide sind nur Umrechnungen von RGB und erben dessen Schwäche: Gleiche L-Werte bedeuten nicht gleich empfundene Helligkeit. Reines Gelb und reines Blau haben beide L = 50 %, Gelb wirkt aber viel heller.
+
+Die Umrechnung von RGB nach HSL (alle Kanäle von 0 bis 1) verwendet das Maximum $M$ und das Minimum $m$ der drei Kanäle, $\Delta = M - m$:
+
+$$
+L = \frac{M + m}{2}, \qquad S = \begin{cases} 0 & \Delta = 0 \\ \dfrac{\Delta}{1 - \lvert 2L - 1 \rvert} & \text{sonst} \end{cases}
+$$
+
+$$
+H = 60^\circ \cdot \begin{cases} \dfrac{G - B}{\Delta} \bmod 6 & M = R \\[2mm] \dfrac{B - R}{\Delta} + 2 & M = G \\[2mm] \dfrac{R - G}{\Delta} + 4 & M = B \end{cases}
+$$
+
+### CIE Lab
+
+Die **CIE** (_Commission Internationale de l'Éclairage_) hat 1931 mit dem Farbraum **XYZ** erstmals alle für Menschen sichtbaren Farben messbar beschrieben. Das daraus abgeleitete Modell **CIE L\*a\*b\*** (1976) hat drei Achsen:
+
+- **L\***: Helligkeit von 0 (Schwarz) bis 100 (Weiß)
+- **a\***: Achse von Grün (negativ) nach Rot (positiv)
+- **b\***: Achse von Blau (negativ) nach Gelb (positiv)
+
+Lab ist **geräteunabhängig**: Ein Lab-Wert beschreibt eine Farbe so, wie ein Normalbeobachter sie sieht, unabhängig davon, welches Gerät sie erzeugt. Außerdem ist Lab annähernd **empfindungsgemäß gleichabständig**: Gleiche Abstände im Raum entsprechen ungefähr gleich großen wahrgenommenen Farbunterschieden. Den Abstand zweier Farben nennt man **ΔE** (Delta E). Ein ΔE unter etwa 1 ist für das Auge kaum sichtbar, deshalb geben Druckereien Toleranzen als ΔE an. Lab dient im Farbmanagement als Vermittler zwischen Geräten. CSS kennt mit `lab()` und `oklch()` ebenfalls solche Farbangaben.
+
+## Farbräume
+
+Ein **Farbraum** legt fest, welche konkreten Farben die Zahlen eines Farbmodells bedeuten. Er wird durch die Farborte der drei Grundfarben, den **Weißpunkt** und die Übertragungsfunktion (Gamma) definiert. Die Menge aller darstellbaren Farben eines Farbraums oder Geräts heißt **Gamut** (Farbumfang). Im CIE-Normfarbtafel-Diagramm ist ein RGB-Farbraum ein Dreieck, dessen Ecken die Grundfarben sind.
+
+| Farbraum | Herkunft | Einsatz |
+| --- | --- | --- |
+| **sRGB** | HP und Microsoft 1996, Norm IEC 61966-2-1 | Standard für Web, Betriebssysteme und günstige Monitore; ohne Angabe gilt ein Bild als sRGB |
+| **Adobe RGB (1998)** | Adobe | größer als sRGB, vor allem bei Grün und Cyan; Fotografie mit Ziel Druck |
+| **Display P3** | Apple, Grundfarben von DCI-P3 (Kino), Weißpunkt D65 | etwa ein Viertel größer als sRGB; aktuelle Smartphones, Laptops und Monitore |
+| **Rec. 2020** (ITU-R BT.2020) | ITU | sehr großer Farbraum für UHD-Fernsehen und HDR |
+| **ISO Coated v2, PSO Coated v3** | ECI, FOGRA | CMYK-Farbräume für Offsetdruck auf gestrichenem Papier |
+
+Derselbe RGB-Wert `(0, 255, 0)` ist in Display P3 ein sattereres Grün als in sRGB. Ein Bild ohne eingebettetes Profil kann deshalb auf verschiedenen Geräten unterschiedlich aussehen.
+
+## Farbtiefe
+
+Die **Farbtiefe** gibt an, wie viele Bit pro Pixel (oder pro Kanal) gespeichert werden. Mit $n$ Bit sind $2^n$ Abstufungen möglich.
+
+| Farbtiefe | Farben | Einsatz |
+| --- | --- | --- |
+| 1 Bit | 2 (Schwarz, Weiß) | Strichzeichnungen, Fax |
+| 8 Bit indiziert | 256 aus einer Farbpalette | GIF, einfache Grafiken |
+| 8 Bit Graustufen | 256 Graustufen | Schwarz-Weiß-Fotos |
+| 24 Bit (3 × 8 Bit, **True Color**) | $2^{24} = 16\,777\,216$ | Standard für Bildschirm und Web |
+| 32 Bit (RGBA) | 16,7 Mio. Farben + 256 Transparenzstufen | Bilder mit Alphakanal |
+| 30 Bit (3 × 10 Bit) | $2^{30} \approx 1{,}07$ Mrd. | HDR-Video, professionelle Monitore |
+| 48 Bit (3 × 16 Bit) | $2^{48}$ | Bildbearbeitung, RAW-Entwicklung |
+
+Mehr Bit pro Kanal verhindern **Banding** (sichtbare Stufen in Verläufen), vor allem wenn ein Bild stark bearbeitet wird. Deshalb bearbeitet man Fotos gern mit 16 Bit pro Kanal und speichert erst das Ergebnis mit 8 Bit.
+
+## Hex-Notation
+
+Im Web werden RGB-Farben meist **hexadezimal** angegeben: `#RRGGBB`, je zwei Hexziffern (00 bis FF, also 0 bis 255) pro Kanal.
+
+| Hex | RGB | Farbe |
+| --- | --- | --- |
+| `#FF0000` | 255, 0, 0 | Rot |
+| `#00FF00` | 0, 255, 0 | Grün |
+| `#0000FF` | 0, 0, 255 | Blau |
+| `#FFFFFF` | 255, 255, 255 | Weiß |
+| `#808080` | 128, 128, 128 | mittleres Grau |
+| `#2563EB` | 37, 99, 235 | Blau dieser Website |
+
+Ein Beispiel zur Umrechnung: `EB` = $14 \cdot 16 + 11 = 235$. Die Kurzform `#RGB` verdoppelt jede Ziffer (`#F80` = `#FF8800`). Mit `#RRGGBBAA` kommt ein Alphakanal dazu (`#2563EB80` ist das Blau mit rund 50 % Deckkraft).
+
+## Gamma
+
+Das Auge reagiert nicht linear auf Helligkeit: Unterschiede in dunklen Tönen nehmen wir viel stärker wahr als gleich große Unterschiede in hellen Tönen. Würde man die physikalische Lichtmenge linear in 8 Bit speichern, wären viele Stufen für helle Töne verschwendet und die dunklen Töne zu grob abgestuft.
+
+Deshalb werden Farbwerte mit einer **Gammakurve** codiert. Der gespeicherte Wert $V$ und die Lichtmenge $L$ (beide von 0 bis 1) hängen näherungsweise so zusammen:
+
+$$
+L = V^{\gamma}, \qquad \gamma \approx 2{,}2
+$$
+
+Ein gespeicherter Wert von 50 % (128) entspricht daher nur etwa 22 % der Lichtmenge. sRGB verwendet genau genommen eine stückweise Funktion mit einem linearen Teil nahe Schwarz:
+
+$$
+C_{\text{linear}} = \begin{cases} \dfrac{C}{12{,}92} & C \le 0{,}04045 \\[2mm] \left(\dfrac{C + 0{,}055}{1{,}055}\right)^{2{,}4} & \text{sonst} \end{cases}
+$$
+
+Rechenoperationen wie Weichzeichnen, Skalieren oder Überblenden sind physikalisch nur im **linearen** Raum korrekt. Programme, die direkt mit den gammacodierten Werten rechnen, erzeugen zum Beispiel zu dunkle Übergänge zwischen kräftigen Farben.
+
+## Farbmanagement
+
+Jedes Gerät hat seinen eigenen Farbumfang: Ein Scanner sieht anders als die Kamera, ein Monitor zeigt anders als der Drucker druckt. **Farbmanagement** sorgt dafür, dass eine Farbe von der Aufnahme bis zur Ausgabe möglichst gleich aussieht.
+
+- Ein **ICC-Profil** (Standard des _International Color Consortium_) beschreibt den Farbraum eines Geräts oder einer Datei. Es übersetzt Gerätewerte in einen geräteunabhängigen **Profilverbindungsraum** (_PCS_, Lab oder XYZ) und zurück.
+- Das **Color Management Module** (CMM) des Betriebssystems rechnet mit zwei Profilen von Quelle zu Ziel um: Kamera-RGB → PCS → Monitor-RGB oder → Druck-CMYK.
+- Ein Monitor wird mit einem Messgerät (Colorimeter) **kalibriert** und **profiliert**, sonst stimmt die Vorschau nicht.
+- Mit dem **Softproof** simuliert die Software am Bildschirm, wie ein Bild im Druck aussehen wird.
+
+Passt eine Farbe nicht in den Zielfarbraum (_out of gamut_), entscheidet der **Rendering Intent**, wie umgerechnet wird:
+
+| Rendering Intent | Verhalten | Einsatz |
+| --- | --- | --- |
+| **perzeptiv** | staucht den ganzen Farbraum, Verhältnisse zwischen Farben bleiben erhalten | Fotos mit vielen gesättigten Farben |
+| **relativ farbmetrisch** | übernimmt darstellbare Farben exakt, schneidet die übrigen ab, passt den Weißpunkt an | Standard für die meisten Druckjobs |
+| **absolut farbmetrisch** | wie relativ, aber ohne Weißpunktanpassung (Papierweiß wird simuliert) | Proofs |
+| **Sättigung** | erhält möglichst kräftige Farben, Farbtöne dürfen sich verschieben | Geschäftsgrafiken, Diagramme |
+
+:::tip[Merke]
+Für das Web: Bilder in **sRGB** exportieren und das Profil einbetten. Für den Druck: in RGB mit großem Farbraum bearbeiten und erst am Ende mit dem Profil der Druckerei nach **CMYK** umwandeln.
+:::
+
+## Farbenlehre
+
+### Farbkreis
+
+Der bekannteste Farbkreis der Gestaltungslehre stammt von **Johannes Itten** (Bauhaus). Er hat 12 Teile:
+
+- **Primärfarben** (1. Ordnung): Gelb, Rot, Blau
+- **Sekundärfarben** (2. Ordnung): Orange, Violett, Grün, jeweils aus zwei Primärfarben gemischt
+- **Tertiärfarben** (3. Ordnung): sechs Mischungen aus einer Primär- und einer benachbarten Sekundärfarbe, etwa Gelborange
+
+Ittens Farbkreis stammt aus der Malerei und ist farbmetrisch nicht exakt: Aus Rot und Blau lässt sich kein reines Violett mischen. In der digitalen Gestaltung arbeitet man deshalb meist mit dem RGB-Farbkreis (Farbton H in HSL), dessen Gegenfarben Rot und Cyan, Grün und Magenta, Blau und Gelb sind. Das Prinzip der Harmonien bleibt gleich.
+
+### Farbharmonien
+
+Harmonien beschreiben geometrische Anordnungen auf dem Farbkreis, die erfahrungsgemäß gut zusammenpassen:
+
+| Harmonie | Auswahl auf dem Farbkreis | Wirkung |
+| --- | --- | --- |
+| **monochrom** | ein Farbton in verschiedenen Helligkeiten und Sättigungen | ruhig, einheitlich |
+| **analog** | zwei bis vier benachbarte Farbtöne | harmonisch, natürlich |
+| **komplementär** | zwei gegenüberliegende Farben (180°) | starker Kontrast, lebendig |
+| **split-komplementär** | eine Farbe und die beiden Nachbarn ihrer Komplementärfarbe | kontrastreich, aber weniger spannungsgeladen |
+| **Triade** | drei Farben im Abstand von 120° | ausgewogen, bunt |
+| **Tetrade** | vier Farben als Rechteck oder Quadrat | vielfältig, schwer auszubalancieren |
+
+Eine bewährte Faustregel für die Verteilung ist **60-30-10**: 60 % Grundfarbe, 30 % Sekundärfarbe, 10 % Akzentfarbe.
+
+### Sieben Farbkontraste nach Itten
+
+| Kontrast | Beschreibung |
+| --- | --- |
+| **Farbe-an-sich-Kontrast** | reine, ungetrübte Farben nebeneinander, am stärksten bei Gelb, Rot und Blau |
+| **Hell-Dunkel-Kontrast** | Unterschied in der Helligkeit, am stärksten Schwarz und Weiß; wichtig für Lesbarkeit |
+| **Kalt-Warm-Kontrast** | warme Farben (Gelb bis Rot) gegen kalte (Grün bis Blau); warme wirken näher, kalte ferner |
+| **Komplementärkontrast** | Farben, die sich im Farbkreis gegenüberliegen, steigern sich gegenseitig |
+| **Simultankontrast** | das Auge erzeugt zu einer Farbe gleichzeitig die Komplementärfarbe: Ein Grau wirkt auf rotem Grund grünlich |
+| **Qualitätskontrast** | gesättigte gegen getrübte, gebrochene Farben (Unterschied in der Reinheit) |
+| **Quantitätskontrast** | Mengenverhältnis der Farbflächen: Eine kleine Fläche Gelb hält einer großen Fläche Violett das Gleichgewicht |
+
+### Farbpsychologie
+
+Farben wecken Assoziationen, die aber von Kultur und Kontext abhängen:
+
+| Farbe | häufige Assoziation in Europa | typischer Einsatz |
+| --- | --- | --- |
+| Rot | Energie, Liebe, Gefahr, Dringlichkeit | Warnungen, Abverkauf, Lebensmittel |
+| Blau | Vertrauen, Ruhe, Kompetenz | Banken, Versicherungen, IT |
+| Grün | Natur, Gesundheit, Erlaubnis | Bio-Produkte, Bestätigungen |
+| Gelb | Aufmerksamkeit, Optimismus | Hinweise, Warnschilder (mit Schwarz) |
+| Schwarz | Eleganz, Luxus, Trauer | Luxusmarken |
+| Weiß | Reinheit, Klarheit (in Teilen Ostasiens Trauer) | Medizin, minimalistische Gestaltung |
+
+In Benutzeroberflächen haben sich Bedeutungen fest eingebürgert: Rot für Fehler und Löschen, Grün für Erfolg, Gelb oder Orange für Warnungen.
+
+## Kontrast und Barrierefreiheit
+
+Die [**Web Content Accessibility Guidelines**](/de/web-technologies/web-accessibility-and-seo/) (WCAG, aktuell 2.2) des W3C legen fest, wie stark sich Text vom Hintergrund abheben muss. In Österreich sind sie über das Web-Zugänglichkeits-Gesetz für öffentliche Stellen und über das Barrierefreiheitsgesetz seit 28. Juni 2025 auch für viele private Produkte und Dienstleistungen verbindlich (Stufe AA über die Norm EN 301 549).
+
+Grundlage ist die **relative Leuchtdichte** $L$ einer Farbe. Zuerst werden die sRGB-Kanäle mit der oben gezeigten Gammafunktion linearisiert, dann gewichtet addiert. Grün trägt am meisten bei, weil das Auge dafür am empfindlichsten ist:
+
+$$
+L = 0{,}2126 \cdot R_{\text{lin}} + 0{,}7152 \cdot G_{\text{lin}} + 0{,}0722 \cdot B_{\text{lin}}
+$$
+
+Das **Kontrastverhältnis** zweier Farben mit $L_1$ (hellere) und $L_2$ (dunklere) ist
+
+$$
+K = \frac{L_1 + 0{,}05}{L_2 + 0{,}05}
+$$
+
+Es reicht von 1:1 (gleiche Farbe) bis 21:1 (Schwarz auf Weiß). Der Summand 0,05 berücksichtigt Umgebungslicht, das auf den Bildschirm fällt.
+
+| Erfolgskriterium | Stufe | Mindestkontrast |
+| --- | --- | --- |
+| 1.4.3 Kontrast (Minimum), normaler Text | AA | 4,5:1 |
+| 1.4.3 großer Text (ab 18 pt oder 14 pt fett) | AA | 3:1 |
+| 1.4.6 Kontrast (erweitert), normaler Text | AAA | 7:1 |
+| 1.4.6 großer Text | AAA | 4,5:1 |
+| 1.4.11 Nicht-Text-Kontrast (Bedienelemente, Icons, Diagramme) | AA | 3:1 |
+
+Dazu fordert das Kriterium 1.4.1, dass Farbe **nie das einzige Mittel** ist, um eine Information zu vermitteln: Ein Pflichtfeld wird nicht nur rot umrandet, sondern bekommt auch eine Fehlermeldung als Text.
+
+:::tip[Beispiel]
+Grau `#767676` auf Weiß: Die Leuchtdichte von `#767676` ist 0,181, von Weiß 1. Das Verhältnis ist $(1 + 0{,}05) / (0{,}181 + 0{,}05) \approx 4{,}54$. Das ist das hellste neutrale Grau, das auf Weiß noch AA für normalen Text erfüllt. `#777777` erreicht nur 4,48:1.
+:::
+
+Das folgende Programm liest Hex-Farben, rechnet nach HSL um und prüft das Kontrastverhältnis:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// Dezimalpunkt wie in CSS, unabhängig von der Systemsprache
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+var blue = Rgb.FromHex("#2563EB");
+var (h, s, l) = blue.ToHsl();
+Console.WriteLine($"HSL: {h:F0}° {s * 100:F0} % {l * 100:F0} %"); // HSL: 221° 83 % 53 %
+
+var white = Rgb.FromHex("#FFF");
+foreach (var color in new[] { blue, Rgb.FromHex("#767676"), Rgb.FromHex("#777777") })
+{
+    double ratio = Rgb.ContrastRatio(color, white);
+    string verdict = ratio >= 4.5 ? "erfüllt AA" : "zu schwach";
+    Console.WriteLine($"{color} auf Weiß: {ratio:F2}:1, {verdict}");
+}
+// #2563EB auf Weiß: 5.17:1, erfüllt AA
+// #767676 auf Weiß: 4.54:1, erfüllt AA
+// #777777 auf Weiß: 4.48:1, zu schwach
+
+public readonly record struct Rgb(byte R, byte G, byte B)
+{
+    public static Rgb FromHex(string hex)
+    {
+        hex = hex.TrimStart('#');
+        if (hex.Length == 3) // Kurzform #RGB: jede Ziffer verdoppeln
+            hex = string.Concat(hex.Select(c => $"{c}{c}"));
+        int value = Convert.ToInt32(hex, 16);
+        return new Rgb((byte)(value >> 16), (byte)((value >> 8) & 0xFF), (byte)(value & 0xFF));
+    }
+
+    public override string ToString() => $"#{R:X2}{G:X2}{B:X2}";
+
+    // Farbton in Grad, Sättigung und Helligkeit von 0 bis 1
+    public (double H, double S, double L) ToHsl()
+    {
+        double r = R / 255.0, g = G / 255.0, b = B / 255.0;
+        double max = Math.Max(r, Math.Max(g, b)), min = Math.Min(r, Math.Min(g, b));
+        double delta = max - min;
+        double l = (max + min) / 2;
+        if (delta == 0) return (0, 0, l); // Grau: kein Farbton
+        double s = delta / (1 - Math.Abs(2 * l - 1));
+        double h = max == r ? (g - b) / delta % 6
+                 : max == g ? (b - r) / delta + 2
+                 : (r - g) / delta + 4;
+        h *= 60;
+        if (h < 0) h += 360;
+        return (h, s, l);
+    }
+
+    static double Linear(byte channel)
+    {
+        double c = channel / 255.0;
+        return c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    public double Luminance() => 0.2126 * Linear(R) + 0.7152 * Linear(G) + 0.0722 * Linear(B);
+
+    public static double ContrastRatio(Rgb a, Rgb b)
+    {
+        double la = a.Luminance(), lb = b.Luminance();
+        return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Rgb {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+
+impl Rgb {
+    fn from_hex(hex: &str) -> Result<Rgb, std::num::ParseIntError> {
+        let hex = hex.trim_start_matches('#');
+        // Kurzform #RGB: jede Ziffer verdoppeln
+        let full: String = if hex.len() == 3 {
+            hex.chars().flat_map(|c| [c, c]).collect()
+        } else {
+            hex.to_string()
+        };
+        let value = u32::from_str_radix(&full, 16)?;
+        Ok(Rgb {
+            r: (value >> 16) as u8,
+            g: (value >> 8) as u8,
+            b: value as u8,
+        })
+    }
+
+    /// Farbton in Grad, Sättigung und Helligkeit von 0 bis 1
+    fn to_hsl(self) -> (f64, f64, f64) {
+        let (r, g, b) = (self.r as f64 / 255.0, self.g as f64 / 255.0, self.b as f64 / 255.0);
+        let max = r.max(g).max(b);
+        let min = r.min(g).min(b);
+        let delta = max - min;
+        let l = (max + min) / 2.0;
+        if delta == 0.0 {
+            return (0.0, 0.0, l); // Grau: kein Farbton
+        }
+        let s = delta / (1.0 - (2.0 * l - 1.0).abs());
+        let h = if max == r {
+            ((g - b) / delta).rem_euclid(6.0)
+        } else if max == g {
+            (b - r) / delta + 2.0
+        } else {
+            (r - g) / delta + 4.0
+        };
+        (h * 60.0, s, l)
+    }
+
+    fn luminance(self) -> f64 {
+        let linear = |channel: u8| {
+            let c = channel as f64 / 255.0;
+            if c <= 0.04045 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
+        };
+        0.2126 * linear(self.r) + 0.7152 * linear(self.g) + 0.0722 * linear(self.b)
+    }
+}
+
+impl std::fmt::Display for Rgb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "#{:02X}{:02X}{:02X}", self.r, self.g, self.b)
+    }
+}
+
+fn contrast_ratio(a: Rgb, b: Rgb) -> f64 {
+    let (la, lb) = (a.luminance(), b.luminance());
+    (la.max(lb) + 0.05) / (la.min(lb) + 0.05)
+}
+
+fn main() -> Result<(), std::num::ParseIntError> {
+    let blue = Rgb::from_hex("#2563EB")?;
+    let (h, s, l) = blue.to_hsl();
+    println!("HSL: {h:.0}° {:.0} % {:.0} %", s * 100.0, l * 100.0); // HSL: 221° 83 % 53 %
+
+    let white = Rgb::from_hex("#FFF")?;
+    for color in [blue, Rgb::from_hex("#767676")?, Rgb::from_hex("#777777")?] {
+        let ratio = contrast_ratio(color, white);
+        let verdict = if ratio >= 4.5 { "erfüllt AA" } else { "zu schwach" };
+        println!("{color} auf Weiß: {ratio:.2}:1, {verdict}");
+    }
+    // #2563EB auf Weiß: 5.17:1, erfüllt AA
+    // #767676 auf Weiß: 4.54:1, erfüllt AA
+    // #777777 auf Weiß: 4.48:1, zu schwach
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Weiterführende Quellen
+
+- [W3C: Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/)
+- [International Color Consortium: Introduction to the ICC profile format](https://www.color.org/iccprofile.xalter)
+- Johannes Itten: _Kunst der Farbe_. Ravensburg: Otto Maier, 1961 (Studienausgabe bei Christophorus)

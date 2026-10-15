@@ -1,0 +1,167 @@
+---
+title: Network Troubleshooting
+description: Systematic layer-by-layer troubleshooting, tools such as ping, traceroute, ipconfig, ip, nslookup, dig, netstat, ss, arp, Wireshark and iperf, and common faults.
+sidebar:
+  order: 14
+---
+
+"The network isn't working" is the most common and least precise fault report. Anyone who tweaks settings at random often makes things worse. Good troubleshooting is systematic: narrow down the problem, form a hypothesis, test it specifically, make one change at a time and document the result.
+
+## Process model
+
+1. **Gather information**: what exactly does not work? Since when? Who is affected (one user, one room, everyone)? What was changed last? Note error messages word for word.
+2. **Isolate the problem**: use tools to check up to which point communication works.
+3. **Determine the cause**: form a hypothesis and test it.
+4. **Implement the solution**: one change, then test. Back up the configuration first so that you can roll back.
+5. **Verify the result**: is the problem really solved for the user, without new problems?
+6. **Document**: record cause and solution, update the network documentation.
+
+## Layer-by-layer approach
+
+The [OSI model](/en/networking/reference-models/) provides a structure for isolating faults:
+
+| Method | Approach | Suitable when |
+| --- | --- | --- |
+| **Bottom-up** | start at layer 1 (cable, link LED) and work upwards | a physical problem is suspected, for complex faults. Thorough but slow |
+| **Top-down** | start at the application and work downwards | a single program is affected and everything else works |
+| **Divide and conquer** | start in the middle, usually with `ping` at layer 3. If it works, the fault lies above, otherwise below | the most common and fastest starting point with experience |
+| **Follow the path** | trace the packet's path device by device | faults on the way through several networks |
+| **Substitution** | swap a suspect component for a working one (cable, switch port, network card) | a hardware fault is suspected |
+| **Comparison** | compare the configuration with a working device | a similar device works |
+| **Educated guess** | test a hypothesis based on experience | known fault patterns |
+
+### Typical questions per layer
+
+| Layer | Check | Tools |
+| --- | --- | --- |
+| 1 | Cable plugged in? Link LED lit? Correct cable type? WLAN signal? | eyes, cable tester, `show interfaces`, error counters |
+| 2 | Correct VLAN? Port not err-disabled? Duplex matching? MAC learnt? ARP entry present? | `show vlan brief`, `show mac address-table`, `arp -a` |
+| 3 | Correct IP, mask, gateway? Route present, also back? ACL blocking? | `ipconfig`, `ping`, `tracert`, `show ip route` |
+| 4 | Port open? Firewall blocking? Service running? | `netstat`, `ss`, `Test-NetConnection` |
+| 7 | DNS working? Certificate valid? Application configured correctly? | `nslookup`, `dig`, browser developer tools |
+
+:::tip[Proven sequence on the client]
+1. `ipconfig /all`: does the computer have a valid address? An address from **169.254.0.0/16** means that no DHCP server answered.
+2. `ping 127.0.0.1`: is the TCP/IP stack working?
+3. `ping` the **default gateway**: is the local network working?
+4. `ping 8.8.8.8` or another well-known IP on the internet: are routing and NAT working?
+5. `ping www.example.com`: is DNS working? If step 4 works but step 5 does not, it is DNS.
+:::
+
+## Tools
+
+### ping
+
+`ping` sends **ICMP echo requests** and measures the time until the echo reply. It shows reachability, round-trip time and packet loss.
+
+```text
+ping 192.168.1.1            Windows: 4 packets, Linux: endless until Ctrl+C
+ping -t 192.168.1.1         Windows: endless
+ping -c 4 192.168.1.1       Linux: 4 packets
+ping -6 www.example.com     force IPv6 (Windows)
+ping -f -l 1472 10.0.0.1    Windows: don't fragment, 1472 bytes of payload, test the MTU
+```
+
+A missing reply does not necessarily mean that the destination is unreachable: many firewalls (including the Windows firewall by default) block incoming echo requests. 1472 bytes of payload plus the 8-byte ICMP header plus the 20-byte IP header give exactly the Ethernet MTU of 1500 bytes.
+
+### traceroute and tracert
+
+`tracert` (Windows) or `traceroute` (Linux, Cisco) shows every router on the way to the destination. The method uses the **TTL**: the first packet is sent with TTL 1, the first router discards it and returns ICMP **time exceeded**, which reveals it. Then TTL 2, and so on, until the destination answers. Windows sends ICMP echo requests for this, Linux by default sends UDP packets to high ports (from 33434), and the destination then replies with "port unreachable".
+
+```text
+tracert www.example.com
+traceroute -n www.example.com     Linux, without DNS resolution of the routers
+```
+
+Asterisks (`* * *`) mean that a router does not answer. This is often intentional and not a fault, as long as later hops answer. If the list stops at some point, the problem lies there or on the return path. `pathping` (Windows) and `mtr` (Linux) combine traceroute with statistics on packet loss per hop.
+
+### ipconfig and ip
+
+| Windows | Linux | Purpose |
+| --- | --- | --- |
+| `ipconfig` | `ip address` (`ip a`) | show IP addresses |
+| `ipconfig /all` | `ip a`, `resolvectl status` | additionally MAC, DHCP, DNS servers, lease |
+| `ipconfig /release`, `/renew` | `dhclient -r`, `dhclient` (or NetworkManager) | release and renew the DHCP address |
+| `ipconfig /flushdns` | `resolvectl flush-caches` | clear the DNS cache |
+| `route print` | `ip route` | routing table |
+| `arp -a` | `ip neigh` | ARP or neighbour cache |
+| `Get-NetIPConfiguration` | | PowerShell overview |
+
+The older Linux tool `ifconfig` from the net-tools package is no longer installed on many systems; `ip` from iproute2 replaces it.
+
+### nslookup and dig
+
+```text
+nslookup www.example.com
+nslookup www.example.com 1.1.1.1        query a specific DNS server
+nslookup -type=MX example.com
+dig www.example.com AAAA
+dig +short example.com MX
+dig +trace www.example.com              show iterative resolution from the root
+dig -x 203.0.113.10                      reverse lookup
+```
+
+If a public server (for example 1.1.1.1) returns the correct answer but your own does not, the problem lies with your own DNS server. On Windows, PowerShell offers `Resolve-DnsName`.
+
+### netstat and ss
+
+`netstat` shows connections and open ports; on Linux it has been replaced by `ss`.
+
+```text
+netstat -ano              Windows: all connections, numeric, with process ID
+netstat -r                routing table
+ss -tulpn                 Linux: TCP and UDP ports in LISTEN state with process
+ss -tn state established  Linux: active TCP connections
+```
+
+This lets you check whether a service is listening at all and on which address: if a server only listens on `127.0.0.1:5432`, it cannot be reached from outside, even if the firewall is open. Whether a port on a remote computer is reachable is checked on Windows with `Test-NetConnection server -Port 443`, on Linux with `nc -zv server 443`.
+
+### arp
+
+`arp -a` shows the ARP cache. If the entry for the gateway is missing or shows an unexpected MAC address, the problem lies at layer 2 (wrong VLAN, ARP spoofing, duplicate IP address). `arp -d *` (Windows, administrator) clears the cache.
+
+### Wireshark
+
+**Wireshark** captures packets on a network card and breaks them down into their headers, layer by layer. This lets you see what is really being transmitted instead of guessing. On the command line there are `tcpdump` (Linux) and `tshark`.
+
+- **Capture filters** (BPF syntax) limit what is captured: `host 192.168.1.10`, `port 53`, `net 10.0.0.0/8`.
+- **Display filters** filter a capture: `ip.addr == 192.168.1.10`, `tcp.port == 443`, `dns`, `arp`, `dhcp`, `tcp.flags.syn == 1`, `tcp.analysis.retransmission`, `icmp`.
+- **Follow TCP Stream** reassembles a whole connection.
+- **Statistics, Conversations** shows who communicates with whom and how much.
+
+On a switch, a computer only sees its own traffic, broadcasts and multicasts. To capture other traffic, a port is mirrored to the analysis port with **SPAN** (_port mirroring_). Captures may contain passwords and personal data and may only be made with authorisation.
+
+### iperf
+
+**iperf3** measures the actual throughput between two computers, independent of disks or applications:
+
+```text
+iperf3 -s                   on the server
+iperf3 -c 192.168.1.10      on the client, TCP, 10 seconds
+iperf3 -c 192.168.1.10 -R   reverse direction
+iperf3 -c 192.168.1.10 -u -b 50M   UDP at 50 Mbit/s, shows jitter and loss
+```
+
+If a gigabit link only reaches about 94 Mbit/s, some point has negotiated only 100 Mbit/s, often because of a faulty wire pair (1000BASE-T needs all four, 100BASE-TX only two).
+
+## Common fault patterns
+
+| Symptom | Possible cause |
+| --- | --- |
+| address 169.254.x.x | DHCP server unreachable: cable, wrong VLAN, relay (`ip helper-address`) missing, pool exhausted |
+| local network works, internet does not | wrong or missing default gateway, missing route, NAT problem |
+| IP addresses work, names do not | wrong or unreachable DNS server |
+| two hosts on the same switch cannot reach each other | different VLANs or different subnets due to a wrong mask |
+| slow connection, CRC errors, late collisions | duplex mismatch, faulty cable, source of interference |
+| "duplicate IP address" error message | static address inside the DHCP range |
+| network collapses completely, switch LEDs flash in unison | layer 2 loop, STP disabled or a device without STP |
+| port goes down after a device is plugged in (err-disabled) | port security or BPDU guard has triggered |
+| ping works, web page does not | firewall or ACL blocks the port, service not running, MTU problem |
+| OSPF adjacency does not form | different area, timers, subnet, authentication or MTU, passive interface |
+| connection only works in one direction | route missing on the return path (asymmetric routing) |
+
+## Further reading
+
+- [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
+- [iperf3 documentation](https://software.es.net/iperf/)
+- Cisco Networking Academy: _Enterprise Networking, Security, and Automation_, Network Troubleshooting module

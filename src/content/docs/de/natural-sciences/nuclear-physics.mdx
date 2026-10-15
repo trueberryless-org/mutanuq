@@ -1,0 +1,213 @@
+---
+title: Kernphysik und Radioaktivität
+description: Atomkern und Isotope, Alpha-, Beta- und Gammastrahlung, Zerfallsgesetz und Halbwertszeit, Aktivität, Dosisgrößen Gy und Sv, Strahlenschutz, Massendefekt, Kernspaltung, Kernfusion und Kernenergie.
+sidebar:
+  order: 15
+---
+
+Die **Kernphysik** untersucht den Aufbau und die Umwandlungen von Atomkernen. Ihre Anwendungen reichen von der Altersbestimmung mit Kohlenstoff-14 über Strahlentherapie und Positronen-Emissions-Tomographie bis zur Energiegewinnung in Kernkraftwerken und in der Sonne.
+
+## Der Atomkern
+
+Der Kern besteht aus **Protonen** (Ladung $+e$) und **Neutronen** (ungeladen), gemeinsam **Nukleonen** genannt. Er enthält über 99,9 % der Atommasse, ist aber mit einem Radius von etwa $r = r_0 \sqrt[3]{A}$, $r_0 \approx 1{,}2\,\mathrm{fm}$ ($1\,\mathrm{fm} = 10^{-15}\,\mathrm{m}$), rund zehntausendmal kleiner als das Atom.
+
+| Größe | Zeichen | Bedeutung |
+| --- | --- | --- |
+| Ordnungszahl (Kernladungszahl) | $Z$ | Zahl der Protonen, bestimmt das Element |
+| Neutronenzahl | $N$ | Zahl der Neutronen |
+| Massenzahl (Nukleonenzahl) | $A = Z + N$ | Zahl der Nukleonen |
+
+Schreibweise: ${}^{A}_{Z}\mathrm{X}$, etwa ${}^{12}_{6}\mathrm{C}$ (6 Protonen, 6 Neutronen) oder ${}^{235}_{92}\mathrm{U}$. Ein Kern einer bestimmten Zusammensetzung heißt **Nuklid**.
+
+**Isotope** sind Atome desselben Elements (gleiches $Z$) mit verschiedener Neutronenzahl. Sie verhalten sich chemisch gleich, unterscheiden sich aber in Masse und Stabilität. Kohlenstoff hat die stabilen Isotope ${}^{12}\mathrm{C}$ (98,9 %) und ${}^{13}\mathrm{C}$ sowie das radioaktive ${}^{14}\mathrm{C}$; Wasserstoff hat Protium ${}^{1}\mathrm{H}$, Deuterium ${}^{2}\mathrm{H}$ und das radioaktive Tritium ${}^{3}\mathrm{H}$.
+
+Zusammengehalten wird der Kern von der **starken Wechselwirkung** (Kernkraft). Sie ist auf kurze Abstände (etwa $1\,\mathrm{fm}$) weit stärker als die elektrische Abstoßung der Protonen, hat aber nur eine Reichweite von wenigen Femtometern. Schwere Kerne brauchen deshalb einen Neutronenüberschuss; Kerne mit mehr als 83 Protonen sind alle instabil.
+
+Massen in der Kernphysik gibt man in der **atomaren Masseneinheit** an: $1\,\mathrm{u} = \frac{1}{12} m({}^{12}\mathrm{C}) = 1{,}660\,539 \cdot 10^{-27}\,\mathrm{kg}$, das entspricht der Energie $931{,}494\,\mathrm{MeV}$.
+
+## Radioaktivität
+
+Instabile Kerne wandeln sich spontan unter Aussendung von Strahlung in andere Kerne um (**radioaktiver Zerfall**). Henri Becquerel entdeckte das 1896 an Uransalzen, Marie und Pierre Curie fanden Polonium und Radium. Der Zeitpunkt des Zerfalls eines einzelnen Kerns ist rein zufällig und lässt sich weder durch Temperatur noch Druck noch chemische Bindung beeinflussen.
+
+| Strahlung | Teilchen | Zerfallsgleichung | Reichweite in Luft | Abschirmung |
+| --- | --- | --- | --- | --- |
+| **Alpha** ($\alpha$) | Heliumkern ${}^{4}_{2}\mathrm{He}$ | ${}^{A}_{Z}\mathrm{X} \to {}^{A-4}_{Z-2}\mathrm{Y} + {}^{4}_{2}\mathrm{He}$ | wenige cm | Blatt Papier, oberste Hautschicht |
+| **Beta-minus** ($\beta^-$) | Elektron (und Antineutrino) | ${}^{A}_{Z}\mathrm{X} \to {}^{A}_{Z+1}\mathrm{Y} + e^- + \bar\nu_e$ | einige m | wenige mm Aluminium oder Plexiglas |
+| **Beta-plus** ($\beta^+$) | Positron (und Neutrino) | ${}^{A}_{Z}\mathrm{X} \to {}^{A}_{Z-1}\mathrm{Y} + e^+ + \nu_e$ | einige m | wie $\beta^-$, Positron zerstrahlt mit Elektron zu zwei Gammaquanten |
+| **Gamma** ($\gamma$) | hochenergetisches Photon | ${}^{A}_{Z}\mathrm{X}^* \to {}^{A}_{Z}\mathrm{X} + \gamma$ | sehr weit, nimmt exponentiell ab | dicke Schichten Blei oder Beton |
+
+Bei jeder Kernreaktion bleiben die Summe der Massenzahlen und die Summe der Ladungszahlen erhalten. Beim $\beta^-$-Zerfall wandelt sich im Kern ein Neutron in ein Proton um, beim $\beta^+$-Zerfall ein Proton in ein Neutron. Gammastrahlung entsteht, wenn ein Kern nach einem Alpha- oder Betazerfall noch angeregt ist und in den Grundzustand übergeht; dabei ändert sich das Nuklid nicht.
+
+Beispiele:
+
+$$
+{}^{238}_{92}\mathrm{U} \to {}^{234}_{90}\mathrm{Th} + {}^{4}_{2}\mathrm{He}, \qquad
+{}^{14}_{6}\mathrm{C} \to {}^{14}_{7}\mathrm{N} + e^- + \bar\nu_e
+$$
+
+Schwere Kerne wie Uran-238 zerfallen über eine **Zerfallsreihe** aus vielen Schritten bis zu stabilem Blei. Ein Zwischenprodukt ist das Edelgas **Radon-222**, das aus dem Boden in Gebäude gelangt.
+
+Nachgewiesen wird ionisierende Strahlung mit dem **Geiger-Müller-Zählrohr**, Szintillationszählern, Halbleiterdetektoren, Filmdosimetern oder der Nebelkammer.
+
+## Zerfallsgesetz und Halbwertszeit
+
+Die Zahl der Zerfälle pro Zeit ist proportional zur Zahl $N$ der noch vorhandenen Kerne:
+
+$$
+\frac{\mathrm{d}N}{\mathrm{d}t} = -\lambda N \quad\Rightarrow\quad N(t) = N_0 \cdot e^{-\lambda t} = N_0 \cdot \left(\frac{1}{2}\right)^{t/T_{1/2}}
+$$
+
+Die **Zerfallskonstante** $\lambda$ (in $\mathrm{s^{-1}}$) gibt die Zerfallswahrscheinlichkeit pro Zeit an. Die **Halbwertszeit** $T_{1/2}$ ist die Zeit, nach der die Hälfte der Kerne zerfallen ist:
+
+$$
+T_{1/2} = \frac{\ln 2}{\lambda} \approx \frac{0{,}693}{\lambda}
+$$
+
+Nach einer Halbwertszeit ist die Hälfte übrig, nach zwei ein Viertel, nach zehn etwa ein Tausendstel. Die Lösung ist eine [Exponentialfunktion](/de/mathematics/functions/exponential-and-logarithmic-functions/).
+
+| Nuklid | Halbwertszeit | Bedeutung |
+| --- | --- | --- |
+| Radon-222 | $3{,}8$ Tage | größte natürliche Strahlenquelle in Gebäuden |
+| Iod-131 | $8{,}0$ Tage | Schilddrüse, Fallout nach Reaktorunfällen |
+| Cobalt-60 | $5{,}3$ Jahre | Bestrahlung, Sterilisation |
+| Cäsium-137 | $30$ Jahre | Hauptbestandteil des Fallouts von Tschernobyl 1986 |
+| Kohlenstoff-14 | $5730$ Jahre | Radiokarbondatierung |
+| Plutonium-239 | $24\,100$ Jahre | Spaltstoff, langlebiger Atommüll |
+| Uran-238 | $4{,}5 \cdot 10^9$ Jahre | etwa so alt wie die Erde |
+
+:::tip[Beispiel: Radiokarbonmethode]
+Lebende Organismen nehmen ständig ${}^{14}\mathrm{C}$ auf, das in der Atmosphäre durch Höhenstrahlung entsteht; das Verhältnis ${}^{14}\mathrm{C}/{}^{12}\mathrm{C}$ ist im Gleichgewicht. Nach dem Tod zerfällt ${}^{14}\mathrm{C}$ ohne Nachschub.
+
+- Ein Holzstück hat noch 25 % des ursprünglichen Anteils: Das sind zwei Halbwertszeiten, also $2 \cdot 5730 = 11\,460$ Jahre.
+- Bei 60 %: $t = T_{1/2} \cdot \frac{\ln(N_0/N)}{\ln 2} = 5730 \cdot \frac{\ln(1/0{,}6)}{0{,}693} = 4220$ Jahre.
+
+Die Methode reicht bis etwa 50 000 Jahre zurück. Ötzi wurde so auf rund 5300 Jahre datiert.
+:::
+
+:::tip[Beispiel: Iod-131]
+Nach $30$ Tagen ist von Iod-131 ($T_{1/2} = 8{,}02\,\mathrm{d}$) noch $\left(\frac{1}{2}\right)^{30/8{,}02} = 0{,}075$, also $7{,}5\,\%$ vorhanden. Von dem 1986 in Österreich deponierten Cäsium-137 ist 40 Jahre später noch rund $40\,\%$ übrig.
+:::
+
+## Aktivität
+
+Die **Aktivität** ist die Zahl der Zerfälle pro Sekunde:
+
+$$
+A = -\frac{\mathrm{d}N}{\mathrm{d}t} = \lambda N, \qquad [A] = \mathrm{s^{-1}} = \mathrm{Bq} \;(\text{Becquerel})
+$$
+
+Sie nimmt mit derselben Halbwertszeit ab wie $N$. Die alte Einheit Curie ($1\,\mathrm{Ci} = 3{,}7 \cdot 10^{10}\,\mathrm{Bq}$) entspricht ungefähr der Aktivität von $1\,\mathrm{g}$ Radium-226.
+
+:::tip[Beispiel: 1 g Radium-226]
+$N = \frac{1\,\mathrm{g}}{226\,\mathrm{g/mol}} \cdot 6{,}022 \cdot 10^{23}\,\mathrm{mol^{-1}} = 2{,}66 \cdot 10^{21}$ Kerne, $T_{1/2} = 1600\,\mathrm{a} = 5{,}05 \cdot 10^{10}\,\mathrm{s}$, also $\lambda = 1{,}37 \cdot 10^{-11}\,\mathrm{s^{-1}}$ und
+
+$$
+A = \lambda N = 1{,}37 \cdot 10^{-11} \cdot 2{,}66 \cdot 10^{21} = 3{,}66 \cdot 10^{10}\,\mathrm{Bq}
+$$
+:::
+
+Zum Vergleich: Der menschliche Körper hat durch natürliches Kalium-40 und Kohlenstoff-14 eine Aktivität von einigen tausend Becquerel.
+
+## Dosis und biologische Wirkung
+
+Ionisierende Strahlung kann Moleküle, insbesondere die DNA, schädigen. Um die Wirkung zu beschreiben, verwendet man drei Dosisgrößen:
+
+| Größe | Formel | Einheit | Bedeutung |
+| --- | --- | --- | --- |
+| **Energiedosis** $D$ | $D = \frac{E}{m}$ | Gray, $1\,\mathrm{Gy} = 1\,\mathrm{J/kg}$ | absorbierte Energie pro Masse |
+| **Äquivalentdosis** $H$ | $H = w_\mathrm{R} \cdot D$ | Sievert, $\mathrm{Sv}$ | berücksichtigt die Strahlungsart |
+| **effektive Dosis** $E$ | $E = \sum w_\mathrm{T} H_\mathrm{T}$ | Sievert, $\mathrm{Sv}$ | gewichtet die Empfindlichkeit der Organe, Maß für das Gesamtrisiko |
+
+Der **Strahlungs-Wichtungsfaktor** $w_\mathrm{R}$ beträgt für Photonen und Elektronen $1$, für Alphateilchen $20$ und für Neutronen je nach Energie $2{,}5$ bis $20$. Alphastrahler sind deshalb von außen fast harmlos, aber gefährlich, wenn sie eingeatmet oder verschluckt werden (Radon, Polonium).
+
+| Effekt | Auftreten | Beispiel |
+| --- | --- | --- |
+| **deterministisch** | erst über einer Schwellendosis (etwa $0{,}5$ bis $1\,\mathrm{Sv}$ kurzzeitig), Schwere steigt mit der Dosis | Strahlenkrankheit, Hautrötung, Katarakt |
+| **stochastisch** | ohne bekannte Schwelle, Wahrscheinlichkeit steigt mit der Dosis | Krebs, genetische Schäden |
+
+### Strahlenbelastung in Österreich
+
+Laut dem Jahresbericht „Radioaktivität und Strahlung in Österreich“ des zuständigen Bundesministeriums (Bericht 2023) beträgt die mittlere effektive Dosis der Bevölkerung rund $6\,\mathrm{mSv}$ pro Jahr. Davon sind etwa $4{,}3\,\mathrm{mSv}$ natürlichen Ursprungs, mit dem Radon in Innenräumen als größtem Einzelbeitrag (rund $3\,\mathrm{mSv}$), dazu kommen terrestrische und kosmische Strahlung sowie Radionuklide in der Nahrung. Der Großteil der künstlichen Belastung stammt aus der medizinischen Diagnostik (Röntgen, Computertomographie). Ein Flug Wien-New York und zurück bringt etwa $0{,}1\,\mathrm{mSv}$.
+
+## Strahlenschutz
+
+Die Grundregeln lassen sich als **„4 A“** merken:
+
+- **Abstand**: Bei punktförmigen Quellen sinkt die Dosisleistung mit $1/r^2$. Doppelter Abstand, ein Viertel der Dosis.
+- **Abschirmung**: passendes Material zwischen Quelle und Körper (siehe Tabelle oben). Gammastrahlung wird exponentiell geschwächt, für Blei halbiert etwa $1\,\mathrm{cm}$ die Intensität bei $1\,\mathrm{MeV}$.
+- **Aufenthaltsdauer**: Die Dosis ist proportional zur Zeit.
+- **Aktivität**: so schwache Quellen wie möglich verwenden.
+
+Dazu kommt: keine Inkorporation (nicht essen, trinken, rauchen im Kontrollbereich). In Österreich regeln das **Strahlenschutzgesetz 2020** und die Allgemeine Strahlenschutzverordnung 2020 den Umgang. Der Grenzwert der effektiven Dosis beträgt für Einzelpersonen der Bevölkerung $1\,\mathrm{mSv}$ pro Jahr (aus geplanten Tätigkeiten, ohne natürliche und medizinische Exposition), für beruflich strahlenexponierte Personen $20\,\mathrm{mSv}$ pro Jahr. Für Radon in Aufenthaltsräumen gilt ein Referenzwert von $300\,\mathrm{Bq/m^3}$.
+
+## Massendefekt und Bindungsenergie
+
+Ein Kern ist leichter als die Summe seiner einzelnen Protonen und Neutronen. Dieser **Massendefekt** $\Delta m$ entspricht nach $E = mc^2$ der **Bindungsenergie**, die frei wird, wenn sich die Nukleonen zum Kern verbinden (und die man aufwenden muss, um ihn zu zerlegen):
+
+$$
+E_\mathrm{B} = \Delta m \cdot c^2, \qquad \Delta m = Z m_\mathrm{p} + N m_\mathrm{n} - m_\mathrm{Kern}
+$$
+
+:::tip[Beispiel: Helium-4]
+Mit Atommassen (die Elektronenmassen heben sich dann heraus): $m({}^{1}\mathrm{H}) = 1{,}007\,825\,\mathrm{u}$, $m_\mathrm{n} = 1{,}008\,665\,\mathrm{u}$, $m({}^{4}\mathrm{He}) = 4{,}002\,603\,\mathrm{u}$.
+
+$$
+\Delta m = 2 \cdot 1{,}007\,825 + 2 \cdot 1{,}008\,665 - 4{,}002\,603 = 0{,}030\,377\,\mathrm{u}
+$$
+
+$$
+E_\mathrm{B} = 0{,}030\,377 \cdot 931{,}494\,\mathrm{MeV} = 28{,}3\,\mathrm{MeV}, \qquad \frac{E_\mathrm{B}}{A} = 7{,}07\,\mathrm{MeV}
+$$
+
+Das ist millionenfach mehr als die Bindungsenergie von Elektronen in Atomen oder Molekülen (einige eV); deshalb liefern Kernreaktionen pro Masse so viel mehr Energie als chemische.
+:::
+
+Die **Bindungsenergie pro Nukleon** steigt von leichten Kernen steil an, erreicht ihr Maximum von etwa $8{,}8\,\mathrm{MeV}$ bei Eisen und Nickel (${}^{56}\mathrm{Fe}$, ${}^{62}\mathrm{Ni}$) und fällt zu schweren Kernen langsam ab (Uran etwa $7{,}6\,\mathrm{MeV}$). Daraus folgen zwei Wege zur Energiegewinnung:
+
+- **Kernspaltung**: Schwere Kerne zerfallen in mittelschwere, stärker gebundene Kerne.
+- **Kernfusion**: Leichte Kerne verschmelzen zu schwereren, stärker gebundenen Kernen.
+
+## Kernspaltung
+
+Otto Hahn und Fritz Straßmann entdeckten 1938 die Spaltung von Uran; die Wienerin Lise Meitner lieferte mit Otto Frisch die physikalische Erklärung. Ein langsames (thermisches) Neutron wird von Uran-235 eingefangen, der Kern spaltet sich in zwei mittelschwere Bruchstücke und setzt zwei bis drei neue Neutronen frei, zum Beispiel:
+
+$$
+{}^{235}_{92}\mathrm{U} + {}^{1}_{0}\mathrm{n} \to {}^{141}_{56}\mathrm{Ba} + {}^{92}_{36}\mathrm{Kr} + 3\,{}^{1}_{0}\mathrm{n} + \approx 200\,\mathrm{MeV}
+$$
+
+Die Energie steckt größtenteils in der Bewegungsenergie der Bruchstücke und wird als Wärme frei. Die vollständige Spaltung von $1\,\mathrm{kg}$ Uran-235 liefert etwa $8{,}2 \cdot 10^{13}\,\mathrm{J} = 23\,\mathrm{GWh}$ Wärme, so viel wie die Verbrennung von rund $1900\,\mathrm{t}$ Erdöl.
+
+Die frei werdenden Neutronen können weitere Kerne spalten: eine **Kettenreaktion**. Im **Kernreaktor** wird sie so gesteuert, dass im Mittel genau ein Neutron pro Spaltung eine weitere Spaltung auslöst (kritischer Zustand):
+
+| Bauteil | Aufgabe |
+| --- | --- |
+| Brennstäbe | Uran, auf 3 bis 5 % U-235 angereichert |
+| Moderator (Wasser, Graphit) | bremst schnelle Neutronen ab, weil langsame U-235 viel besser spalten |
+| Steuerstäbe (Bor, Cadmium) | absorbieren Neutronen und regeln die Leistung |
+| Kühlmittel | führt die Wärme ab, die über Dampf eine Turbine antreibt |
+
+Eine unkontrollierte Kettenreaktion mit hoch angereichertem Material ist das Prinzip der Atombombe.
+
+### Kernenergie und Österreich
+
+Kernkraftwerke erzeugen Strom fast ohne CO₂-Emissionen im Betrieb. Dem stehen Unfallrisiken (Tschernobyl 1986, Fukushima 2011), hochradioaktive Abfälle mit Halbwertszeiten bis zu Zehntausenden von Jahren, für die weltweit erst wenige Endlager gebaut werden, und die Gefahr der Weiterverbreitung von Kernwaffen gegenüber.
+
+Österreich hat sich gegen Kernenergie entschieden: Das fertiggestellte Kernkraftwerk **Zwentendorf** ging nach der Volksabstimmung vom 5. November 1978 (50,5 % dagegen) nie in Betrieb. Das **Atomsperrgesetz** von 1978 und das Bundesverfassungsgesetz für ein atomfreies Österreich von 1999 verbieten die Stromerzeugung durch Kernspaltung. Österreich betreibt nur Forschungsreaktoren, etwa den TRIGA-Reaktor des Atominstituts der TU Wien.
+
+## Kernfusion
+
+Bei der **Kernfusion** verschmelzen leichte Kerne. Damit sie sich trotz der elektrischen Abstoßung nahe genug kommen, braucht es Temperaturen von vielen Millionen Kelvin. In der **Sonne** verschmelzen bei etwa 15 Millionen Kelvin im Kern über mehrere Schritte (Proton-Proton-Kette) vier Wasserstoffkerne zu einem Heliumkern; dabei werden $26{,}7\,\mathrm{MeV}$ frei.
+
+Für Fusionskraftwerke ist die Reaktion von Deuterium und Tritium am aussichtsreichsten:
+
+$$
+{}^{2}_{1}\mathrm{H} + {}^{3}_{1}\mathrm{H} \to {}^{4}_{2}\mathrm{He} + {}^{1}_{0}\mathrm{n} + 17{,}6\,\mathrm{MeV}
+$$
+
+Das Plasma von über 100 Millionen Kelvin wird in Magnetfeldern eingeschlossen (Tokamak, Stellarator). Der internationale Versuchsreaktor **ITER** in Südfrankreich soll zeigen, dass mehr Fusionsleistung entsteht, als zur Heizung des Plasmas nötig ist. Vorteile wären reichlich vorhandene Brennstoffe, keine Kettenreaktion und keine langlebigen Spaltprodukte; ein kommerzielles Kraftwerk ist aber frühestens in der zweiten Hälfte des Jahrhunderts zu erwarten.
+
+## Weiterführende Quellen
+
+- Österreichisches Bundesministerium (Strahlenschutz): Jahresbericht _Radioaktivität und Strahlung in Österreich_, erscheint jährlich
+- Theo Mayer-Kuckuk: _Kernphysik_, Teubner / Springer
+- Bundesamt für Strahlenschutz (Deutschland): Grundlagen ionisierender Strahlung, bfs.de

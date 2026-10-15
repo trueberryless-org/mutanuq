@@ -1,0 +1,352 @@
+---
+title: Error Handling
+description: Exceptions with try, catch and finally in C#, Result, Option and panic in Rust, and dealing with null safely.
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Programs work with input, files, networks and databases, and all of these can fail. Good error handling ensures that a program reacts sensibly to expected problems instead of crashing or producing wrong results. C# uses **exceptions** for this, Rust uses the types **`Result`** and **`Option`**.
+
+## Kinds of errors
+
+| Kind                        | Example                                              | Handling                                                         |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
+| **Expected error**          | file does not exist, user enters text instead of a number, server unreachable | handle it in the program, inform the user, try again |
+| **Programming error (bug)** | index outside the array, access to `null`, division by zero | do not catch it, fix the error in the code               |
+| **System error**            | out of memory, stack overflow                         | hardly possible to handle sensibly, the program terminates      |
+
+Rust makes this distinction in the type system: expected errors are returned as a `Result`, programming errors cause a `panic`. C# uses exceptions for both cases, and the distinction is made through the exception type.
+
+## Exceptions in C#
+
+An **exception** is an object that describes an error. It is raised with `throw`. Execution of the current method stops immediately, and the runtime searches up the call stack until it finds a matching `catch` block. If it does not find one, the program terminates with an error message.
+
+```csharp
+try
+{
+    Console.WriteLine(ReadAge("abc"));
+}
+catch (FormatException e)            // specific exception first
+{
+    Console.WriteLine($"Not a valid number: {e.Message}");
+}
+catch (ArgumentOutOfRangeException e) when (e.ParamName == "text") // exception filter
+{
+    Console.WriteLine("Age outside the valid range");
+}
+catch (Exception e)                  // most general exception last
+{
+    Console.WriteLine($"Unexpected error: {e}");
+    throw;                           // rethrow, the stack trace is preserved
+}
+finally
+{
+    Console.WriteLine("always executed");
+}
+
+static int ReadAge(string text)
+{
+    int age = int.Parse(text);       // throws FormatException
+    if (age is < 0 or > 150)
+        throw new ArgumentOutOfRangeException(nameof(text), "Age must be between 0 and 150");
+    return age;
+}
+```
+
+- The `catch` blocks are checked **from top to bottom**. Specific exceptions must therefore come before general ones.
+- The `finally` block always runs, regardless of whether an exception occurred. It is suitable for cleaning up. For resources, `using` is usually the better choice (see [Memory Management](/en/software-development/memory-management/#idisposable-and-using)).
+- `throw;` rethrows the current exception with the original **stack trace**. `throw e;` would reset the stack trace to the current line and hide the actual source of the error.
+
+### Important exception types
+
+All exceptions inherit from `System.Exception`.
+
+| Exception                         | Cause                                                               |
+| --------------------------------- | ------------------------------------------------------------------- |
+| `ArgumentException`               | An argument is invalid.                                             |
+| `ArgumentNullException`           | An argument is `null` although this is not allowed.                 |
+| `ArgumentOutOfRangeException`     | An argument is outside the allowed range.                           |
+| `InvalidOperationException`       | The method is not allowed in the current state of the object.       |
+| `NullReferenceException`          | Access to a member through a `null` reference (a bug).              |
+| `IndexOutOfRangeException`        | Invalid index for an array.                                         |
+| `KeyNotFoundException`            | Key not present in a `Dictionary`.                                  |
+| `FormatException`                 | Text does not have the expected format, for example with `int.Parse`. |
+| `DivideByZeroException`           | Integer division by zero.                                           |
+| `IOException`, `FileNotFoundException` | Error while reading or writing files.                          |
+| `HttpRequestException`            | Error during an HTTP request.                                       |
+| `NotImplementedException`         | Placeholder for code that has not been written yet.                 |
+
+### Custom exceptions
+
+For domain-specific errors, you can define your own exception classes. They inherit from `Exception` and, by convention, their names end in `Exception`.
+
+```csharp
+try
+{
+    var account = new Account(50);
+    account.Withdraw(80);
+}
+catch (InsufficientFundsException e)
+{
+    Console.WriteLine($"{e.Message} {e.Missing} euros are missing.");
+}
+
+public class InsufficientFundsException(decimal missing)
+    : Exception("The balance is not sufficient.")
+{
+    public decimal Missing { get; } = missing;
+}
+
+public class Account(decimal balance)
+{
+    public decimal Balance { get; private set; } = balance;
+
+    public void Withdraw(decimal amount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        if (amount > Balance)
+            throw new InsufficientFundsException(amount - Balance);
+        Balance -= amount;
+    }
+}
+```
+
+### Good practice
+
+- **Only catch what you can handle.** An empty `catch` block that simply swallows errors makes debugging almost impossible.
+- **Catch specific exceptions**, not `Exception` across the board. Exception: at the top level of the program, to log errors.
+- **Check early** (_fail fast_): reject invalid arguments at the beginning of a method, for example with `ArgumentNullException.ThrowIfNull(arg)`.
+- **Do not use exceptions for normal control flow.** They are slow. For expected cases, there is the **try pattern**, such as `int.TryParse` or `dictionary.TryGetValue`.
+- Error messages should describe **what** went wrong and **why**.
+
+## Error handling in Rust
+
+Rust has no exceptions. Whether a function can fail is stated in its **return type**. The compiler forces the caller to deal with the error case.
+
+### Option
+
+`Option<T>` describes a value that may or may not be present. It replaces `null`.
+
+{/* check: isolated */}
+
+```rust
+enum Option<T> {
+    Some(T), // a value is present
+    None,    // no value
+}
+```
+
+### Result
+
+`Result<T, E>` is the result of an operation that can succeed (`Ok`) or fail (`Err`).
+
+{/* check: isolated */}
+
+```rust
+enum Result<T, E> {
+    Ok(T),  // success with a result
+    Err(E), // failure with an error value
+}
+```
+
+```rust
+use std::num::ParseIntError;
+
+fn parse_age(text: &str) -> Result<u8, ParseIntError> {
+    text.trim().parse::<u8>()
+}
+
+fn main() {
+    // 1. full handling with match
+    match parse_age("abc") {
+        Ok(age) => println!("Age: {age}"),
+        Err(e) => println!("Not a valid number: {e}"),
+    }
+
+    // 2. handle only the success case
+    if let Ok(age) = parse_age("17") {
+        println!("Age: {age}");
+    }
+
+    // 3. default value on error
+    let age = parse_age("x").unwrap_or(0);
+    println!("{age}"); // 0
+
+    // 4. unwrap/expect: panic on error, only if an error would be a bug
+    let age = parse_age("42").expect("hard-coded value must be valid");
+    println!("{age}");
+}
+```
+
+### The ? operator
+
+Most of the time, a function should not handle an error itself but pass it on to the caller. The `?` operator does exactly that: with `Ok`, it returns the value; with `Err`, it ends the function immediately and returns the error. It therefore corresponds to the automatic propagation of an exception in C#, but it is visible in the code.
+
+```rust
+use std::fs;
+use std::io;
+
+fn read_first_line(path: &str) -> Result<String, io::Error> {
+    let content = fs::read_to_string(path)?; // return immediately on error
+    Ok(content.lines().next().unwrap_or("").to_string())
+}
+
+fn main() {
+    match read_first_line("does-not-exist.txt") {
+        Ok(line) => println!("{line}"),
+        Err(e) => println!("Error: {e}"),
+    }
+}
+```
+
+### Custom error types
+
+If a function can fail for several reasons, you define your own error enum. If you implement `From` for the individual kinds of errors, `?` converts them automatically. The crates `thiserror` (for libraries) and `anyhow` (for applications) save a lot of typing here.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+try
+{
+    Console.WriteLine(Config.LoadPort("port=80a"));
+}
+catch (ConfigException e)
+{
+    Console.WriteLine($"Configuration error: {e.Message}");
+}
+
+public class ConfigException(string message, Exception? inner = null)
+    : Exception(message, inner);
+
+public static class Config
+{
+    public static int LoadPort(string line)
+    {
+        var parts = line.Split('=');
+        if (parts.Length != 2 || parts[0] != "port")
+            throw new ConfigException($"Invalid line: {line}");
+        try
+        {
+            return int.Parse(parts[1]);
+        }
+        catch (FormatException e)
+        {
+            // keep the original exception as InnerException
+            throw new ConfigException($"Port is not a number: {parts[1]}", e);
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fmt;
+use std::num::ParseIntError;
+
+#[derive(Debug)]
+enum ConfigError {
+    InvalidLine(String),
+    InvalidPort(ParseIntError),
+}
+
+impl fmt::Display for ConfigError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ConfigError::InvalidLine(line) => write!(f, "Invalid line: {line}"),
+            ConfigError::InvalidPort(e) => write!(f, "Port is not a number: {e}"),
+        }
+    }
+}
+
+impl std::error::Error for ConfigError {}
+
+// enables the automatic conversion by ?
+impl From<ParseIntError> for ConfigError {
+    fn from(e: ParseIntError) -> Self {
+        ConfigError::InvalidPort(e)
+    }
+}
+
+fn load_port(line: &str) -> Result<u16, ConfigError> {
+    let (key, value) = line
+        .split_once('=')
+        .ok_or_else(|| ConfigError::InvalidLine(line.to_string()))?;
+    if key != "port" {
+        return Err(ConfigError::InvalidLine(line.to_string()));
+    }
+    Ok(value.parse::<u16>()?)
+}
+
+fn main() {
+    match load_port("port=80a") {
+        Ok(port) => println!("{port}"),
+        Err(e) => println!("Configuration error: {e}"),
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### panic
+
+A **`panic`** signals a programming error from which the program cannot sensibly recover. It ends the current thread and prints an error message. It is triggered, for example, by an array access out of bounds, `unwrap()` on `None` or a call to `panic!("...")`. For expected errors, you never use `panic` but `Result`.
+
+## Dealing with null
+
+The inventor of the null reference, Tony Hoare, called it his "billion-dollar mistake" in 2009 because accesses to `null` have caused countless crashes. Both languages therefore handle missing values deliberately.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// With <Nullable>enable</Nullable> (the default in new projects),
+// the compiler warns when null can show up in an unexpected place.
+string? middleName = null;          // ? allows null
+string name = "Ada";                // must not be null
+
+int? length = middleName?.Length;   // ?. returns null instead of a NullReferenceException
+int safeLength = middleName?.Length ?? 0; // ?? provides a fallback value
+middleName ??= "none";              // assign if null
+
+Console.WriteLine($"{name} {middleName} {length} {safeLength}");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // There is no null. A missing value is None of type Option.
+    let middle_name: Option<&str> = None;
+    let name = "Ada";
+
+    let length: Option<usize> = middle_name.map(|m| m.len());
+    let safe_length = middle_name.map_or(0, |m| m.len());
+    let middle_name = middle_name.unwrap_or("none");
+
+    println!("{name} {middle_name} {length:?} {safe_length}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Assertions
+
+An **assertion** checks a condition that must always be true if the program is correct. If it is false, there is a bug.
+
+- C#: `Debug.Assert(condition)` is only checked in a debug build.
+- Rust: `assert!(condition)` and `assert_eq!(a, b)` are always checked, `debug_assert!` only in a debug build.
+
+Assertions are no substitute for input validation: user input must always be checked with normal error handling. How to test the correct behaviour in the error case is shown on the page [Testing](/en/software-development/testing/).
+
+## Further reading
+
+- [Best practices for exceptions](https://learn.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions) (Microsoft Learn)
+- [Error Handling](https://doc.rust-lang.org/book/ch09-00-error-handling.html) (The Rust Programming Language)

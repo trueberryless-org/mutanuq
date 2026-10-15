@@ -1,0 +1,230 @@
+---
+title: Sensors and Actuators
+description: "Sensor types and characteristics, signal conditioning with voltage dividers, filters and 4-20 mA, and driving relays, DC, stepper and servo motors."
+sidebar:
+  order: 14
+---
+
+A microcontroller can only read and output digital levels and measure voltages with the ADC. To interact with the physical world, it needs **sensors**, which convert a physical quantity (temperature, light, pressure, distance ...) into an electrical signal, and **actuators**, which conversely turn an electrical signal into a physical effect (motion, heat, light, switching). Together with the controller they form the principle **input, processing, output** (IPO).
+
+## Sensors
+
+### Classification
+
+| Criterion         | Variants | Example |
+| ----------------- | -------- | ------- |
+| Output signal     | **binary** (on/off), **analogue** (voltage, current, resistance), **digital** (data bus such as I²C, SPI, 1-Wire) | limit switch, NTC, LM75 |
+| Power supply      | **passive**: needs auxiliary power and changes e.g. its resistance; **active**: generates a voltage itself | NTC, LDR or thermocouple, photodiode in photovoltaic mode |
+| Contact           | contact or contactless | push button or inductive proximity switch |
+
+A **smart sensor** already contains signal conditioning, an ADC and a digital interface. It directly delivers a calibrated measurement, for example in degrees Celsius.
+
+### Characteristics
+
+| Characteristic       | Meaning |
+| -------------------- | ------- |
+| **Measuring range**  | smallest and largest measurable value |
+| **Sensitivity**      | change of the output signal per change of the measured quantity, e.g. $10\,\mathrm{mV/K}$ |
+| **Resolution**       | smallest distinguishable change |
+| **Accuracy**         | maximum deviation from the true value, e.g. $\pm 0.5\,\mathrm{K}$ |
+| **Linearity**        | how closely the characteristic curve follows a straight line |
+| **Response time**    | time until the sensor reacts to a change (inertia) |
+| **Hysteresis**       | different output depending on whether the measured quantity rises or falls |
+| **Offset and drift** | zero error and slow change over time and temperature |
+
+Resolution and accuracy are different things: a sensor can resolve $0.01\,\mathrm{K}$ and still be $1\,\mathrm{K}$ off.
+
+### Important sensor types
+
+| Quantity             | Sensor                                   | Principle |
+| -------------------- | ---------------------------------------- | --------- |
+| Temperature          | **NTC** thermistor                       | resistance falls as temperature rises, strongly non-linear |
+|                      | **PTC**, **Pt100/Pt1000**                | resistance rises; Pt100 has $100\,\mathrm{\Omega}$ at $0\,\mathrm{°C}$, almost linear and accurate |
+|                      | **Thermocouple** (e.g. type K)           | two metals generate a temperature-dependent voltage (Seebeck effect), for high temperatures |
+|                      | Digital sensors (LM75, DS18B20)          | calibrated value via [I²C](/en/embedded-programming/i2c/) or 1-Wire |
+| Light                | **LDR** (photoresistor), photodiode, phototransistor | resistance or current changes with illuminance |
+| Distance             | Ultrasonic (HC-SR04)                     | travel time of a sound pulse: $d = \frac{v_{sound} \cdot t}{2}$ |
+|                      | Infrared, time of flight (ToF)           | triangulation or travel time of a light pulse |
+| Position, presence   | **Inductive proximity switch**           | detects metal via a magnetic field |
+|                      | **Capacitive proximity switch**          | detects almost all materials via a change in capacitance |
+|                      | Light barrier, reed contact, Hall sensor | interruption of a light beam or magnetic field |
+| Angle, speed         | **Incremental encoder**                  | delivers pulses per revolution; two offset tracks A/B show the direction of rotation |
+|                      | Absolute encoder, potentiometer          | directly delivers the absolute position |
+| Force, pressure      | Strain gauges, piezoresistive pressure sensors | resistance changes when deformed (usually in a Wheatstone bridge) |
+| Acceleration, angular rate | MEMS sensors (e.g. MPU-6050)       | micromechanical structures, output via I²C/SPI |
+
+In industry, binary sensors usually work with **24 V DC**. A distinction is made between **PNP outputs** (switch the positive voltage to the output, "sourcing", common in Europe) and **NPN outputs** (switch the output to ground, "sinking").
+
+## Signal conditioning
+
+Sensor signals rarely fit the microcontroller input directly. **Signal conditioning** converts them into a signal that the [ADC](/en/embedded-programming/analogue-digital-converter/) or a digital input can process.
+
+### Voltage divider for resistive sensors
+
+An NTC, LDR or potentiometer only changes its resistance. In series with a fixed resistor $R$ it forms a **voltage divider**. If the NTC is connected to $V_{CC}$ and $R$ to ground, the ADC measures:
+
+$$
+U_{ADC} = V_{CC} \cdot \frac{R}{R + R_{NTC}} \quad \Rightarrow \quad R_{NTC} = R \cdot \left(\frac{1024}{ADC} - 1\right)
+$$
+
+(with $V_{ref} = V_{CC}$ and a 10-bit ADC). For an NTC, the temperature follows approximately from the **beta parameter equation** with the nominal resistance $R_0$ at $T_0 = 298.15\,\mathrm{K}$ ($25\,\mathrm{°C}$):
+
+$$
+\frac{1}{T} = \frac{1}{T_0} + \frac{1}{B} \cdot \ln\left(\frac{R_{NTC}}{R_0}\right)
+$$
+
+**Example:** NTC with $R_0 = 10\,\mathrm{k\Omega}$ and $B = 3950\,\mathrm{K}$, fixed resistor $R = 10\,\mathrm{k\Omega}$, the ADC returns 600:
+
+$$
+R_{NTC} = 10\,\mathrm{k\Omega} \cdot \left(\frac{1024}{600} - 1\right) \approx 7.07\,\mathrm{k\Omega}
+$$
+
+$$
+\frac{1}{T} = \frac{1}{298.15\,\mathrm{K}} + \frac{\ln(0.7067)}{3950\,\mathrm{K}} \approx 0.003266\,\mathrm{K^{-1}} \quad \Rightarrow \quad T \approx 306.2\,\mathrm{K} \approx 33.0\,\mathrm{°C}
+$$
+
+```c
+#include <math.h>
+#include <stdint.h>
+
+#define R_FIXED 10000.0
+#define R0      10000.0
+#define BETA    3950.0
+#define T0      298.15
+
+float ntc_temperature(uint16_t adc) {
+    float r_ntc = R_FIXED * (1024.0 / adc - 1.0);
+    float inv_t = 1.0 / T0 + log(r_ntc / R0) / BETA;
+    return 1.0 / inv_t - 273.15;   // in °C
+}
+```
+
+Floating-point calculations and `log()` are slow on an 8-bit AVR and need a lot of flash. That is why a precomputed **lookup table** with linear interpolation is often used instead.
+
+### Amplifying, filtering, level shifting
+
+- **Amplifying:** Small signals (thermocouple: about $41\,\mathrm{\mu V/K}$, strain gauge bridge: a few mV) are brought to the input range of the ADC with an **operational amplifier** or instrumentation amplifier.
+- **Filtering:** An **RC low-pass filter** removes high-frequency interference. Its cut-off frequency is $f_c = \frac{1}{2 \pi R C}$. With $R = 10\,\mathrm{k\Omega}$ and $C = 100\,\mathrm{nF}$ this gives $f_c \approx 159\,\mathrm{Hz}$. According to the sampling theorem, the sampling frequency must be more than twice the highest frequency in the signal, otherwise aliasing errors occur. In addition, several readings can be averaged in software.
+- **Level shifting:** A 24 V industrial signal is connected to a 5 V input via a voltage divider or an **optocoupler** (galvanic isolation). Between 3.3 V and 5 V devices, **level shifters** are used.
+- **Schmitt trigger:** Turns a noisy or slowly rising signal into a clean digital signal by using two switching thresholds (hysteresis).
+- **Debouncing:** Mechanical contacts bounce, see [button](/en/embedded-programming/button/#debouncing).
+
+### Standard signals in industry
+
+Over longer cables, analogue measurements are transmitted in standardised ranges:
+
+| Standard signal    | Properties |
+| ------------------ | ---------- |
+| **0 to 10 V**      | simple, but sensitive to voltage drop on the cable and interference |
+| **4 to 20 mA**     | current loop: cable resistance does not matter because the current is the same everywhere. The **live zero** (4 mA = start of range) makes it possible to detect a broken wire (0 mA), and the sensor can be powered from the loop (two-wire technology). |
+| 0 to 20 mA         | as above, but without broken-wire detection |
+
+For the ADC, a current of 4 to 20 mA is converted into a voltage using a burden resistor; with $250\,\mathrm{\Omega}$ this gives 1 to 5 V. A reading of $12\,\mathrm{mA}$ with a measuring range of 0 to 100 °C corresponds to exactly $\frac{12 - 4}{20 - 4} = 50\,\%$, i.e. $50\,\mathrm{°C}$.
+
+## Actuators
+
+### Relays and power switches
+
+A pin of the ATmega328P only supplies about $20\,\mathrm{mA}$ (absolute maximum $40\,\mathrm{mA}$). Larger loads are switched via a **transistor** (bipolar or MOSFET), a **relay** (galvanically isolated, also for 230 V AC) or, in industry, a **contactor**. The coils of relays, solenoid valves and motors generate a high induced voltage when switched off. A **flyback diode** in parallel with the coil protects the transistor from it.
+
+### DC motor
+
+In a DC motor, the speed is roughly proportional to the applied voltage and the torque proportional to the current. The speed is therefore set with [PWM](/en/embedded-programming/timer/#pwm---pulse-width-modulation) and the direction of rotation by reversing the polarity. Both are done by an **H-bridge** made of four switches (as an IC e.g. L293D, L298N or modern MOSFET drivers such as the DRV8833):
+
+| `IN1` | `IN2` | Effect |
+| ----- | ----- | ------ |
+| 1     | 0     | clockwise |
+| 0     | 1     | anticlockwise |
+| 0     | 0     | coast (freewheel) |
+| 1     | 1     | brake (motor winding short-circuited) |
+
+The PWM signal is applied to the enable input of the bridge or alternately to `IN1`/`IN2`.
+
+### Stepper motor
+
+A **stepper motor** does not rotate continuously but in fixed steps when its coils are energised in a particular order. 200 steps per revolution, i.e. $1.8°$ per step, are typical. In half-step mode the angle is halved; with **microstepping** (e.g. 1/16) the motor runs more smoothly and quietly.
+
+Because each step is precisely defined, the position can be determined by counting the steps without measuring it (**open-loop control**). If the motor is overloaded, however, it loses steps without the controller noticing. You find stepper motors in 3D printers, CNC mills and plotters.
+
+A driver such as the **A4988** or **DRV8825** takes care of energising the coils. The microcontroller only sets the direction (`DIR`) and generates one pulse on `STEP` for each step:
+
+```c
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define STEP_PIN PD2
+#define DIR_PIN  PD3
+
+void stepper_move(uint16_t steps, uint8_t clockwise) {
+    if (clockwise) PORTD |= (1<<DIR_PIN);
+    else           PORTD &= ~(1<<DIR_PIN);
+
+    for (uint16_t i = 0; i < steps; i++) {
+        PORTD |= (1<<STEP_PIN);   // rising edge = one step
+        _delay_us(2);
+        PORTD &= ~(1<<STEP_PIN);
+        _delay_ms(2);             // determines the speed
+    }
+}
+
+int main(void) {
+    DDRD |= (1<<STEP_PIN) | (1<<DIR_PIN);
+    while (1) {
+        stepper_move(200, 1);     // one revolution in full-step mode
+        _delay_ms(500);
+        stepper_move(200, 0);     // and back
+        _delay_ms(500);
+    }
+}
+```
+
+At $2\,\mathrm{ms}$ per step, one revolution takes $200 \cdot 2\,\mathrm{ms} = 0.4\,\mathrm{s}$, which is $150\,\mathrm{min^{-1}}$. For higher speeds you have to accelerate slowly (ramp), otherwise the motor loses steps.
+
+### Servo motor
+
+A (hobby) **servo** consists of a DC motor, a gearbox, a potentiometer for measuring the position and control electronics. It moves to a given angle and holds it (**closed-loop control**). The setpoint is transmitted as a PWM signal with a period of $20\,\mathrm{ms}$ ($50\,\mathrm{Hz}$); the **pulse width** determines the angle:
+
+| Pulse width | Angle (typical) |
+| ----------- | --------------- |
+| 1.0 ms      | 0°              |
+| 1.5 ms      | 90° (centre)    |
+| 2.0 ms      | 180°            |
+
+Many servos use a somewhat larger range (about 0.5 to 2.5 ms); the datasheet gives the exact values.
+
+With timer 1 in **fast PWM mode 14** (TOP = `ICR1`) and prescaler 8, the timer counts at $2\,\mathrm{MHz}$, i.e. $0.5\,\mathrm{\mu s}$ per step. A period of $20\,\mathrm{ms}$ corresponds to $40\,000$ steps, so `ICR1 = 39999`. A pulse width of $1\,\mathrm{ms}$ corresponds to `OCR1A = 2000`:
+
+```c
+#include <avr/io.h>
+#include <stdint.h>
+
+void servo_init(void) {
+    DDRB |= (1<<DDB1);                         // OC1A = PB1 as output
+    TCCR1A = (1<<COM1A1) | (1<<WGM11);         // non-inverting, mode 14
+    TCCR1B = (1<<WGM13) | (1<<WGM12) | (1<<CS11); // mode 14, prescaler 8
+    ICR1 = 39999;                              // 20 ms period
+}
+
+// Map an angle from 0 to 180 degrees to 1 to 2 ms
+void servo_set_angle(uint8_t angle) {
+    OCR1A = 2000 + (uint32_t)angle * 2000 / 180;
+}
+```
+
+### Comparison of motors
+
+| Motor        | Control                  | Positioning               | Typical use |
+| ------------ | ------------------------ | ------------------------- | ----------- |
+| DC motor     | PWM + H-bridge           | only with encoder and closed-loop control | fans, pumps, vehicles |
+| Stepper motor | step pulses via driver  | by counting steps (open loop) | 3D printers, CNC |
+| Servo        | 50 Hz PWM, pulse width = angle | internally controlled, usually 0 to 180° | model making, robot arms, flaps |
+| BLDC (brushless) | electronic commutation (ESC) | with sensors/encoder | drones, hard disks, e-mobility |
+
+Industrial plants also use **three-phase induction motors** with **frequency converters** and **servo drives**, which are controlled by a PLC via a [field bus](/en/embedded-programming/bus-systems/).
+
+## Further reading
+
+- [mikrocontroller.net: Motoransteuerung mit PWM](https://www.mikrocontroller.net/articles/Motoransteuerung_mit_PWM) and [Schrittmotoren](https://www.mikrocontroller.net/articles/Schrittmotoren) (German)
+- Jacob Fraden: _Handbook of Modern Sensors_, Springer
+- Microchip: [ATmega328P datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), chapter "16-bit Timer/Counter1 with PWM"

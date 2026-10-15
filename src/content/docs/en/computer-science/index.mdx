@@ -1,0 +1,42 @@
+---
+title: Computer Science
+description: Fundamentals of computer science, from data representation via computer architecture, hardware and operating systems to automata, computability and complexity.
+sidebar:
+  label: Overview
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+This section covers how a computer works on the inside: how numbers and characters are stored as bits, how the processor executes instructions, which components a PC is made of and how the operating system manages processes, memory and files. It also covers the basics of theoretical computer science, which show what computers can and cannot compute in principle.
+
+At the Austrian HTL for information technology, this material is mainly part of **Systemtechnik** (fundamentals of computer science, hardware and operating systems) in the first years and is extended in the higher years with operating system concepts and theoretical computer science. Number systems are covered in [Mathematics](/en/mathematics/algebra/number-systems/), the practical administration of Linux and Windows systems under [Deployment](/en/deployment/).
+
+## Data and codes
+
+<CardGrid>
+  <LinkCard title="Data Representation" href="/en/computer-science/data-representation/" description="Bits, units, two's complement, IEEE 754, byte order and character encoding." />
+  <LinkCard title="Codes and Compression" href="/en/computer-science/codes-and-compression/" description="BCD, Gray code, parity, Hamming code, CRC, Huffman coding and LZW." />
+</CardGrid>
+
+## Computer architecture and hardware
+
+<CardGrid>
+  <LinkCard title="Computer Architecture" href="/en/computer-science/computer-architecture/" description="Von Neumann, CPU, instruction cycle, pipelining, caches, interrupts and Amdahl." />
+  <LinkCard title="PC Hardware" href="/en/computer-science/hardware/" description="Mainboard, RAM, SSD, interfaces, power supply, UEFI, assembly and troubleshooting." />
+</CardGrid>
+
+## Operating systems
+
+<CardGrid>
+  <LinkCard title="Operating Systems" href="/en/computer-science/operating-systems/" description="Tasks, kernel types, system calls, boot process, drivers and comparison of systems." />
+  <LinkCard title="Processes and Threads" href="/en/computer-science/processes-and-threads/" description="Process states, scheduling, IPC, synchronisation and deadlocks." />
+  <LinkCard title="Memory Management in the Operating System" href="/en/computer-science/memory-management-os/" description="Paging, TLB, virtual memory and page replacement." />
+  <LinkCard title="File Systems" href="/en/computer-science/file-systems/" description="Inodes, FAT, NTFS, ext4, journaling, permissions, links and partitioning." />
+</CardGrid>
+
+## Theoretical computer science
+
+<CardGrid>
+  <LinkCard title="Automata and Formal Languages" href="/en/computer-science/automata-and-formal-languages/" description="DFA, NFA, regular expressions, grammars, pushdown automata and Turing machines." />
+  <LinkCard title="Computability and Complexity" href="/en/computer-science/computability-and-complexity/" description="Halting problem, P, NP, NP-completeness and dealing with hard problems." />
+</CardGrid>

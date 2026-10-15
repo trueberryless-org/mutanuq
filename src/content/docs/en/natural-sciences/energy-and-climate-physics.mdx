@@ -1,0 +1,152 @@
+---
+title: Energy and Climate
+description: The physics of energy supply, forms of energy and conversion chains, photovoltaics, wind power with the Betz limit, hydropower, energy storage and the physics of the greenhouse effect.
+sidebar:
+  order: 16
+---
+
+Energy supply and climate change are topics in which physics feeds directly into decisions society makes. This page covers the physical foundations: where does usable energy come from, how much can be obtained from sun, wind and water, how is it stored, and why does additional CO₂ warm the Earth?
+
+## Forms of energy and conversion chains
+
+Energy is never used up, only converted (see [conservation of energy](/en/natural-sciences/work-energy-power/#conservation-of-energy)). What is "used up" is its usefulness: every chain ends in low-temperature heat, and entropy has increased.
+
+| Stage | Meaning | Examples |
+| --- | --- | --- |
+| **primary energy** | energy sources occurring in nature | crude oil, natural gas, coal, uranium, solar radiation, wind, hydropower, biomass |
+| **secondary energy** | obtained by conversion | electricity, petrol, diesel, district heating, hydrogen |
+| **final energy** | what reaches the consumer and is paid for | electricity from the socket, heating oil in the tank |
+| **useful energy** | the form actually wanted | light, heat in the room, motion |
+
+Every conversion has losses; the efficiencies of the chain multiply.
+
+:::tip[Example: conversion chain]
+Electricity from a gas-fired power station ($\eta = 0.58$) is transmitted via the grid ($\eta = 0.94$) to an LED lamp ($\eta \approx 0.4$ for light): $\eta_\mathrm{total} = 0.58 \cdot 0.94 \cdot 0.4 = 0.22$. Only 22 % of the primary energy becomes light. With an incandescent lamp ($\eta \approx 0.03$) it would be under 2 %.
+:::
+
+Almost all of the Earth's energy sources go back to the Sun: wind and the water cycle are driven by solar heat, while biomass and fossil fuels store solar energy via photosynthesis. The exceptions are nuclear energy, geothermal energy (from radioactive decay and residual heat in the Earth's interior) and tidal energy (from the gravitation of the Moon and Sun).
+
+## Photovoltaics
+
+A **solar cell** converts light directly into electrical energy. It is a large-area [pn junction](/en/natural-sciences/modern-physics/#semiconductors) made of semiconductor material, usually silicon:
+
+1. A photon with an energy greater than the band gap ($E_\mathrm{g} = 1.12\,\mathrm{eV}$ for silicon) lifts an electron into the conduction band and creates an electron-hole pair (internal photoelectric effect).
+2. The electric field in the depletion layer separates the charges: electrons move into the n region, holes into the p region.
+3. A voltage of about $0.6\,\mathrm{V}$ per cell appears at the contacts; direct current flows through an external load. Many cells in series form a module, and an **inverter** produces grid-compatible alternating current.
+
+Why the efficiency is limited: photons with $E < E_\mathrm{g}$ (infrared above about $1100\,\mathrm{nm}$) are not used, and with more energetic photons the excess $hf - E_\mathrm{g}$ is lost as heat. For a single cell with an ideal band gap, this gives the theoretical **Shockley-Queisser limit** of about 33 %. Commercial silicon modules reach 20 to 23 %, multi-junction cells with several band gaps over 40 % (space applications). Higher temperature lowers the voltage and thus the efficiency by about $0.3$ to $0.4\,\%$ per kelvin.
+
+The rated power is given under **standard test conditions** (STC: irradiance $1000\,\mathrm{W/m^2}$, cell temperature $25\,^\circ\mathrm{C}$) in **kilowatt-peak** (kWp).
+
+:::tip[Example: rooftop PV system]
+$10\,\mathrm{m^2}$ of modules with 20 % efficiency: $P = 10\,\mathrm{m^2} \cdot 1000\,\mathrm{W/m^2} \cdot 0.2 = 2\,\mathrm{kWp}$. In Austria, a well-oriented system delivers around $1000$ to $1100\,\mathrm{kWh}$ per kWp per year, so here about $2000\,\mathrm{kWh}$. That corresponds to around 1000 full-load hours out of 8760 hours in a year: at night, under cloud and with a low sun, the system delivers little.
+:::
+
+## Wind power
+
+Wind is moving air with kinetic energy. The mass flowing through the rotor area $A$ per second is $\dot m = \rho A v$, so the power of the wind is
+
+$$
+P_\mathrm{wind} = \frac{1}{2} \dot m v^2 = \frac{1}{2} \rho A v^3
+$$
+
+The power grows with the **cube** of the wind speed: twice the wind speed means eight times the power. That is why wind turbines are placed at windy sites and on tall towers, where the wind is stronger and steadier. The rotor area grows with the square of the diameter.
+
+### Betz limit
+
+A wind turbine cannot extract all of the wind's energy; otherwise the air behind the rotor would stand still and could not flow away. In 1920, Albert Betz showed with momentum and energy balances that the power is greatest when the air behind the rotor is slowed to a third of the upstream speed. The highest possible **power coefficient** is
+
+$$
+c_{P,\mathrm{max}} = \frac{16}{27} \approx 0.593
+$$
+
+Modern turbines reach $c_P \approx 0.45$ to $0.50$ at their best operating point.
+
+:::tip[Example: wind turbine]
+Rotor diameter $120\,\mathrm{m}$, wind speed $10\,\mathrm{m/s}$, air density $1.225\,\mathrm{kg/m^3}$:
+
+$$
+A = \pi \cdot 60^2 = 11\,310\,\mathrm{m^2}, \qquad P_\mathrm{wind} = \frac{1}{2} \cdot 1.225 \cdot 11\,310 \cdot 10^3 = 6.93\,\mathrm{MW}
+$$
+
+According to Betz, at most $0.593 \cdot 6.93 = 4.1\,\mathrm{MW}$ can be used; with $c_P = 0.45$, about $3.1\,\mathrm{MW}$. At $5\,\mathrm{m/s}$ it would be only an eighth. Over a year, onshore wind turbines typically achieve 2000 to 3000 full-load hours.
+:::
+
+## Hydropower
+
+Hydroelectric power stations use the potential energy of water flowing down a **head** $h$. With the volume flow rate $Q$ (in $\mathrm{m^3/s}$), the power is
+
+$$
+P = \eta \cdot \rho \cdot g \cdot Q \cdot h
+$$
+
+Turbines and generators together reach efficiencies of 85 to 90 %, more than any other type of power station.
+
+:::tip[Example]
+A run-of-river power station: $Q = 100\,\mathrm{m^3/s}$, $h = 10\,\mathrm{m}$, $\eta = 0.9$: $P = 0.9 \cdot 1000 \cdot 9.81 \cdot 100 \cdot 10 = 8.8\,\mathrm{MW}$.
+:::
+
+| Type of power station | Characteristic |
+| --- | --- |
+| **run-of-river** | large flow, small head, supplies base load (Danube power stations) |
+| **storage power station** | reservoir in the mountains, large head, quickly controllable for peak load |
+| **pumped-storage power station** | pumps water into an upper reservoir when there is surplus electricity and generates electricity when needed; overall efficiency about 75 to 80 % |
+
+Austria is a hydropower country: according to E-Control, around 60 % of domestic electricity generation came from hydropower in 2024.
+
+## Energy storage
+
+Sun and wind do not deliver energy when it is needed. Storage evens this out, over seconds to months.
+
+| Storage | Principle | Energy density (typical) | Efficiency |
+| --- | --- | --- | --- |
+| pumped storage | potential energy $mgh$ | $0.8\,\mathrm{kWh/m^3}$ at $300\,\mathrm{m}$ head | 75 to 80 % |
+| lithium-ion battery | electrochemical | $150$ to $270\,\mathrm{Wh/kg}$ | about 90 to 95 % |
+| lead-acid battery | electrochemical | $30$ to $40\,\mathrm{Wh/kg}$ | 70 to 85 % |
+| flywheel | rotational energy $\frac{1}{2}J\omega^2$ | low, but very high power | over 85 % (short-term) |
+| supercapacitor | electric field $\frac{1}{2}CU^2$ | about $5\,\mathrm{Wh/kg}$ | over 95 % |
+| thermal storage (water) | $Q = c m \Delta T$ | $46.5\,\mathrm{kWh/m^3}$ at $40\,\mathrm{K}$ | depends on insulation |
+| hydrogen (power-to-gas) | chemical, electrolysis and fuel cell | $33.3\,\mathrm{kWh/kg}$ (lower heating value) | power to power about 30 to 40 % |
+| for comparison: petrol | chemical | $12\,\mathrm{kWh/kg}$ | engine 25 to 35 % |
+
+:::tip[Example: pumped storage]
+An upper reservoir holding $10^6\,\mathrm{m^3}$ of water ($10^9\,\mathrm{kg}$) lies $300\,\mathrm{m}$ above the lower reservoir: $E = m g h = 10^9 \cdot 9.81 \cdot 300 = 2.94 \times 10^{12}\,\mathrm{J} = 818\,\mathrm{MWh}$. An electric car battery with $60\,\mathrm{kWh}$, by contrast, weighs around $400\,\mathrm{kg}$.
+:::
+
+Per kilogram, petrol contains about fifty times as much energy as a battery. But because an electric motor converts around 90 % into motion and a combustion engine only a third, the difference in useful energy shrinks considerably.
+
+## Greenhouse effect
+
+### The Earth's radiation balance
+
+At the top of the atmosphere, the Earth receives the **solar constant** $S = 1361\,\mathrm{W/m^2}$ from the Sun (perpendicular to the incoming radiation). About 30 % is reflected directly by clouds, ice and ground (**albedo** $a = 0.3$). The Earth intercepts radiation with its cross-sectional area $\pi R^2$ but radiates with its entire surface $4\pi R^2$. In equilibrium, by the [Stefan-Boltzmann law](/en/natural-sciences/thermodynamics/#thermal-radiation):
+
+$$
+S (1 - a) \pi R^2 = \sigma T^4 \cdot 4\pi R^2 \quad\Rightarrow\quad T = \sqrt[4]{\frac{S(1-a)}{4\sigma}} = \sqrt[4]{\frac{1361 \cdot 0.7}{4 \cdot 5.67 \times 10^{-8}}} = 255\,\mathrm{K}
+$$
+
+Without an atmosphere, the Earth would therefore average about $-18\,^\circ\mathrm{C}$. In fact, the mean surface temperature is about $+15\,^\circ\mathrm{C}$ ($288\,\mathrm{K}$). The difference of around $33\,\mathrm{K}$ is the **natural greenhouse effect**, without which the Earth would be largely frozen.
+
+### Physical mechanism
+
+The Sun ($5772\,\mathrm{K}$) mainly emits visible light, the Earth's surface ($288\,\mathrm{K}$), according to Wien's law, infrared around $10\,\mathrm{\mu m}$. The atmosphere is largely transparent to visible light, but gases with three or more atoms absorb infrared: **water vapour**, **carbon dioxide** (strong band at $15\,\mathrm{\mu m}$), methane, nitrous oxide and ozone. Their molecules can be excited into vibration by infrared photons; nitrogen and oxygen (diatomic, symmetric) practically cannot.
+
+The excited molecules pass the energy on to the air through collisions and in turn emit infrared in all directions, including back towards the ground (**back radiation**). Thermal radiation only escapes into space from higher, colder layers. Because colder layers emit less according to $\sigma T^4$, the system as a whole has to warm up until it again emits as much as it receives. More greenhouse gases raise the emission height further: this is the **enhanced (anthropogenic) greenhouse effect**. The name is misleading; a greenhouse warms mainly because it suppresses convection.
+
+### Radiative forcing and warming
+
+Burning fossil fuels has raised the CO₂ concentration from about $280\,\mathrm{ppm}$ before industrialisation to over $420\,\mathrm{ppm}$. The additional energy this retains on average is called **radiative forcing**. For CO₂, approximately
+
+$$
+\Delta F = 5.35\,\mathrm{W/m^2} \cdot \ln\frac{C}{C_0}
+$$
+
+For $C = 420\,\mathrm{ppm}$ this gives $\Delta F = 5.35 \cdot \ln(1.5) = 2.2\,\mathrm{W/m^2}$. That sounds small, but it acts on the entire surface of the Earth, all the time. **Feedbacks** amplify the warming: warmer air holds more water vapour (itself a greenhouse gas), and melting ice lowers the albedo. According to the Intergovernmental Panel on Climate Change (IPCC, Sixth Assessment Report), the global surface temperature in 2011 to 2020 was about $1.1\,^\circ\mathrm{C}$ above the 1850 to 1900 average, and a doubling of CO₂ very likely leads to warming of 2 to $5\,^\circ\mathrm{C}$ (best estimate $3\,^\circ\mathrm{C}$). Over land, for example in the Alpine region, warming is considerably stronger than the global average.
+
+The effects on ecosystems and possible measures are covered by ecology; what matters physically is that CO₂ stays in the atmosphere for centuries, so warming depends essentially on cumulative emissions.
+
+## Further reading
+
+- IPCC: _Climate Change 2021: The Physical Science Basis_ (Sixth Assessment Report, Working Group I), ipcc.ch
+- E-Control: statistics on electricity generation in Austria, e-control.at
+- David J. C. MacKay: _Sustainable Energy, without the hot air_, UIT Cambridge, 2009 (freely available)

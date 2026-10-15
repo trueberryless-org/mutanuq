@@ -1,0 +1,152 @@
+---
+title: Network Basics
+description: Network types from PAN to WAN, topologies, client-server and peer-to-peer, network components, bandwidth, throughput, latency, jitter and standards bodies.
+sidebar:
+  order: 1
+---
+
+A **computer network** connects two or more devices so that they can exchange data and share resources such as printers, storage or an internet connection. Every network consists of three parts: the **end devices**, which produce or consume data, the **intermediary devices**, which forward data, and the **transmission media** that carry the signals. For the devices to understand each other, they follow common rules called **protocols**.
+
+## Network types
+
+Networks are classified by their geographical extent. The boundaries are not sharp; what matters more is who operates the network: a LAN usually belongs to the organisation itself, while a WAN is almost always leased from a provider.
+
+| Type | Name | Extent | Example |
+| --- | --- | --- | --- |
+| **PAN** | _Personal Area Network_ | a few metres | smartphone with Bluetooth headphones and a smartwatch |
+| **LAN** | _Local Area Network_ | building, site | network of a school or an office |
+| **WLAN** | _Wireless LAN_ | building, site | LAN over radio according to IEEE 802.11 |
+| **MAN** | _Metropolitan Area Network_ | city, region | fibre network of a municipal utility connecting sites within a city |
+| **WAN** | _Wide Area Network_ | countries, continents | connection of a bank's branches via a provider |
+| **GAN** | _Global Area Network_ | worldwide | the internet, satellite networks |
+
+Further terms:
+
+- A **SAN** (_Storage Area Network_) is a separate network used only for access to storage systems, for example with Fibre Channel or iSCSI.
+- The **internet** is the worldwide interconnection of independent networks that all use the TCP/IP protocols. An **intranet** is a private network open only to members of an organisation. An **extranet** opens parts of it to partners such as suppliers.
+- A **VPN** (_Virtual Private Network_) builds an encrypted connection across a third-party network, as if you were directly in your own network (see [WAN and Internet Access](/en/networking/wan-and-internet-access/#vpn)).
+
+## Topologies
+
+The **physical topology** describes how devices and cables are actually arranged. The **logical topology** describes how the data flows. The two can differ: a hub is physically a star but behaves logically like a bus, because every signal goes to all ports.
+
+| Topology | Structure | Advantages | Disadvantages |
+| --- | --- | --- | --- |
+| **Bus** | all devices on one shared cable with terminating resistors | little cable | one cable break takes down the whole network, collisions |
+| **Ring** | each device connected to two neighbours, data travels in a circle | deterministic, no collision problem | failure of one device breaks the ring (unless dual ring) |
+| **Star** | all devices on a central switch | easy troubleshooting, a faulty cable affects only one device | central device is a single point of failure |
+| **Extended star** (tree) | several stars connected hierarchically | scalable, standard in LANs | failure of an upper node affects a whole branch |
+| **Full mesh** | every device connected to every other | highest fault tolerance | very many connections, expensive |
+| **Partial mesh** | only important nodes connected multiple times | good compromise | more planning effort |
+
+A full mesh with $n$ nodes needs
+
+$$
+L = \frac{n \cdot (n - 1)}{2}
+$$
+
+links. For 10 routers that is already 45 lines. In practice, therefore, only the core of a network is meshed (for example the core routers or a WAN between a few sites), and the rest is built as an extended star. Today's Ethernet LANs are almost always physically an extended star; bus and ring are only of historical interest (10BASE2, Token Ring) or used in industry (ring with a redundancy protocol).
+
+## Client-server and peer-to-peer
+
+In the **client-server model**, a central **server** provides a service (web pages, files, email, database), and many **clients** use it. The client starts the communication; the server waits for requests.
+
+In the **peer-to-peer model** (P2P), all participants are equal: every computer is both client and server at the same time. Examples are a Windows workgroup with shared folders, BitTorrent or the nodes of a blockchain.
+
+| Feature | Client-server | Peer-to-peer |
+| --- | --- | --- |
+| Administration | central (users, permissions, backup in one place) | decentralised, each computer individually |
+| Security | centrally controllable | hard to enforce consistently |
+| Scaling | server must grow with the load | every new peer brings capacity |
+| Failure | server failure stops the service | no single point of failure |
+| Cost | server hardware and administration | low, suitable for small networks |
+
+## Network components
+
+| Device | OSI layer | Function |
+| --- | --- | --- |
+| **Network interface card** (NIC) | 1 and 2 | connects a device to the medium, has a globally unique MAC address |
+| **Repeater** | 1 | amplifies and regenerates signals to extend the range |
+| **Hub** | 1 | multiport repeater: sends every signal to all ports, obsolete today |
+| **Bridge** | 2 | connects two segments and filters by MAC address |
+| **Switch** | 2 (layer 3 switch also 3) | forwards frames to the correct port based on the MAC address |
+| **Router** | 3 | connects different IP networks and chooses the path using the routing table |
+| **Access point** (AP) | 1 and 2 | connects WLAN clients to the wired LAN |
+| **Firewall** | 3 to 7 | filters traffic according to rules, separates trusted from untrusted networks |
+| **Modem** | 1 | converts digital signals for a line (DSL, cable) |
+
+A **home router** is really a combined device made up of router, switch, access point, firewall, DHCP server and often a modem. In enterprise networks these functions are spread over separate devices so that they can be scaled and made redundant independently. More on firewalls in the data centre can be found under [Firewalls](/en/deployment/operations/firewalls/).
+
+## Performance metrics
+
+### Bandwidth and throughput
+
+**Bandwidth** is the maximum data rate a medium or connection can carry, for example 1 Gbit/s for Gigabit Ethernet. **Throughput** is the data rate actually measured. It is always lower than the bandwidth because protocol overhead, collisions, errors, waiting times and the slowest link on the path limit it. **Goodput** is the part of the throughput that reaches the application as payload, i.e. without headers and retransmissions.
+
+### Units
+
+Data rates are given in **bits per second** (bit/s, also bps). The prefixes are decimal: 1 kbit/s = 1000 bit/s, 1 Mbit/s = $10^6$ bit/s, 1 Gbit/s = $10^9$ bit/s. File sizes, on the other hand, are given in **bytes** (B), 1 byte = 8 bits. For binary multiples there are the IEC prefixes: 1 KiB = 1024 B, 1 MiB = $2^{20}$ B.
+
+:::tip[Example: transfer time]
+A 2 GB file (decimal, $2 \cdot 10^9\,\mathrm{B}$) is to be transferred over a 100 Mbit/s connection:
+
+$$
+t = \frac{2 \cdot 10^9 \cdot 8\,\mathrm{bit}}{100 \cdot 10^6\,\mathrm{bit/s}} = 160\,\mathrm{s}
+$$
+
+This is the theoretical lower bound. Because of overhead (around 5 % for TCP over Ethernet), it actually takes somewhat longer.
+:::
+
+### Latency
+
+**Latency** (delay) is the time a bit needs to travel from source to destination. It is made up of four components:
+
+| Component | Cause | Formula |
+| --- | --- | --- |
+| **Transmission (serialisation) delay** | putting all bits of a packet onto the line | $t_s = L / R$ (packet length divided by data rate) |
+| **Propagation delay** | travel time of the signal in the medium | $t_p = d / v$ (distance divided by propagation speed) |
+| **Processing delay** | router checks the header and looks up the route | microseconds |
+| **Queuing delay** | packet waits in a buffer because the line is busy | strongly load-dependent |
+
+Signals propagate in copper and fibre at about two thirds of the speed of light, i.e. at roughly $2 \cdot 10^8\,\mathrm{m/s}$.
+
+:::tip[Example: Vienna to New York]
+A 1500-byte packet is sent over a 1 Gbit/s line; the fibre route is about 7000 km long.
+
+$$
+t_s = \frac{1500 \cdot 8\,\mathrm{bit}}{10^9\,\mathrm{bit/s}} = 12\,\mathrm{\mu s}
+\qquad
+t_p = \frac{7 \cdot 10^6\,\mathrm{m}}{2 \cdot 10^8\,\mathrm{m/s}} = 35\,\mathrm{ms}
+$$
+
+Over long distances the propagation delay dominates. A faster line only shortens $t_s$; no amount of bandwidth helps against physics.
+:::
+
+The **round-trip time** (RTT) is the time for the way there and back, which is what `ping` shows.
+
+### Jitter and packet loss
+
+**Jitter** is the variation in latency between consecutive packets. It does not matter for file transfers, but it disturbs voice and video, because the packets have to be played back at an even pace. Receivers compensate for jitter with a **jitter buffer**, which in turn increases latency. **Packet loss** occurs mainly when buffers in routers overflow. How real-time traffic is prioritised is described under [QoS](/en/networking/wan-and-internet-access/#quality-of-service).
+
+## Standards bodies
+
+Networks only work because devices from different manufacturers implement the same open standards.
+
+| Organisation | Responsibility | Examples |
+| --- | --- | --- |
+| **IEEE** (_Institute of Electrical and Electronics Engineers_) | layers 1 and 2, working group 802 | 802.3 Ethernet, 802.11 WLAN, 802.1Q VLANs |
+| **IETF** (_Internet Engineering Task Force_) | internet protocols from layer 3 upwards, published as **RFCs** (_Request for Comments_) | RFC 791 IPv4, RFC 8200 IPv6, RFC 9293 TCP |
+| **ISO** (_International Organization for Standardization_) | international standards | ISO/IEC 7498-1 (OSI model), ISO/IEC 11801 (cabling) |
+| **ITU-T** | telecommunications | G.992/G.993 (ADSL, VDSL), G.984 (GPON) |
+| **IANA** / **ICANN** | allocation of IP address blocks, port numbers, DNS root zone | port 443 for HTTPS |
+| **RIPE NCC** | regional internet registry (RIR) for Europe | IP addresses for Austrian providers |
+| **CENELEC** | European electrotechnical standards | EN 50173 (structured cabling) |
+| **Wi-Fi Alliance** | certification and marketing names for WLAN | Wi-Fi 6, WPA3 |
+
+An RFC is never changed: an improved version gets a new number and obsoletes the old one, which is how RFC 9293 replaced the 1981 TCP standard RFC 793 in 2022. In Austria, **RTR** (Rundfunk und Telekom Regulierungs-GmbH) is the regulatory authority for telecommunications, and European standards are adopted by Austrian Standards and OVE as ÖNORM EN and ÖVE/ÖNORM EN respectively.
+
+## Further reading
+
+- Andrew S. Tanenbaum, Nick Feamster, David J. Wetherall: _Computer Networks_, 6th edition, Pearson 2021
+- James F. Kurose, Keith W. Ross: _Computer Networking: A Top-Down Approach_, Pearson
+- [Cisco Networking Academy](https://www.netacad.com/)

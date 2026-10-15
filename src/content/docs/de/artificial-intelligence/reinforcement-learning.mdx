@@ -1,0 +1,178 @@
+---
+title: Reinforcement Learning
+description: "Lernen durch Belohnung: Agent und Umgebung, Markov-Entscheidungsprozess, Return und Diskontierung, Bellman-Gleichung, Exploration und Q-Learning mit einer Gridworld in NumPy."
+sidebar:
+  order: 11
+---
+
+Beim **verstärkenden Lernen** (_Reinforcement Learning_, RL) lernt ein **Agent** durch Ausprobieren. Er handelt in einer **Umgebung**, beobachtet die Folgen und erhält dafür eine **Belohnung** (_Reward_), die auch negativ sein kann. Niemand sagt ihm, welche Aktion richtig gewesen wäre. Er muss selbst herausfinden, welches Verhalten auf lange Sicht die meiste Belohnung bringt. So lernen auch Menschen und Tiere: Ein Kind, das die heiße Herdplatte angreift, braucht keine Labels, um das Verhalten nicht zu wiederholen.
+
+Im Unterschied zum [Supervised Learning](/de/artificial-intelligence/supervised-learning/) gibt es keine richtigen Antworten, sondern nur ein Bewertungssignal, das oft erst viel später kommt: Ob ein Zug im Schach gut war, zeigt sich manchmal erst am Ende der Partie. Im Unterschied zum [Unsupervised Learning](/de/artificial-intelligence/unsupervised-learning/) hat der Agent ein klares Ziel und beeinflusst mit seinen Aktionen selbst, welche Daten er als Nächstes sieht.
+
+## Grundbegriffe
+
+| Begriff | Bedeutung | Beispiel Saugroboter |
+| ------- | --------- | -------------------- |
+| **Agent** | der Lernende und Entscheidende | die Steuerung des Roboters |
+| **Umgebung** (_Environment_) | alles außerhalb des Agenten, auf das er einwirkt | die Wohnung |
+| **Zustand** $s$ (_State_) | Beschreibung der aktuellen Situation | Position, Akkustand, Schmutzkarte |
+| **Aktion** $a$ (_Action_) | was der Agent tun kann | vorwärts, drehen, zur Ladestation fahren |
+| **Belohnung** $r$ (_Reward_) | sofortige Rückmeldung als Zahl | +1 pro gereinigter Fläche, -100 bei leerem Akku |
+| **Strategie** $\pi$ (_Policy_) | Regel, welche Aktion in welchem Zustand gewählt wird | „bei Akku unter 15 % zurück zur Station“ |
+| **Episode** | ein Durchlauf vom Start bis zu einem Endzustand | eine Reinigung vom Start bis zur Rückkehr |
+
+Der Ablauf wiederholt sich in jedem Zeitschritt $t$: Der Agent beobachtet den Zustand $s_t$, wählt eine Aktion $a_t$, die Umgebung geht in den Zustand $s_{t+1}$ über und liefert die Belohnung $r_{t+1}$.
+
+## Markov-Entscheidungsprozess
+
+Formal beschreibt man das Problem als **Markov-Entscheidungsprozess** (_Markov Decision Process_, MDP) mit
+
+- einer Menge von Zuständen $S$ und Aktionen $A$,
+- Übergangswahrscheinlichkeiten $P(s' \mid s, a)$: Mit welcher Wahrscheinlichkeit landet man nach Aktion $a$ in Zustand $s$ im Zustand $s'$?
+- einer Belohnungsfunktion $R(s, a, s')$,
+- einem **Diskontfaktor** $\gamma$ mit $0 \le \gamma \le 1$.
+
+Die **Markov-Eigenschaft** besagt, dass der nächste Zustand nur vom aktuellen Zustand und der Aktion abhängt, nicht von der Vorgeschichte. Der Zustand muss also alle relevanten Informationen enthalten.
+
+### Return und Diskontierung
+
+Der Agent maximiert nicht die nächste Belohnung, sondern den **Return**, die Summe aller zukünftigen Belohnungen. Spätere Belohnungen werden dabei mit $\gamma$ abgewertet:
+
+$$
+G_t = r_{t+1} + \gamma \cdot r_{t+2} + \gamma^2 \cdot r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k \cdot r_{t+k+1}
+$$
+
+Ein $\gamma$ nahe 0 macht den Agenten kurzsichtig, ein $\gamma$ nahe 1 weitsichtig. Mit $\gamma < 1$ bleibt die Summe auch bei endlosen Aufgaben endlich, und sichere, frühe Belohnungen werden unsicheren, späten vorgezogen.
+
+### Wertfunktionen
+
+- Die **Zustandswertfunktion** $V^\pi(s)$ gibt den erwarteten Return an, wenn man in $s$ startet und der Strategie $\pi$ folgt: Wie gut ist es, hier zu sein?
+- Die **Aktionswertfunktion** $Q^\pi(s, a)$ gibt den erwarteten Return an, wenn man in $s$ die Aktion $a$ wählt und danach $\pi$ folgt: Wie gut ist es, hier diese Aktion zu wählen?
+
+Kennt man die optimale Aktionswertfunktion $Q^*$, ist die beste Strategie einfach: In jedem Zustand die Aktion mit dem größten $Q$-Wert wählen. Sie erfüllt die **Bellman-Optimalitätsgleichung**: Der Wert einer Aktion ist die sofortige Belohnung plus der diskontierte Wert der besten Aktion im Folgezustand.
+
+$$
+Q^*(s, a) = \mathbb{E}\left[r + \gamma \cdot \max_{a'} Q^*(s', a')\right]
+$$
+
+## Exploration und Exploitation
+
+Der Agent steht ständig vor einem Dilemma: Soll er die Aktion wählen, die bisher am besten war (**Exploitation**, Ausnutzen), oder etwas Neues ausprobieren, das vielleicht noch besser ist (**Exploration**, Erkunden)? Wer nur ausnutzt, bleibt bei der ersten halbwegs guten Lösung hängen. Wer nur erkundet, nutzt sein Wissen nie.
+
+Die einfachste Lösung ist die **ε-greedy-Strategie**: Mit Wahrscheinlichkeit $\varepsilon$ (z. B. 10 %) wird eine zufällige Aktion gewählt, sonst die beste bekannte. Häufig lässt man $\varepsilon$ im Lauf des Trainings sinken.
+
+## Q-Learning
+
+**Q-Learning** (Watkins, 1989) lernt die $Q$-Werte direkt aus Erfahrung, ohne die Übergangswahrscheinlichkeiten der Umgebung zu kennen (**modellfrei**). Für kleine Probleme speichert man die Werte in einer Tabelle, der **Q-Tabelle**, mit einer Zeile pro Zustand und einer Spalte pro Aktion. Nach jedem Schritt $(s, a, r, s')$ wird ein Eintrag aktualisiert:
+
+$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \cdot \left[r + \gamma \cdot \max_{a'} Q(s', a') - Q(s, a)\right]
+$$
+
+Der Ausdruck in der eckigen Klammer ist der **TD-Fehler** (_Temporal Difference_): die Differenz zwischen der neuen Schätzung (Belohnung plus Wert des besten nächsten Schritts) und der alten Schätzung. Die **Lernrate** $\alpha$ bestimmt, wie stark die alte Schätzung korrigiert wird.
+
+**Rechenbeispiel:** Es gilt $Q(s, a) = 0$, der Agent erhält $r = -1$, der beste $Q$-Wert im Folgezustand ist $2$, mit $\alpha = 0{,}1$ und $\gamma = 0{,}9$:
+
+$$
+Q(s, a) \leftarrow 0 + 0{,}1 \cdot (-1 + 0{,}9 \cdot 2 - 0) = 0{,}1 \cdot 0{,}8 = 0{,}08
+$$
+
+Q-Learning ist **off-policy**: Es lernt die Werte der optimalen Strategie (wegen des $\max$), auch wenn der Agent beim Sammeln der Erfahrung zufällig erkundet. Das verwandte Verfahren **SARSA** setzt statt des Maximums den Wert der tatsächlich als Nächstes gewählten Aktion ein (**on-policy**) und lernt dadurch vorsichtigeres Verhalten.
+
+## Beispiel: Gridworld
+
+Ein Agent startet in der linken oberen Ecke eines $4 \times 4$-Gitters und soll das Ziel `Z` rechts unten erreichen. Jeder Schritt kostet $-1$, das Ziel bringt $+10$, die beiden Fallen `X` bringen $-10$ und beenden die Episode. Läuft der Agent gegen den Rand, bleibt er stehen.
+
+```python
+import numpy as np
+
+ROWS, COLS = 4, 4
+START, GOAL = (0, 0), (3, 3)
+TRAPS = {(1, 1), (2, 3)}
+ACTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # oben, unten, links, rechts
+SYMBOLS = ["↑", "↓", "←", "→"]
+
+
+def step(state, action):
+    """Führt eine Aktion aus und liefert (neuer Zustand, Belohnung, Episode beendet)."""
+    dr, dc = ACTIONS[action]
+    row = min(max(state[0] + dr, 0), ROWS - 1)  # am Rand stehen bleiben
+    col = min(max(state[1] + dc, 0), COLS - 1)
+    new_state = (row, col)
+    if new_state == GOAL:
+        return new_state, 10.0, True
+    if new_state in TRAPS:
+        return new_state, -10.0, True
+    return new_state, -1.0, False  # jeder Schritt kostet etwas
+
+
+rng = np.random.default_rng(42)
+Q = np.zeros((ROWS, COLS, len(ACTIONS)))
+alpha, gamma, epsilon = 0.1, 0.9, 0.1  # Lernrate, Diskontfaktor, Erkundungsrate
+
+for episode in range(2000):
+    state, done = START, False
+    while not done:
+        # epsilon-greedy: meist die beste bekannte Aktion, manchmal zufällig erkunden
+        if rng.random() < epsilon:
+            action = int(rng.integers(len(ACTIONS)))
+        else:
+            action = int(np.argmax(Q[state]))
+        new_state, reward, done = step(state, action)
+        # Q-Learning-Update
+        target = reward if done else reward + gamma * np.max(Q[new_state])
+        Q[state][action] += alpha * (target - Q[state][action])
+        state = new_state
+
+# gelernte Strategie ausgeben
+for row in range(ROWS):
+    line = ""
+    for col in range(COLS):
+        if (row, col) == GOAL:
+            line += " Z"
+        elif (row, col) in TRAPS:
+            line += " X"
+        else:
+            line += " " + SYMBOLS[int(np.argmax(Q[row, col]))]
+    print(line)
+
+print(f"Q-Werte am Start: {Q[START].round(2)}")
+```
+
+Ausgabe:
+
+```text
+ → → ↓ ←
+ ↓ X ↓ ←
+ → → ↓ X
+ → → → Z
+Q-Werte am Start: [0.62 1.3  0.61 1.81]
+```
+
+Der Agent hat einen kürzesten Weg gelernt, der beide Fallen umgeht: zweimal nach rechts, dreimal nach unten, einmal nach rechts. Der höchste $Q$-Wert am Start ($1{,}81$ für „rechts“) lässt sich nachrechnen: Fünf Schritte zu je $-1$ und dann $+10$ ergeben diskontiert $-1 - 0{,}9 - 0{,}81 - 0{,}729 - 0{,}6561 + 0{,}9^5 \cdot 10 \approx 1{,}81$. Auch in den Feldern rechts oben zeigen die Pfeile weg von der Falle.
+
+## Deep Reinforcement Learning
+
+Eine Q-Tabelle funktioniert nur bei wenigen Zuständen. Ein Schachbrett hat schätzungsweise $10^{43}$ mögliche Stellungen, ein Kamerabild unendlich viele. Beim **Deep Reinforcement Learning** ersetzt ein [neuronales Netz](/de/artificial-intelligence/deep-learning/) die Tabelle und schätzt die Werte bzw. direkt die Strategie.
+
+| Verfahren | Idee | Bekannte Anwendung |
+| --------- | ---- | ------------------ |
+| **Deep Q-Network** (DQN) | neuronales Netz schätzt $Q(s, a)$; Erfahrungen werden gespeichert und zufällig wiederholt (_Experience Replay_) | DeepMind 2015: 49 Atari-Spiele direkt aus den Bildschirmpixeln |
+| **Policy Gradient**, z. B. REINFORCE, **PPO** | das Netz gibt direkt die Wahrscheinlichkeit jeder Aktion aus und wird in Richtung höherer Returns verschoben | Robotersteuerung, RLHF bei Sprachmodellen |
+| **Actor-Critic** | ein Netz wählt Aktionen (Actor), ein zweites bewertet sie (Critic) | kontinuierliche Steuerungsaufgaben |
+| **Kombination mit Suche** | neuronales Netz bewertet Stellungen, eine Baumsuche plant voraus | AlphaGo besiegte 2016 den Go-Profi Lee Sedol, AlphaZero lernte Schach und Go ohne menschliche Partien |
+
+Auch große Sprachmodelle werden mit RL nachtrainiert, siehe [Generative KI](/de/artificial-intelligence/generative-ai/#training-eines-sprachmodells). Zum Üben gibt es die Python-Bibliothek **Gymnasium** (Nachfolger von OpenAI Gym) mit standardisierten Umgebungen wie `CartPole` oder `FrozenLake`.
+
+## Herausforderungen
+
+- **Belohnungsdesign:** Der Agent optimiert genau das, was belohnt wird, nicht das, was gemeint war (_Reward Hacking_). Ein bekanntes Beispiel ist ein Boot in einem Rennspiel, das statt ins Ziel zu fahren endlos im Kreis fuhr, weil es dort immer wieder Bonuspunkte einsammeln konnte.
+- **Verzögerte Belohnung:** Welche von hundert Aktionen war für den Erfolg verantwortlich (_Credit Assignment Problem_)?
+- **Dateneffizienz:** RL braucht oft Millionen von Versuchen. In Simulationen ist das kein Problem, in der echten Welt (Roboter, Autos) schon.
+- **Sicherheit:** Erkunden kann in der Realität gefährlich sein. Und was in der Simulation gelernt wurde, funktioniert in der Wirklichkeit nicht immer (_Sim-to-Real Gap_).
+
+## Weiterführende Quellen
+
+- Richard S. Sutton, Andrew G. Barto: [_Reinforcement Learning: An Introduction_](http://incompleteideas.net/book/the-book-2nd.html), 2. Auflage, kostenlos online
+- [Gymnasium-Dokumentation](https://gymnasium.farama.org/)
+- OpenAI: [Spinning Up in Deep RL](https://spinningup.openai.com/)

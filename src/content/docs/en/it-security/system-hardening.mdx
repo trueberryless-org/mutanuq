@@ -1,0 +1,148 @@
+---
+title: System Hardening
+description: Patch management, hardening Windows and Linux, secure configuration, backups against ransomware, logging, antivirus and EDR, and secure software development.
+sidebar:
+  order: 8
+---
+
+**Hardening** means configuring a system so that it offers as little attack surface as possible: remove what is unnecessary, configure what is necessary securely, close gaps quickly. Most successful attacks do not use sophisticated zero-day flaws, but known vulnerabilities that were fixed long ago, default passwords and misconfigurations. Hardening is therefore one of the most effective measures, and it mainly costs diligence.
+
+## Patch management
+
+A **patch** is an update that fixes a bug or a security vulnerability. As soon as a vendor publishes a security patch, attackers analyse it and often develop an exploit for unpatched systems within a few days. The WannaCry worm caused damage worldwide in 2017, although Microsoft had closed the exploited flaw two months earlier.
+
+**Patch management** is a regulated process:
+
+1. **Inventory**: which hardware, operating systems, programs and libraries exist in which versions? What you do not know about, you cannot patch.
+2. **Keep informed**: monitor vendors' security advisories, warnings from CERT.at and vulnerability scanners.
+3. **Assess and prioritise**: by CVSS score, whether the flaw is already being actively exploited (for example the KEV catalogue) and how exposed the system is. A VPN gateway reachable from the internet takes priority over an internal test machine.
+4. **Test** on test systems or a pilot group.
+5. **Deploy** in a maintenance window, automated with tools such as WSUS, Microsoft Intune, `unattended-upgrades` (Debian, Ubuntu) or `dnf-automatic` (Red Hat).
+6. **Verify**: has the patch arrived everywhere?
+
+Microsoft publishes security updates on the second Tuesday of the month (**Patch Tuesday**). Critical, actively exploited flaws are closed immediately, outside the regular rhythm. Firmware (BIOS/UEFI, network devices, printers), browser extensions and libraries in your own software must not be forgotten. How this works on Windows Server is described under [Updates and Maintenance](/en/deployment/windows_server/updates_and_maintenance/).
+
+Software whose vendor support has ended (**end of life**) no longer receives security updates and must be replaced or at least strongly isolated. Regular support for Windows 10 ended on 14 October 2025.
+
+## Hardening principles
+
+- **Minimisation**: install and enable only the roles, services, programs and user accounts that are really needed. Every disabled service is one less attack surface.
+- **Change defaults**: replace default passwords immediately, disable or rename default accounts, remove sample applications.
+- **Secure protocols**: SSH instead of Telnet, SFTP or FTPS instead of FTP, HTTPS instead of HTTP, SNMPv3 instead of SNMPv1/v2c, LDAPS instead of LDAP. Disable outdated protocols such as SMBv1, TLS 1.0 and NTLMv1.
+- **Least privilege**: services run under their own accounts with minimal rights, users work without administrator rights.
+- **Encryption** of storage devices, especially on mobile devices (BitLocker, LUKS, FileVault).
+- **Uniform baseline configuration** for all systems of one type, rolled out automatically and checked regularly so that deviations (_configuration drift_) are noticed.
+
+Instead of working out every setting yourself, you use recognised guidelines: the **CIS Benchmarks** of the Center for Internet Security (for almost all operating systems and many applications), the **Microsoft Security Baselines**, the BSI's hardening recommendations and the modules of the IT-Grundschutz Compendium. With a port scanner such as **nmap** you check from outside which services are actually reachable:
+
+```bash
+# determine open TCP ports and service versions of your own server
+nmap -sV -p- 192.168.10.30
+```
+
+Port scans of other people's systems without permission are not only impolite but can have legal consequences (see [Information Security Management](/en/it-security/information-security-management/#penetration-testing-and-the-law)).
+
+## Hardening Windows
+
+| Measure                                          | Purpose                                                                                         |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| **separate admin accounts**, work without admin rights | malware runs only with user rights; domain admins log on only to domain controllers (**tiering model**) |
+| **Windows LAPS**                                 | unique random password for the local administrator account of every computer, stored in AD, prevents lateral movement with a shared password |
+| **BitLocker** with TPM                           | disk encryption, protects in case of theft                                                      |
+| **Secure Boot**                                  | loads only signed boot loaders, protects against bootkits                                      |
+| **Credential Guard**                             | protects credentials in memory against tools such as Mimikatz                                   |
+| **App Control for Business**, AppLocker          | only approved programs may start (_application allowlisting_)                                  |
+| **Microsoft Defender** with attack surface reduction (ASR) rules | blocks typical attack techniques, for example Office programs starting processes |
+| block **macros** from the internet               | Office has blocked them by default since 2022; enforce by group policy                          |
+| disable or restrict SMBv1 and NTLM               | outdated, attackable protocols                                                                 |
+| PowerShell logging                               | script block logging makes executed scripts visible for analysis                                |
+
+In a domain these settings are distributed centrally by [Group Policy](/en/deployment/windows_server/group_policies/).
+
+## Hardening Linux
+
+- **Secure SSH**: login only with keys, no direct root login, allow only certain users (see [Linux Administration](/en/deployment/linux_server/linux_administration/)).
+- **sudo** instead of working as `root`, with precisely defined rights in `/etc/sudoers`.
+- **Host firewall** with `nftables` or `ufw`, default deny for incoming traffic.
+- **Mandatory access control** with **SELinux** (Red Hat, Fedora) or **AppArmor** (Ubuntu, SUSE): even a compromised service may only access the files and resources listed in its profile.
+- **fail2ban** blocks addresses after repeated failed attempts.
+- Check file permissions: no world-writable files in system directories, SUID programs limited to what is necessary, mount options such as `noexec` for `/tmp`.
+- Automatic security updates and **auditd** for logging security-relevant events.
+
+```ini
+# excerpt from /etc/ssh/sshd_config
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+AllowGroups ssh-users
+MaxAuthTries 3
+X11Forwarding no
+```
+
+Tools such as **Lynis** automatically check a Linux system for typical hardening gaps and give recommendations.
+
+## Backups
+
+Backups are the last line of defence against ransomware, hardware defects and operating errors. Ransomware groups specifically search for backups and delete or encrypt them before they strike. Therefore:
+
+- **3-2-1 rule**: three copies of the data on two different media, one of them at another site. Extended to **3-2-1-1-0**: additionally one copy **offline** or **immutable**, and zero errors when verifying.
+- The backup system is separated from the domain and has its own credentials with MFA, so that a compromised admin account cannot also delete the backups.
+- Backups are **encrypted**, because they contain all the company's data.
+- **Test restores regularly**: a backup that cannot be restored is worthless. It is also measured how long the restore takes (see RTO and RPO under [Incident Response](/en/it-security/incident-response-and-forensics/#business-continuity-and-disaster-recovery)).
+
+Backup types (full, differential, incremental), the generation principle and storage media are described on the page [Backup Strategies](/en/deployment/security-strategies/).
+
+## Logging and monitoring
+
+Without logs, attacks go unnoticed, and after an incident it is impossible to reconstruct what happened. On average it often takes weeks until a break-in is discovered.
+
+- **What**: logins and logouts (including failed ones), changes to accounts, groups and rights, access to sensitive data, configuration changes, new services and processes being started, firewall blocks, errors in security mechanisms.
+- **Where to**: centrally to a log server or into a SIEM, so that an attacker on a compromised system cannot simply delete their traces.
+- **How**: with synchronised time (NTP), protected against modification, with a defined retention period. Personal data in logs is subject to the GDPR, so retention must be justified and limited.
+- **Evaluate**: logs are only useful if someone handles the alerts (see [SIEM and SOC](/en/it-security/network-security/#siem-and-soc)).
+
+On Windows, relevant event IDs include 4624 (successful logon), 4625 (failed logon), 4720 (account created) and 4732 (member added to a local security group). How to collect logs and monitor systems is described under [Monitoring](/en/deployment/operations/monitoring/).
+
+## Antivirus and EDR
+
+A classic **virus scanner** (antivirus) detects malware in three ways:
+
+- **Signatures**: comparison with patterns of known malware. Reliable, but only for already known malware, and can be bypassed by small changes to the code.
+- **Heuristics**: search for suspicious characteristics in the code, such as obfuscation or typical instruction sequences.
+- **Behaviour analysis**: monitoring at run time, for example a process that encrypts thousands of files within a short time.
+
+**Endpoint detection and response** (EDR) goes further: an agent on every endpoint continuously records process starts, network connections, file and registry changes and sends them to a central platform. There they are examined for attack patterns (for example according to MITRE ATT&CK). Analysts can trace the course of an attack and **respond**: isolate a computer from the network at the push of a button, kill processes, move files into quarantine. **XDR** (_extended detection and response_) additionally includes email, identities, network and cloud. Examples are Microsoft Defender for Endpoint, CrowdStrike Falcon and SentinelOne.
+
+Security software runs with the highest privileges deep in the system and is therefore itself a risk: in July 2024 a faulty update of an EDR product crashed around 8.5 million Windows computers worldwide, including systems at airports, banks and hospitals. Security updates are therefore also rolled out in stages.
+
+## Secure software development
+
+Many vulnerabilities arise during programming. A **secure software development life cycle** (SSDLC) anchors security in every phase of development instead of testing it only at the end. Well-known models are the **Microsoft Security Development Lifecycle** (SDL) and **OWASP SAMM**.
+
+| Phase           | Measures                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Requirements    | define security requirements, for example according to the OWASP ASVS, clarify the protection requirements of the data |
+| Design          | **threat modelling** (for example STRIDE), secure architecture, security by design          |
+| Implementation  | secure coding guidelines, **code reviews** with a focus on security, no secrets in code     |
+| Testing         | **SAST** (static code analysis), **DAST** (tests of the running application, for example with OWASP ZAP), penetration tests |
+| Release         | signed artefacts, secure default configuration, **SBOM**                                     |
+| Operation       | accept and fix vulnerability reports, update dependencies                                    |
+
+Modern software consists largely of third-party libraries. **Dependency scanning** (_software composition analysis_, SCA) checks them automatically for known vulnerabilities:
+
+```bash
+dotnet list package --vulnerable --include-transitive   # .NET
+cargo audit                                             # Rust (tool cargo-audit)
+npm audit                                               # JavaScript
+```
+
+Services such as GitHub Dependabot automatically create pull requests with updates for vulnerable dependencies. An **SBOM** (_software bill of materials_, formats CycloneDX or SPDX) lists all included components with versions, so that operators know immediately whether they are affected by a new flaw such as Log4Shell. **Secret scanning** finds passwords and API keys accidentally committed to the repository. The CI/CD pipeline itself also deserves protection, because whoever takes it over can insert malicious code into every released version.
+
+The European **Cyber Resilience Act** (CRA, Regulation (EU) 2024/2847) makes much of this mandatory for manufacturers of products with digital elements: secure default configuration, security updates throughout the support period, vulnerability handling and an SBOM. The reporting obligations for actively exploited vulnerabilities have applied since 11 September 2026, the remaining obligations apply from 11 December 2027. Basics of testing and code reviews can be found under [Testing](/en/software-development/testing/).
+
+## Further reading
+
+- [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) (Center for Internet Security)
+- [BSI IT-Grundschutz Compendium](https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html), modules SYS (IT systems) and OPS.1.1.3 (patch and change management)
+- [Microsoft Security Development Lifecycle](https://www.microsoft.com/en-us/securityengineering/sdl)

@@ -1,0 +1,285 @@
+---
+title: PC-Hardware
+description: Mainboard, Chipsatz, Prozessor, Arbeitsspeicher, HDD, SSD und NVMe, Schnittstellen von PCIe bis USB und HDMI, Netzteil, BIOS und UEFI, Peripherie sowie Zusammenbau und Fehlersuche.
+sidebar:
+  order: 4
+---
+
+Die [Rechnerarchitektur](/de/computer-science/computer-architecture/) beschreibt die Prinzipien, diese Seite die konkreten Bauteile, aus denen ein heutiger PC besteht. Im Unterricht geht es darum, Komponenten für einen Einsatzzweck auszuwählen, Datenblätter zu lesen, einen PC zusammenzubauen und Fehler systematisch einzugrenzen. Server unterscheiden sich vor allem durch Redundanz und Fernwartung, dazu mehr unter [Serverhardware](/de/deployment/operations/server_hardware/).
+
+## Mainboard
+
+Das **Mainboard** (Hauptplatine, _Motherboard_) verbindet alle Komponenten. Es trägt den Prozessorsockel, die Steckplätze für Arbeitsspeicher und Erweiterungskarten, die Spannungswandler für die CPU, den Chipsatz, die Firmware und die Anschlüsse.
+
+| Formfaktor   | Größe            | Typisch                                       |
+| ------------ | ---------------- | --------------------------------------------- |
+| **E-ATX**    | bis 305 × 330 mm | Workstations, viele Steckplätze               |
+| **ATX**      | 305 × 244 mm     | Standard-Desktop, bis zu 7 Erweiterungssteckplätze |
+| **microATX** | 244 × 244 mm     | Büro-PCs, bis zu 4 Steckplätze                |
+| **Mini-ITX** | 170 × 170 mm     | kompakte Rechner, 1 Steckplatz, meist 2 RAM-Slots |
+
+Der Formfaktor legt auch die Position der Befestigungslöcher und der Anschlussblende fest, deshalb muss das Gehäuse dazu passen.
+
+### Chipsatz
+
+Der **Chipsatz** (bei Intel _Platform Controller Hub_, PCH) stellt zusätzliche Anschlüsse bereit: weitere PCIe-Lanes, SATA-Ports, USB, Netzwerk und Audio. Früher bestand er aus Northbridge (Speicher, Grafik) und Southbridge (Ein-/Ausgabe). Heute sitzen Speichercontroller, die schnellsten PCIe-Lanes für Grafikkarte und SSD sowie oft eine Grafikeinheit direkt im Prozessor. Der Chipsatz ist über eine eigene Verbindung angebunden (Intel DMI, bei AMD PCIe), die sich alle daran hängenden Geräte teilen.
+
+Chipsätze werden in Klassen angeboten. Bei Intel stehen Z-Modelle für Übertaktung und viele Lanes, B- und H-Modelle für günstigere Systeme, bei AMD sind es X- (Oberklasse), B- (Mittelklasse) und A-Modelle (Einstieg).
+
+### Prozessorsockel
+
+Prozessor und Mainboard müssen denselben **Sockel** haben, und das Mainboard muss den Prozessor in seiner Firmware unterstützen.
+
+| Bauart | Kontakte                                  | Beispiel                                      |
+| ------ | ----------------------------------------- | --------------------------------------------- |
+| **LGA** (_Land Grid Array_) | Pins im Sockel, Kontaktflächen an der CPU | Intel LGA 1700, LGA 1851, AMD AM5 (LGA 1718) |
+| **PGA** (_Pin Grid Array_)  | Pins an der CPU                    | AMD AM4                                       |
+| **BGA** (_Ball Grid Array_) | aufgelötet, nicht tauschbar        | Notebooks, Mini-PCs                           |
+
+Wichtige Prozessorkennzahlen sind Kernanzahl und Threads, Basis- und Turbotakt, Cachegröße, die thermische Verlustleistung (TDP, bei Intel inzwischen _Processor Base Power_ und _Maximum Turbo Power_), unterstützter Speicher, Anzahl der PCIe-Lanes und ob eine integrierte Grafik vorhanden ist. Die Verlustleistung bestimmt den nötigen **Kühler**: Luftkühler mit Kühlkörper und Lüfter oder eine Wasserkühlung (AIO). Zwischen CPU und Kühler kommt **Wärmeleitpaste**, die mikroskopische Luftspalte füllt.
+
+## Arbeitsspeicher
+
+Der **Arbeitsspeicher** (RAM, _Random Access Memory_) besteht aus **DRAM** (_Dynamic RAM_): Jedes Bit ist in einem winzigen Kondensator gespeichert, der sich entlädt und deshalb alle paar Millisekunden aufgefrischt werden muss (**Refresh**). DRAM ist dicht und billig. Caches verwenden dagegen **SRAM** (_Static RAM_) aus Flipflops mit sechs Transistoren pro Bit: schneller, ohne Refresh, aber viel größer und teurer.
+
+**DDR-SDRAM** (_Double Data Rate_) überträgt Daten an der steigenden und fallenden Taktflanke. Deshalb gibt man die Geschwindigkeit in **MT/s** (Megatransfers pro Sekunde) an: DDR5-6000 läuft mit 3000 MHz Takt und 6000 MT/s.
+
+| Merkmal                  | DDR4                         | DDR5                                       |
+| ------------------------ | ---------------------------- | ------------------------------------------ |
+| Einführung               | 2014                         | 2021                                       |
+| Datenrate (JEDEC)        | 1600 bis 3200 MT/s           | 4800 bis 8800 MT/s                         |
+| Spannung                 | 1,2 V                        | 1,1 V                                      |
+| Kontakte (DIMM)          | 288                          | 288 (andere Kerbe, nicht kompatibel)       |
+| Kanäle pro Modul         | ein 64-Bit-Kanal             | zwei unabhängige 32-Bit-Subkanäle          |
+| Spannungsregelung        | auf dem Mainboard            | auf dem Modul (PMIC)                       |
+| Fehlerkorrektur          | nur bei ECC-Modulen          | **On-Die-ECC** im Chip immer, Ende-zu-Ende-ECC nur bei ECC-Modulen |
+| max. Kapazität pro Modul (Desktop) | 32 GB              | 64 GB (128 GB angekündigt)                 |
+
+Die Module sind für Desktops als **DIMM** und für Notebooks als kürzeres **SO-DIMM** ausgeführt, bei vielen Notebooks ist **LPDDR** fest aufgelötet. Die verschiedenen DDR-Generationen sind mechanisch durch die Position der Kerbe verriegelt.
+
+- **Mehrkanalbetrieb**: Mainboards haben meist zwei Speicherkanäle. Nur wenn beide bestückt sind (zwei gleiche Module in den im Handbuch angegebenen Slots, oft A2 und B2), verdoppelt sich die Bandbreite.
+- **Timings**: Die **CAS-Latenz** (CL) gibt an, wie viele Takte nach einem Lesebefehl die Daten kommen. Die tatsächliche Latenz in ns ist $\text{CL} \cdot 2000 / \text{Datenrate in MT/s}$. DDR4-3200 CL16 und DDR5-6000 CL30 haben beide 10 ns: Neuere Generationen bringen vor allem mehr Bandbreite, kaum geringere Latenz.
+- **XMP** (Intel) und **EXPO** (AMD) sind im Modul gespeicherte Profile mit höheren Takten. Ohne Aktivierung im UEFI läuft der Speicher nur mit JEDEC-Standardwerten.
+- **ECC-Speicher** (_Error Correcting Code_) speichert pro 64 Datenbits 8 Prüfbits und korrigiert Einzelbitfehler mit einem [Hamming-Code](/de/computer-science/codes-and-compression/#hamming-code). In Servern ist ECC Standard, oft zusätzlich als **Registered DIMM** (RDIMM) mit Puffer für viele Module pro Kanal. Prozessor und Mainboard müssen ECC unterstützen.
+
+## Massenspeicher
+
+### Festplatte (HDD)
+
+Eine **Festplatte** (_Hard Disk Drive_) speichert Daten magnetisch auf rotierenden Scheiben. Ein Schreib-Lese-Kopf schwebt auf einem Luftpolster wenige Nanometer über der Oberfläche. Für einen Zugriff muss der Kopf zur richtigen Spur fahren (**Suchzeit**) und warten, bis der Sektor vorbeikommt (**Rotationslatenz**, bei 7200 U/min im Mittel $\frac{1}{2} \cdot \frac{60\,\mathrm{s}}{7200} \approx 4{,}2\,\mathrm{ms}$). Deshalb sind HDDs bei zufälligen Zugriffen sehr langsam (etwa 100 bis 200 IOPS), sequenziell erreichen sie 150 bis 280 MB/s. Sie bieten den günstigsten Preis pro Terabyte und werden für Archive, NAS und Backups verwendet. Bauformen sind 3,5 Zoll (Desktop, Server) und 2,5 Zoll (Notebook).
+
+### SSD
+
+Eine **SSD** (_Solid State Drive_) speichert Daten in **NAND-Flash**-Zellen ohne bewegliche Teile. Sie ist stoßfest, leise und hat Zugriffszeiten im Mikrosekundenbereich (Hunderttausende IOPS).
+
+| Zelltyp | Bit pro Zelle | Eigenschaften                                    |
+| ------- | ------------- | ------------------------------------------------ |
+| SLC     | 1             | am schnellsten und haltbarsten, teuer, heute v. a. als Cache |
+| MLC     | 2             | selten geworden                                  |
+| TLC     | 3             | Standard in heutigen SSDs                        |
+| QLC     | 4             | günstig und dicht, aber langsamer beim Schreiben und weniger Schreibzyklen |
+
+Flash-Zellen vertragen nur eine begrenzte Anzahl von Schreibzyklen, und Daten können nur in ganzen Blöcken gelöscht werden. Der **Controller** der SSD verteilt Schreibzugriffe deshalb gleichmäßig (**Wear Leveling**), hält Reservezellen bereit und räumt im Hintergrund auf (**Garbage Collection**). Der Befehl **TRIM** teilt der SSD mit, welche Blöcke das Dateisystem nicht mehr braucht. Die Haltbarkeit wird in **TBW** (_Terabytes Written_) angegeben.
+
+### SATA, M.2 und NVMe
+
+Hier werden oft drei verschiedene Dinge verwechselt: Schnittstelle, Protokoll und Bauform.
+
+| Begriff        | Art                | Bedeutung                                                     |
+| -------------- | ------------------ | ------------------------------------------------------------- |
+| **SATA**       | Schnittstelle und Protokoll (AHCI) | für HDDs entwickelt, max. 6 Gbit/s, bei SSDs etwa 550 MB/s |
+| **NVMe**       | Protokoll          | für Flash entwickelt, läuft über **PCIe**, viele parallele Warteschlangen, geringe Latenz |
+| **M.2**        | Bauform (Steckkarte) | kleine Platine, z. B. **2280** = 22 mm breit, 80 mm lang. Kann **entweder SATA oder NVMe** sein |
+| **U.2/U.3, E1.S** | Bauformen       | NVMe-SSDs für Server, im Betrieb tauschbar                    |
+
+Eine M.2-SSD ist also nicht automatisch schnell: Eine M.2-SATA-SSD ist nicht schneller als eine 2,5-Zoll-SATA-SSD. Ein M.2-Steckplatz mit **M-Key** unterstützt meist PCIe x4 (NVMe), **B-Key**-Module (bzw. B+M) sind meist SATA. Das Handbuch des Mainboards sagt, welcher Steckplatz was unterstützt und ob dabei SATA-Ports abgeschaltet werden.
+
+| Laufwerk                  | sequenziell lesen (typisch) |
+| ------------------------- | --------------------------- |
+| HDD 7200 U/min            | 150 bis 280 MB/s            |
+| SATA-SSD                  | ca. 550 MB/s                |
+| NVMe-SSD, PCIe 3.0 x4     | ca. 3,5 GB/s                |
+| NVMe-SSD, PCIe 4.0 x4     | ca. 7 GB/s                  |
+| NVMe-SSD, PCIe 5.0 x4     | ca. 14 GB/s                 |
+
+Mehrere Laufwerke lassen sich zu einem [RAID](/de/deployment/storage-systems/#raid) zusammenfassen.
+
+## Schnittstellen
+
+### PCI Express
+
+**PCI Express** (PCIe) ist die interne Verbindung für Grafikkarten, NVMe-SSDs und Erweiterungskarten. Es ist eine serielle Punkt-zu-Punkt-Verbindung aus **Lanes** (je ein Leitungspaar pro Richtung, vollduplex). Steckplätze und Geräte gibt es mit x1, x4, x8 und x16 Lanes. Eine Karte passt in jeden gleich großen oder größeren Steckplatz und handelt die höchste gemeinsame Generation und Lanezahl aus, die Versionen sind abwärtskompatibel.
+
+| Version | Jahr | Transferrate pro Lane | Kodierung | Datenrate pro Lane und Richtung | x16 pro Richtung |
+| ------- | ---- | --------------------- | --------- | ------------------------------- | ---------------- |
+| 1.0     | 2003 | 2,5 GT/s              | 8b/10b    | 250 MB/s                        | 4 GB/s           |
+| 2.0     | 2007 | 5 GT/s                | 8b/10b    | 500 MB/s                        | 8 GB/s           |
+| 3.0     | 2010 | 8 GT/s                | 128b/130b | ca. 0,985 GB/s                  | ca. 15,8 GB/s    |
+| 4.0     | 2017 | 16 GT/s               | 128b/130b | ca. 1,97 GB/s                   | ca. 31,5 GB/s    |
+| 5.0     | 2019 | 32 GT/s               | 128b/130b | ca. 3,94 GB/s                   | ca. 63 GB/s      |
+| 6.0     | 2022 | 64 GT/s (PAM4)        | FLIT      | ca. 8 GB/s                      | ca. 128 GB/s     |
+| 7.0     | 2025 | 128 GT/s (PAM4)       | FLIT      | ca. 16 GB/s                     | ca. 256 GB/s     |
+
+Pro Generation verdoppelt sich die Datenrate. Die **Kodierung** erklärt die krummen Werte: Bei 8b/10b werden 8 Nutzbits in 10 übertragene Bits verpackt (20 % Overhead), bei 128b/130b nur noch 1,5 %. Die Werte für PCIe 6.0 und 7.0 sind die von der PCI-SIG genannten Rohwerte, effektiv bleibt nach dem Overhead der FLIT-Pakete etwas weniger.
+
+### SATA
+
+**SATA** (_Serial ATA_) verbindet HDDs, 2,5-Zoll-SSDs und optische Laufwerke über ein eigenes Daten- und Stromkabel. SATA I schafft 1,5 Gbit/s, SATA II 3 Gbit/s und SATA III **6 Gbit/s**, wegen der 8b/10b-Kodierung netto 600 MB/s.
+
+### USB
+
+**USB** (_Universal Serial Bus_) ist die Standardschnittstelle für Peripherie. Die Versionsnamen wurden mehrfach umbenannt, deshalb sind die Geschwindigkeitsbezeichnungen aussagekräftiger.
+
+| Spezifikation              | Bezeichnung (Marketing)          | Datenrate         |
+| -------------------------- | -------------------------------- | ----------------- |
+| USB 1.0/1.1 (1996/1998)    | Low Speed / Full Speed           | 1,5 / 12 Mbit/s   |
+| USB 2.0 (2000)             | Hi-Speed                         | 480 Mbit/s        |
+| USB 3.2 Gen 1 (früher USB 3.0) | USB 5Gbps (SuperSpeed)       | 5 Gbit/s          |
+| USB 3.2 Gen 2 (früher USB 3.1) | USB 10Gbps (SuperSpeed+)     | 10 Gbit/s         |
+| USB 3.2 Gen 2x2            | USB 20Gbps                       | 20 Gbit/s (nur USB-C, zwei Lanes) |
+| USB4 (2019)                | USB 20Gbps / USB 40Gbps          | 20 oder 40 Gbit/s (nur USB-C) |
+| USB4 Version 2.0 (2022)    | USB 80Gbps                       | 80 Gbit/s symmetrisch, asymmetrisch bis 120 Gbit/s in eine Richtung |
+
+Steckertypen sind **USB-A** (der klassische Stecker am Host), **USB-B** und Micro-USB auf der Geräteseite und **USB-C**: verdrehsicher, 24 Kontakte, für alle Geschwindigkeiten und Stromversorgung. Ein USB-C-Stecker sagt aber nichts über die Geschwindigkeit aus, eine Buchse kann auch nur USB 2.0 können. Mit **USB Power Delivery** (USB PD 3.1) überträgt USB-C bis zu 240 W (48 V bei 5 A), genug für Notebooks. USB4 kann außerdem DisplayPort- und PCIe-Verbindungen durch dasselbe Kabel tunneln.
+
+### Thunderbolt
+
+**Thunderbolt** (Intel, gemeinsam mit Apple entwickelt) verwendet seit Version 3 den USB-C-Stecker und bündelt PCIe, DisplayPort und USB in einem Kabel, etwa für Docking-Stationen und externe Grafikkarten.
+
+| Version         | Datenrate                         | Bemerkung                                      |
+| --------------- | --------------------------------- | ---------------------------------------------- |
+| Thunderbolt 3   | 40 Gbit/s                         | erste Version mit USB-C, Grundlage von USB4    |
+| Thunderbolt 4   | 40 Gbit/s                         | strengere Mindestanforderungen (zwei 4K-Monitore, PCIe 32 Gbit/s) |
+| Thunderbolt 5   | 80 Gbit/s, bis 120 Gbit/s asymmetrisch | basiert auf USB4 Version 2.0              |
+
+### Bildschirmanschlüsse
+
+| Anschluss              | maximale Datenrate | Bemerkung                                            |
+| ---------------------- | ------------------ | ---------------------------------------------------- |
+| VGA                    | analog             | veraltet, Bildqualität verliert bei hohen Auflösungen |
+| DVI                    | 3,96 bzw. 7,92 Gbit/s (Single/Dual Link) | digital, veraltet               |
+| HDMI 1.4               | 10,2 Gbit/s        | 4K mit 30 Hz                                         |
+| HDMI 2.0               | 18 Gbit/s          | 4K mit 60 Hz                                         |
+| HDMI 2.1               | 48 Gbit/s          | 4K mit 120 Hz, 8K, variable Bildrate                 |
+| HDMI 2.2 (2025)        | 96 Gbit/s          | benötigt „Ultra96“-Kabel                             |
+| DisplayPort 1.4        | 32,4 Gbit/s        | Daisy Chaining mehrerer Monitore (MST)               |
+| DisplayPort 2.0/2.1    | bis 80 Gbit/s (UHBR20) | auch über USB-C (_DisplayPort Alt Mode_)         |
+
+HDMI ist im Fernseh- und Heimkinobereich verbreitet und überträgt auch Ton, DisplayPort vor allem bei PC-Monitoren.
+
+Ob eine Verbindung ausreicht, lässt sich abschätzen: Ein 4K-Bild (3840 × 2160 Pixel) mit 60 Hz und 24 Bit Farbtiefe braucht
+
+$$
+3840 \cdot 2160 \cdot 60\,\mathrm{s^{-1}} \cdot 24\,\mathrm{bit} \approx 11{,}9\,\mathrm{Gbit/s}
+$$
+
+plus einige Prozent für Austastlücken. HDMI 2.0 mit 18 Gbit/s (nach 8b/10b-Kodierung 14,4 Gbit/s Nutzdaten) reicht dafür, HDMI 1.4 nicht.
+
+### Weitere Anschlüsse
+
+- **Ethernet** (RJ45): 1 Gbit/s Standard, zunehmend 2,5 Gbit/s und 10 Gbit/s.
+- **WLAN**: Wi-Fi 6 (802.11ax), Wi-Fi 6E (zusätzlich 6 GHz), Wi-Fi 7 (802.11be).
+- **Audio**: 3,5-mm-Klinke, digital über S/PDIF, HDMI oder USB.
+- Intern: Lüfteranschlüsse (4-Pin-PWM), Front-Panel-Header (Ein-Taster, Reset, LEDs), interne USB-Header.
+
+## Netzteil
+
+Das **Netzteil** (_Power Supply Unit_, PSU) wandelt die Netzspannung (230 V Wechselspannung, 50 Hz) in die Gleichspannungen für den PC um: **+12 V** für CPU, Grafikkarte und Laufwerksmotoren (heute fast die gesamte Last), **+5 V** und **+3,3 V** für Logik und Laufwerke sowie **+5 V Standby** (5VSB), damit der PC per Taste oder Netzwerk eingeschaltet werden kann.
+
+| Stecker                      | Versorgt                                   |
+| ---------------------------- | ------------------------------------------ |
+| 24-Pin-ATX                   | Mainboard                                  |
+| 4+4-Pin-EPS (12 V)           | Prozessor (Spannungswandler am Mainboard)  |
+| 6+2-Pin-PCIe                 | Grafikkarte, bis 150 W pro Stecker         |
+| 12VHPWR bzw. 12V-2x6 (ATX 3.x) | Grafikkarte, bis 600 W über einen Stecker |
+| SATA-Strom                   | Laufwerke                                  |
+
+Der **Wirkungsgrad** gibt an, welcher Anteil der aufgenommenen Leistung beim PC ankommt. Der Rest wird zu Wärme:
+
+$$
+\eta = \frac{P_{\text{ab}}}{P_{\text{auf}}}
+$$
+
+Beispiel: Gibt ein Netzteil mit $\eta = 0{,}90$ an den PC $450\,\mathrm{W}$ ab, nimmt es $450\,\mathrm{W} / 0{,}90 = 500\,\mathrm{W}$ aus dem Netz auf, $50\,\mathrm{W}$ werden als Wärme abgegeben.
+
+Die Zertifizierung **80 PLUS** garantiert Mindestwirkungsgrade bei 20 %, 50 % und 100 % Last. Die Werte für 115-V-Netze:
+
+| Stufe       | 10 % Last | 20 % Last | 50 % Last | 100 % Last |
+| ----------- | --------- | --------- | --------- | ---------- |
+| 80 PLUS     |           | 80 %      | 80 %      | 80 %       |
+| Bronze      |           | 82 %      | 85 %      | 82 %       |
+| Silver      |           | 85 %      | 88 %      | 85 %       |
+| Gold        |           | 87 %      | 90 %      | 87 %       |
+| Platinum    |           | 90 %      | 92 %      | 89 %       |
+| Titanium    | 90 %      | 92 %      | 94 %      | 90 %       |
+
+Für 230-V-Netze wie in Österreich gibt es eine eigene Variante mit um etwa zwei bis drei Prozentpunkte höheren Anforderungen, weil Netzteile bei höherer Eingangsspannung effizienter arbeiten. Der Wirkungsgrad ist bei etwa halber Last am höchsten, deshalb wählt man ein Netzteil so, dass die typische Last im mittleren Bereich liegt. Zur Dimensionierung addiert man die maximale Leistung von CPU, Grafikkarte und restlichen Komponenten und schlägt eine Reserve von 20 bis 30 % auf. Ein unnötig großes Netzteil arbeitet im Leerlauf ineffizient.
+
+## Firmware: BIOS und UEFI
+
+Die **Firmware** ist Software, die fest auf einem Flash-Chip des Mainboards gespeichert ist und beim Einschalten als Erstes läuft. Sie initialisiert die Hardware und startet den Bootloader des Betriebssystems.
+
+| Merkmal              | BIOS (_Basic Input/Output System_, seit 1981) | UEFI (_Unified Extensible Firmware Interface_)   |
+| -------------------- | ---------------------------------------- | ------------------------------------------------ |
+| Prozessormodus       | 16-Bit-Real-Mode                         | 32 oder 64 Bit                                   |
+| Partitionstabelle    | MBR, Bootplatten bis 2 TiB               | GPT, praktisch unbegrenzt                        |
+| Bootvorgang          | lädt den ersten Sektor (512 Byte) der Platte | lädt eine `.efi`-Datei von der EFI-Systempartition |
+| Oberfläche           | Text, Tastatur                           | grafisch, Maus                                   |
+| Sicherheit           | keine                                    | **Secure Boot**: nur signierte Bootloader werden gestartet |
+| Erweiterbarkeit      | gering                                   | eigene Treiber, Netzwerk, Shell                  |
+
+Heute verwenden alle PCs UEFI. Ein **CSM** (_Compatibility Support Module_) kann alte BIOS-Systeme emulieren, ist aber bei neuen Mainboards meist entfernt. Umgangssprachlich wird das UEFI-Setup weiterhin „BIOS“ genannt. Windows 11 setzt UEFI, Secure Boot und ein **TPM 2.0** (_Trusted Platform Module_, oft als Firmware-TPM im Prozessor) voraus.
+
+Einstellungen wie Bootreihenfolge, Speicherprofile und Lüfterkurven werden im **NVRAM** gespeichert. Eine Knopfzelle (CR2032) versorgt die Echtzeituhr (RTC), wenn der PC vom Netz getrennt ist. Mit dem Jumper oder Taster **Clear CMOS** setzt man die Einstellungen zurück, etwa nach einer fehlgeschlagenen Übertaktung. Firmware-Updates schließen Sicherheitslücken und bringen Unterstützung für neue Prozessoren. Viele Mainboards können ihre Firmware auch ohne eingesetzte CPU von einem USB-Stick aktualisieren (_BIOS Flashback_).
+
+Firmware gibt es nicht nur auf dem Mainboard: SSDs, Grafikkarten, Netzwerkkarten, Drucker und Router haben eigene Firmware, die ebenfalls aktualisiert werden kann.
+
+### POST
+
+Nach dem Einschalten führt die Firmware den **POST** (_Power-On Self-Test_) aus: Sie prüft Prozessor, Arbeitsspeicher und Grafik, erkennt angeschlossene Geräte und initialisiert sie. Schlägt ein Test fehl, bevor ein Bild angezeigt werden kann, meldet das Mainboard den Fehler über **Piepcodes** (je nach Hersteller unterschiedlich), **Debug-LEDs** (CPU, DRAM, VGA, BOOT) oder eine zweistellige **POST-Code-Anzeige**. Danach sucht die Firmware nach einem Bootgerät und übergibt an den Bootloader. Wie es dann weitergeht, steht unter [Bootvorgang](/de/computer-science/operating-systems/#bootvorgang).
+
+## Peripherie
+
+**Peripheriegeräte** sind alle Geräte außerhalb der Zentraleinheit:
+
+- **Eingabe**: Tastatur, Maus, Touchpad, Scanner, Mikrofon, Webcam. Tastaturen und Mäuse melden sich über USB als **HID** (_Human Interface Device_) und brauchen keinen eigenen Treiber.
+- **Ausgabe**: Monitor, Drucker, Lautsprecher. Bei Monitoren zählen Auflösung, Bildwiederholrate (60 bis über 240 Hz), Reaktionszeit und Paneltyp: **IPS** (gute Farben und Blickwinkel), **VA** (hoher Kontrast), **TN** (schnell, schwache Blickwinkel), **OLED** (selbstleuchtende Pixel, perfektes Schwarz). Drucker arbeiten als **Laserdrucker** (Toner, schnell, günstig pro Seite) oder **Tintenstrahldrucker** (gut für Fotos).
+- **Ein- und Ausgabe**: externe Laufwerke, Netzwerkadapter, Touchscreens.
+
+Das Betriebssystem spricht Peripherie über **Treiber** an (siehe [Betriebssysteme](/de/computer-science/operating-systems/#treiber)).
+
+## Zusammenbau
+
+Vor dem Zusammenbau prüft man die **Kompatibilität**: Sockel und Chipsatz passend zur CPU, Firmwareversion unterstützt die CPU, RAM-Generation passend zum Mainboard, Grafikkarte passt in Länge und Breite ins Gehäuse, Kühlerhöhe passt, Netzteil hat genug Leistung und die nötigen Stecker.
+
+1. **ESD-Schutz**: Elektrostatische Entladung kann Bauteile zerstören. Vorher ein geerdetes Metallteil berühren oder ein Erdungsarmband tragen, nicht auf Teppich arbeiten, Bauteile nur am Rand anfassen.
+2. **CPU** in den Sockel setzen (Markierung beachten, keine Kraft anwenden), Hebel schließen.
+3. **Arbeitsspeicher** in die laut Handbuch richtigen Slots für Dual-Channel, bis beide Clips einrasten.
+4. **M.2-SSD** einsetzen, gegebenenfalls mit Kühlkörper.
+5. **Kühler** mit Wärmeleitpaste montieren und den Lüfter am CPU-Fan-Anschluss anstecken.
+6. Abstandshalter im Gehäuse prüfen, Blende einsetzen, **Mainboard** einschrauben.
+7. **Netzteil** einbauen, 24-Pin-ATX und EPS-Stecker anschließen.
+8. **Grafikkarte** in den obersten x16-Steckplatz, Stromstecker vollständig einstecken.
+9. **Front-Panel-Kabel** (Power, Reset, LEDs), USB- und Audio-Header, Lüfter anschließen.
+10. Erster Start: ins UEFI-Setup gehen, Erkennung von CPU, RAM und Laufwerken prüfen, XMP/EXPO aktivieren, Bootreihenfolge setzen, Betriebssystem installieren, Treiber und Firmware-Updates einspielen.
+
+## Fehlersuche
+
+Bei der Fehlersuche geht man **systematisch** vor: Symptom genau beschreiben, zuletzt geänderte Dinge zuerst prüfen, das System auf das Minimum reduzieren (CPU, ein RAM-Modul, Grafik, keine Laufwerke) und Komponenten einzeln durch bekannt funktionierende ersetzen.
+
+| Symptom                                         | mögliche Ursachen und Maßnahmen                                         |
+| ----------------------------------------------- | ----------------------------------------------------------------------- |
+| keine Reaktion, keine Lüfter                    | Netzschalter am Netzteil, Netzkabel, 24-Pin-Stecker, Front-Panel-Kabel falsch gesteckt, Netzteil defekt |
+| Lüfter drehen, kein Bild                        | Debug-LEDs oder Piepcodes prüfen. RAM neu einsetzen oder einzeln testen, Monitorkabel an der Grafikkarte statt am Mainboard anstecken, EPS-Stecker fehlt, Firmware unterstützt die CPU nicht |
+| sehr langer erster Start                        | normal bei DDR5 (Speichertraining), einige Minuten warten               |
+| Bootgerät nicht gefunden                        | Bootreihenfolge, SATA/NVMe im UEFI aktiviert, Secure Boot/CSM-Einstellung passend zum Installationsmedium |
+| zufällige Abstürze, Bluescreens                 | RAM mit MemTest86 prüfen, XMP/EXPO testweise deaktivieren, Temperaturen kontrollieren, Treiber aktualisieren, Netzteil zu schwach |
+| PC schaltet sich unter Last ab                  | Überhitzung (Kühler, Wärmeleitpaste, Staub) oder Überlastung des Netzteils |
+| langsam, häufige Hänger                         | Laufwerkszustand per **S.M.A.R.T.** prüfen, Auslastung im Task-Manager oder mit `top`, zu wenig RAM (ständiges Auslagern) |
+| Uhrzeit und Einstellungen gehen verloren        | CMOS-Batterie leer                                                      |
+
+## Weiterführende Quellen
+
+- [PCI-SIG Specifications](https://pcisig.com/specifications) und [USB-IF Document Library](https://www.usb.org/documents)
+- [UEFI Specifications](https://uefi.org/specifications) (UEFI Forum)
+- [JEDEC DDR5 SDRAM Standard JESD79-5](https://www.jedec.org/standards-documents/docs/jesd79-5c)

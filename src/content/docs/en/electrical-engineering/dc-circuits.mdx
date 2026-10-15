@@ -1,0 +1,256 @@
+---
+title: DC Circuits
+description: Ohm's law, Kirchhoff's laws, series and parallel circuits, voltage and current dividers, bridge, star-delta, network analysis and equivalent sources.
+sidebar:
+  order: 2
+---
+
+A **circuit** consists of at least a source, a load and the wires between them. Current only flows if the circuit is closed. With Ohm's law and Kirchhoff's two laws every network of sources and resistors can be calculated. The other methods on this page are shortcuts that simplify the calculation.
+
+## Ohm's law
+
+For an **ohmic resistor** the current is proportional to the voltage. The characteristic $I(U)$ is a straight line through the origin; its slope is the conductance $G = 1/R$:
+
+$$
+U = R \cdot I \qquad I = \frac{U}{R} \qquad R = \frac{U}{I}
+$$
+
+The law applies to metals at constant temperature. Components such as incandescent lamps, diodes or NTC resistors have curved characteristics. For them the resistance is given at an operating point, as the **differential resistance** $r = \Delta U / \Delta I$.
+
+:::tip[Example]
+A $470\,\Omega$ resistor has $9\,\mathrm{V}$ across it. The current is $I = 9\,\mathrm{V} / 470\,\Omega \approx 19.1\,\mathrm{mA}$ and the power dissipation $P = U \cdot I \approx 0.17\,\mathrm{W}$.
+:::
+
+## Kirchhoff's laws
+
+### Current law
+
+A **node** is a connection point of at least three wires. Charge cannot accumulate in a node, so the **current law** applies (Kirchhoff's first law, KCL):
+
+$$
+\sum I_\mathrm{in} = \sum I_\mathrm{out} \qquad \text{or} \qquad \sum_k I_k = 0
+$$
+
+Incoming currents count as positive, outgoing ones as negative. If $3\,\mathrm{A}$ and $2\,\mathrm{A}$ flow into a node, a total of $5\,\mathrm{A}$ must flow out.
+
+### Voltage law
+
+A **mesh** (loop) is a closed path in a network. Because the potential of a point is unique, the sum of all voltages around a loop is zero. This is the **voltage law** (Kirchhoff's second law, KVL):
+
+$$
+\sum_k U_k = 0
+$$
+
+Choose a direction of travel. Voltage arrows in that direction count as positive, opposite ones as negative. For a source $U_0$ with two resistors in series this gives $U_0 - U_1 - U_2 = 0$, so $U_0 = U_1 + U_2$.
+
+:::tip[Procedure for networks]
+1. Assume a current direction for each branch (arbitrary) and draw the voltage arrows across the resistors in the current direction.
+2. With $k$ nodes, write $k - 1$ node equations.
+3. With $z$ branches, write $z - (k - 1)$ independent mesh equations.
+4. Solve the [system of linear equations](/en/mathematics/algebra/systems-of-linear-equations/). A negative result only means that the current flows opposite to the assumed direction.
+:::
+
+### Worked example
+
+Two sources $U_1 = 12\,\mathrm{V}$ and $U_2 = 6\,\mathrm{V}$ feed a common node N via $R_1 = 2\,\Omega$ and $R_2 = 3\,\Omega$; from N, $R_3 = 6\,\Omega$ leads to ground. The negative terminals of both sources are grounded. The currents $I_1$ (through $R_1$) and $I_2$ (through $R_2$) are assumed to flow into the node, $I_3$ flows through $R_3$ to ground.
+
+Current law at N and the two meshes (left via $U_1$, $R_1$, $R_3$ and right via $U_2$, $R_2$, $R_3$):
+
+$$
+\begin{aligned}
+I_1 + I_2 - I_3 &= 0 \\
+2\,\Omega \cdot I_1 + 6\,\Omega \cdot I_3 &= 12\,\mathrm{V} \\
+3\,\Omega \cdot I_2 + 6\,\Omega \cdot I_3 &= 6\,\mathrm{V}
+\end{aligned}
+$$
+
+Substituting $I_1 = (12 - 6 I_3)/2$ and $I_2 = (6 - 6 I_3)/3$ into the node equation gives $6 - 3I_3 + 2 - 2I_3 - I_3 = 0$, so $I_3 = 4/3\,\mathrm{A} \approx 1.33\,\mathrm{A}$. This yields $I_1 = 2\,\mathrm{A}$ and $I_2 = -2/3\,\mathrm{A} \approx -0.67\,\mathrm{A}$. The negative value shows that the current through $R_2$ flows out of the node into the source $U_2$. The node voltage is $U_\mathrm{N} = R_3 \cdot I_3 = 8\,\mathrm{V}$.
+
+This network is solved again below with the other methods so that you can compare the results.
+
+## Series circuit
+
+In a **series circuit** the same current flows through all resistors. The partial voltages add up to the total voltage, and the resistances add up:
+
+$$
+R_\mathrm{total} = R_1 + R_2 + \ldots + R_n \qquad I = \frac{U}{R_\mathrm{total}} \qquad \frac{U_1}{U_2} = \frac{R_1}{R_2}
+$$
+
+The largest voltage drops across the largest resistor. The total resistance is always larger than the largest individual resistance. $100\,\Omega$, $220\,\Omega$ and $330\,\Omega$ in series give $650\,\Omega$.
+
+## Parallel circuit
+
+In a **parallel circuit** all resistors have the same voltage across them. The branch currents add up, as do the conductances:
+
+$$
+\frac{1}{R_\mathrm{total}} = \frac{1}{R_1} + \frac{1}{R_2} + \ldots + \frac{1}{R_n} \qquad G_\mathrm{total} = G_1 + G_2 + \ldots
+$$
+
+For two resistors the "product over sum" formula applies:
+
+$$
+R_1 \parallel R_2 = \frac{R_1 \cdot R_2}{R_1 + R_2}
+$$
+
+The total resistance is always smaller than the smallest individual resistance. $100\,\Omega \parallel 400\,\Omega = 40\,000/500\,\Omega = 80\,\Omega$. $n$ equal resistors $R$ in parallel give $R/n$.
+
+**Mixed circuits** are solved step by step from the inside out: combine recognisable series and parallel connections until only one equivalent resistance remains, then calculate the currents and voltages back.
+
+## Voltage divider
+
+A **voltage divider** of two resistors in series supplies a lower voltage than the input voltage. A potentiometer is an adjustable voltage divider.
+
+![Unloaded and loaded voltage divider](/images/electrical-engineering/voltage-divider_en.svg)
+
+**Unloaded** (no current at the output):
+
+$$
+U_2 = U \cdot \frac{R_2}{R_1 + R_2}
+$$
+
+**Loaded** with a load resistor $R_\mathrm{L}$ in parallel with $R_2$, replace $R_2$ by $R_2 \parallel R_\mathrm{L}$. The output voltage falls.
+
+:::tip[Example]
+$U = 12\,\mathrm{V}$, $R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 5\,\mathrm{k\Omega}$.
+
+- Unloaded: $U_2 = 12\,\mathrm{V} \cdot \dfrac{5}{15} = 4\,\mathrm{V}$.
+- Loaded with $R_\mathrm{L} = 10\,\mathrm{k\Omega}$: $R_2 \parallel R_\mathrm{L} = 3.33\,\mathrm{k\Omega}$, so $U_2 = 12\,\mathrm{V} \cdot \dfrac{3.33}{13.33} = 3\,\mathrm{V}$.
+:::
+
+For a voltage divider to be "stiff", meaning the load hardly changes the voltage, the **bleeder current** through $R_2$ should be much larger than the load current. As a rule of thumb choose it at least ten times as large. For larger loads use a [voltage regulator](/en/electrical-engineering/power-supplies/) or a [voltage follower](/en/electrical-engineering/operational-amplifiers/#voltage-follower) instead of a voltage divider.
+
+## Current divider
+
+In a parallel circuit the total current divides in the inverse ratio of the resistances. The larger current flows through the smaller resistor:
+
+$$
+\frac{I_1}{I_2} = \frac{R_2}{R_1} \qquad I_1 = I \cdot \frac{R_2}{R_1 + R_2}
+$$
+
+Note: the **other** resistor is in the numerator. If $I = 30\,\mathrm{mA}$ divides between $R_1 = 100\,\Omega$ and $R_2 = 200\,\Omega$, then $I_1 = 30\,\mathrm{mA} \cdot 200/300 = 20\,\mathrm{mA}$ and $I_2 = 10\,\mathrm{mA}$.
+
+## Bridge circuit
+
+A **bridge circuit** consists of two voltage dividers in parallel. The left branch consists of $R_1$ (top) and $R_2$ (bottom), the right one of $R_3$ (top) and $R_4$ (bottom). The **bridge voltage** $U_\mathrm{B}$ is measured between the two midpoints. The bridge is **balanced** ($U_\mathrm{B} = 0$) when both dividers have the same ratio:
+
+$$
+\frac{R_1}{R_2} = \frac{R_3}{R_4}
+$$
+
+In the **Wheatstone bridge** $R_4 = R_x$ is unknown. A known resistor is adjusted until a sensitive meter reads zero, and $R_x = R_3 \cdot R_2 / R_1$ is calculated. The result does not depend on the supply voltage and is therefore very accurate.
+
+:::tip[Example]
+With $R_1 = 1\,\mathrm{k\Omega}$, $R_2 = 2\,\mathrm{k\Omega}$ and $R_3 = 1.5\,\mathrm{k\Omega}$ the bridge is balanced at $R_x = 1.5 \cdot 2 / 1\,\mathrm{k\Omega} = 3\,\mathrm{k\Omega}$.
+
+Unbalanced bridge: $U = 10\,\mathrm{V}$, $R_1 = R_2 = R_3 = 1\,\mathrm{k\Omega}$, $R_4 = 1.1\,\mathrm{k\Omega}$. The lower left resistor has $5\,\mathrm{V}$ across it, the lower right one $10\,\mathrm{V} \cdot 1.1/2.1 \approx 5.238\,\mathrm{V}$. The bridge voltage is about $0.238\,\mathrm{V}$.
+:::
+
+Unbalanced bridges are used with sensors such as strain gauges or Pt100: a small change in resistance produces a measurable bridge voltage around zero.
+
+## Star-delta transformation
+
+Some networks, such as a bridge with a resistor in the bridge branch, contain neither pure series nor pure parallel connections. Then it helps to replace three resistors in a **delta connection** (between nodes a, b, c) by three equivalent resistors in a **star connection** (from each node to a new centre point), or vice versa.
+
+Delta to star (product of the two adjacent delta resistors divided by the sum of all three):
+
+$$
+R_\mathrm{a} = \frac{R_\mathrm{ab} \cdot R_\mathrm{ca}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}} \quad
+R_\mathrm{b} = \frac{R_\mathrm{ab} \cdot R_\mathrm{bc}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}} \quad
+R_\mathrm{c} = \frac{R_\mathrm{bc} \cdot R_\mathrm{ca}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}}
+$$
+
+Star to delta:
+
+$$
+R_\mathrm{ab} = R_\mathrm{a} + R_\mathrm{b} + \frac{R_\mathrm{a} R_\mathrm{b}}{R_\mathrm{c}} \quad
+R_\mathrm{bc} = R_\mathrm{b} + R_\mathrm{c} + \frac{R_\mathrm{b} R_\mathrm{c}}{R_\mathrm{a}} \quad
+R_\mathrm{ca} = R_\mathrm{c} + R_\mathrm{a} + \frac{R_\mathrm{c} R_\mathrm{a}}{R_\mathrm{b}}
+$$
+
+For three equal resistors simply $R_\mathrm{star} = R_\mathrm{delta}/3$. A delta of three times $30\,\Omega$ corresponds to a star of three times $10\,\Omega$.
+
+## Network analysis
+
+For larger networks Kirchhoff's equations quickly become confusing. Systematic methods reduce the number of unknowns.
+
+### Mesh analysis
+
+Each independent mesh is assigned an imaginary **mesh current**. The current in a branch that belongs to two meshes is the difference of the two mesh currents. The current law is then satisfied automatically, and only the mesh equations are needed.
+
+For the example above with the mesh currents $I_\mathrm{a}$ (left) and $I_\mathrm{b}$ (right), both clockwise:
+
+$$
+\begin{aligned}
+(R_1 + R_3) I_\mathrm{a} - R_3 I_\mathrm{b} &= U_1 & \Rightarrow \quad 8 I_\mathrm{a} - 6 I_\mathrm{b} &= 12 \\
+-R_3 I_\mathrm{a} + (R_2 + R_3) I_\mathrm{b} &= -U_2 & \Rightarrow \quad -6 I_\mathrm{a} + 9 I_\mathrm{b} &= -6
+\end{aligned}
+$$
+
+The solution is $I_\mathrm{a} = 2\,\mathrm{A}$, $I_\mathrm{b} = 2/3\,\mathrm{A}$. The current through $R_3$ is $I_\mathrm{a} - I_\mathrm{b} = 4/3\,\mathrm{A}$, as above.
+
+### Nodal analysis
+
+Choose a reference node (ground) and write the current law for every other node, expressing the currents in terms of the potentials. With $k$ nodes you get only $k - 1$ equations. In the example there is only one unknown node N:
+
+$$
+\frac{U_\mathrm{N} - 12\,\mathrm{V}}{2\,\Omega} + \frac{U_\mathrm{N} - 6\,\mathrm{V}}{3\,\Omega} + \frac{U_\mathrm{N}}{6\,\Omega} = 0
+$$
+
+Multiplying by $6\,\Omega$ gives $3U_\mathrm{N} - 36 + 2U_\mathrm{N} - 12 + U_\mathrm{N} = 0$, so $U_\mathrm{N} = 8\,\mathrm{V}$. Here this is by far the shortest route. Circuit simulators such as SPICE use this method internally.
+
+## Superposition theorem
+
+In a **linear** network (only sources and ohmic resistors) the effect of each source may be calculated separately and the results added (**superposition**). The other voltage sources are short-circuited, current sources are removed (open circuit).
+
+For the example:
+
+- Only $U_1$ ($U_2$ short-circuited): $R_2 \parallel R_3 = 2\,\Omega$, total resistance $4\,\Omega$, current $3\,\mathrm{A}$, node voltage $3\,\mathrm{A} \cdot 2\,\Omega = 6\,\mathrm{V}$.
+- Only $U_2$ ($U_1$ short-circuited): $R_1 \parallel R_3 = 1.5\,\Omega$, total resistance $4.5\,\Omega$, current $1.33\,\mathrm{A}$, node voltage $1.33\,\mathrm{A} \cdot 1.5\,\Omega = 2\,\mathrm{V}$.
+- Superimposed: $U_\mathrm{N} = 6\,\mathrm{V} + 2\,\mathrm{V} = 8\,\mathrm{V}$.
+
+Powers must not be superimposed because $P = I^2 R$ is not linear. Superimpose currents or voltages and calculate the power afterwards.
+
+## Thévenin and Norton equivalents
+
+Every linear network behaves at two terminals like a single real source. This is **Thévenin's theorem** (equivalent voltage source: $U_0$ with $R_\mathrm{i}$ in series) or **Norton's theorem** (equivalent current source: $I_\mathrm{SC}$ with $R_\mathrm{i}$ in parallel).
+
+1. Disconnect the load resistor.
+2. Calculate the **open-circuit voltage** $U_0$ at the open terminals.
+3. **Internal resistance** $R_\mathrm{i}$: short-circuit all voltage sources, remove current sources and calculate the resistance between the terminals.
+4. The **short-circuit current** is $I_\mathrm{SC} = U_0 / R_\mathrm{i}$.
+
+:::tip[Example]
+In the network above, $R_3$ is treated as the load. Without $R_3$ the current in the loop of both sources is $I = (12 - 6)\,\mathrm{V} / 5\,\Omega = 1.2\,\mathrm{A}$, and the open-circuit voltage is $U_0 = 12\,\mathrm{V} - 2\,\Omega \cdot 1.2\,\mathrm{A} = 9.6\,\mathrm{V}$. The internal resistance is $R_\mathrm{i} = 2\,\Omega \parallel 3\,\Omega = 1.2\,\Omega$, the short-circuit current $I_\mathrm{SC} = 8\,\mathrm{A}$.
+
+With $R_3 = 6\,\Omega$ connected: $U_\mathrm{N} = 9.6\,\mathrm{V} \cdot 6/7.2 = 8\,\mathrm{V}$. The advantage: for any other load resistor a simple voltage divider is now sufficient.
+:::
+
+## Maximum power transfer
+
+At which load resistance does a source deliver the most power? The power at the load is
+
+$$
+P_\mathrm{L} = I^2 R_\mathrm{L} = \frac{U_0^2 \cdot R_\mathrm{L}}{(R_\mathrm{i} + R_\mathrm{L})^2}
+$$
+
+Differentiating and setting to zero gives the maximum at $R_\mathrm{L} = R_\mathrm{i}$ (**impedance matching** for maximum power). Then
+
+$$
+P_\mathrm{max} = \frac{U_0^2}{4 R_\mathrm{i}} \qquad \eta = \frac{R_\mathrm{L}}{R_\mathrm{i} + R_\mathrm{L}} = 50\,\%
+$$
+
+For the example above: $R_\mathrm{L} = 1.2\,\Omega$ gives $P_\mathrm{max} = 9.6^2/(4 \cdot 1.2)\,\mathrm{W} = 19.2\,\mathrm{W}$.
+
+| Mode of operation        | Condition                          | Application                                      |
+| ------------------------ | ---------------------------------- | ------------------------------------------------ |
+| Power matching           | $R_\mathrm{L} = R_\mathrm{i}$      | antennas, RF lines ($50\,\Omega$), older audio power amplifiers |
+| Voltage matching         | $R_\mathrm{L} \gg R_\mathrm{i}$    | power supply, power supply units, measuring inputs: high efficiency |
+| Current matching         | $R_\mathrm{L} \ll R_\mathrm{i}$    | current sources, current measurement             |
+
+Power matching would make no sense in the grid: half of the energy would be lost in the internal resistance. That is why power supply systems and power supply units work with voltage matching.
+
+## Further reading
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.
+- [Falstad Circuit Simulator](https://www.falstad.com/circuit/) for trying out circuits in the browser

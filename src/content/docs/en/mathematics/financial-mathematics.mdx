@@ -1,0 +1,325 @@
+---
+title: Financial Mathematics
+description: "Simple and compound interest, nominal and effective interest rate, continuous compounding, annuities, loans with repayment schedules, net present value, internal rate of return and depreciation."
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Financial mathematics** answers questions that come up in everyday life and in every company: how much is a savings plan worth after ten years? How high is the monthly instalment on a loan? Is it worth buying a new server? The basis is [sequences and series](/en/mathematics/analysis/sequences-and-series/#compound-interest): compound interest forms a geometric sequence, regular payments a geometric series.
+
+## Basic terms
+
+| Term | Meaning |
+| ---- | ------- |
+| capital $K$ | amount of money invested or borrowed; $K_0$ at the start, $K_n$ after $n$ periods |
+| interest rate $p$ or $i$ | interest per period as a percentage ($p = 3$) or as a decimal ($i = 0.03$); "p.a." (per annum) means per year |
+| interest $Z$ | payment for the use of capital |
+| accumulation factor $q$ | $q = 1 + i$ |
+| future value, present value | value of a payment at the end or at the start of the period considered |
+
+The **time value of money** is the core of financial mathematics: €1000 today is worth more than €1000 in five years because you could invest it at interest in the meantime. Payments at different times may therefore only be compared or added after they have been compounded or discounted to the same point in time.
+
+## Simple interest
+
+If the interest is not added to the capital (or the investment lasts less than one interest period), it grows linearly with time:
+
+$$
+Z = K_0 \cdot i \cdot t \qquad K_t = K_0 \cdot (1 + i \cdot t)
+$$
+
+The term $t$ is given in years. For days, depending on the agreement, $t = \frac{\text{days}}{360}$ (commercial convention, every month with 30 days) or the actual days divided by $365$ is used.
+
+:::tip[Example]
+€5000 is invested for 120 days at 3 % p.a. (months of 30 days, year of 360 days):
+
+$$
+Z = 5000 \cdot 0.03 \cdot \frac{120}{360} = 50\ \text{€}
+$$
+
+In Austria the bank withholds **25 % capital gains tax** (Kapitalertragsteuer, KESt), so €37.50 is paid out. The interest rate after tax is therefore only $3\,\% \cdot 0.75 = 2.25\,\%$.
+:::
+
+## Compound interest
+
+If the interest is added to the capital at the end of each period and earns interest itself, the capital grows exponentially:
+
+$$
+K_n = K_0 \cdot q^n \qquad K_0 = \frac{K_n}{q^n}
+$$
+
+The second form is **discounting**: $K_0$ is the **present value** of an amount due in $n$ years. Term and interest rate are obtained by rearranging:
+
+$$
+n = \frac{\ln\frac{K_n}{K_0}}{\ln q} \qquad i = \sqrt[n]{\frac{K_n}{K_0}} - 1
+$$
+
+:::tip[Rule of thumb]
+The doubling time in years is approximately $\frac{72}{p}$ ("rule of 72"). At 3 %, capital doubles in about 24 years (exactly: $\frac{\ln 2}{\ln 1.03} \approx 23.4$).
+:::
+
+### Compounding more than once a year
+
+Many banks compound quarterly or monthly. If a **nominal** annual rate $i_{\text{nom}}$ is divided over $m$ periods per year, the **relative interest rate** $\frac{i_{\text{nom}}}{m}$ is used per period. Because interest already earns interest during the year, the actual **effective annual rate** is higher:
+
+$$
+i_{\text{eff}} = \left(1 + \frac{i_{\text{nom}}}{m}\right)^m - 1
+$$
+
+:::tip[Example]
+A loan has a nominal rate of 6 % p.a. with monthly compounding (0.5 % per month):
+
+$$
+i_{\text{eff}} = 1.005^{12} - 1 \approx 0.06168 = 6.168\,\%
+$$
+:::
+
+Conversely, the **equivalent** (conformal) period rate is the one that gives exactly the same final value after one year as the annual rate $i$: $\;i_m = \sqrt[m]{1 + i} - 1$. At 3 % p.a., the equivalent monthly rate is $\sqrt[12]{1.03} - 1 \approx 0.2466\,\%$, slightly less than the relative rate of $0.25\,\%$.
+
+:::note
+For consumer loans in Austria, the Consumer Credit Act (Verbraucherkreditgesetz, VKrG) requires the **annual percentage rate** (effektiver Jahreszinssatz) to be stated. It includes not only compounding within the year but also processing fees and other costs, and is therefore the right figure for comparing offers.
+:::
+
+### Continuous compounding
+
+If the number of interest periods per year tends to infinity, the [limit](/en/mathematics/analysis/limits-and-continuity/) $\lim_{m \to \infty} \left(1 + \frac{r}{m}\right)^m = e^r$ gives **continuous compounding** with the force of interest $r$:
+
+$$
+K_t = K_0 \cdot e^{r t}
+$$
+
+:::tip[Example]
+€5000 for 8 years at 3 %: compounded annually $5000 \cdot 1.03^8 \approx 6333.85$ €, compounded continuously $5000 \cdot e^{0.24} \approx 6356.25$ €.
+:::
+
+Continuous compounding is rare in practice but is used in theory (e.g. in option pricing) because the exponential function is easier to differentiate and integrate.
+
+## Annuities
+
+An **annuity** (Rente) is a sequence of equal payments $R$ at equal time intervals, for example monthly savings, rent or loan instalments. A distinction is made between:
+
+- **ordinary annuity** (nachschüssig): payment at the end of each period (loan instalments, salaries),
+- **annuity due** (vorschüssig): payment at the start of each period (rent, insurance premiums, many savings plans).
+
+The payment period must match the interest period. For monthly payments and an annual rate, you therefore use the equivalent monthly rate.
+
+### Future value and present value
+
+The **future value** is the value of all payments including interest at the end of the term, the **present value** their value at the start. In an ordinary annuity, the first payment earns interest for $n - 1$ periods and the last not at all; the sum is a geometric series:
+
+| | ordinary annuity | annuity due |
+| --- | --- | --- |
+| future value | $E = R \cdot \dfrac{q^n - 1}{q - 1}$ | $E' = R \cdot q \cdot \dfrac{q^n - 1}{q - 1}$ |
+| present value | $B = R \cdot \dfrac{q^n - 1}{q^n (q - 1)}$ | $B' = R \cdot q \cdot \dfrac{q^n - 1}{q^n (q - 1)}$ |
+
+Values for an annuity due are larger by the factor $q$ because each payment earns interest for one period longer. In all cases $B = \frac{E}{q^n}$.
+
+:::tip[Example: Savings plan]
+€1200 is paid each year into an account at 2.5 % p.a. for 10 years ($q = 1.025$):
+
+| | ordinary annuity | annuity due |
+| --- | --- | --- |
+| future value | $1200 \cdot \frac{1.025^{10} - 1}{0.025} \approx 13{,}444.06$ € | $13{,}444.06 \cdot 1.025 \approx 13{,}780.16$ € |
+| present value | $\frac{13{,}444.06}{1.025^{10}} \approx 10{,}502.48$ € | $10{,}502.48 \cdot 1.025 \approx 10{,}765.04$ € |
+
+The present value means: a single payment of €10,502.48 today is worth exactly as much as the ten payments at the end of each year.
+:::
+
+:::tip[Example: Monthly savings plan (Bausparen)]
+In Austria, a building savings contract (Bausparvertrag) usually runs for 6 years. €100 is paid in at the end of each month, with interest at 3 % p.a. With the equivalent monthly rate $i_{12} = \sqrt[12]{1.03} - 1 \approx 0.0024663$ and $n = 72$ months:
+
+$$
+E = 100 \cdot \frac{(1 + i_{12})^{72} - 1}{i_{12}} \approx 7868.25\ \text{€}
+$$
+
+€7200 was paid in. With Bausparen, a state premium (Bausparprämie) is added, whose percentage is set anew each year; KESt is deducted from the interest.
+:::
+
+### Calculating the payment or the term
+
+Rearranging gives the payment needed for a desired future or present value. The term is found with logarithms; if the result is not a whole number, a smaller **final payment** remains. An annuity paid indefinitely (**perpetuity**) has the present value $B = \frac{R}{i}$: you need exactly the capital whose interest covers the payments.
+
+## Loans and repayment schedules
+
+A loan of $K_0$ is repaid by payments consisting of two parts: **interest** on the current outstanding balance and **repayment** (principal), which reduces the outstanding balance. A **repayment schedule** (amortisation schedule) shows this split for each period.
+
+### Annuity loan
+
+With an **annuity loan**, the payment (the **annuity** $A$) is the same in every period. As the balance falls, the interest share decreases and the repayment share increases. The annuity is the payment of an ordinary annuity with present value $K_0$:
+
+$$
+A = K_0 \cdot \frac{q^n \cdot (q - 1)}{q^n - 1}
+$$
+
+:::tip[Example: Repayment schedule]
+A loan of €10,000 is repaid over 5 years at 5 % p.a. by annual annuities at the end of each year:
+
+$$
+A = 10\,000 \cdot \frac{1.05^5 \cdot 0.05}{1.05^5 - 1} \approx 2309.75\ \text{€}
+$$
+
+| Year | Balance at start of year | Interest | Repayment | Annuity | Balance at end of year |
+| ---- | ------------------------ | -------- | --------- | ------- | ---------------------- |
+| 1 | 10,000.00 | 500.00 | 1809.75 | 2309.75 | 8190.25 |
+| 2 | 8190.25 | 409.51 | 1900.24 | 2309.75 | 6290.01 |
+| 3 | 6290.01 | 314.50 | 1995.25 | 2309.75 | 4294.76 |
+| 4 | 4294.76 | 214.74 | 2095.01 | 2309.75 | 2199.75 |
+| 5 | 2199.75 | 109.99 | 2199.75 | 2309.74 | 0.00 |
+| **Total** | | **1548.74** | **10,000.00** | **11,548.74** | |
+
+The interest in each row is 5 % of the balance at the start of the year; the repayment is the annuity minus the interest. Because every row is rounded to the cent, a rounding difference remains at the end: the last annuity is one cent smaller so that the balance becomes exactly zero. Banks usually settle such differences with the last instalment.
+:::
+
+### Instalment loan
+
+With an **instalment loan** (Ratentilgung), the repayment is the same in every period: $T = \frac{K_0}{n}$. The payment (repayment plus interest) falls from year to year.
+
+:::tip[Example]
+The same loan with equal repayments, $T = \frac{10\,000}{5} = 2000$ €:
+
+| Year | Balance at start of year | Interest | Repayment | Payment |
+| ---- | ------------------------ | -------- | --------- | ------- |
+| 1 | 10,000 | 500 | 2000 | 2500 |
+| 2 | 8000 | 400 | 2000 | 2400 |
+| 3 | 6000 | 300 | 2000 | 2300 |
+| 4 | 4000 | 200 | 2000 | 2200 |
+| 5 | 2000 | 100 | 2000 | 2100 |
+| **Total** | | **1500** | **10,000** | **11,500** |
+
+Less interest is paid in total than with the annuity loan because the debt is repaid faster at the beginning. In return, the burden is higher at the start.
+:::
+
+Producing a repayment schedule is a typical programming task: for each period you repeat "calculate interest, calculate repayment, reduce the balance".
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+static double Annuity(double principal, double rate, int periods)
+{
+    double qn = Math.Pow(1 + rate, periods);
+    return principal * qn * rate / (qn - 1);
+}
+
+var inv = CultureInfo.InvariantCulture;
+double debt = 10_000, rate = 0.05;
+int years = 5;
+double annuity = Annuity(debt, rate, years);
+Console.WriteLine(string.Create(inv, $"Annuity: {annuity:F2}"));
+Console.WriteLine("Year     Balance Interest Repayment");
+double totalInterest = 0;
+for (int year = 1; year <= years; year++)
+{
+    double interest = debt * rate;
+    double repayment = annuity - interest;
+    Console.WriteLine(string.Create(inv, $"{year,4} {debt,11:F2} {interest,8:F2} {repayment,9:F2}"));
+    totalInterest += interest;
+    debt -= repayment;
+}
+Console.WriteLine(string.Create(inv, $"Total interest: {totalInterest:F2}"));
+// Annuity: 2309.75
+// Year     Balance Interest Repayment
+//    1    10000.00   500.00   1809.75
+//    2     8190.25   409.51   1900.24
+//    3     6290.02   314.50   1995.25
+//    4     4294.77   214.74   2095.01
+//    5     2199.76   109.99   2199.76
+// Total interest: 1548.74
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn annuity(principal: f64, rate: f64, periods: i32) -> f64 {
+    let qn = (1.0 + rate).powi(periods);
+    principal * qn * rate / (qn - 1.0)
+}
+
+fn main() {
+    let (mut debt, rate, years) = (10_000.0_f64, 0.05, 5);
+    let annuity = annuity(debt, rate, years);
+    println!("Annuity: {annuity:.2}");
+    println!("Year     Balance Interest Repayment");
+    let mut total_interest = 0.0;
+    for year in 1..=years {
+        let interest = debt * rate;
+        let repayment = annuity - interest;
+        println!("{year:>4} {debt:>11.2} {interest:>8.2} {repayment:>9.2}");
+        total_interest += interest;
+        debt -= repayment;
+    }
+    println!("Total interest: {total_interest:.2}");
+    // Annuity: 2309.75
+    // Year     Balance Interest Repayment
+    //    1    10000.00   500.00   1809.75
+    //    2     8190.25   409.51   1900.24
+    //    3     6290.02   314.50   1995.25
+    //    4     4294.77   214.74   2095.01
+    //    5     2199.76   109.99   2199.76
+    // Total interest: 1548.74
+}
+```
+
+</TabItem>
+</Tabs>
+
+The program carries on calculating without rounding to the cent, so some balances differ by one cent from the table above. For real amounts of money, C# uses the `decimal` type and rounds each row commercially.
+
+## Investment appraisal
+
+Whether an investment pays off is assessed with dynamic methods that take the time value of money into account. The business context and static methods are described on the page [investment analysis](/en/project_management/controlling/investment_analysis/).
+
+### Net present value
+
+The **net present value** (NPV, Kapitalwert) is the sum of all payments discounted to time $0$. With the initial outlay $I_0$, the net cash inflows $R_t$ and the discount rate $i$:
+
+$$
+C_0 = -I_0 + \sum_{t=1}^{n} \frac{R_t}{q^t}
+$$
+
+If $C_0 > 0$, the investment yields more than the discount rate and pays off. Of several alternatives, the one with the largest net present value is preferred.
+
+:::tip[Example]
+A server infrastructure costs €10,000 and brings savings of €3000, €4000 and €5000 over the next three years. Discount rate 6 %:
+
+$$
+C_0 = -10\,000 + \frac{3000}{1.06} + \frac{4000}{1.06^2} + \frac{5000}{1.06^3} \approx -10\,000 + 2830.189 + 3559.986 + 4198.096 \approx 588.27\ \text{€}
+$$
+
+The net present value is positive, so the investment pays off.
+:::
+
+### Internal rate of return
+
+The **internal rate of return** (IRR) is the interest rate at which the net present value is exactly zero. It states the return on the investment. The equation $C_0(i) = 0$ is a polynomial in $q$ and from three periods onwards can usually only be solved [numerically](/en/mathematics/analysis/numerical-methods/) (bisection, regula falsi, Newton's method or a spreadsheet with `IRR`).
+
+:::tip[Example]
+For the server investment, $C_0(8\,\%) \approx 176.29$ € and $C_0(9\,\%) \approx -20.07$ €. The root lies in between, numerically at $i \approx 8.90\,\%$. Because the internal rate of return is above the discount rate of 6 %, the investment pays off.
+:::
+
+## Depreciation
+
+Fixed assets such as computers, machines or vehicles lose value over time. **Depreciation** (in Austrian tax law: Absetzung für Abnutzung, AfA) spreads the acquisition cost over the useful life:
+
+| Method | Depreciation amount | Book value after $t$ years |
+| ------ | ------------------- | -------------------------- |
+| straight-line | the same each year: $\frac{A}{n}$ | $A - t \cdot \frac{A}{n}$ (arithmetic sequence) |
+| declining balance | fixed percentage $d$ of the current book value | $A \cdot (1 - d)^t$ (geometric sequence) |
+
+:::tip[Example]
+A server costing €6000 with a useful life of 4 years:
+
+- straight-line: €1500 per year, book values €4500, €3000, €1500, €0.
+- declining balance at 30 %: depreciation €1800, €1260, €882; book values €4200, €2940, €2058. A declining book value never reaches zero, so towards the end one switches to straight-line depreciation of the remaining book value.
+:::
+
+In Austria, straight-line depreciation is the standard case for tax purposes; for many assets acquired after 30 June 2020, declining-balance depreciation of at most 30 % is also permitted. How depreciation is booked is described on the page [bookkeeping](/en/economy_and_law/accounting/bookkeeping/#depreciation).
+
+## Further reading
+
+- [Austrian Legal Information System (RIS): Consumer Credit Act and Income Tax Act](https://www.ris.bka.gv.at/)
+- [Oesterreichische Nationalbank: interest rate statistics](https://www.oenb.at/)

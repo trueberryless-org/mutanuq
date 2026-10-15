@@ -1,0 +1,237 @@
+---
+title: Frontend Frameworks
+description: SPA, MPA, SSR and SSG, the component model with state and routing, React, Angular, Vue and Svelte, Blazor and Rust with WebAssembly, and npm and Vite.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Any user interface can be built with plain JavaScript and the DOM. In larger applications, however, it becomes tedious to update every affected place in the DOM by hand whenever data changes, and the code quickly becomes hard to follow. **Frontend frameworks** solve this problem: you describe what the user interface should look like for a given **state**, and the framework keeps the DOM up to date automatically. The interface is assembled from reusable **components**.
+
+## Rendering strategies
+
+A central architectural decision is **where** and **when** the HTML is created.
+
+| Strategy | Process | Strengths | Weaknesses |
+| -------- | ------- | --------- | ---------- |
+| **MPA** (_multi-page application_) | Every click loads a new HTML page generated on the server | simple, fast first page load, good for search engines | every page change reloads, little interactivity |
+| **SPA** (_single-page application_) | The server delivers an almost empty HTML page and a large JavaScript bundle. The browser builds the interface, fetches data as JSON via an API and switches views without reloading | as smooth as a desktop application, clear separation of frontend and API | slower first load, empty without JavaScript, harder for search engines |
+| **SSR** (_server-side rendering_) | The server renders the components to HTML for every request. In the browser, JavaScript then takes over the page (**hydration**) and makes it interactive | fast first content, good discoverability, still interactive | the server has to run JavaScript, more complex |
+| **SSG** (_static site generation_) | All pages are rendered to HTML once at build time and delivered as static files | very fast, cheap to host (CDN), secure | content only changes after a new build |
+
+Modern **meta-frameworks** combine these strategies per page: **Next.js** (React), **Nuxt** (Vue), **SvelteKit** (Svelte), **Angular SSR** and **Astro**. By default Astro delivers static HTML without JavaScript and only brings individual interactive areas (**islands**) to life. This website is built with Astro.
+
+## Components
+
+A **component** encapsulates a piece of user interface with structure, styling and behaviour: a button, a product card, a form, an entire page. Components are nested and form a tree, similar to the DOM.
+
+- **Props** (properties) are input values passed in by the parent component. The child component does not modify them.
+- **State** is data that the component manages itself and that changes, for example the content of an input field.
+- **Events** report occurrences back to the parent component.
+
+Data therefore flows **down** (props) and events flow **up**. When the state changes, the framework re-renders the affected parts. This principle is called **reactivity**, and the frameworks differ mainly in how they detect changes:
+
+- **Virtual DOM** (React, Vue, Yew): after a change, the component creates a new, lightweight copy of the tree in memory. The framework compares it with the old one (_diffing_) and changes only the differences in the real DOM.
+- **Signals** (Angular, Svelte 5, SolidJS, Leptos): every value knows which places use it and updates exactly those. This is fine-grained and saves the comparison.
+- **Compiler** (Svelte): the component code is translated into direct DOM instructions at build time, so there is hardly any framework code at runtime.
+
+### State across components
+
+If many components need the same data (logged-in user, shopping cart), it would be cumbersome to pass it through all levels as props (_prop drilling_). Solutions are a **context** or **dependency injection** (Angular services), or a central **store** (Redux, Zustand, Pinia for Vue, NgRx for Angular). Data from the server is often managed with libraries such as TanStack Query, which take care of caching and reloading.
+
+### Routing
+
+An SPA has only one HTML page but should behave like a website with several addresses: links should be shareable and bookmarkable, and the back button should work. A **client-side router** maps URLs to components, changes the address bar with the **History API** (`history.pushState`) without reloading and shows the matching component. Examples are React Router, Vue Router and the Angular Router. Meta-frameworks usually use **file-based routing**: the file `src/pages/students/[id].astro` belongs to the URL `/students/17`. For an SPA, the server must deliver the same `index.html` for all paths, otherwise reloading a subpage results in `404`.
+
+## The major frameworks
+
+| Framework   | Origin                         | Characteristics                                                                             |
+| ----------- | ------------------------------ | ------------------------------------------------------------------------------------------- |
+| **React**   | Meta (Facebook), 2013          | strictly speaking a library for user interfaces. Components are functions that return **JSX** (HTML-like syntax in JavaScript). State via **hooks** such as `useState`. Largest ecosystem, also React Native for mobile apps |
+| **Angular** | Google, 2016 (successor of AngularJS from 2010) | complete framework with router, forms, HTTP client, dependency injection and testing tools. Requires **TypeScript**. Clear structure, popular in large enterprise applications |
+| **Vue**     | Evan You, 2014                  | **single-file components** (`.vue`) with template, script and style in one file. Easy to learn, can be adopted incrementally |
+| **Svelte**  | Rich Harris, 2016               | **compiler** instead of a runtime library, very little code, small bundles. Since Svelte 5, reactivity via **runes** such as `$state` |
+
+The same example, a counter button, in the four frameworks:
+
+<Tabs>
+<TabItem label="React">
+
+```jsx
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Clicks: {count}</button>;
+}
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import { Component, signal } from "@angular/core";
+
+@Component({
+  selector: "app-counter",
+  template: `<button (click)="increment()">Clicks: {{ count() }}</button>`,
+})
+export class CounterComponent {
+  count = signal(0);
+  increment() {
+    this.count.update((n) => n + 1);
+  }
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import { ref } from "vue";
+const count = ref(0);
+</script>
+
+<template>
+  <button @click="count++">Clicks: {{ count }}</button>
+</template>
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+  let count = $state(0);
+</script>
+
+<button onclick={() => count++}>Clicks: {count}</button>
+```
+
+</TabItem>
+</Tabs>
+
+A list of students loaded from an API shows props, state and effects in React:
+
+```jsx
+import { useEffect, useState } from "react";
+
+function StudentCard({ student }) {            // props
+  return (
+    <li className="card">
+      {student.name} ({student.schoolClass})
+    </li>
+  );
+}
+
+export default function StudentList() {
+  const [students, setStudents] = useState([]); // state
+  const [filter, setFilter] = useState("");
+
+  useEffect(() => {                              // load after the first render
+    fetch("/api/students")
+      .then((r) => r.json())
+      .then(setStudents);
+  }, []);
+
+  const visible = students.filter((s) => s.name.toLowerCase().includes(filter.toLowerCase()));
+
+  return (
+    <>
+      <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search" />
+      <ul>
+        {visible.map((s) => <StudentCard key={s.id} student={s} />)}
+      </ul>
+    </>
+  );
+}
+```
+
+The `key` attribute helps React recognise list items when comparing. JSX escapes inserted values automatically, so `{student.name}` does not allow XSS.
+
+Which framework you choose depends more on the team, the existing code and the job market than on technical differences. The concepts (components, props, state, reactivity, routing) are the same everywhere.
+
+## Blazor and Rust in the browser
+
+With **WebAssembly**, languages other than JavaScript can also run in the browser.
+
+- **Blazor** (Microsoft, part of ASP.NET Core) writes components in **C#** and Razor syntax (`.razor`). Since .NET 8, you choose a **render mode** per component: static server rendering, **Interactive Server** (the component runs on the server, and events and DOM changes travel over a SignalR connection), **Interactive WebAssembly** (the .NET runtime is loaded into the browser) or **Auto** (server first, WebAssembly after the download). Advantage: frontend and backend share the language and data classes.
+- In **Rust** there are **Leptos** (fine-grained signals, also SSR), **Yew** (inspired by React, virtual DOM) and **Dioxus** (also desktop and mobile). They are built with tools such as **Trunk** or `cargo leptos`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```razor
+@* Counter.razor *@
+<button @onclick="Increment">Clicks: @count</button>
+
+@code {
+    private int count = 0;
+
+    private void Increment() => count++;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: skip */}
+
+```rust
+// Leptos (version 0.8)
+use leptos::prelude::*;
+
+#[component]
+fn Counter() -> impl IntoView {
+    let (count, set_count) = signal(0);
+    view! {
+        <button on:click=move |_| set_count.update(|n| *n += 1)>
+            "Clicks: " {count}
+        </button>
+    }
+}
+
+fn main() {
+    leptos::mount::mount_to_body(Counter);
+}
+```
+
+</TabItem>
+</Tabs>
+
+The drawback of both approaches is the download size: a Blazor WebAssembly application loads the .NET runtime (several megabytes); Rust applications are smaller but larger than a comparable Svelte bundle. In addition, the ecosystem is smaller than for JavaScript.
+
+## WebAssembly
+
+**WebAssembly** (Wasm) is a compact **binary format** for a stack-based virtual machine that is built into all major browsers (since 2017) and has been standardised as a W3C Recommendation since 2019. Programs in C, C++, Rust, C# or Go are compiled to `.wasm` and run at close to native speed in the same sandbox as JavaScript.
+
+- Wasm does not replace JavaScript but complements it. Wasm accesses the DOM via JavaScript interfaces.
+- Typical uses are computationally intensive tasks: image and video editing (Figma, Photoshop on the web), games, CAD, cryptography, emulators or existing C++ libraries in the browser.
+- With **WASI** (_WebAssembly System Interface_), Wasm also runs outside the browser, for example for plug-ins and server functions.
+
+## Build tools
+
+A modern frontend consists of hundreds of modules, TypeScript, JSX, Vue files and third-party packages. Browsers only understand JavaScript modules, CSS and HTML. **Build tools** translate, bundle and optimise the code.
+
+- **npm** (_Node Package Manager_) installs packages from the public registry. `package.json` describes the project, its dependencies and scripts; `package-lock.json` records the exact installed versions so that every build is the same. The packages end up in the `node_modules` folder (do not commit it to Git). Alternatives are **pnpm** and **Yarn**.
+- **Vite** (Evan You, 2020) is the most widely used build tool today. In development mode it serves the code as native ES modules and replaces changed modules in the browser immediately (**hot module replacement**) without losing the state. For production it bundles everything into a few optimised files. Older projects use **webpack**.
+- During the build, among other things, the following happens: translation of TypeScript and JSX, **bundling** (many modules into a few files), **tree shaking** (removing unused code), **minification** (removing whitespace and long names) and **code splitting** (loading code for rarely visited pages only when needed).
+
+```bash
+npm create vite@latest school-app -- --template react-ts   # create a new project
+cd school-app
+npm install            # install the dependencies from package.json
+npm run dev            # development server with hot module replacement
+npm run build          # optimised build into the dist/ folder
+npm install zod        # add a package
+```
+
+Static build output in `dist/` can be served by any web server or a CDN.
+
+## Further reading
+
+- [Understanding client-side JavaScript frameworks](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Frameworks_libraries) (MDN Web Docs)
+- [react.dev](https://react.dev/learn), [angular.dev](https://angular.dev/), [vuejs.org](https://vuejs.org/guide/introduction.html), [svelte.dev](https://svelte.dev/docs)
+- [ASP.NET Core Blazor](https://learn.microsoft.com/en-us/aspnet/core/blazor/) (Microsoft Learn)

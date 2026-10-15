@@ -1,0 +1,325 @@
+---
+title: Finanzmathematik
+description: "Einfache Verzinsung und Zinseszins, nomineller und effektiver Zinssatz, stetige Verzinsung, Rentenrechnung, Kredite mit Tilgungsplan, Kapitalwert, interner Zinssatz und Abschreibung."
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Finanzmathematik** beantwortet Fragen, die im Alltag und in jedem Unternehmen auftreten: Wie viel ist ein Sparplan nach zehn Jahren wert? Wie hoch ist die monatliche Rate eines Kredits? Lohnt sich die Anschaffung eines neuen Servers? Grundlage sind die [Folgen und Reihen](/de/mathematics/analysis/sequences-and-series/#zinseszinsrechnung): Zinseszinsen bilden eine geometrische Folge, regelmäßige Zahlungen eine geometrische Reihe.
+
+## Grundbegriffe
+
+| Begriff | Bedeutung |
+| ------- | --------- |
+| Kapital $K$ | angelegter oder geliehener Geldbetrag; $K_0$ zu Beginn, $K_n$ nach $n$ Perioden |
+| Zinssatz $p$ bzw. $i$ | Zinsen pro Periode in Prozent ($p = 3$) bzw. als Dezimalzahl ($i = 0{,}03$); „p. a.“ (per annum) heißt pro Jahr |
+| Zinsen $Z$ | Entgelt für die Überlassung von Kapital |
+| Aufzinsungsfaktor $q$ | $q = 1 + i$ |
+| Endwert, Barwert | Wert einer Zahlung zum Ende bzw. zu Beginn des betrachteten Zeitraums |
+
+Der **Zeitwert des Geldes** ist der Kern der Finanzmathematik: 1000 € heute sind mehr wert als 1000 € in fünf Jahren, weil man sie in der Zwischenzeit verzinst anlegen könnte. Zahlungen zu verschiedenen Zeitpunkten darf man deshalb nur vergleichen oder addieren, nachdem man sie auf denselben Zeitpunkt auf- oder abgezinst hat.
+
+## Einfache Verzinsung
+
+Werden die Zinsen nicht dem Kapital zugeschlagen (oder dauert die Anlage weniger als eine Zinsperiode), wachsen sie linear mit der Zeit:
+
+$$
+Z = K_0 \cdot i \cdot t \qquad K_t = K_0 \cdot (1 + i \cdot t)
+$$
+
+Die Laufzeit $t$ wird in Jahren angegeben. Bei Tagen rechnet man je nach Vereinbarung mit $t = \frac{\text{Tage}}{360}$ (kaufmännisch, jeder Monat mit 30 Tagen) oder mit den tatsächlichen Tagen durch $365$.
+
+:::tip[Beispiel]
+5000 € werden 120 Tage zu 3 % p. a. angelegt (Monate zu 30 Tagen, Jahr zu 360 Tagen):
+
+$$
+Z = 5000 \cdot 0{,}03 \cdot \frac{120}{360} = 50\ \text{€}
+$$
+
+In Österreich behält die Bank davon **25 % Kapitalertragsteuer** (KESt) ein, ausbezahlt werden $37{,}50$ €. Der Zinssatz nach Steuern beträgt also nur $3\,\% \cdot 0{,}75 = 2{,}25\,\%$.
+:::
+
+## Zinseszinsen
+
+Werden die Zinsen am Ende jeder Periode zum Kapital addiert und weiter verzinst, wächst das Kapital exponentiell:
+
+$$
+K_n = K_0 \cdot q^n \qquad K_0 = \frac{K_n}{q^n}
+$$
+
+Die zweite Form ist das **Abzinsen** (Diskontieren): $K_0$ ist der **Barwert** eines Betrags, der in $n$ Jahren fällig ist. Laufzeit und Zinssatz erhält man durch Umformen:
+
+$$
+n = \frac{\ln\frac{K_n}{K_0}}{\ln q} \qquad i = \sqrt[n]{\frac{K_n}{K_0}} - 1
+$$
+
+:::tip[Faustregel]
+Die Verdopplungszeit in Jahren ist ungefähr $\frac{72}{p}$ („72er-Regel“). Bei 3 % verdoppelt sich ein Kapital in rund 24 Jahren (genau: $\frac{\ln 2}{\ln 1{,}03} \approx 23{,}4$).
+:::
+
+### Unterjährige Verzinsung
+
+Viele Banken verzinsen vierteljährlich oder monatlich. Wird ein **nomineller** Jahreszinssatz $i_{\text{nom}}$ auf $m$ Perioden pro Jahr aufgeteilt, verwendet man pro Periode den **relativen Zinssatz** $\frac{i_{\text{nom}}}{m}$. Weil die Zinsen während des Jahres schon mitverzinst werden, ist der tatsächliche, **effektive Jahreszinssatz** höher:
+
+$$
+i_{\text{eff}} = \left(1 + \frac{i_{\text{nom}}}{m}\right)^m - 1
+$$
+
+:::tip[Beispiel]
+Ein Kredit hat nominell 6 % p. a. bei monatlicher Verzinsung (0,5 % pro Monat):
+
+$$
+i_{\text{eff}} = 1{,}005^{12} - 1 \approx 0{,}06168 = 6{,}168\,\%
+$$
+:::
+
+Umgekehrt ist der **konforme** (äquivalente) Periodenzinssatz jener, der nach einem Jahr genau denselben Endwert ergibt wie der Jahreszinssatz $i$: $\;i_m = \sqrt[m]{1 + i} - 1$. Bei 3 % p. a. ist der konforme Monatszinssatz $\sqrt[12]{1{,}03} - 1 \approx 0{,}2466\,\%$, etwas weniger als der relative Zinssatz $0{,}25\,\%$.
+
+:::note
+Bei Verbraucherkrediten muss in Österreich laut Verbraucherkreditgesetz (VKrG) der **effektive Jahreszinssatz** angegeben werden. Er enthält nicht nur die unterjährige Verzinsung, sondern auch Bearbeitungsgebühren und sonstige Kosten und ist deshalb die richtige Größe, um Angebote zu vergleichen.
+:::
+
+### Stetige Verzinsung
+
+Lässt man die Anzahl der Zinsperioden pro Jahr gegen unendlich gehen, erhält man mit dem [Grenzwert](/de/mathematics/analysis/limits-and-continuity/) $\lim_{m \to \infty} \left(1 + \frac{r}{m}\right)^m = e^r$ die **stetige Verzinsung** mit der Zinsintensität $r$:
+
+$$
+K_t = K_0 \cdot e^{r t}
+$$
+
+:::tip[Beispiel]
+5000 € für 8 Jahre zu 3 %: jährlich verzinst $5000 \cdot 1{,}03^8 \approx 6333{,}85$ €, stetig verzinst $5000 \cdot e^{0{,}24} \approx 6356{,}25$ €.
+:::
+
+Die stetige Verzinsung ist in der Praxis selten, wird aber in der Theorie (z. B. bei der Bewertung von Optionen) verwendet, weil man mit der Exponentialfunktion leichter differenzieren und integrieren kann.
+
+## Rentenrechnung
+
+Eine **Rente** ist eine Folge gleich hoher Zahlungen $R$ in gleichen Zeitabständen, zum Beispiel monatliche Sparraten, Mietzahlungen oder Kreditraten. Man unterscheidet:
+
+- **nachschüssig:** Zahlung am Ende jeder Periode (Kreditraten, Gehälter),
+- **vorschüssig:** Zahlung zu Beginn jeder Periode (Miete, Versicherungsprämien, viele Sparpläne).
+
+Die Rentenperiode muss zur Zinsperiode passen. Bei monatlichen Zahlungen und jährlichem Zinssatz rechnet man deshalb mit dem konformen Monatszinssatz.
+
+### Endwert und Barwert
+
+Der **Endwert** ist der Wert aller Zahlungen samt Zinsen am Ende der Laufzeit, der **Barwert** ihr Wert zu Beginn. Bei der nachschüssigen Rente wird die erste Zahlung $n - 1$ Perioden verzinst, die letzte gar nicht; die Summe ist eine geometrische Reihe:
+
+| | nachschüssig | vorschüssig |
+| --- | --- | --- |
+| Endwert | $E = R \cdot \dfrac{q^n - 1}{q - 1}$ | $E' = R \cdot q \cdot \dfrac{q^n - 1}{q - 1}$ |
+| Barwert | $B = R \cdot \dfrac{q^n - 1}{q^n (q - 1)}$ | $B' = R \cdot q \cdot \dfrac{q^n - 1}{q^n (q - 1)}$ |
+
+Vorschüssige Werte sind um den Faktor $q$ größer, weil jede Zahlung eine Periode länger verzinst wird. Immer gilt $B = \frac{E}{q^n}$.
+
+:::tip[Beispiel: Sparplan]
+Jährlich werden 1200 € auf ein Konto mit 2,5 % p. a. eingezahlt, 10 Jahre lang ($q = 1{,}025$):
+
+| | nachschüssig | vorschüssig |
+| --- | --- | --- |
+| Endwert | $1200 \cdot \frac{1{,}025^{10} - 1}{0{,}025} \approx 13\,444{,}06$ € | $13\,444{,}06 \cdot 1{,}025 \approx 13\,780{,}16$ € |
+| Barwert | $\frac{13\,444{,}06}{1{,}025^{10}} \approx 10\,502{,}48$ € | $10\,502{,}48 \cdot 1{,}025 \approx 10\,765{,}04$ € |
+
+Der Barwert bedeutet: Eine Einmalzahlung von $10\,502{,}48$ € heute ist gleich viel wert wie die zehn nachschüssigen Raten.
+:::
+
+:::tip[Beispiel: Monatlicher Sparplan (Bausparen)]
+Ein Bausparvertrag läuft in Österreich üblicherweise 6 Jahre. Es werden monatlich nachschüssig 100 € eingezahlt, verzinst mit 3 % p. a. Mit dem konformen Monatszinssatz $i_{12} = \sqrt[12]{1{,}03} - 1 \approx 0{,}0024663$ und $n = 72$ Monaten:
+
+$$
+E = 100 \cdot \frac{(1 + i_{12})^{72} - 1}{i_{12}} \approx 7868{,}25\ \text{€}
+$$
+
+Eingezahlt wurden 7200 €. Dazu kommt beim Bausparen die staatliche Bausparprämie, deren Prozentsatz jährlich neu festgelegt wird; von den Zinsen wird KESt abgezogen.
+:::
+
+### Rate oder Laufzeit berechnen
+
+Durch Umformen erhält man die nötige Rate für einen gewünschten End- oder Barwert. Die Laufzeit bestimmt man mit Logarithmen; bei nicht ganzzahligem Ergebnis bleibt eine kleinere **Restzahlung**. Eine Rente, die unbegrenzt lange gezahlt wird (**ewige Rente**), hat den Barwert $B = \frac{R}{i}$: Man braucht genau das Kapital, dessen Zinsen die Rente decken.
+
+## Kredite und Tilgungspläne
+
+Ein Kredit über $K_0$ wird durch Zahlungen zurückgezahlt, die aus zwei Teilen bestehen: **Zinsen** für die aktuelle Restschuld und **Tilgung**, die die Restschuld verringert. Ein **Tilgungsplan** zeigt diese Aufteilung für jede Periode.
+
+### Annuitätentilgung
+
+Bei der **Annuitätentilgung** ist die Zahlung (die **Annuität** $A$) in jeder Periode gleich hoch. Da die Restschuld sinkt, wird der Zinsanteil kleiner und der Tilgungsanteil größer. Die Annuität ist die Rate einer nachschüssigen Rente mit Barwert $K_0$:
+
+$$
+A = K_0 \cdot \frac{q^n \cdot (q - 1)}{q^n - 1}
+$$
+
+:::tip[Beispiel: Tilgungsplan]
+Ein Kredit über 10 000 € wird in 5 Jahren mit 5 % p. a. durch nachschüssige Annuitäten zurückgezahlt:
+
+$$
+A = 10\,000 \cdot \frac{1{,}05^5 \cdot 0{,}05}{1{,}05^5 - 1} \approx 2309{,}75\ \text{€}
+$$
+
+| Jahr | Restschuld am Jahresbeginn | Zinsen | Tilgung | Annuität | Restschuld am Jahresende |
+| ---- | -------------------------- | ------ | ------- | -------- | ------------------------ |
+| 1 | 10 000,00 | 500,00 | 1809,75 | 2309,75 | 8190,25 |
+| 2 | 8190,25 | 409,51 | 1900,24 | 2309,75 | 6290,01 |
+| 3 | 6290,01 | 314,50 | 1995,25 | 2309,75 | 4294,76 |
+| 4 | 4294,76 | 214,74 | 2095,01 | 2309,75 | 2199,75 |
+| 5 | 2199,75 | 109,99 | 2199,75 | 2309,74 | 0,00 |
+| **Summe** | | **1548,74** | **10 000,00** | **11 548,74** | |
+
+Die Zinsen jeder Zeile sind 5 % der Restschuld am Jahresbeginn, die Tilgung ist Annuität minus Zinsen. Weil jede Zeile auf Cent gerundet wird, bleibt am Ende eine Rundungsdifferenz: Die letzte Annuität ist um einen Cent kleiner, damit die Restschuld genau null wird. Banken gleichen solche Differenzen üblicherweise mit der letzten Rate aus.
+:::
+
+### Ratentilgung
+
+Bei der **Ratentilgung** ist die Tilgung in jeder Periode gleich: $T = \frac{K_0}{n}$. Die Zahlung (Tilgung plus Zinsen) sinkt von Jahr zu Jahr.
+
+:::tip[Beispiel]
+Derselbe Kredit mit Ratentilgung, $T = \frac{10\,000}{5} = 2000$ €:
+
+| Jahr | Restschuld am Jahresbeginn | Zinsen | Tilgung | Zahlung |
+| ---- | -------------------------- | ------ | ------- | ------- |
+| 1 | 10 000 | 500 | 2000 | 2500 |
+| 2 | 8000 | 400 | 2000 | 2400 |
+| 3 | 6000 | 300 | 2000 | 2300 |
+| 4 | 4000 | 200 | 2000 | 2200 |
+| 5 | 2000 | 100 | 2000 | 2100 |
+| **Summe** | | **1500** | **10 000** | **11 500** |
+
+Insgesamt fallen weniger Zinsen an als bei der Annuitätentilgung, weil anfangs schneller getilgt wird. Dafür ist die Belastung am Anfang höher.
+:::
+
+Einen Tilgungsplan zu erstellen ist eine typische Programmieraufgabe: Man wiederholt für jede Periode „Zinsen berechnen, Tilgung berechnen, Restschuld verringern“.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+static double Annuity(double principal, double rate, int periods)
+{
+    double qn = Math.Pow(1 + rate, periods);
+    return principal * qn * rate / (qn - 1);
+}
+
+var inv = CultureInfo.InvariantCulture;
+double debt = 10_000, rate = 0.05;
+int years = 5;
+double annuity = Annuity(debt, rate, years);
+Console.WriteLine(string.Create(inv, $"Annuität: {annuity:F2}"));
+Console.WriteLine("Jahr  Restschuld   Zinsen  Tilgung");
+double totalInterest = 0;
+for (int year = 1; year <= years; year++)
+{
+    double interest = debt * rate;
+    double repayment = annuity - interest;
+    Console.WriteLine(string.Create(inv, $"{year,4} {debt,11:F2} {interest,8:F2} {repayment,8:F2}"));
+    totalInterest += interest;
+    debt -= repayment;
+}
+Console.WriteLine(string.Create(inv, $"Zinsen gesamt: {totalInterest:F2}"));
+// Annuität: 2309.75
+// Jahr  Restschuld   Zinsen  Tilgung
+//    1    10000.00   500.00  1809.75
+//    2     8190.25   409.51  1900.24
+//    3     6290.02   314.50  1995.25
+//    4     4294.77   214.74  2095.01
+//    5     2199.76   109.99  2199.76
+// Zinsen gesamt: 1548.74
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn annuity(principal: f64, rate: f64, periods: i32) -> f64 {
+    let qn = (1.0 + rate).powi(periods);
+    principal * qn * rate / (qn - 1.0)
+}
+
+fn main() {
+    let (mut debt, rate, years) = (10_000.0_f64, 0.05, 5);
+    let annuity = annuity(debt, rate, years);
+    println!("Annuität: {annuity:.2}");
+    println!("Jahr  Restschuld   Zinsen  Tilgung");
+    let mut total_interest = 0.0;
+    for year in 1..=years {
+        let interest = debt * rate;
+        let repayment = annuity - interest;
+        println!("{year:>4} {debt:>11.2} {interest:>8.2} {repayment:>8.2}");
+        total_interest += interest;
+        debt -= repayment;
+    }
+    println!("Zinsen gesamt: {total_interest:.2}");
+    // Annuität: 2309.75
+    // Jahr  Restschuld   Zinsen  Tilgung
+    //    1    10000.00   500.00  1809.75
+    //    2     8190.25   409.51  1900.24
+    //    3     6290.02   314.50  1995.25
+    //    4     4294.77   214.74  2095.01
+    //    5     2199.76   109.99  2199.76
+    // Zinsen gesamt: 1548.74
+}
+```
+
+</TabItem>
+</Tabs>
+
+Das Programm rechnet ohne Rundung auf Cent weiter, deshalb weichen einzelne Restschulden um einen Cent von der Tabelle oben ab. Für echte Geldbeträge verwendet man in C# den Typ `decimal` und rundet jede Zeile kaufmännisch.
+
+## Investitionsrechnung
+
+Ob sich eine Investition lohnt, beurteilt man mit dynamischen Verfahren, die den Zeitwert des Geldes berücksichtigen. Die betriebswirtschaftliche Einordnung und statische Verfahren beschreibt die Seite [Investitionsrechnung](/de/project_management/controlling/investment_analysis/).
+
+### Kapitalwert
+
+Der **Kapitalwert** (Nettobarwert, NPV) ist die Summe aller auf den Zeitpunkt $0$ abgezinsten Zahlungen. Mit der Anschaffungsauszahlung $I_0$, den Rückflüssen (Einzahlungsüberschüssen) $R_t$ und dem Kalkulationszinssatz $i$:
+
+$$
+C_0 = -I_0 + \sum_{t=1}^{n} \frac{R_t}{q^t}
+$$
+
+Ist $C_0 > 0$, verzinst sich die Investition besser als mit dem Kalkulationszinssatz und lohnt sich. Von mehreren Alternativen ist die mit dem größten Kapitalwert vorzuziehen.
+
+:::tip[Beispiel]
+Eine Serverinfrastruktur kostet 10 000 € und bringt in den nächsten drei Jahren Einsparungen von 3000 €, 4000 € und 5000 €. Kalkulationszinssatz 6 %:
+
+$$
+C_0 = -10\,000 + \frac{3000}{1{,}06} + \frac{4000}{1{,}06^2} + \frac{5000}{1{,}06^3} \approx -10\,000 + 2830{,}189 + 3559{,}986 + 4198{,}096 \approx 588{,}27\ \text{€}
+$$
+
+Der Kapitalwert ist positiv, die Investition lohnt sich.
+:::
+
+### Interner Zinssatz
+
+Der **interne Zinssatz** (IRR, Internal Rate of Return) ist jener Zinssatz, bei dem der Kapitalwert genau null ist. Er gibt die Rendite der Investition an. Die Gleichung $C_0(i) = 0$ ist ein Polynom in $q$ und lässt sich ab drei Perioden meist nur [numerisch](/de/mathematics/analysis/numerical-methods/) lösen (Bisektion, Regula falsi, Newton-Verfahren oder Tabellenkalkulation mit `IKV`).
+
+:::tip[Beispiel]
+Für die Serverinvestition ist $C_0(8\,\%) \approx 176{,}29$ € und $C_0(9\,\%) \approx -20{,}07$ €. Die Nullstelle liegt dazwischen, numerisch bei $i \approx 8{,}90\,\%$. Weil der interne Zinssatz über dem Kalkulationszinssatz von 6 % liegt, lohnt sich die Investition.
+:::
+
+## Abschreibung
+
+Anlagegüter wie Computer, Maschinen oder Fahrzeuge verlieren mit der Zeit an Wert. Die **Abschreibung** (steuerlich in Österreich: Absetzung für Abnutzung, AfA) verteilt die Anschaffungskosten auf die Nutzungsdauer:
+
+| Verfahren | Abschreibungsbetrag | Buchwert nach $t$ Jahren |
+| --------- | ------------------- | ------------------------ |
+| linear | gleich in jedem Jahr: $\frac{A}{n}$ | $A - t \cdot \frac{A}{n}$ (arithmetische Folge) |
+| geometrisch-degressiv | fester Prozentsatz $d$ vom jeweiligen Buchwert | $A \cdot (1 - d)^t$ (geometrische Folge) |
+
+:::tip[Beispiel]
+Ein Server um 6000 € mit 4 Jahren Nutzungsdauer:
+
+- linear: 1500 € pro Jahr, Buchwerte 4500 €, 3000 €, 1500 €, 0 €.
+- degressiv mit 30 %: Abschreibungen 1800 €, 1260 €, 882 €; Buchwerte 4200 €, 2940 €, 2058 €. Ein degressiver Buchwert erreicht nie null, deshalb wechselt man gegen Ende auf die lineare Abschreibung des Restbuchwerts.
+:::
+
+In Österreich ist steuerlich die lineare AfA der Regelfall; für viele nach dem 30. 6. 2020 angeschaffte Wirtschaftsgüter ist auch eine degressive AfA mit höchstens 30 % zulässig. Die Buchung der Abschreibung beschreibt die Seite [Buchhaltung](/de/economy_and_law/accounting/bookkeeping/#abschreibung).
+
+## Weiterführende Quellen
+
+- [Rechtsinformationssystem des Bundes (RIS): Verbraucherkreditgesetz und Einkommensteuergesetz](https://www.ris.bka.gv.at/)
+- [Oesterreichische Nationalbank: Statistiken zu Zinssätzen](https://www.oenb.at/)

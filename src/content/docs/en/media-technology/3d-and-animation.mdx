@@ -1,0 +1,308 @@
+---
+title: 3D and Animation
+description: Coordinate systems, meshes, modelling, PBR materials, rasterisation and ray tracing, animation principles, rigging, Blender and game engines.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+3D graphics describe objects not as an image but as a spatial model that a program can turn into an image from any viewing direction. They are used for films and advertising, games, product visualisation, architecture, virtual and augmented reality and 3D printing. The path to the finished image leads through modelling, materials, light and camera to rendering; for animation, motion and rigging are added.
+
+## Coordinate systems
+
+Every point in a 3D scene has three coordinates $(x, y, z)$ in a Cartesian coordinate system. Programs differ in which axis points up and whether the system is **right-handed** or **left-handed**. In a right-handed system, the thumb (x), index finger (y) and middle finger (z) of the right hand point in the positive axis directions.
+
+| Program, format | Handedness | Up |
+| --- | --- | --- |
+| Blender | right-handed | Z |
+| Unity | left-handed | Y |
+| Unreal Engine | left-handed | Z |
+| Godot, OpenGL, glTF | right-handed | Y |
+
+When exchanging models between programs, axes therefore often have to be converted, otherwise a model suddenly lies on its back.
+
+- **Local coordinates** (object coordinates) refer to the **origin** (_pivot_) of an object, around which it also rotates.
+- **Global coordinates** (world coordinates) refer to the origin of the whole scene.
+
+Objects are placed by three **transformations**: **translation**, **rotation** and **scaling**. Internally they are stored as $4 \times 4$ matrices in homogeneous coordinates and multiplied. The order matters; the usual order is scale first, then rotate, then translate. Rotations with three angles (**Euler angles**) can reach a position in which two axes coincide and one degree of freedom is lost (**gimbal lock**). Engines therefore compute internally with **quaternions**.
+
+To produce an image, all points are converted from object to world coordinates, then to camera coordinates and finally **projected** onto the image plane: in perspective (distant objects smaller, like the eye) or orthographically (without foreshortening, for technical views). The virtual camera has a **field of view** and a near and far **clipping plane**, outside of which nothing is drawn.
+
+## Meshes
+
+Most 3D models are **polygon meshes**:
+
+- **Vertex** (plural _vertices_): a point in space
+- **Edge**: connection between two vertices
+- **Face**: an area enclosed by edges. A face with three corners is a **triangle** (_tri_), with four a **quad**, with more an **n-gon**.
+
+Graphics cards only draw triangles; every quad is split into two triangles during rendering. When modelling, quads are still preferred because they form clean **edge loops** (rings of edges running around the model), can be subdivided well and deform cleanly during animation. The arrangement of the polygons is called **topology**.
+
+For every closed solid without holes, **Euler's polyhedron formula** applies:
+
+$$
+V - E + F = 2
+$$
+
+A cube has $V = 8$ vertices, $E = 12$ edges and $F = 6$ faces: $8 - 12 + 6 = 2$.
+
+Further terms:
+
+- **Normal**: a vector perpendicular to a surface that indicates where "outside" is. It determines how light is reflected. If the vertex normals of adjacent faces are averaged, a surface looks smooth (_smooth shading_), otherwise faceted (_flat shading_).
+- **Polycount**: number of polygons. Game characters have a few thousand to over a hundred thousand triangles depending on the platform, film models millions.
+- **Level of detail** (LOD): several versions of a model with decreasing polycount that are swapped depending on the distance to the camera.
+- **Manifold** (watertight): every edge belongs to exactly two faces. This is a prerequisite for 3D printing and Boolean operations.
+
+## Modelling techniques
+
+| Technique | Approach | Use |
+| --- | --- | --- |
+| **Polygon modelling** (box modelling) | shape a primitive (cube, cylinder) with tools such as extrude, inset, bevel and loop cut | game objects, architecture, hard-surface models |
+| **Subdivision surface** | a coarse mesh is automatically smoothed and refined (Catmull-Clark algorithm) | organic, smooth shapes with few control points |
+| **Sculpting** | model with brushes as in digital clay, millions of polygons | characters, creatures, fine detail |
+| **Retopology** | a clean mesh with few polygons is laid over a high-resolution sculpt | preparation for animation and games |
+| **NURBS** and CAD | mathematically exact curves and surfaces instead of polygons | product design, mechanical engineering |
+| **Procedural modelling** | rules and nodes generate geometry (Blender Geometry Nodes, Houdini) | cities, vegetation, variations |
+| **Boolean operations** | union, difference and intersection of two solids | holes, cut-outs |
+| **Photogrammetry**, 3D scanning | a model is computed from many photos or laser scans | real objects, cultural heritage |
+
+**Modifiers** apply operations non-destructively, such as _mirror_ for symmetrical models where you model only one half, or _array_ for repetition.
+
+## Materials and textures
+
+### UV mapping
+
+To place a 2D image (**texture**) on a 3D model, every vertex must know which point in the image belongs to it. To do this, the surface is cut open like a paper craft sheet and laid out flat (**UV unwrapping**). The axes of the image plane are called **U** and **V** (because x, y and z are already taken) and run from 0 to 1. The cut edges are called **seams**. They are placed in barely visible spots, and you aim for as little distortion as possible and an even **texel density** (texture pixels per area).
+
+Textures usually have side lengths that are powers of two (1024, 2048, 4096 px) because graphics cards efficiently compute reduced versions of them (**mipmaps**) for distant objects.
+
+### Physically based rendering
+
+**PBR** (_physically based rendering_) describes materials with physically motivated parameters so that they look believable under any lighting. A material never reflects more light than it receives (**energy conservation**). In the widespread **metallic-roughness workflow** there are these textures (_maps_):
+
+| Map | Meaning |
+| --- | --- |
+| **Base colour** (albedo) | basic colour without light and shadow |
+| **Metallic** | 0 non-metal (wood, plastic, skin), 1 metal |
+| **Roughness** | 0 mirror-smooth, 1 completely matt |
+| **Normal map** | fakes fine surface detail (scratches, pores) by changing the normals per pixel, without additional polygons |
+| **Ambient occlusion** | shading in cracks and corners |
+| **Height** or **displacement** | actually moves the geometry |
+| **Emission** | self-illuminating areas |
+
+The program that calculates the colour of a pixel from material, light and viewing direction is called a **shader**. In Blender, the standard shader is the _Principled BSDF_. Textures are painted directly onto the model in programs such as Adobe Substance 3D Painter.
+
+## Lighting
+
+| Light source | Properties | Example |
+| --- | --- | --- |
+| **Point light** | radiates from a point in all directions | light bulb |
+| **Spot light** | cone of light in one direction | torch, stage spotlight |
+| **Directional light** (sun) | parallel rays from infinite distance, position irrelevant | sunlight |
+| **Area light** | luminous surface, soft shadows | window, softbox |
+| **Environment light** (HDRI) | a 360° photo with high dynamic range lights the scene from all sides | realistic outdoor scenes, product shots |
+
+As in film, **three-point lighting** with key, fill and back light is a good starting point. An image only becomes realistic with **global illumination**: light is bounced on by surfaces, so a red wall tints the floor next to it reddish. In games, indirect light for static objects is often precomputed and stored in textures (**light baking**, _lightmaps_).
+
+## Rendering
+
+**Rendering** is the computation of the image from the scene. There are two fundamental methods:
+
+| | Rasterisation | Ray tracing |
+| --- | --- | --- |
+| Principle | every triangle is projected onto the screen and broken into pixels; a **depth buffer** (z-buffer) remembers the nearest object for each pixel | for each pixel, a ray is sent from the camera into the scene and followed to see where it hits, reflects, refracts or is shadowed |
+| Speed | very fast, real time at 60 fps and more | slow, seconds to hours per frame |
+| Shadows, reflections | only via tricks (shadow maps, screen-space reflections) | arise physically correctly |
+| Use | games, interactive applications, previews | film, advertising, architectural visualisation |
+
+Rasterisation runs on the graphics card in a **graphics pipeline**: a **vertex shader** transforms the vertices, the rasteriser determines the covered pixels, a **fragment shader** (pixel shader) calculates their colour.
+
+**Path tracing** is a ray tracing method that follows many random light paths per pixel and thus also computes global illumination. With few rays (_samples_) the image is noisy, so **denoisers** are used. Since 2018, graphics cards have hardware for ray tracing, and games now combine both methods. Blender contains both approaches: **EEVEE** (real time, rasterisation) and **Cycles** (path tracing).
+
+## Animation
+
+### The twelve principles of animation
+
+In _The Illusion of Life_ (1981), the Disney animators Frank Thomas and Ollie Johnston described twelve principles that make movement believable and lively. They apply equally to 3D animation and to motion in user interfaces:
+
+| Principle | Meaning |
+| --- | --- |
+| **Squash and stretch** | objects deform when moving and on impact while their volume stays the same; a ball flattens on impact |
+| **Anticipation** | a counter-movement announces the main action: bending the knees before a jump |
+| **Staging** | present the action clearly and unambiguously, through pose, camera and light |
+| **Straight ahead and pose to pose** | animate frame by frame (spontaneous, fluid) or key poses first, then in-betweens (plannable) |
+| **Follow through and overlapping action** | parts such as hair, clothing or a tail keep moving after the stop, with a time offset |
+| **Slow in and slow out** | movements accelerate at the beginning and decelerate at the end (_easing_) |
+| **Arcs** | natural movements follow arcs, not straight lines |
+| **Secondary action** | secondary movements support the main action: whistling while walking |
+| **Timing** | the number of frames for a movement determines weight and character |
+| **Exaggeration** | exaggerate movement and expression so that they come across |
+| **Solid drawing** | design shapes three-dimensionally, with weight and volume |
+| **Appeal** | characters should look interesting and engaging, villains included |
+
+### Keyframes and interpolation
+
+In **keyframe animation**, the animator only sets values at important points in time: position, rotation, scale or any other parameter. The program calculates the frames in between (**in-betweens**) by **interpolation**:
+
+| Interpolation | Curve | Effect |
+| --- | --- | --- |
+| **constant** (step) | value jumps at the next keyframe | blocking, stop-motion look |
+| **linear** | uniform change | mechanical, abrupt start and stop |
+| **Bézier** (ease in/out) | gentle acceleration and deceleration | natural (slow in and slow out) |
+
+Linearly between the keyframes $(t_0, v_0)$ and $(t_1, v_1)$, with the normalised time fraction $u = \frac{t - t_0}{t_1 - t_0}$:
+
+$$
+v(t) = v_0 + (v_1 - v_0) \cdot u
+$$
+
+For a smooth curve, $u$ is replaced by an **easing function**, for example $s(u) = 3u^2 - 2u^3$ (_smoothstep_), whose slope is zero at the beginning and end. In the **graph editor** these progressions appear as **curves** (_F-curves_) and can be shaped with Bézier handles.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // decimal point
+
+// value between two keyframes, easing maps u (0 to 1) to the progress
+static double Interpolate(double t0, double v0, double t1, double v1, double t, Func<double, double> easing)
+{
+    double u = Math.Clamp((t - t0) / (t1 - t0), 0, 1);
+    return v0 + (v1 - v0) * easing(u);
+}
+
+Func<double, double> linear = u => u;
+Func<double, double> smoothstep = u => 3 * u * u - 2 * u * u * u;
+
+// keyframes: x = 0 at frame 0, x = 10 at frame 24 (1 second at 24 fps)
+Console.WriteLine("Frame  linear  smooth");
+for (int frame = 0; frame <= 24; frame += 6)
+{
+    double lin = Interpolate(0, 0, 24, 10, frame, linear);
+    double smooth = Interpolate(0, 0, 24, 10, frame, smoothstep);
+    Console.WriteLine($"{frame,5}  {lin,6:F2}  {smooth,6:F2}");
+}
+// Frame  linear  smooth
+//     0    0.00    0.00
+//     6    2.50    1.56
+//    12    5.00    5.00
+//    18    7.50    8.44
+//    24   10.00   10.00
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// value between two keyframes, easing maps u (0 to 1) to the progress
+fn interpolate(t0: f64, v0: f64, t1: f64, v1: f64, t: f64, easing: impl Fn(f64) -> f64) -> f64 {
+    let u = ((t - t0) / (t1 - t0)).clamp(0.0, 1.0);
+    v0 + (v1 - v0) * easing(u)
+}
+
+fn linear(u: f64) -> f64 {
+    u
+}
+
+fn smoothstep(u: f64) -> f64 {
+    3.0 * u * u - 2.0 * u * u * u
+}
+
+fn main() {
+    // keyframes: x = 0 at frame 0, x = 10 at frame 24 (1 second at 24 fps)
+    println!("Frame  linear  smooth");
+    for frame in (0..=24).step_by(6) {
+        let t = frame as f64;
+        let lin = interpolate(0.0, 0.0, 24.0, 10.0, t, linear);
+        let smooth = interpolate(0.0, 0.0, 24.0, 10.0, t, smoothstep);
+        println!("{frame:5}  {lin:6.2}  {smooth:6.2}");
+    }
+    // Frame  linear  smooth
+    //     0    0.00    0.00
+    //     6    2.50    1.56
+    //    12    5.00    5.00
+    //    18    7.50    8.44
+    //    24   10.00   10.00
+}
+```
+
+</TabItem>
+</Tabs>
+
+The smoothed movement covers only 1.56 instead of 2.5 units in the first quarter, is faster in the middle and slows down again at the end.
+
+### Rigging
+
+To animate a character, you do not move individual vertices but a **skeleton** (_rig_, in Blender an _armature_) made of **bones**:
+
+- The bones form a **hierarchy**: if the upper arm rotates, forearm and hand follow (parent-child relationship).
+- In **skinning**, the mesh is bound to the bones. **Weight painting** defines how strongly each vertex is influenced by which bone, for example in the elbow partly by the upper arm and partly by the forearm.
+- **Forward kinematics** (FK): you rotate bone by bone from the root (shoulder, elbow, hand). Good for swinging movements.
+- **Inverse kinematics** (IK): you move the end of the chain (hand or foot) to a target and the program calculates the angles of the other joints. Good when a foot should stay planted on the ground.
+- **Controllers** are easy-to-grab shapes that animators use to operate the rig. **Constraints** restrict movement (a knee only bends in one direction).
+- **Shape keys** (_blend shapes_, morph targets) store deformed variants of the mesh, for example for facial expressions, and blend between them.
+
+Instead of animating by hand, movements can also be recorded from actors by **motion capture**. For hair, cloth, fluids, smoke and rigid bodies there are **physics simulations**.
+
+## Tools
+
+**Blender** is free, open-source 3D software (GPL) from the Blender Foundation and the standard tool in schools. It covers the whole production: modelling, sculpting, UV mapping, texturing, rigging, animation, simulation, rendering with EEVEE and Cycles, compositing and even video editing. It can be automated and extended with Python.
+
+| Program | Focus |
+| --- | --- |
+| Autodesk Maya | character animation in film and games |
+| Autodesk 3ds Max | architectural visualisation, games |
+| Maxon Cinema 4D | motion graphics, advertising |
+| Maxon ZBrush | sculpting |
+| Adobe Substance 3D Painter | PBR texturing |
+| SideFX Houdini | procedural models, effects, simulation |
+
+## Game engines
+
+A **game engine** provides everything interactive 3D applications need: real-time rendering, physics, audio, input, animation, user interface, networking and export to many platforms. At the core of every game is the **game loop**: read input, update the game state, draw the frame, 30 to 144 times per second. Movements are multiplied by the time elapsed since the last frame (**delta time**) so that they run at the same speed on fast and slow computers.
+
+| Engine | Languages | Properties |
+| --- | --- | --- |
+| **Unity** | C# | very widespread for indie and mobile games, AR/VR; large community and Asset Store |
+| **Unreal Engine** | C++, visual scripting with **Blueprints** | Epic Games; very high-quality graphics (Nanite, Lumen), also used for film and architecture |
+| **Godot** | GDScript, C# | free and open source (MIT licence), lightweight, popular for 2D and smaller 3D projects |
+
+In Unity, a scene consists of **GameObjects** whose behaviour is defined by **components**. Custom components are C# classes that inherit from `MonoBehaviour`. The engine calls `Start()` once at the beginning and `Update()` every frame:
+
+{/* check: skip */}
+```csharp
+using UnityEngine;
+
+// rotates the GameObject the script is attached to evenly around the y-axis
+public class Rotator : MonoBehaviour
+{
+    [SerializeField] private float degreesPerSecond = 90f; // adjustable in the Inspector
+
+    void Update()
+    {
+        // Time.deltaTime makes it independent of the frame rate
+        transform.Rotate(0f, degreesPerSecond * Time.deltaTime, 0f);
+    }
+}
+```
+
+## File formats
+
+| Format | Content | Use |
+| --- | --- | --- |
+| **OBJ** (Wavefront) | geometry, UV coordinates, normals; materials in a separate `.mtl` file; text format, no animation | simple, universal exchange of static models |
+| **FBX** (Autodesk) | geometry, materials, skeleton, animation, cameras; proprietary | exchange between DCC programs and game engines |
+| **glTF 2.0** (Khronos Group) | geometry, PBR materials, skeleton, animation; JSON with binary data or as a single `.glb` file; open, ISO/IEC 12113 | web (three.js, Babylon.js), AR, delivery to end devices; the "JPEG of 3D" |
+| **USD** (Pixar, OpenUSD) | whole scenes with layers and variants | film pipelines, Apple AR (USDZ) |
+| **STL** | triangles only, no colours or units | 3D printing |
+| **3MF** | geometry with colours, materials, units | modern 3D printing |
+| **.blend** | complete Blender file | working file |
+
+## Further reading
+
+- [Blender Manual](https://docs.blender.org/manual/en/latest/)
+- [Khronos Group: glTF 2.0 Specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)
+- Frank Thomas, Ollie Johnston: _The Illusion of Life: Disney Animation_. New York: Abbeville Press, 1981

@@ -1,0 +1,158 @@
+---
+title: Impuls und Stöße
+description: Impuls, Kraftstoß, Impulserhaltung, elastische und unelastische Stöße mit Rechenbeispielen, ballistisches Pendel, Rückstoß und Raketenprinzip.
+sidebar:
+  order: 5
+---
+
+Der Impuls ist neben der Energie die zweite große Erhaltungsgröße der Mechanik. Mit ihm berechnet man Stöße, Explosionen und Rückstoß, also Vorgänge, bei denen sehr große Kräfte nur sehr kurz wirken und man die Kraft im Detail gar nicht kennt.
+
+## Impuls
+
+Der **Impuls** (Bewegungsgröße) eines Körpers ist das Produkt aus Masse und Geschwindigkeit:
+
+$$
+\vec p = m \cdot \vec v, \qquad [p] = \mathrm{kg\,m/s} = \mathrm{N\,s}
+$$
+
+Der Impuls ist ein Vektor und zeigt in Bewegungsrichtung. Ein Lkw mit $10\,\mathrm{t}$ bei $36\,\mathrm{km/h}$ hat den Impuls $10\,000 \cdot 10 = 10^5\,\mathrm{kg\,m/s}$, ebenso viel wie ein Auto mit $1\,\mathrm{t}$ bei $360\,\mathrm{km/h}$.
+
+Newton hat sein zweites Axiom ursprünglich mit dem Impuls formuliert:
+
+$$
+\vec F = \frac{\mathrm{d}\vec p}{\mathrm{d}t}
+$$
+
+Für konstante Masse folgt daraus $\vec F = m \vec a$. Die Impulsform gilt aber auch, wenn sich die Masse ändert, etwa bei einer Rakete.
+
+## Kraftstoß
+
+Wirkt eine Kraft während der Zeit $\Delta t$, ändert sich der Impuls um den **Kraftstoß** $\vec I$ (englisch _impulse_):
+
+$$
+\vec I = \int_{t_1}^{t_2} \vec F\,\mathrm{d}t = \Delta \vec p, \qquad \text{bei konstanter Kraft: } I = F \cdot \Delta t
+$$
+
+Im $F$-$t$-Diagramm ist der Kraftstoß die Fläche unter der Kurve. Bei gegebener Impulsänderung ist die Kraft umso kleiner, je länger der Stoß dauert. Darauf beruhen Knautschzone, Airbag, Fahrradhelm und das Abfedern beim Landen nach einem Sprung.
+
+:::tip[Beispiel: Fußball]
+Ein Ball mit $0{,}45\,\mathrm{kg}$ wird aus der Ruhe auf $25\,\mathrm{m/s}$ geschossen. Der Fuß berührt ihn $10\,\mathrm{ms}$ lang. Kraftstoß $I = 0{,}45 \cdot 25 = 11{,}25\,\mathrm{N\,s}$, mittlere Kraft $F = 11{,}25/0{,}01 = 1125\,\mathrm{N}$, das entspricht der Gewichtskraft von etwa $115\,\mathrm{kg}$.
+:::
+
+## Impulserhaltung
+
+> In einem abgeschlossenen System (keine äußeren Kräfte) bleibt der Gesamtimpuls nach Betrag und Richtung erhalten.
+
+$$
+\sum \vec p_\mathrm{vorher} = \sum \vec p_\mathrm{nachher}
+$$
+
+Der Satz folgt direkt aus dem dritten newtonschen Axiom: Die inneren Kräfte zwischen den Körpern sind gleich groß und entgegengesetzt, ihre Kraftstöße heben sich auf. Er gilt bei **jedem** Stoß, auch wenn mechanische Energie verloren geht. Der Schwerpunkt eines abgeschlossenen Systems bewegt sich deshalb gleichförmig geradlinig, egal was im Inneren passiert.
+
+:::tip[Beispiel: Rückstoß eines Gewehrs]
+Ein Gewehr ($4\,\mathrm{kg}$) feuert ein Geschoß ($10\,\mathrm{g}$) mit $400\,\mathrm{m/s}$ ab. Vorher ruht alles, der Gesamtimpuls ist null. Nachher: $0{,}01 \cdot 400 + 4 \cdot v = 0$, also $v = -1\,\mathrm{m/s}$. Das Gewehr bewegt sich mit $1\,\mathrm{m/s}$ nach hinten.
+:::
+
+## Stöße
+
+Bei einem Stoß wirken zwei Körper kurz aufeinander ein. Der Impuls ist immer erhalten; die kinetische Energie nur beim elastischen Stoß.
+
+| Stoßart | Impuls | kinetische Energie | Beispiel |
+| --- | --- | --- | --- |
+| **vollkommen elastisch** | erhalten | erhalten | Billardkugeln, Gasmoleküle |
+| **teilelastisch** (realer Stoß) | erhalten | teilweise in Wärme und Verformung | Tennisball auf Boden |
+| **vollkommen unelastisch** (plastisch) | erhalten | maximaler Verlust, Körper bewegen sich gemeinsam weiter | Auffahrunfall mit Verkeilen, Knetkugeln |
+
+### Vollkommen elastischer Stoß
+
+Für einen **geraden zentralen Stoß** (Bewegung auf einer Linie) mit den Massen $m_1$, $m_2$ und den Geschwindigkeiten $v_1$, $v_2$ vor dem Stoß liefern Impuls- und Energieerhaltung:
+
+$$
+v_1' = \frac{(m_1 - m_2)\,v_1 + 2 m_2 v_2}{m_1 + m_2}, \qquad
+v_2' = \frac{(m_2 - m_1)\,v_2 + 2 m_1 v_1}{m_1 + m_2}
+$$
+
+Sonderfälle mit ruhendem zweiten Körper ($v_2 = 0$):
+
+- **gleiche Massen**: $v_1' = 0$, $v_2' = v_1$. Die Kugeln tauschen ihre Geschwindigkeiten (Kugelstoßpendel, „Newton-Wiege“).
+- **sehr große Masse** $m_2$ (Wand): $v_1' = -v_1$, der Körper prallt mit gleicher Geschwindigkeit zurück.
+- **sehr kleine Masse** $m_2$: $v_2' \approx 2 v_1$.
+
+:::tip[Beispiel: elastischer Stoß]
+Eine Kugel mit $m_1 = 2\,\mathrm{kg}$ und $v_1 = 3\,\mathrm{m/s}$ trifft eine ruhende Kugel mit $m_2 = 1\,\mathrm{kg}$.
+
+$$
+v_1' = \frac{(2 - 1) \cdot 3}{3} = 1\,\mathrm{m/s}, \qquad v_2' = \frac{2 \cdot 2 \cdot 3}{3} = 4\,\mathrm{m/s}
+$$
+
+Kontrolle Impuls: vorher $2 \cdot 3 = 6$, nachher $2 \cdot 1 + 1 \cdot 4 = 6\,\mathrm{kg\,m/s}$. Kontrolle Energie: vorher $\frac{1}{2} \cdot 2 \cdot 9 = 9\,\mathrm{J}$, nachher $1 + 8 = 9\,\mathrm{J}$.
+:::
+
+### Vollkommen unelastischer Stoß
+
+Die Körper haften nach dem Stoß aneinander und haben eine gemeinsame Geschwindigkeit:
+
+$$
+v' = \frac{m_1 v_1 + m_2 v_2}{m_1 + m_2}
+$$
+
+Der Verlust an kinetischer Energie geht in Verformung und Wärme.
+
+:::tip[Beispiel: Auffahrunfall]
+Ein Auto ($1500\,\mathrm{kg}$, $20\,\mathrm{m/s}$) fährt auf ein stehendes Auto ($1000\,\mathrm{kg}$) auf, beide verkeilen sich.
+
+$$
+v' = \frac{1500 \cdot 20}{2500} = 12\,\mathrm{m/s}
+$$
+
+Kinetische Energie vorher $\frac{1}{2} \cdot 1500 \cdot 20^2 = 300\,\mathrm{kJ}$, nachher $\frac{1}{2} \cdot 2500 \cdot 12^2 = 180\,\mathrm{kJ}$. $120\,\mathrm{kJ}$ (40 %) werden in Verformung und Wärme umgesetzt.
+:::
+
+:::tip[Beispiel: ballistisches Pendel]
+Ein Geschoß ($10\,\mathrm{g}$) bleibt in einem hängenden Holzklotz ($2\,\mathrm{kg}$) stecken, der danach $5\,\mathrm{cm}$ hoch schwingt. Zwei Schritte, weil beim Stoß Energie verloren geht:
+
+1. Schwingen (Energieerhaltung): $v' = \sqrt{2 g h} = \sqrt{2 \cdot 9{,}81 \cdot 0{,}05} = 0{,}990\,\mathrm{m/s}$
+2. Stoß (Impulserhaltung): $v_1 = \frac{(m_1 + m_2)\,v'}{m_1} = \frac{2{,}01 \cdot 0{,}990}{0{,}01} = 199\,\mathrm{m/s}$
+
+Nur etwa $0{,}5\,\%$ der kinetischen Energie des Geschoßes bleiben als Bewegungsenergie des Pendels erhalten.
+:::
+
+### Teilelastischer Stoß und Stoßzahl
+
+Reale Stöße liegen dazwischen. Die **Stoßzahl** $k$ (Restitutionskoeffizient) vergleicht die Relativgeschwindigkeiten nach und vor dem Stoß:
+
+$$
+k = \frac{v_2' - v_1'}{v_1 - v_2}, \qquad 0 \le k \le 1
+$$
+
+$k = 1$ ist elastisch, $k = 0$ vollkommen unelastisch. Fällt ein Ball aus der Höhe $h$ auf den Boden und springt auf $h'$, ist $k = \sqrt{h'/h}$.
+
+### Schiefer Stoß
+
+Treffen sich die Körper nicht zentral, gilt die Impulserhaltung für jede Komponente getrennt ($x$ und $y$). Beim elastischen Stoß zweier gleicher Massen, von denen eine ruht, fliegen die Kugeln danach im rechten Winkel auseinander, was man beim Billard nutzt.
+
+## Rückstoß und Raketenprinzip
+
+Eine Rakete stößt Gas mit der Ausströmgeschwindigkeit $u$ (relativ zur Rakete) nach hinten aus. Nach der Impulserhaltung erhält sie dadurch Impuls nach vorne. Sie braucht keine Luft, an der sie sich „abstößt“, und funktioniert deshalb auch im Weltraum.
+
+Die **Schubkraft** ist das Produkt aus Ausströmgeschwindigkeit und Massenstrom:
+
+$$
+F_\mathrm{Schub} = u \cdot \frac{\mathrm{d}m}{\mathrm{d}t}
+$$
+
+Ein Triebwerk mit $u = 3000\,\mathrm{m/s}$, das $250\,\mathrm{kg}$ Treibstoff pro Sekunde ausstößt, liefert $750\,\mathrm{kN}$ Schub.
+
+Integriert man die Impulsbilanz über die Brenndauer (ohne Schwerkraft und Luftwiderstand), erhält man die **Raketengleichung** von Ziolkowski:
+
+$$
+\Delta v = u \cdot \ln\frac{m_0}{m_\mathrm{e}}
+$$
+
+mit Startmasse $m_0$ und Leermasse (Brennschlussmasse) $m_\mathrm{e}$. Bei $u = 3000\,\mathrm{m/s}$ und einem Massenverhältnis von $10$ ist $\Delta v = 3000 \cdot \ln 10 = 6{,}91\,\mathrm{km/s}$. Für eine Erdumlaufbahn sind rund $7{,}8\,\mathrm{km/s}$ nötig, dazu kommen Verluste durch Schwerkraft und Luftwiderstand. Wegen des Logarithmus lässt sich das nicht durch mehr Treibstoff allein erreichen, deshalb baut man **Stufenraketen**, die leere Tanks abwerfen.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Impuls und Stöße, leifiphysik.de
+- NASA Glenn Research Center: _Ideal Rocket Equation_, grc.nasa.gov

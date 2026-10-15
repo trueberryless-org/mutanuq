@@ -1,0 +1,223 @@
+---
+title: Relationale Algebra
+description: Die Operatoren der relationalen Algebra mit Beispielen und SQL-Entsprechungen, von Selektion und Projektion über Joins bis zur Division.
+sidebar:
+  order: 3
+---
+
+Die **relationale Algebra** ist die mathematische Grundlage relationaler Datenbanken. Sie definiert Operatoren, die eine oder zwei Relationen als Eingabe nehmen und wieder eine Relation liefern. Weil das Ergebnis jeder Operation erneut eine Relation ist, lassen sich die Operatoren beliebig verschachteln (**Abgeschlossenheit**). Jede SQL-Abfrage wird vom Datenbanksystem intern in einen solchen Ausdruck übersetzt und dann optimiert.
+
+## Beispieldaten
+
+Alle Beispiele verwenden diese Tabellen:
+
+**Klasse**
+
+| Id | Name  | Jahrgang |
+| -- | ----- | -------- |
+| 1  | 3AHIT | 3        |
+| 2  | 4AHIT | 4        |
+| 3  | 5AHIT | 5        |
+
+**Schueler**
+
+| Id | Vorname | Nachname | KlasseId |
+| -- | ------- | -------- | -------- |
+| 1  | Anna    | Huber    | 1        |
+| 2  | Ben     | Wolf     | 1        |
+| 3  | Clara   | Berger   | 2        |
+| 4  | David   | Novak    | `NULL`   |
+
+**Fach**
+
+| Id | Kuerzel |
+| -- | ------- |
+| 1  | AM      |
+| 2  | SEW     |
+| 3  | INSY    |
+
+**Note**
+
+| SchuelerId | FachId | Wert |
+| ---------- | ------ | ---- |
+| 1          | 1      | 2    |
+| 1          | 2      | 1    |
+| 1          | 3      | 1    |
+| 2          | 1      | 4    |
+| 2          | 2      | 3    |
+| 3          | 2      | 2    |
+| 3          | 3      | 3    |
+
+```sql
+CREATE TABLE Klasse (Id INT PRIMARY KEY, Name VARCHAR(10), Jahrgang INT);
+CREATE TABLE Schueler (Id INT PRIMARY KEY, Vorname VARCHAR(50), Nachname VARCHAR(50),
+                       KlasseId INT REFERENCES Klasse(Id));
+CREATE TABLE Fach (Id INT PRIMARY KEY, Kuerzel VARCHAR(10));
+CREATE TABLE Note (SchuelerId INT REFERENCES Schueler(Id), FachId INT REFERENCES Fach(Id),
+                   Wert INT, PRIMARY KEY (SchuelerId, FachId));
+
+INSERT INTO Klasse VALUES (1, '3AHIT', 3), (2, '4AHIT', 4), (3, '5AHIT', 5);
+INSERT INTO Schueler VALUES (1, 'Anna', 'Huber', 1), (2, 'Ben', 'Wolf', 1),
+                            (3, 'Clara', 'Berger', 2), (4, 'David', 'Novak', NULL);
+INSERT INTO Fach VALUES (1, 'AM'), (2, 'SEW'), (3, 'INSY');
+INSERT INTO Note VALUES (1, 1, 2), (1, 2, 1), (1, 3, 1), (2, 1, 4), (2, 2, 3), (3, 2, 2), (3, 3, 3);
+```
+
+## Grundoperatoren
+
+### Selektion
+
+Die **Selektion** $\sigma$ (sigma) wählt die **Zeilen** aus, die eine Bedingung erfüllen. Die Spalten bleiben unverändert.
+
+$$
+\sigma_{\text{Jahrgang} \geq 4}(\text{Klasse})
+$$
+
+liefert die Klassen 4AHIT und 5AHIT. Bedingungen dürfen Vergleiche ($=, \neq, <, \leq, >, \geq$) und die Verknüpfungen $\land$ (und), $\lor$ (oder) und $\lnot$ (nicht) enthalten. Die Selektion entspricht der `WHERE`-Klausel:
+
+```sql
+SELECT * FROM Klasse WHERE Jahrgang >= 4;
+```
+
+### Projektion
+
+Die **Projektion** $\pi$ (pi) wählt **Spalten** aus. Weil eine Relation eine Menge ist, entfernt die Projektion doppelte Zeilen.
+
+$$
+\pi_{\text{KlasseId}}(\text{Schueler})
+$$
+
+liefert die Werte 1, 2 und `NULL`, also drei Zeilen statt vier. In SQL entfernt erst `DISTINCT` die Duplikate:
+
+```sql
+SELECT DISTINCT KlasseId FROM Schueler;
+```
+
+### Umbenennung
+
+Die **Umbenennung** $\rho$ (rho) gibt einer Relation oder einem Attribut einen neuen Namen. Das ist nötig, wenn eine Relation mit sich selbst verbunden wird oder wenn zwei Attribute gleich heißen. $\rho_{S}(\text{Schueler})$ entspricht dem Alias `FROM Schueler AS S`, $\rho_{\text{Klassenname} \leftarrow \text{Name}}(\text{Klasse})$ entspricht `SELECT Name AS Klassenname`.
+
+### Mengenoperationen
+
+Vereinigung, Schnitt und Differenz funktionieren wie in der [Mengenlehre](/de/mathematics/algebra/sets-and-number-ranges/). Beide Relationen müssen dafür **vereinigungsverträglich** sein: gleich viele Attribute mit jeweils kompatiblen Wertebereichen.
+
+Mit $A = \pi_{\text{SchuelerId}}(\sigma_{\text{FachId} = 1}(\text{Note}))$ (Schüler mit einer AM-Note, also 1 und 2) und $B = \pi_{\text{SchuelerId}}(\sigma_{\text{FachId} = 3}(\text{Note}))$ (Schüler mit einer INSY-Note, also 1 und 3) gilt:
+
+| Operation        | Ausdruck       | Ergebnis   | SQL         |
+| ---------------- | -------------- | ---------- | ----------- |
+| **Vereinigung**  | $A \cup B$     | 1, 2, 3    | `UNION`     |
+| **Durchschnitt** | $A \cap B$     | 1          | `INTERSECT` |
+| **Differenz**    | $A - B$        | 2          | `EXCEPT` (in Oracle `MINUS`) |
+
+```sql
+SELECT SchuelerId FROM Note WHERE FachId = 1
+EXCEPT
+SELECT SchuelerId FROM Note WHERE FachId = 3;
+```
+
+`UNION`, `INTERSECT` und `EXCEPT` entfernen Duplikate. Mit `UNION ALL` bleiben sie erhalten, was schneller ist, weil nicht sortiert oder gehasht werden muss.
+
+### Kartesisches Produkt
+
+Das **kartesische Produkt** $R \times S$ verbindet jede Zeile von $R$ mit jeder Zeile von $S$. Haben $R$ und $S$ $m$ und $n$ Zeilen, hat das Ergebnis $m \cdot n$ Zeilen. $\text{Schueler} \times \text{Klasse}$ hat also $4 \cdot 3 = 12$ Zeilen, von denen die meisten keinen Sinn ergeben. In SQL heißt das Produkt `CROSS JOIN`.
+
+Selektion, Projektion, Umbenennung, Vereinigung, Differenz und kartesisches Produkt sind die sechs **Grundoperatoren**. Alle weiteren Operatoren lassen sich daraus zusammensetzen. Der Durchschnitt etwa ist $A \cap B = A - (A - B)$.
+
+## Joins
+
+Ein **Join** ist ein kartesisches Produkt, auf das sofort eine Selektion folgt. Er verbindet nur die Zeilen, die zusammenpassen.
+
+| Join                   | Schreibweise                    | Bedeutung                                                                           |
+| ---------------------- | ------------------------------- | ----------------------------------------------------------------------------------- |
+| **Theta-Join**         | $R \bowtie_{\theta} S$          | $\sigma_{\theta}(R \times S)$ mit beliebiger Bedingung $\theta$                     |
+| **Equi-Join**          | $R \bowtie_{R.a = S.b} S$       | Theta-Join, dessen Bedingung nur aus Gleichheiten besteht                           |
+| **Natürlicher Join**   | $R \bowtie S$                   | Equi-Join über alle gleichnamigen Attribute, die dann nur einmal im Ergebnis stehen |
+| **Linker äußerer Join** | R ⟕ S                          | wie Equi-Join, zusätzlich die Zeilen von $R$ ohne Partner, ergänzt mit `NULL`       |
+| **Rechter äußerer Join** | R ⟖ S                         | ebenso für die Zeilen von $S$                                                       |
+| **Voller äußerer Join** | R ⟗ S                          | Zeilen ohne Partner von beiden Seiten                                               |
+| **Semi-Join**          | $R \ltimes S$                   | nur die Zeilen von $R$, die einen Partner in $S$ haben, und nur die Spalten von $R$ |
+
+$$
+\text{Schueler} \bowtie_{\text{Schueler.KlasseId} = \text{Klasse.Id}} \text{Klasse}
+$$
+
+liefert Anna und Ben mit 3AHIT sowie Clara mit 4AHIT. David hat keine Klasse und fehlt. Erst der linke äußere Join nimmt ihn mit `NULL` als Klassennamen auf:
+
+```sql
+SELECT s.Vorname, k.Name
+FROM Schueler s
+LEFT JOIN Klasse k ON s.KlasseId = k.Id
+ORDER BY s.Id;
+```
+
+Der natürliche Join ist in SQL als `NATURAL JOIN` verfügbar, wird aber selten verwendet: Er verbindet über **alle** gleichnamigen Spalten, im Beispiel also über `Id`, was falsch wäre. Wie Joins in SQL geschrieben werden, zeigt die Seite [SQL-Abfragen](/de/databases/sql-queries/#joins).
+
+## Division
+
+Die **Division** $R \div S$ beantwortet Fragen der Form „Welche Elemente stehen mit **allen** Elementen einer anderen Menge in Beziehung?“. Gesucht sind etwa die Schüler, die in **jedem** Fach eine Note haben:
+
+$$
+\pi_{\text{SchuelerId}, \text{FachId}}(\text{Note}) \div \rho_{\text{FachId} \leftarrow \text{Id}}(\pi_{\text{Id}}(\text{Fach}))
+$$
+
+Das Ergebnis ist Schüler 1 (Anna). Ben fehlt die INSY-Note, Clara die AM-Note. SQL hat keinen eigenen Operator dafür. Üblich sind zwei Formulierungen: über das Zählen oder über eine doppelte Verneinung („Es gibt kein Fach, in dem der Schüler keine Note hat“).
+
+```sql
+-- Variante 1: zählen
+SELECT SchuelerId
+FROM Note
+GROUP BY SchuelerId
+HAVING COUNT(DISTINCT FachId) = (SELECT COUNT(*) FROM Fach);
+
+-- Variante 2: doppelte Verneinung
+SELECT s.Id
+FROM Schueler s
+WHERE NOT EXISTS (
+    SELECT * FROM Fach f
+    WHERE NOT EXISTS (
+        SELECT * FROM Note n WHERE n.SchuelerId = s.Id AND n.FachId = f.Id
+    )
+);
+```
+
+## Erweiterte Operatoren
+
+Für SQL reicht die klassische Algebra nicht ganz aus. Erweiterungen sind:
+
+- **Gruppierung und Aggregation** $\gamma$ (gamma): $\gamma_{\text{SchuelerId};\ \text{AVG(Wert)}}(\text{Note})$ bildet pro Schüler den Notendurchschnitt (1: 1,33, 2: 3,5, 3: 2,5) und entspricht `GROUP BY` mit Aggregatfunktionen.
+- **Sortierung** $\tau$ (tau) entspricht `ORDER BY`. Das Ergebnis ist streng genommen keine Relation mehr, weil Relationen ungeordnet sind.
+- **Duplikaterhaltende Operatoren**: SQL arbeitet mit Multimengen. `SELECT` ohne `DISTINCT` entspricht daher einer Projektion ohne Duplikatentfernung.
+
+## Ausdrücke und Optimierung
+
+Ein Ausdruck lässt sich als **Operatorbaum** darstellen: Die Blätter sind Tabellen, die inneren Knoten Operatoren. Die Frage „Vor- und Nachnamen aller Schüler des 3. Jahrgangs“ lautet
+
+$$
+\pi_{\text{Vorname}, \text{Nachname}}(\sigma_{\text{Jahrgang} = 3}(\text{Schueler} \bowtie_{\text{KlasseId} = \text{Klasse.Id}} \text{Klasse}))
+$$
+
+und in SQL:
+
+```sql
+SELECT s.Vorname, s.Nachname
+FROM Schueler s
+JOIN Klasse k ON s.KlasseId = k.Id
+WHERE k.Jahrgang = 3;
+```
+
+Viele Ausdrücke sind **äquivalent**, liefern also dasselbe Ergebnis. Der Abfrageoptimierer nutzt Umformungsregeln, um einen schnelleren gleichwertigen Ausdruck zu finden. Die wichtigste Regel lautet: **Selektionen möglichst früh ausführen** (_selection pushdown_). Im Beispiel wird zuerst die Klasse mit Jahrgang 3 gesucht und erst dann mit den Schülern verbunden. So entsteht ein viel kleineres Zwischenergebnis:
+
+$$
+\pi_{\text{Vorname}, \text{Nachname}}(\text{Schueler} \bowtie_{\text{KlasseId} = \text{Klasse.Id}} \sigma_{\text{Jahrgang} = 3}(\text{Klasse}))
+$$
+
+Ebenso werden Projektionen früh ausgeführt, damit nur benötigte Spalten weitergereicht werden, und bei mehreren Joins wird die Reihenfolge so gewählt, dass die Zwischenergebnisse klein bleiben. Welchen Plan das System gewählt hat, zeigt `EXPLAIN` (siehe [Indizes](/de/databases/sql-advanced/#indizes)).
+
+:::note[Relationenkalkül]
+Neben der Algebra beschrieb Codd das **Relationenkalkül**, das auf der Prädikatenlogik beruht. Es beschreibt nur, welche Tupel im Ergebnis liegen, etwa $\{\, s \mid s \in \text{Schueler} \land s.\text{KlasseId} = 1 \,\}$. Algebra und Kalkül sind gleich ausdrucksstark. Eine Sprache, die mindestens alles kann, was die Algebra kann, heißt **relational vollständig**. SQL ist relational vollständig.
+:::
+
+## Weiterführende Quellen
+
+- Alfons Kemper, André Eickler: _Datenbanksysteme. Eine Einführung_, De Gruyter, Kapitel „Das relationale Modell“
+- [Relationale Algebra](https://de.wikipedia.org/wiki/Relationale_Algebra) in der Wikipedia

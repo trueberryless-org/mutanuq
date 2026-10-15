@@ -1,0 +1,192 @@
+---
+title: Measurement
+description: Voltage, current and resistance measurement with a multimeter, internal resistance and measurement errors, accuracy classes, RMS measurement, oscilloscope, function generator and measurement uncertainty.
+sidebar:
+  order: 15
+---
+
+Measuring means comparing a quantity with a unit. Every measurement influences the circuit and has an uncertainty. Good measurement practice therefore means not only connecting an instrument correctly, but also estimating how accurate the displayed value is and whether the instrument distorts the result.
+
+## Multimeter
+
+A **digital multimeter** (DMM) measures DC voltage (V DC), AC voltage (V AC), current (A), resistance ($\Omega$) and often also continuity, diodes, capacitance, frequency and temperature.
+
+### Voltage measurement
+
+The voltmeter is connected **in parallel** with the component. An ideal voltmeter has an infinitely large internal resistance and draws no current. Digital multimeters typically have $R_\mathrm{i} = 10\,\mathrm{M\Omega}$, analogue moving-coil meters much less (specified in $\Omega/\mathrm{V}$ of the range).
+
+:::tip[Example: loading error]
+A voltage divider of two resistors of $1\,\mathrm{M\Omega}$ each is connected to $10\,\mathrm{V}$. The midpoint should be at $5\,\mathrm{V}$. The multimeter with $10\,\mathrm{M\Omega}$ is in parallel with the lower resistor: $1\,\mathrm{M\Omega} \parallel 10\,\mathrm{M\Omega} \approx 0.909\,\mathrm{M\Omega}$.
+
+$$
+U_\mathrm{meas} = 10\,\mathrm{V} \cdot \frac{0.909}{1 + 0.909} \approx 4.76\,\mathrm{V}
+$$
+
+The error is $-4.8\,\%$ even though the instrument itself is accurate. In high-impedance circuits this influence must be taken into account.
+:::
+
+### Current measurement
+
+The ammeter is connected **in series** in the circuit, which has to be opened for this purpose. An ideal ammeter has zero internal resistance. Internally the instrument measures the voltage across a small **shunt** resistor. The **burden voltage** dropped across it is missing in the circuit.
+
+:::danger
+An ammeter has a very small internal resistance. If it is connected in parallel with a voltage source like a voltmeter, a short circuit results. At best the internal fuse blows. After a current measurement always plug the test lead back into the voltage socket.
+:::
+
+Currents can be measured without opening the circuit using a **clamp meter**. It detects the magnetic field around a conductor (for AC via a current transformer, for DC via a Hall sensor). Only one conductor may be enclosed, because the fields of the outgoing and return conductors cancel each other.
+
+### Range extension
+
+For analogue meter movements with full-scale current $I_\mathrm{m}$ and internal resistance $R_\mathrm{m}$, the range is extended with resistors:
+
+- **Series resistor** for voltage measurement up to $U$: $R_\mathrm{V} = \dfrac{U}{I_\mathrm{m}} - R_\mathrm{m}$
+- **Shunt resistor** for current measurement up to $I$: $R_\mathrm{sh} = \dfrac{R_\mathrm{m} \cdot I_\mathrm{m}}{I - I_\mathrm{m}}$
+
+For a movement with $1\,\mathrm{mA}$ and $100\,\Omega$ you need a series resistor of $9900\,\Omega$ for $10\,\mathrm{V}$ and a shunt of $100\,\Omega \cdot 1\,\mathrm{mA} / 999\,\mathrm{mA} \approx 0.1001\,\Omega$ for $1\,\mathrm{A}$.
+
+### Resistance measurement
+
+The multimeter sends a known current through the resistor and measures the voltage. The circuit must be **de-energised**, and the component should be desoldered at least on one side, otherwise components in parallel are measured as well.
+
+When resistances are measured with a separate ammeter and voltmeter, there are two circuits:
+
+| Circuit                   | Arrangement                                                    | suitable for                      |
+| ------------------------- | -------------------------------------------------------------- | --------------------------------- |
+| voltage-correct           | voltmeter directly across the resistor; the ammeter in front of it also measures the voltmeter current | **small** resistances |
+| current-correct           | ammeter directly in series with the resistor; voltmeter across both | **large** resistances        |
+
+For very small resistances (cables, shunts, contacts) **four-wire measurement** (Kelvin measurement) is used: two wires carry the current, two more measure the voltage directly at the component. Because almost no current flows through the sense leads, their resistance is negligible.
+
+## Measurement errors
+
+The **absolute error** is the difference between the displayed and the true value; the **relative error** relates it to the true value:
+
+$$
+F = x_\mathrm{d} - x_\mathrm{t} \qquad f = \frac{F}{x_\mathrm{t}} \cdot 100\,\%
+$$
+
+| Error type           | Cause                                                        | Remedy                                     |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| systematic           | loading by the instrument, badly calibrated instrument, temperature influence, lead resistance | identify and correct by calculation |
+| random               | noise, reading errors, fluctuations                          | measure several times and average          |
+| gross                | wrong range, wrong connection, mix-ups                       | work carefully, check plausibility         |
+
+### Accuracy classes
+
+**Analogue instruments** have an **accuracy class** (e.g. 0.1, 0.5, 1, 1.5, 2.5). It gives the maximum permissible error as a percentage of the **full-scale value**, not of the reading.
+
+:::tip[Example]
+A class 1.5 voltmeter in the $300\,\mathrm{V}$ range may deviate by $\pm 1.5\,\% \cdot 300\,\mathrm{V} = \pm 4.5\,\mathrm{V}$. If it reads $100\,\mathrm{V}$, the relative error is up to $\pm 4.5\,\%$; at $30\,\mathrm{V}$ already $\pm 15\,\%$. That is why the range is chosen so that the pointer is in the upper third.
+:::
+
+**Digital instruments** specify accuracy as "$\pm$(percentage of reading + digits)". One digit is one unit of the last display position. The display size is specified in **counts**: an instrument with 6000 counts shows at most 5999, a $3\tfrac{1}{2}$-digit instrument at most 1999.
+
+:::tip[Example]
+Accuracy $\pm(0.5\,\% + 3\,\mathrm{digits})$, reading $2.500\,\mathrm{V}$ in the range with $1\,\mathrm{mV}$ resolution. The possible error is $0.005 \cdot 2.5\,\mathrm{V} + 3 \cdot 1\,\mathrm{mV} = 15.5\,\mathrm{mV}$, about $\pm 0.62\,\%$. The true value lies between $2.4845$ and $2.5155\,\mathrm{V}$.
+:::
+
+### Error propagation
+
+If a result is calculated from several measured values, their errors propagate. For an estimate of the largest error:
+
+- For **sums and differences** the **absolute** errors add.
+- For **products and quotients** the **relative** errors add.
+
+If the power $P = U \cdot I$ is calculated from a voltage with $\pm 1\,\%$ and a current with $\pm 2\,\%$, $P$ is accurate to at most $\pm 3\,\%$. For powers the relative error is multiplied by the exponent: $P = U^2/R$ with $U$ to $\pm 1\,\%$ and $R$ to $\pm 1\,\%$ gives $\pm 3\,\%$.
+
+If the errors are independent and random, adding them is too pessimistic. Then the square root of the sum of squares is used: $\sqrt{1^2 + 2^2}\,\% \approx 2.2\,\%$.
+
+## Measurement uncertainty
+
+According to the international guide **GUM** (Guide to the Expression of Uncertainty in Measurement), every measurement result is stated with a **measurement uncertainty**. For $n$ repeated measurements:
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2} \qquad u = \frac{s}{\sqrt{n}}
+$$
+
+$\bar{x}$ is the mean, $s$ the standard deviation of the individual values and $u$ the **standard uncertainty** of the mean. This statistical evaluation is called **Type A**. Uncertainties from other sources, such as the manufacturer's accuracy specification, are called **Type B**. The result is usually given with the **expanded uncertainty** $U = k \cdot u$ with the coverage factor $k = 2$. The true value then lies in the stated interval with a probability of about $95\,\%$.
+
+:::tip[Example]
+Five measurements give $4.98$, $5.02$, $5.01$, $4.99$ and $5.00\,\mathrm{V}$. The mean is $5.000\,\mathrm{V}$, the standard deviation $s \approx 0.0158\,\mathrm{V}$, the standard uncertainty $u = 0.0158/\sqrt{5}\,\mathrm{V} \approx 0.0071\,\mathrm{V}$. With $k = 2$: $U_\mathrm{meas} = (5.000 \pm 0.014)\,\mathrm{V}$.
+:::
+
+The result is given with a sensibly rounded uncertainty (one or two significant figures) and the same number of decimal places for the measured value.
+
+## RMS measurement
+
+For AC voltage a multimeter displays the [RMS value](/en/electrical-engineering/alternating-current/#rms-value). Simple instruments, however, measure the rectified mean value and multiply it by the form factor $1.11$ of the sine. This is only correct for pure sine signals.
+
+For a symmetrical square wave the rectified mean equals the RMS value, which equals $\hat{u}$. An averaging instrument displays $1.11\,\hat{u}$, i.e. $11\,\%$ too much. With distorted currents from power supplies or LED lamps the errors can be even larger. Instruments labelled **True RMS** calculate the true RMS value, but only up to a certain frequency and a maximum crest factor.
+
+## Measurement categories
+
+Multimeters are classified into **measurement categories** according to IEC 61010. They indicate at which points of an installation the instrument can safely withstand the overvoltage transients that may occur there (for example from lightning or switching operations).
+
+| Category  | Measurement location                                                    |
+| --------- | ----------------------------------------------------------------------- |
+| CAT I (today often "not for mains measurements") | circuits without a direct mains connection, electronics |
+| CAT II    | appliances plugged into the mains, sockets                              |
+| CAT III   | fixed building installation: distribution boards, cables, permanently connected equipment |
+| CAT IV    | origin of the installation: service connection, meter, overhead lines   |
+
+An instrument rated CAT III $600\,\mathrm{V}$ may also be used in CAT II, but not in CAT IV. For measurements on the mains, observe the [safety rules](/en/electrical-engineering/electrical-safety/).
+
+## Oscilloscope
+
+An **oscilloscope** shows the variation of voltages over time. It reveals waveforms, edges, interference and timing relationships that a multimeter cannot capture. Modern instruments are **digital storage oscilloscopes** (DSO): a fast ADC samples the signal, and the values are stored and displayed.
+
+### Operation
+
+The screen is divided into **divisions** (div), usually 10 horizontally and 8 vertically.
+
+| Setting               | Effect                                                                  |
+| --------------------- | ----------------------------------------------------------------------- |
+| Vertical (V/div)      | voltage per division, position of the zero line                         |
+| Time base (s/div)     | time per division, horizontal position                                  |
+| Coupling              | DC (everything), AC (the DC component is removed by a high-pass), GND (zero line) |
+| Trigger: source, level, slope | The trace always starts when the signal passes the level with the selected slope. This makes a periodic signal stand still. |
+| Trigger: mode         | auto (draws even without a trigger), normal (only on trigger), single (once, for one-off events) |
+
+:::tip[Example: reading]
+One period of a sine signal is $4$ divisions wide at $0.5\,\mathrm{ms/div}$, so $T = 2\,\mathrm{ms}$ and $f = 500\,\mathrm{Hz}$. Peak to peak it measures $6$ divisions at $2\,\mathrm{V/div}$, so $u_\mathrm{pp} = 12\,\mathrm{V}$, $\hat{u} = 6\,\mathrm{V}$ and $U \approx 4.24\,\mathrm{V}$.
+:::
+
+Digital oscilloscopes also measure such values automatically, provide cursors, maths functions (difference of two channels, FFT for the frequency spectrum) and decoding of serial buses such as UART, SPI and I²C. In **XY mode** one channel is plotted against the other, for example to record characteristics or Lissajous figures.
+
+### Bandwidth and sample rate
+
+The **bandwidth** is the frequency at which a sine is displayed attenuated by $3\,\mathrm{dB}$. For sine signals it should be at least three to five times the signal frequency. For square waves the rise time is decisive; approximately $t_\mathrm{r} \approx 0.35/B$ applies. An oscilloscope with $100\,\mathrm{MHz}$ does not display edges faster than about $3.5\,\mathrm{ns}$. The sample rate should be at least four to five times the bandwidth.
+
+### Probes
+
+The input of an oscilloscope typically has $1\,\mathrm{M\Omega}$ in parallel with about $15$ to $20\,\mathrm{pF}$. A **10:1 probe** contains a $9\,\mathrm{M\Omega}$ resistor with a capacitor in parallel. It divides the signal by 10, increases the input resistance to $10\,\mathrm{M\Omega}$ and greatly reduces capacitive loading. That is why 10:1 is used almost always. The oscilloscope must be set to the division ratio, otherwise the displayed values are wrong by a factor of 10.
+
+A probe must be **compensated**: apply the square wave of the calibration output (usually $1\,\mathrm{kHz}$) and adjust the trimmer capacitor until the corners neither overshoot nor are rounded.
+
+:::caution
+The ground clip of the probe is connected to protective earth via the mains cable. If it is connected to a point that is not at earth potential (for example on the mains side of a switch-mode power supply), a short circuit via protective earth results. Such measurements require a **differential probe** or an isolating transformer for the device under test.
+:::
+
+## Function generator
+
+A **function generator** produces test signals: sine, square, triangle, sawtooth, pulses and, with arbitrary waveform generators, any shape. Frequency, amplitude, **offset** (DC component) and, for square waves, the **duty cycle** can be set. Many instruments can also sweep (run through frequencies) and modulate.
+
+The output usually has an internal resistance of $50\,\Omega$. The displayed amplitude often applies to a $50\,\Omega$ termination. At a high-impedance input ($1\,\mathrm{M\Omega}$) you then measure **twice** the voltage, because the voltage divider of internal resistance and load is absent. Many generators can be switched to "High Z", and then the display is correct again.
+
+With a function generator and an oscilloscope you can, for example, record the frequency response of a [filter](/en/electrical-engineering/filters/): display input and output, change the frequency step by step and note the amplitude ratio and phase shift.
+
+## Other instruments
+
+| Instrument         | Purpose                                                                         |
+| ------------------ | ------------------------------------------------------------------------------- |
+| LCR meter          | measures inductance, capacitance and resistance at an adjustable frequency      |
+| Logic analyser     | records many digital signals simultaneously and decodes protocols               |
+| Spectrum analyser  | shows amplitude against frequency, for example for radio and EMC                |
+| Power meter        | measures active, reactive and apparent power and the power factor               |
+| Bench power supply | adjustable voltage and **current limit**, protects circuits during commissioning |
+
+## Further reading
+
+- [JCGM 100:2008: Evaluation of measurement data, Guide to the expression of uncertainty in measurement (GUM)](https://www.bipm.org/en/committees/jc/jcgm/publications)
+- Tektronix: _XYZs of Oscilloscopes_ (introduction to oscilloscope measurement).
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.

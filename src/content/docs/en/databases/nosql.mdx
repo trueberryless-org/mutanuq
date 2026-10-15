@@ -1,0 +1,119 @@
+---
+title: NoSQL Databases
+description: "An overview of the kinds of NoSQL databases: key-value stores, column-oriented and wide-column databases, graph databases with Cypher, time-series and search databases, and choosing the right system."
+sidebar:
+  label: NoSQL Overview
+  order: 12
+---
+
+The term **NoSQL** (today usually read as "Not only SQL") covers databases that do not follow the relational model. They emerged in the 2000s at large internet companies, when data volumes and access rates exceeded the limits of single relational servers. Google published Bigtable in 2006, Amazon Dynamo in 2007. Many of today's systems grew out of these.
+
+NoSQL databases share some properties:
+
+- **Flexible or no fixed schema** (_schema-on-read_): the structure is only interpreted when reading.
+- **Horizontal scaling**: instead of a bigger server (_scale-up_), more servers are added (_scale-out_). The data is distributed across them (see [Distributed Databases](/en/databases/distributed-databases/)).
+- **Relaxed consistency**: many systems give up full [ACID guarantees](/en/databases/transactions/#acid) in favour of availability and speed and follow the [BASE model](/en/databases/document-oriented-databases/#base).
+- **Data model by access pattern**: data is stored the way it is read, even if this means redundancy. There are hardly any joins.
+
+## Kinds of NoSQL databases
+
+| Kind                         | Data model                                               | Typical use                                              | Examples                                 |
+| ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| **Key-value**                | a key points to any value                                | cache, sessions, shopping baskets, counters              | Redis, Valkey, Amazon DynamoDB, etcd      |
+| **Document-oriented**        | a key points to a structured document (JSON)             | product catalogues, content, user profiles               | MongoDB, CouchDB, Azure Cosmos DB         |
+| **Wide-column**              | rows with many columns that differ per row, distributed by partition key | very high write loads, measurements, event logs | Apache Cassandra, HBase, ScyllaDB |
+| **Graph**                    | nodes and edges with properties                          | social networks, recommendations, fraud detection, networks | Neo4j, Amazon Neptune, ArangoDB       |
+| **Time series**              | measurements with a timestamp                            | monitoring, IoT sensors, stock prices                    | InfluxDB, TimescaleDB, Prometheus         |
+| **Search engines**           | inverted index over texts                                | full-text search, log analysis                           | Elasticsearch, OpenSearch, Apache Solr    |
+
+Document-oriented databases have a [page of their own](/en/databases/document-oriented-databases/).
+
+## Key-value stores
+
+A **key-value store** is basically a large, persistent hash table: a value is stored for a key and read again through exactly this key. The database usually does not know the content of the value and therefore cannot search by it. In return, reads and writes are extremely fast, typically under one millisecond.
+
+**Redis** keeps all data in main memory and optionally also writes it to disk. Besides simple strings, it has lists, sets, sorted sets and hashes. A key can be given a lifetime after which it is deleted automatically. This makes Redis the standard for **caches** and **session data** in web applications.
+
+```text
+SET session:8f3a "{\"user\": \"anna\"}" EX 1800   # valid for 30 minutes
+GET session:8f3a
+INCR visits:homepage                              # atomic counter
+ZADD leaderboard 1250 "anna" 980 "ben"            # sorted set
+ZREVRANGE leaderboard 0 9 WITHSCORES              # the top ten
+```
+
+The key name `session:8f3a` follows a common convention of separating namespaces with colons. In 2024, Redis changed its licence. As a result, the open-source fork **Valkey** was created under the Linux Foundation. Since Redis 8 (2025), Redis is additionally available under an open-source licence (AGPL) again.
+
+## Wide-column databases
+
+**Wide-column databases** such as **Apache Cassandra** store rows in tables but distribute them across many servers using a **partition key**. All rows with the same partition key are stored together on the same nodes and are sorted by a **clustering key**. A query is only efficient if it specifies the partition key.
+
+That is why the schema in Cassandra is designed **according to the queries**, not according to the entities: there is a matching table for every frequent query, even if the same data is then stored several times. The query language CQL looks similar to SQL but has no joins and no arbitrary `WHERE` conditions.
+
+```text
+CREATE TABLE measurements_by_sensor (
+    sensor_id   text,
+    time        timestamp,
+    temperature double,
+    PRIMARY KEY ((sensor_id), time)           -- partition key, clustering key
+) WITH CLUSTERING ORDER BY (time DESC);
+
+SELECT time, temperature FROM measurements_by_sensor
+WHERE sensor_id = 'lab-3' LIMIT 10;           -- the ten most recent values
+```
+
+Cassandra has no central node; every node can accept requests. How many copies have to confirm is determined by each request through the **consistency level** (`ONE`, `QUORUM`, `ALL`). This way, you can choose between speed and consistency per request.
+
+This should be distinguished from **column-oriented** relational databases such as ClickHouse or DuckDB. They store the values of a column one after another instead of the values of a row. Evaluations that sum only a few columns over millions of rows become very fast as a result, and values of the same kind compress well (see [Data Warehouse](/en/databases/data-warehouse/)).
+
+## Graph databases
+
+**Graph databases** store data as **nodes** and **edges** (_relationships_). Both can have properties and labels. This model is called a **property graph**. In relational databases, every step along a relationship costs a join, and queries across many levels ("friends of friends of friends") quickly become slow. A graph database, by contrast, follows the edges directly from node to node. The cost depends only on the number of visited nodes, not on the size of the whole database.
+
+The most widespread graph database is **Neo4j** with the query language **Cypher**. Patterns are written in it as ASCII art: nodes in round brackets, edges as arrows with square brackets. Since 2024, **GQL** (ISO/IEC 39075) has been an international standard for graph queries that builds heavily on Cypher.
+
+```text
+// create nodes and edges
+CREATE (anna:Student {name: 'Anna'}), (ben:Student {name: 'Ben'}),
+       (clara:Student {name: 'Clara'}), (robotics:Course {name: 'Robotics'}),
+       (anna)-[:KNOWS]->(ben), (ben)-[:KNOWS]->(clara),
+       (clara)-[:ATTENDS]->(robotics);
+
+// Which courses do acquaintances of acquaintances of Anna attend?
+MATCH (a:Student {name: 'Anna'})-[:KNOWS*1..2]->(p:Student)-[:ATTENDS]->(c:Course)
+RETURN p.name, c.name;
+
+// shortest path between two people
+MATCH path = shortestPath((a:Student {name: 'Anna'})-[:KNOWS*]-(c:Student {name: 'Clara'}))
+RETURN length(path);
+```
+
+`[:KNOWS*1..2]` stands for one to two steps along `KNOWS` edges. Graph databases are suitable for recommendations ("customers who bought this also bought"), fraud detection (rings of connected accounts), network and dependency analyses and knowledge graphs. The underlying algorithms such as breadth-first search and Dijkstra are described on the page [Graphs](/en/software-development/graphs/).
+
+## Time-series and search databases
+
+**Time-series databases** are specialised in measurements with a timestamp: very many writes that are almost only appended, and queries over time ranges with aggregation ("average temperature per hour over the last week"). They compress the data heavily, automatically condense old values (_downsampling_) and delete them after a defined retention period. **Prometheus** is the standard for [monitoring](/en/deployment/operations/monitoring/) servers and containers; **InfluxDB** and **TimescaleDB** (an extension for PostgreSQL) are used for IoT and industry.
+
+**Search engines** such as **Elasticsearch** and **OpenSearch** build an **inverted index**: for every word, they store the documents in which it occurs, like the index of a book. They split texts into words, reduce them to their base forms and rank the hits by relevance. This allows error-tolerant full-text searches that would be neither fast nor good with `LIKE '%word%'` in a relational database. Together with Logstash and Kibana, they form the **ELK stack** for central log analysis.
+
+## Choosing the right database
+
+| Requirement                                                    | Suitable                                   |
+| -------------------------------------------------------------- | ------------------------------------------ |
+| structured business data, many relationships, transactions    | relational database                        |
+| fast access by key, caching                                    | key-value store                            |
+| changing structure, objects are read as a whole                | document database                          |
+| very high write load, distributed across data centres          | wide-column database                       |
+| highly connected data, queries across many relationship levels | graph database                             |
+| measurements over time                                         | time-series database                       |
+| full-text search, log analysis                                 | search engine                              |
+| large evaluations of historical data                           | column-oriented data warehouse             |
+
+Larger applications often combine several systems, depending on the task (**polyglot persistence**): a web shop stores orders relationally, the product catalogue in a document database, shopping baskets in Redis and the search index in Elasticsearch. However, every additional system increases the operating effort and requires keeping the data consistent between the systems.
+
+The boundaries are increasingly blurring: PostgreSQL stores documents including indexes with `jsonb`, MongoDB supports transactions across several documents, and **NewSQL** systems such as CockroachDB or Google Spanner combine SQL and ACID with horizontal scaling. For most projects, a relational database is still the right starting point. A NoSQL database is worthwhile when a specific requirement calls for it.
+
+## Further reading
+
+- Pramod J. Sadalage, Martin Fowler: _NoSQL Distilled_, Addison-Wesley
+- [Neo4j Cypher Manual](https://neo4j.com/docs/cypher-manual/current/) and [Apache Cassandra Documentation](https://cassandra.apache.org/doc/latest/)

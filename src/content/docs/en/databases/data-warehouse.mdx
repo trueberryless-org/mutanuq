@@ -1,0 +1,160 @@
+---
+title: Data Warehouse and Business Intelligence
+description: OLTP and OLAP, the structure of a data warehouse, ETL and ELT, star and snowflake schemas, facts and dimensions, historised dimensions, OLAP operations with ROLLUP and CUBE, and data lakes.
+sidebar:
+  order: 16
+---
+
+The databases that applications work with every day are built for many small accesses: creating an order, changing a customer, entering a grade. They are unsuitable for evaluations such as "How has revenue per product category and federal state developed over the last three years?". Such queries read millions of rows, slow down day-to-day operations and need data from several systems. This is what the **data warehouse** (DWH) is for.
+
+## OLTP and OLAP
+
+| Feature                | OLTP (_online transaction processing_)            | OLAP (_online analytical processing_)                      |
+| ---------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| Purpose                | handling day-to-day business                      | preparing decisions, evaluating                            |
+| Users                  | many clerks, customers, applications              | few analysts, management                                   |
+| Access                 | many short reads and writes on few rows           | few long reads across very many rows                       |
+| Data                   | current state                                     | history over years                                         |
+| Schema                 | [normalised](/en/databases/normalisation/)        | deliberately denormalised (star schema)                    |
+| Changes                | continuous                                        | only through regular loading                               |
+
+Bill Inmon, who coined the term, described a data warehouse in 1992 as **subject-oriented** (by business area such as sales or personnel, not by application), **integrated** (uniform formats and keys from all sources), **time-variant** (with history) and **non-volatile** (data is loaded but no longer changed).
+
+## Structure
+
+1. **Source systems**: operational databases, ERP and CRM systems, files, external data.
+2. **ETL process**: the data is read from the sources (**extract**), cleaned, standardised and given keys (**transform**) and written to the data warehouse (**load**). Intermediate results are kept in a **staging area**. Loading usually runs nightly or hourly.
+3. **Data warehouse**: the central, integrated data basis.
+4. **Data marts**: extracts for individual departments, for example only sales data.
+5. **Analysis tools**: reports, dashboards and ad hoc analyses with **business intelligence** tools such as Power BI, Tableau or Qlik.
+
+Typical transformation tasks are standardising formats (date, currency, country codes), removing duplicates, filling in missing values, merging the same customers from different systems and calculating derived values. With **ELT**, the raw data is loaded first and only transformed in the target system. This is common today with powerful cloud data warehouses such as Snowflake, Google BigQuery or Azure Synapse.
+
+## Star schema
+
+The data model of a data warehouse is **multidimensional**: measures are viewed from different perspectives. In the **star schema**, a **fact table** sits in the centre, surrounded by **dimension tables**.
+
+- The **fact table** contains the **measures**, that is, measurable, mostly additive values such as quantity and revenue, and foreign keys to the dimensions. It is very large: one row per sale, booking or measurement.
+- The **dimension tables** describe the "who, what, when, where": date, product, store, customer. They are comparatively small and contain descriptive attributes, often with **hierarchies** such as day, month, quarter, year or town, federal state, country.
+- The **grain** determines what one row of the fact table means, for example "one product in one sale" or "daily total per store". It is decided first.
+
+```sql
+CREATE TABLE DimDate (DateId INT PRIMARY KEY, Date DATE NOT NULL, Month INT NOT NULL, Quarter INT NOT NULL, Year INT NOT NULL);
+CREATE TABLE DimProduct (ProductId INT PRIMARY KEY, Name VARCHAR(50) NOT NULL, Category VARCHAR(30) NOT NULL);
+CREATE TABLE DimStore (StoreId INT PRIMARY KEY, Town VARCHAR(30) NOT NULL, State VARCHAR(30) NOT NULL);
+CREATE TABLE FactSales (
+    DateId   INT REFERENCES DimDate(DateId),
+    ProductId INT REFERENCES DimProduct(ProductId),
+    StoreId INT REFERENCES DimStore(StoreId),
+    Quantity     INT NOT NULL,
+    Revenue    DECIMAL(10, 2) NOT NULL
+);
+INSERT INTO DimDate VALUES (20250115, '2025-01-15', 1, 1, 2025), (20250410, '2025-04-10', 4, 2, 2025), (20250702, '2025-07-02', 7, 3, 2025);
+INSERT INTO DimProduct VALUES (1, 'Laptop', 'Hardware'), (2, 'Mouse', 'Accessories'), (3, 'Monitor', 'Hardware');
+INSERT INTO DimStore VALUES (1, 'Krems', 'Lower Austria'), (2, 'St. Pölten', 'Lower Austria'), (3, 'Vienna', 'Vienna');
+INSERT INTO FactSales VALUES
+    (20250115, 1, 1, 2, 1800), (20250115, 2, 1, 10, 200), (20250410, 3, 2, 3, 750),
+    (20250410, 1, 3, 4, 3600), (20250702, 2, 3, 25, 500), (20250702, 3, 1, 1, 250);
+```
+
+The dimensions are not normalised: `DimStore` contains the federal state for every town, although the state depends on the town. This redundancy is intended, because every evaluation then needs only one join per dimension. If the hierarchies are moved into separate tables instead (`DimStore` refers to `DimState`), the result is a **snowflake schema**. It saves storage but requires more joins.
+
+The date dimension is filled once for all days of many years and contains attributes such as weekday, public holiday, school holidays or financial year. Its key is often a readable number such as `20250115`.
+
+A typical query joins the fact table with the required dimensions, filters and groups:
+
+```sql
+SELECT d.Quarter, p.Category, SUM(f.Revenue) AS Revenue
+FROM FactSales f
+JOIN DimDate d   ON d.DateId = f.DateId
+JOIN DimProduct p ON p.ProductId = f.ProductId
+JOIN DimStore st ON st.StoreId = f.StoreId
+WHERE st.State = 'Lower Austria'
+GROUP BY d.Quarter, p.Category
+ORDER BY d.Quarter, p.Category;
+```
+
+| quarter | category    | revenue |
+| ------- | ----------- | ------- |
+| 1       | Accessories | 200.00  |
+| 1       | Hardware    | 1800.00 |
+| 2       | Hardware    | 750.00  |
+| 3       | Hardware    | 250.00  |
+
+### Historised dimensions
+
+If a store moves or a product changes category, the question arises of how old sales should be evaluated. Dimensions whose attributes change slowly are called **slowly changing dimensions** (SCD):
+
+| Type       | Approach                                                                                      | Consequence                                              |
+| ---------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Type 1** | overwrite the old value                                                                       | no history; old sales appear under the new category      |
+| **Type 2** | create a new row with a new surrogate key and a validity period (`ValidFrom`, `ValidTo`)    | full history; every sale refers to the version valid at the time |
+| **Type 3** | additional column for the previous value                                                      | only one change can be traced                            |
+
+Type 2 is the norm. It is the reason why dimensions in the data warehouse get their own surrogate keys instead of taking over the keys of the source systems.
+
+## OLAP operations
+
+The data is imagined as a **cube** whose axes are the dimensions and whose cells contain the measures. Evaluations move through this cube:
+
+| Operation       | Meaning                                                      | Example                                                    |
+| --------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Roll-up**     | aggregate along a hierarchy                                  | from towns to federal states                               |
+| **Drill-down**  | refine along a hierarchy                                     | from the year to quarters and months                       |
+| **Slice**       | fix one dimension to a value                                 | only the year 2025                                         |
+| **Dice**        | restrict several dimensions to sub-ranges                    | hardware in Lower Austria in the 1st and 2nd quarter       |
+| **Pivot**       | swap axes                                                    | federal states as columns instead of rows                  |
+
+SQL supports roll-up directly with extensions of `GROUP BY`. `ROLLUP` forms subtotals along a hierarchy and a grand total:
+
+```sql
+SELECT st.State, st.Town, SUM(f.Revenue) AS Revenue
+FROM FactSales f JOIN DimStore st ON st.StoreId = f.StoreId
+GROUP BY ROLLUP (st.State, st.Town)
+ORDER BY st.State NULLS LAST, st.Town NULLS LAST;
+```
+
+| state         | town       | revenue |
+| ------------- | ---------- | ------- |
+| Lower Austria | Krems      | 2250.00 |
+| Lower Austria | St. Pölten | 750.00  |
+| Lower Austria |            | 3000.00 |
+| Vienna        | Vienna     | 4100.00 |
+| Vienna        |            | 4100.00 |
+|               |            | 7100.00 |
+
+The rows with an empty town are the subtotals per state; the last row is the grand total. `CUBE` forms totals for **all** combinations of the given columns, `GROUPING SETS` for exactly the given ones. The function `GROUPING(column)` returns 1 if a row is aggregated over this column:
+
+```sql
+SELECT COALESCE(st.State, 'Total') AS State, COALESCE(p.Category, 'Total') AS Category, SUM(f.Revenue) AS Revenue
+FROM FactSales f JOIN DimStore st ON st.StoreId = f.StoreId JOIN DimProduct p ON p.ProductId = f.ProductId
+GROUP BY CUBE (st.State, p.Category)
+ORDER BY GROUPING(st.State), st.State, GROUPING(p.Category), p.Category;
+```
+
+| state         | category    | revenue |
+| ------------- | ----------- | ------- |
+| Lower Austria | Accessories | 200.00  |
+| Lower Austria | Hardware    | 2800.00 |
+| Lower Austria | Total       | 3000.00 |
+| Vienna        | Accessories | 500.00  |
+| Vienna        | Hardware    | 3600.00 |
+| Vienna        | Total       | 4100.00 |
+| Total         | Accessories | 700.00  |
+| Total         | Hardware    | 6400.00 |
+| Total         | Total       | 7100.00 |
+
+Data warehouses usually store their tables **column-oriented**: a query that only needs revenue and category reads only these two columns, and values of the same kind in a column compress very well. In addition, frequently needed totals are precalculated as **aggregate tables** or [materialised views](/en/databases/sql-advanced/#materialised-views).
+
+## Data lake and lakehouse
+
+A **data lake** stores raw data in its original format, structured (tables), semi-structured (JSON, log files) and unstructured (images, texts), usually cheaply in an object store such as Amazon S3 or Azure Data Lake Storage. The structure is only determined when reading. Data lakes are suitable for data science and [machine learning](/en/artificial-intelligence/machine-learning/), but without order and documentation they quickly become a confusing "data swamp".
+
+The **lakehouse** combines both: data is stored in open file formats such as Parquet in the object store, and table formats such as Delta Lake or Apache Iceberg add transactions, schemas and versioning so that SQL evaluations are possible as in a data warehouse.
+
+**Data mining** extracts patterns from the collected data that are not obvious: groups of similar customers, products that are frequently bought together (market basket analysis), or predictions. The methods for this are described in the [Artificial Intelligence](/en/artificial-intelligence/) section.
+
+## Further reading
+
+- Ralph Kimball, Margy Ross: _The Data Warehouse Toolkit_, Wiley (the standard work on dimensional modelling)
+- [PostgreSQL documentation: GROUPING SETS, CUBE, and ROLLUP](https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-GROUPING-SETS)

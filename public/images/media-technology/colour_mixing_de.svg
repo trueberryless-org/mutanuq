@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Additive und subtraktive Farbmischung"><title>Additive und subtraktive Farbmischung</title>
+<rect width="760" height="420" rx="14" fill="#ffffff"/>
+<rect x="30" y="60" width="330" height="300" rx="10" fill="#000000"/>
+<text x="195" y="40" font-size="17" font-weight="700" text-anchor="middle" fill="#1f2937">Additiv (Licht, RGB)</text>
+<g style="isolation:isolate">
+<circle cx="195" cy="165" r="62" fill="#ff0000" style="mix-blend-mode:screen"/>
+<circle cx="160" cy="225" r="62" fill="#00ff00" style="mix-blend-mode:screen"/>
+<circle cx="230" cy="225" r="62" fill="#0000ff" style="mix-blend-mode:screen"/>
+</g>
+<text x="195" y="128" font-size="13" font-weight="600" text-anchor="middle" fill="#ffffff">Rot</text>
+<text x="132" y="262" font-size="13" font-weight="600" text-anchor="middle" fill="#000000">Grün</text>
+<text x="270" y="262" font-size="13" font-weight="600" text-anchor="middle" fill="#ffffff">Blau</text>
+<text x="195" y="212" font-size="12" font-weight="700" text-anchor="middle" fill="#000000">Weiß</text>
+<text x="195" y="390" font-size="13" text-anchor="middle" fill="#475569">Ausgangspunkt: Schwarz</text>
+<rect x="400" y="60" width="330" height="300" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="565" y="40" font-size="17" font-weight="700" text-anchor="middle" fill="#1f2937">Subtraktiv (Druck, CMY)</text>
+<g style="isolation:isolate">
+<circle cx="565" cy="165" r="62" fill="#00ffff" style="mix-blend-mode:multiply"/>
+<circle cx="530" cy="225" r="62" fill="#ff00ff" style="mix-blend-mode:multiply"/>
+<circle cx="600" cy="225" r="62" fill="#ffff00" style="mix-blend-mode:multiply"/>
+</g>
+<text x="565" y="128" font-size="13" font-weight="600" text-anchor="middle" fill="#000000">Cyan</text>
+<text x="490" y="262" font-size="13" font-weight="600" text-anchor="middle" fill="#000000">Magenta</text>
+<text x="640" y="262" font-size="13" font-weight="600" text-anchor="middle" fill="#000000">Gelb</text>
+<text x="565" y="212" font-size="12" font-weight="700" text-anchor="middle" fill="#ffffff">Schwarz</text>
+<text x="565" y="390" font-size="13" text-anchor="middle" fill="#475569">Ausgangspunkt: weißes Papier</text>
+</svg>

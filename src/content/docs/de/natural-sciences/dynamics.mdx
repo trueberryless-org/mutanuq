@@ -1,0 +1,195 @@
+---
+title: Dynamik
+description: Die drei newtonschen Axiome, Masse und Gewicht, Gewichts-, Normal-, Reibungs-, Feder- und Zentripetalkraft, Freikörperbilder, schiefe Ebene und Inertialsysteme.
+sidebar:
+  order: 3
+---
+
+Die **Dynamik** erklärt, warum sich Körper so bewegen, wie es die [Kinematik](/de/natural-sciences/kinematics/) beschreibt. Ursache jeder Änderung des Bewegungszustands ist eine **Kraft**. Isaac Newton hat 1687 in den _Principia_ drei Grundsätze formuliert, aus denen die gesamte klassische Mechanik folgt.
+
+## Kraft
+
+Eine **Kraft** $\vec F$ ist eine Vektorgröße mit Betrag, Richtung und Angriffspunkt. Sie kann einen Körper beschleunigen oder verformen. Die Einheit ist das **Newton**:
+
+$$
+1\,\mathrm{N} = 1\,\mathrm{kg} \cdot \frac{\mathrm{m}}{\mathrm{s^2}}
+$$
+
+Ein Newton beschleunigt $1\,\mathrm{kg}$ mit $1\,\mathrm{m/s^2}$. Auf der Erde wiegt eine Tafel Schokolade ($100\,\mathrm{g}$) etwa $1\,\mathrm{N}$. Greifen mehrere Kräfte an, addiert man sie vektoriell zur **resultierenden Kraft** (Resultierende) $\vec F_\mathrm{res} = \sum \vec F_i$. Umgekehrt kann man eine Kraft in **Komponenten** zerlegen, etwa parallel und normal zu einer Ebene.
+
+## Die newtonschen Axiome
+
+### Erstes Axiom: Trägheitsprinzip
+
+> Ein Körper bleibt in Ruhe oder in gleichförmiger geradliniger Bewegung, solange keine resultierende Kraft auf ihn wirkt.
+
+Die Eigenschaft, den Bewegungszustand beizubehalten, heißt **Trägheit**; ihr Maß ist die Masse. Darum rutscht beim Bremsen das Gepäck nach vorne und darum braucht man im Auto Gurte.
+
+### Zweites Axiom: Aktionsprinzip
+
+> Die resultierende Kraft auf einen Körper ist gleich dem Produkt aus Masse und Beschleunigung.
+
+$$
+\vec F_\mathrm{res} = m \cdot \vec a
+$$
+
+Allgemeiner gilt $\vec F = \frac{\mathrm{d}\vec p}{\mathrm{d}t}$ mit dem Impuls $\vec p = m \vec v$ (siehe [Impuls und Stöße](/de/natural-sciences/momentum-and-collisions/)). Die Grundgleichung erklärt, warum eine doppelt so große Masse bei gleicher Kraft nur halb so stark beschleunigt wird.
+
+### Drittes Axiom: Wechselwirkungsprinzip
+
+> Übt Körper A auf Körper B eine Kraft aus (actio), so übt B auf A eine gleich große, entgegengesetzt gerichtete Kraft aus (reactio).
+
+$$
+\vec F_\mathrm{AB} = -\vec F_\mathrm{BA}
+$$
+
+Actio und reactio greifen an **verschiedenen** Körpern an und heben sich deshalb nicht auf. Die Erde zieht einen Apfel mit seiner Gewichtskraft an, der Apfel zieht die Erde mit derselben Kraft an; wegen ihrer riesigen Masse ist die Beschleunigung der Erde aber unmessbar klein. Raketen, Rückstoß und das Gehen beruhen auf diesem Prinzip.
+
+:::caution
+Häufiger Fehler: Gewichtskraft und Normalkraft eines Buchs auf dem Tisch sind **kein** Actio-reactio-Paar. Beide greifen am Buch an und sind nur im Gleichgewicht gleich groß. Das Gegenstück zur Gewichtskraft ist die Anziehung des Buchs auf die Erde.
+:::
+
+### Inertialsysteme
+
+Die newtonschen Axiome gelten in **Inertialsystemen**, also Bezugssystemen, die selbst nicht beschleunigt sind (ruhend oder gleichförmig geradlinig bewegt). In einem bremsenden Bus oder einem Karussell scheint ein kräftefreier Körper beschleunigt zu werden. Wer in einem solchen beschleunigten Bezugssystem rechnet, muss **Scheinkräfte** (Trägheitskräfte) einführen, etwa die Zentrifugalkraft $F = m\omega^2 r$ nach außen oder die Corioliskraft. Für die meisten technischen Aufgaben ist die Erdoberfläche in guter Näherung ein Inertialsystem.
+
+## Masse und Gewicht
+
+| | Masse $m$ | Gewichtskraft $F_\mathrm{G}$ |
+| --- | --- | --- |
+| Art | Skalar, Eigenschaft des Körpers | Vektor, Kraft zum Erdmittelpunkt |
+| Einheit | $\mathrm{kg}$ | $\mathrm{N}$ |
+| ortsabhängig | nein | ja ($g$ am Mond etwa $1{,}62\,\mathrm{m/s^2}$) |
+| Messung | Balkenwaage (Vergleich) | Federwaage, Kraftmesser |
+
+$$
+F_\mathrm{G} = m \cdot g
+$$
+
+Ein Astronaut mit $80\,\mathrm{kg}$ hat auf dem Mond dieselbe Masse, aber nur eine Gewichtskraft von $80 \cdot 1{,}62 = 130\,\mathrm{N}$ statt $785\,\mathrm{N}$. Im Alltag sagt man „ich wiege 80 Kilo“ und meint die Masse.
+
+## Kräfte im Überblick
+
+### Gewichtskraft
+
+Die Gewichtskraft $F_\mathrm{G} = mg$ wirkt senkrecht nach unten (zum Erdmittelpunkt). Sie ist ein Sonderfall der [Gravitation](/de/natural-sciences/gravitation/).
+
+### Normalkraft
+
+Die **Normalkraft** $F_\mathrm{N}$ ist die Kraft, mit der eine Unterlage einen Körper stützt. Sie steht senkrecht (normal) auf der Berührfläche und ist genau so groß, dass der Körper nicht in die Unterlage eindringt. Auf waagrechtem Boden ist $F_\mathrm{N} = mg$, auf einer schiefen Ebene nur $mg\cos\alpha$.
+
+### Reibungskraft
+
+Reibung entsteht an Berührflächen und wirkt der (versuchten) Relativbewegung entgegen. Ihr Betrag hängt von der Normalkraft und den Materialien ab, kaum aber von der Größe der Berührfläche.
+
+| Art | Formel | Bedeutung |
+| --- | --- | --- |
+| **Haftreibung** | $F_\mathrm{H} \le \mu_\mathrm{H} F_\mathrm{N}$ | Körper ruht; die Haftreibung ist so groß wie nötig, höchstens $\mu_\mathrm{H} F_\mathrm{N}$ |
+| **Gleitreibung** | $F_\mathrm{R} = \mu_\mathrm{G} F_\mathrm{N}$ | Körper gleitet |
+| **Rollreibung** | $F_\mathrm{R} = \mu_\mathrm{R} F_\mathrm{N}$ | Körper rollt, $\mu_\mathrm{R}$ sehr klein |
+
+Es gilt fast immer $\mu_\mathrm{R} < \mu_\mathrm{G} < \mu_\mathrm{H}$. Deshalb ist es leichter, eine Kiste in Bewegung zu halten, als sie loszureißen, und deshalb bremst ein Auto mit ABS (Räder haften) kürzer als mit blockierten Rädern (Räder gleiten).
+
+| Materialpaar (Richtwerte) | $\mu_\mathrm{H}$ | $\mu_\mathrm{G}$ |
+| --- | --- | --- |
+| Gummi auf trockenem Asphalt | 0,8 bis 1,0 | 0,6 bis 0,8 |
+| Gummi auf nassem Asphalt | 0,5 bis 0,7 | 0,4 bis 0,6 |
+| Stahl auf Stahl (trocken) | 0,7 | 0,6 |
+| Holz auf Holz | 0,5 | 0,3 |
+| Stahl auf Eis | 0,03 | 0,01 |
+
+### Federkraft und Hookesches Gesetz
+
+Eine Feder wird um die Strecke $s$ gedehnt, wenn die Kraft $F$ wirkt. Im elastischen Bereich gilt das **Hookesche Gesetz**:
+
+$$
+F = D \cdot s
+$$
+
+Die **Federkonstante** (Federhärte) $D$ in $\mathrm{N/m}$ gibt an, wie steif die Feder ist; in englischen Büchern heißt sie $k$. Die Rückstellkraft der Feder ist $-D s$, also der Auslenkung entgegengesetzt. Eine Feder mit $D = 200\,\mathrm{N/m}$ dehnt sich unter $5\,\mathrm{N}$ um $2{,}5\,\mathrm{cm}$. Kraftmesser (Federwaagen) beruhen darauf.
+
+- Reihenschaltung: $\frac{1}{D} = \frac{1}{D_1} + \frac{1}{D_2}$ (weicher)
+- Parallelschaltung: $D = D_1 + D_2$ (härter)
+
+### Zentripetalkraft
+
+Damit sich ein Körper auf einer Kreisbahn bewegt, muss eine zum Mittelpunkt gerichtete Kraft wirken, die **Zentripetalkraft**:
+
+$$
+F_\mathrm{Z} = m \frac{v^2}{r} = m \omega^2 r
+$$
+
+Sie ist keine eigene Kraftart, sondern die Rolle, die eine vorhandene Kraft übernimmt: die Seilkraft beim Kettenkarussell, die Haftreibung der Reifen in der Kurve, die Gravitation bei einem Satelliten. Fällt sie weg, fliegt der Körper tangential geradeaus weiter (Trägheit).
+
+:::tip[Beispiel: Kurvenfahrt]
+Ein Auto fährt mit $15\,\mathrm{m/s}$ durch eine Kurve mit $r = 50\,\mathrm{m}$. Die Haftreibung muss die Zentripetalkraft liefern: $\mu_\mathrm{H} m g \ge m \frac{v^2}{r}$, also $\mu_\mathrm{H} \ge \frac{v^2}{r g} = \frac{225}{50 \cdot 9{,}81} = 0{,}46$. Auf trockenem Asphalt reicht das, auf Eis nicht. Die Masse kürzt sich heraus: Ein Lkw kommt bei gleichem $\mu$ genauso schnell durch die Kurve, solange er nicht kippt.
+:::
+
+## Freikörperbild
+
+Ein **Freikörperbild** (Freischnitt) ist das wichtigste Werkzeug zur Lösung von Mechanikaufgaben:
+
+1. Den Körper gedanklich von seiner Umgebung trennen und als Punkt oder Umriss zeichnen.
+2. Alle Kräfte einzeichnen, die **auf** diesen Körper wirken: Gewichtskraft, Normalkräfte, Reibung, Seilkräfte, Federkräfte. Keine Kräfte, die der Körper auf andere ausübt.
+3. Ein günstiges Koordinatensystem wählen (bei der schiefen Ebene parallel und normal zur Ebene).
+4. Kräfte in Komponenten zerlegen und für jede Achse $\sum F = m a$ aufstellen.
+
+## Schiefe Ebene
+
+Ein Körper liegt auf einer Ebene mit Neigungswinkel $\alpha$. Die Gewichtskraft zerlegt man in:
+
+$$
+F_\parallel = m g \sin\alpha \quad \text{(Hangabtriebskraft)}, \qquad F_\perp = m g \cos\alpha \quad \text{(Normalkomponente)}
+$$
+
+![Freikörperbild auf der schiefen Ebene: Gewichtskraft zerlegt in Hangabtriebskraft parallel zur Ebene und Normalkomponente, dazu Normalkraft der Ebene und Reibungskraft](/images/natural-sciences/inclined-plane_de.svg)
+
+Die Normalkomponente drückt den Körper gegen die Ebene, deshalb ist die Normalkraft der Ebene $F_\mathrm{N} = F_\perp$. Der Körper bleibt liegen, solange die Haftreibung ausreicht: $m g \sin\alpha \le \mu_\mathrm{H} m g \cos\alpha$, also
+
+$$
+\tan\alpha \le \mu_\mathrm{H}
+$$
+
+Der Grenzwinkel hängt nicht von der Masse ab. Mit dieser Beziehung misst man Haftreibungszahlen: Man neigt die Ebene, bis der Körper zu rutschen beginnt.
+
+:::tip[Beispiel: Kiste auf der Rampe]
+Eine Kiste mit $m = 10\,\mathrm{kg}$ gleitet eine Rampe mit $\alpha = 30^\circ$ hinab, Gleitreibungszahl $\mu_\mathrm{G} = 0{,}2$.
+
+- Gewichtskraft: $F_\mathrm{G} = 10 \cdot 9{,}81 = 98{,}1\,\mathrm{N}$
+- Hangabtriebskraft: $F_\parallel = 98{,}1 \cdot \sin 30^\circ = 49{,}1\,\mathrm{N}$
+- Normalkraft: $F_\mathrm{N} = 98{,}1 \cdot \cos 30^\circ = 85{,}0\,\mathrm{N}$
+- Reibungskraft: $F_\mathrm{R} = 0{,}2 \cdot 85{,}0 = 17{,}0\,\mathrm{N}$
+- Resultierende entlang der Ebene: $F_\mathrm{res} = 49{,}1 - 17{,}0 = 32{,}1\,\mathrm{N}$
+- Beschleunigung: $a = 32{,}1/10 = 3{,}21\,\mathrm{m/s^2}$
+
+Allgemein: $a = g(\sin\alpha - \mu_\mathrm{G}\cos\alpha)$. Ohne Reibung wären es $g \sin 30^\circ = 4{,}91\,\mathrm{m/s^2}$.
+:::
+
+## Weitere typische Aufgaben
+
+:::tip[Beispiel: Aufzug]
+Eine Person mit $70\,\mathrm{kg}$ steht in einem Aufzug auf einer Personenwaage. Die Waage zeigt die Normalkraft an. Aus $F_\mathrm{N} - m g = m a$ folgt $F_\mathrm{N} = m(g + a)$.
+
+| Bewegung | $a$ | $F_\mathrm{N}$ |
+| --- | --- | --- |
+| Ruhe oder konstante Geschwindigkeit | $0$ | $687\,\mathrm{N}$ |
+| Anfahren nach oben | $+2\,\mathrm{m/s^2}$ | $827\,\mathrm{N}$ |
+| Anfahren nach unten | $-2\,\mathrm{m/s^2}$ | $547\,\mathrm{N}$ |
+| freier Fall (Seil reißt) | $-g$ | $0$ (Schwerelosigkeit) |
+:::
+
+:::tip[Beispiel: Zwei Körper mit Seil]
+Ein Wagen ($m_1 = 3\,\mathrm{kg}$) auf einem reibungsfreien Tisch ist über eine Umlenkrolle mit einem hängenden Gewicht ($m_2 = 1\,\mathrm{kg}$) verbunden. Nur die Gewichtskraft von $m_2$ treibt an, beschleunigt werden beide Massen:
+
+$$
+a = \frac{m_2 g}{m_1 + m_2} = \frac{1 \cdot 9{,}81}{4} = 2{,}45\,\mathrm{m/s^2}, \qquad F_\mathrm{Seil} = m_1 a = 7{,}36\,\mathrm{N}
+$$
+
+Die Seilkraft ist kleiner als die Gewichtskraft $9{,}81\,\mathrm{N}$ des hängenden Körpers, sonst würde er nicht beschleunigen.
+:::
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- Isaac Newton: _Philosophiae Naturalis Principia Mathematica_, 1687 (Formulierung der drei Axiome)
+- LEIFIphysik: Kraft und Bewegung, leifiphysik.de

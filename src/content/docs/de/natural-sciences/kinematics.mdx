@@ -1,0 +1,264 @@
+---
+title: Kinematik
+description: Ort, Geschwindigkeit und Beschleunigung, gleichförmige und gleichmäßig beschleunigte Bewegung, freier Fall, Würfe, Kreisbewegung und Relativbewegung.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Kinematik** beschreibt, wie sich Körper bewegen, ohne nach der Ursache zu fragen. Die Ursachen, also Kräfte, behandelt die [Dynamik](/de/natural-sciences/dynamics/). Solange Größe und Drehung keine Rolle spielen, betrachtet man den Körper als **Massenpunkt**.
+
+## Ort, Weg und Bezugssystem
+
+Bewegung ist immer relativ zu einem **Bezugssystem**: Ein Fahrgast sitzt im Zug still, für jemanden am Bahnsteig bewegt er sich mit $100\,\mathrm{km/h}$. Man wählt einen Ursprung und Koordinatenachsen und beschreibt die Lage des Körpers durch seinen **Ortsvektor** $\vec r(t)$ bzw. bei geradliniger Bewegung durch die Koordinate $x(t)$.
+
+- Die **Verschiebung** $\Delta x = x_2 - x_1$ ist ein Vektor (kann negativ sein).
+- Der **Weg** $s$ ist die tatsächlich zurückgelegte Strecke (immer positiv). Wer 5 m vor und 5 m zurück geht, hat einen Weg von 10 m, aber eine Verschiebung von 0 m.
+
+## Geschwindigkeit
+
+Die **Durchschnittsgeschwindigkeit** ist die Verschiebung pro Zeit, die **Momentangeschwindigkeit** ihr Grenzwert für $\Delta t \to 0$, also die [Ableitung](/de/mathematics/analysis/differential-calculus/) des Orts nach der Zeit:
+
+$$
+\bar v = \frac{\Delta x}{\Delta t}, \qquad v(t) = \frac{\mathrm{d}x}{\mathrm{d}t} = \dot x, \qquad [v] = \mathrm{m/s}
+$$
+
+Im $s$-$t$-Diagramm ist die Geschwindigkeit die **Steigung** der Kurve. Der Betrag der Geschwindigkeit heißt auch Schnelligkeit (englisch _speed_).
+
+## Beschleunigung
+
+Die **Beschleunigung** ist die Änderung der Geschwindigkeit pro Zeit:
+
+$$
+a = \frac{\mathrm{d}v}{\mathrm{d}t} = \ddot x, \qquad [a] = \mathrm{m/s^2}
+$$
+
+Ein Bremsvorgang ist eine Beschleunigung mit negativem Vorzeichen (entgegen der Bewegungsrichtung). Umgekehrt bekommt man aus $a(t)$ durch [Integration](/de/mathematics/analysis/integral-calculus/) die Geschwindigkeit und aus $v(t)$ den Ort: Die **Fläche unter der $v$-$t$-Kurve** ist die Verschiebung.
+
+## Gleichförmige Bewegung
+
+Bei der **gleichförmigen geradlinigen Bewegung** ist $v$ konstant und $a = 0$:
+
+$$
+x(t) = x_0 + v \cdot t
+$$
+
+| Diagramm | Verlauf |
+| --- | --- |
+| $x$-$t$ | Gerade mit Steigung $v$ |
+| $v$-$t$ | waagrechte Gerade auf Höhe $v$ |
+| $a$-$t$ | auf der Zeitachse ($a = 0$) |
+
+## Gleichmäßig beschleunigte Bewegung
+
+Bei konstanter Beschleunigung $a$ gelten die **Bewegungsgleichungen**:
+
+$$
+v(t) = v_0 + a t, \qquad x(t) = x_0 + v_0 t + \frac{1}{2} a t^2
+$$
+
+Eliminiert man die Zeit, erhält man die **zeitfreie Gleichung**:
+
+$$
+v^2 = v_0^2 + 2 a (x - x_0)
+$$
+
+| Diagramm | Verlauf |
+| --- | --- |
+| $x$-$t$ | Parabel (nach oben offen für $a > 0$) |
+| $v$-$t$ | Gerade mit Steigung $a$ |
+| $a$-$t$ | waagrechte Gerade auf Höhe $a$ |
+
+:::tip[Beispiel: Beschleunigen von 0 auf 100 km/h]
+Ein Auto beschleunigt in $8\,\mathrm{s}$ gleichmäßig von $0$ auf $100\,\mathrm{km/h} = 27{,}8\,\mathrm{m/s}$. Die Beschleunigung ist $a = 27{,}8/8 = 3{,}47\,\mathrm{m/s^2}$, die dabei zurückgelegte Strecke $s = \frac{1}{2} \cdot 3{,}47 \cdot 8^2 = 111\,\mathrm{m}$. Einfacher über die Fläche im $v$-$t$-Diagramm: Dreieck $\frac{1}{2} \cdot 8\,\mathrm{s} \cdot 27{,}8\,\mathrm{m/s} = 111\,\mathrm{m}$.
+:::
+
+:::tip[Beispiel: Anhalteweg]
+Ein Auto fährt mit $50\,\mathrm{km/h} = 13{,}9\,\mathrm{m/s}$. Die Reaktionszeit beträgt $1\,\mathrm{s}$, die Bremsverzögerung $7\,\mathrm{m/s^2}$.
+
+- Reaktionsweg (gleichförmig): $s_\mathrm{R} = 13{,}9 \cdot 1 = 13{,}9\,\mathrm{m}$
+- Bremsweg aus $0 = v_0^2 - 2 a s$: $s_\mathrm{B} = \frac{v_0^2}{2a} = \frac{13{,}9^2}{14} = 13{,}8\,\mathrm{m}$
+- Anhalteweg: $27{,}7\,\mathrm{m}$
+
+Bei $100\,\mathrm{km/h}$ verdoppelt sich der Reaktionsweg, der Bremsweg vervierfacht sich, weil er quadratisch von $v_0$ abhängt.
+:::
+
+## Freier Fall
+
+Ohne Luftwiderstand fallen alle Körper gleich schnell mit der **Fallbeschleunigung** $g$. Ihr Normwert ist $g_\mathrm{n} = 9{,}806\,65\,\mathrm{m/s^2}$; in Österreich liegt der Ortswert bei etwa $9{,}81\,\mathrm{m/s^2}$. Mit der Achse nach unten und Start aus der Ruhe:
+
+$$
+v = g t, \qquad h = \frac{1}{2} g t^2, \qquad v = \sqrt{2 g h}, \qquad t = \sqrt{\frac{2h}{g}}
+$$
+
+:::tip[Beispiel]
+Ein Stein fällt aus $20\,\mathrm{m}$ Höhe. Fallzeit $t = \sqrt{2 \cdot 20/9{,}81} = 2{,}02\,\mathrm{s}$, Aufprallgeschwindigkeit $v = 9{,}81 \cdot 2{,}02 = 19{,}8\,\mathrm{m/s} \approx 71\,\mathrm{km/h}$.
+:::
+
+## Würfe
+
+Würfe sind **Überlagerungen** zweier unabhängiger Bewegungen (Superpositionsprinzip): waagrecht gleichförmig, senkrecht gleichmäßig beschleunigt mit $-g$ (Achse nach oben).
+
+### Senkrechter Wurf nach oben
+
+$$
+v(t) = v_0 - g t, \qquad h(t) = v_0 t - \frac{1}{2} g t^2
+$$
+
+Steigzeit $t_\mathrm{S} = v_0/g$, Steighöhe $h_\mathrm{max} = \frac{v_0^2}{2g}$. Der Körper kommt mit derselben Geschwindigkeit $v_0$ (nach unten) wieder an.
+
+### Waagrechter Wurf
+
+Abwurf mit $v_0$ waagrecht aus der Höhe $h$:
+
+$$
+x(t) = v_0 t, \qquad y(t) = h - \frac{1}{2} g t^2
+$$
+
+Die Bahn ist eine Parabel. Die Flugzeit hängt nur von der Höhe ab, nicht von $v_0$: Eine waagrecht abgeschossene und eine gleichzeitig fallengelassene Kugel kommen gleichzeitig am Boden an.
+
+:::tip[Beispiel]
+Eine Kugel rollt mit $3\,\mathrm{m/s}$ über eine $1{,}25\,\mathrm{m}$ hohe Tischkante. Flugzeit $t = \sqrt{2 \cdot 1{,}25/9{,}81} = 0{,}505\,\mathrm{s}$, Wurfweite $x = 3 \cdot 0{,}505 = 1{,}51\,\mathrm{m}$. Beim Aufprall ist $v_y = 4{,}95\,\mathrm{m/s}$ und $v = \sqrt{3^2 + 4{,}95^2} = 5{,}79\,\mathrm{m/s}$.
+:::
+
+### Schiefer Wurf
+
+Abwurf vom Boden mit $v_0$ unter dem Winkel $\alpha$ zur Waagrechten:
+
+$$
+v_x = v_0 \cos\alpha, \qquad v_y(t) = v_0 \sin\alpha - g t
+$$
+
+$$
+x(t) = v_0 \cos\alpha \cdot t, \qquad y(t) = v_0 \sin\alpha \cdot t - \frac{1}{2} g t^2
+$$
+
+| Größe | Formel |
+| --- | --- |
+| Flugzeit | $t_\mathrm{F} = \dfrac{2 v_0 \sin\alpha}{g}$ |
+| Wurfweite | $w = \dfrac{v_0^2 \sin(2\alpha)}{g}$ |
+| Wurfhöhe | $h_\mathrm{max} = \dfrac{v_0^2 \sin^2\alpha}{2g}$ |
+| Bahnkurve | $y = x \tan\alpha - \dfrac{g}{2 v_0^2 \cos^2\alpha} x^2$ |
+
+Die Wurfweite ist bei $\alpha = 45^\circ$ maximal, und Winkel, die sich zu $90^\circ$ ergänzen (etwa $30^\circ$ und $60^\circ$), ergeben dieselbe Weite. Mit Luftwiderstand ist die Bahn keine Parabel mehr und der optimale Winkel kleiner.
+
+:::tip[Beispiel]
+$v_0 = 20\,\mathrm{m/s}$, $\alpha = 45^\circ$: Flugzeit $2{,}88\,\mathrm{s}$, Wurfweite $\frac{400 \cdot 1}{9{,}81} = 40{,}8\,\mathrm{m}$, Wurfhöhe $\frac{400 \cdot 0{,}5}{19{,}62} = 10{,}2\,\mathrm{m}$.
+:::
+
+Die Bahn lässt sich leicht tabellieren. Das Programm berechnet Flugzeit, Weite, Höhe und die Position alle $0{,}5\,\mathrm{s}$:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double G = 9.81;
+
+double v0 = 20.0;
+double alpha = 45.0 * Math.PI / 180.0;
+double vx = v0 * Math.Cos(alpha);
+double vy = v0 * Math.Sin(alpha);
+
+double flightTime = 2 * vy / G;
+Console.WriteLine($"Flugzeit: {flightTime:F2} s");
+Console.WriteLine($"Wurfweite: {vx * flightTime:F2} m");
+Console.WriteLine($"Wurfhöhe: {vy * vy / (2 * G):F2} m");
+
+for (int i = 0; i * 0.5 <= flightTime; i++)
+{
+    double t = i * 0.5;
+    double x = vx * t;
+    double y = vy * t - 0.5 * G * t * t;
+    Console.WriteLine($"t = {t:F1} s: x = {x:F2} m, y = {y:F2} m");
+}
+// Flugzeit: 2.88 s
+// Wurfweite: 40.77 m
+// Wurfhöhe: 10.19 m
+// t = 0.0 s: x = 0.00 m, y = 0.00 m
+// t = 0.5 s: x = 7.07 m, y = 5.84 m
+// t = 1.0 s: x = 14.14 m, y = 9.24 m
+// t = 1.5 s: x = 21.21 m, y = 10.18 m
+// t = 2.0 s: x = 28.28 m, y = 8.66 m
+// t = 2.5 s: x = 35.36 m, y = 4.70 m
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const G: f64 = 9.81;
+
+fn main() {
+    let v0 = 20.0_f64;
+    let alpha = 45.0_f64.to_radians();
+    let vx = v0 * alpha.cos();
+    let vy = v0 * alpha.sin();
+
+    let flight_time = 2.0 * vy / G;
+    println!("Flugzeit: {flight_time:.2} s");
+    println!("Wurfweite: {:.2} m", vx * flight_time);
+    println!("Wurfhöhe: {:.2} m", vy * vy / (2.0 * G));
+
+    let mut i = 0;
+    while f64::from(i) * 0.5 <= flight_time {
+        let t = f64::from(i) * 0.5;
+        let x = vx * t;
+        let y = vy * t - 0.5 * G * t * t;
+        println!("t = {t:.1} s: x = {x:.2} m, y = {y:.2} m");
+        i += 1;
+    }
+}
+// Flugzeit: 2.88 s
+// Wurfweite: 40.77 m
+// Wurfhöhe: 10.19 m
+// t = 0.0 s: x = 0.00 m, y = 0.00 m
+// t = 0.5 s: x = 7.07 m, y = 5.84 m
+// t = 1.0 s: x = 14.14 m, y = 9.24 m
+// t = 1.5 s: x = 21.21 m, y = 10.18 m
+// t = 2.0 s: x = 28.28 m, y = 8.66 m
+// t = 2.5 s: x = 35.36 m, y = 4.70 m
+```
+
+</TabItem>
+</Tabs>
+
+## Kreisbewegung
+
+Bewegt sich ein Körper auf einer Kreisbahn mit Radius $r$, beschreibt man ihn mit dem Drehwinkel $\varphi$ (im Bogenmaß).
+
+| Größe | Formel | Einheit |
+| --- | --- | --- |
+| Umlaufdauer (Periode) | $T$ | $\mathrm{s}$ |
+| Frequenz, Drehzahl | $f = \dfrac{1}{T}$ | $\mathrm{Hz} = \mathrm{s^{-1}}$ (Drehzahl oft in $\mathrm{min^{-1}}$) |
+| Winkelgeschwindigkeit | $\omega = \dfrac{\mathrm{d}\varphi}{\mathrm{d}t} = \dfrac{2\pi}{T} = 2\pi f$ | $\mathrm{rad/s} = \mathrm{s^{-1}}$ |
+| Bahngeschwindigkeit | $v = \omega r = \dfrac{2\pi r}{T}$ | $\mathrm{m/s}$ |
+| Zentripetalbeschleunigung | $a_\mathrm{Z} = \dfrac{v^2}{r} = \omega^2 r$ | $\mathrm{m/s^2}$ |
+
+Bei der **gleichförmigen Kreisbewegung** bleibt der Betrag der Geschwindigkeit konstant, ihre Richtung ändert sich aber ständig. Deshalb ist der Körper beschleunigt, und zwar zum Kreismittelpunkt hin (**Zentripetalbeschleunigung**). Die Kraft, die dafür nötig ist, behandelt die [Dynamik](/de/natural-sciences/dynamics/#zentripetalkraft).
+
+:::tip[Beispiel: Kurvenfahrt]
+Ein Auto fährt mit $54\,\mathrm{km/h} = 15\,\mathrm{m/s}$ durch eine Kurve mit $r = 50\,\mathrm{m}$. Die Zentripetalbeschleunigung ist $a_\mathrm{Z} = 15^2/50 = 4{,}5\,\mathrm{m/s^2}$, fast die Hälfte von $g$.
+:::
+
+Ändert sich auch der Betrag der Bahngeschwindigkeit, kommt eine **Tangentialbeschleunigung** $a_\mathrm{T} = \alpha r$ dazu, mit der Winkelbeschleunigung $\alpha = \dot\omega$ in $\mathrm{rad/s^2}$ (siehe [Rotation](/de/natural-sciences/rotation/)).
+
+## Relativbewegung und Vektoraddition
+
+Geschwindigkeiten addieren sich vektoriell. Ist $\vec v_\mathrm{B}$ die Geschwindigkeit eines Boots relativ zum Wasser und $\vec v_\mathrm{W}$ die Geschwindigkeit des Wassers relativ zum Ufer, so gilt relativ zum Ufer:
+
+$$
+\vec v = \vec v_\mathrm{B} + \vec v_\mathrm{W}
+$$
+
+:::tip[Beispiel: Boot im Fluss]
+Ein Boot fährt mit $4\,\mathrm{m/s}$ quer zur Strömung, der Fluss fließt mit $3\,\mathrm{m/s}$. Über Grund bewegt sich das Boot mit $v = \sqrt{4^2 + 3^2} = 5\,\mathrm{m/s}$, abgelenkt um $\arctan(3/4) = 36{,}9^\circ$ flussabwärts. Die Überfahrtzeit hängt nur von der Querkomponente ab: Bei $80\,\mathrm{m}$ Breite sind es $20\,\mathrm{s}$, egal wie stark die Strömung ist.
+:::
+
+Die **Relativgeschwindigkeit** von B gegenüber A ist $\vec v_\mathrm{BA} = \vec v_\mathrm{B} - \vec v_\mathrm{A}$. Zwei Autos, die mit $100$ und $80\,\mathrm{km/h}$ in dieselbe Richtung fahren, nähern sich mit $20\,\mathrm{km/h}$; im Gegenverkehr mit $180\,\mathrm{km/h}$. Diese einfache Addition (Galilei-Transformation) gilt nur für $v \ll c$, nahe der Lichtgeschwindigkeit braucht man die [spezielle Relativitätstheorie](/de/natural-sciences/modern-physics/#spezielle-relativitätstheorie).
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- David Halliday, Robert Resnick, Jearl Walker: _Halliday Physik_, Wiley-VCH
+- LEIFIphysik: Kinematik, leifiphysik.de

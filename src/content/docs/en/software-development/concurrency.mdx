@@ -1,0 +1,435 @@
+---
+title: Concurrency
+description: Threads, race conditions, locks, deadlocks, channels, thread pools, parallelisation and async and await in C# and Rust.
+sidebar:
+  order: 13
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Modern processors have many cores, and many programs have to wait for user input, network requests and files at the same time. **Concurrency** means that several tasks are processed in overlapping periods of time. **Parallelism** means that they actually run at the same time on several cores. Concurrency is also possible on a single core, with the operating system switching quickly between the tasks.
+
+## Processes and threads
+
+- A **process** is a running program with its own protected address space. Processes cannot write into each other's memory.
+- A **thread** is a path of execution within a process. All threads of a process share the heap, but each has its own stack. Creating threads and switching between them is cheaper than with processes.
+
+How the operating system distributes threads across the cores (**scheduling**) is described on the page [Processes and Threads](/en/computer-science/processes-and-threads/).
+
+Areas of application:
+
+- **Responsiveness**: a graphical user interface stays usable while a long computation runs in the background.
+- **Throughput**: a web server handles many requests at the same time.
+- **Computing power**: an expensive computation is split across all cores.
+
+## Starting threads
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var workers = new List<Thread>();
+for (int i = 1; i <= 3; i++)
+{
+    int id = i; // separate copy for the lambda expression
+    var t = new Thread(() => Console.WriteLine($"Thread {id} is working"));
+    t.Start();
+    workers.Add(t);
+}
+
+foreach (var t in workers)
+{
+    t.Join(); // wait until the thread has finished
+}
+Console.WriteLine("All done");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::thread;
+
+fn main() {
+    let mut workers = Vec::new();
+    for id in 1..=3 {
+        // move: the closure takes ownership of id
+        workers.push(thread::spawn(move || {
+            println!("Thread {id} is working");
+            id * 10 // return value of the thread
+        }));
+    }
+
+    for handle in workers {
+        let result = handle.join().unwrap(); // wait and get the result
+        println!("Result: {result}");
+    }
+    println!("All done");
+}
+```
+
+</TabItem>
+</Tabs>
+
+The order of the output differs with every run because the operating system decides which thread runs when. Concurrent programs are therefore **non-deterministic**, which makes debugging harder.
+
+## Race conditions
+
+A **race condition** occurs when the result depends on the order in which threads access shared data. The classic example is a counter that several threads increment. The statement `counter++` consists of three steps: read the value, increase it by 1, write the value back. If two threads read the same old value, one increment is lost.
+
+```txt
+Thread 1: reads 41
+Thread 2: reads 41
+Thread 1: writes 42
+Thread 2: writes 42       ← one increment is lost
+```
+
+The section of code in which shared data is accessed is called the **critical section**. Only one thread may be inside it at any time (**mutual exclusion**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int unsafeCounter = 0;
+int safeCounter = 0;
+int atomicCounter = 0;
+var gate = new object();
+
+var threads = Enumerable.Range(0, 4).Select(_ => new Thread(() =>
+{
+    for (int i = 0; i < 100_000; i++)
+    {
+        unsafeCounter++;                          // race condition
+
+        lock (gate)                               // only one thread at a time
+        {
+            safeCounter++;
+        }
+
+        Interlocked.Increment(ref atomicCounter); // atomic operation without a lock
+    }
+})).ToList();
+
+threads.ForEach(t => t.Start());
+threads.ForEach(t => t.Join());
+
+Console.WriteLine(unsafeCounter < 400_000);  // usually True: increments were lost
+Console.WriteLine(safeCounter);              // 400000
+Console.WriteLine(atomicCounter);            // 400000
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    // Arc: shared ownership across threads
+    // Mutex: the counter is only reachable while holding the lock
+    let safe_counter = Arc::new(Mutex::new(0));
+    let atomic_counter = Arc::new(AtomicUsize::new(0));
+
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let safe = Arc::clone(&safe_counter);
+            let atomic = Arc::clone(&atomic_counter);
+            thread::spawn(move || {
+                for _ in 0..100_000 {
+                    *safe.lock().unwrap() += 1;              // the lock is released at the end of the statement
+                    atomic.fetch_add(1, Ordering::Relaxed);  // atomic operation
+                }
+            })
+        })
+        .collect();
+
+    for h in handles {
+        h.join().unwrap();
+    }
+    println!("{}", *safe_counter.lock().unwrap());           // 400000
+    println!("{}", atomic_counter.load(Ordering::Relaxed));  // 400000
+    // An unprotected shared variable does not even compile in Rust.
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust prevents race conditions on data (**data races**) at compile time. Two marker traits govern what is allowed between threads: a type is **`Send`** if it may be moved to another thread, and **`Sync`** if several threads may access it through references at the same time. `Rc`, for example, is neither `Send` nor `Sync`, whereas `Arc` is both. Logical race conditions, such as a wrong order of operations, cannot be prevented by Rust either.
+
+## Synchronisation primitives
+
+| Primitive                 | Purpose                                                                  | C#                                     | Rust                                   |
+| ------------------------- | ------------------------------------------------------------------------ | -------------------------------------- | -------------------------------------- |
+| **Mutex / lock**          | one thread at a time in the critical section                             | `lock`, `Monitor`, `Mutex`             | `Mutex<T>`                             |
+| **Read-write lock**       | many readers or one writer                                               | `ReaderWriterLockSlim`                 | `RwLock<T>`                            |
+| **Semaphore**             | at most $n$ threads at the same time, for example for limited connections | `SemaphoreSlim`                       | `tokio::sync::Semaphore`               |
+| **Atomic variables**      | simple counters and flags without a lock                                 | `Interlocked`                          | `AtomicUsize`, `AtomicBool` etc.       |
+| **Condition variable**    | wait until a condition is met                                            | `Monitor.Wait` / `Pulse`               | `Condvar`                              |
+| **Channel**               | send messages between threads                                            | `System.Threading.Channels`            | `std::sync::mpsc`                      |
+| **Thread-safe collections** | concurrent access without your own lock                                | `ConcurrentDictionary`, `ConcurrentQueue` | `Mutex<HashMap>` or crates such as `dashmap` |
+
+A **semaphore** (after Edsger W. Dijkstra) is a counter with two operations: `P` (_wait_, decrement, wait at 0) and `V` (_signal_, increment). A mutex corresponds to a semaphore with the initial value 1.
+
+## Deadlocks
+
+A **deadlock** occurs when threads wait for each other for resources that the other one holds. None can continue, and the program hangs.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+var lockA = new object();
+var lockB = new object();
+
+var t1 = new Thread(() =>
+{
+    lock (lockA)
+    {
+        Thread.Sleep(100);
+        lock (lockB) { }    // waits for B, which thread 2 holds
+    }
+});
+var t2 = new Thread(() =>
+{
+    lock (lockB)
+    {
+        Thread.Sleep(100);
+        lock (lockA) { }    // waits for A, which thread 1 holds
+    }
+});
+t1.Start(); t2.Start();
+t1.Join(); t2.Join();       // never returns
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let a = Arc::new(Mutex::new(0));
+    let b = Arc::new(Mutex::new(0));
+
+    let (a1, b1) = (Arc::clone(&a), Arc::clone(&b));
+    let t1 = thread::spawn(move || {
+        let _ga = a1.lock().unwrap();
+        thread::sleep(Duration::from_millis(100));
+        let _gb = b1.lock().unwrap(); // waits for B, which thread 2 holds
+    });
+    let t2 = thread::spawn(move || {
+        let _gb = b.lock().unwrap();
+        thread::sleep(Duration::from_millis(100));
+        let _ga = a.lock().unwrap();  // waits for A, which thread 1 holds
+    });
+    t1.join().unwrap();               // never returns
+    t2.join().unwrap();
+}
+```
+
+</TabItem>
+</Tabs>
+
+A deadlock can only occur if all four **Coffman conditions** are met at the same time:
+
+1. **Mutual exclusion**: a resource can only be used by one thread at a time.
+2. **Hold and wait**: a thread holds a resource and waits for another one.
+3. **No preemption**: resources cannot be taken away from a thread.
+4. **Circular wait**: there is a cycle of threads in which each waits for a resource of the next.
+
+To avoid deadlocks, you break one of these conditions, most easily the circular wait: all threads always request locks in **the same order** (in the example, always A first, then B). Other options are timeouts when waiting (`Monitor.TryEnter` with a timeout, `try_lock`) and holding locks for as short a time as possible. Related problems are the **livelock**, in which threads constantly react to each other without making progress, and **starvation**, in which a thread never gets its turn.
+
+## Messages instead of shared data
+
+Instead of sharing data and protecting it with locks, you can also let threads send messages through a **channel**. Each piece of data then always belongs to exactly one thread. The pattern is called **producer-consumer**: a producer puts jobs into a channel, and one or more consumers process them. The Go community sums up the idea like this: _"Do not communicate by sharing memory; instead, share memory by communicating."_
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Threading.Channels;
+
+var channel = Channel.CreateUnbounded<int>();
+
+var producer = Task.Run(async () =>
+{
+    for (int i = 1; i <= 5; i++)
+    {
+        await channel.Writer.WriteAsync(i);
+    }
+    channel.Writer.Complete(); // no further messages
+});
+
+var consumer = Task.Run(async () =>
+{
+    int sum = 0;
+    await foreach (int value in channel.Reader.ReadAllAsync())
+    {
+        sum += value * value;
+    }
+    return sum;
+});
+
+await producer;
+Console.WriteLine(await consumer); // 55
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    // mpsc: multiple producer, single consumer
+    let (sender, receiver) = mpsc::channel();
+
+    let producer = thread::spawn(move || {
+        for i in 1..=5 {
+            sender.send(i).unwrap();
+        }
+        // sender is released here: the channel is closed
+    });
+
+    let consumer = thread::spawn(move || {
+        // the loop ends as soon as all senders are gone
+        receiver.iter().map(|v: i32| v * v).sum::<i32>()
+    });
+
+    producer.join().unwrap();
+    println!("{}", consumer.join().unwrap()); // 55
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Thread pools and parallelisation
+
+Creating a thread costs time and memory (every thread reserves its own stack of typically 1 to 8 MiB). For many small tasks, you therefore use a **thread pool**, which reuses a fixed number of threads. In .NET, the **Task Parallel Library** does this: a `Task` is a unit of work that runs on the thread pool. `Parallel.For` and PLINQ (`AsParallel()`) split loops across all cores automatically. In Rust, the crate **Rayon** offers the same (`par_iter()`). With the standard library, `thread::scope` lets you start threads that may borrow local data.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+long[] numbers = Enumerable.Range(1, 1_000_000).Select(i => (long)i).ToArray();
+
+// PLINQ: the sum is distributed across all cores
+long sum = numbers.AsParallel().Sum();
+Console.WriteLine(sum); // 500000500000
+
+// Parallel.For: every index is computed independently
+var squares = new long[10];
+Parallel.For(0, squares.Length, i => squares[i] = (long)i * i);
+Console.WriteLine(string.Join(" ", squares)); // 0 1 4 9 16 25 36 49 64 81
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::thread;
+
+fn main() {
+    let numbers: Vec<u64> = (1..=1_000_000).collect();
+    let cores = thread::available_parallelism().map_or(4, |n| n.get());
+    let chunk_size = numbers.len().div_ceil(cores);
+
+    // scoped threads may borrow numbers because they finish before the end of the block
+    let sum: u64 = thread::scope(|s| {
+        let handles: Vec<_> = numbers
+            .chunks(chunk_size)
+            .map(|chunk| s.spawn(move || chunk.iter().sum::<u64>()))
+            .collect();
+        handles.into_iter().map(|h| h.join().unwrap()).sum()
+    });
+    println!("{sum}"); // 500000500000
+}
+```
+
+</TabItem>
+</Tabs>
+
+Not every task can be sped up arbitrarily. **Amdahl's law** states: if a fraction $s$ of the program is sequential, the maximum speedup with $n$ cores is $\frac{1}{s + \frac{1 - s}{n}}$. With a sequential fraction of 10 %, even an infinite number of cores gives at most a tenfold speedup.
+
+## async and await
+
+Many programs spend most of their time **waiting**: for the network, the disk or the database. If you blocked one thread for every waiting request, a web server would need thousands of threads. **Asynchronous programming** solves this: an `async` function releases the thread as soon as it waits for a result with `await`. When the result is available, it continues, possibly on a different thread.
+
+- **CPU-bound** work (computations) is sped up with threads and parallelisation.
+- **I/O-bound** work (waiting) is done with `async` and `await`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Diagnostics;
+
+var watch = Stopwatch.StartNew();
+
+// both tasks run at the same time, no thread is blocked
+Task<string> weather = LoadAsync("Weather", 1000);
+Task<string> news = LoadAsync("News", 1000);
+string[] results = await Task.WhenAll(weather, news);
+
+Console.WriteLine(string.Join(", ", results));    // Weather loaded, News loaded
+Console.WriteLine(watch.ElapsedMilliseconds < 1500); // True: about 1 instead of 2 seconds
+
+static async Task<string> LoadAsync(string name, int milliseconds)
+{
+    await Task.Delay(milliseconds); // stands for a network request
+    return $"{name} loaded";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::time::{Duration, Instant};
+
+async fn load(name: &str, milliseconds: u64) -> String {
+    tokio::time::sleep(Duration::from_millis(milliseconds)).await; // stands for a network request
+    format!("{name} loaded")
+}
+
+#[tokio::main]
+async fn main() {
+    let start = Instant::now();
+
+    // join! runs both futures at the same time
+    let (weather, news) = tokio::join!(load("Weather", 1000), load("News", 1000));
+
+    println!("{weather}, {news}");                         // Weather loaded, News loaded
+    println!("{}", start.elapsed() < Duration::from_millis(1500)); // true
+}
+```
+
+</TabItem>
+</Tabs>
+
+Differences between the languages:
+
+- In C#, a `Task` is **hot**: it starts running as soon as the method is called. In Rust, a `Future` is **lazy**: it does nothing until it is polled with `.await`.
+- C# ships the runtime for asynchronous code. Rust's standard library only has the language features `async` and `.await`; the **runtime** that executes futures comes from a crate. The most widely used one is **Tokio**.
+- In both languages, asynchronous code should never contain blocking calls such as `Thread.Sleep` or `std::thread::sleep`, because these block the runtime's thread.
+
+:::caution[Do not block]
+In C#, you should never wait for a `Task` with `.Result` or `.Wait()`, but always with `await`. In applications with a graphical user interface, `.Result` can otherwise cause a deadlock because the continuation waits for the blocked UI thread.
+:::
+
+## Further reading
+
+- [Asynchronous programming with async and await](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/) (Microsoft Learn)
+- [Fearless Concurrency](https://doc.rust-lang.org/book/ch16-00-concurrency.html) (The Rust Programming Language)
+- [Tokio Tutorial](https://tokio.rs/tokio/tutorial)

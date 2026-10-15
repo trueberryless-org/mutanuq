@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 430" width="800" height="430" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Invertierender und nichtinvertierender Verstärker"><title>Invertierender und nichtinvertierender Verstärker</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect width="800" height="430" rx="14" fill="#ffffff"/>
+<text x="200" y="34" font-size="16" text-anchor="middle" font-weight="700" fill="#1f2937">invertierender Verstärker</text>
+<path d="M210,140 L210,240 L300,190 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="224" y="171" font-size="18" text-anchor="middle" font-weight="700" fill="#1f2937">−</text>
+<text x="224" y="221" font-size="18" text-anchor="middle" font-weight="700" fill="#1f2937">+</text>
+<circle cx="50" cy="165" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="50" y="150" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">U<tspan font-size="10" dy="3">e</tspan><tspan dy="-3"></tspan></text>
+<polyline points="55,165 90,165" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="90" y="154" width="60" height="22" rx="2" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="120" y="145" font-size="15" text-anchor="middle" font-weight="600" fill="#1f2937">R<tspan font-size="11" dy="4">1</tspan><tspan dy="-4"> </tspan></text>
+<polyline points="150,165 210,165" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="180" cy="165" r="4" fill="#1f2937"/>
+<polyline points="180,165 180,90 230,90" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="230" y="79" width="60" height="22" rx="2" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="260" y="70" font-size="15" text-anchor="middle" font-weight="600" fill="#1f2937">R<tspan font-size="11" dy="4">2</tspan><tspan dy="-4"> </tspan></text>
+<polyline points="290,90 340,90 340,190" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="340" cy="190" r="4" fill="#1f2937"/>
+<polyline points="300,190 370,190" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="375" cy="190" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="375" y="174" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">U<tspan font-size="10" dy="3">a</tspan><tspan dy="-3"></tspan></text>
+<polyline points="210,215 180,215 180,265" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="180,265 180,279" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="166,279 194,279" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="171,284 189,284" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="176,289 184,289" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="200" y="390" font-size="16" text-anchor="middle" font-weight="700" fill="#2563eb">V = −R₂ / R₁</text>
+<text x="590" y="34" font-size="16" text-anchor="middle" font-weight="700" fill="#1f2937">nichtinvertierender Verstärker</text>
+<path d="M600,140 L600,240 L690,190 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<text x="614" y="171" font-size="18" text-anchor="middle" font-weight="700" fill="#1f2937">+</text>
+<text x="614" y="221" font-size="18" text-anchor="middle" font-weight="700" fill="#1f2937">−</text>
+<circle cx="440" cy="165" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="440" y="150" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">U<tspan font-size="10" dy="3">e</tspan><tspan dy="-3"></tspan></text>
+<polyline points="445,165 600,165" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="600,215 520,215 520,235" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="570" cy="215" r="4" fill="#1f2937"/>
+<rect x="509" y="235" width="22" height="55" rx="2" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="498" y="268" font-size="15" text-anchor="end" font-weight="600" fill="#1f2937">R<tspan font-size="11" dy="4">1</tspan><tspan dy="-4"> </tspan></text>
+<polyline points="520,290 520,305" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="520,305 520,319" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="506,319 534,319" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="511,324 529,324" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="516,329 524,329" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="570,215 570,330 620,330" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<rect x="620" y="319" width="60" height="22" rx="2" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="650" y="312" font-size="15" text-anchor="middle" font-weight="600" fill="#1f2937">R<tspan font-size="11" dy="4">2</tspan><tspan dy="-4"> </tspan></text>
+<polyline points="680,330 730,330 730,190" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="730" cy="190" r="4" fill="#1f2937"/>
+<polyline points="690,190 760,190" fill="none" stroke="#1f2937" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="765" cy="190" r="5" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<text x="765" y="174" font-size="15" text-anchor="middle" font-weight="700" fill="#1f2937">U<tspan font-size="10" dy="3">a</tspan><tspan dy="-3"></tspan></text>
+<text x="590" y="390" font-size="16" text-anchor="middle" font-weight="700" fill="#2563eb">V = 1 + R₂ / R₁</text>
+</svg>

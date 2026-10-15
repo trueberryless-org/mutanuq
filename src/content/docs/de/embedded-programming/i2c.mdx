@@ -1,0 +1,289 @@
+---
+title: I²C - Inter-Integrated Circuit
+description: "Der I²C-Bus (TWI) mit zwei Leitungen: Start und Stopp, Adressierung, ACK, Clock Stretching und Ansteuerung von LM75 und 24C02 mit dem ATmega328P."
+sidebar:
+  label: I²C (TWI)
+  order: 13
+---
+
+**I²C** (_Inter-Integrated Circuit_, gesprochen „I-Quadrat-C“) ist ein synchroner, serieller Bus, den Philips (heute NXP) 1982 für die Kommunikation zwischen Chips auf einer Platine entwickelt hat. Er braucht nur **zwei Leitungen** für beliebig viele Teilnehmer: **SDA** (_Serial Data_) und **SCL** (_Serial Clock_). Typische I²C-Bausteine sind Temperatursensoren, EEPROMs, Echtzeituhren (RTC), Beschleunigungssensoren, Port-Expander und kleine OLED-Displays.
+
+Atmel nennt die I²C-Schnittstelle des AVR **TWI** (_Two-Wire Interface_), weil der Name I²C markenrechtlich geschützt war. Technisch ist TWI zu I²C kompatibel.
+
+:::note
+Seit Revision 7 der I²C-Spezifikation (UM10204, 2021) verwendet NXP statt `Master` und `Slave` die Begriffe **Controller** und **Target**. Das Datenblatt des ATmega328P verwendet noch die alten Bezeichnungen.
+:::
+
+## Elektrischer Aufbau
+
+Alle Teilnehmer hängen parallel an SDA und SCL. Die Ausgänge sind **Open-Drain** (bzw. Open-Collector): Ein Baustein kann eine Leitung nur aktiv auf 0 V ziehen, aber nicht aktiv auf high treiben. Den High-Pegel stellen zwei **Pull-up-Widerstände** her, typischerweise $4{,}7\,\mathrm{k\Omega}$ gegen die Versorgungsspannung.
+
+Daraus ergibt sich ein **Wired-AND**: Die Leitung ist nur dann high, wenn kein einziger Teilnehmer sie auf low zieht. Ein Kurzschluss zwischen zwei Bausteinen, die gleichzeitig unterschiedliche Pegel ausgeben, ist dadurch unmöglich. Genau diese Eigenschaft ermöglicht Clock Stretching und die Arbitrierung zwischen mehreren Controllern.
+
+Beim ATmega328P liegt SDA an `PC4` und SCL an `PC5` (beim Arduino Uno zusätzlich als eigene Pins neben `AREF`).
+
+### Pull-up-Widerstände dimensionieren
+
+Der Widerstand darf nicht zu klein sein, weil ein Baustein beim Low-Pegel (höchstens $0{,}4\,\mathrm{V}$) nur $3\,\mathrm{mA}$ aufnehmen muss. Er darf auch nicht zu groß sein, weil die Leitungskapazität $C_b$ zusammen mit $R_p$ ein RC-Glied bildet und die steigende Flanke innerhalb der erlaubten Anstiegszeit $t_r$ fertig sein muss:
+
+$$
+R_{p,\min} = \frac{V_{DD} - 0{,}4\,\mathrm{V}}{3\,\mathrm{mA}} \qquad R_{p,\max} = \frac{t_r}{0{,}8473 \cdot C_b}
+$$
+
+**Beispiel:** $V_{DD} = 5\,\mathrm{V}$, Standard Mode ($t_r = 1000\,\mathrm{ns}$), Buskapazität $C_b = 200\,\mathrm{pF}$:
+
+$$
+R_{p,\min} = \frac{4{,}6\,\mathrm{V}}{3\,\mathrm{mA}} \approx 1{,}53\,\mathrm{k\Omega} \qquad R_{p,\max} = \frac{1000\,\mathrm{ns}}{0{,}8473 \cdot 200\,\mathrm{pF}} \approx 5{,}9\,\mathrm{k\Omega}
+$$
+
+Ein Widerstand mit $4{,}7\,\mathrm{k\Omega}$ liegt dazwischen. Die gesamte Buskapazität darf im Standard und Fast Mode höchstens $400\,\mathrm{pF}$ betragen, deshalb ist I²C nur für kurze Strecken (Platine, wenige Dezimeter Kabel) gedacht.
+
+### Geschwindigkeiten
+
+| Modus                  | Maximale Bitrate   |
+| ---------------------- | ------------------ |
+| Standard Mode (Sm)     | 100 kbit/s         |
+| Fast Mode (Fm)         | 400 kbit/s         |
+| Fast Mode Plus (Fm+)   | 1 Mbit/s           |
+| High Speed Mode (Hs)   | 3,4 Mbit/s         |
+| Ultra Fast Mode (UFm)  | 5 Mbit/s (nur in eine Richtung, ohne ACK) |
+
+Der ATmega328P unterstützt Standard und Fast Mode.
+
+## Protokoll
+
+### Start- und Stoppbedingung
+
+Solange keine Übertragung läuft, sind beide Leitungen high. Während der Datenübertragung darf sich SDA nur ändern, während SCL low ist. Zwei Ausnahmen von dieser Regel markieren Anfang und Ende einer Übertragung:
+
+- **Start** (S): SDA wechselt von high auf low, während SCL high ist.
+- **Stopp** (P): SDA wechselt von low auf high, während SCL high ist.
+- **Repeated Start** (Sr): eine weitere Startbedingung ohne vorherigen Stopp. Damit kann der Controller die Richtung wechseln (zuerst schreiben, dann lesen), ohne den Bus freizugeben.
+
+Den Takt erzeugt immer der Controller.
+
+### Adressierung
+
+Nach dem Start sendet der Controller ein Byte mit der **7-Bit-Adresse** des gewünschten Targets und als achtes Bit die Richtung: **0 = Schreiben** (_Write_), **1 = Lesen** (_Read_). Dieses Byte heißt SLA+W bzw. SLA+R. Ein Target mit der Adresse `0x48` wird also mit `0x90` zum Schreiben und `0x91` zum Lesen angesprochen.
+
+Mit 7 Bit sind 128 Adressen möglich, davon sind 16 reserviert (`0x00` bis `0x07` und `0x78` bis `0x7F`, etwa für den General Call und 10-Bit-Adressen). Die Adresse ist meist teilweise fest vom Hersteller vorgegeben, die unteren Bits lassen sich über Adresspins (`A0`, `A1`, `A2`) einstellen. So können bis zu acht gleiche Bausteine an einem Bus hängen. Für größere Systeme gibt es zusätzlich eine 10-Bit-Adressierung.
+
+### Acknowledge
+
+Nach jedem Byte (8 Bit) folgt ein neunter Takt für das **Acknowledge**: Der Empfänger zieht SDA auf low (**ACK**) und bestätigt damit das Byte. Bleibt SDA high, ist das ein **NACK**. Ein NACK nach der Adresse bedeutet, dass kein Target mit dieser Adresse antwortet. Beim Lesen sendet der Controller nach dem letzten gewünschten Byte bewusst ein NACK, damit das Target aufhört zu senden, und danach die Stoppbedingung.
+
+### Ablauf: Register lesen
+
+Die meisten Sensoren haben interne Register. Um ein Register zu lesen, schreibt der Controller zuerst die Registernummer (den **Pointer**) und liest dann:
+
+| Schritt | Controller sendet         | Target antwortet |
+| ------- | ------------------------- | ---------------- |
+| 1       | Start                     |                  |
+| 2       | Adresse + W               | ACK              |
+| 3       | Registernummer            | ACK              |
+| 4       | Repeated Start            |                  |
+| 5       | Adresse + R               | ACK              |
+| 6       | ACK                       | Datenbyte 1      |
+| 7       | NACK                      | Datenbyte 2      |
+| 8       | Stopp                     |                  |
+
+### Clock Stretching
+
+Ein Target, das mehr Zeit braucht (etwa weil es erst einen Messwert berechnen muss), darf SCL nach dem Low-Pegel des Controllers einfach weiter auf low halten. Der Controller bemerkt beim Loslassen von SCL, dass die Leitung nicht high wird, und wartet. Dieses **Clock Stretching** ist nur durch den Open-Drain-Aufbau möglich. Die TWI-Hardware des AVR berücksichtigt es automatisch.
+
+### Arbitrierung
+
+Starten zwei Controller gleichzeitig, senden beide ihre Bits. Ein Controller, der eine 1 sendet (Leitung loslässt), aber eine 0 auf SDA liest, weiß, dass ein anderer Controller sendet. Er hat die **Arbitrierung verloren** und zieht sich zurück. Der andere Controller bemerkt davon nichts, seine Übertragung wird nicht gestört.
+
+## TWI-Register des ATmega328P
+
+| Register | Bedeutung |
+| -------- | --------- |
+| `TWBR`   | Bitrate Register: legt zusammen mit dem Prescaler die SCL-Frequenz fest |
+| `TWSR`   | Status Register: Bits 7 bis 3 enthalten den Statuscode, Bits 1 und 0 (`TWPS1`, `TWPS0`) den Prescaler |
+| `TWCR`   | Control Register: steuert die Hardware (siehe unten) |
+| `TWDR`   | Data Register: das zu sendende bzw. das empfangene Byte |
+| `TWAR`   | Address Register: eigene Adresse, wenn der AVR als Target arbeitet |
+
+Wichtige Bits in `TWCR`:
+
+| Bit     | Bedeutung |
+| ------- | --------- |
+| `TWINT` | Interrupt-Flag: wird von der Hardware gesetzt, wenn eine Aktion fertig ist. Durch **Schreiben einer 1** wird es gelöscht und die nächste Aktion gestartet. |
+| `TWEA`  | Enable Acknowledge: nach dem Empfang eines Bytes ACK senden |
+| `TWSTA` | Startbedingung erzeugen |
+| `TWSTO` | Stoppbedingung erzeugen |
+| `TWEN`  | TWI einschalten |
+| `TWIE`  | TWI-Interrupt aktivieren |
+
+Die SCL-Frequenz berechnet sich nach dem Datenblatt mit:
+
+$$
+f_{SCL} = \frac{f_{CPU}}{16 + 2 \cdot TWBR \cdot 4^{TWPS}}
+$$
+
+Für $100\,\mathrm{kHz}$ bei $16\,\mathrm{MHz}$ und Prescaler 1 ($TWPS = 0$):
+
+$$
+TWBR = \frac{f_{CPU} / f_{SCL} - 16}{2} = \frac{160 - 16}{2} = 72
+$$
+
+Nach jeder Aktion steht im Statusregister ein Code, mit dem man prüfen kann, ob alles geklappt hat. Die Prescaler-Bits werden dabei mit `TWSR & 0xF8` ausmaskiert:
+
+| Code   | Bedeutung (Controller-Modus) |
+| ------ | ---------------------------- |
+| `0x08` | Start gesendet               |
+| `0x10` | Repeated Start gesendet      |
+| `0x18` | SLA+W gesendet, ACK erhalten |
+| `0x20` | SLA+W gesendet, NACK erhalten |
+| `0x28` | Datenbyte gesendet, ACK erhalten |
+| `0x30` | Datenbyte gesendet, NACK erhalten |
+| `0x40` | SLA+R gesendet, ACK erhalten |
+| `0x48` | SLA+R gesendet, NACK erhalten |
+| `0x50` | Datenbyte empfangen, ACK gesendet |
+| `0x58` | Datenbyte empfangen, NACK gesendet |
+
+## Code
+
+### Grundfunktionen
+
+```c
+#define F_CPU 16000000UL
+
+#include <avr/io.h>
+#include <stdint.h>
+
+void TWI_init(void) {
+    TWSR = 0;              // Prescaler 1
+    TWBR = 72;             // 100 kHz bei 16 MHz
+    TWCR = (1<<TWEN);      // TWI einschalten
+}
+
+// Start bzw. Repeated Start erzeugen, liefert den Statuscode
+uint8_t TWI_start(void) {
+    TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);
+    while (!(TWCR & (1<<TWINT)));
+    return TWSR & 0xF8;
+}
+
+void TWI_stop(void) {
+    TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN);
+    while (TWCR & (1<<TWSTO));   // warten, bis der Stopp gesendet wurde
+}
+
+// Ein Byte senden (Adresse oder Daten), liefert den Statuscode
+uint8_t TWI_write(uint8_t data) {
+    TWDR = data;
+    TWCR = (1<<TWINT) | (1<<TWEN);
+    while (!(TWCR & (1<<TWINT)));
+    return TWSR & 0xF8;
+}
+
+// Ein Byte empfangen und mit ACK bestätigen (weitere Bytes folgen)
+uint8_t TWI_read_ack(void) {
+    TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
+    while (!(TWCR & (1<<TWINT)));
+    return TWDR;
+}
+
+// Letztes Byte empfangen und mit NACK beenden
+uint8_t TWI_read_nack(void) {
+    TWCR = (1<<TWINT) | (1<<TWEN);
+    while (!(TWCR & (1<<TWINT)));
+    return TWDR;
+}
+```
+
+Das Setzen von `TWINT` mit `TWCR = ...` sieht verwirrend aus: Das Flag wird durch Schreiben einer 1 **gelöscht**, und genau das startet die nächste Aktion der Hardware. Ist die Aktion fertig, setzt die Hardware `TWINT` wieder auf 1.
+
+### Temperatursensor LM75 lesen
+
+Der **LM75** ist ein Temperatursensor mit der Basisadresse `0b1001xxx`. Sind die Adresspins `A2`, `A1`, `A0` mit GND verbunden, lautet die Adresse `0x48`. Das Temperaturregister (Pointer `0x00`) ist 2 Byte groß. Beim LM75A werden die obersten 9 Bit im Zweierkomplement mit einer Auflösung von $0{,}5\,\mathrm{°C}$ verwendet, die übrigen Bits sind 0.
+
+```c
+#define LM75_ADDR 0x48
+
+// Liefert die Temperatur in halben Grad (z. B. 47 = 23,5 °C)
+// oder INT16_MIN bei einem Fehler
+int16_t LM75_read_half_degrees(void) {
+    if (TWI_start() != 0x08) { TWI_stop(); return INT16_MIN; }
+    if (TWI_write(LM75_ADDR << 1) != 0x18) { TWI_stop(); return INT16_MIN; }  // SLA+W
+    if (TWI_write(0x00) != 0x28) { TWI_stop(); return INT16_MIN; }            // Pointer: Temperatur
+    if (TWI_start() != 0x10) { TWI_stop(); return INT16_MIN; }                // Repeated Start
+    if (TWI_write((LM75_ADDR << 1) | 1) != 0x40) { TWI_stop(); return INT16_MIN; } // SLA+R
+
+    uint8_t msb = TWI_read_ack();
+    uint8_t lsb = TWI_read_nack();
+    TWI_stop();
+
+    int16_t raw = (int16_t)(((uint16_t)msb << 8) | lsb);
+    return raw / 128;   // obere 9 Bit, 1 LSB = 0,5 °C
+}
+```
+
+**Beispiel:** Der Sensor liefert `0x19` und `0x80`. Zusammen ist das `0x1980` = 6528, geteilt durch 128 ergibt 51 halbe Grad, also $25{,}5\,\mathrm{°C}$. Bei `0xFF80` (= -128 im Zweierkomplement) ergibt sich -1, also $-0{,}5\,\mathrm{°C}$.
+
+### EEPROM 24C02 schreiben und lesen
+
+Der **24C02** ist ein externes EEPROM mit 256 Byte (2 kbit). Seine Basisadresse ist `0b1010xxx`, mit `A2` bis `A0` auf GND also `0x50`. Nach der Geräteadresse folgt die Speicheradresse (ein Byte, 0 bis 255). Nach einem Schreibvorgang braucht der Baustein bis zu $5\,\mathrm{ms}$ für den internen Schreibzyklus und antwortet in dieser Zeit mit NACK. Mit einem **Page Write** können bis zu 8 aufeinanderfolgende Bytes einer Seite in einem Zyklus geschrieben werden.
+
+```c
+#include <util/delay.h>
+
+#define EEPROM_ADDR 0x50
+
+uint8_t EEPROM_write_byte(uint8_t address, uint8_t value) {
+    if (TWI_start() != 0x08) return 0;
+    if (TWI_write(EEPROM_ADDR << 1) != 0x18) { TWI_stop(); return 0; }
+    if (TWI_write(address) != 0x28) { TWI_stop(); return 0; }
+    if (TWI_write(value) != 0x28) { TWI_stop(); return 0; }
+    TWI_stop();
+    _delay_ms(5);          // interner Schreibzyklus
+    return 1;
+}
+
+uint8_t EEPROM_read_byte(uint8_t address) {
+    TWI_start();
+    TWI_write(EEPROM_ADDR << 1);        // Schreibmodus, um die Adresse zu setzen
+    TWI_write(address);
+    TWI_start();                        // Repeated Start
+    TWI_write((EEPROM_ADDR << 1) | 1);  // Lesemodus
+    uint8_t value = TWI_read_nack();    // nur ein Byte, daher NACK
+    TWI_stop();
+    return value;
+}
+```
+
+```c
+int main(void) {
+    TWI_init();
+    EEPROM_write_byte(0x10, 42);
+    uint8_t value = EEPROM_read_byte(0x10);   // 42
+    int16_t t = LM75_read_half_degrees();     // z. B. 47 = 23,5 °C
+    while (1) {
+    }
+}
+```
+
+Statt der festen Wartezeit kann man auch **ACK Polling** verwenden: Der Controller sendet so lange Start und SLA+W, bis das EEPROM wieder mit ACK antwortet. Das ist schneller, weil der tatsächliche Schreibzyklus oft kürzer als $5\,\mathrm{ms}$ ist. Zum internen EEPROM des ATmega328P siehe [EEPROM](/de/embedded-programming/eeprom/).
+
+## Vergleich mit SPI und UART
+
+| Eigenschaft           | [UART](/de/embedded-programming/usart/) | I²C                          | [SPI](/de/embedded-programming/spi/) |
+| --------------------- | ---------------------------------------- | ---------------------------- | ------------------------------------ |
+| Leitungen             | 2 (TX, RX) + GND                         | 2 (SDA, SCL) + GND           | 3 + 1 Chip Select pro Peripheral + GND |
+| Takt                  | asynchron (Baudrate vereinbart)          | synchron (SCL)               | synchron (SCK)                       |
+| Teilnehmer            | 2 (Punkt-zu-Punkt)                       | viele, über Adressen         | viele, über Chip-Select-Leitungen    |
+| Richtung              | vollduplex                               | halbduplex                   | vollduplex                           |
+| Typische Geschwindigkeit | 9600 bit/s bis ca. 1 Mbit/s           | 100 kbit/s bis 1 Mbit/s      | mehrere Mbit/s bis über 50 Mbit/s    |
+| Bestätigung           | keine (optional Parität)                 | ACK nach jedem Byte          | keine                                |
+| Mehrere Controller    | nein                                     | ja (Arbitrierung)            | nein                                 |
+| Typische Bausteine    | PC-Verbindung, GPS, Bluetooth-Module     | Sensoren, RTC, EEPROM        | SD-Karten, Displays, schnelle ADCs   |
+
+I²C spart Pins und Leitungen, ist aber langsamer als SPI und wegen der Adressierung und der ACKs aufwendiger im Protokoll. SPI ist schneller und einfacher, braucht aber pro Baustein eine eigene Chip-Select-Leitung.
+
+## Weiterführende Quellen
+
+- NXP: [UM10204 I²C-bus specification and user manual](https://www.nxp.com/docs/en/user-guide/UM10204.pdf)
+- Microchip: [ATmega328P Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf), Kapitel „2-wire Serial Interface“
+- [mikrocontroller.net: I2C](https://www.mikrocontroller.net/articles/I2C)

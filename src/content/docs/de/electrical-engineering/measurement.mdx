@@ -1,0 +1,192 @@
+---
+title: Messtechnik
+description: Spannungs-, Strom- und Widerstandsmessung mit dem Multimeter, Innenwiderstand und Messfehler, Genauigkeitsklassen, Effektivwertmessung, Oszilloskop, Funktionsgenerator und Messunsicherheit.
+sidebar:
+  order: 15
+---
+
+Messen heißt, eine Größe mit einer Einheit zu vergleichen. Jede Messung beeinflusst die Schaltung und ist mit einer Unsicherheit behaftet. Gute Messtechnik bedeutet deshalb nicht nur, ein Gerät richtig anzuschließen, sondern auch abzuschätzen, wie genau der angezeigte Wert ist und ob das Messgerät das Ergebnis verfälscht.
+
+## Multimeter
+
+Ein **Digitalmultimeter** (DMM) misst Gleichspannung (V DC), Wechselspannung (V AC), Strom (A), Widerstand ($\Omega$) und oft auch Durchgang, Dioden, Kapazität, Frequenz und Temperatur.
+
+### Spannungsmessung
+
+Der Spannungsmesser wird **parallel** zum Bauteil angeschlossen. Ein idealer Spannungsmesser hat einen unendlich großen Innenwiderstand und nimmt keinen Strom auf. Digitalmultimeter haben typisch $R_\mathrm{i} = 10\,\mathrm{M\Omega}$, analoge Drehspulinstrumente viel weniger (angegeben in $\Omega/\mathrm{V}$ des Messbereichs).
+
+:::tip[Beispiel: Belastungsfehler]
+Ein Spannungsteiler aus zwei Widerständen mit je $1\,\mathrm{M\Omega}$ liegt an $10\,\mathrm{V}$. In der Mitte liegen eigentlich $5\,\mathrm{V}$. Das Multimeter mit $10\,\mathrm{M\Omega}$ liegt parallel zum unteren Widerstand: $1\,\mathrm{M\Omega} \parallel 10\,\mathrm{M\Omega} \approx 0{,}909\,\mathrm{M\Omega}$.
+
+$$
+U_\mathrm{mess} = 10\,\mathrm{V} \cdot \frac{0{,}909}{1 + 0{,}909} \approx 4{,}76\,\mathrm{V}
+$$
+
+Der Fehler beträgt $-4{,}8\,\%$, obwohl das Gerät selbst genau ist. Bei hochohmigen Schaltungen muss man diesen Einfluss berücksichtigen.
+:::
+
+### Strommessung
+
+Der Strommesser wird **in Reihe** in den Stromkreis geschaltet, der Kreis muss dafür aufgetrennt werden. Ein idealer Strommesser hat den Innenwiderstand null. Intern misst das Gerät die Spannung an einem kleinen **Shunt**-Widerstand. Die dabei abfallende **Bürdenspannung** fehlt der Schaltung.
+
+:::danger
+Ein Strommesser hat einen sehr kleinen Innenwiderstand. Legt man ihn wie einen Spannungsmesser parallel an eine Spannungsquelle, entsteht ein Kurzschluss. Im besten Fall löst die interne Sicherung aus. Nach einer Strommessung die Messleitung immer wieder in die Spannungsbuchse stecken.
+:::
+
+Ohne den Kreis aufzutrennen misst man Ströme mit einer **Stromzange**. Sie erfasst das Magnetfeld um einen Leiter (bei Wechselstrom über einen Stromwandler, bei Gleichstrom über einen Hall-Sensor). Dabei darf nur ein Leiter umfasst werden, weil sich die Felder von Hin- und Rückleiter aufheben.
+
+### Messbereichserweiterung
+
+Bei analogen Messwerken mit dem Vollausschlagstrom $I_\mathrm{m}$ und dem Innenwiderstand $R_\mathrm{m}$ erweitert man den Messbereich mit Widerständen:
+
+- **Vorwiderstand** für Spannungsmessung bis $U$: $R_\mathrm{V} = \dfrac{U}{I_\mathrm{m}} - R_\mathrm{m}$
+- **Nebenwiderstand** (Shunt) für Strommessung bis $I$: $R_\mathrm{N} = \dfrac{R_\mathrm{m} \cdot I_\mathrm{m}}{I - I_\mathrm{m}}$
+
+Für ein Messwerk mit $1\,\mathrm{mA}$ und $100\,\Omega$ braucht man für $10\,\mathrm{V}$ einen Vorwiderstand von $9900\,\Omega$ und für $1\,\mathrm{A}$ einen Shunt von $100\,\Omega \cdot 1\,\mathrm{mA} / 999\,\mathrm{mA} \approx 0{,}1001\,\Omega$.
+
+### Widerstandsmessung
+
+Das Multimeter schickt einen bekannten Strom durch den Widerstand und misst die Spannung. Dabei muss die Schaltung **spannungsfrei** sein, und das Bauteil sollte mindestens einseitig ausgelötet sein, sonst misst man parallel liegende Bauteile mit.
+
+Misst man Widerstände mit getrenntem Strom- und Spannungsmesser, gibt es zwei Schaltungen:
+
+| Schaltung                 | Aufbau                                                         | geeignet für                      |
+| ------------------------- | -------------------------------------------------------------- | --------------------------------- |
+| spannungsrichtig          | Spannungsmesser direkt am Widerstand, Strommesser davor misst dessen Strom mit | **kleine** Widerstände |
+| stromrichtig              | Strommesser direkt in Reihe mit dem Widerstand, Spannungsmesser über beiden | **große** Widerstände   |
+
+Für sehr kleine Widerstände (Leitungen, Shunts, Kontakte) verwendet man die **Vierleitermessung** (Kelvin-Messung): Zwei Leitungen führen den Strom, zwei weitere messen die Spannung direkt am Bauteil. Weil durch die Messleitungen fast kein Strom fließt, fällt ihr Widerstand nicht ins Gewicht.
+
+## Messfehler
+
+Der **absolute Fehler** ist die Differenz zwischen angezeigtem und richtigem Wert, der **relative Fehler** bezieht ihn auf den richtigen Wert:
+
+$$
+F = x_\mathrm{a} - x_\mathrm{w} \qquad f = \frac{F}{x_\mathrm{w}} \cdot 100\,\%
+$$
+
+| Fehlerart            | Ursache                                                      | Abhilfe                                    |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| systematisch         | Belastung durch das Messgerät, falsch kalibriertes Gerät, Temperatureinfluss, Leitungswiderstand | erkennen und rechnerisch korrigieren |
+| zufällig             | Rauschen, Ablesefehler, Schwankungen                         | mehrfach messen und mitteln                |
+| grob                 | falscher Messbereich, falscher Anschluss, Verwechslung        | sorgfältig arbeiten, Plausibilität prüfen  |
+
+### Genauigkeitsklassen
+
+**Analoge Messgeräte** haben eine **Genauigkeitsklasse** (etwa 0,1, 0,5, 1, 1,5, 2,5). Sie gibt den größten zulässigen Fehler in Prozent des **Messbereichsendwerts** an, nicht des Messwerts.
+
+:::tip[Beispiel]
+Ein Spannungsmesser der Klasse 1,5 im $300$-V-Bereich darf um $\pm 1{,}5\,\% \cdot 300\,\mathrm{V} = \pm 4{,}5\,\mathrm{V}$ abweichen. Zeigt er $100\,\mathrm{V}$ an, ist der relative Fehler bis zu $\pm 4{,}5\,\%$, bei $30\,\mathrm{V}$ schon $\pm 15\,\%$. Deshalb wählt man den Messbereich so, dass der Zeiger im oberen Drittel steht.
+:::
+
+**Digitale Messgeräte** geben die Genauigkeit als „$\pm$(Prozent vom Messwert + Digits)“ an. Ein Digit ist eine Einheit der letzten Anzeigestelle. Die Anzeigegröße wird in **Counts** angegeben: Ein Gerät mit 6000 Counts zeigt höchstens 5999 an, ein $3\tfrac{1}{2}$-stelliges Gerät höchstens 1999.
+
+:::tip[Beispiel]
+Genauigkeit $\pm(0{,}5\,\% + 3\,\mathrm{Digits})$, Anzeige $2{,}500\,\mathrm{V}$ im Bereich mit $1\,\mathrm{mV}$ Auflösung. Der mögliche Fehler ist $0{,}005 \cdot 2{,}5\,\mathrm{V} + 3 \cdot 1\,\mathrm{mV} = 15{,}5\,\mathrm{mV}$, also etwa $\pm 0{,}62\,\%$. Der wahre Wert liegt zwischen $2{,}4845$ und $2{,}5155\,\mathrm{V}$.
+:::
+
+### Fehlerfortpflanzung
+
+Wird ein Ergebnis aus mehreren Messwerten berechnet, pflanzen sich deren Fehler fort. Für eine Abschätzung des größten Fehlers gilt:
+
+- Bei **Summe und Differenz** addieren sich die **absoluten** Fehler.
+- Bei **Produkt und Quotient** addieren sich die **relativen** Fehler.
+
+Wird die Leistung $P = U \cdot I$ aus einer Spannung mit $\pm 1\,\%$ und einem Strom mit $\pm 2\,\%$ berechnet, ist $P$ auf höchstens $\pm 3\,\%$ genau. Bei Potenzen multipliziert sich der relative Fehler mit der Hochzahl: $P = U^2/R$ mit $U$ auf $\pm 1\,\%$ und $R$ auf $\pm 1\,\%$ ergibt $\pm 3\,\%$.
+
+Sind die Fehler unabhängig und zufällig, ist die Abschätzung durch Addieren zu pessimistisch. Dann rechnet man mit der Wurzel aus der Summe der Quadrate: $\sqrt{1^2 + 2^2}\,\% \approx 2{,}2\,\%$.
+
+## Messunsicherheit
+
+Nach dem internationalen Leitfaden **GUM** (_Guide to the Expression of Uncertainty in Measurement_) gibt man zu jedem Messergebnis eine **Messunsicherheit** an. Bei $n$ Wiederholungsmessungen bestimmt man:
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2} \qquad u = \frac{s}{\sqrt{n}}
+$$
+
+$\bar{x}$ ist der Mittelwert, $s$ die Standardabweichung der Einzelwerte und $u$ die **Standardunsicherheit** des Mittelwerts. Diese statistische Auswertung heißt **Typ A**. Unsicherheiten aus anderen Quellen, etwa der Herstellerangabe zur Genauigkeit, heißen **Typ B**. Für das Ergebnis gibt man meist die **erweiterte Unsicherheit** $U = k \cdot u$ mit dem Erweiterungsfaktor $k = 2$ an. Der wahre Wert liegt dann mit etwa $95\,\%$ Wahrscheinlichkeit im angegebenen Intervall.
+
+:::tip[Beispiel]
+Fünf Messungen ergeben $4{,}98$, $5{,}02$, $5{,}01$, $4{,}99$ und $5{,}00\,\mathrm{V}$. Der Mittelwert ist $5{,}000\,\mathrm{V}$, die Standardabweichung $s \approx 0{,}0158\,\mathrm{V}$, die Standardunsicherheit $u = 0{,}0158/\sqrt{5}\,\mathrm{V} \approx 0{,}0071\,\mathrm{V}$. Mit $k = 2$: $U_\mathrm{mess} = (5{,}000 \pm 0{,}014)\,\mathrm{V}$.
+:::
+
+Das Ergebnis wird mit sinnvoll gerundeter Unsicherheit (eine bis zwei gültige Stellen) und gleich vielen Nachkommastellen beim Messwert angegeben.
+
+## Effektivwertmessung
+
+Bei Wechselspannung zeigt ein Multimeter den [Effektivwert](/de/electrical-engineering/alternating-current/#effektivwert) an. Einfache Geräte messen aber den Gleichrichtwert und multiplizieren ihn mit dem Formfaktor $1{,}11$ des Sinus. Das ist nur bei reinen Sinussignalen richtig.
+
+Für ein symmetrisches Rechtecksignal ist der Gleichrichtwert gleich dem Effektivwert gleich $\hat{u}$. Ein mittelwertbildendes Gerät zeigt $1{,}11\,\hat{u}$ an, also $11\,\%$ zu viel. Bei verzerrten Strömen von Netzteilen oder LED-Lampen können die Fehler noch größer sein. Geräte mit der Aufschrift **True RMS** berechnen den echten Effektivwert, allerdings nur bis zu einer bestimmten Frequenz und einem maximalen Scheitelfaktor.
+
+## Messkategorien
+
+Multimeter sind nach IEC 61010 in **Messkategorien** eingeteilt. Sie geben an, an welchen Stellen einer Installation das Gerät die dort möglichen Überspannungsimpulse (etwa durch Blitzeinschlag oder Schaltvorgänge) sicher verträgt.
+
+| Kategorie | Messort                                                                 |
+| --------- | ----------------------------------------------------------------------- |
+| CAT I (heute oft „nicht für Netzmessungen“) | Schaltungen ohne direkte Netzverbindung, Elektronik |
+| CAT II    | Geräte, die über Stecker am Netz hängen, Steckdosen                      |
+| CAT III   | feste Gebäudeinstallation: Verteiler, Leitungen, fest angeschlossene Geräte |
+| CAT IV    | Ursprung der Installation: Hausanschluss, Zähler, Freileitungen          |
+
+Ein Gerät für CAT III $600\,\mathrm{V}$ darf auch in CAT II eingesetzt werden, nicht aber in CAT IV. Für Messungen am Stromnetz sind die [Sicherheitsregeln](/de/electrical-engineering/electrical-safety/) zu beachten.
+
+## Oszilloskop
+
+Ein **Oszilloskop** zeigt den zeitlichen Verlauf von Spannungen. Damit sieht man Signalformen, Flanken, Störungen und zeitliche Zusammenhänge, die ein Multimeter nicht erfasst. Moderne Geräte sind **digitale Speicheroszilloskope** (DSO): Ein schneller ADC tastet das Signal ab, die Werte werden gespeichert und angezeigt.
+
+### Bedienung
+
+Der Bildschirm ist in **Divisions** (Kästchen, div) eingeteilt, meist 10 waagrecht und 8 senkrecht.
+
+| Einstellung           | Wirkung                                                                 |
+| --------------------- | ----------------------------------------------------------------------- |
+| Vertikal (V/div)      | Spannung pro Kästchen, Position der Nulllinie                           |
+| Zeitbasis (s/div)     | Zeit pro Kästchen, waagrechte Position                                  |
+| Kopplung              | DC (alles), AC (Gleichanteil wird durch einen Hochpass entfernt), GND (Nulllinie) |
+| Trigger: Quelle, Pegel, Flanke | Das Bild startet immer dann, wenn das Signal den Pegel mit der gewählten Flanke durchläuft. So steht ein periodisches Signal still. |
+| Trigger: Modus        | Auto (zeichnet auch ohne Trigger), Normal (nur bei Trigger), Single (einmal, für einmalige Ereignisse) |
+
+:::tip[Beispiel: Ablesen]
+Eine Periode eines Sinussignals ist $4$ Kästchen breit bei $0{,}5\,\mathrm{ms/div}$, also $T = 2\,\mathrm{ms}$ und $f = 500\,\mathrm{Hz}$. Von Spitze zu Spitze misst es $6$ Kästchen bei $2\,\mathrm{V/div}$, also $u_\mathrm{ss} = 12\,\mathrm{V}$, $\hat{u} = 6\,\mathrm{V}$ und $U \approx 4{,}24\,\mathrm{V}$.
+:::
+
+Digitale Oszilloskope messen solche Werte auch automatisch, bieten Cursor, Mathematikfunktionen (Differenz zweier Kanäle, FFT für das Frequenzspektrum) und das Dekodieren serieller Busse wie UART, SPI und I²C. Im **XY-Betrieb** wird ein Kanal über dem anderen dargestellt, etwa um Kennlinien oder Lissajous-Figuren aufzunehmen.
+
+### Bandbreite und Abtastrate
+
+Die **Bandbreite** ist die Frequenz, bei der ein Sinus um $3\,\mathrm{dB}$ gedämpft angezeigt wird. Für Sinussignale sollte sie mindestens das Drei- bis Fünffache der Signalfrequenz betragen. Für Rechtecksignale entscheidet die Anstiegszeit, es gilt näherungsweise $t_\mathrm{r} \approx 0{,}35/B$. Ein Oszilloskop mit $100\,\mathrm{MHz}$ zeigt Flanken nicht schneller als etwa $3{,}5\,\mathrm{ns}$ an. Die Abtastrate sollte mindestens das Vier- bis Fünffache der Bandbreite betragen.
+
+### Tastköpfe
+
+Der Eingang eines Oszilloskops hat typisch $1\,\mathrm{M\Omega}$ parallel zu etwa $15$ bis $20\,\mathrm{pF}$. Ein **Tastkopf 10:1** enthält einen $9$-M$\Omega$-Widerstand mit einem Kondensator parallel. Er teilt das Signal durch 10, erhöht den Eingangswiderstand auf $10\,\mathrm{M\Omega}$ und verringert die kapazitive Belastung stark. Deshalb verwendet man fast immer 10:1. Das Oszilloskop muss auf den Teiler eingestellt sein, sonst sind die angezeigten Werte um den Faktor 10 falsch.
+
+Ein Tastkopf muss **abgeglichen** werden: Man legt das Rechtecksignal des Kalibrierausgangs (meist $1\,\mathrm{kHz}$) an und stellt den Trimmkondensator ein, bis die Ecken weder überschwingen noch verrundet sind.
+
+:::caution
+Die Masseklemme des Tastkopfs ist über das Netzkabel mit dem Schutzleiter verbunden. Schließt man sie an einen Punkt an, der nicht auf Erdpotenzial liegt (etwa in einem Schaltnetzteil auf der Netzseite), entsteht ein Kurzschluss über den Schutzleiter. Für solche Messungen braucht man einen **Differenztastkopf** oder einen Trenntransformator für das Messobjekt.
+:::
+
+## Funktionsgenerator
+
+Ein **Funktionsgenerator** erzeugt Testsignale: Sinus, Rechteck, Dreieck, Sägezahn, Pulse und bei Arbiträrgeneratoren beliebige Formen. Einstellbar sind Frequenz, Amplitude, **Offset** (Gleichanteil) und beim Rechteck das **Tastverhältnis**. Viele Geräte können auch wobbeln (Frequenz durchfahren) und modulieren.
+
+Der Ausgang hat meist einen Innenwiderstand von $50\,\Omega$. Die angezeigte Amplitude gilt oft für einen $50$-$\Omega$-Abschluss. An einem hochohmigen Eingang ($1\,\mathrm{M\Omega}$) misst man dann die **doppelte** Spannung, weil der Spannungsteiler aus Innenwiderstand und Last wegfällt. Viele Generatoren lassen sich auf „High Z“ umstellen, dann stimmt die Anzeige wieder.
+
+Mit Funktionsgenerator und Oszilloskop nimmt man etwa den Frequenzgang eines [Filters](/de/electrical-engineering/filters/) auf: Eingang und Ausgang anzeigen, die Frequenz schrittweise ändern und Amplitudenverhältnis sowie Phasenverschiebung notieren.
+
+## Weitere Messgeräte
+
+| Gerät              | Zweck                                                                           |
+| ------------------ | ------------------------------------------------------------------------------- |
+| LCR-Messgerät      | misst Induktivität, Kapazität und Widerstand bei einstellbarer Frequenz         |
+| Logikanalysator    | zeichnet viele digitale Signale gleichzeitig auf und dekodiert Protokolle       |
+| Spektrumanalysator | zeigt die Amplitude über der Frequenz, etwa für Funk und EMV                    |
+| Leistungsmesser    | misst Wirk-, Blind- und Scheinleistung sowie den Leistungsfaktor                 |
+| Labornetzteil      | einstellbare Spannung und **Strombegrenzung**, schützt Schaltungen bei der Inbetriebnahme |
+
+## Weiterführende Quellen
+
+- [JCGM 100:2008: Evaluation of measurement data, Guide to the expression of uncertainty in measurement (GUM)](https://www.bipm.org/en/committees/jc/jcgm/publications)
+- Tektronix: _XYZs of Oscilloscopes_ (Einführung in die Oszilloskop-Messtechnik).
+- Schrüfer, E.; Reindl, L.; Zagar, B.: _Elektrische Messtechnik_. Hanser.

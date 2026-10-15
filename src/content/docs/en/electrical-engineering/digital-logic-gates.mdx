@@ -1,0 +1,156 @@
+---
+title: Logic Gates
+description: TTL and CMOS logic levels, basic gates with IEC and ANSI symbols and truth tables, NAND as a universal gate, circuit design and minimisation with Karnaugh maps.
+sidebar:
+  order: 11
+---
+
+**Digital electronics** processes signals that know only two states: 0 and 1, low and high, false and true. From a few basic gates all arithmetic units, memories and controllers up to the processor can be built. The mathematical foundation is [Boolean algebra](/en/mathematics/algebra/logic-and-boolean-algebra/); number representation is covered on the page [Number Systems](/en/mathematics/algebra/number-systems/).
+
+## Analogue and digital
+
+An **analogue** signal can take any value within a range. A **digital** signal is discrete in value; in the binary case there are only two values. The advantage: interference that changes the signal slightly does not change its meaning as long as it stays within the permitted range. Digital data can therefore be stored, copied and transmitted without loss.
+
+## Logic levels
+
+Voltage ranges are assigned to the logic states. With **positive logic** (the normal case) high corresponds to 1 and low to 0. Between the ranges lies a forbidden range in which the state is undefined.
+
+| Logic family             | Supply     | Input low $U_\mathrm{IL,max}$ | Input high $U_\mathrm{IH,min}$ | Output low $U_\mathrm{OL,max}$ | Output high $U_\mathrm{OH,min}$ |
+| ------------------------ | ---------- | ---------------------- | ----------------------- | ---------------------- | ----------------------- |
+| TTL (74xx, 74LS)         | $5\,\mathrm{V}$   | $0.8\,\mathrm{V}$ | $2.0\,\mathrm{V}$  | $0.4\,\mathrm{V}$  | $2.4\,\mathrm{V}$  |
+| CMOS (74HC) at $5\,\mathrm{V}$ | $2$ to $6\,\mathrm{V}$ | $1.5\,\mathrm{V}$ ($0.3\,U_\mathrm{DD}$) | $3.5\,\mathrm{V}$ ($0.7\,U_\mathrm{DD}$) | close to $0\,\mathrm{V}$ | close to $U_\mathrm{DD}$ |
+| LVCMOS/LVTTL             | $3.3\,\mathrm{V}$ | $0.8\,\mathrm{V}$ | $2.0\,\mathrm{V}$ | $0.4\,\mathrm{V}$ | $2.4\,\mathrm{V}$ |
+
+The output levels are tighter than the input ranges. The difference is the **noise margin**: with TTL, interference of up to $0.4\,\mathrm{V}$ may distort a signal without the receiver misinterpreting it.
+
+:::caution
+Families cannot always be connected directly. A TTL output with a $2.4\,\mathrm{V}$ high level is not reliably recognised as high by a 74HC input ($3.5\,\mathrm{V}$ required); the 74HCT family with TTL-compatible inputs exists for this purpose. A $5\,\mathrm{V}$ output can destroy a $3.3\,\mathrm{V}$ input if it is not $5\,\mathrm{V}$ tolerant. Then a **level shifter** is needed.
+:::
+
+Further parameters of logic devices are the **propagation delay** (a few nanoseconds), the **fan-out** (how many inputs an output can drive) and the power consumption. Special output types are the **open-collector** or open-drain output, which can only switch to ground and needs a pull-up resistor (used on the I²C bus), and the **tri-state** output, which can additionally become high-impedance so that several devices can share a bus.
+
+## Basic gates
+
+A **gate** combines one or more inputs into one output. There are two common standards for the symbols: the European standard **IEC 60617** uses rectangles with an identifier, the American **ANSI/IEEE Std 91** uses distinctive shapes. A small circle at the output means negation.
+
+![Symbols of the basic gates according to IEC and ANSI](/images/electrical-engineering/logic-gates_en.svg)
+
+| Gate           | Function                          | IEC identifier  | Expression                     | Output is 1 if …                         |
+| -------------- | --------------------------------- | --------------- | ------------------------------ | ---------------------------------------- |
+| NOT (inverter) | negation                          | `1` with circle | $Y = \overline{A}$             | the input is 0                           |
+| AND            | conjunction                       | `&`             | $Y = A \cdot B = A \land B$    | all inputs are 1                         |
+| OR             | disjunction                       | `≥1`            | $Y = A + B = A \lor B$         | at least one input is 1                  |
+| NAND           | negated AND                       | `&` with circle | $Y = \overline{A \cdot B}$     | not all inputs are 1                     |
+| NOR            | negated OR                        | `≥1` with circle | $Y = \overline{A + B}$        | all inputs are 0                         |
+| XOR            | exclusive OR, antivalence         | `=1`            | $Y = A \oplus B = \overline{A}B + A\overline{B}$ | the inputs differ |
+| XNOR           | equivalence                       | `=`             | $Y = \overline{A \oplus B} = AB + \overline{A}\,\overline{B}$ | the inputs are equal |
+
+### Truth table
+
+A **truth table** lists the output for every input combination. With $n$ inputs it has $2^n$ rows.
+
+| $A$ | $B$ | AND | OR | NAND | NOR | XOR | XNOR |
+| --- | --- | --- | -- | ---- | --- | --- | ---- |
+| 0   | 0   | 0   | 0  | 1    | 1   | 0   | 1    |
+| 0   | 1   | 0   | 1  | 1    | 0   | 1   | 0    |
+| 1   | 0   | 0   | 1  | 1    | 0   | 1   | 0    |
+| 1   | 1   | 1   | 1  | 0    | 0   | 0   | 1    |
+
+An XOR with more than two inputs gives 1 if an odd number of inputs are 1. That is why it is used to form **parity bits**. An XOR is also a controllable inverter: $A \oplus 0 = A$, $A \oplus 1 = \overline{A}$.
+
+Well-known devices of the 74 series are the 74HC00 (four NAND), 74HC02 (four NOR), 74HC04 (six inverters), 74HC08 (four AND), 74HC32 (four OR) and 74HC86 (four XOR).
+
+## NAND as a universal gate
+
+Any logic function can be built from NAND gates alone. The same applies to NOR. The derivation is based on **De Morgan's laws**:
+
+$$
+\overline{A \cdot B} = \overline{A} + \overline{B} \qquad \overline{A + B} = \overline{A} \cdot \overline{B}
+$$
+
+| Function | from NAND gates                                                    | Count |
+| -------- | ------------------------------------------------------------------ | ----- |
+| NOT      | $\overline{A} = \overline{A \cdot A}$ (both inputs connected)       | 1     |
+| AND      | $A \cdot B = \overline{\overline{A \cdot B}}$ (NAND, then NOT)      | 2     |
+| OR       | $A + B = \overline{\overline{A} \cdot \overline{B}}$ (two NOT, then NAND) | 3 |
+
+In CMOS, NAND and NOR are the simplest gates (four transistors each, see [CMOS technology](/en/electrical-engineering/transistors/#cmos-technology)), whereas AND and OR need an additional inverter. A **disjunctive normal form** (sum of products) can be converted directly into a two-level NAND-NAND circuit by replacing each AND and the final OR with NAND.
+
+## Circuit design
+
+The design of a combinational circuit always follows the same path:
+
+1. Understand the task, define inputs and outputs.
+2. Draw up the **truth table**.
+3. Read off the switching function as a **normal form**: the disjunctive normal form (DNF) combines all rows with output 1 (minterms) with OR.
+4. **Simplify** using the laws of Boolean algebra or a Karnaugh map.
+5. Draw the circuit, converting it to NAND or NOR technology if required.
+
+The normal forms and laws are explained in [Logic and Boolean Algebra](/en/mathematics/algebra/logic-and-boolean-algebra/#normal-forms).
+
+## Karnaugh map
+
+The **Karnaugh map** (K-map, in German KV-Diagramm after Karnaugh and Veitch) is a graphical form of the truth table with which switching functions of up to about four variables can be minimised quickly. The cells are arranged so that neighbouring cells differ in **exactly one** variable. The row and column labels therefore follow the **Gray code** (00, 01, 11, 10). Cells on opposite edges also count as neighbours; the map is conceptually a torus.
+
+Rules for minimisation:
+
+1. Enter the ones of the truth table.
+2. Combine neighbouring ones into rectangular groups that are as **large** as possible with $1$, $2$, $4$, $8$ or $16$ cells. Groups may overlap and wrap around the edges.
+3. Choose as **few** groups as possible so that every 1 is covered at least once.
+4. Each group gives a product term. Only the variables that are the same throughout the group remain. A group of $2^k$ cells eliminates $k$ variables.
+5. Combine the product terms with OR.
+
+### Example with four variables
+
+Given $Y = \sum m(0, 2, 5, 7, 8, 10, 13, 15)$ with the variables $A$ (most significant), $B$, $C$, $D$. The minterm number is the binary number $ABCD$.
+
+| $AB$ \ $CD$ | 00 | 01 | 11 | 10 |
+| ----------- | -- | -- | -- | -- |
+| **00**      | 1  | 0  | 0  | 1  |
+| **01**      | 0  | 1  | 1  | 0  |
+| **11**      | 0  | 1  | 1  | 0  |
+| **10**      | 1  | 0  | 0  | 1  |
+
+- The four ones in the middle (rows 01 and 11, columns 01 and 11) form a group. $B = 1$ and $D = 1$ remain constant, so $BD$.
+- The four corners are neighbours across the edges. $B = 0$ and $D = 0$ remain constant, so $\overline{B}\,\overline{D}$.
+
+$$
+Y = BD + \overline{B}\,\overline{D} = \overline{B \oplus D}
+$$
+
+Eight minterms with four variables each have become a single XNOR gate. $A$ and $C$ have no influence.
+
+### Don't-care terms
+
+Some input combinations never occur, or their output does not matter. Such **don't-care terms** are entered with **X**. They may be used as 1 if this produces larger groups, but they do not have to be.
+
+Example: a circuit is to indicate whether a BCD digit $x_3 x_2 x_1 x_0$ is at least 5. The codes 10 to 15 do not occur in BCD and are don't cares.
+
+| $x_3 x_2$ \ $x_1 x_0$ | 00 | 01 | 11 | 10 |
+| --------------------- | -- | -- | -- | -- |
+| **00**                | 0  | 0  | 0  | 0  |
+| **01**                | 0  | 1  | 1  | 1  |
+| **11**                | X  | X  | X  | X  |
+| **10**                | 1  | 1  | X  | X  |
+
+- Rows 11 and 10 form a group of eight: $x_3$.
+- Rows 01 and 11, columns 01 and 11: $x_2 x_0$.
+- Rows 01 and 11, columns 11 and 10: $x_2 x_1$.
+
+$$
+Y = x_3 + x_2 x_0 + x_2 x_1
+$$
+
+Without don't cares the terms would be longer, for example $x_3 \overline{x_2}\,\overline{x_1}$ instead of $x_3$.
+
+:::tip[Remember]
+Always make groups as large as possible, even if ones are covered twice. A group consisting only of don't cares is not used because it covers no 1.
+:::
+
+With more than four or five variables the Karnaugh map becomes confusing. Then the **Quine-McCluskey** method or software is used, as built into the tools for [programmable logic](/en/electrical-engineering/sequential-circuits/#programmable-logic).
+
+## Further reading
+
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- [Wikipedia: Logic gate](https://en.wikipedia.org/wiki/Logic_gate)

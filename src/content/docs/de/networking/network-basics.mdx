@@ -1,0 +1,152 @@
+---
+title: Netzwerkgrundlagen
+description: Netzwerkarten von PAN bis WAN, Topologien, Client-Server und Peer-to-Peer, Netzwerkkomponenten, Bandbreite, Durchsatz, Latenz, Jitter und Normungsorganisationen.
+sidebar:
+  order: 1
+---
+
+Ein **Rechnernetz** verbindet zwei oder mehr Geräte, damit sie Daten austauschen und Ressourcen wie Drucker, Speicher oder einen Internetzugang gemeinsam nutzen können. Jedes Netz besteht aus drei Teilen: den **Endgeräten**, die Daten erzeugen oder verbrauchen, den **Zwischengeräten** (_intermediary devices_), die Daten weiterleiten, und den **Übertragungsmedien**, über die die Signale laufen. Damit sich die Geräte verstehen, halten sie sich an gemeinsame Regeln, die **Protokolle**.
+
+## Netzwerkarten
+
+Netze werden nach ihrer räumlichen Ausdehnung eingeteilt. Die Grenzen sind nicht scharf, wichtiger ist, wer das Netz betreibt: Ein LAN gehört meist der Organisation selbst, ein WAN wird fast immer von einem Provider gemietet.
+
+| Art | Bezeichnung | Ausdehnung | Beispiel |
+| --- | --- | --- | --- |
+| **PAN** | _Personal Area Network_ | wenige Meter | Smartphone mit Bluetooth-Kopfhörer und Smartwatch |
+| **LAN** | _Local Area Network_ | Gebäude, Gelände | Netz einer Schule oder eines Büros |
+| **WLAN** | _Wireless LAN_ | Gebäude, Gelände | LAN über Funk nach IEEE 802.11 |
+| **MAN** | _Metropolitan Area Network_ | Stadt, Region | Glasfasernetz eines Stadtwerks, das Standorte in einer Stadt verbindet |
+| **WAN** | _Wide Area Network_ | Länder, Kontinente | Verbindung der Filialen einer Bank über einen Provider |
+| **GAN** | _Global Area Network_ | weltweit | das Internet, Satellitennetze |
+
+Weitere Begriffe:
+
+- Ein **SAN** (_Storage Area Network_) ist ein eigenes Netz nur für den Zugriff auf Speichersysteme, etwa mit Fibre Channel oder iSCSI.
+- Das **Internet** ist der weltweite Verbund unabhängiger Netze, die alle die TCP/IP-Protokolle verwenden. Ein **Intranet** ist ein privates Netz, das nur Mitgliedern einer Organisation offensteht. Ein **Extranet** öffnet Teile davon für Partner wie Lieferanten.
+- Ein **VPN** (_Virtual Private Network_) baut über ein fremdes Netz eine verschlüsselte Verbindung auf, als wäre man direkt im eigenen Netz (siehe [WAN und Internetzugang](/de/networking/wan-and-internet-access/#vpn)).
+
+## Topologien
+
+Die **physische Topologie** beschreibt, wie Geräte und Kabel tatsächlich angeordnet sind. Die **logische Topologie** beschreibt, wie die Daten fließen. Beide können verschieden sein: Ein Hub ist physisch ein Stern, verhält sich logisch aber wie ein Bus, weil jedes Signal an alle Ports geht.
+
+| Topologie | Aufbau | Vorteile | Nachteile |
+| --- | --- | --- | --- |
+| **Bus** | alle Geräte an einem gemeinsamen Kabel mit Abschlusswiderständen | wenig Kabel | ein Kabelbruch legt das ganze Netz lahm, Kollisionen |
+| **Ring** | jedes Gerät mit zwei Nachbarn verbunden, Daten laufen im Kreis | deterministisch, kein Kollisionsproblem | Ausfall eines Geräts unterbricht den Ring (außer Doppelring) |
+| **Stern** | alle Geräte an einem zentralen Switch | einfache Fehlersuche, ein defektes Kabel betrifft nur ein Gerät | zentrales Gerät ist Single Point of Failure |
+| **Erweiterter Stern** (Baum) | mehrere Sterne hierarchisch verbunden | skalierbar, Standard in LANs | Ausfall eines oberen Knotens betrifft einen ganzen Zweig |
+| **Vollvermascht** | jedes Gerät mit jedem verbunden | höchste Ausfallsicherheit | sehr viele Verbindungen, teuer |
+| **Teilvermascht** | nur wichtige Knoten mehrfach verbunden | guter Kompromiss | Planung aufwendiger |
+
+Ein vollvermaschtes Netz mit $n$ Knoten braucht
+
+$$
+L = \frac{n \cdot (n - 1)}{2}
+$$
+
+Verbindungen. Für 10 Router sind das bereits 45 Leitungen. Deshalb vermascht man in der Praxis nur den Kern eines Netzes (etwa die Core-Router oder ein WAN zwischen wenigen Standorten) und baut den Rest als erweiterten Stern auf. Heutige Ethernet-LANs sind physisch fast immer ein erweiterter Stern, Bus und Ring sind nur noch historisch (10BASE2, Token Ring) oder in der Industrie (Ring mit Redundanzprotokoll) von Bedeutung.
+
+## Client-Server und Peer-to-Peer
+
+Im **Client-Server-Modell** stellt ein zentraler **Server** einen Dienst bereit (Webseiten, Dateien, E-Mail, Datenbank), und viele **Clients** nehmen ihn in Anspruch. Der Client startet die Kommunikation, der Server wartet auf Anfragen.
+
+Im **Peer-to-Peer-Modell** (P2P) sind alle Teilnehmer gleichberechtigt: Jeder Rechner ist zugleich Client und Server. Beispiele sind eine Windows-Arbeitsgruppe mit freigegebenen Ordnern, BitTorrent oder die Knoten einer Blockchain.
+
+| Merkmal | Client-Server | Peer-to-Peer |
+| --- | --- | --- |
+| Verwaltung | zentral (Benutzer, Rechte, Backup an einer Stelle) | dezentral, jeder Rechner einzeln |
+| Sicherheit | zentral kontrollierbar | schwer einheitlich durchzusetzen |
+| Skalierung | Server muss mit der Last wachsen | jeder neue Peer bringt Kapazität mit |
+| Ausfall | Serverausfall stoppt den Dienst | kein einzelner Ausfallpunkt |
+| Kosten | Serverhardware und Administration | gering, für kleine Netze geeignet |
+
+## Netzwerkkomponenten
+
+| Gerät | OSI-Schicht | Aufgabe |
+| --- | --- | --- |
+| **Netzwerkkarte** (NIC) | 1 und 2 | verbindet ein Gerät mit dem Medium, hat eine weltweit eindeutige MAC-Adresse |
+| **Repeater** | 1 | verstärkt und regeneriert Signale, um die Reichweite zu erhöhen |
+| **Hub** | 1 | Multiport-Repeater: sendet jedes Signal an alle Ports, heute veraltet |
+| **Bridge** | 2 | verbindet zwei Segmente und filtert nach MAC-Adressen |
+| **Switch** | 2 (Layer-3-Switch auch 3) | leitet Frames anhand der MAC-Adresse gezielt an den richtigen Port weiter |
+| **Router** | 3 | verbindet verschiedene IP-Netze und wählt anhand der Routingtabelle den Weg |
+| **Access Point** (AP) | 1 und 2 | verbindet WLAN-Clients mit dem kabelgebundenen LAN |
+| **Firewall** | 3 bis 7 | filtert Verkehr nach Regeln, trennt vertrauenswürdige von unsicheren Netzen |
+| **Modem** | 1 | wandelt digitale Signale für eine Leitung um (DSL, Kabel) |
+
+Ein **Heimrouter** ist eigentlich ein Kombigerät aus Router, Switch, Access Point, Firewall, DHCP-Server und oft Modem. In Unternehmensnetzen sind diese Funktionen auf getrennte Geräte verteilt, damit sie unabhängig skaliert und redundant ausgelegt werden können. Mehr zu Firewalls im Rechenzentrum findest du unter [Firewalls](/de/deployment/operations/firewalls/).
+
+## Leistungskennzahlen
+
+### Bandbreite und Durchsatz
+
+Die **Bandbreite** (_bandwidth_) ist die maximale Datenrate, die ein Medium oder eine Verbindung übertragen kann, etwa 1 Gbit/s bei Gigabit-Ethernet. Der **Durchsatz** (_throughput_) ist die tatsächlich gemessene Datenrate. Er ist immer kleiner als die Bandbreite, weil Protokoll-Overhead, Kollisionen, Fehler, Wartezeiten und die langsamste Teilstrecke ihn begrenzen. Der **Goodput** ist der Anteil des Durchsatzes, der als Nutzdaten bei der Anwendung ankommt, also ohne Header und Wiederholungen.
+
+### Einheiten
+
+Datenraten werden in **Bit pro Sekunde** (bit/s, auch bps) angegeben. Die Vorsätze sind dezimal: 1 kbit/s = 1000 bit/s, 1 Mbit/s = $10^6$ bit/s, 1 Gbit/s = $10^9$ bit/s. Dateigrößen werden dagegen in **Byte** (B) angegeben, 1 Byte = 8 Bit. Für binäre Vielfache gibt es die IEC-Vorsätze: 1 KiB = 1024 B, 1 MiB = $2^{20}$ B.
+
+:::tip[Beispiel: Übertragungsdauer]
+Eine Datei mit 2 GB (dezimal, $2 \cdot 10^9\,\mathrm{B}$) soll über eine Verbindung mit 100 Mbit/s übertragen werden:
+
+$$
+t = \frac{2 \cdot 10^9 \cdot 8\,\mathrm{bit}}{100 \cdot 10^6\,\mathrm{bit/s}} = 160\,\mathrm{s}
+$$
+
+Das ist die theoretische Untergrenze. Wegen des Overheads (rund 5 % bei TCP über Ethernet) dauert es real etwas länger.
+:::
+
+### Latenz
+
+Die **Latenz** (Verzögerung, _delay_) ist die Zeit, die ein Bit von der Quelle bis zum Ziel braucht. Sie setzt sich aus vier Anteilen zusammen:
+
+| Anteil | Ursache | Formel |
+| --- | --- | --- |
+| **Sendeverzögerung** (_transmission/serialisation delay_) | alle Bits eines Pakets auf die Leitung legen | $t_s = L / R$ (Paketlänge durch Datenrate) |
+| **Ausbreitungsverzögerung** (_propagation delay_) | Laufzeit des Signals im Medium | $t_p = d / v$ (Strecke durch Ausbreitungsgeschwindigkeit) |
+| **Verarbeitungsverzögerung** (_processing delay_) | Router prüft Header und sucht die Route | Mikrosekunden |
+| **Warteschlangenverzögerung** (_queuing delay_) | Paket wartet im Puffer, weil die Leitung belegt ist | stark lastabhängig |
+
+Signale breiten sich in Kupfer und Glasfaser mit rund zwei Dritteln der Lichtgeschwindigkeit aus, also mit etwa $2 \cdot 10^8\,\mathrm{m/s}$.
+
+:::tip[Beispiel: Wien nach New York]
+Ein 1500-Byte-Paket wird über eine 1-Gbit/s-Leitung gesendet, die Glasfaserstrecke ist etwa 7000 km lang.
+
+$$
+t_s = \frac{1500 \cdot 8\,\mathrm{bit}}{10^9\,\mathrm{bit/s}} = 12\,\mathrm{\mu s}
+\qquad
+t_p = \frac{7 \cdot 10^6\,\mathrm{m}}{2 \cdot 10^8\,\mathrm{m/s}} = 35\,\mathrm{ms}
+$$
+
+Auf langen Strecken dominiert die Ausbreitungsverzögerung. Eine schnellere Leitung verkürzt nur $t_s$, gegen die Physik hilft keine höhere Bandbreite.
+:::
+
+Die **Round-Trip-Time** (RTT) ist die Zeit für Hin- und Rückweg, also das, was `ping` anzeigt.
+
+### Jitter und Paketverlust
+
+Der **Jitter** ist die Schwankung der Latenz zwischen aufeinanderfolgenden Paketen. Für Dateiübertragungen ist er egal, für Sprache und Video dagegen störend, weil die Pakete gleichmäßig abgespielt werden müssen. Empfänger gleichen Jitter mit einem **Jitter-Puffer** aus, der die Latenz aber weiter erhöht. **Paketverlust** entsteht vor allem, wenn Puffer in Routern überlaufen. Wie man Echtzeitverkehr bevorzugt, beschreibt [QoS](/de/networking/wan-and-internet-access/#quality-of-service).
+
+## Normungsorganisationen
+
+Netzwerke funktionieren nur, weil Geräte verschiedener Hersteller dieselben offenen Standards umsetzen.
+
+| Organisation | Zuständigkeit | Beispiele |
+| --- | --- | --- |
+| **IEEE** (_Institute of Electrical and Electronics Engineers_) | Schicht 1 und 2, Arbeitsgruppe 802 | 802.3 Ethernet, 802.11 WLAN, 802.1Q VLANs |
+| **IETF** (_Internet Engineering Task Force_) | Internetprotokolle ab Schicht 3, veröffentlicht als **RFCs** (_Request for Comments_) | RFC 791 IPv4, RFC 8200 IPv6, RFC 9293 TCP |
+| **ISO** (_International Organization for Standardization_) | internationale Normen | ISO/IEC 7498-1 (OSI-Modell), ISO/IEC 11801 (Verkabelung) |
+| **ITU-T** | Telekommunikation | G.992/G.993 (ADSL, VDSL), G.984 (GPON) |
+| **IANA** / **ICANN** | Vergabe von IP-Adressbereichen, Portnummern, Root-Zone des DNS | Port 443 für HTTPS |
+| **RIPE NCC** | regionale Vergabestelle (RIR) für Europa | IP-Adressen für österreichische Provider |
+| **CENELEC** | europäische Elektronormen | EN 50173 (strukturierte Verkabelung) |
+| **Wi-Fi Alliance** | Zertifizierung und Marketingnamen für WLAN | Wi-Fi 6, WPA3 |
+
+Ein RFC wird nie geändert: Eine verbesserte Fassung bekommt eine neue Nummer und ersetzt (_obsoletes_) die alte, so hat RFC 9293 im Jahr 2022 den TCP-Standard RFC 793 von 1981 abgelöst. In Österreich ist die **RTR** (Rundfunk und Telekom Regulierungs-GmbH) die Regulierungsbehörde für Telekommunikation, und europäische Normen werden von Austrian Standards und dem OVE als ÖNORM EN beziehungsweise ÖVE/ÖNORM EN übernommen.
+
+## Weiterführende Quellen
+
+- Andrew S. Tanenbaum, Nick Feamster, David J. Wetherall: _Computer Networks_, 6. Auflage, Pearson 2021
+- James F. Kurose, Keith W. Ross: _Computernetzwerke: Der Top-Down-Ansatz_, Pearson
+- [Cisco Networking Academy](https://www.netacad.com/)

@@ -1,0 +1,287 @@
+---
+title: Video
+description: Frame rate, resolution, chroma subsampling, codecs and containers, file size, GOP, adaptive streaming, camera work, editing and colour grading.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A video is a sequence of still images shown in quick enough succession that the brain perceives smooth motion. Uncompressed, video data would be so large that neither hard drives nor networks could handle it. Video technology is therefore largely about compression. The other half is design: framing, camera work and editing determine whether a video tells a story clearly.
+
+## Frame rate
+
+The **frame rate** states how many still images (_frames_) are shown per second (fps, _frames per second_).
+
+| Frame rate | Use |
+| --- | --- |
+| 24 fps | cinema; creates the typical "film look" with slight motion blur |
+| 25 fps | television in Europe (PAL tradition, derived from the 50 Hz mains frequency) |
+| 29.97 or 30 fps | television in North America and Japan (NTSC tradition, 60 Hz) |
+| 50 or 60 fps | sport, games, smooth motion |
+| 120 fps and more | slow motion: recorded at 120 fps and played back at 24 fps gives five-fold slow motion |
+
+For natural motion blur, the **180-degree shutter rule** applies: the shutter speed is about the reciprocal of twice the frame rate, i.e. 1/50 s at 25 fps. Shorter times make motion look choppy, longer times smear it.
+
+## Resolution and aspect ratio
+
+| Name | Resolution in pixels | Note |
+| --- | --- | --- |
+| SD (PAL) | 720 × 576 | DVD, old television |
+| HD (720p) | 1280 × 720 | |
+| Full HD (1080p) | 1920 × 1080 | standard for web and television |
+| UHD, "4K" | 3840 × 2160 | four times as many pixels as Full HD |
+| DCI 4K | 4096 × 2160 | cinema projection |
+| 8K UHD | 7680 × 4320 | 16 times Full HD |
+
+The **aspect ratio** is the ratio of width to height:
+
+| Ratio | Use |
+| --- | --- |
+| 4:3 | old television, older monitors |
+| **16:9** | HD and UHD television, YouTube, presentations |
+| 1.85:1 and 2.39:1 | cinema (widescreen, CinemaScope) |
+| **9:16** | portrait format for smartphones: Reels, TikTok, Shorts, Stories |
+| 1:1 | square posts on social media |
+
+If a video does not match the screen, black bars appear: at the top and bottom with **letterbox**, left and right with **pillarbox**. Alternatively the image is cropped, which costs picture content.
+
+## Interlaced and progressive
+
+With **interlaced** scanning (marked "i"), a frame is split into two **fields**: first all odd lines, then all even lines. This dates from the era of cathode-ray televisions and halved the required bandwidth while keeping motion smooth. 1080i50 means 50 fields, i.e. 25 full frames per second. On modern screens, **combing artefacts** appear during motion unless the material is converted first (**deinterlacing**).
+
+With **progressive** scanning (marked "p"), every frame is transmitted completely. All digital platforms and computer screens work progressively. For your own productions, you therefore always record progressively.
+
+## Chroma subsampling
+
+As with JPEG, video formats store images in the **YCbCr** colour model: brightness (Y, _luma_) and two colour difference channels (Cb, Cr, _chroma_). Because the eye resolves colour less finely than brightness, the colour channels are stored at a lower resolution (**chroma subsampling**). The notation J:a:b describes a block of 4 × 2 pixels: J is the width (4), a the number of colour samples in the first row, b the additional colour samples in the second row.
+
+| Scheme | Colour resolution | Bits per pixel at 8 bit | Use |
+| --- | --- | --- | --- |
+| **4:4:4** | full | 24 | graphics, screen recordings, compositing, green screen |
+| **4:2:2** | half horizontal resolution | 16 | professional cameras, television production |
+| **4:2:0** | half horizontal and half vertical resolution | 12 | streaming, Blu-ray, smartphones, almost all consumer formats |
+
+With 4:2:0, four pixels therefore share one colour sample. This is hardly visible in natural images, but it is with fine coloured text or when **keying** (removing a green screen background).
+
+## Data rate and file size
+
+The data rate of an **uncompressed** video is
+
+$$
+\text{data rate} = \text{width} \cdot \text{height} \cdot \text{bits per pixel} \cdot \text{frame rate}
+$$
+
+Full HD at 25 fps in 4:2:0 and 8 bit: $1920 \cdot 1080 \cdot 12 \cdot 25 = 622\,080\,000\ \mathrm{bit/s} \approx 622\ \mathrm{Mbit/s}$. One hour would be about 280 GB. A typical H.264 video in this quality only has 5 to 8 Mbit/s, which is a compression by a factor of about one hundred.
+
+The size of a **compressed** video depends only on bitrate and duration:
+
+$$
+\text{file size} = (\text{video bitrate} + \text{audio bitrate}) \cdot \text{duration}
+$$
+
+:::tip[Example]
+A 10-minute video with 8 Mbit/s video and 192 kbit/s audio: $(8000 + 192)\ \mathrm{kbit/s} \cdot 600\ \mathrm{s} = 4\,915\,200\ \mathrm{kbit}$. Divided by 8, this gives $614\,400\ \mathrm{kB} \approx 614.4\ \mathrm{MB}$.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // decimal point
+
+// uncompressed data rate in bit/s
+static long RawBitrate(int width, int height, int bitsPerPixel, double fps) =>
+    (long)(width * height * (long)bitsPerPixel * fps);
+
+// file size in bytes from bitrates in bit/s and duration in seconds
+static double FileSize(double videoBitrate, double audioBitrate, double seconds) =>
+    (videoBitrate + audioBitrate) * seconds / 8;
+
+long raw = RawBitrate(1920, 1080, 12, 25);   // 4:2:0 at 8 bit = 12 bits per pixel
+Console.WriteLine($"Uncompressed: {raw / 1e6:F0} Mbit/s");              // Uncompressed: 622 Mbit/s
+Console.WriteLine($"1 hour: {raw * 3600 / 8 / 1e9:F0} GB");            // 1 hour: 280 GB
+Console.WriteLine($"Factor at 6 Mbit/s: {raw / 6e6:F0}");               // Factor at 6 Mbit/s: 104
+
+double size = FileSize(8_000_000, 192_000, 10 * 60);
+Console.WriteLine($"10 min: {size / 1e6:F1} MB");                        // 10 min: 614.4 MB
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// uncompressed data rate in bit/s
+fn raw_bitrate(width: u64, height: u64, bits_per_pixel: u64, fps: f64) -> f64 {
+    (width * height * bits_per_pixel) as f64 * fps
+}
+
+/// file size in bytes from bitrates in bit/s and duration in seconds
+fn file_size(video_bitrate: f64, audio_bitrate: f64, seconds: f64) -> f64 {
+    (video_bitrate + audio_bitrate) * seconds / 8.0
+}
+
+fn main() {
+    let raw = raw_bitrate(1920, 1080, 12, 25.0); // 4:2:0 at 8 bit = 12 bits per pixel
+    println!("Uncompressed: {:.0} Mbit/s", raw / 1e6); // Uncompressed: 622 Mbit/s
+    println!("1 hour: {:.0} GB", raw * 3600.0 / 8.0 / 1e9); // 1 hour: 280 GB
+    println!("Factor at 6 Mbit/s: {:.0}", raw / 6e6); // Factor at 6 Mbit/s: 104
+
+    let size = file_size(8_000_000.0, 192_000.0, 10.0 * 60.0);
+    println!("10 min: {:.1} MB", size / 1e6); // 10 min: 614.4 MB
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Video compression
+
+Video codecs exploit two kinds of redundancy:
+
+- **Spatial redundancy** within a frame (**intra-frame compression**): as with JPEG, the image is divided into blocks, transformed and quantised. H.264 uses macroblocks of 16 × 16 pixels, H.265 flexible blocks up to 64 × 64.
+- **Temporal redundancy** between successive frames (**inter-frame compression**): usually little changes from frame to frame. For each block, the encoder searches where it has moved (**motion estimation**) and stores only the **motion vector** and the small remainder (_residual_) that it cannot explain.
+
+### Group of pictures
+
+The frames of a video are encoded as three types and combined into a **group of pictures** (GOP):
+
+![Sequence of I, P and B frames in a group of pictures with their references](/images/media-technology/gop_en.svg)
+
+| Frame | Content | Size |
+| --- | --- | --- |
+| **I-frame** (_intra_, keyframe) | complete picture, intra-coded only, without reference to other frames | large |
+| **P-frame** (_predicted_) | only differences from a previous I- or P-frame | medium |
+| **B-frame** (_bidirectional_) | differences from a previous and a following frame | small |
+
+A GOP starts with an I-frame. A player can only start decoding at I-frames, so the **GOP length** determines how precisely you can seek and how quickly an error in the data stream "heals". For streaming, an I-frame every **2 seconds** is common. Because of B-frames, the decoding order differs from the display order: P-frame 4 must be decoded before B-frames 2 and 3.
+
+Editing programs run more smoothly with **all-intra codecs** such as **Apple ProRes** or **Avid DNxHR**, in which every frame is an I-frame. They are larger, but every frame can be decoded without its neighbours. For camera footage with a long GOP, **proxies** in such codecs are often created.
+
+### Codecs
+
+A **codec** (_coder/decoder_) is the method used to compress video.
+
+| Codec | Year | Origin | Properties |
+| --- | --- | --- | --- |
+| **MPEG-2** | 1995 | MPEG | DVD, older digital television |
+| **H.264 / AVC** | 2003 | ITU-T and ISO/IEC MPEG | supported by practically every device; standard on the web |
+| **H.265 / HEVC** | 2013 | ITU-T and ISO/IEC MPEG | about 50 % less bitrate than H.264 at the same quality; UHD Blu-ray, smartphones; complicated licensing |
+| **VP9** | 2013 | Google | royalty-free, YouTube |
+| **AV1** | 2018 | Alliance for Open Media (Google, Netflix, Amazon, Microsoft and others) | royalty-free, more efficient than HEVC; streaming |
+| **H.266 / VVC** | 2020 | ITU-T and ISO/IEC MPEG | successor of HEVC, not yet widespread |
+
+Newer codecs achieve the same quality with less bitrate but need more computing power, which is best provided by hardware acceleration in the graphics card or chip.
+
+For **rate control**, a distinction is made between constant (CBR) and variable bitrate (VBR). **Two-pass encoding** analyses the video in the first pass and distributes the bits where they are needed in the second. Encoders such as x264 also offer a **quality mode** (CRF), in which you specify a target quality instead of a bitrate.
+
+### Containers
+
+A **container** is the file format that combines the video track, audio tracks, subtitles, chapters and metadata and keeps them in sync. Codec and container are independent: an MP4 file can contain H.264, HEVC or AV1.
+
+| Container | Typical content | Use |
+| --- | --- | --- |
+| **MP4** (MPEG-4 Part 14) | H.264, HEVC, AV1; AAC | standard for web, smartphones, upload |
+| **MOV** (QuickTime) | H.264, HEVC, ProRes | Apple, video editing |
+| **MKV** (Matroska) | practically any codecs, several audio and subtitle tracks | open, archive, films |
+| **WebM** | VP8, VP9, AV1; Vorbis, Opus | open, browsers |
+| **MXF** | professional codecs | broadcasters, professional cameras |
+| **MPEG-TS** | H.264, HEVC; AAC | broadcasting, HLS segments |
+
+## Streaming
+
+With **progressive download**, the player downloads a single file from the start and begins playback as soon as enough is buffered. If the bandwidth changes, playback stalls.
+
+**Adaptive bitrate streaming** (ABR) solves this problem:
+
+1. The video is encoded in several **quality levels**, for example 360p at 0.8 Mbit/s up to 2160p at 16 Mbit/s (the **bitrate ladder**).
+2. Each level is divided into **segments** of usually 2 to 6 seconds. Each segment starts with an I-frame.
+3. A **manifest file** lists all levels and segments.
+4. The player continuously measures bandwidth and buffer level and loads each segment in the quality that currently fits. With a poor connection the picture becomes blurrier, but it does not stall.
+
+| Method | Origin | Manifest | Segments |
+| --- | --- | --- | --- |
+| **HLS** (_HTTP Live Streaming_) | Apple, 2009; RFC 8216 | playlist `.m3u8` | MPEG-TS or fragmented MP4 |
+| **MPEG-DASH** | ISO/IEC 23009-1, 2012 | XML file `.mpd` | codec-agnostic, usually fragmented MP4 |
+
+Both run over ordinary [HTTP](/en/web-technologies/http/), so segments can be cached by **content delivery networks** (CDN) and delivered close to the viewer. The common segment format **CMAF** allows the same files to be used for HLS and DASH.
+
+For **live streams**, the software (such as OBS Studio) usually sends the signal via **RTMP** or **SRT** to a server, which transcodes it into the quality levels. For very low latency, for example in video conferencing, **WebRTC** is used.
+
+## Camera work
+
+### Shot sizes
+
+The **shot size** describes how much of a person or scene is visible in the frame:
+
+| Shot | Framing | Effect, use |
+| --- | --- | --- |
+| **Extreme long shot** | wide landscape, people tiny | establish the location, mood |
+| **Long shot** | whole setting with people | overview, orientation |
+| **Full shot** | people from head to toe with some surroundings | groups, body language |
+| **Cowboy shot** (American shot) | head to mid-thigh | from westerns (revolver in frame); dialogues |
+| **Medium shot** | head to hip | conversations, interaction |
+| **Medium close-up** | head to mid-chest | interviews, news presenters |
+| **Close-up** | face, head | emotions, facial expression |
+| **Extreme close-up** | detail: eyes, hand, object | suspense, important details |
+
+### Camera angles
+
+| Angle | Camera position | Effect |
+| --- | --- | --- |
+| **Bird's-eye view** | steeply from above | overview, person looks small and lost |
+| **High angle** | slightly from above | person looks inferior, weak |
+| **Eye level** | at eye height | neutral, encounter on equal terms |
+| **Low angle** | slightly from below | person looks powerful, threatening |
+| **Worm's-eye view** | steeply from below | strongly exaggerated, monumental |
+
+A tilted camera (_Dutch angle_) is unsettling and is used for suspense or confusion.
+
+### Camera movements
+
+- **Pan**: the camera rotates horizontally on the tripod. **Tilt**: vertically.
+- **Dolly** or **tracking shot**: the camera moves as a whole, for example on rails, with a **gimbal** or a drone.
+- **Zoom**: the focal length changes, the perspective stays the same. A dolly shot looks more spatial than a zoom.
+- **Handheld camera**: shaky, documentary, close to the action.
+
+### Rules of shooting
+
+- **180-degree rule**: an imaginary **axis of action** runs between two people in a dialogue. All shots are filmed from the same side of this axis. If the camera jumps across the axis (**crossing the line**), the people seem to swap sides and the viewer loses orientation.
+- **Shot/reverse shot**: in a dialogue, the camera alternately films over the shoulder of one person towards the other. The eyelines must match.
+- **30-degree rule**: between two consecutive shots of the same subject, the camera angle changes by at least 30 degrees or the shot size changes clearly; otherwise the cut looks like a glitch (**jump cut**).
+- **Headroom** and **look room**: leave little space above the head and more in the direction of gaze; eyes roughly on the upper [third line](/en/media-technology/digital-images/#composition).
+- **Three-point lighting**: **key light** as the main light at the front side, **fill light** on the other side against harsh shadows, **back light** from behind to separate the person from the background.
+
+## Editing
+
+Editing is done in a **non-linear editor** (NLE) such as DaVinci Resolve, Adobe Premiere Pro or Final Cut Pro. The footage lies on a **timeline** with several video and audio tracks. The process goes from the **rough cut** (coarse order) via the **fine cut** to **picture lock** (picture is final), followed by sound, colour and export.
+
+| Transition | Description |
+| --- | --- |
+| **Hard cut** | direct change; the most common transition, unnoticeable with good editing |
+| **J-cut** | the sound of the next scene starts before the picture |
+| **L-cut** | the sound of the previous scene continues under the new picture |
+| **Match cut** | cut between two images with similar shape or movement |
+| **Cutaway** (insert) | short cut to a detail or **B-roll** (additional footage), for example to hide cuts in an interview |
+| **Jump cut** | jump within one shot, used deliberately in vlogs |
+| **Dissolve** | one image slowly turns into the next; indicates a time jump |
+| **Fade to black** | fade out to black; end of a section |
+
+In **continuity editing** (the invisible cut), you pay attention to **continuity**: movements, props, light and eyelines must match across the cut. Cuts are often made on movement because viewers then do not notice them. The **Kuleshov effect** shows how strongly editing determines meaning: the same neutral face looks hungry, sad or in love depending on which image is shown before it.
+
+## Colour correction and colour grading
+
+- **Colour correction** is technical: correcting white balance and exposure and matching all shots of a scene to each other, so that they look as if they were shot at the same time in the same place.
+- **Colour grading** is creative: a deliberate **look** creates mood, such as cool blue for distance, warm yellow for nostalgia or the widespread "teal and orange" contrast (blue-green shadows, orange skin tones).
+
+For objective assessment, **scopes** are used rather than the monitor alone: the **waveform** (brightness distribution across the image width), the **vectorscope** (hue and saturation, with a line for skin tones) and the [histogram](/en/media-technology/digital-images/#histogram).
+
+Professional cameras record in a **log profile** (such as S-Log, V-Log, C-Log). The image looks flat and grey but stores a larger dynamic range that is used during grading. A **LUT** (_lookup table_) converts colour values according to a table, for example from the log profile into the standard colour space **Rec. 709** (HD) or as a ready-made look. For **HDR** (_high dynamic range_) there is Rec. 2100 with the transfer functions PQ and HLG, and the formats HDR10 and Dolby Vision. The most widely used grading program is **DaVinci Resolve**.
+
+## Further reading
+
+- [ITU-T H.264: Advanced video coding for generic audiovisual services](https://www.itu.int/rec/T-REC-H.264)
+- [IETF RFC 8216: HTTP Live Streaming](https://www.rfc-editor.org/rfc/rfc8216)
+- Steven D. Katz: _Shot by Shot: Visualizing from Concept to Screen_. 2nd edition, Studio City: Michael Wiese Productions, 2019

@@ -1,0 +1,243 @@
+---
+title: Softwarearchitektur
+description: Architekturstile wie Schichtenarchitektur, Client-Server, MVC, MVP, MVVM, hexagonale Architektur, Microservices und ereignisgesteuerte Systeme sowie Repository und Dependency Injection in C# und Rust.
+sidebar:
+  order: 22
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Softwarearchitektur** beschreibt die grundlegende Struktur eines Systems: aus welchen Bausteinen es besteht, welche Verantwortung jeder Baustein hat und wie sie miteinander kommunizieren. Architekturentscheidungen sind schwer rückgängig zu machen, weil viele andere Entscheidungen darauf aufbauen. Während [Entwurfsmuster](/de/software-development/design-patterns/) das Zusammenspiel weniger Klassen beschreiben, geht es bei der Architektur um das große Ganze.
+
+## Qualitätsziele
+
+Eine Architektur ist nie „richtig“ oder „falsch“, sondern mehr oder weniger gut geeignet für die wichtigsten **Qualitätsziele** eines Systems: Wartbarkeit, Skalierbarkeit, Verfügbarkeit, Sicherheit, Performance, Testbarkeit (siehe [Softwarequalität](/de/project_management/quality_management/software_quality/)). Diese Ziele widersprechen sich oft: Ein verteiltes System skaliert besser als ein einzelner Prozess, ist aber schwerer zu testen und zu betreiben. Gute Architektur bedeutet, diese **Zielkonflikte** bewusst abzuwägen und die Entscheidungen zu dokumentieren.
+
+## Schichtenarchitektur
+
+Die **Schichtenarchitektur** (_Layered Architecture_) teilt ein System in übereinanderliegende Schichten. Jede Schicht verwendet nur die Dienste der darunterliegenden Schicht.
+
+| Schicht                      | Aufgabe                                                      | Beispiele                                   |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| **Präsentationsschicht**     | Ein- und Ausgabe, Benutzeroberfläche oder API-Endpunkte      | WPF-Fenster, Webseiten, REST-Controller     |
+| **Geschäftslogikschicht** (_Business Layer_) | fachliche Regeln und Abläufe                  | Bestellung prüfen, Preis berechnen          |
+| **Datenzugriffsschicht** (_Data Access Layer_) | Lesen und Speichern von Daten               | Repositorys, ORM, Dateizugriff              |
+| **Datenhaltung**             | die eigentliche Speicherung                                 | Datenbankserver, Dateisystem                |
+
+- In einer **strikten** Schichtenarchitektur darf eine Schicht nur die direkt darunterliegende verwenden, in einer **lockeren** auch tiefere Schichten.
+- Vorteile: klare Trennung der Aufgaben ([Separation of Concerns](/de/software-development/clean-code/#grundprinzipien)), austauschbare Schichten, leicht verständlich.
+- Nachteil: Änderungen an einem Datenfeld ziehen sich oft durch alle Schichten.
+
+Werden die Schichten auf verschiedene Rechner verteilt, spricht man von **Tiers**: Bei einer **2-Tier-Architektur** greift ein Client direkt auf den Datenbankserver zu, bei einer **3-Tier-Architektur** liegt ein Anwendungsserver mit der Geschäftslogik dazwischen.
+
+## Client-Server
+
+Beim **Client-Server-Modell** bietet ein zentraler **Server** Dienste an, die viele **Clients** über das Netzwerk nutzen (siehe [Netzwerkprogrammierung](/de/software-development/network-programming/#client-server-modell)). Je nachdem, wie viel Logik der Client enthält, unterscheidet man **Thin Clients** (etwa ein Webbrowser, der nur anzeigt) und **Fat Clients** (eine Desktopanwendung mit eigener Logik). Beim Gegenmodell **Peer-to-Peer** sind alle Teilnehmer gleichberechtigt und zugleich Client und Server, etwa bei BitTorrent.
+
+## MVC, MVP und MVVM
+
+Diese drei Muster trennen in Anwendungen mit Benutzeroberfläche die **Darstellung** von den **Daten** und der **Logik**. Allen gemeinsam ist das **Model** mit den fachlichen Daten und Regeln und die **View**, die anzeigt.
+
+| Muster   | Vermittler          | Ablauf                                                                                                          | Typischer Einsatz                         |
+| -------- | ------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **MVC** (_Model-View-Controller_) | **Controller** | Der Controller nimmt Eingaben entgegen, ändert das Model und wählt die View aus, die das Model darstellt. | Webanwendungen (ASP.NET Core MVC, Ruby on Rails, Spring MVC) |
+| **MVP** (_Model-View-Presenter_)  | **Presenter**  | Die View ist passiv und leitet alle Eingaben an den Presenter weiter, der das Model ändert und die View über ein Interface aktualisiert. | Windows Forms, Android (früher) |
+| **MVVM** (_Model-View-ViewModel_) | **ViewModel**  | Die View ist über **Datenbindung** an das ViewModel gekoppelt und aktualisiert sich selbst; das ViewModel kennt die View nicht. | WPF, MAUI, Avalonia, Angular |
+
+Das ursprüngliche MVC stammt von Trygve Reenskaug, der es Ende der 1970er-Jahre für Smalltalk am Xerox PARC entwickelte. Ein ausführliches MVVM-Beispiel zeigt die Seite [GUI-Programmierung](/de/software-development/gui-programming/#datenbindung-und-mvvm).
+
+## Hexagonale Architektur und Clean Architecture
+
+In einer klassischen Schichtenarchitektur hängt die Geschäftslogik von der Datenzugriffsschicht ab. Die **hexagonale Architektur** (_Ports and Adapters_, Alistair Cockburn) und die darauf aufbauende **Clean Architecture** (Robert C. Martin) drehen diese Abhängigkeit um:
+
+- Im **Kern** liegen die fachlichen Klassen und Regeln (_Domain_). Sie hängen von nichts außerhalb ab, weder von Datenbank noch Framework noch Oberfläche.
+- Der Kern definiert **Ports**: Interfaces für das, was er von außen braucht (etwa `IOrderRepository`) oder anbietet.
+- **Adapter** außen implementieren diese Ports: ein Datenbankadapter, ein REST-Controller, ein Adapter für Tests.
+- **Abhängigkeitsregel**: Abhängigkeiten zeigen immer nach innen. Das ist das [Dependency Inversion Principle](/de/software-development/clean-code/#dependency-inversion-principle) auf Architekturebene.
+
+So lässt sich die Geschäftslogik ohne Datenbank testen, und Datenbank oder Oberfläche können ausgetauscht werden, ohne den Kern zu ändern.
+
+## Repository
+
+Das **Repository**-Muster (aus _Domain-Driven Design_ von Eric Evans) kapselt den Datenzugriff hinter einer Schnittstelle, die sich wie eine Sammlung von Objekten im Speicher verhält: `Add`, `GetById`, `FindByCustomer`, `Remove`. Die Geschäftslogik weiß nicht, ob die Daten aus einer SQL-Datenbank, einer Datei oder einem Webservice kommen. Für Tests ersetzt man das Repository durch eine Variante im Arbeitsspeicher. Das Gegenstück **Unit of Work** sammelt alle Änderungen eines Vorgangs und speichert sie gemeinsam in einer [Transaktion](/de/databases/transactions/). Der `DbContext` von Entity Framework Core vereint beide Muster.
+
+Für die Übertragung zwischen Schichten oder über das Netzwerk verwendet man oft **DTOs** (_Data Transfer Objects_): einfache Objekte ohne Logik, die genau die Daten enthalten, die übertragen werden sollen, etwa ohne das Passwort-Hash eines Benutzers.
+
+## Dependency Injection
+
+Damit Klassen nur von Abstraktionen abhängen, dürfen sie ihre Abhängigkeiten nicht selbst mit `new` erzeugen. Stattdessen werden sie von außen übergeben, meist über den Konstruktor (**Constructor Injection**). Dieses Prinzip heißt **Dependency Injection** (DI). Die Stelle, an der alle Objekte erzeugt und verbunden werden, heißt **Composition Root**, typischerweise der Programmstart.
+
+In größeren .NET-Anwendungen übernimmt ein **DI-Container** diese Arbeit: Man registriert, welche Implementierung für welches Interface verwendet wird, und der Container erzeugt Objekte samt aller Abhängigkeiten automatisch. Dabei legt man die **Lebensdauer** fest:
+
+| Lebensdauer   | Bedeutung                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| **Singleton** | eine Instanz für die gesamte Laufzeit der Anwendung                                           |
+| **Scoped**    | eine Instanz pro Bereich, in ASP.NET Core pro HTTP-Anfrage (bei Blazor Server pro Verbindung) |
+| **Transient** | bei jeder Anforderung eine neue Instanz                                                       |
+
+Rust hat keinen verbreiteten DI-Container. Abhängigkeiten werden dort ausdrücklich über Konstruktoren oder generische Parameter übergeben, was durch den Compiler vollständig geprüft wird.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+
+// Composition Root: Registrierung
+var services = new ServiceCollection();
+services.AddSingleton<IClock, SystemClock>();
+services.AddScoped<IOrderRepository, InMemoryOrderRepository>();
+services.AddTransient<OrderService>();
+
+using var provider = services.BuildServiceProvider();
+using (var scope = provider.CreateScope())
+{
+    // der Container erzeugt OrderService samt Repository und Uhr
+    var orders = scope.ServiceProvider.GetRequiredService<OrderService>();
+    orders.Place(new Order(1, "Tastatur"));
+    orders.Place(new Order(2, "Maus"));
+    Console.WriteLine(orders.Summary()); // 2 Bestellungen, letzte: Maus
+}
+
+public record Order(int Id, string Item);
+
+public interface IClock { DateTime Now { get; } }
+public class SystemClock : IClock { public DateTime Now => DateTime.Now; }
+
+// Port: Repository-Schnittstelle
+public interface IOrderRepository
+{
+    void Add(Order order);
+    IReadOnlyList<Order> All();
+}
+
+// Adapter: Implementierung im Arbeitsspeicher (in echt etwa mit Entity Framework)
+public class InMemoryOrderRepository : IOrderRepository
+{
+    private readonly List<Order> _orders = [];
+    public void Add(Order order) => _orders.Add(order);
+    public IReadOnlyList<Order> All() => _orders;
+}
+
+// Geschäftslogik: kennt nur Abstraktionen
+public class OrderService(IOrderRepository repository, IClock clock)
+{
+    public void Place(Order order)
+    {
+        if (clock.Now.Year < 2000) throw new InvalidOperationException("Systemuhr falsch gestellt");
+        repository.Add(order);
+    }
+
+    public string Summary() => $"{repository.All().Count} Bestellungen, letzte: {repository.All()[^1].Item}";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Clone, Debug)]
+struct Order {
+    id: u32,
+    item: String,
+}
+
+trait Clock {
+    fn now_secs(&self) -> u64;
+}
+
+struct SystemClock;
+
+impl Clock for SystemClock {
+    fn now_secs(&self) -> u64 {
+        SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
+    }
+}
+
+// Port: Repository-Schnittstelle
+trait OrderRepository {
+    fn add(&mut self, order: Order);
+    fn all(&self) -> &[Order];
+}
+
+// Adapter: Implementierung im Arbeitsspeicher
+#[derive(Default)]
+struct InMemoryOrderRepository {
+    orders: Vec<Order>,
+}
+
+impl OrderRepository for InMemoryOrderRepository {
+    fn add(&mut self, order: Order) { self.orders.push(order); }
+    fn all(&self) -> &[Order] { &self.orders }
+}
+
+// Geschäftslogik: generisch über die Abstraktionen
+struct OrderService<R: OrderRepository, C: Clock> {
+    repository: R,
+    clock: C,
+}
+
+impl<R: OrderRepository, C: Clock> OrderService<R, C> {
+    fn place(&mut self, order: Order) -> Result<(), String> {
+        if self.clock.now_secs() < 946_684_800 {
+            return Err("Systemuhr falsch gestellt".into()); // vor dem Jahr 2000
+        }
+        self.repository.add(order);
+        Ok(())
+    }
+
+    fn summary(&self) -> String {
+        let all = self.repository.all();
+        format!("{} Bestellungen, letzte: {}", all.len(), all.last().map_or("-", |o| &o.item))
+    }
+}
+
+fn main() {
+    // Composition Root: Abhängigkeiten ausdrücklich zusammenstecken
+    let mut orders = OrderService { repository: InMemoryOrderRepository::default(), clock: SystemClock };
+    orders.place(Order { id: 1, item: "Tastatur".into() }).unwrap();
+    orders.place(Order { id: 2, item: "Maus".into() }).unwrap();
+    println!("{}", orders.summary()); // 2 Bestellungen, letzte: Maus
+}
+```
+
+</TabItem>
+</Tabs>
+
+Ein **Service Locator**, bei dem sich Klassen ihre Abhängigkeiten selbst aus einem globalen Container holen (`ServiceLocator.Get<IClock>()`), gilt als **Anti-Pattern**: Die Abhängigkeiten sind dann im Konstruktor nicht mehr sichtbar, und Fehler treten erst zur Laufzeit auf.
+
+## Monolith und Microservices
+
+| Aspekt              | Monolith                                                   | Microservices                                                         |
+| ------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| Aufbau              | eine einzige Anwendung, ein Deployment                     | viele kleine, eigenständige Dienste, jeder mit eigener Datenbank      |
+| Kommunikation       | Methodenaufrufe im selben Prozess                          | Netzwerk (HTTP/REST, gRPC, Nachrichten)                               |
+| Skalierung          | nur als Ganzes                                             | jeder Dienst einzeln                                                  |
+| Deployment          | alles auf einmal                                           | jeder Dienst unabhängig, häufige Auslieferung möglich                 |
+| Technologie         | einheitlich                                                | pro Dienst frei wählbar                                               |
+| Komplexität         | gering am Anfang, wächst mit der Größe                     | hohe Betriebs- und Netzwerkkomplexität von Anfang an                  |
+| Fehlerfälle         | ein Fehler kann alles lahmlegen                            | Teilausfälle, verteilte Fehlersuche, [Konsistenz](/de/databases/cap-theorem/) schwierig |
+| Geeignet für        | kleine bis mittlere Teams und Anwendungen                  | große Organisationen mit vielen unabhängigen Teams                    |
+
+Microservices schneidet man entlang fachlicher Grenzen (_Bounded Contexts_), etwa Bestellung, Zahlung, Versand. Ein häufiger Mittelweg ist der **modulare Monolith**: eine Anwendung mit klar getrennten Modulen, die man später bei Bedarf als eigene Dienste herauslösen kann. Betrieben werden Microservices meist in [Containern](/de/deployment/virtualisation/) mit Orchestrierung durch Kubernetes. Grundlagen verteilter Systeme behandelt das Kapitel [Dezentrale Systeme](/de/decentralised-systems/).
+
+## Ereignisgesteuerte Architektur
+
+In einer **ereignisgesteuerten Architektur** (_Event-Driven Architecture_) kommunizieren Komponenten über **Ereignisse** statt über direkte Aufrufe: Der Bestellservice veröffentlicht „Bestellung aufgegeben“, und Lager, Rechnung und E-Mail-Versand reagieren unabhängig darauf. Ein **Message Broker** wie RabbitMQ, Apache Kafka oder Azure Service Bus vermittelt die Nachrichten (**Publish-Subscribe**). Sender und Empfänger sind zeitlich und räumlich entkoppelt: Der Empfänger muss nicht gerade laufen, wenn das Ereignis entsteht. Dafür ist der Ablauf schwerer nachzuvollziehen, und Daten sind nur **letztendlich konsistent** (_Eventual Consistency_).
+
+Weitere Stile sind **Serverless** (Funktionen, die bei Bedarf von der Cloud ausgeführt werden, siehe [Azure Functions](/de/decentralised-systems/azure-functions/)) und **Pipes and Filters** (Daten fließen durch eine Kette von Verarbeitungsschritten, wie bei Unix-Pipes).
+
+## Architektur dokumentieren
+
+- **arc42**: eine verbreitete, kostenlose Vorlage zur Architekturdokumentation mit zwölf Kapiteln, darunter Ziele, Randbedingungen, Kontext, Bausteinsicht, Laufzeitsicht, Verteilungssicht, Entscheidungen und Risiken.
+- **C4-Modell** (Simon Brown): beschreibt ein System in vier Zoomstufen, nämlich **Context** (das System und seine Umgebung), **Container** (Anwendungen und Datenbanken), **Component** und **Code**.
+- **Architecture Decision Records** (ADR): kurze Dokumente, die jeweils eine wichtige Entscheidung mit Kontext, Alternativen und Begründung festhalten.
+- [UML](/de/software-development/uml/): Komponenten-, Verteilungs- und Sequenzdiagramme.
+
+## Weiterführende Quellen
+
+- [arc42](https://arc42.org/) und [C4-Modell](https://c4model.com/)
+- Martin Fowler: [Microservices](https://martinfowler.com/articles/microservices.html) und _Patterns of Enterprise Application Architecture_, Addison-Wesley 2002
+- [Dependency injection in .NET](https://learn.microsoft.com/de-de/dotnet/core/extensions/dependency-injection) (Microsoft Learn)

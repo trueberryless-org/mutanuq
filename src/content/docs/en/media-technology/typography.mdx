@@ -1,0 +1,212 @@
+---
+title: Typography
+description: Font anatomy, DIN 16518 classification, font formats, units, line height and line length, tracking, alignment, licences and web fonts.
+sidebar:
+  order: 3
+---
+
+**Typography** is designing with type: choosing a typeface, its size and spacing, and arranging text on a page or screen. Good typography is hardly noticed because it makes reading easy. Bad typography tires, confuses or looks unprofessional. Since most of every website, app and printed product consists of text, typography is the most important single discipline of media design.
+
+## Terms
+
+| Term | Meaning |
+| --- | --- |
+| **Glyph** | the concrete shape of a character in a typeface (an "a" looks different in every typeface) |
+| **Typeface** | the design, such as Helvetica or Garamond |
+| **Style** (font style) | a variant of a typeface: weight (light, regular, bold), slope (italic) or width (condensed) |
+| **Type family** | all styles of a typeface |
+| **Font** | the file that technically contains a style, such as `Inter-Bold.woff2` |
+
+A true **italic** has specially drawn shapes, an **oblique** is merely slanted. A bold or slanted style generated artificially by a program (faux bold, faux italic) looks worse than a real style, so you should include all the styles you need.
+
+## Font anatomy
+
+Letters sit on imaginary lines:
+
+- **Baseline**: the letters stand on it.
+- **x-height**: the height of lowercase letters without ascenders and descenders, measured on the "x". A large x-height makes a typeface more legible at small sizes.
+- **Ascender**: the part of b, d, h, k, l that rises above the x-height.
+- **Descender**: the part of g, j, p, q, y below the baseline.
+- **Cap height**: the height of capital letters, usually slightly lower than the ascender.
+- **Body size**: historically, the font size refers to the metal body of the lead type, not to the visible letters. This is why two typefaces at the same size in pt often look different in size.
+
+Further features:
+
+- **Serifs** are small cross strokes at the ends of strokes. They come from Roman inscriptions carved in stone and guide the eye along the line in printed body text.
+- **Counter**: the inner space of a letter, fully closed as in "o" or open as in "c".
+- **Stroke contrast**: the difference between thick **stems** and thin **hairlines**. Didone typefaces such as Bodoni have strong contrast, sans serif typefaces almost none.
+- **Ligature**: two or more characters merged into one glyph, such as "fi" and "fl", so that the shapes do not collide.
+
+## Type classification
+
+### Groups by form
+
+| Group | Features | Examples | Use |
+| --- | --- | --- | --- |
+| **Serif** (roman) | serifs, varying stroke width | Garamond, Times New Roman, Georgia | long printed body text, serious look |
+| **Sans serif** (grotesque) | no serifs, mostly uniform stroke width | Helvetica, Arial, Futura, Frutiger, Inter | screen, signage, modern look |
+| **Slab serif** | strong, rectangular serifs, little stroke contrast | Rockwell, Clarendon, Roboto Slab | headings, posters, technical look |
+| **Script** | imitates handwriting, letters often joined | Brush Script, Pacifico | invitations, logos, short texts only |
+| **Monospace** | all characters equally wide | Courier, Consolas, JetBrains Mono | source code, tables in terminals |
+| **Blackletter** | broken curves | Fraktur, Textura | historic look, beer and newspaper logos |
+| **Display** (decorative) | eye-catching, drawn for large sizes | Cooper Black, Bebas Neue | headings, posters |
+
+### DIN 16518
+
+The German standard **DIN 16518** (1964) divides printing types into **eleven groups** based on their historical development. It is based on Maximilien Vox's classification, which is widespread internationally as the **Vox-ATypI classification**. A draft revision (1998) was withdrawn; the 1964 version is still the basis in school teaching.
+
+| Group | Name | Features | Examples |
+| --- | --- | --- | --- |
+| I | Venetian Renaissance roman | slanted axis, slanted crossbar of the "e", low contrast | Centaur, Jenson |
+| II | French Renaissance roman (Garalde) | horizontal crossbar of the "e", somewhat more contrast | Garamond, Palatino |
+| III | Baroque roman (Transitional) | almost vertical axis, stronger contrast | Times, Baskerville |
+| IV | Classicist roman (Didone) | vertical axis, very strong contrast, thin horizontal serifs | Bodoni, Didot, Walbaum |
+| V | Slab serif | emphasised, often rectangular serifs | Rockwell, Clarendon, Courier |
+| VI | Sans serif | no serifs, almost uniform stroke width | Helvetica, Futura, Gill Sans |
+| VII | Roman variants | fit no other group, often decorative | Optima, Peignot |
+| VIII | Scripts | derived from written forms, joined | English roundhand |
+| IX | Handwritten roman | roman with a handwritten feel | Post-Antiqua |
+| X | Blackletter | broken curves; subgroups Textura, Rotunda, Schwabacher, Fraktur | Fraktur, Schwabacher |
+| XI | Non-Latin scripts | non-Latin writing systems | Greek, Cyrillic, Arabic |
+
+In practice, the simpler classification by form in the table above is usually sufficient. Groups I to IV help to place serif typefaces stylistically and to combine them well.
+
+## Units
+
+| Unit | Definition | Use |
+| --- | --- | --- |
+| **DTP point** (pt) | $1\ \text{pt} = \frac{1}{72}\ \text{inch} \approx 0.353\ \text{mm}$ | font size in print and office programs |
+| Didot point | $\approx 0.376\ \text{mm}$ | historical hot-metal typesetting in continental Europe |
+| **Pica** | 12 pt | column widths in the English-speaking world |
+| **px** (CSS pixel) | $1\ \text{px} = \frac{1}{96}\ \text{inch} = 0.75\ \text{pt}$ | screen; corresponds to several device pixels on high-resolution displays |
+| **em** | the font size of the current element | relative spacing that scales along |
+| **rem** | the font size of the root element (`html`), 16 px by default in browsers | font sizes on the web |
+| **ch** | width of the digit "0" | line lengths, such as `max-width: 65ch` |
+
+The browsers' default font size, 16 px, corresponds to 12 pt. On the web, font sizes are preferably given in **rem**: if a user changes the base font in the browser settings, the whole page scales along. This is an accessibility requirement (WCAG 1.4.4, text resizable to 200 %).
+
+In typography, the **em** is the width of a square whose side equals the font size. The dashes are named after it: the **en dash** (Unicode U+2013) is the dash for ranges such as times or page numbers and the sentence dash in German, the **em dash** (U+2014) is the sentence dash in English. The short **hyphen** (U+002D) joins words.
+
+## Line height and line length
+
+**Leading** (line spacing, CSS `line-height`) is the distance from baseline to baseline. The term comes from the strips of lead placed between lines in hot-metal typesetting. The space added on top of the body size is also called leading or line gap.
+
+- For body text in print, 120 % to 145 % of the font size is usual, on screen about **1.4 to 1.6**.
+- Long lines need more leading so that the eye finds the start of the next line.
+- Large headings need less, often 1.1 to 1.2, otherwise they fall apart visually.
+- The space between paragraphs should be clearly larger than the line spacing so that paragraphs are recognisable as units.
+
+**Line length** (measure) strongly determines how pleasant a text is to read. **45 to 75 characters** per line including spaces are considered good, ideally around 66 (Robert Bringhurst). Lines that are too long are tiring because the eye struggles to find the next line. Lines that are too short break the text into many hyphenations and jumps.
+
+## Tracking and kerning
+
+- **Tracking** (CSS `letter-spacing`) changes the spacing between **all** characters of a text evenly. Text in capitals only and very small text are spaced out slightly, large headings set slightly tighter.
+- **Kerning** corrects the spacing between **specific pairs of characters** whose shapes create uneven gaps, such as "AV", "To", "Te" or "W.". Good fonts contain kerning tables. For large headings and logos, spacing is additionally adjusted optically by hand.
+
+Letter-spacing body text for emphasis is considered outdated today. For emphasis, use italic or semibold.
+
+## Alignment
+
+| Alignment | Description | Use |
+| --- | --- | --- |
+| **left-aligned, ragged right** | lines start flush left, uneven on the right | default on the web and for most texts; even word spacing |
+| **justified** | both edges flush, word spaces are stretched | books, newspapers; needs hyphenation, otherwise holes and "rivers" appear |
+| **centred** | lines arranged around the centre | short texts: invitations, titles, certificates |
+| **right-aligned, ragged left** | flush right | short elements such as captions or numbers in tables |
+
+Justified text is rarely used on the web because browsers do not hyphenate as well as typesetting programs. `hyphens: auto` with the correct `lang` attribute improves this.
+
+Typesetting errors to avoid:
+
+- **Orphan**: the first line of a paragraph stands alone at the bottom of a page or column.
+- **Widow**: the last line of a paragraph stands alone at the top of the next page or column. In German they are called _Schusterjunge_ and _Hurenkind_.
+- Wrong quotation marks: in English “so” or ‘so’, not "so" (inch marks); in German „so“ or »so«.
+- The apostrophe is ’ (U+2019), not the foot mark.
+
+## Hierarchy
+
+Readers skim texts before they read them. A clear **typographic hierarchy** shows immediately what is important and what belongs together. The means are:
+
+- **Size**: headings clearly larger than body text. A **modular scale** is often used: each step is larger by a fixed factor, such as 1.25 (16, 20, 25, 31.25 px).
+- **Weight**: bold for headings, regular for text.
+- **Colour and lightness**: secondary text slightly lighter, but with sufficient contrast.
+- **Spacing**: more space above a heading than below it, so that it belongs to its text (law of proximity, see [Layout and Design](/en/media-technology/layout-and-design/#gestalt-laws)).
+- **Typeface**: combine at most two type families, such as a sans serif for headings and a serif for text. Contrast comes from clear differences; two very similar typefaces look like a mistake.
+
+## Readability
+
+Two terms are distinguished:
+
+- **Legibility**: how well can individual characters be recognised and distinguished? Critical cases are capital I, lowercase l and the digit 1, or O and 0. Important for signage, passwords and code.
+- **Readability**: how easily and without fatigue can a whole text be read? It depends on typeface, size, line spacing, line length, contrast and alignment.
+
+Rules of thumb for readable body text:
+
+- screen: at least 16 px, print: 9 to 12 pt
+- typeface with a large x-height and open counters
+- dark text on a light background with sufficient [contrast](/en/media-technology/colour/#contrast-and-accessibility); a very dark grey instead of pure black dazzles less in long texts
+- no long text in capitals, italics or script
+- left-aligned, 45 to 75 characters per line
+
+## Font formats
+
+| Format | Origin | Properties |
+| --- | --- | --- |
+| **TrueType** (.ttf) | Apple, 1991 | quadratic Bézier curves, elaborate **hinting** for rendering at small sizes |
+| **OpenType** (.otf, .ttf) | Microsoft and Adobe, 1996 | outlines as TrueType or as CFF (cubic curves); up to 65,536 glyphs; **OpenType features** such as ligatures, small caps, old-style figures; cross-platform |
+| **Variable fonts** | OpenType 1.8, 2016 | one file with continuous axes, such as weight (`wght`), width (`wdth`), optical size (`opsz`) |
+| **WOFF** | W3C, 2012 | OpenType/TrueType compressed for the web |
+| **WOFF2** | W3C, 2018 | Brotli compression, about 30 % smaller than WOFF; today's usual web font format |
+
+Older formats such as PostScript Type 1 are no longer supported by current programs; EOT was only intended for old versions of Internet Explorer.
+
+## Font licences
+
+A font file is software. When you buy a typeface, you acquire a **licence** (_EULA_) that specifies exactly what it may be used for:
+
+| Licence type | permits |
+| --- | --- |
+| **Desktop licence** | installation on a certain number of computers, design of printed matter and images |
+| **Web licence** | embedding via `@font-face` on websites, often limited by page views |
+| **App licence** | embedding in mobile apps or software |
+| **E-book licence** | embedding in e-books |
+
+Free typefaces are usually published under the **SIL Open Font License** (OFL): they may be used, embedded, modified and redistributed free of charge, including commercially. Only selling the font by itself is forbidden, and modified versions must not carry the reserved name. Almost all typefaces on Google Fonts are under the OFL.
+
+Fonts that come with the operating system or Office may not automatically be served from a web server.
+
+## Web fonts
+
+Custom typefaces are included with the CSS rule `@font-face`:
+
+```css
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-var.woff2") format("woff2");
+  font-weight: 100 900; /* variable font with a weight axis */
+  font-display: swap;   /* show fallback font immediately, then swap */
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif; /* fallbacks */
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+article {
+  max-width: 65ch; /* comfortable line length */
+}
+```
+
+- **Self-host instead of using external services**: if a font is loaded directly from the Google Fonts servers, the browser transmits the visitor's IP address to Google. The Regional Court of Munich I (judgment of 20 January 2022, 3 O 17493/20) considered this a breach of the GDPR. In 2022 a wave of warning letters followed in Austria as well. Since then, fonts are loaded from your own server.
+- **Load time**: include only the styles and character sets you need (**subsetting**, for example Latin only), use WOFF2, preload important fonts with `<link rel="preload">`.
+- **FOUT and FOIT**: until the font has loaded, the browser shows either the fallback font (_flash of unstyled text_) or no text at all (_flash of invisible text_). `font-display: swap` chooses FOUT so that content is readable immediately.
+- **System font stack** (`system-ui`): uses the device's system font and needs no download.
+
+More on CSS properties for type is in the chapter [CSS](/en/web-technologies/css/#typography).
+
+## Further reading
+
+- Robert Bringhurst: _The Elements of Typographic Style_. 4th edition, Seattle: Hartley & Marks, 2012
+- Hans Peter Willberg, Friedrich Forssman: _Lesetypografie_. Mainz: Hermann Schmidt, 2010
+- [MDN: Web fonts](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Text_styling/Web_fonts)

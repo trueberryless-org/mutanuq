@@ -1,0 +1,157 @@
+---
+title: Elektrische Sicherheit
+description: Wirkungen des Stroms auf den Menschen, Schutzmaßnahmen (Schutzleiter, Fehlerstrom-Schutzschalter, Schutzisolierung, SELV/PELV), fünf Sicherheitsregeln, OVE E 8101, ESD und Erste Hilfe.
+sidebar:
+  order: 16
+---
+
+Elektrischer Strom ist unsichtbar, geruchlos und bereits bei der Netzspannung von $230\,\mathrm{V}$ lebensgefährlich. In der Werkstätte und im Labor arbeitest du mit Netzgeräten, Messgeräten und offenen Schaltungen. Die Regeln auf dieser Seite schützen dich und andere. Arbeiten an elektrischen Anlagen dürfen in Österreich nur befugte **Elektrofachkräfte** durchführen, als Laie und Schüler darfst du Geräte nur bestimmungsgemäß verwenden und an Schutzkleinspannung arbeiten, sofern die Lehrkraft nichts anderes anordnet.
+
+## Wirkungen des Stroms auf den Menschen
+
+Für die Gefahr entscheidend ist nicht die Spannung, sondern der **Strom durch den Körper**, seine **Einwirkdauer**, der **Stromweg** (über das Herz besonders gefährlich, etwa Hand zu Hand oder Hand zu Fuß) und die Frequenz. Wechselstrom mit $50\,\mathrm{Hz}$ ist gefährlicher als Gleichstrom gleicher Stärke, weil er die Muskeln im Takt der Frequenz verkrampft und den Herzrhythmus stört.
+
+Den Strom bestimmt das ohmsche Gesetz: Der **Körperwiderstand** liegt je nach Hautzustand, Kontaktfläche und Spannung bei etwa $1\,\mathrm{k\Omega}$ (feuchte Haut, hohe Spannung) bis zu einigen $\mathrm{k\Omega}$. Bei $230\,\mathrm{V}$ und $1\,\mathrm{k\Omega}$ fließen $230\,\mathrm{mA}$.
+
+| Stromstärke (50 Hz, Richtwerte) | Wirkung                                                                     |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| ab etwa $0{,}5\,\mathrm{mA}$    | **Wahrnehmbarkeitsschwelle**: leichtes Kribbeln                             |
+| etwa $5$ bis $10\,\mathrm{mA}$  | **Loslassschwelle**: Muskelverkrampfung, darüber kann man einen umfassten Leiter nicht mehr loslassen |
+| etwa $10$ bis $30\,\mathrm{mA}$ | starke Krämpfe, Atembeschwerden, Blutdruckanstieg, meist noch ohne bleibende Schäden bei kurzer Dauer |
+| ab etwa $30$ bis $50\,\mathrm{mA}$ bei längerer Einwirkung | **Herzkammerflimmern** möglich: Das Herz pumpt nicht mehr, Lebensgefahr |
+| mehrere Ampere                  | Herzstillstand, schwere Verbrennungen innen und außen                        |
+
+Die Grenzen hängen von der Einwirkdauer ab und sind in IEC 60479-1 als Zeit-Strom-Bereiche (AC-1 bis AC-4) festgelegt. Je kürzer der Strom fließt, desto mehr verträgt der Körper. Darauf beruht die schnelle Abschaltung von Fehlerstrom-Schutzschaltern.
+
+Weitere Gefahren sind **Verbrennungen** durch Lichtbögen und Stromwärme, **Folgeunfälle** (Sturz von der Leiter nach einem Schreck), Augenschäden durch Lichtbögen und Spätfolgen wie Herzrhythmusstörungen Stunden nach dem Unfall.
+
+Als dauernd zulässige **Berührungsspannung** gelten allgemein $50\,\mathrm{V}$ Wechselspannung und $120\,\mathrm{V}$ (oberschwingungsfreie) Gleichspannung, in besonderen Bereichen wie Feuchträumen oder bei Nutztierhaltung weniger.
+
+## Normen und Netzsysteme
+
+In Österreich regelt das **Elektrotechnikgesetz 1992** (ETG) die elektrische Sicherheit. Die **Elektrotechnikverordnung** erklärt Normen für verbindlich. Die zentrale Norm für die Errichtung von Niederspannungsanlagen ist die **OVE E 8101** (früher ÖVE/ÖNORM E 8101, davor ÖVE/ÖNORM E 8001), die inhaltlich der europäischen Reihe HD 60364 entspricht. Die aktuelle Ausgabe 2025 hat die Ausgabe 2019 abgelöst. Für den Betrieb und das Arbeiten an Anlagen gilt die **ÖVE/ÖNORM EN 50110-1**.
+
+Das öffentliche Netz in Österreich ist überwiegend als **TN-System** ausgeführt (historisch „Nullung“): Der Sternpunkt des Transformators ist geerdet, und die Körper der Geräte sind über den Schutzleiter mit diesem Punkt verbunden. In manchen Gebieten gibt es das **TT-System**, bei dem die Geräte über einen eigenen Anlagenerder geerdet sind.
+
+| Leiter         | Kennzeichnung | Farbe                 |
+| -------------- | ------------- | --------------------- |
+| Außenleiter    | L1, L2, L3    | braun, schwarz, grau  |
+| Neutralleiter  | N             | blau                  |
+| Schutzleiter   | PE            | grün-gelb             |
+
+## Schutzmaßnahmen
+
+Die Normen verlangen einen Schutz in mehreren Stufen, damit ein einzelner Fehler nicht zur Gefahr wird:
+
+| Stufe           | Zweck                                                     | Maßnahmen                                                        |
+| --------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Basisschutz** (Schutz gegen direktes Berühren) | aktive Teile im Normalbetrieb unerreichbar machen | Isolierung, Abdeckungen, Gehäuse, Abstand, Hindernisse |
+| **Fehlerschutz** (Schutz bei indirektem Berühren) | Schutz, wenn im Fehlerfall ein Gehäuse unter Spannung gerät | automatische Abschaltung mit Schutzleiter, Schutzisolierung, Schutztrennung |
+| **Zusatzschutz** | Schutz, wenn die anderen Maßnahmen versagen oder unachtsam gehandelt wird | Fehlerstrom-Schutzschalter mit $I_{\Delta\mathrm{n}} \le 30\,\mathrm{mA}$, Schutzpotenzialausgleich |
+
+### Schutzleiter und automatische Abschaltung
+
+Geräte mit Metallgehäuse sind über den **Schutzleiter** (PE) geerdet. Berührt ein Außenleiter durch einen Isolationsfehler das Gehäuse (**Körperschluss**), fließt ein großer Fehlerstrom über den Schutzleiter. Die **Überstrom-Schutzeinrichtung** (Leitungsschutzschalter oder Sicherung) schaltet innerhalb der vorgeschriebenen Zeit ab, für Endstromkreise bis $32\,\mathrm{A}$ im TN-System innerhalb von $0{,}4\,\mathrm{s}$. Bis dahin hält der niederohmige Schutzleiter die Berührungsspannung klein.
+
+Leitungsschutzschalter (etwa B16 oder C16) schützen in erster Linie die **Leitung** vor Überlastung und Kurzschluss. Den Menschen schützen sie nur im Zusammenspiel mit dem Schutzleiter. Ihr Nennstrom richtet sich nach Querschnitt und Verlegeart der Leitung.
+
+### Fehlerstrom-Schutzschalter
+
+Der **Fehlerstrom-Schutzschalter** (FI-Schutzschalter, RCD, _residual current device_) vergleicht über einen **Summenstromwandler** den hinfließenden mit dem zurückfließenden Strom. Im fehlerfreien Betrieb sind beide gleich, die Magnetfelder heben sich auf. Fließt ein Teil des Stroms auf einem anderen Weg zur Erde, etwa über einen Menschen, entsteht eine Differenz. Überschreitet sie den **Bemessungsfehlerstrom** $I_{\Delta\mathrm{n}}$, schaltet der FI alle aktiven Leiter ab.
+
+- FI-Schutzschalter mit $I_{\Delta\mathrm{n}} = 30\,\mathrm{mA}$ dienen dem **Personenschutz** (Zusatzschutz), etwa für Steckdosenstromkreise. Sie schalten bei $I_{\Delta\mathrm{n}}$ innerhalb von $300\,\mathrm{ms}$ ab, bei höheren Fehlerströmen deutlich schneller.
+- Der FI schützt nicht bei Berührung zwischen Außenleiter und Neutralleiter, weil dann kein Differenzstrom entsteht. Er ersetzt also nicht den Basisschutz.
+- Die **Prüftaste** sollte regelmäßig (etwa halbjährlich) betätigt werden, damit die Mechanik nicht festsitzt.
+
+| Typ | erfasst                                                                 |
+| --- | ----------------------------------------------------------------------- |
+| AC  | nur sinusförmige Wechselfehlerströme                                     |
+| A   | zusätzlich pulsierende Gleichfehlerströme (etwa hinter Gleichrichtern)  |
+| F   | zusätzlich Mischfrequenzen, für Geräte mit Frequenzumrichter             |
+| B   | zusätzlich glatte Gleichfehlerströme, etwa für Ladestationen, Photovoltaik und Umrichter |
+
+Typ AC ist nach OVE E 8101:2025 für neue Anlagen sowie für Änderungen und Erweiterungen nicht mehr zulässig, weil viele moderne Geräte Gleichfehlerströme erzeugen können.
+
+### Schutzklassen
+
+| Schutzklasse | Symbol (beschrieben)          | Schutzprinzip                                                        | Beispiel                    |
+| ------------ | ----------------------------- | -------------------------------------------------------------------- | --------------------------- |
+| I            | Erdungszeichen                | Metallgehäuse mit Schutzleiter, Schutzkontaktstecker                 | PC-Netzteil, Waschmaschine  |
+| II           | zwei ineinanderliegende Quadrate | **Schutzisolierung**: doppelte oder verstärkte Isolierung, kein Schutzleiter | Ladegerät, Föhn, Bohrmaschine |
+| III          | römische III in einer Raute   | Betrieb mit **Schutzkleinspannung**                                  | Akku-Werkzeug, Spielzeug    |
+
+### Schutzkleinspannung
+
+Bei **Kleinspannung** bis $50\,\mathrm{V}$ Wechselspannung oder $120\,\mathrm{V}$ Gleichspannung besteht bei Berührung normalerweise keine Lebensgefahr. Sie muss aus einer sicheren Quelle stammen (Sicherheitstransformator, Akku) und von höheren Spannungen sicher getrennt sein.
+
+| System | Erdung                          | Einsatz                                                   |
+| ------ | ------------------------------- | --------------------------------------------------------- |
+| **SELV** (_safety extra-low voltage_) | nicht geerdet, weder aktive Teile noch Gehäuse | Spielzeug, Laborübungen, Steckernetzteile |
+| **PELV** (_protective extra-low voltage_) | aktive Teile oder Gehäuse dürfen geerdet sein | Steuerungen, Computer mit geerdetem Gehäuse |
+
+Laborübungen an der HTL finden deshalb mit Labornetzgeräten im Kleinspannungsbereich statt.
+
+### Schutztrennung
+
+Bei der **Schutztrennung** versorgt ein Trenntransformator genau ein Gerät. Der Sekundärkreis hat keine Verbindung zur Erde. Berührt man einen Leiter, findet der Strom keinen geschlossenen Weg über die Erde zurück zur Quelle. Anwendung: Rasiersteckdosen im Bad, Arbeiten in engen leitfähigen Räumen, Reparatur von Geräten.
+
+### Schutzarten (IP-Code)
+
+Die **Schutzart** nach EN 60529 gibt mit zwei Ziffern an, wie gut ein Gehäuse gegen Fremdkörper und Berührung (erste Ziffer, 0 bis 6) und gegen Wasser (zweite Ziffer, 0 bis 9) geschützt ist. **IP20** bedeutet fingersicher, aber ohne Wasserschutz (Geräte in Innenräumen), **IP44** spritzwassergeschützt (Außensteckdose), **IP67** staubdicht und zeitweiliges Untertauchen (Smartphone).
+
+## Die fünf Sicherheitsregeln
+
+Bevor an einer elektrischen Anlage gearbeitet wird, muss sie in einen sicheren Zustand gebracht werden. Die **fünf Sicherheitsregeln** nach ÖVE/ÖNORM EN 50110-1 werden in dieser Reihenfolge angewendet:
+
+1. **Freischalten**: alle Leiter allpolig vom Netz trennen (Leitungsschutzschalter aus, Sicherung heraus, Stecker ziehen).
+2. **Gegen Wiedereinschalten sichern**: Schalter versperren, Sicherungen mitnehmen, Warnschild „Nicht schalten, es wird gearbeitet“ anbringen.
+3. **Spannungsfreiheit allpolig feststellen**: mit einem geeigneten zweipoligen Spannungsprüfer an der Arbeitsstelle, den Prüfer vorher und nachher an einer bekannten Spannung testen.
+4. **Erden und kurzschließen**: zuerst erden, dann mit den aktiven Leitern verbinden. In Niederspannungsanlagen kann darauf verzichtet werden, wenn keine Gefahr einer Rückspeisung oder Fremdspannung besteht.
+5. **Benachbarte, unter Spannung stehende Teile abdecken oder abschranken.**
+
+Nach Abschluss der Arbeit werden die Maßnahmen in umgekehrter Reihenfolge aufgehoben, erst wenn alle Personen gewarnt sind und die Arbeitsstelle geräumt ist.
+
+:::caution
+Auch nach dem Abschalten können Kondensatoren in Netzteilen, Monitoren und USV-Anlagen gefährliche Spannungen speichern. Geöffnete Netzteile fasst man nicht an, und das Öffnen von Netzgeräten ist Fachkräften vorbehalten.
+:::
+
+## Sicheres Arbeiten im Labor
+
+- Vor dem Einschalten die Schaltung prüfen (lassen), Netzspannung nur über die vorgesehenen Labornetzgeräte und Steckdosen mit FI-Schutz verwenden.
+- Bei Änderungen an der Schaltung die Versorgung immer ausschalten.
+- Sichtprüfung von Messleitungen und Geräten: Beschädigte Isolierung, offene Gehäuse oder fehlende Abdeckungen sind ein Grund, das Gerät nicht zu verwenden.
+- Den **Not-Aus**-Schalter des Labors kennen.
+- Messgeräte nur innerhalb ihrer [Messkategorie](/de/electrical-engineering/measurement/#messkategorien) verwenden.
+- Ortsveränderliche Geräte werden regelmäßig geprüft (Sichtprüfung, Schutzleiterwiderstand, Isolationswiderstand, Ableitstrom).
+
+## ESD
+
+**Elektrostatische Entladung** (ESD, _electrostatic discharge_) entsteht, wenn sich ein Körper durch Reibung auflädt (Gehen auf Teppich, Abziehen von Folie) und die Ladung beim Berühren eines anderen Gegenstands schlagartig abfließt. Dabei entstehen Spannungen von einigen bis über zehn Kilovolt. Spüren kann man eine Entladung erst ab etwa $3\,\mathrm{kV}$.
+
+Für den Menschen sind solche Entladungen harmlos, weil die Ladungsmenge winzig ist. Für elektronische Bauteile, besonders für MOSFETs mit ihrer dünnen Gateoxidschicht, reichen aber schon deutlich geringere Spannungen. Der Schaden ist nicht immer sofort sichtbar: Ein vorgeschädigtes Bauteil kann Wochen später ausfallen.
+
+Schutzmaßnahmen in einem **ESD-Schutzbereich** (EPA, _electrostatic protected area_, nach IEC 61340-5-1):
+
+- **Erdungsarmband** mit eingebautem Schutzwiderstand (etwa $1\,\mathrm{M\Omega}$), damit Ladungen langsam abfließen und man im Fehlerfall nicht direkt geerdet ist,
+- leitfähige oder ableitfähige Arbeitsunterlage, Bodenbeläge und Schuhe,
+- Bauteile und Baugruppen in **ESD-Schutzbeuteln** (metallisiert) lagern und transportieren,
+- vor dem Berühren einer Baugruppe Potenzial ausgleichen, etwa durch Berühren eines geerdeten Gehäuses,
+- ausreichende Luftfeuchtigkeit, weil trockene Luft Aufladung begünstigt.
+
+Beim Einbau von Arbeitsspeicher, Prozessoren und Erweiterungskarten in einen PC gelten dieselben Regeln.
+
+## Erste Hilfe bei Stromunfällen
+
+1. **Eigenschutz geht vor**: Die verunfallte Person nicht berühren, solange sie noch mit dem Strom in Kontakt ist.
+2. **Stromkreis unterbrechen**: Not-Aus betätigen, Stecker ziehen, Leitungsschutzschalter ausschalten. Ist das in Niederspannungsanlagen nicht möglich, die Person mit einem isolierenden, trockenen Gegenstand (Holzlatte) vom Leiter trennen und dabei auf isolierendem Untergrund stehen. Bei **Hochspannung** mindestens $5\,\mathrm{m}$ Abstand halten (je nach Spannung mehr) und auf die Abschaltung durch den Netzbetreiber warten.
+3. **Notruf** absetzen: Rettung **144** oder Euro-Notruf **112**.
+4. **Bewusstsein und Atmung prüfen**: Bei Atmung stabile Seitenlage. Ohne normale Atmung sofort mit der **Herzdruckmassage** beginnen (30 Mal drücken, 2 Mal beatmen) und einen **Defibrillator** (AED) holen lassen und einsetzen.
+5. **Verbrennungen** an Ein- und Austrittsstellen steril abdecken.
+
+Jeder Stromunfall mit Netzspannung muss **ärztlich untersucht** werden, auch wenn sich die Person gut fühlt. Herzrhythmusstörungen können noch Stunden später auftreten.
+
+## Weiterführende Quellen
+
+- [OVE: Normen für die Errichtung elektrischer Anlagen (OVE E 8101)](https://www.ove.at/)
+- [AUVA: Merkblätter zur Elektrosicherheit](https://www.auva.at/)
+- [Österreichisches Rotes Kreuz: Erste Hilfe](https://www.roteskreuz.at/)

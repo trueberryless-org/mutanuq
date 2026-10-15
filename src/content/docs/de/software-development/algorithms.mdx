@@ -1,0 +1,495 @@
+---
+title: Algorithmen
+description: Eigenschaften und Darstellung von Algorithmen, Laufzeitkomplexität mit der O-Notation sowie Such- und Sortierverfahren in C# und Rust.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **Algorithmus** ist eine eindeutige, endliche Handlungsvorschrift zur Lösung eines Problems. Kochrezepte, Bauanleitungen und schriftliches Dividieren sind Algorithmen im Alltag. In der Informatik beschreibt ein Algorithmus, wie aus Eingabedaten die gewünschten Ausgabedaten berechnet werden. Der Begriff geht auf den persischen Mathematiker al-Chwarizmi (9. Jahrhundert) zurück.
+
+## Eigenschaften
+
+| Eigenschaft            | Bedeutung                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| **Finitheit**          | Die Beschreibung hat eine endliche Länge.                                                   |
+| **Eindeutigkeit**      | Jeder Schritt ist klar festgelegt und lässt keinen Interpretationsspielraum.                |
+| **Ausführbarkeit**     | Jeder Schritt kann tatsächlich ausgeführt werden.                                           |
+| **Terminierung**       | Der Algorithmus endet nach endlich vielen Schritten.                                        |
+| **Determiniertheit**   | Bei gleicher Eingabe liefert er immer dasselbe Ergebnis.                                    |
+| **Determinismus**      | Bei gleicher Eingabe durchläuft er immer dieselben Schritte (nicht jeder Algorithmus ist deterministisch, etwa zufallsbasierte Verfahren). |
+
+## Darstellung
+
+Bevor man programmiert, beschreibt man einen Algorithmus oft unabhängig von einer Programmiersprache:
+
+- **Pseudocode**: an Programmiersprachen angelehnter, aber frei formulierter Text.
+- **Programmablaufplan** (Flussdiagramm, DIN 66001): Rechtecke für Anweisungen, Rauten für Verzweigungen, Pfeile für den Ablauf.
+- **Struktogramm** (Nassi-Shneiderman-Diagramm, DIN 66261): verschachtelte Blöcke für Sequenz, Verzweigung und Schleife. Es erzwingt strukturierte Programmierung, weil es keine Sprünge kennt.
+- **Aktivitätsdiagramm** der [UML](/de/software-development/uml/#aktivitätsdiagramm).
+
+```txt
+Algorithmus Maximum(Liste)
+    max ← erstes Element der Liste
+    für jedes Element e der Liste
+        wenn e > max dann
+            max ← e
+    gib max zurück
+```
+
+## Laufzeitkomplexität
+
+Wie schnell ein Algorithmus ist, hängt von der Hardware ab. Um Algorithmen trotzdem vergleichen zu können, zählt man, wie die Anzahl der Rechenschritte mit der **Größe der Eingabe** $n$ wächst. Konstante Faktoren und kleinere Terme werden dabei weggelassen, weil sie für große $n$ keine Rolle spielen. Das Ergebnis schreibt man in der **O-Notation** (_Big-O_): $O(f(n))$ ist eine obere Schranke für das Wachstum.
+
+Benötigt ein Algorithmus zum Beispiel $3n^2 + 5n + 7$ Schritte, so liegt er in $O(n^2)$.
+
+| Klasse          | Bezeichnung        | Beispiel                                          | $n = 1000$ ergibt etwa |
+| --------------- | ------------------ | ------------------------------------------------- | ---------------------- |
+| $O(1)$          | konstant           | Zugriff auf ein Array-Element per Index           | 1                      |
+| $O(\log n)$     | logarithmisch      | binäre Suche                                      | 10                     |
+| $O(n)$          | linear             | lineare Suche, Maximum finden                     | 1 000                  |
+| $O(n \log n)$   | linear-logarithmisch | Mergesort, Heapsort, Quicksort im Mittel        | 10 000                 |
+| $O(n^2)$        | quadratisch        | Bubblesort, zwei verschachtelte Schleifen         | 1 000 000              |
+| $O(n^3)$        | kubisch            | naive Matrixmultiplikation                        | $10^9$                 |
+| $O(2^n)$        | exponentiell       | alle Teilmengen aufzählen                         | $10^{301}$             |
+| $O(n!)$         | faktoriell         | alle Reihenfolgen ausprobieren (Rundreiseproblem) | $10^{2567}$            |
+
+Man unterscheidet den **besten Fall** (_best case_), den **durchschnittlichen Fall** (_average case_) und den **schlechtesten Fall** (_worst case_). Meist interessiert der schlechteste Fall, weil er eine Garantie gibt. Analog zur Laufzeit beschreibt die **Speicherkomplexität**, wie viel zusätzlicher Speicher benötigt wird.
+
+Faustregeln zum Ablesen:
+
+- Eine Schleife über alle $n$ Elemente: $O(n)$.
+- Zwei verschachtelte Schleifen über $n$ Elemente: $O(n^2)$.
+- Halbiert sich das Problem in jedem Schritt: $O(\log n)$.
+- Aufeinanderfolgende Teile werden addiert, und es zählt nur der größte: $O(n) + O(n^2) = O(n^2)$.
+
+## Suchen
+
+### Lineare Suche
+
+Die **lineare Suche** prüft ein Element nach dem anderen, bis das gesuchte gefunden ist. Sie funktioniert mit unsortierten Daten und braucht im schlechtesten Fall $n$ Vergleiche: $O(n)$.
+
+### Binäre Suche
+
+Ist die Liste **sortiert**, geht es viel schneller: Die **binäre Suche** vergleicht mit dem mittleren Element. Ist der gesuchte Wert kleiner, sucht sie in der linken Hälfte weiter, sonst in der rechten. Weil sich der Suchbereich jedes Mal halbiert, braucht sie höchstens $\lceil \log_2 (n+1) \rceil$ Vergleiche: Bei einer Million Elementen sind das 20.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] data = [3, 8, 15, 23, 42, 57, 91];
+Console.WriteLine(LinearSearch(data, 42));   // 4
+Console.WriteLine(BinarySearch(data, 42));   // 4
+Console.WriteLine(BinarySearch(data, 5));    // -1
+
+static int LinearSearch(int[] items, int target)
+{
+    for (int i = 0; i < items.Length; i++)
+    {
+        if (items[i] == target) return i;
+    }
+    return -1;
+}
+
+static int BinarySearch(int[] sorted, int target)
+{
+    int low = 0, high = sorted.Length - 1;
+    while (low <= high)
+    {
+        int mid = low + (high - low) / 2;    // vermeidet Überlauf bei low + high
+        if (sorted[mid] == target) return mid;
+        if (sorted[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}
+// In der Praxis: Array.BinarySearch(data, 42) oder List<T>.BinarySearch
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn linear_search(items: &[i32], target: i32) -> Option<usize> {
+    for (i, &item) in items.iter().enumerate() {
+        if item == target {
+            return Some(i);
+        }
+    }
+    None
+}
+
+fn binary_search(sorted: &[i32], target: i32) -> Option<usize> {
+    let (mut low, mut high) = (0, sorted.len()); // halboffenes Intervall [low, high)
+    while low < high {
+        let mid = low + (high - low) / 2;
+        if sorted[mid] == target {
+            return Some(mid);
+        } else if sorted[mid] < target {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+    None
+}
+
+fn main() {
+    let data = [3, 8, 15, 23, 42, 57, 91];
+    println!("{:?}", linear_search(&data, 42)); // Some(4)
+    println!("{:?}", binary_search(&data, 42)); // Some(4)
+    println!("{:?}", binary_search(&data, 5));  // None
+    // In der Praxis: data.binary_search(&42) liefert Ok(4)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Sortieren
+
+Sortieren ist eine der häufigsten Aufgaben überhaupt, und an Sortierverfahren lassen sich die wichtigsten Ideen der Algorithmik gut zeigen. Zwei Eigenschaften unterscheiden die Verfahren neben der Laufzeit:
+
+- **Stabil**: Elemente mit gleichem Sortierschlüssel behalten ihre ursprüngliche Reihenfolge. Das ist wichtig, wenn man nacheinander nach mehreren Kriterien sortiert.
+- **In-place**: Das Verfahren braucht nur konstant viel zusätzlichen Speicher.
+
+| Verfahren          | Bester Fall     | Durchschnitt    | Schlechtester Fall | Zusatzspeicher | Stabil |
+| ------------------ | --------------- | --------------- | ------------------ | -------------- | ------ |
+| Bubblesort         | $O(n)$          | $O(n^2)$        | $O(n^2)$           | $O(1)$         | ja     |
+| Selectionsort      | $O(n^2)$        | $O(n^2)$        | $O(n^2)$           | $O(1)$         | nein   |
+| Insertionsort      | $O(n)$          | $O(n^2)$        | $O(n^2)$           | $O(1)$         | ja     |
+| Mergesort          | $O(n \log n)$   | $O(n \log n)$   | $O(n \log n)$      | $O(n)$         | ja     |
+| Quicksort          | $O(n \log n)$   | $O(n \log n)$   | $O(n^2)$           | $O(\log n)$    | nein   |
+| Heapsort           | $O(n \log n)$   | $O(n \log n)$   | $O(n \log n)$      | $O(1)$         | nein   |
+
+Vergleichsbasierte Sortierverfahren können im schlechtesten Fall nicht schneller als $O(n \log n)$ sein. Die Standardbibliotheken verwenden Kombinationen: `Array.Sort` in .NET nutzt **Introsort** (Quicksort, der bei zu tiefer Rekursion auf Heapsort und bei kleinen Teilen auf Insertionsort wechselt) und ist nicht stabil. Rust bietet mit `sort` ein stabiles Verfahren (auf Basis von Mergesort) und mit `sort_unstable` ein schnelleres instabiles. LINQs `OrderBy` sortiert stabil.
+
+### Bubblesort
+
+Bubblesort vergleicht benachbarte Elemente und vertauscht sie, wenn sie in der falschen Reihenfolge sind. Nach jedem Durchlauf ist das größte verbleibende Element wie eine Blase ans Ende „aufgestiegen“. Gab es in einem Durchlauf keine Vertauschung, ist die Liste sortiert.
+
+### Selectionsort
+
+Selectionsort sucht im unsortierten Teil das kleinste Element und vertauscht es mit dem ersten Element des unsortierten Teils. Der sortierte Bereich wächst so von links nach rechts.
+
+### Insertionsort
+
+Insertionsort nimmt ein Element nach dem anderen und fügt es an der richtigen Stelle in den bereits sortierten Bereich links davon ein, so wie man Spielkarten auf der Hand sortiert. Für kleine oder fast sortierte Listen ist es sehr schnell.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] a = [5, 2, 9, 1, 7];
+BubbleSort(a);
+Console.WriteLine(string.Join(" ", a)); // 1 2 5 7 9
+
+int[] b = [5, 2, 9, 1, 7];
+SelectionSort(b);
+Console.WriteLine(string.Join(" ", b)); // 1 2 5 7 9
+
+int[] c = [5, 2, 9, 1, 7];
+InsertionSort(c);
+Console.WriteLine(string.Join(" ", c)); // 1 2 5 7 9
+
+static void BubbleSort(int[] a)
+{
+    for (int end = a.Length - 1; end > 0; end--)
+    {
+        bool swapped = false;
+        for (int i = 0; i < end; i++)
+        {
+            if (a[i] > a[i + 1])
+            {
+                (a[i], a[i + 1]) = (a[i + 1], a[i]); // tauschen
+                swapped = true;
+            }
+        }
+        if (!swapped) return; // bereits sortiert
+    }
+}
+
+static void SelectionSort(int[] a)
+{
+    for (int i = 0; i < a.Length - 1; i++)
+    {
+        int min = i;
+        for (int j = i + 1; j < a.Length; j++)
+        {
+            if (a[j] < a[min]) min = j;
+        }
+        (a[i], a[min]) = (a[min], a[i]);
+    }
+}
+
+static void InsertionSort(int[] a)
+{
+    for (int i = 1; i < a.Length; i++)
+    {
+        int current = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > current)
+        {
+            a[j + 1] = a[j]; // größere Elemente nach rechts schieben
+            j--;
+        }
+        a[j + 1] = current;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn bubble_sort(a: &mut [i32]) {
+    for end in (1..a.len()).rev() {
+        let mut swapped = false;
+        for i in 0..end {
+            if a[i] > a[i + 1] {
+                a.swap(i, i + 1);
+                swapped = true;
+            }
+        }
+        if !swapped {
+            return; // bereits sortiert
+        }
+    }
+}
+
+fn selection_sort(a: &mut [i32]) {
+    for i in 0..a.len().saturating_sub(1) {
+        let mut min = i;
+        for j in i + 1..a.len() {
+            if a[j] < a[min] {
+                min = j;
+            }
+        }
+        a.swap(i, min);
+    }
+}
+
+fn insertion_sort(a: &mut [i32]) {
+    for i in 1..a.len() {
+        let current = a[i];
+        let mut j = i;
+        while j > 0 && a[j - 1] > current {
+            a[j] = a[j - 1]; // größere Elemente nach rechts schieben
+            j -= 1;
+        }
+        a[j] = current;
+    }
+}
+
+fn main() {
+    let mut a = [5, 2, 9, 1, 7];
+    bubble_sort(&mut a);
+    println!("{a:?}"); // [1, 2, 5, 7, 9]
+
+    let mut b = [5, 2, 9, 1, 7];
+    selection_sort(&mut b);
+    println!("{b:?}");
+
+    let mut c = [5, 2, 9, 1, 7];
+    insertion_sort(&mut c);
+    println!("{c:?}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Mergesort
+
+Mergesort arbeitet nach dem Prinzip **Teile und herrsche** (_divide and conquer_):
+
+1. **Teilen**: Die Liste wird in zwei Hälften geteilt.
+2. **Herrschen**: Beide Hälften werden rekursiv sortiert. Eine Liste mit einem Element ist bereits sortiert.
+3. **Zusammenführen**: Die zwei sortierten Hälften werden zu einer sortierten Liste verschmolzen (_merge_), indem man immer das kleinere der beiden vordersten Elemente übernimmt.
+
+Die Liste wird $\log_2 n$ Mal halbiert, und auf jeder Ebene werden insgesamt $n$ Elemente zusammengeführt. Daraus ergibt sich $O(n \log n)$ in jedem Fall.
+
+### Quicksort
+
+Quicksort wählt ein **Pivotelement** und ordnet die Liste so um, dass links davon alle kleineren und rechts alle größeren Elemente stehen (**Partitionierung**). Danach werden beide Teile rekursiv sortiert. Im Mittel ist Quicksort das schnellste der Verfahren, weil es in-place arbeitet und den Prozessor-Cache gut nutzt. Wählt man das Pivot ungeschickt, etwa immer das letzte Element einer bereits sortierten Liste, entartet es zu $O(n^2)$. Deshalb wählt man in der Praxis zufällig oder den Median aus drei Elementen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] data = [38, 27, 43, 3, 9, 82, 10];
+Console.WriteLine(string.Join(" ", MergeSort(data))); // 3 9 10 27 38 43 82
+
+int[] q = [38, 27, 43, 3, 9, 82, 10];
+QuickSort(q, 0, q.Length - 1);
+Console.WriteLine(string.Join(" ", q));               // 3 9 10 27 38 43 82
+
+static int[] MergeSort(int[] a)
+{
+    if (a.Length <= 1) return a;
+    int mid = a.Length / 2;
+    int[] left = MergeSort(a[..mid]);
+    int[] right = MergeSort(a[mid..]);
+
+    // zusammenführen
+    var result = new int[a.Length];
+    int i = 0, j = 0, k = 0;
+    while (i < left.Length && j < right.Length)
+    {
+        result[k++] = left[i] <= right[j] ? left[i++] : right[j++]; // <= macht es stabil
+    }
+    while (i < left.Length) result[k++] = left[i++];
+    while (j < right.Length) result[k++] = right[j++];
+    return result;
+}
+
+static void QuickSort(int[] a, int low, int high)
+{
+    if (low >= high) return;
+    int p = Partition(a, low, high);
+    QuickSort(a, low, p - 1);
+    QuickSort(a, p + 1, high);
+}
+
+// Lomuto-Partitionierung mit dem letzten Element als Pivot
+static int Partition(int[] a, int low, int high)
+{
+    int pivot = a[high];
+    int i = low;
+    for (int j = low; j < high; j++)
+    {
+        if (a[j] < pivot)
+        {
+            (a[i], a[j]) = (a[j], a[i]);
+            i++;
+        }
+    }
+    (a[i], a[high]) = (a[high], a[i]);
+    return i;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn merge_sort(a: &[i32]) -> Vec<i32> {
+    if a.len() <= 1 {
+        return a.to_vec();
+    }
+    let mid = a.len() / 2;
+    let left = merge_sort(&a[..mid]);
+    let right = merge_sort(&a[mid..]);
+
+    // zusammenführen
+    let mut result = Vec::with_capacity(a.len());
+    let (mut i, mut j) = (0, 0);
+    while i < left.len() && j < right.len() {
+        if left[i] <= right[j] {  // <= macht es stabil
+            result.push(left[i]);
+            i += 1;
+        } else {
+            result.push(right[j]);
+            j += 1;
+        }
+    }
+    result.extend_from_slice(&left[i..]);
+    result.extend_from_slice(&right[j..]);
+    result
+}
+
+fn quick_sort(a: &mut [i32]) {
+    if a.len() <= 1 {
+        return;
+    }
+    let p = partition(a);
+    let (left, right) = a.split_at_mut(p);
+    quick_sort(left);
+    quick_sort(&mut right[1..]); // Pivot an Position p ist schon richtig
+}
+
+// Lomuto-Partitionierung mit dem letzten Element als Pivot
+fn partition(a: &mut [i32]) -> usize {
+    let high = a.len() - 1;
+    let pivot = a[high];
+    let mut i = 0;
+    for j in 0..high {
+        if a[j] < pivot {
+            a.swap(i, j);
+            i += 1;
+        }
+    }
+    a.swap(i, high);
+    i
+}
+
+fn main() {
+    let data = [38, 27, 43, 3, 9, 82, 10];
+    println!("{:?}", merge_sort(&data)); // [3, 9, 10, 27, 38, 43, 82]
+
+    let mut q = [38, 27, 43, 3, 9, 82, 10];
+    quick_sort(&mut q);
+    println!("{q:?}");                   // [3, 9, 10, 27, 38, 43, 82]
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Heapsort
+
+Heapsort baut aus der Liste zuerst einen Max-[Heap](/de/software-development/data-structures/#heap), also einen Binärbaum, in dem jeder Elternknoten größer als seine Kinder ist. Das größte Element steht dann an der Wurzel. Es wird mit dem letzten Element vertauscht, der Heap verkleinert und die Heap-Eigenschaft wiederhergestellt. Das wiederholt man, bis der Heap leer ist. Heapsort garantiert $O(n \log n)$ und braucht keinen Zusatzspeicher, ist aber in der Praxis meist langsamer als Quicksort.
+
+### Sortieren ohne Vergleiche
+
+Sind die Werte ganze Zahlen aus einem kleinen Bereich, geht es schneller als $O(n \log n)$. **Countingsort** zählt, wie oft jeder Wert vorkommt, und schreibt die Werte dann der Reihe nach aus: $O(n + k)$, wobei $k$ die Größe des Wertebereichs ist. **Radixsort** sortiert Zahlen Stelle für Stelle und baut auf einem stabilen Countingsort auf.
+
+## Sortieren in der Praxis
+
+Eigene Sortierverfahren schreibt man nur zum Lernen. In echten Programmen verwendet man die Bibliothek:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] numbers = [5, 2, 9, 1];
+Array.Sort(numbers);                         // aufsteigend, in-place
+Array.Reverse(numbers);                      // absteigend
+
+var words = new List<string> { "Birne", "Apfel", "Kiwi" };
+words.Sort();                                // alphabetisch
+words.Sort((a, b) => a.Length.CompareTo(b.Length)); // nach Länge
+
+// stabil und ohne die Liste zu verändern
+var byLength = words.OrderBy(w => w.Length).ThenBy(w => w).ToList();
+Console.WriteLine(string.Join(", ", byLength)); // Kiwi, Apfel, Birne
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let mut numbers = [5, 2, 9, 1];
+    numbers.sort_unstable();                     // aufsteigend, schneller, nicht stabil
+    numbers.reverse();                           // absteigend
+
+    let mut words = vec!["Birne", "Apfel", "Kiwi"];
+    words.sort();                                // alphabetisch, stabil
+    words.sort_by_key(|w| w.len());              // nach Länge, stabil
+
+    // Länge, bei Gleichstand alphabetisch
+    words.sort_by(|a, b| a.len().cmp(&b.len()).then(a.cmp(b)));
+    println!("{}", words.join(", "));            // Kiwi, Apfel, Birne
+    println!("{numbers:?}");                     // [9, 5, 2, 1]
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Weiterführende Quellen
+
+- [VisuAlgo](https://visualgo.net/en/sorting): Animationen von Such- und Sortierverfahren
+- Thomas H. Cormen u. a.: _Introduction to Algorithms_, MIT Press (das Standardwerk zu Algorithmen)

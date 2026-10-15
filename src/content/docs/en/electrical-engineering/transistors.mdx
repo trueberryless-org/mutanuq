@@ -1,0 +1,148 @@
+---
+title: Transistors
+description: Bipolar transistor with current gain and operating regions, transistor as a switch with base resistor, MOSFET, MOSFET as a switch, CMOS technology and amplifier basics.
+sidebar:
+  order: 8
+---
+
+The **transistor** is a semiconductor component with which a small current or a small voltage controls a large current. It works as a **switch** (digital: on or off) or as an **amplifier** (analogue: continuously). A modern processor contains billions of transistors that form logic gates as switches. In HTL practice you use transistors to drive relays, motors and LED strips from a microcontroller.
+
+## Bipolar transistor
+
+A **bipolar junction transistor** (BJT) consists of three alternately doped layers: **emitter** (E), **base** (B) and **collector** (C). Depending on the layer sequence there are **NPN** and **PNP** transistors. In the circuit symbol the arrow at the emitter points in the conventional current direction: for NPN out of the transistor ("Not Pointing iN"), for PNP into it.
+
+The base is very thin and lightly doped. If a small base current flows (for NPN from B to E), most of the electrons from the emitter pass through the thin base into the collector. In this way the small **base current** $I_\mathrm{B}$ controls the large **collector current** $I_\mathrm{C}$.
+
+### Currents and current gain
+
+$$
+I_\mathrm{C} = B \cdot I_\mathrm{B} \qquad I_\mathrm{E} = I_\mathrm{C} + I_\mathrm{B} \qquad U_\mathrm{BE} \approx 0.7\,\mathrm{V}
+$$
+
+The **DC current gain** $B$ (in the datasheet $h_\mathrm{FE}$, also $\beta$) is between about $100$ and $800$ for small-signal transistors and varies widely between devices of the same type and with temperature. Circuits must therefore work with the **minimum value** from the datasheet. The base-emitter junction behaves like a diode.
+
+| Limit                  | Meaning                                     | Example BC547B    |
+| ---------------------- | ------------------------------------------- | ----------------- |
+| $I_\mathrm{C,max}$     | maximum collector current                   | $100\,\mathrm{mA}$ |
+| $U_\mathrm{CEO}$       | maximum collector-emitter voltage           | $45\,\mathrm{V}$  |
+| $P_\mathrm{tot}$       | maximum power dissipation                   | $500\,\mathrm{mW}$ |
+| $h_\mathrm{FE}$        | current gain                                | $200$ to $450$    |
+
+### Characteristics
+
+- The **input characteristic** $I_\mathrm{B}(U_\mathrm{BE})$ is a diode characteristic.
+- The **output characteristics** $I_\mathrm{C}(U_\mathrm{CE})$ show almost horizontal lines for different base currents: in the active region the collector current hardly depends on $U_\mathrm{CE}$, only on $I_\mathrm{B}$.
+- The **load line** for a collector resistor $R_\mathrm{C}$ is drawn between the points $U_\mathrm{CE} = U_\mathrm{B}$ (transistor off) and $I_\mathrm{C} = U_\mathrm{B}/R_\mathrm{C}$ (transistor fully on). The **operating point** lies on this line.
+
+### Operating regions
+
+| Region          | Condition (NPN)                                        | Behaviour                                    | Application    |
+| --------------- | ------------------------------------------------------ | -------------------------------------------- | -------------- |
+| Cut-off         | $U_\mathrm{BE} < 0.5\,\mathrm{V}$, $I_\mathrm{B} \approx 0$ | $I_\mathrm{C} \approx 0$, switch open     | switch off     |
+| Active region   | BE diode conducts, $U_\mathrm{CE} > U_\mathrm{CE,sat}$ | $I_\mathrm{C} = B \cdot I_\mathrm{B}$       | amplifier      |
+| Saturation      | $I_\mathrm{B} > I_\mathrm{C}/B$                        | $U_\mathrm{CE} \approx 0.1$ to $0.3\,\mathrm{V}$, switch closed | switch on |
+
+## Transistor as a switch
+
+As a switch the transistor should either block completely or conduct fully. In between, voltage would drop across it while current flows, and it would get hot. In the off state no current flows; in the saturated state hardly any voltage drops; in both cases the power dissipation is small.
+
+For an NPN the load is between the positive supply and the collector, with the emitter grounded (**low-side switch**). To make sure the transistor saturates, more base current is supplied than is theoretically needed. The ratio is called the **overdrive factor** $k$, typically $2$ to $5$:
+
+$$
+I_\mathrm{B} = k \cdot \frac{I_\mathrm{C}}{B_\mathrm{min}} \qquad R_\mathrm{B} = \frac{U_\mathrm{ctrl} - U_\mathrm{BE}}{I_\mathrm{B}}
+$$
+
+:::tip[Example: calculating the base resistor]
+A microcontroller with a $5\,\mathrm{V}$ output level is to switch a relay with $12\,\mathrm{V}$ and $100\,\mathrm{mA}$ coil current via an NPN transistor. The transistor has $B_\mathrm{min} = 100$; choose $k = 3$.
+
+$$
+I_\mathrm{B} = 3 \cdot \frac{100\,\mathrm{mA}}{100} = 3\,\mathrm{mA} \qquad R_\mathrm{B} = \frac{5\,\mathrm{V} - 0.7\,\mathrm{V}}{3\,\mathrm{mA}} \approx 1.43\,\mathrm{k\Omega}
+$$
+
+Choose the next smaller E12 value $1.2\,\mathrm{k\Omega}$ so that the base current does not become too small. Then $I_\mathrm{B} = 4.3\,\mathrm{V}/1.2\,\mathrm{k\Omega} \approx 3.6\,\mathrm{mA}$ flows, which a microcontroller pin can supply. With $U_\mathrm{CE,sat} = 0.2\,\mathrm{V}$ the power dissipation in the transistor is only $0.2\,\mathrm{V} \cdot 100\,\mathrm{mA} = 20\,\mathrm{mW}$.
+
+A [flyback diode](/en/electrical-engineering/magnetism-and-inductors/#turn-off-voltage-and-flyback-diode) belongs in parallel with the relay coil; otherwise the turn-off voltage destroys the transistor.
+:::
+
+For loads that must be switched on the positive side (**high-side switch**), PNP transistors or p-channel MOSFETs are used. If the current gain of one transistor is not enough, two are cascaded (**Darlington pair**, $B_\mathrm{total} \approx B_1 \cdot B_2$, but $U_\mathrm{BE} \approx 1.4\,\mathrm{V}$). ICs such as the ULN2803 contain eight Darlington stages with flyback diodes.
+
+## MOSFET
+
+The **MOSFET** (metal-oxide-semiconductor field-effect transistor) is a field-effect transistor. Its terminals are called **gate** (G), **drain** (D) and **source** (S). The gate is insulated from the channel by a very thin oxide layer. A voltage between gate and source creates an electric field that forms a conducting **channel** between drain and source in the semiconductor below.
+
+The most important difference from the bipolar transistor: the MOSFET is **voltage-controlled**. In the static state no gate current flows. Only when switching does the gate capacitance have to be charged or discharged.
+
+| Type                               | conducts when                                 | Circuit          |
+| ---------------------------------- | --------------------------------------------- | ---------------- |
+| n-channel, enhancement mode        | $U_\mathrm{GS} > U_\mathrm{GS(th)}$ (positive) | low-side switch, most common type |
+| p-channel, enhancement mode        | $U_\mathrm{GS} < U_\mathrm{GS(th)}$ (negative) | high-side switch |
+| Depletion mode (n or p)            | already conducts at $U_\mathrm{GS} = 0$, is turned off by a reverse voltage | rare, constant current sources |
+
+**Enhancement-mode** types (normally off) block without gate voltage and are the norm. The **threshold voltage** $U_\mathrm{GS(th)}$ is typically between $1$ and $4\,\mathrm{V}$. Only well above it is the channel fully conducting.
+
+When switched on, the channel behaves like a small resistance $R_\mathrm{DS(on)}$, from a few milliohms for power MOSFETs to a few ohms for small-signal types. The power dissipation is $P = I_\mathrm{D}^2 \cdot R_\mathrm{DS(on)}$. Power MOSFETs inherently contain a **body diode** between source and drain in reverse direction.
+
+## MOSFET as a switch
+
+For a low-side switch with an n-channel MOSFET the load is between the positive supply and the drain, the source is grounded and the gate is driven by the microcontroller.
+
+- A **gate resistor** (about $100\,\Omega$) limits the charging current of the gate capacitance and damps oscillations.
+- A **pull-down resistor** (about $10\,\mathrm{k\Omega}$) between gate and source keeps the MOSFET reliably off while the microcontroller pin is still high-impedance after power-up. An open gate would charge up randomly.
+- For $3.3$ or $5\,\mathrm{V}$ drive you need a **logic-level MOSFET** whose $R_\mathrm{DS(on)}$ is specified at $U_\mathrm{GS} = 4.5\,\mathrm{V}$ (or $2.5\,\mathrm{V}$).
+
+:::tip[Example]
+An LED strip with $12\,\mathrm{V}$ and $2\,\mathrm{A}$ is switched via a MOSFET with $R_\mathrm{DS(on)} = 50\,\mathrm{m\Omega}$. The power dissipation is $P = (2\,\mathrm{A})^2 \cdot 0.05\,\Omega = 0.2\,\mathrm{W}$; only $0.1\,\mathrm{V}$ drops across the MOSFET. A bipolar transistor would need a base current of several tens of milliamperes for this.
+:::
+
+With **PWM** (pulse-width modulation) the MOSFET is switched on and off quickly to control brightness or speed. At high frequencies the switching losses increase; then a **gate driver** is needed that charges and discharges the gate capacitance with a large current.
+
+### Comparison
+
+| Property                 | Bipolar transistor                  | MOSFET                                    |
+| ------------------------ | ----------------------------------- | ----------------------------------------- |
+| Control                  | current ($I_\mathrm{B}$)            | voltage ($U_\mathrm{GS}$)                 |
+| Static control power     | permanently $U_\mathrm{BE} \cdot I_\mathrm{B}$ | practically zero               |
+| On-state behaviour       | $U_\mathrm{CE,sat} \approx 0.2\,\mathrm{V}$ | resistance $R_\mathrm{DS(on)}$     |
+| Suitability              | small currents, analogue amplifiers | large currents, fast switches, digital ICs |
+| Sensitivity              | insensitive                         | gate oxide sensitive to [ESD](/en/electrical-engineering/electrical-safety/#esd) |
+
+For very high voltages and currents (inverters, electric cars, railways) the **IGBT** combines a MOSFET input with a bipolar output.
+
+## CMOS technology
+
+**CMOS** (complementary metal-oxide-semiconductor) always combines a p-channel and an n-channel MOSFET. The simplest building block is the **inverter**: the p-channel MOSFET is between $U_\mathrm{DD}$ and the output, the n-channel MOSFET between the output and ground, both gates at the input.
+
+| Input    | p-MOSFET | n-MOSFET | Output  |
+| -------- | -------- | -------- | ------- |
+| 0 (low)  | conducts | off      | 1 (high, connected to $U_\mathrm{DD}$) |
+| 1 (high) | off      | conducts | 0 (low, connected to ground) |
+
+In every stable state one of the two transistors is off, so practically no cross current flows. Current flows only when switching, to charge and discharge capacitances. The **dynamic power dissipation** of a CMOS chip is therefore proportional to the clock frequency and to the square of the supply voltage:
+
+$$
+P_\mathrm{dyn} = \alpha \cdot C \cdot U_\mathrm{DD}^2 \cdot f
+$$
+
+$\alpha$ is the fraction of gates that switch per clock cycle. That is why processors lower the voltage to save power, and clock and voltage are reduced together at low load. A NAND gate in CMOS consists of two p-MOSFETs in parallel and two n-MOSFETs in series. Logic gates are covered on the page [Logic Gates](/en/electrical-engineering/digital-logic-gates/).
+
+:::caution
+Unused CMOS inputs must not be left open. They take on undefined levels, both transistors partly conduct, and the device draws unnecessary current or oscillates. Tie them firmly to ground or $U_\mathrm{DD}$.
+:::
+
+## Amplifier basics
+
+In the active region a bipolar transistor amplifies small AC signals. A base voltage divider sets an **operating point** roughly in the middle of the load line so that the signal can swing in both directions. **Coupling capacitors** separate the DC voltage of the operating point from the signal source and the load. An emitter resistor $R_\mathrm{E}$ stabilises the operating point against temperature and device variations (**negative feedback**).
+
+| Basic circuit     | common terminal       | Voltage gain           | Special feature                                 |
+| ----------------- | --------------------- | ---------------------- | ----------------------------------------------- |
+| Common emitter    | emitter               | high, $V_u \approx -R_\mathrm{C}/R_\mathrm{E}$ | inverting, most common amplifier stage |
+| Common collector (emitter follower) | collector | $\approx 1$         | high input and low output resistance, impedance converter |
+| Common base       | base                  | high                   | low input resistance, for high frequencies      |
+
+The formula $V_u \approx -R_\mathrm{C}/R_\mathrm{E}$ applies when $R_\mathrm{E}$ is not bypassed by a capacitor. With $R_\mathrm{C} = 4.7\,\mathrm{k\Omega}$ and $R_\mathrm{E} = 470\,\Omega$ the stage amplifies about tenfold. Today amplifiers are mostly built with [operational amplifiers](/en/electrical-engineering/operational-amplifiers/), which internally consist of many such stages.
+
+## Further reading
+
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Electronic Circuits: Handbook for Design and Application_. Springer.
+- [onsemi: BC546/BC547/BC548 datasheet](https://www.onsemi.com/pdf/datasheet/bc546-d.pdf)

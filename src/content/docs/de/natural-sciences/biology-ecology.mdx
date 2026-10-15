@@ -1,0 +1,233 @@
+---
+title: Ökologie
+description: Ökosysteme, abiotische und biotische Faktoren, Nahrungsketten und -netze, Energiefluss, Kohlenstoff-, Stickstoff- und Wasserkreislauf, Populationswachstum, Räuber-Beute-Modell, Biodiversität und Ökosysteme in Österreich.
+sidebar:
+  order: 55
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Ökologie** (griechisch _oikos_, Haus) untersucht die Beziehungen der Lebewesen untereinander und zu ihrer unbelebten Umwelt. Der Begriff wurde 1866 von Ernst Haeckel geprägt. Ökologisches Wissen ist die Grundlage für Naturschutz, Land- und Forstwirtschaft und das Verständnis von [Umweltproblemen und Nachhaltigkeit](/de/natural-sciences/biology-environment-and-sustainability/).
+
+## Ökosysteme
+
+Ein **Ökosystem** besteht aus dem **Biotop** (Lebensraum mit seinen unbelebten Eigenschaften) und der **Biozönose** (Lebensgemeinschaft aller darin lebenden Organismen). Beispiele sind ein See, ein Buchenwald, eine Almwiese oder ein Moor. Alle Individuen einer Art in einem Gebiet, die sich miteinander fortpflanzen können, bilden eine **Population**.
+
+### Abiotische Faktoren
+
+**Abiotische Faktoren** sind die Einflüsse der unbelebten Umwelt: Licht, Temperatur, Wasser, Feuchtigkeit, Wind, Boden (Mineralstoffe, pH-Wert), Sauerstoff- und $\mathrm{CO_2}$-Gehalt, im Gebirge die Höhe.
+
+Jede Art kann einen Faktor nur in einem bestimmten Bereich ertragen (**Toleranzbereich**). Die **Toleranzkurve** zeigt die Lebensaktivität in Abhängigkeit vom Faktor: Sie ist im **Optimum** am höchsten, fällt zu den **Pessima** hin ab und endet an Minimum und Maximum. Arten mit breitem Toleranzbereich heißen **euryök** (etwa Fuchs, Wanderratte), solche mit engem **stenök** (etwa Bachforelle, die kaltes, sauerstoffreiches Wasser braucht). Stenöke Arten eignen sich als **Zeigerarten** (Bioindikatoren): Flechten zeigen saubere Luft, bestimmte Insektenlarven gute Gewässergüte.
+
+Nach dem **Minimumgesetz** (Liebig) begrenzt der Faktor, der am weitesten vom Optimum entfernt ist, das Wachstum, auch wenn alle anderen reichlich vorhanden sind. Fehlt einem Feld Stickstoff, hilft zusätzlicher Phosphor nicht.
+
+### Biotische Faktoren
+
+**Biotische Faktoren** sind Einflüsse durch andere Lebewesen:
+
+| Beziehung                    | Wirkung für A / B | Beispiel                                                    |
+| ---------------------------- | ----------------- | ----------------------------------------------------------- |
+| **innerartliche Konkurrenz** | − / −             | Fichten im dichten Bestand konkurrieren um Licht             |
+| **zwischenartliche Konkurrenz** | − / −          | Fuchs und Greifvögel jagen Mäuse                             |
+| **Räuber-Beute** (Prädation) | + / −             | Luchs und Reh                                               |
+| **Parasitismus**             | + / −             | Zecke, Bandwurm, Mistel                                     |
+| **Symbiose** (Mutualismus)   | + / +             | Flechte (Pilz und Alge), Mykorrhiza (Pilz und Baumwurzel), Blüte und Bestäuber |
+| **Kommensalismus**           | + / 0             | Aasfresser nutzen Reste der Beute von Raubtieren            |
+
+Die **ökologische Nische** ist die Gesamtheit aller Ansprüche einer Art an ihre Umwelt und ihre Rolle im Ökosystem (Nahrung, Aktivitätszeit, Brutplatz). Nach dem **Konkurrenzausschlussprinzip** können zwei Arten mit identischer Nische nicht dauerhaft nebeneinander existieren; eine verdrängt die andere oder sie spezialisieren sich.
+
+## Nahrungsbeziehungen und Energiefluss
+
+### Nahrungsketten und Nahrungsnetze
+
+Jedes Ökosystem hat drei Gruppen von Organismen:
+
+- **Produzenten** (Pflanzen, Algen) bauen durch [Fotosynthese](/de/natural-sciences/biology-biomolecules-and-metabolism/#fotosynthese) organische Stoffe aus anorganischen auf.
+- **Konsumenten** ernähren sich von anderen Lebewesen: Pflanzenfresser sind **Primärkonsumenten**, Fleischfresser **Sekundär-** und **Tertiärkonsumenten**.
+- **Destruenten** (Bakterien, Pilze, Bodentiere wie Regenwürmer) zersetzen tote organische Substanz zu Mineralstoffen, die die Produzenten wieder aufnehmen.
+
+Eine **Nahrungskette** zeigt, wer wen frisst: Gras → Heuschrecke → Spitzmaus → Waldkauz. In der Natur sind die Ketten zu **Nahrungsnetzen** verknüpft, weil die meisten Tiere mehrere Nahrungsquellen haben. Netze mit vielen Verbindungen sind stabiler, weil der Ausfall einer Art ausgeglichen werden kann.
+
+### Trophieebenen und Energiefluss
+
+Die Stufen einer Nahrungskette heißen **Trophieebenen**. Beim Übergang von einer Ebene zur nächsten wird nur ein kleiner Teil der Energie in neue Biomasse eingebaut; der Großteil wird bei der Zellatmung als Wärme abgegeben, nicht gefressen oder ausgeschieden. Als Faustregel gelangen etwa **10 %** der Energie in die nächste Ebene (**Zehn-Prozent-Regel**).
+
+| Trophieebene             | Energie (Faustregel) |
+| ------------------------ | -------------------- |
+| Produzenten              | $10\,000\,\mathrm{kJ}$ |
+| Primärkonsumenten        | $1\,000\,\mathrm{kJ}$  |
+| Sekundärkonsumenten      | $100\,\mathrm{kJ}$     |
+| Tertiärkonsumenten       | $10\,\mathrm{kJ}$      |
+
+Dargestellt wird das als **Energiepyramide**. Daraus folgt: Nahrungsketten haben selten mehr als vier bis fünf Glieder, und Spitzenprädatoren sind selten. Für die menschliche Ernährung bedeutet es, dass für ein Kilogramm Fleisch ein Vielfaches an Pflanzen und Fläche nötig ist als für ein Kilogramm pflanzlicher Nahrung.
+
+**Energie fließt** durch das Ökosystem (von der Sonne bis zur Wärmeabgabe) und muss ständig nachgeliefert werden. **Stoffe** dagegen werden im Kreislauf geführt.
+
+## Stoffkreisläufe
+
+### Kohlenstoffkreislauf
+
+| Prozess                         | Richtung                                              |
+| ------------------------------- | ----------------------------------------------------- |
+| Fotosynthese                    | $\mathrm{CO_2}$ aus der Luft wird in Biomasse gebunden |
+| Zellatmung, Zersetzung          | Biomasse wird zu $\mathrm{CO_2}$                      |
+| Lösung im Meer                  | Austausch zwischen Atmosphäre und Ozean; Kalkschalen sinken zu Boden und bilden Kalkgestein |
+| Bildung fossiler Brennstoffe    | über Jahrmillionen wird Biomasse zu Kohle, Erdöl und Erdgas |
+| Verbrennung fossiler Brennstoffe, Entwaldung | gibt in kurzer Zeit Kohlenstoff frei, der über Jahrmillionen gespeichert war |
+
+Die großen **Kohlenstoffspeicher** sind Gesteine, Ozeane, fossile Lagerstätten, Böden (Humus, Moore) und die Vegetation. Der Mensch verschiebt Kohlenstoff aus den langfristigen Speichern in die Atmosphäre und verursacht so den [Klimawandel](/de/natural-sciences/biology-environment-and-sustainability/#klimawandel).
+
+### Stickstoffkreislauf
+
+Stickstoff ist Bestandteil von Proteinen und Nukleinsäuren. Die Luft besteht zu 78 % aus $\mathrm{N_2}$, das die meisten Lebewesen wegen der stabilen Dreifachbindung nicht nutzen können.
+
+1. **Stickstofffixierung**: Bestimmte Bakterien wandeln $\mathrm{N_2}$ in Ammonium um, etwa Knöllchenbakterien (_Rhizobium_) in Symbiose mit Hülsenfrüchtlern (Klee, Bohnen, Erbsen) oder Cyanobakterien. Auch Blitze und das technische Haber-Bosch-Verfahren fixieren Stickstoff.
+2. **Assimilation**: Pflanzen nehmen Ammonium und vor allem Nitrat auf und bauen Proteine.
+3. **Ammonifikation**: Destruenten bauen tote Biomasse und Ausscheidungen zu Ammonium ab.
+4. **Nitrifikation**: Bodenbakterien oxidieren Ammonium über Nitrit zu Nitrat ($\mathrm{NH_4^+ \rightarrow NO_2^- \rightarrow NO_3^-}$).
+5. **Denitrifikation**: Unter Sauerstoffmangel reduzieren Bakterien Nitrat wieder zu $\mathrm{N_2}$, der in die Luft entweicht.
+
+Übermäßige Düngung führt zu Nitrat im Grundwasser und zur Eutrophierung von Gewässern; dabei entsteht auch das Treibhausgas Lachgas $\mathrm{N_2O}$.
+
+### Wasserkreislauf
+
+Die Sonne treibt den Wasserkreislauf an: **Verdunstung** von Meeren, Seen und Böden und **Transpiration** der Pflanzen bringen Wasserdampf in die Atmosphäre; er **kondensiert** zu Wolken und fällt als **Niederschlag**. Das Wasser fließt oberirdisch ab, versickert ins **Grundwasser** oder wird von Pflanzen aufgenommen. Wälder und unversiegelte Böden speichern Wasser und bremsen Hochwasser.
+
+## Populationsökologie
+
+### Wachstumsmodelle
+
+Bei unbegrenzten Ressourcen wächst eine Population **exponentiell**: Die Zuwachsrate ist proportional zur Größe.
+
+$$
+\frac{\mathrm{d}N}{\mathrm{d}t} = r \cdot N \quad\Rightarrow\quad N(t) = N_0 \cdot e^{r t}, \qquad T_\text{Verdopplung} = \frac{\ln 2}{r}
+$$
+
+Bakterien, die sich alle 20 Minuten teilen, werden in 10 Stunden ($30$ Verdopplungen) rund $2^{30} \approx 10^9$-mal so viele. Real werden Nahrung und Platz knapp, Feinde und Krankheiten nehmen zu. Das **logistische Wachstum** berücksichtigt die **Kapazitätsgrenze** $K$, die größte Population, die der Lebensraum dauerhaft tragen kann:
+
+$$
+\frac{\mathrm{d}N}{\mathrm{d}t} = r \cdot N \cdot \frac{K - N}{K}
+$$
+
+Die Kurve verläuft S-förmig: zuerst fast exponentiell, am schnellsten bei $N = \frac{K}{2}$, dann nähert sie sich $K$. Die Mathematik dahinter behandelt die Seite [Exponential- und Logarithmusfunktionen](/de/mathematics/functions/exponential-and-logarithmic-functions/#verdopplungszeit-und-halbwertszeit).
+
+Faktoren, deren Wirkung mit der Populationsdichte zunimmt (Konkurrenz, Krankheiten, Feinde), heißen **dichteabhängig**; Wetter, Katastrophen und Klima wirken **dichteunabhängig**. **r-Strategen** (Insekten, Mäuse) haben viele Nachkommen ohne Brutpflege und schwanken stark, **K-Strategen** (Elefanten, Menschenaffen) wenige Nachkommen mit intensiver Brutpflege und halten sich nahe an $K$.
+
+### Räuber-Beute-Beziehung
+
+Alfred Lotka (1925) und Vito Volterra (1926) beschrieben die Wechselwirkung zwischen Beute $x$ und Räubern $y$ mit zwei gekoppelten Differentialgleichungen:
+
+$$
+\frac{\mathrm{d}x}{\mathrm{d}t} = a x - b x y \qquad \frac{\mathrm{d}y}{\mathrm{d}t} = d x y - c y
+$$
+
+Dabei ist $a$ die Vermehrungsrate der Beute, $b$ die Fressrate, $c$ die Sterberate der Räuber und $d$ der Faktor, mit dem gefressene Beute in Räubernachwuchs umgesetzt wird. Daraus folgen die **Lotka-Volterra-Regeln**:
+
+1. **Periodische Schwankungen**: Beute- und Räuberzahl schwanken periodisch, die Maxima der Räuber folgen zeitlich verzögert auf die der Beute.
+2. **Konstanz der Mittelwerte**: Über lange Zeit bleiben die Mittelwerte beider Populationen konstant ($\bar{x} = \frac{c}{d}$, $\bar{y} = \frac{a}{b}$).
+3. **Störung der Mittelwerte**: Werden beide Populationen gleich stark dezimiert (etwa durch ein Insektizid), erholt sich die Beute schneller als die Räuber.
+
+Das klassische Beispiel sind die Fellankäufe der Hudson’s Bay Company für Schneeschuhhase und Kanadaluchs. In der Natur wirken aber meist viele weitere Faktoren mit, etwa Nahrungsangebot der Beute und alternative Beutearten.
+
+Eine einfache numerische Simulation mit dem Euler-Verfahren (kleine Zeitschritte, Änderungen aufsummiert) zeigt die versetzten Schwingungen:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// Parameter: Vermehrung Beute, Fressrate, Sterberate Räuber, Umsetzung
+const double a = 0.1, b = 0.02, c = 0.3, d = 0.01;
+const double dt = 0.001;
+
+double prey = 40.0, predators = 9.0;
+
+for (int t = 10; t <= 100; t += 10)
+{
+    // 10 000 Euler-Schritte entsprechen 10 Zeiteinheiten
+    for (int i = 0; i < 10_000; i++)
+    {
+        double dPrey = (a * prey - b * prey * predators) * dt;
+        double dPredators = (d * prey * predators - c * predators) * dt;
+        prey += dPrey;
+        predators += dPredators;
+    }
+    Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+        $"t = {t,3}: Beute {prey,5:F1}, Räuber {predators,5:F1}"));
+}
+// t =  10: Beute  18.0, Räuber   6.0
+// t =  20: Beute  24.0, Räuber   2.1
+// t =  30: Beute  42.9, Räuber   2.8
+// t =  40: Beute  32.1, Räuber  10.4
+// t =  50: Beute  17.8, Räuber   4.5
+// t =  60: Beute  27.6, Räuber   1.9
+// t =  70: Beute  46.2, Räuber   4.0
+// t =  80: Beute  25.1, Räuber  10.0
+// t =  90: Beute  18.7, Räuber   3.5
+// t = 100: Beute  31.8, Räuber   1.9
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // Parameter: Vermehrung Beute, Fressrate, Sterberate Räuber, Umsetzung
+    let (a, b, c, d) = (0.1_f64, 0.02, 0.3, 0.01);
+    let dt = 0.001;
+
+    let (mut prey, mut predators) = (40.0_f64, 9.0_f64);
+
+    for t in (10..=100).step_by(10) {
+        // 10 000 Euler-Schritte entsprechen 10 Zeiteinheiten
+        for _ in 0..10_000 {
+            let d_prey = (a * prey - b * prey * predators) * dt;
+            let d_predators = (d * prey * predators - c * predators) * dt;
+            prey += d_prey;
+            predators += d_predators;
+        }
+        println!("t = {t:>3}: Beute {prey:>5.1}, Räuber {predators:>5.1}");
+    }
+}
+// t =  10: Beute  18.0, Räuber   6.0
+// t =  20: Beute  24.0, Räuber   2.1
+// t =  30: Beute  42.9, Räuber   2.8
+// t =  40: Beute  32.1, Räuber  10.4
+// t =  50: Beute  17.8, Räuber   4.5
+// t =  60: Beute  27.6, Räuber   1.9
+// t =  70: Beute  46.2, Räuber   4.0
+// t =  80: Beute  25.1, Räuber  10.0
+// t =  90: Beute  18.7, Räuber   3.5
+// t = 100: Beute  31.8, Räuber   1.9
+```
+
+</TabItem>
+</Tabs>
+
+Die Maxima der Räuber (bei $t \approx 40$ und $t \approx 80$) folgen auf die Maxima der Beute. Das einfache Euler-Verfahren sammelt kleine Rechenfehler an, sodass die Schwingung langsam auseinanderläuft; genauere Verfahren (Runge-Kutta) vermeiden das.
+
+## Biodiversität
+
+**Biodiversität** (biologische Vielfalt) umfasst drei Ebenen: die **genetische Vielfalt** innerhalb von Arten, die **Artenvielfalt** und die **Vielfalt der Ökosysteme**. Beschrieben sind rund zwei Millionen Arten, die tatsächliche Zahl ist um ein Vielfaches höher. Vielfältige Ökosysteme sind stabiler und erbringen **Ökosystemleistungen**: Bestäubung, sauberes Wasser, fruchtbare Böden, Schutz vor Hochwasser und Erosion, Kohlenstoffspeicherung, Rohstoffe und Medikamente.
+
+Der Weltbiodiversitätsrat **IPBES** schätzte 2019, dass rund eine Million Tier- und Pflanzenarten vom Aussterben bedroht sind. Die wichtigsten direkten Ursachen sind in absteigender Bedeutung: veränderte Land- und Meeresnutzung (Lebensraumverlust), direkte Ausbeutung (Überfischung, Jagd), Klimawandel, Verschmutzung und **invasive Arten** (eingeschleppte Arten wie Ragweed oder Asiatische Hornisse). Das Weltnaturabkommen von Kunming-Montreal (2022) will bis 2030 30 % der Land- und Meeresflächen unter Schutz stellen.
+
+## Ökosysteme in Österreich
+
+In Österreich leben rund 67 000 Arten, darunter etwa 45 000 Tierarten und rund 3 000 Farn- und Blütenpflanzen. Laut Umweltministerium sind etwa ein Drittel der Farn- und Blütenpflanzen und 60 % der Kriechtiere und Lurche gefährdet. Es gibt sechs **Nationalparks**: Hohe Tauern, Neusiedler See-Seewinkel, Donau-Auen, Kalkalpen, Thayatal und Gesäuse.
+
+| Ökosystem                    | Merkmale                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| **Wald**                     | bedeckt rund die Hälfte der Staatsfläche; natürlich wären Buchen- und Mischwälder vorherrschend, angepflanzt wurden vielfach Fichten-Monokulturen, die anfällig für Borkenkäfer, Sturm und Trockenheit sind. Schutzwälder sichern Siedlungen vor Lawinen und Muren |
+| **Alpen**                    | **Höhenstufen**: kollin (Laubwald, Landwirtschaft), montan (Buchen-Tannen-Fichten-Wald), subalpin (Fichten, Lärchen, Zirben, Latschen bis zur Waldgrenze bei etwa $1800$ bis $2200\,\mathrm{m}$), alpin (Rasen, Zwergsträucher), nival (Fels, Eis). Mit jeder Höhenstufe sinkt die Temperatur um etwa $0{,}6\,\mathrm{°C}$ pro $100\,\mathrm{m}$. Gletscher schmelzen durch den Klimawandel stark ab |
+| **Neusiedler See**           | westlichster Steppensee Europas, sehr flach (unter $2\,\mathrm{m}$), großer Schilfgürtel, Salzlacken im Seewinkel; Lebensraum für Hunderte Vogelarten |
+| **Donau-Auen**               | Auwald mit regelmäßigen Überschwemmungen, sehr artenreich. Die Besetzung der Hainburger Au 1984 gegen ein geplantes Kraftwerk gilt als Geburtsstunde der österreichischen Umweltbewegung; 1996 wurde der Nationalpark gegründet |
+| **Seen**                     | im Sommer **geschichtet** (warmes Oberflächenwasser über kaltem Tiefenwasser), Durchmischung im Frühjahr und Herbst. Viele Alpenseen waren in den 1960er- und 1970er-Jahren durch Abwässer eutrophiert und wurden durch Ringkanalisationen saniert |
+| **Moore**                    | speichern große Mengen Kohlenstoff; ein Großteil der Moore in Österreich wurde durch Entwässerung und Torfabbau geschädigt, entwässerte Moore setzen $\mathrm{CO_2}$ frei |
+
+## Weiterführende Quellen
+
+- [Biodiversität in Österreich](https://www.bmluk.gv.at/themen/klima-und-umwelt/natur-und-artenschutz-und-biodiversitaet/biologische-vielfalt/biodiversitaetinoesterreich.html) (Bundesministerium)
+- [IPBES Global Assessment Report](https://www.ipbes.net/global-assessment) (Weltbiodiversitätsrat)
+- [Nationalparks Austria](https://www.nationalparksaustria.at/)

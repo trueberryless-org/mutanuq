@@ -1,0 +1,427 @@
+---
+title: Automaten und formale Sprachen
+description: Alphabete, Wörter und Sprachen, deterministische und nichtdeterministische endliche Automaten, Potenzmengenkonstruktion, reguläre Ausdrücke, Grammatiken, Chomsky-Hierarchie, Kellerautomaten, Turingmaschinen sowie Mealy- und Moore-Automaten.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **theoretische Informatik** untersucht mit mathematischen Modellen, was Computer grundsätzlich berechnen können. **Automaten** sind abstrakte Maschinen, die Eingaben Zeichen für Zeichen lesen und dabei ihren Zustand ändern. **Formale Sprachen** beschreiben, welche Zeichenfolgen zu einer Sprache gehören. Beides hat sehr praktische Anwendungen: Compiler zerlegen Quelltext mit endlichen Automaten und prüfen die Syntax mit Grammatiken, reguläre Ausdrücke durchsuchen Texte, Steuerungen und Netzwerkprotokolle werden als Zustandsautomaten entworfen. Die Grundlagen der Mengenlehre stehen unter [Mengen und Zahlenbereiche](/de/mathematics/algebra/sets-and-number-ranges/).
+
+## Alphabete, Wörter und Sprachen
+
+| Begriff               | Definition                                                                | Beispiel                                  |
+| --------------------- | ------------------------------------------------------------------------- | ----------------------------------------- |
+| **Alphabet** $\Sigma$ | endliche, nicht leere Menge von Zeichen (Symbolen)                        | $\Sigma = \{0, 1\}$, $\Sigma = \{a, b, c\}$ |
+| **Wort**              | endliche Folge von Zeichen aus $\Sigma$                                   | $0110$, $abba$                            |
+| **Länge** $\lvert w \rvert$ | Anzahl der Zeichen                                                  | $\lvert abba \rvert = 4$                  |
+| **leeres Wort** $\varepsilon$ | Wort der Länge 0                                                  | $\lvert \varepsilon \rvert = 0$           |
+| **Konkatenation** $uv$ | Hintereinanderschreiben zweier Wörter                                    | $u = ab$, $v = ba$: $uv = abba$           |
+| $\Sigma^*$            | Menge **aller** Wörter über $\Sigma$, einschließlich $\varepsilon$ (Kleene-Stern) | $\{0,1\}^* = \{\varepsilon, 0, 1, 00, 01, \ldots\}$ |
+| $\Sigma^+$            | alle Wörter außer $\varepsilon$                                           |                                           |
+| **formale Sprache** $L$ | beliebige Teilmenge $L \subseteq \Sigma^*$                              | alle Dualzahlen, die durch 3 teilbar sind |
+
+Eine Sprache kann endlich oder unendlich sein. Die zentrale Frage ist das **Wortproblem**: Gehört ein gegebenes Wort $w$ zur Sprache $L$? Je nachdem, welche Art von Automat diese Frage beantworten kann, ordnet man Sprachen in Klassen ein.
+
+## Endliche Automaten
+
+### Deterministischer endlicher Automat
+
+Ein **deterministischer endlicher Automat** (DEA, engl. _DFA_) ist ein 5-Tupel $M = (Q, \Sigma, \delta, q_0, F)$:
+
+- $Q$: endliche Menge von **Zuständen**
+- $\Sigma$: Eingabealphabet
+- $\delta: Q \times \Sigma \to Q$: **Übergangsfunktion**, für jeden Zustand und jedes Zeichen genau ein Folgezustand
+- $q_0 \in Q$: **Startzustand**
+- $F \subseteq Q$: Menge der **Endzustände** (akzeptierende Zustände)
+
+Der Automat beginnt in $q_0$, liest das Wort Zeichen für Zeichen und wechselt jeweils nach $\delta$. Ist er am Ende in einem Endzustand, **akzeptiert** er das Wort. Die Menge aller akzeptierten Wörter ist die **Sprache** $L(M)$ des Automaten. Ein DEA hat kein Gedächtnis außer seinem aktuellen Zustand, deshalb braucht er für jede Eingabe genau $\lvert w \rvert$ Schritte und konstanten Speicher.
+
+:::tip[Beispiel: Dualzahlen, die durch 3 teilbar sind]
+Der Zustand $q_r$ speichert den Rest $r$ der bisher gelesenen Zahl bei Division durch 3. Hängt man an eine Dualzahl mit Wert $n$ ein Bit $b$ an, entsteht $2n + b$. Der neue Rest ist also $(2r + b) \bmod 3$.
+
+$Q = \{q_0, q_1, q_2\}$, $\Sigma = \{0, 1\}$, Startzustand $q_0$, $F = \{q_0\}$.
+
+![Zustandsdiagramm des DEA mit den Zuständen q0, q1 und q2, q0 ist Start- und Endzustand](/images/computer-science/dfa_mod3_de.svg)
+
+| $\delta$ | 0     | 1     |
+| -------- | ----- | ----- |
+| → \* $q_0$ | $q_0$ | $q_1$ |
+| $q_1$    | $q_2$ | $q_0$ |
+| $q_2$    | $q_1$ | $q_2$ |
+
+(→ markiert den Startzustand, \* einen Endzustand.)
+
+Eingabe $1001_2 = 9$: $q_0 \xrightarrow{1} q_1 \xrightarrow{0} q_2 \xrightarrow{0} q_1 \xrightarrow{1} q_0$. Endzustand, also akzeptiert.
+Eingabe $111_2 = 7$: $q_0 \xrightarrow{1} q_1 \xrightarrow{1} q_0 \xrightarrow{1} q_1$. Kein Endzustand, also abgelehnt.
+:::
+
+Im **Zustandsdiagramm** sind Zustände Kreise, Endzustände doppelte Kreise, der Startzustand hat einen Pfeil ohne Ursprung, und Übergänge sind mit dem gelesenen Zeichen beschriftete Pfeile. Fehlt in einem Diagramm ein Übergang, geht man von einem nicht gezeichneten **Fehlerzustand** (Fangzustand) aus, den der Automat nie wieder verlässt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var delta = new Dictionary<(int State, char Symbol), int>();
+for (int r = 0; r < 3; r++)
+{
+    delta[(r, '0')] = (2 * r) % 3;
+    delta[(r, '1')] = (2 * r + 1) % 3;
+}
+var divisibleBy3 = new Dfa(Start: 0, Accepting: [0], Delta: delta);
+
+foreach (string word in new[] { "0", "11", "110", "111", "1001", "1010" })
+{
+    string result = divisibleBy3.Accepts(word) ? "akzeptiert" : "abgelehnt";
+    Console.WriteLine($"{word,4} ({Convert.ToInt32(word, 2),2}): {result}");
+}
+// Ausgabe:
+//    0 ( 0): akzeptiert
+//   11 ( 3): akzeptiert
+//  110 ( 6): akzeptiert
+//  111 ( 7): abgelehnt
+// 1001 ( 9): akzeptiert
+// 1010 (10): abgelehnt
+
+record Dfa(int Start, HashSet<int> Accepting, Dictionary<(int State, char Symbol), int> Delta)
+{
+    public bool Accepts(string word)
+    {
+        int state = Start;
+        foreach (char symbol in word)
+        {
+            // fehlender Übergang = Fehlerzustand
+            if (!Delta.TryGetValue((state, symbol), out int next)) return false;
+            state = next;
+        }
+        return Accepting.Contains(state);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{HashMap, HashSet};
+
+struct Dfa {
+    start: u32,
+    accepting: HashSet<u32>,
+    delta: HashMap<(u32, char), u32>,
+}
+
+impl Dfa {
+    fn accepts(&self, word: &str) -> bool {
+        // fehlender Übergang = Fehlerzustand (None)
+        word.chars()
+            .try_fold(self.start, |state, symbol| self.delta.get(&(state, symbol)).copied())
+            .is_some_and(|state| self.accepting.contains(&state))
+    }
+}
+
+fn main() {
+    let mut delta = HashMap::new();
+    for r in 0..3 {
+        delta.insert((r, '0'), (2 * r) % 3);
+        delta.insert((r, '1'), (2 * r + 1) % 3);
+    }
+    let divisible_by_3 = Dfa { start: 0, accepting: HashSet::from([0]), delta };
+
+    for word in ["0", "11", "110", "111", "1001", "1010"] {
+        let value = u32::from_str_radix(word, 2).unwrap_or(0);
+        let result = if divisible_by_3.accepts(word) { "akzeptiert" } else { "abgelehnt" };
+        println!("{word:>4} ({value:>2}): {result}");
+    }
+}
+// Ausgabe:
+//    0 ( 0): akzeptiert
+//   11 ( 3): akzeptiert
+//  110 ( 6): akzeptiert
+//  111 ( 7): abgelehnt
+// 1001 ( 9): akzeptiert
+// 1010 (10): abgelehnt
+```
+
+</TabItem>
+</Tabs>
+
+### Nichtdeterministischer endlicher Automat
+
+Ein **nichtdeterministischer endlicher Automat** (NEA, engl. _NFA_) darf in einem Zustand bei einem Zeichen **mehrere** oder **keinen** Folgezustand haben und optional ohne Lesen eines Zeichens wechseln (**ε-Übergänge**). Die Übergangsfunktion liefert eine Menge von Zuständen:
+
+$$
+\delta: Q \times (\Sigma \cup \{\varepsilon\}) \to \mathcal{P}(Q)
+$$
+
+Ein NEA akzeptiert ein Wort, wenn **mindestens ein** möglicher Weg in einem Endzustand endet. Man kann sich vorstellen, dass er bei jeder Wahl richtig „rät“ oder alle Möglichkeiten parallel verfolgt. NEAs sind oft viel kleiner und leichter zu entwerfen als DEAs.
+
+Beispiel: alle Wörter über $\{a, b\}$, die auf $ab$ enden. Der NEA bleibt in $p_0$, solange er will, und „rät“ irgendwann, dass das abschließende $ab$ beginnt:
+
+| $\delta$   | a              | b         |
+| ---------- | -------------- | --------- |
+| → $p_0$    | $\{p_0, p_1\}$ | $\{p_0\}$ |
+| $p_1$      | $\emptyset$    | $\{p_2\}$ |
+| \* $p_2$   | $\emptyset$    | $\emptyset$ |
+
+### Potenzmengenkonstruktion
+
+Jeder NEA lässt sich in einen gleichwertigen DEA umwandeln. NEAs können also **nicht mehr** als DEAs, sie sind nur bequemer. Bei der **Potenzmengenkonstruktion** (Teilmengenkonstruktion, Rabin und Scott 1959) ist jeder Zustand des DEA eine **Menge** von NEA-Zuständen, nämlich alle, in denen der NEA gerade sein könnte:
+
+1. Startzustand des DEA ist $\{p_0\}$ (bei ε-Übergängen zusätzlich alle per ε erreichbaren Zustände, der **ε-Abschluss**).
+2. Für jeden neuen DEA-Zustand $S$ und jedes Zeichen $x$: Folgezustand ist die Vereinigung aller $\delta(p, x)$ für $p \in S$.
+3. Wiederholen, bis keine neuen Mengen entstehen.
+4. Endzustände sind alle Mengen, die mindestens einen NEA-Endzustand enthalten.
+
+:::tip[Beispiel: NEA für „endet auf ab“]
+| DEA-Zustand        | a              | b              |
+| ------------------ | -------------- | -------------- |
+| → $\{p_0\}$        | $\{p_0, p_1\}$ | $\{p_0\}$      |
+| $\{p_0, p_1\}$     | $\{p_0, p_1\}$ | $\{p_0, p_2\}$ |
+| \* $\{p_0, p_2\}$  | $\{p_0, p_1\}$ | $\{p_0\}$      |
+
+Von den $2^3 = 8$ möglichen Teilmengen sind nur drei erreichbar. Der DEA merkt sich: „nichts Passendes gelesen“, „zuletzt ein $a$“ und „zuletzt $ab$“.
+:::
+
+Im schlimmsten Fall hat der DEA $2^n$ Zustände, wenn der NEA $n$ Zustände hat. Ein DEA lässt sich außerdem **minimieren**, indem man Zustände zusammenfasst, die sich für keine Eingabe unterschiedlich verhalten. Zu jeder regulären Sprache gibt es einen eindeutigen minimalen DEA.
+
+## Reguläre Ausdrücke und reguläre Sprachen
+
+**Reguläre Ausdrücke** beschreiben Sprachen mit drei Operationen. Formal über einem Alphabet $\Sigma$:
+
+| Ausdruck                 | Sprache                                              |
+| ------------------------ | ---------------------------------------------------- |
+| $\emptyset$              | die leere Sprache                                    |
+| $\varepsilon$            | nur das leere Wort                                   |
+| $a$ für $a \in \Sigma$   | nur das Wort $a$                                     |
+| $R \mid S$ (Vereinigung) | Wörter aus $R$ oder aus $S$                          |
+| $RS$ (Verkettung)        | ein Wort aus $R$, gefolgt von einem Wort aus $S$     |
+| $R^*$ (Kleene-Stern)     | null oder mehr Wiederholungen von Wörtern aus $R$    |
+
+Beispiele über $\{a, b\}$: $(a \mid b)^*ab$ beschreibt alle Wörter, die auf $ab$ enden. $a^*b^*$ beschreibt beliebig viele $a$, gefolgt von beliebig vielen $b$. $(0 \mid 1(01^*0)^*1)^*$ beschreibt die durch 3 teilbaren Dualzahlen aus dem DEA-Beispiel.
+
+Der **Satz von Kleene** besagt: Eine Sprache lässt sich genau dann durch einen regulären Ausdruck beschreiben, wenn ein endlicher Automat sie erkennt. Diese Sprachen heißen **regulär**. Die Umwandlungen sind konstruktiv:
+
+```text
+regulärer Ausdruck  ──(Thompson-Konstruktion)──▶  NEA mit ε-Übergängen
+NEA                 ──(Potenzmengenkonstruktion)──▶  DEA
+DEA                 ──(Zustandselimination)──▶  regulärer Ausdruck
+```
+
+Genau so arbeiten Regex-Bibliotheken und die **lexikalische Analyse** eines Compilers, die Quelltext in Token wie Bezeichner, Zahlen und Schlüsselwörter zerlegt. Praktische Regex-Syntax wie in C# und Rust (siehe [Reguläre Ausdrücke](/de/software-development/strings-and-regular-expressions/#reguläre-ausdrücke)) bietet Abkürzungen wie `+`, `?`, `[0-9]` und `{2,4}`, die sich alle auf die drei Grundoperationen zurückführen lassen. **Rückverweise** (`\1`) gehen allerdings über reguläre Sprachen hinaus. Deshalb verzichtet die Rust-Bibliothek `regex` darauf und garantiert dafür lineare Laufzeit.
+
+### Grenzen endlicher Automaten
+
+Die Sprache $L = \{a^n b^n \mid n \geq 0\}$ (gleich viele $a$ wie $b$, erst alle $a$) ist **nicht regulär**. Anschaulich: Um zu prüfen, ob gleich viele $b$ wie $a$ folgen, müsste sich der Automat beliebig große Zahlen merken, hat aber nur endlich viele Zustände.
+
+Das formale Werkzeug ist das **Pumping-Lemma**: Für jede reguläre Sprache gibt es eine Zahl $p$, sodass sich jedes Wort $w \in L$ mit $\lvert w \rvert \geq p$ zerlegen lässt in $w = xyz$ mit $\lvert xy \rvert \leq p$, $\lvert y \rvert \geq 1$ und $xy^iz \in L$ für alle $i \geq 0$. Für $a^p b^p$ liegt $y$ wegen $\lvert xy \rvert \leq p$ vollständig im $a$-Teil. „Aufpumpen“ zu $xy^2z$ ergibt mehr $a$ als $b$, also ein Wort außerhalb von $L$. Widerspruch, $L$ ist nicht regulär. Aus demselben Grund kann kein regulärer Ausdruck korrekt geklammerte Ausdrücke beliebiger Tiefe prüfen.
+
+## Grammatiken
+
+Eine **formale Grammatik** erzeugt die Wörter einer Sprache durch Ersetzungsregeln. Sie ist ein 4-Tupel $G = (V, \Sigma, P, S)$:
+
+- $V$: **Nichtterminale** (Variablen, Großbuchstaben)
+- $\Sigma$: **Terminale** (die Zeichen der Sprache)
+- $P$: **Produktionsregeln** der Form $\alpha \to \beta$
+- $S \in V$: **Startsymbol**
+
+Man beginnt beim Startsymbol und ersetzt so lange, bis nur noch Terminale übrig sind (**Ableitung**). Die Grammatik mit den Regeln $S \to aSb \mid \varepsilon$ erzeugt genau $\{a^n b^n\}$:
+
+$$
+S \Rightarrow aSb \Rightarrow aaSbb \Rightarrow aaaSbbb \Rightarrow aaabbb
+$$
+
+Programmiersprachen werden mit Grammatiken in der **Backus-Naur-Form** (BNF) oder der erweiterten **EBNF** beschrieben. Eine Grammatik für einfache arithmetische Ausdrücke, die Punkt vor Strich durch ihre Struktur berücksichtigt:
+
+```text
+Ausdruck ::= Term { ("+" | "-") Term }
+Term     ::= Faktor { ("*" | "/") Faktor }
+Faktor   ::= Zahl | "(" Ausdruck ")"
+Zahl     ::= Ziffer { Ziffer }
+Ziffer   ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+```
+
+Die Ableitung lässt sich als **Syntaxbaum** darstellen. Der **Parser** eines Compilers baut diesen Baum auf. Eine Grammatik ist **mehrdeutig**, wenn ein Wort zwei verschiedene Syntaxbäume hat. Das ist bei Programmiersprachen unerwünscht, weil dann die Bedeutung unklar ist. Die Grammatik oben ist eindeutig, weil sie Prioritäten über die Ebenen Ausdruck, Term und Faktor festlegt.
+
+### Chomsky-Hierarchie
+
+Noam Chomsky ordnete 1956 Grammatiken nach den erlaubten Regeln in vier Typen. Jede Stufe enthält die darunterliegenden:
+
+| Typ | Name                         | Regelform                                                         | Automat                               | Beispielsprache                       |
+| --- | ---------------------------- | ----------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| 0   | **rekursiv aufzählbar** (unbeschränkt) | $\alpha \to \beta$ beliebig                             | Turingmaschine                        | Sprache des Halteproblems             |
+| 1   | **kontextsensitiv**          | $\alpha A \beta \to \alpha \gamma \beta$, die rechte Seite ist nie kürzer | linear beschränkter Automat   | $\{a^n b^n c^n \mid n \geq 1\}$       |
+| 2   | **kontextfrei**              | $A \to \gamma$, links genau ein Nichtterminal                     | Kellerautomat                         | $\{a^n b^n\}$, korrekte Klammerung, Syntax von Programmiersprachen |
+| 3   | **regulär**                  | $A \to aB$ oder $A \to a$ (oder $A \to \varepsilon$)              | endlicher Automat                     | Bezeichner, Zahlen, $(a \mid b)^*ab$  |
+
+Für die Praxis wichtig: Die **Token** einer Programmiersprache (Typ 3) erkennt der Lexer mit endlichen Automaten, die **Struktur** (Typ 2) prüft der Parser mit einem Kellerautomaten. Regeln wie „eine Variable muss vor der Verwendung deklariert sein“ sind nicht kontextfrei und werden in einem eigenen Schritt (semantische Analyse) geprüft.
+
+## Kellerautomaten
+
+Ein **Kellerautomat** (_Pushdown Automaton_, PDA) ist ein endlicher Automat mit einem zusätzlichen, unbegrenzt großen **Stapelspeicher** (Keller, Stack). Ein Übergang hängt vom Zustand, vom gelesenen Zeichen und vom obersten Kellersymbol ab und kann das oberste Symbol durch eine Folge von Symbolen ersetzen (Push, Pop).
+
+Für $\{a^n b^n \mid n \geq 1\}$:
+
+1. Für jedes gelesene $a$ ein $A$ auf den Keller legen.
+2. Beim ersten $b$ in einen zweiten Zustand wechseln, ab dann für jedes $b$ ein $A$ entfernen. Ein $a$ ist in diesem Zustand nicht mehr erlaubt.
+3. Akzeptieren, wenn die Eingabe zu Ende und der Keller leer ist.
+
+Genauso prüfen Compiler, ob Klammern, `{` und `}` oder HTML-Tags korrekt verschachtelt sind. Anders als bei endlichen Automaten sind **nichtdeterministische** Kellerautomaten mächtiger als deterministische: Die Sprache der Palindrome gerader Länge ($ww^R$, z. B. $abba$) erkennt nur ein nichtdeterministischer PDA, weil er die Mitte des Wortes „raten“ muss. Parser verwenden deshalb Grammatiken, die sich deterministisch verarbeiten lassen (LL, LR).
+
+## Turingmaschinen
+
+Die **Turingmaschine** (Alan Turing, 1936) ist das allgemeinste Automatenmodell. Sie besteht aus:
+
+- einem in beide Richtungen **unendlichen Band**, eingeteilt in Felder mit je einem Zeichen (anfangs steht dort die Eingabe, sonst das Leerzeichen $\sqcup$),
+- einem **Schreib-Lese-Kopf**, der ein Feld liest, es überschreibt und sich um ein Feld nach links oder rechts bewegt,
+- einer endlichen **Steuerung** mit Zuständen und der Übergangsfunktion $\delta: Q \times \Gamma \to Q \times \Gamma \times \{L, R, N\}$ ($\Gamma$ ist das Bandalphabet, $N$ bedeutet stehen bleiben).
+
+Im Unterschied zum Kellerautomaten kann die Turingmaschine auf ihrem Band beliebig hin- und herfahren und überall schreiben. Damit kann sie alles berechnen, was ein heutiger Computer berechnen kann, nur langsamer. Eine **universelle Turingmaschine** erhält die Beschreibung einer anderen Turingmaschine als Eingabe und simuliert sie, das theoretische Vorbild des Speicherprogrammkonzepts. Was Turingmaschinen nicht können, beschreibt [Berechenbarkeit und Komplexität](/de/computer-science/computability-and-complexity/).
+
+:::tip[Beispiel: Dualzahl um 1 erhöhen]
+Der Kopf steht am Anfang auf der ersten Ziffer.
+
+| Zustand   | liest      | schreibt   | bewegt | neuer Zustand | Bedeutung                              |
+| --------- | ---------- | ---------- | ------ | ------------- | -------------------------------------- |
+| rechts    | 0          | 0          | R      | rechts        | zum Ende der Zahl laufen               |
+| rechts    | 1          | 1          | R      | rechts        |                                        |
+| rechts    | $\sqcup$   | $\sqcup$   | L      | übertrag      | Ende erreicht, zurück zur letzten Ziffer |
+| übertrag  | 1          | 0          | L      | übertrag      | 1 + 1 = 10, Übertrag weitergeben       |
+| übertrag  | 0          | 1          | N      | halt          | Übertrag aufgenommen                   |
+| übertrag  | $\sqcup$   | 1          | N      | halt          | neue führende Stelle                   |
+
+$1011 \to 1100$ und $111 \to 1000$.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const char Blank = '_';
+var rules = new Dictionary<(string State, char Read), (string Next, char Write, int Move)>
+{
+    [("rechts", '0')] = ("rechts", '0', +1),
+    [("rechts", '1')] = ("rechts", '1', +1),
+    [("rechts", Blank)] = ("übertrag", Blank, -1),
+    [("übertrag", '1')] = ("übertrag", '0', -1),
+    [("übertrag", '0')] = ("halt", '1', 0),
+    [("übertrag", Blank)] = ("halt", '1', 0),
+};
+
+foreach (string input in new[] { "1011", "111" })
+{
+    Console.WriteLine($"{input} -> {Run(input)}");
+}
+// Ausgabe:
+// 1011 -> 1100
+// 111 -> 1000
+
+string Run(string input)
+{
+    // Band als Dictionary: Position -> Zeichen, nicht beschriebene Felder sind leer
+    var tape = new Dictionary<int, char>();
+    for (int i = 0; i < input.Length; i++) tape[i] = input[i];
+
+    string state = "rechts";
+    int head = 0;
+    while (state != "halt")
+    {
+        char read = tape.GetValueOrDefault(head, Blank);
+        var (next, write, move) = rules[(state, read)];
+        tape[head] = write;
+        head += move;
+        state = next;
+    }
+    return string.Concat(tape.OrderBy(kv => kv.Key).Select(kv => kv.Value)).Trim(Blank);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{BTreeMap, HashMap};
+
+const BLANK: char = '_';
+
+fn run(rules: &HashMap<(&str, char), (&'static str, char, i64)>, input: &str) -> Option<String> {
+    // Band als Map: Position -> Zeichen, nicht beschriebene Felder sind leer
+    let mut tape: BTreeMap<i64, char> = input.chars().enumerate().map(|(i, c)| (i as i64, c)).collect();
+    let mut state = "rechts";
+    let mut head = 0;
+    while state != "halt" {
+        let read = tape.get(&head).copied().unwrap_or(BLANK);
+        let &(next, write, movement) = rules.get(&(state, read))?; // kein Übergang: Abbruch
+        tape.insert(head, write);
+        head += movement;
+        state = next;
+    }
+    let text: String = tape.values().collect();
+    Some(text.trim_matches(BLANK).to_string())
+}
+
+fn main() {
+    let rules = HashMap::from([
+        (("rechts", '0'), ("rechts", '0', 1)),
+        (("rechts", '1'), ("rechts", '1', 1)),
+        (("rechts", BLANK), ("übertrag", BLANK, -1)),
+        (("übertrag", '1'), ("übertrag", '0', -1)),
+        (("übertrag", '0'), ("halt", '1', 0)),
+        (("übertrag", BLANK), ("halt", '1', 0)),
+    ]);
+    for input in ["1011", "111"] {
+        if let Some(result) = run(&rules, input) {
+            println!("{input} -> {result}");
+        }
+    }
+}
+// Ausgabe:
+// 1011 -> 1100
+// 111 -> 1000
+```
+
+</TabItem>
+</Tabs>
+
+## Mealy- und Moore-Automaten
+
+Die bisherigen Automaten **erkennen** Sprachen, sie antworten nur mit Ja oder Nein. **Transduktoren** (Automaten mit Ausgabe) erzeugen bei jedem Schritt eine Ausgabe. Sie werden in der Digitaltechnik (Schaltwerke), in Steuerungen, Protokollen und Spielen verwendet.
+
+| Merkmal          | Moore-Automat                                      | Mealy-Automat                                      |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------- |
+| Ausgabe hängt ab von | nur vom **Zustand**                           | vom **Zustand und der aktuellen Eingabe**          |
+| Notation         | Ausgabe steht im Zustand: $q_1 / 1$                | Ausgabe steht am Übergang: $0 / 1$ (Eingabe / Ausgabe) |
+| Reaktion         | Ausgabe ändert sich erst mit dem nächsten Zustand  | reagiert sofort auf die Eingabe                    |
+| Zustände         | oft mehr                                           | oft weniger                                        |
+
+Beide sind gleich mächtig: Jeder Mealy-Automat lässt sich in einen Moore-Automaten umwandeln und umgekehrt.
+
+:::tip[Beispiel: Erkennen einer steigenden Flanke]
+Ein Signal wird in jedem Takt abgetastet. Die Ausgabe soll genau dann 1 sein, wenn das Signal von 0 auf 1 wechselt.
+
+**Mealy** (zwei Zustände, merkt sich den letzten Wert):
+
+| Zustand        | Eingabe 0      | Eingabe 1      |
+| -------------- | -------------- | -------------- |
+| → war 0        | war 0 / 0      | war 1 / **1**  |
+| war 1          | war 0 / 0      | war 1 / 0      |
+
+**Moore** (drei Zustände, die Ausgabe gehört zum Zustand):
+
+| Zustand / Ausgabe | Eingabe 0 | Eingabe 1 |
+| ----------------- | --------- | --------- |
+| → niedrig / 0     | niedrig   | Flanke    |
+| Flanke / **1**    | niedrig   | hoch      |
+| hoch / 0          | niedrig   | hoch      |
+
+Eingabefolge 0 1 1 0 1 ergibt bei beiden die Ausgabe 0 1 0 0 1. Beim Moore-Automaten erscheint sie im Zustand nach dem Übergang, beim Mealy-Automaten schon während des Übergangs.
+:::
+
+Eine Ampelsteuerung, ein Getränkeautomat oder der Verbindungsaufbau von TCP lassen sich ebenso als Zustandsautomat beschreiben. Im Programm setzt man sie mit einer Aufzählung für die Zustände und einem `switch` bzw. `match` über Zustand und Ereignis um. Auch die Zustandsdiagramme der [UML](/de/software-development/uml/) beruhen auf diesem Modell.
+
+## Weiterführende Quellen
+
+- John E. Hopcroft, Rajeev Motwani, Jeffrey D. Ullman: _Introduction to Automata Theory, Languages, and Computation_, Pearson
+- Uwe Schöning: _Theoretische Informatik kurzgefasst_, Spektrum Akademischer Verlag
+- Michael Sipser: _Introduction to the Theory of Computation_, Cengage

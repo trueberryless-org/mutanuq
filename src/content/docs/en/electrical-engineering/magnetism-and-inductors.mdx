@@ -1,0 +1,215 @@
+---
+title: Magnetism and Inductors
+description: Magnetic field, magnetomotive force, field strength, flux and flux density, Lorentz force, law of induction, inductance, switching inductors, transformer, motor and generator.
+sidebar:
+  order: 4
+---
+
+Every current produces a magnetic field, and every changing magnetic field produces a voltage. Transformers, motors, generators, relays, loudspeakers, hard disks, inductive charging and the inductors in switch-mode power supplies are all based on these two relationships.
+
+## Magnetic field
+
+A **magnetic field** is the space in which forces act on magnets, magnetisable materials (iron, nickel, cobalt) and moving charges. **Magnetic field lines** are always closed: outside a magnet they run from the north pole to the south pole, inside from south to north. There are no isolated magnetic poles. Like poles repel each other, unlike poles attract.
+
+Around a **current-carrying conductor** the field lines form concentric circles. The direction is given by the **right-hand grip rule**: if the thumb points in the conventional current direction, the curled fingers show the direction of the field lines. In a **coil** the fields of the turns add up. Inside there is an almost uniform field; outside it resembles that of a bar magnet. If the fingers wrap around the coil in the current direction, the thumb points to the north pole.
+
+## Magnetic quantities
+
+| Quantity                    | Symbol    | Unit                                         | Formula                      |
+| --------------------------- | --------- | -------------------------------------------- | ---------------------------- |
+| Magnetomotive force         | $\Theta$  | A                                            | $\Theta = N \cdot I$         |
+| Magnetic field strength     | $H$       | A/m                                          | $H = \dfrac{\Theta}{l} = \dfrac{N \cdot I}{l}$ |
+| Magnetic flux density       | $B$       | tesla, $1\,\mathrm{T} = 1\,\mathrm{V \cdot s/m^2}$ | $B = \mu_0 \cdot \mu_\mathrm{r} \cdot H$ |
+| Magnetic flux               | $\Phi$    | weber, $1\,\mathrm{Wb} = 1\,\mathrm{V \cdot s}$ | $\Phi = B \cdot A$        |
+
+The **magnetomotive force** is the cause of the field: $N$ turns with current $I$ act like one conductor with current $N \cdot I$. The **field strength** distributes the magnetomotive force over the mean field line length $l$. For a long straight conductor the field line length at distance $r$ is $2\pi r$, so $H = I/(2\pi r)$.
+
+The **flux density** $B$ indicates how strongly the field actually acts. It depends on the material:
+
+$$
+B = \mu_0 \cdot \mu_\mathrm{r} \cdot H \qquad \mu_0 \approx 4\pi \cdot 10^{-7}\,\mathrm{\frac{V \cdot s}{A \cdot m}} \approx 1.257 \cdot 10^{-6}\,\mathrm{\frac{H}{m}}
+$$
+
+$\mu_0$ is the **magnetic constant**, $\mu_\mathrm{r}$ the **relative permeability** of the material. The **flux** $\Phi$ is the flux density times the area it passes through, intuitively the total number of field lines.
+
+:::tip[Example]
+A coil with $N = 500$ turns and a length of $l = 10\,\mathrm{cm}$ carries $I = 0.2\,\mathrm{A}$:
+
+$$
+H = \frac{500 \cdot 0.2\,\mathrm{A}}{0.1\,\mathrm{m}} = 1000\,\mathrm{\frac{A}{m}} \qquad B_\mathrm{air} = 1.257 \cdot 10^{-6} \cdot 1000\,\mathrm{T} \approx 1.26\,\mathrm{mT}
+$$
+
+With an iron core ($\mu_\mathrm{r} = 1000$) it would be $1.26\,\mathrm{T}$. This shows why coils for strong fields have an iron core.
+:::
+
+### Magnetic materials
+
+| Group              | $\mu_\mathrm{r}$         | Examples                     |
+| ------------------ | ------------------------ | ---------------------------- |
+| diamagnetic        | just below $1$           | copper, water, bismuth       |
+| paramagnetic       | just above $1$           | aluminium, platinum, air     |
+| ferromagnetic      | $100$ to over $100\,000$, not constant | iron, nickel, cobalt, ferrites |
+
+For ferromagnetic materials $\mu_\mathrm{r}$ is not constant. The magnetisation curve $B(H)$ flattens out when all elementary magnets are aligned (**saturation**, for iron about $1.5$ to $2\,\mathrm{T}$). During remagnetisation the material traverses a **hysteresis loop**. The enclosed area corresponds to the energy lost as heat per cycle. **Soft magnetic** materials (electrical steel, ferrite) have a narrow loop and are suitable for transformers and inductors. **Hard magnetic** materials (NdFeB, AlNiCo) have a high remanence and coercivity and are suitable for permanent magnets.
+
+## Force in a magnetic field
+
+### Force on a conductor
+
+A current-carrying conductor of length $l$ perpendicular to a magnetic field experiences a force:
+
+$$
+F = B \cdot I \cdot l \qquad \text{in general} \quad F = B \cdot I \cdot l \cdot \sin\alpha
+$$
+
+The direction is given by **Fleming's left-hand rule** (motor rule): with thumb, index finger and middle finger at right angles, the index finger points along the field, the middle finger along the current and the thumb shows the direction of the force.
+
+:::tip[Example]
+A conductor with an effective length of $20\,\mathrm{cm}$ carries $10\,\mathrm{A}$ in a field of $0.5\,\mathrm{T}$. It is deflected with $F = 0.5\,\mathrm{T} \cdot 10\,\mathrm{A} \cdot 0.2\,\mathrm{m} = 1\,\mathrm{N}$.
+:::
+
+### Lorentz force
+
+The cause of this force is the **Lorentz force** on each individual moving charge:
+
+$$
+F = Q \cdot v \cdot B \qquad \vec{F} = Q \cdot \vec{v} \times \vec{B}
+$$
+
+It is perpendicular to the velocity and the field. It deflects electron beams and explains the **Hall effect**: in a current-carrying plate in a magnetic field the charge carriers are pushed to one side, and the Hall voltage appears across the current. **Hall sensors** thus measure magnetic fields, speeds, positions and currents without contact.
+
+## Induction
+
+### Law of induction
+
+If the magnetic flux through a conductor loop changes, a voltage is **induced** in it. **Faraday's law of induction** for a coil with $N$ turns reads:
+
+$$
+u_\mathrm{i} = -N \cdot \frac{\mathrm{d}\Phi}{\mathrm{d}t} \approx -N \cdot \frac{\Delta\Phi}{\Delta t}
+$$
+
+Only the **change** matters. A constant field induces nothing. The flux can change because the current in the field-producing conductor changes (transformer), because a magnet moves or because the loop rotates in the field (generator).
+
+The minus sign is **Lenz's law**: the induced current is directed so that its magnetic field opposes the cause of the induction. Without this law a generator would produce energy from nothing.
+
+:::tip[Example]
+In a coil with $100$ turns the flux changes by $2\,\mathrm{mWb}$ in $10\,\mathrm{ms}$. The magnitude of the induced voltage is
+
+$$
+u_\mathrm{i} = 100 \cdot \frac{0.002\,\mathrm{Wb}}{0.01\,\mathrm{s}} = 20\,\mathrm{V}
+$$
+:::
+
+A straight conductor of length $l$ moving at velocity $v$ perpendicular through a field $B$ produces the **motional EMF** $u_\mathrm{i} = B \cdot l \cdot v$.
+
+**Eddy currents** arise when the flux changes in a solid conducting body. They heat it. In induction hobs and eddy current brakes this is intended, in transformer cores it is not. That is why cores consist of thin sheets insulated from each other or of ferrite.
+
+### Self-induction and inductance
+
+If the current in a coil changes, its own magnetic field changes and it induces a voltage in itself that opposes the change (**self-induction**). How strong this is, is described by the **inductance** $L$:
+
+$$
+u_L = L \cdot \frac{\mathrm{d}i}{\mathrm{d}t} \qquad [L] = \mathrm{\frac{V \cdot s}{A}} = \mathrm{H}\ (\text{henry})
+$$
+
+For a long cylindrical coil with cross-section $A$ and length $l$:
+
+$$
+L = \frac{\mu_0 \cdot \mu_\mathrm{r} \cdot N^2 \cdot A}{l}
+$$
+
+The inductance grows with the **square** of the number of turns.
+
+:::tip[Example]
+Air-core coil with $N = 200$, $A = 1\,\mathrm{cm^2} = 10^{-4}\,\mathrm{m^2}$, $l = 2\,\mathrm{cm}$:
+
+$$
+L = \frac{1.257 \cdot 10^{-6}\,\mathrm{H/m} \cdot 200^2 \cdot 10^{-4}\,\mathrm{m^2}}{0.02\,\mathrm{m}} \approx 0.25\,\mathrm{mH}
+$$
+:::
+
+An inductor stores energy in its magnetic field:
+
+$$
+W = \frac{1}{2} L I^2
+$$
+
+Inductors in series add like resistors ($L = L_1 + L_2$), in parallel like resistors in parallel, provided they are not magnetically coupled.
+
+## Switching inductors
+
+The inductor behaves towards current as the capacitor does towards voltage: its current cannot change abruptly. If an inductor with resistance $R$ (winding resistance plus series resistor) is connected to $U_0$, the current rises exponentially:
+
+$$
+\tau = \frac{L}{R} \qquad i(t) = \frac{U_0}{R} \cdot \left(1 - e^{-t/\tau}\right) \qquad u_L(t) = U_0 \cdot e^{-t/\tau}
+$$
+
+At the first moment the full voltage is across the inductor and the current is zero. After $5\tau$ practically the final current $U_0/R$ flows, and an ideal inductor has no voltage across it any more. The values $63\,\%$ after $1\tau$ etc. apply as for the [capacitor](/en/electrical-engineering/electric-field-and-capacitors/#charging-and-discharging).
+
+:::tip[Example]
+A relay has $L = 100\,\mathrm{mH}$ and $R = 50\,\Omega$. The time constant is $\tau = 0.1\,\mathrm{H} / 50\,\Omega = 2\,\mathrm{ms}$. After about $10\,\mathrm{ms}$ the current has reached its final value.
+:::
+
+### Turn-off voltage and flyback diode
+
+When **switching off**, the inductor tries to keep the current flowing. If the circuit is interrupted suddenly, $\mathrm{d}i/\mathrm{d}t$ is very large and a high **induced voltage** results, often hundreds of volts. It can destroy transistors and causes sparks at mechanical contacts. The remedy is a **flyback diode** (freewheeling diode) in antiparallel with the coil (cathode to plus): it blocks during operation and takes over the current when switching off, which then decays via the coil resistance. Every relay or motor driver with a [transistor](/en/electrical-engineering/transistors/) therefore needs such a diode.
+
+The turn-off voltage is used deliberately in the ignition coil of petrol engines and in the [boost converter](/en/electrical-engineering/power-supplies/#switching-regulators).
+
+## Transformer
+
+A **transformer** consists of two coils on a common iron core. An AC voltage on the **primary coil** ($N_1$) produces a constantly changing flux which, via the core, also passes through the **secondary coil** ($N_2$) and induces a voltage there. A transformer does not work with DC because the flux does not change.
+
+For the ideal (lossless) transformer with the **turns ratio** $n$:
+
+$$
+n = \frac{N_1}{N_2} = \frac{U_1}{U_2} = \frac{I_2}{I_1} \qquad P_1 = P_2
+$$
+
+The voltages behave like the numbers of turns, the currents inversely. A load resistance appears on the primary side multiplied by $n^2$ (**impedance transformation**): $Z_1 = n^2 \cdot Z_2$.
+
+:::tip[Example]
+A mains transformer steps $230\,\mathrm{V}$ down to $12\,\mathrm{V}$ and has $1150$ primary turns. $n = 230/12 \approx 19.17$, so the secondary winding needs $N_2 = 1150 \cdot 12/230 = 60$ turns. If $2\,\mathrm{A}$ are drawn on the secondary side, (ideally) $I_1 = 2\,\mathrm{A}/19.17 \approx 0.104\,\mathrm{A}$ flow on the primary side. The power is $24\,\mathrm{W}$ on both sides.
+:::
+
+Real transformers have **copper losses** (winding resistance, $I^2 R$) and **iron losses** (hysteresis and eddy currents). Large transformers reach efficiencies above $99\,\%$. Besides changing voltage, further tasks are **galvanic isolation** (no conductive connection between mains and secondary side, important for [safety](/en/electrical-engineering/electrical-safety/)) and impedance matching, for example in network cards (Ethernet transformers).
+
+Because the induced voltage is proportional to $\mathrm{d}\Phi/\mathrm{d}t$, a transformer needs much less iron and fewer turns for the same power at higher frequency. This is why [switch-mode power supplies](/en/electrical-engineering/power-supplies/) are so small.
+
+The power grid uses transformers to transmit electrical energy at high voltage (in Austria up to $380\,\mathrm{kV}$) and therefore low current. The line losses $I^2 R$ fall with the square of the current.
+
+## Motors and generators
+
+### Generator
+
+If a coil rotates in a magnetic field (or a magnet in a coil), the flux through the coil changes sinusoidally and a **sinusoidal AC voltage** is induced:
+
+$$
+u(t) = \hat{u} \cdot \sin(\omega t) \qquad \hat{u} = N \cdot B \cdot A \cdot \omega
+$$
+
+This is how power station generators and bicycle dynamos produce electricity. Three windings offset by $120°$ supply [three-phase AC](/en/electrical-engineering/alternating-current/#three-phase-ac).
+
+### Electric motors
+
+A motor is the reverse of a generator: the force on current-carrying conductors in the magnetic field produces a torque.
+
+| Motor type                      | Principle                                                                                       | Application                        |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Brushed DC motor                | A **commutator** reverses the current in the rotor every half turn so that the torque keeps the same direction | toys, automotive auxiliary drives |
+| Brushless DC motor (BLDC)       | Electronics switch the stator windings; the rotor is a permanent magnet                          | fans, hard disks, drones           |
+| Stepper motor                   | The rotor follows the windings energised one after the other in steps                           | 3D printers, positioning           |
+| Induction motor (asynchronous)  | A **rotating field** from three phases induces currents in the squirrel-cage rotor, which runs slightly slower than the field (slip) | industrial drives, pumps |
+| Synchronous motor               | The rotor (magnet) turns exactly with the rotating field                                         | electric cars, clocks              |
+
+Every rotating motor also acts as a generator and produces a back EMF that rises with speed. That is why a motor draws a much larger current when starting (speed zero) than during operation.
+
+### Relay
+
+A **relay** is an electromagnetic switch: a small control current through the coil attracts an armature that closes or opens contacts for a separate load circuit. Relays isolate control and load circuits galvanically but are slow and wear out. Solid state relays switch without mechanics.
+
+## Further reading
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- [Wikipedia: Electromagnetic induction](https://en.wikipedia.org/wiki/Electromagnetic_induction)
+- Hughes, E.: _Electrical and Electronic Technology_. Pearson.

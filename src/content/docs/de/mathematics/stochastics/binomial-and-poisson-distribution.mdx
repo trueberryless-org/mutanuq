@@ -1,0 +1,231 @@
+---
+title: Binomial- und Poisson-Verteilung
+description: "Bernoulli-Experimente, Binomialverteilung mit Erwartungswert und Varianz, Poisson-Verteilung für seltene Ereignisse und Näherung der Binomialverteilung."
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die Binomialverteilung und die Poisson-Verteilung sind die wichtigsten **diskreten** Verteilungen. Die Binomialverteilung zählt Treffer bei einer festen Anzahl unabhängiger Versuche, die Poisson-Verteilung zählt seltene Ereignisse in einem Zeitraum oder Bereich, etwa Anrufe pro Stunde oder Bitfehler pro Datenblock.
+
+## Bernoulli-Experiment
+
+Ein **Bernoulli-Experiment** hat genau zwei Ausgänge: **Treffer** (Erfolg) mit Wahrscheinlichkeit $p$ und Niete mit Wahrscheinlichkeit $q = 1 - p$. Beispiele: Bauteil defekt oder nicht, Paket angekommen oder verloren, Münzwurf.
+
+Eine **Bernoulli-Kette** der Länge $n$ besteht aus $n$ Wiederholungen, wobei
+
+- die Versuche voneinander **unabhängig** sind und
+- die Trefferwahrscheinlichkeit $p$ bei jedem Versuch **gleich** bleibt.
+
+Ziehen *mit* Zurücklegen erfüllt diese Bedingungen. Ziehen ohne Zurücklegen nicht; ist die Stichprobe aber klein im Vergleich zur Grundgesamtheit (Faustregel: weniger als 5 %), verwendet man trotzdem die Binomialverteilung als Näherung.
+
+## Binomialverteilung
+
+Die Zufallsvariable $X$ = „Anzahl der Treffer in einer Bernoulli-Kette der Länge $n$“ ist **binomialverteilt** mit den Parametern $n$ und $p$, kurz $X \sim B(n; p)$:
+
+$$
+P(X = k) = \binom{n}{k} \cdot p^k \cdot (1 - p)^{n - k} \qquad k = 0, 1, \ldots, n
+$$
+
+Die Formel setzt sich aus zwei Teilen zusammen: $p^k (1 - p)^{n-k}$ ist die Wahrscheinlichkeit eines einzelnen Pfades mit $k$ Treffern und $n - k$ Nieten, der [Binomialkoeffizient](/de/mathematics/stochastics/probability/#kombinatorik) $\binom{n}{k}$ zählt, wie viele solche Pfade es gibt.
+
+### Erwartungswert und Varianz
+
+$$
+E(X) = \mu = n \cdot p \qquad V(X) = \sigma^2 = n \cdot p \cdot (1 - p) \qquad \sigma = \sqrt{n p (1 - p)}
+$$
+
+:::tip[Beispiel: Qualitätskontrolle]
+Eine Maschine produziert 10 % Ausschuss. Es werden 10 Teile zufällig entnommen, $X \sim B(10; 0{,}1)$.
+
+Genau zwei defekte Teile:
+
+$$
+P(X = 2) = \binom{10}{2} \cdot 0{,}1^2 \cdot 0{,}9^8 = 45 \cdot 0{,}01 \cdot 0{,}4305 \approx 0{,}1937
+$$
+
+Höchstens zwei defekte Teile:
+
+$$
+P(X \leq 2) = P(X = 0) + P(X = 1) + P(X = 2) \approx 0{,}3487 + 0{,}3874 + 0{,}1937 = 0{,}9298
+$$
+
+Mindestens ein defektes Teil (über das Gegenereignis):
+
+$$
+P(X \geq 1) = 1 - P(X = 0) = 1 - 0{,}9^{10} \approx 0{,}6513
+$$
+
+Erwartungswert und Standardabweichung: $\mu = 10 \cdot 0{,}1 = 1$, $\;\sigma = \sqrt{10 \cdot 0{,}1 \cdot 0{,}9} \approx 0{,}949$.
+:::
+
+:::tip[Typische Formulierungen]
+| Formulierung | Berechnung |
+| ------------ | ---------- |
+| genau $k$ | $P(X = k)$ |
+| höchstens $k$ | $P(X \leq k)$ |
+| weniger als $k$ | $P(X \leq k - 1)$ |
+| mindestens $k$ | $P(X \geq k) = 1 - P(X \leq k - 1)$ |
+| mehr als $k$ | $P(X > k) = 1 - P(X \leq k)$ |
+| zwischen $a$ und $b$ (inklusive) | $P(a \leq X \leq b) = P(X \leq b) - P(X \leq a - 1)$ |
+:::
+
+### Mindestanzahl von Versuchen
+
+Eine häufige Aufgabe: Wie oft muss man ein Experiment mindestens durchführen, damit mit einer Wahrscheinlichkeit von mindestens $\alpha$ wenigstens ein Treffer dabei ist?
+
+$$
+1 - (1 - p)^n \geq \alpha \quad\Rightarrow\quad n \geq \frac{\ln(1 - \alpha)}{\ln(1 - p)}
+$$
+
+:::tip[Beispiel]
+Ein Paket geht mit Wahrscheinlichkeit $0{,}2$ verloren. Wie viele unabhängige Kopien muss man senden, damit mit mindestens 99 % Wahrscheinlichkeit wenigstens eine ankommt? Hier ist der „Treffer“ das Ankommen, $p = 0{,}8$:
+
+$$
+n \geq \frac{\ln 0{,}01}{\ln 0{,}2} \approx 2{,}86 \quad\Rightarrow\quad n = 3
+$$
+
+Beim Dividieren durch den negativen Logarithmus $\ln(1 - p)$ dreht sich das Ungleichheitszeichen um.
+:::
+
+### Form der Verteilung
+
+Für $p = 0{,}5$ ist die Binomialverteilung symmetrisch, für $p < 0{,}5$ rechtsschief, für $p > 0{,}5$ linksschief. Je größer $n$, desto mehr ähnelt das Stabdiagramm einer Glockenkurve; deshalb kann man die Binomialverteilung für große $n$ durch die [Normalverteilung annähern](/de/mathematics/stochastics/normal-distribution/#näherung-der-binomialverteilung).
+
+## Poisson-Verteilung
+
+Die **Poisson-Verteilung** beschreibt die Anzahl von Ereignissen, die in einem festen Intervall (Zeit, Länge, Fläche) unabhängig voneinander und mit konstanter mittlerer Rate auftreten, zum Beispiel Anrufe bei einer Hotline pro Stunde, Anfragen an einen Server pro Sekunde, Druckfehler pro Seite oder radioaktive Zerfälle pro Sekunde. Mit der mittleren Anzahl $\lambda$ pro Intervall gilt, kurz $X \sim P(\lambda)$:
+
+$$
+P(X = k) = \frac{\lambda^k}{k!} \cdot e^{-\lambda} \qquad k = 0, 1, 2, \ldots
+$$
+
+$$
+E(X) = \lambda \qquad V(X) = \lambda \qquad \sigma = \sqrt{\lambda}
+$$
+
+Erwartungswert und Varianz sind gleich. Die Anzahl $k$ ist nach oben nicht begrenzt.
+
+:::tip[Beispiel: Helpdesk]
+Bei einem Helpdesk gehen im Mittel 2 Anrufe pro Stunde ein ($\lambda = 2$).
+
+$$
+P(X = 0) = e^{-2} \approx 0{,}1353 \qquad P(X = 3) = \frac{2^3}{3!} \cdot e^{-2} \approx 0{,}1804
+$$
+
+Mehr als 4 Anrufe in einer Stunde:
+
+$$
+P(X > 4) = 1 - P(X \leq 4) \approx 1 - (0{,}1353 + 0{,}2707 + 0{,}2707 + 0{,}1804 + 0{,}0902) = 1 - 0{,}9473 = 0{,}0527
+$$
+
+Für eine halbe Stunde ist $\lambda = 1$: Die Rate wird proportional zur Intervalllänge umgerechnet.
+:::
+
+### Poisson als Näherung der Binomialverteilung
+
+Ist $n$ groß und $p$ klein, ist die Binomialverteilung $B(n; p)$ fast gleich der Poisson-Verteilung mit $\lambda = n \cdot p$. Übliche Faustregel: $n \geq 50$ und $p \leq 0{,}1$ (manche Bücher: $n p \leq 10$). Die Poisson-Verteilung heißt deshalb auch **Verteilung der seltenen Ereignisse**.
+
+:::tip[Beispiel]
+Ein Bauteil ist mit Wahrscheinlichkeit $1\,\%$ fehlerhaft. Unter 200 Bauteilen genau ein fehlerhaftes:
+
+$$
+\text{binomial: } \binom{200}{1} \cdot 0{,}01 \cdot 0{,}99^{199} \approx 0{,}27067 \qquad \text{Poisson mit } \lambda = 2\text{: } 2 \cdot e^{-2} \approx 0{,}27067
+$$
+:::
+
+## Berechnung im Programm
+
+Taschenrechner und GeoGebra haben eigene Funktionen (`BinomialDist`, `Poisson`). Im Programm berechnet man den Binomialkoeffizienten schrittweise, damit keine riesigen Fakultäten entstehen:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// Binomialkoeffizient schrittweise, ohne große Fakultäten
+static double Choose(int n, int k)
+{
+    double result = 1;
+    for (int i = 1; i <= k; i++) result = result * (n - k + i) / i;
+    return result;
+}
+
+static double BinomialPmf(int n, double p, int k) =>
+    Choose(n, k) * Math.Pow(p, k) * Math.Pow(1 - p, n - k);
+
+static double PoissonPmf(double lambda, int k)
+{
+    double result = Math.Exp(-lambda);
+    for (int i = 1; i <= k; i++) result *= lambda / i;
+    return result;
+}
+
+var inv = CultureInfo.InvariantCulture;
+double cumulative = 0;
+for (int k = 0; k <= 3; k++)
+{
+    double pk = BinomialPmf(10, 0.1, k);
+    cumulative += pk;
+    Console.WriteLine(string.Create(inv, $"k = {k}: P(X = k) = {pk:F4}, P(X <= k) = {cumulative:F4}"));
+}
+Console.WriteLine(string.Create(inv, $"Poisson: P(X = 3) = {PoissonPmf(2, 3):F4}"));
+// k = 0: P(X = k) = 0.3487, P(X <= k) = 0.3487
+// k = 1: P(X = k) = 0.3874, P(X <= k) = 0.7361
+// k = 2: P(X = k) = 0.1937, P(X <= k) = 0.9298
+// k = 3: P(X = k) = 0.0574, P(X <= k) = 0.9872
+// Poisson: P(X = 3) = 0.1804
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Binomialkoeffizient schrittweise, ohne große Fakultäten
+fn choose(n: u32, k: u32) -> f64 {
+    (1..=k).fold(1.0, |acc, i| acc * f64::from(n - k + i) / f64::from(i))
+}
+
+fn binomial_pmf(n: u32, p: f64, k: u32) -> f64 {
+    choose(n, k) * p.powi(k as i32) * (1.0 - p).powi((n - k) as i32)
+}
+
+fn poisson_pmf(lambda: f64, k: u32) -> f64 {
+    (1..=k).fold((-lambda).exp(), |acc, i| acc * lambda / f64::from(i))
+}
+
+fn main() {
+    let mut cumulative = 0.0;
+    for k in 0..=3 {
+        let pk = binomial_pmf(10, 0.1, k);
+        cumulative += pk;
+        println!("k = {k}: P(X = k) = {pk:.4}, P(X <= k) = {cumulative:.4}");
+    }
+    println!("Poisson: P(X = 3) = {:.4}", poisson_pmf(2.0, 3));
+    // k = 0: P(X = k) = 0.3487, P(X <= k) = 0.3487
+    // k = 1: P(X = k) = 0.3874, P(X <= k) = 0.7361
+    // k = 2: P(X = k) = 0.1937, P(X <= k) = 0.9298
+    // k = 3: P(X = k) = 0.0574, P(X <= k) = 0.9872
+    // Poisson: P(X = 3) = 0.1804
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Übersicht
+
+| | Binomialverteilung $B(n; p)$ | Poisson-Verteilung $P(\lambda)$ |
+| --- | --- | --- |
+| Situation | $n$ unabhängige Versuche, Trefferwahrscheinlichkeit $p$ | seltene Ereignisse in einem Intervall mit mittlerer Anzahl $\lambda$ |
+| Werte | $0, 1, \ldots, n$ | $0, 1, 2, \ldots$ (unbegrenzt) |
+| $P(X = k)$ | $\binom{n}{k} p^k (1 - p)^{n-k}$ | $\frac{\lambda^k}{k!} e^{-\lambda}$ |
+| $E(X)$ | $n p$ | $\lambda$ |
+| $V(X)$ | $n p (1 - p)$ | $\lambda$ |
+
+## Weiterführende Quellen
+
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Binomial Distribution](https://www.itl.nist.gov/div898/handbook/eda/section3/eda366i.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Poisson Distribution](https://www.itl.nist.gov/div898/handbook/eda/section3/eda366j.htm)

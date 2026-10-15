@@ -1,0 +1,172 @@
+---
+title: Halbleiter und Dioden
+description: Bändermodell, Eigenleitung, Dotierung, pn-Übergang, Diodenkennlinie, Z-Diode und Stabilisierung, LED mit Vorwiderstand, Gleichrichter mit Glättung, Fotodiode und Solarzelle.
+sidebar:
+  order: 7
+---
+
+**Halbleiter** wie Silizium leiten schlechter als Metalle, aber besser als Isolatoren. Ihre Leitfähigkeit lässt sich durch gezielte Verunreinigung, Licht, Temperatur und angelegte Spannungen steuern. Alle elektronischen Bauelemente von der Diode über den Transistor bis zum Prozessor beruhen darauf.
+
+## Bändermodell
+
+In einem Festkörper bilden die erlaubten Energiezustände der Elektronen **Bänder**. Das **Valenzband** enthält die Elektronen, die die Atome aneinander binden. Im darüberliegenden **Leitungsband** können sich Elektronen frei bewegen und Strom leiten. Dazwischen liegt eine **Bandlücke** (verbotene Zone) mit der Energie $W_\mathrm{g}$, angegeben in Elektronenvolt ($1\,\mathrm{eV} \approx 1{,}602 \cdot 10^{-19}\,\mathrm{J}$).
+
+| Stoffart   | Bandlücke                 | Beispiel                                |
+| ---------- | ------------------------- | --------------------------------------- |
+| Leiter     | keine, Bänder überlappen  | Kupfer, Aluminium                       |
+| Halbleiter | etwa $0{,}1$ bis $3\,\mathrm{eV}$ | Germanium $0{,}67\,\mathrm{eV}$, Silizium $1{,}12\,\mathrm{eV}$, Galliumarsenid $1{,}42\,\mathrm{eV}$, Galliumnitrid $3{,}4\,\mathrm{eV}$ |
+| Isolator   | groß, über etwa $4\,\mathrm{eV}$ | Glas, Diamant ($5{,}5\,\mathrm{eV}$)    |
+
+### Eigenleitung
+
+In reinem Silizium sind bei $0\,\mathrm{K}$ alle Elektronen in Bindungen. Durch Wärme springen einzelne Elektronen ins Leitungsband und hinterlassen ein **Loch** (Defektelektron) im Valenzband. Benachbarte Elektronen können in das Loch nachrücken, sodass sich das Loch wie eine positive Ladung bewegt. Diese **Eigenleitung** ist klein und steigt stark mit der Temperatur. Halbleiter sind deshalb Heißleiter (NTC).
+
+## Dotierung
+
+Durch Einbau weniger Fremdatome (**Dotierung**, etwa 1 Fremdatom auf $10^6$ bis $10^8$ Siliziumatome) steigt die Leitfähigkeit um viele Größenordnungen.
+
+| Typ    | Fremdatome                                      | Wertigkeit | Wirkung                                  | Majoritätsträger |
+| ------ | ----------------------------------------------- | ---------- | ---------------------------------------- | ---------------- |
+| n-Typ  | **Donatoren**: Phosphor, Arsen, Antimon          | 5          | ein überzähliges, leicht lösbares Elektron | Elektronen      |
+| p-Typ  | **Akzeptoren**: Bor, Aluminium, Gallium, Indium | 3          | ein fehlendes Bindungselektron, also ein Loch | Löcher       |
+
+Die Ladungsträger, die durch Dotierung entstehen, heißen **Majoritätsträger**. Die wenigen Ladungsträger der Gegenart, die durch Eigenleitung entstehen, heißen **Minoritätsträger**. Ein dotierter Kristall ist insgesamt elektrisch neutral, weil die Fremdatome als ortsfeste Ionen die Gegenladung tragen.
+
+## pn-Übergang
+
+Grenzen ein p- und ein n-dotierter Bereich aneinander, **diffundieren** Elektronen aus dem n-Gebiet ins p-Gebiet und rekombinieren dort mit Löchern, und umgekehrt. An der Grenze bleibt eine Zone ohne freie Ladungsträger zurück, die **Sperrschicht** (Raumladungszone). Die zurückgebliebenen ortsfesten Ionen erzeugen ein elektrisches Feld, das weitere Diffusion stoppt. Die zugehörige **Diffusionsspannung** beträgt bei Silizium etwa $0{,}7\,\mathrm{V}$.
+
+- **Durchlassrichtung**: Plus an p (Anode), Minus an n (Kathode). Die äußere Spannung baut die Sperrschicht ab. Ab etwa $0{,}6$ bis $0{,}7\,\mathrm{V}$ steigt der Strom steil an.
+- **Sperrrichtung**: Plus an n. Die Sperrschicht wird breiter, es fließt nur ein winziger **Sperrstrom** aus Minoritätsträgern (nA bis µA).
+
+## Diode
+
+Eine **Diode** ist ein pn-Übergang mit zwei Anschlüssen: **Anode** (p) und **Kathode** (n, am Gehäuse durch einen Ring markiert). Sie wirkt wie ein Ventil, das Strom nur in eine Richtung durchlässt. Im Schaltzeichen zeigt das Dreieck in die technische Durchlassrichtung.
+
+### Kennlinie
+
+Der Zusammenhang zwischen Strom und Spannung ist stark nichtlinear. Er wird durch die **Shockley-Gleichung** beschrieben:
+
+$$
+I = I_\mathrm{S} \cdot \left(e^{\frac{U}{n \cdot U_\mathrm{T}}} - 1\right) \qquad U_\mathrm{T} = \frac{k \cdot T}{e} \approx 26\,\mathrm{mV}\ \text{bei}\ 300\,\mathrm{K}
+$$
+
+$I_\mathrm{S}$ ist der Sättigungssperrstrom, $n$ der Emissionskoeffizient (1 bis 2), $U_\mathrm{T}$ die Temperaturspannung. Praktisch heißt das: Pro $60\,\mathrm{mV}$ (bei $n = 1$) mehr Spannung verzehnfacht sich der Strom. Deshalb liegt die Spannung an einer leitenden Siliziumdiode über einen großen Strombereich nahezu fest bei $0{,}6$ bis $0{,}8\,\mathrm{V}$. Für Berechnungen nimmt man vereinfacht eine **Schleusenspannung** von $U_\mathrm{F} = 0{,}7\,\mathrm{V}$ an.
+
+Die Durchlassspannung sinkt mit etwa $-2\,\mathrm{mV/K}$, wenn die Temperatur steigt. Wird die maximale **Sperrspannung** überschritten, bricht die Diode durch, und der Sperrstrom steigt stark an (Zener- oder Lawinendurchbruch).
+
+| Diodenart         | $U_\mathrm{F}$ (typisch)       | Einsatz                                          |
+| ----------------- | ------------------------------ | ------------------------------------------------ |
+| Silizium (1N4148, 1N4007) | $0{,}6$ bis $0{,}8\,\mathrm{V}$ | Signal- und Gleichrichterdioden          |
+| Germanium         | $0{,}2$ bis $0{,}3\,\mathrm{V}$ | historisch, Demodulatoren                        |
+| Schottky          | $0{,}2$ bis $0{,}5\,\mathrm{V}$ | Metall-Halbleiter-Übergang, schnell, für Schaltregler und Verpolschutz |
+| LED               | $1{,}6$ bis $3{,}6\,\mathrm{V}$ | Lichterzeugung                                  |
+
+Wichtige Grenzwerte im Datenblatt sind der maximale Durchlassstrom $I_\mathrm{F}$, die maximale Sperrspannung $U_\mathrm{R}$ (oder $U_\mathrm{RRM}$), die Verlustleistung und die Sperrverzögerungszeit (wie schnell die Diode vom Leiten ins Sperren wechselt).
+
+## Z-Diode
+
+Eine **Z-Diode** (Zener-Diode) ist so dotiert, dass sie in Sperrrichtung bei einer genau festgelegten **Z-Spannung** $U_\mathrm{Z}$ (etwa $2{,}4$ bis $200\,\mathrm{V}$, E24-Reihe) durchbricht, ohne Schaden zu nehmen. Im Durchbruchbereich bleibt die Spannung nahezu konstant, auch wenn sich der Strom stark ändert. Z-Dioden werden in Sperrrichtung betrieben, also mit der Kathode an Plus.
+
+### Spannungsstabilisierung
+
+Die einfachste Stabilisierung besteht aus einem **Vorwiderstand** $R_\mathrm{V}$ und einer Z-Diode parallel zur Last. Der Vorwiderstand nimmt die Differenz zwischen Eingangs- und Z-Spannung auf. Der Strom durch ihn teilt sich auf Z-Diode und Last auf. Ändert sich die Eingangsspannung oder der Laststrom, ändert sich nur der Z-Strom.
+
+Bedingungen für die Dimensionierung:
+
+- Auch bei **kleinster Eingangsspannung und größtem Laststrom** muss noch der Mindeststrom $I_\mathrm{Z,min}$ durch die Z-Diode fließen:
+
+$$
+R_\mathrm{V} \le \frac{U_\mathrm{e,min} - U_\mathrm{Z}}{I_\mathrm{Z,min} + I_\mathrm{L,max}}
+$$
+
+- Bei **größter Eingangsspannung und kleinstem Laststrom** darf die Verlustleistung der Z-Diode $P_\mathrm{Z} = U_\mathrm{Z} \cdot I_\mathrm{Z}$ nicht überschritten werden.
+
+:::tip[Beispiel]
+Eine Eingangsspannung von $10$ bis $14\,\mathrm{V}$ soll auf $5{,}1\,\mathrm{V}$ stabilisiert werden. Der Laststrom liegt zwischen $0$ und $20\,\mathrm{mA}$, die Z-Diode braucht mindestens $5\,\mathrm{mA}$ und verträgt $500\,\mathrm{mW}$.
+
+$$
+R_\mathrm{V} \le \frac{10\,\mathrm{V} - 5{,}1\,\mathrm{V}}{5\,\mathrm{mA} + 20\,\mathrm{mA}} = 196\,\Omega \quad \Rightarrow \quad R_\mathrm{V} = 180\,\Omega\ \text{(E12)}
+$$
+
+Schlimmster Fall für die Z-Diode ($14\,\mathrm{V}$, keine Last): $I_\mathrm{Z} = (14 - 5{,}1)\,\mathrm{V}/180\,\Omega \approx 49{,}4\,\mathrm{mA}$, $P_\mathrm{Z} = 5{,}1\,\mathrm{V} \cdot 49{,}4\,\mathrm{mA} \approx 252\,\mathrm{mW}$. Das liegt unter $500\,\mathrm{mW}$. Der Vorwiderstand setzt dabei $(8{,}9\,\mathrm{V})^2/180\,\Omega \approx 0{,}44\,\mathrm{W}$ um und sollte für $1\,\mathrm{W}$ ausgelegt sein. Bei $10\,\mathrm{V}$ und $20\,\mathrm{mA}$ Last bleiben für die Z-Diode $7{,}2\,\mathrm{mA}$, also genug.
+:::
+
+Diese Schaltung ist einfach, aber ineffizient, weil ständig Strom durch die Z-Diode fließt. Sie eignet sich für Referenzspannungen und kleine Ströme. Für größere Lasten verwendet man [Spannungsregler](/de/electrical-engineering/power-supplies/). Z-Dioden schützen außerdem Eingänge vor Überspannung.
+
+## Leuchtdiode
+
+Eine **LED** (_light-emitting diode_) gibt Licht ab, wenn Elektronen und Löcher am pn-Übergang rekombinieren. Die Farbe hängt von der Bandlücke des Halbleitermaterials ab. Weiße LEDs sind blaue LEDs mit einer Leuchtstoffschicht. Die Durchlassspannung steigt mit der Energie des Lichts:
+
+| Farbe                  | $U_\mathrm{F}$ (typisch)        |
+| ---------------------- | ------------------------------- |
+| Infrarot               | $1{,}2$ bis $1{,}5\,\mathrm{V}$ |
+| Rot                    | $1{,}8$ bis $2{,}1\,\mathrm{V}$ |
+| Gelb, Orange           | $2{,}0$ bis $2{,}2\,\mathrm{V}$ |
+| Grün (klassisch)       | $2{,}1$ bis $2{,}4\,\mathrm{V}$ |
+| Blau, Weiß, Echtgrün   | $2{,}8$ bis $3{,}6\,\mathrm{V}$ |
+
+Weil der Strom einer Diode exponentiell von der Spannung abhängt, darf eine LED **nie direkt** an eine Spannungsquelle angeschlossen werden. Ein **Vorwiderstand** begrenzt den Strom:
+
+$$
+R_\mathrm{V} = \frac{U_\mathrm{B} - U_\mathrm{F}}{I_\mathrm{F}}
+$$
+
+:::tip[Beispiel]
+Eine rote LED ($U_\mathrm{F} = 2{,}0\,\mathrm{V}$, $I_\mathrm{F} = 20\,\mathrm{mA}$) an $5\,\mathrm{V}$:
+
+$$
+R_\mathrm{V} = \frac{5\,\mathrm{V} - 2{,}0\,\mathrm{V}}{0{,}02\,\mathrm{A}} = 150\,\Omega \qquad P_R = 3\,\mathrm{V} \cdot 20\,\mathrm{mA} = 60\,\mathrm{mW}
+$$
+
+$150\,\Omega$ ist ein E12-Wert. Eine blaue LED ($3{,}0\,\mathrm{V}$, $10\,\mathrm{mA}$) braucht $200\,\Omega$. Man wählt den nächstgrößeren Normwert $220\,\Omega$, dann fließen $9{,}1\,\mathrm{mA}$.
+:::
+
+Mehrere LEDs schaltet man in Reihe mit einem gemeinsamen Vorwiderstand ($U_\mathrm{F}$ addieren sich) oder parallel mit **je einem eigenen** Vorwiderstand. Ohne eigene Vorwiderstände würde die LED mit der kleinsten Durchlassspannung den meisten Strom ziehen. Die Ansteuerung durch einen Mikrocontroller zeigt [Hardwarenahe Programmierung: LED](/de/embedded-programming/light-emitting-diode/).
+
+## Gleichrichter
+
+Ein **Gleichrichter** macht aus Wechselspannung eine pulsierende Gleichspannung. Er ist Teil jedes Netzteils. In den Formeln ist $\hat{u}$ der Scheitelwert der Wechselspannung, $U_\mathrm{F}$ die Durchlassspannung einer Diode.
+
+| Schaltung                       | Dioden | Ausgang                                  | Brummfrequenz bei $50\,\mathrm{Hz}$ | Sperrspannung je Diode (mit Glättung) |
+| ------------------------------- | ------ | ---------------------------------------- | ------------------ | ------------------- |
+| Einweg (M1)                     | 1      | nur positive Halbwellen, $\hat{u} - U_\mathrm{F}$ | $50\,\mathrm{Hz}$ | $2\hat{u}$     |
+| Mittelpunkt (M2)                | 2      | beide Halbwellen, Transformator mit Mittelanzapfung | $100\,\mathrm{Hz}$ | $2\hat{u}$ |
+| Brücke (B2, Graetz)             | 4      | beide Halbwellen, $\hat{u} - 2U_\mathrm{F}$ | $100\,\mathrm{Hz}$ | $\hat{u}$         |
+
+Bei der **Brückenschaltung** leiten in jeder Halbwelle zwei Dioden in Reihe, eine Halbwelle wird dadurch „umgeklappt“. Sie ist die häufigste Schaltung, weil sie keinen Transformator mit Mittelanzapfung braucht. Ohne Glättung beträgt der arithmetische Mittelwert beim Einweggleichrichter $\hat{u}/\pi$, beim Zweiweggleichrichter $2\hat{u}/\pi$.
+
+### Glättung
+
+Ein **Ladekondensator** parallel zum Ausgang wird in den Spannungsspitzen geladen und versorgt die Last dazwischen. Es bleibt eine **Brummspannung** (Welligkeit). Näherungsweise gilt mit der Brummfrequenz $f_\mathrm{B}$:
+
+$$
+U_\mathrm{Br,ss} \approx \frac{I_\mathrm{L}}{f_\mathrm{B} \cdot C}
+$$
+
+:::tip[Beispiel]
+Ein Transformator liefert $12\,\mathrm{V}$ (effektiv) an einen Brückengleichrichter, die Last zieht $0{,}5\,\mathrm{A}$, der Ladekondensator hat $2200\,\mathrm{\mu F}$.
+
+- Scheitelwert: $\hat{u} = 12\,\mathrm{V} \cdot \sqrt{2} \approx 16{,}97\,\mathrm{V}$
+- Leerlaufspannung am Kondensator: $16{,}97\,\mathrm{V} - 2 \cdot 0{,}7\,\mathrm{V} \approx 15{,}6\,\mathrm{V}$
+- Brummspannung: $U_\mathrm{Br,ss} \approx 0{,}5\,\mathrm{A} / (100\,\mathrm{Hz} \cdot 2200 \cdot 10^{-6}\,\mathrm{F}) \approx 2{,}3\,\mathrm{V}$
+
+Die Spannung schwankt also etwa zwischen $13{,}3$ und $15{,}6\,\mathrm{V}$. Ein nachgeschalteter Spannungsregler macht daraus eine glatte Gleichspannung.
+:::
+
+Ein größerer Kondensator verringert die Brummspannung, erhöht aber die Stromspitzen beim Nachladen, weil die Dioden nur kurz leiten.
+
+## Fotodiode und Solarzelle
+
+Licht kann im Halbleiter Elektron-Loch-Paare erzeugen, wenn die Energie der Photonen größer als die Bandlücke ist (**innerer fotoelektrischer Effekt**). Das Feld der Sperrschicht trennt die Paare, und es fließt ein **Fotostrom**.
+
+- Die **Fotodiode** wird in Sperrrichtung betrieben. Ihr Sperrstrom ist nahezu proportional zur Beleuchtungsstärke. Sie ist sehr schnell und wird in Lichtschranken, Fernbedienungsempfängern, Glasfaserempfängern und Optokopplern eingesetzt. **Fototransistoren** verstärken den Fotostrom zusätzlich.
+- Die **Solarzelle** ist eine großflächige Fotodiode ohne äußere Spannung. Sie arbeitet als Quelle (Generatorbetrieb). Eine Siliziumzelle liefert eine **Leerlaufspannung** von etwa $0{,}6$ bis $0{,}7\,\mathrm{V}$ und einen **Kurzschlussstrom**, der proportional zur Einstrahlung ist. Die meiste Leistung gibt sie im **Punkt maximaler Leistung** (MPP, _maximum power point_) ab, den Wechselrichter mit einem MPP-Tracker laufend suchen.
+
+Solarmodule schalten viele Zellen in Reihe, um höhere Spannungen zu erreichen, etwa 60 oder 120 Halbzellen. Kristalline Siliziummodule erreichen Wirkungsgrade um $20$ bis $23\,\%$. Weil alle Zellen eines Strangs denselben Strom führen, bremst eine verschattete Zelle den ganzen Strang. **Bypassdioden** überbrücken verschattete Zellgruppen.
+
+## Weiterführende Quellen
+
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg.
+- [Wikipedia: Diode](https://de.wikipedia.org/wiki/Diode)
+- [Elektronik-Kompendium](https://www.elektronik-kompendium.de/) von Patrick Schnabel, Kapitel Halbleitertechnik und Bauelemente

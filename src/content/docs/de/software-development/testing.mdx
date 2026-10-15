@@ -1,0 +1,314 @@
+---
+title: Testen
+description: Teststufen, Testverfahren wie Äquivalenzklassen und Grenzwertanalyse, Unit-Tests mit xUnit und cargo test, Test-Doubles, testgetriebene Entwicklung, Testabdeckung und Debugging.
+sidebar:
+  order: 16
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Tests prüfen, ob sich Software so verhält, wie sie soll. Sie finden Fehler, bevor Benutzer sie finden, und sie geben Sicherheit beim Ändern von Code: Wer ein gutes Testnetz hat, kann umbauen und erweitern, ohne Angst zu haben, unbemerkt etwas kaputt zu machen. Edsger W. Dijkstra hat die Grenze von Tests treffend beschrieben: Tests können die Anwesenheit von Fehlern zeigen, aber nie ihre Abwesenheit beweisen.
+
+## Begriffe
+
+| Begriff          | Bedeutung                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| **Fehlhandlung** (_error_) | menschlicher Irrtum, etwa ein Missverständnis der Anforderung                       |
+| **Fehlerzustand** (_defect_, _bug_) | der fehlerhafte Code, der durch die Fehlhandlung entsteht                  |
+| **Fehlerwirkung** (_failure_) | das sichtbare falsche Verhalten beim Ausführen                                    |
+| **Testfall**     | Eingabe, Vorbedingungen und erwartetes Ergebnis                                               |
+| **Testorakel**   | Quelle des erwarteten Ergebnisses, etwa die Spezifikation oder eine Handrechnung              |
+| **Regressionstest** | erneutes Ausführen bestehender Tests nach einer Änderung, um neue Fehler in altem Code zu finden |
+
+Die Begriffe folgen dem Glossar des ISTQB (_International Software Testing Qualifications Board_), dessen Lehrplan zum Certified Tester die verbreitetste Grundlage für Softwaretests ist.
+
+## Teststufen
+
+| Stufe                    | Was wird geprüft?                                           | Wer testet?                    |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------ |
+| **Komponententest** (Unit-Test) | einzelne Methoden oder Klassen, isoliert vom Rest   | Entwickler, automatisiert      |
+| **Integrationstest**     | das Zusammenspiel mehrerer Komponenten, etwa mit der Datenbank | Entwickler, automatisiert   |
+| **Systemtest**           | das vollständige System gegen die Anforderungen             | Testteam                       |
+| **Abnahmetest**          | ob das System die Bedürfnisse des Auftraggebers erfüllt     | Auftraggeber, Benutzer         |
+
+Die **Testpyramide** empfiehlt viele schnelle Unit-Tests als Basis, weniger Integrationstests darüber und nur wenige langsame End-to-End-Tests an der Spitze, die das System über die Oberfläche bedienen. Die Stufen ordnet das [V-Modell](/de/project_management/basics/process_models/) den Entwicklungsphasen zu.
+
+Neben **funktionalen** Tests (tut das Programm das Richtige?) gibt es **nicht funktionale** Tests: Lasttests und Performancetests, Sicherheitstests, Usability-Tests (siehe [Softwarequalität](/de/project_management/quality_management/software_quality/)).
+
+## Testverfahren
+
+- **Statische Verfahren** führen den Code nicht aus: Code-Reviews, Walkthroughs und automatische Analyse durch Compiler und Linter.
+- **Dynamische Verfahren** führen den Code mit Testdaten aus. Man unterscheidet:
+
+### Black-Box-Verfahren
+
+Die Testfälle werden aus der **Spezifikation** abgeleitet, ohne den Code zu kennen.
+
+- **Äquivalenzklassenbildung**: Eingaben, bei denen sich das Programm gleich verhalten sollte, bilden eine Klasse. Aus jeder Klasse genügt ein Vertreter. Ungültige Eingaben bilden eigene Klassen.
+- **Grenzwertanalyse**: Fehler passieren häufig an den Rändern der Klassen (`<` statt `<=`). Man testet deshalb die Grenzwerte selbst und die Werte direkt daneben.
+- **Entscheidungstabellen**: Für Kombinationen von Bedingungen wird jede Kombination mit der erwarteten Aktion als Spalte aufgeschrieben.
+- **Zustandsbasierter Test**: Für Systeme mit Zuständen (Automat, Bestellung) werden alle Zustandsübergänge geprüft.
+
+Beispiel: Eine Funktion berechnet aus einer Punktzahl von 0 bis 100 die Note, wobei ab 50 Punkten bestanden ist.
+
+| Klasse                 | Bereich       | Vertreter | Grenzwerte          |
+| ---------------------- | ------------- | --------- | ------------------- |
+| ungültig (zu klein)    | < 0           | −10       | −1                  |
+| nicht bestanden        | 0 bis 49      | 25        | 0, 49               |
+| bestanden              | 50 bis 100    | 75        | 50, 100             |
+| ungültig (zu groß)     | > 100         | 150       | 101                 |
+
+### White-Box-Verfahren
+
+Die Testfälle werden aus der **Struktur des Codes** abgeleitet. Gemessen wird die **Testabdeckung** (_Code Coverage_):
+
+- **Anweisungsüberdeckung** (C0): Jede Anweisung wurde mindestens einmal ausgeführt.
+- **Zweigüberdeckung** (C1): Jeder Zweig jeder Verzweigung (`if` und `else`) wurde mindestens einmal durchlaufen. C1 schließt C0 ein.
+- **Bedingungsüberdeckung**: Jede Teilbedingung eines zusammengesetzten Ausdrucks war einmal wahr und einmal falsch.
+- **Pfadüberdeckung**: Jeder mögliche Weg durch die Methode wurde durchlaufen. Bei Schleifen ist das meist unerreichbar.
+
+Eine hohe Abdeckung ist kein Beweis für gute Tests: Ein Test ohne sinnvolle Prüfung (_Assertion_) erhöht die Abdeckung, findet aber keinen Fehler. Werkzeuge sind **Coverlet** für .NET und **cargo-llvm-cov** für Rust.
+
+## Unit-Tests
+
+Ein guter Unit-Test ist nach dem Merkwort **FIRST**: _fast_ (schnell), _independent_ (unabhängig von anderen Tests und der Reihenfolge), _repeatable_ (bei jeder Ausführung gleiches Ergebnis), _self-validating_ (bestanden oder nicht, ohne manuelle Kontrolle) und _timely_ (zeitnah zum Code geschrieben).
+
+Tests folgen meist dem Aufbau **Arrange, Act, Assert** (AAA): Vorbereiten, Ausführen, Prüfen. Der Name eines Tests sagt, was geprüft wird und was erwartet wird.
+
+In C# verwendet man ein Testframework wie **xUnit**, NUnit oder MSTest in einem eigenen Testprojekt (`dotnet new xunit`, ausführen mit `dotnet test`). Rust hat Tests in die Sprache und in Cargo eingebaut: Funktionen mit `#[test]` werden mit `cargo test` ausgeführt. Unit-Tests stehen üblicherweise in einem Modul `tests` in derselben Datei, Integrationstests im Verzeichnis `tests/`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Xunit;
+
+public static class Grading
+{
+    public static string Grade(int points)
+    {
+        if (points is < 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(points));
+        return points >= 50 ? "bestanden" : "nicht bestanden";
+    }
+}
+
+public class GradingTests
+{
+    [Fact]
+    public void Grade_With75Points_ReturnsPassed()
+    {
+        // Arrange
+        int points = 75;
+        // Act
+        string result = Grading.Grade(points);
+        // Assert
+        Assert.Equal("bestanden", result);
+    }
+
+    // ein Test, mehrere Datensätze: Grenzwerte
+    [Theory]
+    [InlineData(0, "nicht bestanden")]
+    [InlineData(49, "nicht bestanden")]
+    [InlineData(50, "bestanden")]
+    [InlineData(100, "bestanden")]
+    public void Grade_AtBoundaries_ReturnsExpected(int points, string expected)
+    {
+        Assert.Equal(expected, Grading.Grade(points));
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(101)]
+    public void Grade_OutOfRange_Throws(int points)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Grading.Grade(points));
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+pub fn grade(points: i32) -> Result<&'static str, String> {
+    match points {
+        0..=49 => Ok("nicht bestanden"),
+        50..=100 => Ok("bestanden"),
+        _ => Err(format!("ungültige Punktzahl: {points}")),
+    }
+}
+
+// wird nur beim Testen kompiliert
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn grade_with_75_points_returns_passed() {
+        // Arrange
+        let points = 75;
+        // Act
+        let result = grade(points);
+        // Assert
+        assert_eq!(result, Ok("bestanden"));
+    }
+
+    #[test]
+    fn grade_at_boundaries() {
+        for (points, expected) in [(0, "nicht bestanden"), (49, "nicht bestanden"), (50, "bestanden"), (100, "bestanden")] {
+            assert_eq!(grade(points), Ok(expected), "bei {points} Punkten");
+        }
+    }
+
+    #[test]
+    fn grade_out_of_range_is_error() {
+        assert!(grade(-1).is_err());
+        assert!(grade(101).is_err());
+    }
+
+    #[test]
+    #[should_panic(expected = "index out of bounds")]
+    fn invalid_index_panics() {
+        let v: Vec<i32> = Vec::new();
+        let _ = v[0];
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust führt außerdem Codebeispiele in Dokumentationskommentaren (`///`) als **Doc-Tests** aus. So bleibt die Dokumentation immer korrekt.
+
+## Test-Doubles
+
+Eine Klasse hängt oft von anderen ab: von einer Datenbank, einem Webservice oder der Systemzeit. Im Unit-Test ersetzt man solche Abhängigkeiten durch **Test-Doubles** (in Anlehnung an Stunt-Doubles), damit der Test schnell, wiederholbar und unabhängig bleibt.
+
+| Art         | Verhalten                                                                                  |
+| ----------- | ------------------------------------------------------------------------------------------ |
+| **Dummy**   | wird nur übergeben, damit der Code kompiliert, aber nie verwendet                          |
+| **Stub**    | liefert vorgegebene Antworten, etwa immer dieselbe Uhrzeit                                 |
+| **Fake**    | funktionierende, vereinfachte Implementierung, etwa eine Datenbank im Arbeitsspeicher      |
+| **Spy**     | ein Stub, der zusätzlich aufzeichnet, wie er aufgerufen wurde                              |
+| **Mock**    | prüft selbst, ob er wie erwartet aufgerufen wurde                                           |
+
+Voraussetzung ist, dass die Klasse ihre Abhängigkeit über ein **Interface** (bzw. Trait) erhält, statt sie selbst zu erzeugen. Dieses Prinzip heißt **Dependency Injection** (siehe [Softwarearchitektur](/de/software-development/software-architecture/#dependency-injection)). In C# erstellt man Mocks bequem mit Bibliotheken wie **Moq** oder NSubstitute, in Rust mit dem Crate `mockall` oder schreibt einfache Fakes von Hand.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Moq;
+using Xunit;
+
+public interface IClock
+{
+    DateTime Now { get; }
+}
+
+public class Greeter(IClock clock)
+{
+    public string Greet() => clock.Now.Hour < 12 ? "Guten Morgen" : "Guten Tag";
+}
+
+public class GreeterTests
+{
+    [Fact]
+    public void Greet_InTheMorning_SaysGoodMorning()
+    {
+        // Stub mit Moq: Now liefert immer 8:00 Uhr
+        var clock = new Mock<IClock>();
+        clock.Setup(c => c.Now).Returns(new DateTime(2026, 9, 7, 8, 0, 0));
+
+        var greeter = new Greeter(clock.Object);
+
+        Assert.Equal("Guten Morgen", greeter.Greet());
+        clock.VerifyGet(c => c.Now, Times.Once()); // als Mock: Aufruf prüfen
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+pub trait Clock {
+    fn hour(&self) -> u32;
+}
+
+pub struct Greeter<C: Clock> {
+    clock: C,
+}
+
+impl<C: Clock> Greeter<C> {
+    pub fn greet(&self) -> &'static str {
+        if self.clock.hour() < 12 { "Guten Morgen" } else { "Guten Tag" }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // handgeschriebener Stub
+    struct FixedClock(u32);
+
+    impl Clock for FixedClock {
+        fn hour(&self) -> u32 {
+            self.0
+        }
+    }
+
+    #[test]
+    fn greet_in_the_morning() {
+        let greeter = Greeter { clock: FixedClock(8) };
+        assert_eq!(greeter.greet(), "Guten Morgen");
+    }
+
+    #[test]
+    fn greet_in_the_afternoon() {
+        let greeter = Greeter { clock: FixedClock(15) };
+        assert_eq!(greeter.greet(), "Guten Tag");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Testgetriebene Entwicklung
+
+Bei der **testgetriebenen Entwicklung** (TDD, _Test-Driven Development_, bekannt gemacht von Kent Beck) wird der Test **vor** dem Code geschrieben, in einem kurzen Zyklus:
+
+1. **Rot**: Einen Test schreiben, der das nächste kleine Stück Verhalten beschreibt. Er schlägt fehl, weil der Code noch fehlt.
+2. **Grün**: Gerade so viel Code schreiben, dass der Test besteht.
+3. **Refactor**: Den Code aufräumen, ohne das Verhalten zu ändern. Die Tests sichern dabei ab (siehe [Clean Code](/de/software-development/clean-code/#refactoring)).
+
+TDD führt zu gut testbarem, lose gekoppeltem Code und zu einer umfassenden Testsammlung als Nebenprodukt. Verwandte Ansätze sind **BDD** (_Behavior-Driven Development_), bei dem Tests in fachlicher Sprache formuliert werden (_Given, When, Then_), und **Akzeptanztest-getriebene Entwicklung**.
+
+## Automatisierung
+
+Tests lohnen sich erst richtig, wenn sie bei jeder Änderung automatisch laufen. In der **Continuous Integration** (CI) baut ein Server wie GitHub Actions oder GitLab CI bei jedem Push das Projekt und führt alle Tests aus. Ein fehlgeschlagener Test verhindert, dass fehlerhafter Code in den Hauptzweig gelangt (siehe [Versionsverwaltung](/de/software-development/version-control/#continuous-integration)).
+
+## Debugging
+
+Schlägt ein Test fehl oder verhält sich ein Programm falsch, sucht man die Ursache mit einem **Debugger** (in Visual Studio, Rider, VS Code oder RustRover):
+
+| Funktion                 | Zweck                                                                    |
+| ------------------------ | ------------------------------------------------------------------------ |
+| **Haltepunkt** (_Breakpoint_) | hält das Programm an einer Zeile an                                 |
+| **Bedingter Haltepunkt** | hält nur an, wenn eine Bedingung erfüllt ist, etwa `i == 500`            |
+| **Step Over**            | führt die aktuelle Zeile aus, ohne in aufgerufene Methoden zu springen    |
+| **Step Into**            | springt in die aufgerufene Methode                                        |
+| **Step Out**             | läuft bis zum Ende der aktuellen Methode                                  |
+| **Überwachung** (_Watch_) | zeigt Werte von Variablen und Ausdrücken an                             |
+| **Aufrufliste** (_Call Stack_) | zeigt, über welche Methodenaufrufe man an die aktuelle Stelle kam  |
+
+Bewährtes Vorgehen: Den Fehler zuerst zuverlässig **reproduzieren**, dann einen Test schreiben, der ihn zeigt, die Ursache mit Haltepunkten oder Ausgaben eingrenzen, beheben und prüfen, dass der neue Test besteht und alle anderen weiterhin bestehen. Oft hilft es auch, das Problem jemand anderem (oder einer Quietscheente) Schritt für Schritt zu erklären (_Rubber Duck Debugging_).
+
+## Weiterführende Quellen
+
+- [Unit testing C# with xUnit](https://learn.microsoft.com/de-de/dotnet/core/testing/unit-testing-csharp-with-xunit) (Microsoft Learn)
+- [Writing Automated Tests](https://doc.rust-lang.org/book/ch11-00-testing.html) (The Rust Programming Language)
+- [ISTQB Certified Tester Foundation Level](https://www.istqb.org/) und das deutschsprachige [German Testing Board](https://www.german-testing-board.info/)

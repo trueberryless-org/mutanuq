@@ -1,0 +1,239 @@
+---
+title: Industrielle Automatisierung
+description: "Automatisierungspyramide, SPS und IEC 61131-3 mit Structured Text, Steuern und Regeln mit P-, I-, D- und PID-Regler, Industrie 4.0, Edge Computing und funktionale Sicherheit."
+sidebar:
+  order: 17
+---
+
+**Automatisierung** bedeutet, dass Maschinen und Anlagen Abläufe selbsttätig ausführen, ohne dass ein Mensch jeden Schritt auslösen muss. Die Steuerung erfasst über [Sensoren](/de/embedded-programming/sensors-and-actuators/) den Zustand des Prozesses, verarbeitet die Informationen nach einem Programm und greift über Aktoren in den Prozess ein. Die Grundlagen sind dieselben wie beim Mikrocontroller, in der Industrie kommen aber besondere Anforderungen hinzu: Robustheit (Temperatur, Vibration, elektromagnetische Störungen), Verfügbarkeit über Jahrzehnte, [Echtzeitfähigkeit](/de/embedded-programming/real-time-systems/) und Sicherheit für Menschen.
+
+## Automatisierungspyramide
+
+Die klassische **Automatisierungspyramide** gliedert die Systeme eines Unternehmens in Ebenen. Nach oben werden die Datenmengen pro Nachricht größer und die Zeitanforderungen lockerer, nach unten werden die Reaktionszeiten kürzer und die Anzahl der Geräte größer.
+
+| Ebene | Name | Aufgabe | Systeme | Zeithorizont |
+| ----- | ---- | ------- | ------- | ------------ |
+| 4 | **Unternehmensebene** | Planung, Bestellungen, Personal, Buchhaltung | ERP (z. B. SAP) | Tage bis Monate |
+| 3 | **Betriebsleitebene** | Produktionsplanung und -steuerung, Auftragsverwaltung, Qualität | MES (_Manufacturing Execution System_) | Stunden bis Minuten |
+| 2 | **Prozessleitebene** | Bedienen und Beobachten, Visualisierung, Alarme, Datenaufzeichnung | SCADA, Leitsystem, HMI | Sekunden |
+| 1 | **Steuerungsebene** | Ablaufsteuerung und Regelung der Maschinen | SPS, Industrie-PC, Regler | Millisekunden |
+| 0 | **Feldebene** | Messen und Stellen | Sensoren, Aktoren, Antriebe | Mikro- bis Millisekunden |
+
+Zwischen den Ebenen verbinden [Bussysteme](/de/embedded-programming/bus-systems/) die Geräte: Feldbusse und Industrial Ethernet unten, Ethernet/IP und OPC UA weiter oben. Mit Industrie 4.0 löst sich die strenge Hierarchie zunehmend auf: Sensoren und Maschinen liefern ihre Daten direkt an MES- oder Cloud-Systeme, man spricht von einer **vernetzten Automatisierung** statt einer Pyramide.
+
+## Speicherprogrammierbare Steuerung (SPS)
+
+Eine **SPS** (englisch **PLC**, _Programmable Logic Controller_) ist ein für den Industrieeinsatz gebauter Computer, der Maschinen und Anlagen steuert. Sie hat die früher übliche **verbindungsprogrammierte Steuerung** (Relais und Schütze, deren Logik in der Verdrahtung steckt) abgelöst: Änderungen erfordern nur ein neues Programm statt einer neuen Verdrahtung.
+
+Eine SPS besteht aus Stromversorgung (meist 24 V DC), CPU, digitalen und analogen **Ein- und Ausgabebaugruppen** sowie Kommunikationsbaugruppen. Bekannte Hersteller und Systeme sind Siemens (SIMATIC S7-1200/1500, Programmierung mit TIA Portal), Beckhoff (TwinCAT), Rockwell/Allen-Bradley sowie die österreichische Firma B&R (heute Teil von ABB). Viele Hersteller nutzen die Entwicklungsumgebung **CODESYS**. Eine **Soft-SPS** läuft als Echtzeitsoftware auf einem Industrie-PC.
+
+### Zyklische Programmbearbeitung
+
+Anders als ein ereignisgesteuertes PC-Programm arbeitet eine SPS ihr Programm **zyklisch** ab:
+
+1. **Eingänge lesen:** Alle Eingänge werden gleichzeitig in das **Prozessabbild der Eingänge** (PAE) kopiert.
+2. **Programm ausführen:** Das Anwenderprogramm wird von oben nach unten bearbeitet. Es arbeitet nur mit dem Prozessabbild, nicht direkt mit den Klemmen.
+3. **Ausgänge schreiben:** Das **Prozessabbild der Ausgänge** (PAA) wird auf die Ausgangsklemmen übertragen.
+4. Interne Aufgaben (Kommunikation, Diagnose), dann beginnt der nächste Zyklus.
+
+Das Prozessabbild sorgt dafür, dass sich ein Eingang während eines Zyklus nicht ändert und das Programm einen konsistenten Zustand sieht. Die **Zykluszeit** beträgt typischerweise 1 bis 100 ms. Die **Reaktionszeit** auf eine Eingangsänderung kann bis zu **zwei Zykluszeiten** betragen: Ändert sich ein Eingang kurz nach dem Einlesen, wird er erst im nächsten Zyklus erfasst und am Ende dieses Zyklus ausgegeben. Eine Zykluszeitüberwachung (Watchdog) stoppt die SPS, wenn ein Zyklus zu lange dauert.
+
+### SPS und Mikrocontroller
+
+| Aspekt | SPS | Mikrocontroller |
+| ------ | --- | --------------- |
+| Hardware | robust, modular, zertifiziert, 24-V-Pegel | Platine, meist 3,3 V oder 5 V, muss selbst entwickelt werden |
+| Programmierung | IEC 61131-3, für Techniker ohne Informatikstudium gedacht | C, C++, Assembler |
+| Lebensdauer, Ersatzteile | 10 bis 20 Jahre und mehr | abhängig vom Produkt |
+| Kosten pro Stück | hoch | sehr niedrig |
+| Einsatz | Einzelmaschinen und Anlagen | Serienprodukte (Haushaltsgeräte, Sensoren, Fahrzeuge) |
+
+## IEC 61131-3
+
+Die Norm **IEC 61131-3** legt die Programmiersprachen für SPS herstellerübergreifend fest. Die aktuelle vierte Ausgabe ist 2025 erschienen.
+
+| Sprache | Art | Beschreibung |
+| ------- | --- | ------------ |
+| **KOP** Kontaktplan (_Ladder Diagram_, LD) | grafisch | Logik als Stromlaufplan mit Kontakten und Spulen, an Relaisschaltungen angelehnt, besonders in den USA verbreitet |
+| **FUP** Funktionsplan (_Function Block Diagram_, FBD) | grafisch | Logik mit Bausteinen (UND, ODER, Timer, Zähler), die verbunden werden, ähnlich wie Logikgatter |
+| **ST** Strukturierter Text (_Structured Text_) | textuell | Hochsprache ähnlich Pascal mit `IF`, `CASE`, `FOR`, `WHILE`; gut für Berechnungen und komplexe Logik |
+| **AWL** Anweisungsliste (_Instruction List_, IL) | textuell | assemblerähnlich; seit 2013 als veraltet markiert und in der Ausgabe 2025 entfernt |
+| **AS** Ablaufsprache (_Sequential Function Chart_, SFC) | grafisch | Gliedert Abläufe in **Schritte** und **Transitionen** (Weiterschaltbedingungen), ähnlich einem Zustandsautomaten |
+
+Programme bestehen aus **Programmorganisationseinheiten** (POE):
+
+- **Funktion** (`FUNCTION`): ohne Gedächtnis, gleiche Eingaben liefern immer dasselbe Ergebnis (z. B. `ADD`, `SQRT`).
+- **Funktionsbaustein** (`FUNCTION_BLOCK`): mit Gedächtnis (internen Variablen), wird als Instanz verwendet, etwa Timer und Zähler.
+- **Programm** (`PROGRAM`): oberste Ebene, wird von einer zyklischen Task aufgerufen.
+
+Wichtige Standard-Funktionsbausteine sind `TON` (Einschaltverzögerung), `TOF` (Ausschaltverzögerung), `TP` (Impuls), `CTU`/`CTD` (Vorwärts-/Rückwärtszähler), `R_TRIG`/`F_TRIG` (steigende/fallende Flanke) sowie `SR` und `RS` (Flipflops mit dominantem Setzen bzw. Rücksetzen).
+
+### Beispiel: Förderband mit Anlaufwarnung
+
+Ein Förderband wird mit einem Starttaster eingeschaltet und mit einem Stopptaster ausgeschaltet. Bevor der Motor anläuft, ertönt drei Sekunden lang eine Hupe. Ein Not-Halt-Kreis schaltet alles ab.
+
+Der Stopptaster ist ein **Öffner** (Ruhezustand geschlossen, Eingang `TRUE`). Reißt sein Kabel, wird der Eingang `FALSE`, und die Anlage stoppt. Dieses Prinzip heißt **Drahtbruchsicherheit**: Abschaltende Signale werden immer mit Öffnern realisiert.
+
+Die **Selbsthaltung** in Kontaktplan-Darstellung:
+
+```text
+   StartButton    StopButton   EmergencyOk      Request
+ |----| |-----+-----| |-----------| |--------------( )----|
+ |            |
+ |  Request   |
+ |----| |-----+
+```
+
+Dasselbe Programm in Structured Text:
+
+```text
+PROGRAM Conveyor
+VAR
+    StartButton  AT %IX0.0 : BOOL;   (* Schließer *)
+    StopButton   AT %IX0.1 : BOOL;   (* Öffner: TRUE = nicht betätigt *)
+    EmergencyOk  AT %IX0.2 : BOOL;   (* Not-Halt-Kreis geschlossen *)
+    Motor        AT %QX0.0 : BOOL;
+    Horn         AT %QX0.1 : BOOL;
+    Request      : BOOL;
+    StartDelay   : TON;              (* Instanz des Timer-Bausteins *)
+END_VAR
+
+(* Selbsthaltung mit dominantem Aus *)
+Request := (StartButton OR Request) AND StopButton AND EmergencyOk;
+
+(* Einschaltverzögerung um 3 Sekunden *)
+StartDelay(IN := Request, PT := T#3S);
+
+Horn  := Request AND NOT StartDelay.Q;   (* hupen, solange der Timer läuft *)
+Motor := StartDelay.Q;                   (* danach läuft der Motor *)
+END_PROGRAM
+```
+
+`%IX0.0` ist die Adresse des ersten digitalen Eingangs, `%QX0.0` die des ersten Ausgangs. Weil die SPS das Programm zyklisch ausführt, wird die Zeile mit `Request` in jedem Zyklus neu ausgewertet: Einmal gesetzt, hält sich `Request` über seinen eigenen Kontakt selbst, bis Stopp oder Not-Halt die Bedingung unterbrechen.
+
+## Steuern und Regeln
+
+Die Begriffe sind in DIN IEC 60050-351 festgelegt:
+
+- **Steuern** (_open loop control_): Eine Eingangsgröße beeinflusst eine Ausgangsgröße in einer **offenen Wirkungskette**. Ob das Ziel erreicht wurde, wird nicht gemessen. Beispiel: Eine Heizung läuft je nach Außentemperatur mit fester Leistung. Öffnet jemand das Fenster, merkt die Steuerung das nicht.
+- **Regeln** (_closed loop control_): Die zu beeinflussende Größe wird fortlaufend **gemessen**, mit dem Sollwert verglichen und bei einer Abweichung nachgestellt. Es entsteht ein **geschlossener Regelkreis**. Beispiel: Ein Thermostat misst die Raumtemperatur und heizt nach, wenn sie unter den Sollwert fällt.
+
+Größen im Regelkreis:
+
+| Größe | Formelzeichen | Beispiel Raumheizung |
+| ----- | ------------- | -------------------- |
+| **Führungsgröße** (Sollwert) | $w$ | gewünschte Temperatur $21\,\mathrm{°C}$ |
+| **Regelgröße** (Istwert) | $x$ | gemessene Raumtemperatur |
+| **Regelabweichung** | $e = w - x$ | $21\,\mathrm{°C} - 19{,}5\,\mathrm{°C} = 1{,}5\,\mathrm{K}$ |
+| **Stellgröße** | $y$ | Ventilöffnung in % |
+| **Störgröße** | $z$ | offenes Fenster, Sonneneinstrahlung |
+| **Regelstrecke** | | Raum mit Heizkörper |
+| **Regler** | | berechnet $y$ aus $e$ |
+
+### Zweipunktregler
+
+Der einfachste Regler kennt nur **Ein** und **Aus**: Unter einer unteren Schwelle wird eingeschaltet, über einer oberen ausgeschaltet. Die **Hysterese** zwischen den Schwellen verhindert ständiges Hin- und Herschalten. Der Istwert pendelt dabei immer etwas um den Sollwert. Bügeleisen, Kühlschränke und einfache Thermostate arbeiten so.
+
+### P-, I- und D-Anteil
+
+Stetige Regler berechnen eine Stellgröße, die beliebige Werte annehmen kann. Sie werden aus drei Anteilen zusammengesetzt:
+
+| Anteil | Gleichung | Wirkung |
+| ------ | --------- | ------- |
+| **P** (proportional) | $y = K_P \cdot e$ | reagiert sofort und proportional zur Abweichung. Allein lässt er meist eine **bleibende Regelabweichung**, weil ohne Abweichung keine Stellgröße mehr entsteht. Großes $K_P$ macht ihn schneller, aber schwingungsanfälliger. |
+| **I** (integral) | $y = K_I \int e \, \mathrm{d}t$ | summiert die Abweichung über die Zeit und wächst, solange eine Abweichung besteht. Er **beseitigt die bleibende Regelabweichung**, macht den Regelkreis aber langsamer und neigt zum Überschwingen. |
+| **D** (differential) | $y = K_D \cdot \frac{\mathrm{d}e}{\mathrm{d}t}$ | reagiert auf die **Änderungsgeschwindigkeit** der Abweichung und wirkt dadurch vorausschauend und dämpfend. Allein nicht verwendbar (bei konstanter Abweichung ist er null), empfindlich gegenüber Messrauschen. |
+
+Kombiniert ergibt sich der **PID-Regler**:
+
+$$
+y(t) = K_P \cdot e(t) + K_I \int_0^t e(\tau) \, \mathrm{d}\tau + K_D \cdot \frac{\mathrm{d}e(t)}{\mathrm{d}t}
+$$
+
+Oft schreibt man ihn mit der **Nachstellzeit** $T_N$ und der **Vorhaltzeit** $T_V$ als $y = K_P \left(e + \frac{1}{T_N} \int e \, \mathrm{d}t + T_V \frac{\mathrm{d}e}{\mathrm{d}t}\right)$, also $K_I = K_P / T_N$ und $K_D = K_P \cdot T_V$.
+
+In der Praxis am häufigsten ist der **PI-Regler** (z. B. Temperatur, Drehzahl, Durchfluss). Den D-Anteil ergänzt man bei trägen Strecken, die schnell ausgeregelt werden sollen. Die Parameter bestimmt man durch Versuch oder mit Einstellregeln wie dem Verfahren von **Ziegler und Nichols**.
+
+### Digitaler PID-Regler
+
+Eine SPS oder ein Mikrocontroller berechnet den Regler in festen Abständen, der **Abtastzeit** $T_s$. Das Integral wird zur Summe, die Ableitung zur Differenz zweier Werte:
+
+$$
+y_k = K_P \cdot e_k + K_I \cdot T_s \sum_{i=0}^{k} e_i + K_D \cdot \frac{e_k - e_{k-1}}{T_s}
+$$
+
+```c
+typedef struct {
+    float kp, ki, kd;     // Reglerparameter
+    float ts;             // Abtastzeit in s
+    float integral;
+    float last_error;
+    float out_min, out_max;
+} Pid;
+
+float pid_update(Pid *pid, float setpoint, float actual) {
+    float error = setpoint - actual;
+    float derivative = (error - pid->last_error) / pid->ts;
+    pid->last_error = error;
+
+    float new_integral = pid->integral + error * pid->ts;
+    float output = pid->kp * error + pid->ki * new_integral + pid->kd * derivative;
+
+    // Stellgröße begrenzen; Integral nur weiterführen, wenn nicht begrenzt (Anti-Windup)
+    if (output > pid->out_max) {
+        output = pid->out_max;
+    } else if (output < pid->out_min) {
+        output = pid->out_min;
+    } else {
+        pid->integral = new_integral;
+    }
+    return output;
+}
+```
+
+Die Funktion muss in genau gleichen Abständen aufgerufen werden, etwa aus einem Timer-Interrupt oder einem periodischen RTOS-Task. Die Begrenzung mit **Anti-Windup** verhindert, dass der I-Anteil weiter wächst, wenn das Stellglied schon am Anschlag ist (Ventil 100 % offen). Sonst würde der Regler nach Erreichen des Sollwerts lange überschwingen.
+
+## Industrie 4.0
+
+Der Begriff **Industrie 4.0** wurde 2011 auf der Hannover Messe geprägt und bezeichnet die vierte industrielle Revolution:
+
+| Revolution | Zeit | Kennzeichen |
+| ---------- | ---- | ----------- |
+| 1. | ab Ende des 18. Jahrhunderts | Mechanisierung mit Wasser- und Dampfkraft |
+| 2. | ab Ende des 19. Jahrhunderts | Massenproduktion mit elektrischer Energie und Fließband |
+| 3. | ab den 1970er-Jahren | Automatisierung mit Elektronik, IT und SPS |
+| 4. | ab den 2010er-Jahren | Vernetzung von Maschinen, Produkten und Menschen, **cyber-physische Systeme** |
+
+Ein **cyber-physisches System** (CPS) verbindet physische Komponenten (Maschine, Sensoren, Aktoren) mit Software und Netzwerkkommunikation. Ziele sind eine flexible Fertigung bis zur **Losgröße 1** (individuelle Produkte zu Kosten der Massenfertigung), höhere Effizienz und neue Geschäftsmodelle.
+
+Wichtige Konzepte:
+
+- **IIoT** (_Industrial Internet of Things_): Maschinen, Sensoren und Werkstücke sind vernetzt und liefern laufend Daten, etwa über [OPC UA oder MQTT](/de/embedded-programming/bus-systems/#opc-ua).
+- **Edge Computing:** Daten werden nahe an der Maschine vorverarbeitet, etwa auf einem Industrie-PC oder Gateway. Das verringert die Latenz und die Datenmenge, funktioniert auch ohne Internetverbindung und hält sensible Daten im Werk. Nur verdichtete Ergebnisse gehen in die [Cloud](/de/decentralised-systems/cloud-computing/), wo große Rechen- und Speicherkapazität für Langzeitanalysen und KI-Modelle bereitsteht.
+- **Digitaler Zwilling** (_Digital Twin_): ein virtuelles Abbild einer realen Maschine oder Anlage, das laufend mit echten Daten aktualisiert wird. Damit kann man Änderungen simulieren, bevor man sie umsetzt (**virtuelle Inbetriebnahme**), oder den Zustand der Maschine überwachen.
+- **Vorausschauende Wartung** (_Predictive Maintenance_): Aus Messdaten wie Vibration, Temperatur oder Stromaufnahme erkennt ein Modell, wann ein Bauteil voraussichtlich ausfällt. Gewartet wird dann, bevor es ausfällt, aber nicht unnötig früh.
+- **RAMI 4.0** (Referenzarchitekturmodell Industrie 4.0) und die **Verwaltungsschale** (_Asset Administration Shell_) beschreiben einheitlich, wie Komponenten ihre Daten und Funktionen digital bereitstellen.
+
+Die Vernetzung bringt neue Risiken: Früher abgeschottete Anlagen sind nun über das Netzwerk erreichbar. Die Normenreihe **IEC 62443** beschreibt die IT-Sicherheit für industrielle Automatisierungssysteme (OT-Security), etwa durch Aufteilung des Netzes in Zonen.
+
+## Funktionale Sicherheit
+
+**Funktionale Sicherheit** bedeutet, dass eine Anlage auch bei Fehlern (Bauteilausfall, Softwarefehler, Bedienfehler) in einen sicheren Zustand übergeht, etwa durch Abschalten eines Motors, wenn eine Schutztür geöffnet wird. Die Grundnorm ist **IEC 61508** (in Europa EN 61508). Sie beschreibt einen Sicherheitslebenszyklus von der Gefährdungsanalyse über Entwurf und Test bis zur Außerbetriebnahme.
+
+Wie zuverlässig eine Sicherheitsfunktion sein muss, ergibt sich aus einer **Risikobeurteilung** (Schwere der Verletzung, Häufigkeit der Gefährdung, Möglichkeit zur Vermeidung). Das Ergebnis ist ein **Safety Integrity Level** von **SIL 1** (niedrigste) bis **SIL 4** (höchste Anforderung). Für jeden SIL sind höchstzulässige Ausfallwahrscheinlichkeiten festgelegt.
+
+Für Maschinen werden davon abgeleitete Normen verwendet: **IEC 62061** (mit SIL) und **EN ISO 13849** (mit **Performance Level** PL a bis PL e). In Europa müssen Maschinen der Maschinenrichtlinie 2006/42/EG entsprechen, die ab **20. Jänner 2027** von der **Maschinenverordnung (EU) 2023/1230** abgelöst wird.
+
+Typische Maßnahmen:
+
+- **Not-Halt** (EN ISO 13850): roter Pilztaster auf gelbem Grund, der zwangsöffnende Kontakte hat und einrastet.
+- **Sicherheits-SPS** und Sicherheitsrelais: redundante, sich gegenseitig überwachende Kanäle; Sicherheitsfunktionen werden getrennt vom normalen Programm ausgeführt.
+- **Redundanz** und **Diversität**: Funktionen doppelt und mit unterschiedlicher Technik ausführen, damit ein einzelner Fehler nicht zum Ausfall führt.
+- **Ruhestromprinzip** und Drahtbruchsicherheit, wie im Förderbandbeispiel oben.
+- Schutztüren mit Sicherheitsschaltern, Lichtvorhänge, Zweihandbedienung.
+
+## Weiterführende Quellen
+
+- Seitz: _Speicherprogrammierbare Steuerungen in der Industrie 4.0_, Hanser
+- [PLCopen: IEC 61131-3](https://plcopen.org/iec-61131-3) und [Plattform Industrie 4.0](https://www.plattform-i40.de/)
+- Lunze: _Regelungstechnik 1_, Springer Vieweg

@@ -1,0 +1,205 @@
+---
+title: Normalisation
+description: Anomalies, functional dependencies, Armstrong's axioms, attribute closure and finding keys, and all normal forms from 1NF to 5NF with worked examples.
+sidebar:
+  order: 4
+---
+
+**Normalisation** is a method for decomposing tables so that every piece of information is stored in only one place. A poorly normalised schema leads to contradictions in the data, wastes storage space and makes changes error-prone. The rules for this are the **normal forms**, which Edgar F. Codd formulated from 1970 onwards and other researchers later. Every normal form requires the previous one.
+
+## Anomalies
+
+The starting point is a table in which everything is stored together:
+
+| StudentNo | Name       | Class | FormTeacher | Course   | CourseLeader |
+| --------- | ---------- | ----- | ----------- | -------- | ------------ |
+| 1         | Anna Huber | 3AHIT | Mayer       | Robotics | Gruber       |
+| 1         | Anna Huber | 3AHIT | Mayer       | Spanish  | Lopez        |
+| 2         | Ben Wolf   | 3AHIT | Mayer       | Robotics | Gruber       |
+| 3         | Clara Berg | 4AHIT | Steiner     | Spanish  | Lopez        |
+
+The fact that Mayer is the form teacher of 3AHIT is stored three times here. This **redundancy** causes three kinds of **anomalies**:
+
+- **Update anomaly**: If 3AHIT gets a new form teacher, three rows have to be changed. If you forget one, the data contradicts itself.
+- **Insertion anomaly**: A new course "Photography" can only be stored once a student signs up for it, because `StudentNo` is part of the key and must not be `NULL`.
+- **Deletion anomaly**: If Clara drops Spanish and her only row is deleted, the information that Steiner is the form teacher of 4AHIT is lost as well.
+
+## Functional dependencies
+
+The normal forms are defined through **functional dependencies** (FDs). An attribute $B$ is functionally dependent on $A$, written $A \rightarrow B$, if exactly one value of $B$ belongs to every value of $A$. $A$ is called the **determinant**.
+
+In the example, the following hold, among others:
+
+$$
+\begin{aligned}
+\text{StudentNo} &\rightarrow \text{Name}, \text{Class} \\
+\text{Class} &\rightarrow \text{FormTeacher} \\
+\text{Course} &\rightarrow \text{CourseLeader}
+\end{aligned}
+$$
+
+Functional dependencies result from the **meaning** of the data, not from random values in a table. The fact that every name occurs only once in the four rows above does not mean that $\text{Name} \rightarrow \text{StudentNo}$ holds, because two students can have the same name.
+
+| Kind                   | Meaning                                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Full**               | $B$ depends on the whole composite key, but on no proper subset of it.                                 |
+| **Partial**            | $B$ already depends on part of the key: $\text{StudentNo} \rightarrow \text{Name}$, although the key is $(\text{StudentNo}, \text{Course})$. |
+| **Transitive**         | $B$ depends on the key via a non-key attribute: $\text{StudentNo} \rightarrow \text{Class} \rightarrow \text{FormTeacher}$. |
+| **Trivial**            | $B$ is part of $A$, such as $(\text{StudentNo}, \text{Course}) \rightarrow \text{Course}$. It always holds. |
+
+### Armstrong's axioms
+
+Further dependencies can be derived from given ones. The three **Armstrong's axioms** (William Armstrong, 1974) are sufficient for this. For attribute sets $X$, $Y$, $Z$:
+
+| Rule               | Statement                                                     |
+| ------------------ | ------------------------------------------------------------- |
+| **Reflexivity**    | If $Y \subseteq X$, then $X \rightarrow Y$.                   |
+| **Augmentation**   | From $X \rightarrow Y$ follows $XZ \rightarrow YZ$.           |
+| **Transitivity**   | From $X \rightarrow Y$ and $Y \rightarrow Z$ follows $X \rightarrow Z$. |
+
+From these follow the practical rules of **union** (from $X \rightarrow Y$ and $X \rightarrow Z$ follows $X \rightarrow YZ$), **decomposition** (from $X \rightarrow YZ$ follows $X \rightarrow Y$) and **pseudotransitivity** (from $X \rightarrow Y$ and $WY \rightarrow Z$ follows $WX \rightarrow Z$).
+
+### Attribute closure and keys
+
+The **attribute closure** $X^+$ is the set of all attributes that are functionally dependent on $X$. It is calculated step by step:
+
+1. Start with $X^+ = X$.
+2. For every dependency $A \rightarrow B$ whose left side $A$ lies completely in $X^+$, add $B$ to $X^+$.
+3. Repeat step 2 until $X^+$ no longer changes.
+
+Let the relation $R(A, B, C, D, E)$ be given with the dependencies $A \rightarrow B$, $B \rightarrow C$ and $CD \rightarrow E$. For $X = \{A, D\}$:
+
+| Step    | Dependency applied       | $X^+$                    |
+| ------- | ------------------------ | ------------------------ |
+| start   |                          | $\{A, D\}$               |
+| 1       | $A \rightarrow B$        | $\{A, B, D\}$            |
+| 2       | $B \rightarrow C$        | $\{A, B, C, D\}$         |
+| 3       | $CD \rightarrow E$       | $\{A, B, C, D, E\}$      |
+
+Because $\{A, D\}^+$ contains all attributes, $\{A, D\}$ is a **superkey**. Because neither $\{A\}^+ = \{A, B, C\}$ nor $\{D\}^+ = \{D\}$ contains all attributes, it is also minimal and therefore a **candidate key**.
+
+:::tip[Finding keys quickly]
+Attributes that occur on **no right-hand side** (here $A$ and $D$) must be contained in every key because they depend on nothing. Start with this set and calculate its closure. If it already contains all attributes, it is the only candidate key.
+:::
+
+Attributes that are part of a candidate key are called **prime attributes**, all others **non-prime attributes**.
+
+## The normal forms
+
+### First normal form (1NF)
+
+A relation is in **first normal form** if all attribute values are **atomic** and there are no repeating groups.
+
+| StudentNo | Name       | Courses            |
+| --------- | ---------- | ------------------ |
+| 1         | Anna Huber | Robotics, Spanish  |
+
+violates 1NF twice: `Courses` contains several values, and `Name` can be split into first and last name. The solution is a separate row per course and one column each for first and last names. Columns such as `Course1`, `Course2`, `Course3` are also a repeating group and not a solution.
+
+What "atomic" means depends on the use. An address can be atomic as one text if nobody ever searches by postcode. A date counts as atomic, although it consists of day, month and year.
+
+### Second normal form (2NF)
+
+A relation is in **second normal form** if it is in 1NF and every non-prime attribute is **fully functionally** dependent on every candidate key. So there must be no partial dependency.
+
+The original table has the key $(\text{StudentNo}, \text{Course})$. However, `Name`, `Class` and `FormTeacher` depend only on `StudentNo`, and `CourseLeader` only on `Course`. Every partial dependency is moved into a table of its own:
+
+- `Student(StudentNo, FirstName, LastName, Class, FormTeacher)`
+- `Course(Course, CourseLeader)`
+- `Enrolment(StudentNo, Course)`
+
+A relation whose candidate keys consist of only one attribute is automatically in 2NF.
+
+### Third normal form (3NF)
+
+A relation is in **third normal form** if it is in 2NF and no non-prime attribute is **transitively** dependent on a key. So no non-prime attribute may depend on another non-prime attribute.
+
+In `Student`, $\text{StudentNo} \rightarrow \text{Class} \rightarrow \text{FormTeacher}$ holds. The form teacher belongs to the class, not to the student, and is moved out:
+
+- `Student(StudentNo, FirstName, LastName, Class)`
+- `Class(Class, FormTeacher)`
+
+A memory aid for the first three normal forms: every non-prime attribute depends on **the key** (1NF), **the whole key** (2NF) and **nothing but the key** (3NF).
+
+The finished schema in SQL:
+
+```sql
+CREATE TABLE Class (
+    Name        VARCHAR(10) PRIMARY KEY,
+    FormTeacher VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Student (
+    StudentNo INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    Class     VARCHAR(10) NOT NULL REFERENCES Class(Name)
+);
+
+CREATE TABLE Course (
+    Name         VARCHAR(50) PRIMARY KEY,
+    CourseLeader VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Enrolment (
+    StudentNo INT         REFERENCES Student(StudentNo),
+    Course    VARCHAR(50) REFERENCES Course(Name),
+    PRIMARY KEY (StudentNo, Course)
+);
+```
+
+All three anomalies are eliminated: the form teacher is stored exactly once in `Class`, a course can be created without participants, and deleting an enrolment deletes no other information. With a join, the original table can be restored at any time.
+
+### Boyce-Codd normal form (BCNF)
+
+A relation is in **Boyce-Codd normal form** if, for every non-trivial functional dependency $X \rightarrow Y$, the determinant $X$ is a superkey. BCNF tightens 3NF: 3NF still allows dependencies whose right-hand side is a prime attribute.
+
+A difference only arises with several overlapping candidate keys. Example: in the table `Tutoring(Student, Subject, Teacher)`, every teacher teaches only one subject ($\text{Teacher} \rightarrow \text{Subject}$), and every student has exactly one teacher per subject ($\text{Student}, \text{Subject} \rightarrow \text{Teacher}$).
+
+| Student  | Subject | Teacher |
+| -------- | ------- | ------- |
+| Anna     | AM      | Pichler |
+| Ben      | AM      | Pichler |
+| Anna     | SEW     | Kern    |
+| Ben      | SEW     | Hofer   |
+
+The candidate keys are $(\text{Student}, \text{Subject})$ and $(\text{Student}, \text{Teacher})$. All attributes are prime, so the table is in 3NF. However, the determinant `Teacher` is not a superkey, so the table is not in BCNF: the fact that Pichler teaches AM is stored twice. The decomposition into `TeacherSubject(Teacher, Subject)` and `Tutoring(Student, Teacher)` is in BCNF.
+
+This decomposition has a price: the dependency $\text{Student}, \text{Subject} \rightarrow \text{Teacher}$ can no longer be checked with a simple constraint in either of the two tables. A decomposition into BCNF is **not always dependency-preserving**, whereas a decomposition into 3NF always is. In practice, 3NF is therefore the goal, and BCNF where it is possible without loss.
+
+### Fourth normal form (4NF)
+
+A relation is in **fourth normal form** if it is in BCNF and contains no non-trivial **multivalued dependencies**. A multivalued dependency $A \twoheadrightarrow B$ exists if a **set** of values of $B$ belongs to a value of $A$, independent of the remaining attributes.
+
+| Student  | Language | Hobby    |
+| -------- | -------- | -------- |
+| Anna     | English  | climbing |
+| Anna     | English  | guitar   |
+| Anna     | Spanish  | climbing |
+| Anna     | Spanish  | guitar   |
+
+Languages and hobbies have nothing to do with each other, yet every combination has to be stored. If Anna learns Italian, two new rows are needed. The table is in BCNF because all three columns together are the key, but $\text{Student} \twoheadrightarrow \text{Language}$ and $\text{Student} \twoheadrightarrow \text{Hobby}$ hold. The solution is two tables `LanguageSkill(Student, Language)` and `Hobby(Student, Hobby)`.
+
+### Fifth normal form (5NF)
+
+A relation is in **fifth normal form** (_project-join normal form_) if it cannot be decomposed further without loss into smaller tables, except into ones that each contain a candidate key. It is violated by **join dependencies**: a table can only be decomposed without loss into three or more parts, but not into two.
+
+Example: `Assignment(Teacher, Subject, Class)` with the rule "If a teacher teaches a subject, teaches in a class, and the subject is taught in that class, then the teacher also teaches it there". Under this rule, the table can be decomposed without loss into `(Teacher, Subject)`, `(Teacher, Class)` and `(Subject, Class)`. Such rules are rare, which is why 5NF hardly plays a role in practice.
+
+## Properties of a good decomposition
+
+A decomposition of a table into several smaller ones must have two properties:
+
+- **Lossless** (_lossless join_): the join of the partial tables results in exactly the original table, without missing and without additional, invented rows. A decomposition of $R$ into $R_1$ and $R_2$ is lossless if the common attributes $R_1 \cap R_2$ are a key of $R_1$ or of $R_2$. In the decomposition into `Student` and `Class`, the common attribute `Class` is the key of `Class`.
+- **Dependency-preserving**: every functional dependency can be checked within a single partial table.
+
+Bernstein's **synthesis algorithm** (1976) always produces a schema in 3NF from a set of functional dependencies that has both properties: one table is created for every dependency of a minimal cover, and if none of them contains a key of the original relation, a table with a key is added.
+
+## Denormalisation
+
+Every decomposition means additional joins when reading. If queries become too slow as a result, redundancy can be introduced deliberately (**denormalisation**), such as a precalculated grade average in the table `Student` or a star schema design in the [data warehouse](/en/databases/data-warehouse/). The database itself then has to keep the redundancy consistent, for example with [triggers](/en/databases/sql-advanced/#triggers) or a materialised view. Normalise first and only denormalise selectively when measurements show a problem.
+
+## Further reading
+
+- Ramez Elmasri, Shamkant B. Navathe: _Fundamentals of Database Systems_, Pearson, chapters on functional dependencies and normalisation
+- William Kent: _A Simple Guide to Five Normal Forms in Relational Database Theory_, Communications of the ACM, 1983

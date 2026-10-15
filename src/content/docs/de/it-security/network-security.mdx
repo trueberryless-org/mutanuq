@@ -1,0 +1,176 @@
+---
+title: Netzwerksicherheit
+description: Firewalltypen und WAF, DMZ, IDS und IPS, VPN mit IPsec, WireGuard und OpenVPN, Segmentierung, NAC mit 802.1X, WLAN- und Switch-Sicherheit, E-Mail-Sicherheit, Honeypots und SIEM.
+sidebar:
+  order: 7
+---
+
+Netzwerksicherheit kontrolliert, wer mit wem kommunizieren darf, schützt Daten auf dem Transportweg und erkennt Angriffe im Datenverkehr. Sie folgt dem Prinzip der gestaffelten Verteidigung: Eine Firewall am Internetanschluss allein genügt nicht, weil Angriffe heute oft von innen kommen, etwa über einen per Phishing infizierten Laptop. Deshalb wird auch das interne Netz unterteilt und überwacht.
+
+## Firewalls
+
+Eine **Firewall** setzt eine Sicherheitsrichtlinie an der Grenze zwischen Netzen durch. Wie die Typen arbeiten und wie man ein Regelwerk aufbaut, steht ausführlich unter [Firewalls und VPN](/de/deployment/operations/firewalls/). Hier der Überblick:
+
+| Typ                              | OSI-Schicht | prüft                                                        | Stärken und Grenzen                                       |
+| -------------------------------- | ----------- | ------------------------------------------------------------ | --------------------------------------------------------- |
+| **Paketfilter** (zustandslos)    | 3, 4        | IP-Adressen, Protokoll, Ports jedes einzelnen Pakets          | schnell, aber ohne Kontext, Antwortpakete eigens erlauben  |
+| **Stateful Inspection**          | 3, 4        | zusätzlich den Verbindungszustand (Zustandstabelle)          | heutiger Mindeststandard                                  |
+| **Application Level Gateway** (Proxy) | 7      | Inhalte eines bestimmten Protokolls, etwa HTTP                | gründlich, aber rechenintensiv, je Protokoll ein Proxy     |
+| **Next-Generation Firewall** (NGFW) | 3 bis 7  | Anwendungen unabhängig vom Port, Benutzer, IPS, URL-Filter, TLS-Inspektion | umfassend, teuer, komplex                       |
+| **Web Application Firewall** (WAF) | 7         | HTTP-Anfragen an eine Webanwendung auf SQL-Injection, XSS usw. | schützt Webanwendungen, ersetzt keinen sicheren Code     |
+| **Host-Firewall**                | 3, 4        | Verkehr eines einzelnen Rechners                              | schützt auch im internen Netz und unterwegs                |
+
+Grundsätze für jedes Regelwerk sind **Default Deny** (alles, was nicht ausdrücklich erlaubt ist, wird verworfen), minimale Freigaben nach Quelle, Ziel und Port, Filterung auch des **ausgehenden** Verkehrs (damit Schadsoftware nicht beliebig nach außen telefonieren kann) und Protokollierung. Eine **TLS-Inspektion** bricht verschlüsselte Verbindungen an der Firewall auf, um Inhalte zu prüfen. Das erfordert ein Firmen-Root-Zertifikat auf allen Clients und ist datenschutzrechtlich heikel, weil auch private Inhalte wie Onlinebanking sichtbar würden.
+
+Eine **WAF** wie ModSecurity mit dem OWASP Core Rule Set arbeitet mit Signaturen bekannter Angriffsmuster. Sie kann Angriffe blockieren, bis eine Lücke im Code behoben ist (_Virtual Patching_), lässt sich aber durch Varianten umgehen und erzeugt Fehlalarme.
+
+## DMZ
+
+Server, die aus dem Internet erreichbar sein müssen (Webserver, Mailrelay, Reverse Proxy, VPN-Gateway), stehen in einer **demilitarisierten Zone** (DMZ), einem eigenen Netz zwischen Internet und LAN. Wird ein solcher Server übernommen, steht der Angreifer nicht im internen Netz, sondern trifft erneut auf eine Firewall. Aus dem Internet ist nur die DMZ erreichbar, aus der DMZ ins LAN möglichst nichts. Die Varianten mit zwei Firewalls (_Screened Subnet_) oder einer Dreibein-Firewall beschreibt die Seite [Firewalls und VPN](/de/deployment/operations/firewalls/#dmz).
+
+Ein **Reverse Proxy** in der DMZ nimmt Anfragen aus dem Internet entgegen, beendet TLS und leitet sie an die eigentlichen Anwendungsserver weiter. Administrative Zugänge laufen über einen gehärteten **Jump Host** (Bastion Host) statt direkt auf jeden Server.
+
+## Segmentierung
+
+Ein flaches Netz, in dem jedes Gerät jedes andere erreicht, erlaubt einem Angreifer nach dem ersten Einbruch ungehinderte Ausbreitung (_Lateral Movement_). Deshalb wird das Netz in **Zonen** mit unterschiedlichem Schutzbedarf geteilt, typischerweise mit **VLANs** auf den Switches und Filterung zwischen den VLANs durch Firewall oder ACLs.
+
+| Zone              | Beispiele                                         |
+| ----------------- | ------------------------------------------------- |
+| Server            | Datenbank, Dateiserver, Domänencontroller          |
+| Clients           | Arbeitsplätze der Mitarbeitenden                  |
+| Verwaltung (Management) | Switch-, Firewall- und Hypervisor-Verwaltung, nur für Admins |
+| Gäste             | nur Internetzugang, kein Zugriff auf interne Systeme |
+| IoT, Drucker, Haustechnik | Geräte, die schwer zu patchen sind         |
+| Produktion (OT)   | Steuerungen in Fertigung oder Gebäudetechnik      |
+
+Besonders streng getrennt werden **Betriebstechnik** (_Operational Technology_, OT) wie Industriesteuerungen, die oft jahrzehntelang ohne Updates laufen, und Verwaltungsschnittstellen. **Mikrosegmentierung** geht noch weiter und regelt die Kommunikation einzelner Server oder sogar Workloads untereinander, etwa in virtualisierten Rechenzentren. Wie VLANs funktionieren, beschreibt die Seite [Ethernet und Switching](/de/networking/ethernet-and-switching/).
+
+## Intrusion Detection und Prevention
+
+Ein **Intrusion Detection System** (IDS) analysiert Datenverkehr oder Systemereignisse und meldet Hinweise auf Angriffe. Ein **Intrusion Prevention System** (IPS) liegt **inline** im Datenstrom und kann verdächtige Pakete sofort verwerfen.
+
+| Unterscheidung             | Varianten                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------- |
+| **Ort**                    | **NIDS**: überwacht den Netzwerkverkehr, etwa über einen Spiegelport (SPAN) am Switch. **HIDS**: läuft auf einem Rechner und überwacht Logs, Dateiänderungen und Prozesse |
+| **Erkennung**              | **signaturbasiert**: vergleicht mit bekannten Angriffsmustern, zuverlässig bei bekannten Angriffen, blind für neue. **anomaliebasiert**: lernt den Normalzustand und meldet Abweichungen, erkennt Neues, erzeugt aber mehr Fehlalarme |
+| **Reaktion**               | IDS meldet nur (passiv), IPS blockiert (aktiv)                                              |
+
+Bei der Bewertung unterscheidet man vier Fälle: **True Positive** (Angriff erkannt), **False Positive** (Fehlalarm), **False Negative** (Angriff übersehen) und **True Negative** (harmloser Verkehr korrekt durchgelassen). Zu viele Fehlalarme sind gefährlich, weil Analysten dann echte Alarme übersehen (_Alert Fatigue_). Ein IPS mit zu vielen False Positives blockiert legitimen Verkehr. Bekannte quelloffene Systeme sind **Suricata** und **Snort** (signaturbasiert, NIDS/IPS), **Zeek** (Netzwerkanalyse) sowie **Wazuh** und **OSSEC** (HIDS). Verschlüsselter Verkehr ist für ein NIDS undurchsichtig, deshalb gewinnen Analysen auf den Endgeräten (EDR, siehe [Systemhärtung](/de/it-security/system-hardening/#virenschutz-und-edr)) und von Metadaten an Bedeutung.
+
+## VPN
+
+Ein **Virtual Private Network** (VPN) baut einen verschlüsselten und authentifizierten Tunnel über ein unsicheres Netz auf. **Site-to-Site-VPNs** verbinden Standorte dauerhaft zwischen zwei Gateways, **Remote-Access-VPNs** verbinden einzelne Geräte mit dem Firmennetz.
+
+| Protokoll    | Schicht      | Merkmale                                                                                       |
+| ------------ | ------------ | ---------------------------------------------------------------------------------------------- |
+| **IPsec**    | 3            | offener Standard, herstellerübergreifend, Standard für Site-to-Site, komplex zu konfigurieren  |
+| **WireGuard** | 3           | modern, schlank (wenige tausend Codezeilen), schnell, feste moderne Kryptografie, UDP          |
+| **OpenVPN**  | 3 (bzw. 2)   | quelloffen, TLS-basiert, sehr flexibel, UDP oder TCP, Standardport 1194                         |
+| **SSL-VPN**  | 4 bis 7      | Herstellerlösungen über TLS auf Port 443, teils clientlos über den Browser                     |
+
+### IPsec
+
+**IPsec** besteht aus mehreren Protokollen:
+
+- **IKE** (_Internet Key Exchange_, aktuell IKEv2, UDP-Port 500 bzw. 4500 bei NAT) authentifiziert die Gegenstellen (mit Pre-Shared Key oder Zertifikaten), handelt die Verfahren aus und tauscht per Diffie-Hellman die Schlüssel aus. Das Ergebnis sind **Security Associations** (SA), die festlegen, wie der Verkehr geschützt wird.
+- **ESP** (_Encapsulating Security Payload_, IP-Protokoll 50) verschlüsselt und authentifiziert die Daten. Das ist der Normalfall.
+- **AH** (_Authentication Header_, IP-Protokoll 51) authentifiziert nur, ohne Verschlüsselung, und verträgt sich nicht mit NAT. Er wird kaum noch verwendet.
+
+Im **Tunnelmodus** wird das gesamte ursprüngliche IP-Paket verschlüsselt und in ein neues Paket mit den Adressen der Gateways verpackt. So arbeiten Site-to-Site-VPNs. Im **Transportmodus** wird nur die Nutzlast geschützt, der ursprüngliche IP-Header bleibt. Er dient zur Absicherung der Verbindung zwischen zwei einzelnen Hosts.
+
+### WireGuard
+
+**WireGuard** ist seit 2020 Teil des Linux-Kernels und auch für Windows, macOS, Android und iOS verfügbar. Es verwendet fest vorgegebene, moderne Verfahren (Curve25519 für den Schlüsselaustausch, ChaCha20-Poly1305 für die Verschlüsselung, BLAKE2s als Hashfunktion), sodass es nichts auszuhandeln und keine unsicheren Optionen gibt. Jede Gegenstelle wird durch ihren öffentlichen Schlüssel identifiziert, die Konfiguration ähnelt der von SSH-Schlüsseln:
+
+```ini
+# /etc/wireguard/wg0.conf auf dem Laptop
+[Interface]
+PrivateKey = <privater Schlüssel des Laptops>
+Address = 10.8.0.2/32
+DNS = 10.0.0.53
+
+[Peer]
+# VPN-Gateway der Firma
+PublicKey = <öffentlicher Schlüssel des Gateways>
+Endpoint = vpn.example.at:51820
+# Diese Netze laufen durch den Tunnel (Split Tunneling)
+AllowedIPs = 10.0.0.0/16
+PersistentKeepalive = 25
+```
+
+`AllowedIPs` legt fest, welcher Verkehr durch den Tunnel geht, und gleichzeitig, von welchen Adressen die Gegenstelle Pakete senden darf (_Cryptokey Routing_). Mit `0.0.0.0/0` läuft der gesamte Verkehr durch den Tunnel (**Full Tunneling**), sonst nur der für die Firmennetze (**Split Tunneling**). Full Tunneling schützt auch im öffentlichen WLAN und erlaubt zentrale Filterung, belastet aber die Firmenleitung.
+
+VPN-Gateways sind direkt aus dem Internet erreichbar und deshalb ein bevorzugtes Ziel. In den letzten Jahren wurden zahlreiche kritische Lücken in SSL-VPN-Produkten großer Hersteller massenhaft ausgenutzt. VPN-Zugänge brauchen daher **MFA**, schnelle Updates und eine Überwachung der Anmeldungen. Konzepte wie **Zero Trust Network Access** (ZTNA) ersetzen den Netzwerkzugang des VPN zunehmend durch den Zugriff auf einzelne Anwendungen (siehe [Zero Trust](/de/it-security/security-basics/#zero-trust)).
+
+## Netzwerkzugangskontrolle
+
+**Network Access Control** (NAC) stellt sicher, dass nur bekannte und authentifizierte Geräte überhaupt ins Netz kommen, egal ob über eine Netzwerkdose oder WLAN. Der Standard dafür ist **IEEE 802.1X** (_Port-based Network Access Control_):
+
+| Rolle                    | Aufgabe                                              | Beispiel                              |
+| ------------------------ | ---------------------------------------------------- | ------------------------------------- |
+| **Supplicant**           | Client, der Zugang möchte                            | Laptop mit Windows                    |
+| **Authenticator**        | Netzwerkgerät, das den Port erst nach erfolgreicher Prüfung freischaltet | Switch, WLAN-Access-Point  |
+| **Authentication Server** | prüft die Zugangsdaten                              | RADIUS-Server (Windows NPS, FreeRADIUS) mit Anbindung an das Active Directory |
+
+Bis zur erfolgreichen Anmeldung lässt der Switchport nur EAP-Pakete durch (**EAPoL**, _EAP over LAN_). Die Anmeldung läuft über **EAP**, am sichersten mit **EAP-TLS** (Zertifikate auf Client und Server). Der RADIUS-Server kann dem Gerät abhängig von Benutzer oder Gerätetyp ein VLAN zuweisen, etwa Gäste ins Gäste-VLAN. Geräte ohne 802.1X-Unterstützung wie Drucker werden über ihre MAC-Adresse zugelassen (**MAB**, _MAC Authentication Bypass_), was schwächer ist, weil sich MAC-Adressen fälschen lassen. Erweiterte NAC-Lösungen prüfen zusätzlich den Gerätezustand, etwa ob Virenschutz und Updates aktuell sind, und schieben nicht konforme Geräte in ein Quarantäne-VLAN.
+
+## Switch- und WLAN-Sicherheit
+
+Auf Schicht 2 schützen Funktionen der Switches vor Angriffen aus dem lokalen Netz:
+
+- **Port Security** begrenzt die Zahl der MAC-Adressen pro Port und schützt so vor MAC-Flooding und fremden Geräten.
+- **DHCP Snooping** verwirft DHCP-Antworten von nicht autorisierten Servern (_Rogue DHCP_).
+- **Dynamic ARP Inspection** verhindert ARP-Spoofing und damit Man-in-the-Middle-Angriffe im LAN.
+- Ungenutzte Ports werden abgeschaltet, das automatische Aushandeln von Trunks (DTP) wird deaktiviert, um **VLAN-Hopping** zu verhindern.
+
+```text
+interface FastEthernet0/5
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+```
+
+Im **WLAN** ist heute **WPA3** Standard, mindestens aber WPA2 mit AES (CCMP). WEP und WPA mit TKIP sind gebrochen. Im Unternehmen wird WPA2/WPA3-**Enterprise** mit 802.1X verwendet, damit jeder Benutzer eigene Zugangsdaten hat. Gäste erhalten ein eigenes, vom internen Netz getrenntes WLAN. WPS ist abzuschalten. Details stehen unter [Netzwerkdesign](/de/networking/network-design/) und [WLAN](/de/networking/wlan/).
+
+## E-Mail-Sicherheit
+
+E-Mail ist der häufigste Angriffsweg. Das SMTP-Protokoll prüft ursprünglich nicht, ob ein Absender echt ist, deshalb lassen sich Absenderadressen beliebig fälschen. Drei DNS-basierte Verfahren schaffen Abhilfe:
+
+| Verfahren | Funktionsweise                                                                                                   |
+| --------- | ---------------------------------------------------------------------------------------------------------------- |
+| **SPF** (_Sender Policy Framework_) | ein TXT-Eintrag listet die Server, die für die Domain E-Mails versenden dürfen              |
+| **DKIM** (_DomainKeys Identified Mail_) | der sendende Server signiert Header und Inhalt, der öffentliche Schlüssel steht im DNS |
+| **DMARC** | legt fest, was mit E-Mails passieren soll, die SPF bzw. DKIM nicht bestehen (`none`, `quarantine`, `reject`), und fordert Berichte an |
+
+```text
+example.at.         TXT  "v=spf1 mx include:_spf.mailprovider.example -all"
+_dmarc.example.at.  TXT  "v=DMARC1; p=reject; rua=mailto:dmarc@example.at"
+```
+
+Zusätzlich filtern **Mail-Gateways** Spam und Schadsoftware, öffnen Anhänge in einer **Sandbox** und schreiben Links um, um sie beim Klick zu prüfen. Der Transport zwischen Mailservern sollte per TLS verschlüsselt sein.
+
+## Honeypots
+
+Ein **Honeypot** ist ein absichtlich angreifbar wirkendes System ohne produktive Funktion. Weil kein legitimer Benutzer es verwenden würde, ist **jeder** Zugriff verdächtig. Honeypots liefern so sehr zuverlässige Alarme und zeigen, welche Werkzeuge und Techniken Angreifer einsetzen.
+
+- **Low-Interaction-Honeypots** simulieren nur einzelne Dienste, etwa einen SSH-Anmeldedialog (Beispiel Cowrie), und sind risikoarm.
+- **High-Interaction-Honeypots** sind echte Systeme, auf denen der Angreifer agieren kann. Sie liefern mehr Erkenntnisse, müssen aber gut isoliert sein, damit sie nicht als Sprungbrett dienen.
+- Ein **Honeynet** ist ein ganzes Netz aus Honeypots.
+- **Honeytokens** sind Köderdaten, etwa ein Benutzerkonto „admin_backup“ im AD oder ein gefälschter Zugangsschlüssel in einem Repository. Ihre Verwendung löst sofort einen Alarm aus.
+
+## SIEM und SOC
+
+Ein **Security Information and Event Management** (SIEM) sammelt Protokolle aus dem gesamten Netz zentral: von Firewalls, Servern, Domänencontrollern, Proxys, EDR und Cloud-Diensten. Es normalisiert die Ereignisse, **korreliert** sie über Systeme hinweg und schlägt nach Regeln Alarm. Ein einzelner fehlgeschlagener Login ist unauffällig. Fünfzig fehlgeschlagene Logins an verschiedenen Konten von derselben Adresse, gefolgt von einem erfolgreichen, deuten dagegen auf Password Spraying hin. Diese Erkenntnis entsteht erst durch die Korrelation.
+
+Weitere Aufgaben eines SIEM sind die revisionssichere Aufbewahrung von Logs für spätere Untersuchungen und Berichte für Audits. Bekannte Produkte sind Splunk, Microsoft Sentinel, IBM QRadar, Elastic Security und das quelloffene Wazuh. Voraussetzung sind synchronisierte Uhren (NTP), sonst lassen sich Ereignisse verschiedener Systeme nicht zeitlich zuordnen.
+
+Ein SIEM nützt nur, wenn jemand die Alarme bearbeitet. Das übernimmt ein **Security Operations Center** (SOC), ein Team, das die Sicherheitslage überwacht, oft rund um die Uhr, und bei Vorfällen die [Incident Response](/de/it-security/incident-response-and-forensics/) einleitet. Kleinere Organisationen beauftragen dafür einen externen Dienstleister (_Managed SOC_, MDR). **SOAR**-Plattformen (_Security Orchestration, Automation and Response_) automatisieren wiederkehrende Reaktionen, etwa das Sperren eines Kontos oder das Isolieren eines Rechners.
+
+## Weiterführende Quellen
+
+- [BSI IT-Grundschutz-Kompendium, Schicht NET (Netze und Kommunikation)](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html)
+- [WireGuard: Conceptual Overview](https://www.wireguard.com/)
+- [NIST SP 800-94: Guide to Intrusion Detection and Prevention Systems](https://csrc.nist.gov/pubs/sp/800/94/final)

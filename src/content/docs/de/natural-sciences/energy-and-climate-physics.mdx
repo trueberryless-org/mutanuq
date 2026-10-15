@@ -1,0 +1,152 @@
+---
+title: Energie und Klima
+description: Physik der Energieversorgung, Energieformen und Umwandlungsketten, Photovoltaik, Windkraft mit Betz-Grenze, Wasserkraft, Energiespeicher und der physikalische Treibhauseffekt.
+sidebar:
+  order: 16
+---
+
+Energieversorgung und Klimawandel sind Themen, bei denen Physik direkt in gesellschaftliche Entscheidungen hineinwirkt. Diese Seite behandelt die physikalischen Grundlagen: Woher kommt nutzbare Energie, wie viel lässt sich aus Sonne, Wind und Wasser gewinnen, wie speichert man sie, und warum erwärmt zusätzliches CO₂ die Erde?
+
+## Energieformen und Umwandlungsketten
+
+Energie wird nie verbraucht, sondern nur umgewandelt (siehe [Energieerhaltung](/de/natural-sciences/work-energy-power/#energieerhaltungssatz)). „Verbraucht“ wird ihre Nutzbarkeit: Am Ende jeder Kette steht Wärme niedriger Temperatur, und die Entropie ist gestiegen.
+
+| Stufe | Bedeutung | Beispiele |
+| --- | --- | --- |
+| **Primärenergie** | in der Natur vorkommende Energieträger | Rohöl, Erdgas, Kohle, Uran, Sonnenstrahlung, Wind, Wasserkraft, Biomasse |
+| **Sekundärenergie** | durch Umwandlung gewonnen | Strom, Benzin, Diesel, Fernwärme, Wasserstoff |
+| **Endenergie** | was beim Verbraucher ankommt und bezahlt wird | Strom aus der Steckdose, Heizöl im Tank |
+| **Nutzenergie** | die tatsächlich gewünschte Form | Licht, Wärme im Raum, Bewegung |
+
+Jede Umwandlung hat Verluste; die Wirkungsgrade der Kette multiplizieren sich.
+
+:::tip[Beispiel: Umwandlungskette]
+Strom aus einem Gaskraftwerk ($\eta = 0{,}58$) wird über das Netz ($\eta = 0{,}94$) zu einer LED-Lampe ($\eta \approx 0{,}4$ für Licht) geleitet: $\eta_\mathrm{ges} = 0{,}58 \cdot 0{,}94 \cdot 0{,}4 = 0{,}22$. Nur 22 % der Primärenergie werden zu Licht. Mit einer Glühlampe ($\eta \approx 0{,}03$) wären es unter 2 %.
+:::
+
+Fast alle Energiequellen der Erde gehen auf die Sonne zurück: Wind und Wasserkreislauf werden von Sonnenwärme angetrieben, Biomasse und fossile Brennstoffe speichern Sonnenenergie über die Photosynthese. Ausnahmen sind Kernenergie, Erdwärme (Geothermie, aus radioaktivem Zerfall und Restwärme im Erdinneren) und Gezeitenenergie (aus der Gravitation von Mond und Sonne).
+
+## Photovoltaik
+
+Eine **Solarzelle** wandelt Licht direkt in elektrische Energie um. Sie ist ein großflächiger [pn-Übergang](/de/natural-sciences/modern-physics/#halbleiter) aus Halbleitermaterial, meist Silizium:
+
+1. Ein Photon mit einer Energie größer als die Bandlücke ($E_\mathrm{g} = 1{,}12\,\mathrm{eV}$ bei Silizium) hebt ein Elektron ins Leitungsband und erzeugt ein Elektron-Loch-Paar (innerer Photoeffekt).
+2. Das elektrische Feld in der Sperrschicht trennt die Ladungen: Elektronen wandern ins n-Gebiet, Löcher ins p-Gebiet.
+3. An den Kontakten entsteht eine Spannung von etwa $0{,}6\,\mathrm{V}$ pro Zelle; über einen äußeren Verbraucher fließt Gleichstrom. Viele Zellen in Reihe bilden ein Modul, ein **Wechselrichter** erzeugt netzkonformen Wechselstrom.
+
+Warum der Wirkungsgrad begrenzt ist: Photonen mit $E < E_\mathrm{g}$ (Infrarot über etwa $1100\,\mathrm{nm}$) werden nicht genutzt, und von energiereicheren Photonen geht der Überschuss $hf - E_\mathrm{g}$ als Wärme verloren. Für eine einzelne Zelle mit idealer Bandlücke ergibt sich daraus die theoretische **Shockley-Queisser-Grenze** von etwa 33 %. Handelsübliche Siliziummodule erreichen 20 bis 23 %, Mehrfachsolarzellen mit mehreren Bandlücken über 40 % (Raumfahrt). Höhere Temperatur senkt die Spannung und damit den Wirkungsgrad um etwa $0{,}3$ bis $0{,}4\,\%$ pro Kelvin.
+
+Die Nennleistung wird unter **Standardtestbedingungen** (STC: Einstrahlung $1000\,\mathrm{W/m^2}$, Zelltemperatur $25\,^\circ\mathrm{C}$) in **Kilowatt-Peak** (kWp) angegeben.
+
+:::tip[Beispiel: PV-Anlage am Hausdach]
+$10\,\mathrm{m^2}$ Module mit 20 % Wirkungsgrad: $P = 10\,\mathrm{m^2} \cdot 1000\,\mathrm{W/m^2} \cdot 0{,}2 = 2\,\mathrm{kWp}$. In Österreich liefert eine gut ausgerichtete Anlage im Jahr rund $1000$ bis $1100\,\mathrm{kWh}$ pro kWp, hier also etwa $2000\,\mathrm{kWh}$. Das entspricht rund 1000 Volllaststunden von 8760 Stunden im Jahr: Nachts, bei Bewölkung und bei flacher Sonne liefert die Anlage wenig.
+:::
+
+## Windkraft
+
+Wind ist bewegte Luft mit kinetischer Energie. Durch die Rotorfläche $A$ strömt pro Sekunde die Masse $\dot m = \rho A v$, die Leistung des Windes ist deshalb
+
+$$
+P_\mathrm{Wind} = \frac{1}{2} \dot m v^2 = \frac{1}{2} \rho A v^3
+$$
+
+Die Leistung wächst mit der **dritten Potenz** der Windgeschwindigkeit: Doppelte Windgeschwindigkeit bedeutet achtfache Leistung. Deshalb stehen Windräder an windreichen Standorten und auf hohen Türmen, wo der Wind stärker und gleichmäßiger weht. Die Rotorfläche wächst mit dem Quadrat des Durchmessers.
+
+### Betz-Grenze
+
+Eine Windturbine kann dem Wind nicht die ganze Energie entziehen, sonst stünde die Luft hinter dem Rotor still und könnte nicht abfließen. Albert Betz zeigte 1920 mit Impuls- und Energiebilanz, dass die Leistung maximal wird, wenn die Luft hinter dem Rotor auf ein Drittel der Anströmgeschwindigkeit abgebremst wird. Der höchstmögliche **Leistungsbeiwert** ist
+
+$$
+c_{P,\mathrm{max}} = \frac{16}{27} \approx 0{,}593
+$$
+
+Moderne Anlagen erreichen im besten Betriebspunkt $c_P \approx 0{,}45$ bis $0{,}50$.
+
+:::tip[Beispiel: Windkraftanlage]
+Rotordurchmesser $120\,\mathrm{m}$, Windgeschwindigkeit $10\,\mathrm{m/s}$, Luftdichte $1{,}225\,\mathrm{kg/m^3}$:
+
+$$
+A = \pi \cdot 60^2 = 11\,310\,\mathrm{m^2}, \qquad P_\mathrm{Wind} = \frac{1}{2} \cdot 1{,}225 \cdot 11\,310 \cdot 10^3 = 6{,}93\,\mathrm{MW}
+$$
+
+Nach Betz sind höchstens $0{,}593 \cdot 6{,}93 = 4{,}1\,\mathrm{MW}$ nutzbar, mit $c_P = 0{,}45$ etwa $3{,}1\,\mathrm{MW}$. Bei $5\,\mathrm{m/s}$ wäre es nur ein Achtel. Über das Jahr erreichen Windräder an Land typischerweise 2000 bis 3000 Volllaststunden.
+:::
+
+## Wasserkraft
+
+Wasserkraftwerke nutzen die potentielle Energie von Wasser, das eine **Fallhöhe** $h$ hinabfließt. Mit dem Volumenstrom $Q$ (in $\mathrm{m^3/s}$) ist die Leistung
+
+$$
+P = \eta \cdot \rho \cdot g \cdot Q \cdot h
+$$
+
+Turbinen und Generatoren erreichen zusammen Wirkungsgrade von 85 bis 90 %, mehr als jede andere Kraftwerksart.
+
+:::tip[Beispiel]
+Ein Laufkraftwerk an einem Fluss: $Q = 100\,\mathrm{m^3/s}$, $h = 10\,\mathrm{m}$, $\eta = 0{,}9$: $P = 0{,}9 \cdot 1000 \cdot 9{,}81 \cdot 100 \cdot 10 = 8{,}8\,\mathrm{MW}$.
+:::
+
+| Kraftwerkstyp | Merkmal |
+| --- | --- |
+| **Laufkraftwerk** | großer Durchfluss, kleine Fallhöhe, liefert Grundlast (Donaukraftwerke) |
+| **Speicherkraftwerk** | Stausee im Gebirge, große Fallhöhe, schnell regelbar für Spitzenlast |
+| **Pumpspeicherkraftwerk** | pumpt bei Stromüberschuss Wasser in ein Oberbecken, erzeugt bei Bedarf Strom; Gesamtwirkungsgrad etwa 75 bis 80 % |
+
+Österreich ist ein Wasserkraftland: 2024 stammten laut E-Control rund 60 % der heimischen Stromerzeugung aus Wasserkraft.
+
+## Energiespeicher
+
+Sonne und Wind liefern Energie nicht dann, wenn sie gebraucht wird. Speicher gleichen das aus, über Sekunden bis Monate.
+
+| Speicher | Prinzip | Energiedichte (Richtwert) | Wirkungsgrad |
+| --- | --- | --- | --- |
+| Pumpspeicher | potentielle Energie $mgh$ | $0{,}8\,\mathrm{kWh/m^3}$ bei $300\,\mathrm{m}$ Fallhöhe | 75 bis 80 % |
+| Lithium-Ionen-Akku | elektrochemisch | $150$ bis $270\,\mathrm{Wh/kg}$ | etwa 90 bis 95 % |
+| Bleiakku | elektrochemisch | $30$ bis $40\,\mathrm{Wh/kg}$ | 70 bis 85 % |
+| Schwungrad | Rotationsenergie $\frac{1}{2}J\omega^2$ | gering, aber sehr hohe Leistung | über 85 % (kurzzeitig) |
+| Superkondensator | elektrisches Feld $\frac{1}{2}CU^2$ | etwa $5\,\mathrm{Wh/kg}$ | über 95 % |
+| Wärmespeicher (Wasser) | $Q = c m \Delta T$ | $46{,}5\,\mathrm{kWh/m^3}$ bei $40\,\mathrm{K}$ | je nach Dämmung |
+| Wasserstoff (Power-to-Gas) | chemisch, Elektrolyse und Brennstoffzelle | $33{,}3\,\mathrm{kWh/kg}$ (Heizwert) | Strom zu Strom etwa 30 bis 40 % |
+| zum Vergleich: Benzin | chemisch | $12\,\mathrm{kWh/kg}$ | Motor 25 bis 35 % |
+
+:::tip[Beispiel: Pumpspeicher]
+Ein Oberbecken mit $10^6\,\mathrm{m^3}$ Wasser ($10^9\,\mathrm{kg}$) liegt $300\,\mathrm{m}$ über dem Unterbecken: $E = m g h = 10^9 \cdot 9{,}81 \cdot 300 = 2{,}94 \cdot 10^{12}\,\mathrm{J} = 818\,\mathrm{MWh}$. Ein Elektroauto-Akku mit $60\,\mathrm{kWh}$ wiegt dagegen rund $400\,\mathrm{kg}$.
+:::
+
+Benzin hat pro Kilogramm etwa fünfzigmal so viel Energie wie ein Akku. Weil ein Elektromotor aber rund 90 % in Bewegung umsetzt und ein Verbrennungsmotor nur ein Drittel, schrumpft der Unterschied bei der Nutzenergie deutlich.
+
+## Treibhauseffekt
+
+### Strahlungsbilanz der Erde
+
+Die Erde erhält von der Sonne an der Obergrenze der Atmosphäre die **Solarkonstante** $S = 1361\,\mathrm{W/m^2}$ (senkrecht zur Einstrahlung). Etwa 30 % werden von Wolken, Eis und Boden direkt reflektiert (**Albedo** $a = 0{,}3$). Die Erde fängt Strahlung mit ihrer Querschnittsfläche $\pi R^2$ auf, strahlt aber mit ihrer ganzen Oberfläche $4\pi R^2$ wieder ab. Im Gleichgewicht gilt nach dem [Stefan-Boltzmann-Gesetz](/de/natural-sciences/thermodynamics/#wärmestrahlung):
+
+$$
+S (1 - a) \pi R^2 = \sigma T^4 \cdot 4\pi R^2 \quad\Rightarrow\quad T = \sqrt[4]{\frac{S(1-a)}{4\sigma}} = \sqrt[4]{\frac{1361 \cdot 0{,}7}{4 \cdot 5{,}67 \cdot 10^{-8}}} = 255\,\mathrm{K}
+$$
+
+Ohne Atmosphäre hätte die Erde also im Mittel etwa $-18\,^\circ\mathrm{C}$. Tatsächlich beträgt die mittlere Oberflächentemperatur etwa $+15\,^\circ\mathrm{C}$ ($288\,\mathrm{K}$). Die Differenz von rund $33\,\mathrm{K}$ ist der **natürliche Treibhauseffekt**, ohne den die Erde weitgehend vereist wäre.
+
+### Physikalischer Mechanismus
+
+Die Sonne ($5772\,\mathrm{K}$) strahlt vor allem sichtbares Licht ab, die Erdoberfläche ($288\,\mathrm{K}$) nach dem Wienschen Gesetz Infrarot um $10\,\mathrm{\mu m}$. Die Atmosphäre ist für sichtbares Licht weitgehend durchlässig, aber Gase aus drei oder mehr Atomen absorbieren Infrarot: **Wasserdampf**, **Kohlendioxid** (starke Bande bei $15\,\mathrm{\mu m}$), Methan, Lachgas und Ozon. Ihre Moleküle können durch Infrarotphotonen zu Schwingungen angeregt werden; Stickstoff und Sauerstoff (zweiatomig, symmetrisch) können das praktisch nicht.
+
+Die angeregten Moleküle geben die Energie durch Stöße an die Luft ab und strahlen ihrerseits Infrarot in alle Richtungen, auch zurück zum Boden (**Gegenstrahlung**). Ins All entweicht die Wärmestrahlung erst aus höheren, kälteren Schichten. Weil kältere Schichten nach $\sigma T^4$ weniger abstrahlen, muss sich das System insgesamt erwärmen, bis wieder so viel abgestrahlt wie empfangen wird. Mehr Treibhausgase heben die Abstrahlhöhe weiter an: Das ist der **verstärkte (anthropogene) Treibhauseffekt**. Der Name ist irreführend, ein Glashaus wärmt vor allem, weil es die Konvektion unterbindet.
+
+### Strahlungsantrieb und Erwärmung
+
+Die CO₂-Konzentration ist durch das Verbrennen fossiler Brennstoffe von etwa $280\,\mathrm{ppm}$ vor der Industrialisierung auf über $420\,\mathrm{ppm}$ gestiegen. Die zusätzliche Energie, die das im Mittel zurückhält, heißt **Strahlungsantrieb**. Für CO₂ gilt näherungsweise
+
+$$
+\Delta F = 5{,}35\,\mathrm{W/m^2} \cdot \ln\frac{C}{C_0}
+$$
+
+Für $C = 420\,\mathrm{ppm}$ ergibt das $\Delta F = 5{,}35 \cdot \ln(1{,}5) = 2{,}2\,\mathrm{W/m^2}$. Das klingt wenig, wirkt aber auf die ganze Erdoberfläche und ständig. **Rückkopplungen** verstärken die Erwärmung: Wärmere Luft enthält mehr Wasserdampf (selbst ein Treibhausgas), schmelzendes Eis senkt die Albedo. Laut Weltklimarat (IPCC, Sechster Sachstandsbericht) lag die globale Oberflächentemperatur 2011 bis 2020 um etwa $1{,}1\,^\circ\mathrm{C}$ über dem Mittel von 1850 bis 1900, und eine Verdopplung von CO₂ führt sehr wahrscheinlich zu einer Erwärmung von 2 bis $5\,^\circ\mathrm{C}$ (bester Schätzwert $3\,^\circ\mathrm{C}$). Über Land, etwa im Alpenraum, ist die Erwärmung deutlich stärker als im globalen Mittel.
+
+Die Wirkungen auf Ökosysteme und mögliche Maßnahmen behandelt die Ökologie; physikalisch entscheidend ist, dass CO₂ über Jahrhunderte in der Atmosphäre bleibt und die Erwärmung deshalb im Wesentlichen von den kumulierten Emissionen abhängt.
+
+## Weiterführende Quellen
+
+- IPCC: _Climate Change 2021: The Physical Science Basis_ (Sechster Sachstandsbericht, Arbeitsgruppe I), ipcc.ch
+- E-Control: Statistiken zur Stromerzeugung in Österreich, e-control.at
+- David J. C. MacKay: _Sustainable Energy, without the hot air_, UIT Cambridge, 2009 (frei verfügbar)

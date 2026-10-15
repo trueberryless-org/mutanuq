@@ -1,16 +1,59 @@
 ---
 title: Softwareentwicklung
-description: Grundlagen der objektorientierten Programmierung, Qualitätsmerkmale von Software und bewährte Entwurfsmuster.
+description: Programmieren in C# und Rust von den Grundlagen über Algorithmen, Datenstrukturen und Nebenläufigkeit bis zu Testen, Clean Code, Entwurfsmustern und Softwarearchitektur.
 sidebar:
   label: Überblick
 ---
 
-import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-Die Softwareentwicklung ist das Kernfach der Informatik an der HTL. In diesem Bereich lernst du, wie man Programme nicht nur zum Laufen bringt, sondern so aufbaut, dass sie **verständlich**, erweiterbar und wartbar bleiben, auch dann, wenn viele Personen über mehrere Jahre daran arbeiten.
+Softwareentwicklung (SEW) ist das Kernfach der Informationstechnologie an der HTL und begleitet die gesamte Ausbildung vom ersten bis zum fünften Jahrgang. In diesem Bereich lernst du, wie man Programme nicht nur zum Laufen bringt, sondern so aufbaut, dass sie **verständlich**, erweiterbar und wartbar bleiben, auch dann, wenn viele Personen über mehrere Jahre daran arbeiten.
 
-Die Beispiele auf diesen Seiten sind in **C#** geschrieben, lassen sich aber mit wenigen Anpassungen auf Java oder andere objektorientierte Sprachen übertragen.
+Alle Codebeispiele gibt es in **C#** und **Rust**. C# ist die Sprache, mit der an der HTL Krems unterrichtet wird, Rust zeigt einen modernen, systemnahen Ansatz ohne Garbage Collector. Über die Reiter über jedem Beispiel wählst du die Sprache. Die Auswahl bleibt auf allen Seiten erhalten. Jedes Beispiel wurde mit .NET 10 und Rust (Edition 2024) übersetzt und ausgeführt.
 
-## Was dich erwartet
+## Grundlagen
 
-<GroupPageCards directory="software-development" />
+<CardGrid>
+  <LinkCard title="Grundlagen der Programmierung" href="/de/software-development/programming-basics/" description="Variablen, Datentypen, Operatoren, Kontrollstrukturen, Methoden und Arrays." />
+  <LinkCard title="Speicherverwaltung" href="/de/software-development/memory-management/" description="Stack und Heap, Wert- und Referenztypen, Garbage Collection, Ownership und Borrowing." />
+  <LinkCard title="Objektorientierte Programmierung" href="/de/software-development/object-oriented-programming/" description="Klassen, Kapselung, Vererbung, Polymorphie, Interfaces und Traits." />
+  <LinkCard title="Fehlerbehandlung" href="/de/software-development/error-handling/" description="Exceptions, Result und Option sowie der sichere Umgang mit null." />
+  <LinkCard title="Generics und Collections" href="/de/software-development/generics-and-collections/" description="Generische Typen, Listen, Dictionaries, Mengen, Queues, Stacks und Iteratoren." />
+  <LinkCard title="Funktionale Programmierung" href="/de/software-development/functional-programming/" description="Lambdas, Closures, LINQ und Iterator-Adapter." />
+  <LinkCard title="Zeichenketten und reguläre Ausdrücke" href="/de/software-development/strings-and-regular-expressions/" description="Unicode, String-Operationen, Formatierung und Regex." />
+  <LinkCard title="Dateien und Serialisierung" href="/de/software-development/files-and-serialization/" description="Dateien, Streams, JSON, CSV und XML." />
+</CardGrid>
+
+## Algorithmen und Datenstrukturen
+
+<CardGrid>
+  <LinkCard title="Algorithmen" href="/de/software-development/algorithms/" description="O-Notation, Suchen und Sortieren." />
+  <LinkCard title="Rekursion und Entwurfstechniken" href="/de/software-development/recursion/" description="Teile und herrsche, Backtracking, dynamische Programmierung, Greedy." />
+  <LinkCard title="Datenstrukturen" href="/de/software-development/data-structures/" description="Verkettete Listen, Hashtabellen, Bäume und Heaps." />
+  <LinkCard title="Graphen" href="/de/software-development/graphs/" description="Breiten- und Tiefensuche, Dijkstra, topologische Sortierung, Spannbäume." />
+</CardGrid>
+
+## Fortgeschrittene Programmierung
+
+<CardGrid>
+  <LinkCard title="Nebenläufigkeit" href="/de/software-development/concurrency/" description="Threads, Locks, Deadlocks, Channels sowie async und await." />
+  <LinkCard title="Netzwerkprogrammierung" href="/de/software-development/network-programming/" description="Sockets, TCP, UDP, Nachrichtenrahmen und HTTP-Anfragen." />
+  <LinkCard title="GUI-Programmierung" href="/de/software-development/gui-programming/" description="Events, Layout, Datenbindung, MVVM und die Elm-Architektur." />
+</CardGrid>
+
+## Qualität und Entwurf
+
+<CardGrid>
+  <LinkCard title="Testen" href="/de/software-development/testing/" description="Testverfahren, Unit-Tests, Test-Doubles, TDD und Debugging." />
+  <LinkCard title="Versionsverwaltung mit Git" href="/de/software-development/version-control/" description="Commits, Branches, Merge, Pull Requests und CI." />
+  <LinkCard title="UML" href="/de/software-development/uml/" description="Klassen-, Anwendungsfall-, Sequenz-, Aktivitäts- und Zustandsdiagramm." />
+  <LinkCard title="Clean Code und SOLID" href="/de/software-development/clean-code/" description="Gute Namen, kleine Funktionen, SOLID, Code Smells und Refactoring." />
+  <LinkCard title="Softwaremetriken" href="/de/software-development/software-metrics/" description="Skalierbarkeit, Transparenz, Kopplung, Kohäsion und Kennzahlen." />
+  <LinkCard title="Entwurfsmuster" href="/de/software-development/design-patterns/" description="Alle 23 Muster der Gang of Four." />
+  <LinkCard title="Softwarearchitektur" href="/de/software-development/software-architecture/" description="Schichten, MVC, MVVM, hexagonale Architektur, Microservices und Dependency Injection." />
+  <LinkCard title="Software Engineering" href="/de/software-development/software-engineering/" description="Lebenszyklus, Anforderungen, User Stories, Schätzung, Dokumentation und Lizenzen." />
+</CardGrid>
+
+## Verwandte Themen
+
+Datenbanken und SQL behandelt der Bereich [Datenbanken](/de/databases/), Webanwendungen der Bereich [Webtechnologien](/de/web-technologies/), und die hardwarenahe Programmierung in C der Bereich [Hardwarenahe Programmierung](/de/embedded-programming/).

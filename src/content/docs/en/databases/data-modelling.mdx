@@ -1,0 +1,153 @@
+---
+title: Data Modelling
+description: From requirements to a database schema with the entity-relationship model, cardinalities, notations, generalisation and the rules for mapping to tables.
+sidebar:
+  order: 1
+---
+
+Before you create a database, you have to understand which data is to be stored and how it is related. A mistake in the data model can only be fixed later with great effort because programs, queries and stored data build on it. Database design therefore happens in several steps.
+
+## Phases of database design
+
+| Phase                     | Result                                                                           | independent of             |
+| ------------------------- | -------------------------------------------------------------------------------- | -------------------------- |
+| **Requirements analysis** | description of which data is needed and which queries are frequent               | anything technical         |
+| **Conceptual design**     | **entity-relationship model** (ER model): entities, attributes, relationships    | the database model and product |
+| **Logical design**        | **relational schema**: tables, columns, keys, [normalised](/en/databases/normalisation/) | the concrete product |
+| **Physical design**       | `CREATE TABLE` statements, data types, [indexes](/en/databases/sql-advanced/#indexes), storage locations | (product-specific) |
+
+## The entity-relationship model
+
+The **ER model** was published by Peter Chen in 1976. It describes a part of the real world with three basic building blocks:
+
+- An **entity** is a uniquely identifiable object about which data is stored: the student Anna Huber, the class 3AHIT. Entities of the same kind form an **entity type** (student, class).
+- An **attribute** describes a property of an entity type: first name, date of birth. Every attribute has a **domain** (range of values).
+- A **relationship** connects entities: a student _attends_ a class. Relationships can have attributes too: the grade belongs neither to the student nor to the subject alone, but to their relationship.
+
+![ER model of a school in Chen notation with the entity types student, class and subject](/images/databases/er_chen_en.svg)
+
+### Chen notation
+
+| Symbol                         | Meaning                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------- |
+| rectangle                      | entity type                                                                           |
+| double rectangle               | **weak entity type**: can only be identified together with another entity, such as a room in a building (room 101 exists in many buildings) |
+| diamond                        | relationship type                                                                     |
+| ellipse                        | attribute                                                                             |
+| underlined attribute           | **key attribute**, uniquely identifies an entity                                      |
+| double ellipse                 | **multivalued attribute**, such as several phone numbers                              |
+| dashed ellipse                 | **derived attribute** that can be computed, such as the age from the date of birth    |
+| ellipse with sub-ellipses      | **composite attribute**, such as an address made of street, postcode and town         |
+
+### Cardinalities
+
+The **cardinality** states with how many entities of the other type an entity can be related:
+
+| Cardinality  | Example                                                                   |
+| ------------ | ------------------------------------------------------------------------- |
+| **1:1**      | A person has at most one passport, and a passport belongs to exactly one person. |
+| **1:n**      | A class has many students, and a student attends exactly one class.       |
+| **n:m**      | A student gets grades in many subjects, and in a subject many students get grades. |
+
+Chen notation only shows the **upper bound**. The more precise **(min, max) notation** states for each side how often an entity at least and at most participates in the relationship. A student attends (1, 1) classes, that is, exactly one; a class is attended by (1, \*) students, that is, at least one. If the minimum is 0, participation is **optional**, otherwise **mandatory** (_total_).
+
+:::caution[Reading direction]
+In Chen notation, the number is written on the **opposite** side: the "n" next to student means that a class has many students. In (min, max) notation, by contrast, the value is written on the entity's **own** side: (1, 1) next to student means that every student participates in exactly one relationship. In exams, always state which notation you are using.
+:::
+
+### Crow's foot notation
+
+In practice, for example in tools such as MySQL Workbench, draw.io or the diagrams of Entity Framework, **crow's foot notation** (also called information engineering notation) is usually used. Entities are drawn as tables with their columns, and the ends of the relationship line show minimum and maximum:
+
+| Line end   | Meaning                |
+| ---------- | ---------------------- |
+| `‖`        | exactly one (1, 1)     |
+| `○‖`       | zero or one (0, 1)     |
+| `\|<`      | one or many (1, \*)    |
+| `○<`       | zero or many (0, \*)   |
+
+![Database schema of the same school in crow's foot notation with the junction table Grade](/images/databases/er_crows_foot_en.svg)
+
+The [UML class diagram](/en/software-development/uml/#class-diagram) is also suitable for data modelling. Its multiplicities (`1`, `0..1`, `*`, `1..*`) correspond to the (min, max) notation.
+
+### Generalisation and specialisation
+
+If several entity types share attributes, they can be combined into a more general type (**generalisation**). Conversely, a type is split into more specific subtypes (**specialisation**). Teachers and students are both persons with first name, last name and date of birth. The relationship is called **"is a"** and corresponds to inheritance in object-oriented programming. There are:
+
+- **disjoint** (a person is either a teacher or a student) or **overlapping** (a person can be both),
+- **total** (every person is a teacher or a student) or **partial** (there are other persons too).
+
+## From the ER model to tables
+
+There are fixed rules for mapping to a relational schema:
+
+| Element in the ER model          | Implementation in tables                                                                                  |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Entity type**                  | its own table; the key attribute becomes the primary key                                                  |
+| **Simple attribute**             | column                                                                                                    |
+| **Composite attribute**          | one column per part (`Street`, `Postcode`, `Town`)                                                        |
+| **Multivalued attribute**        | its own table with a foreign key to the entity (`PhoneNumber(PersonId, Number)`)                          |
+| **Derived attribute**            | usually not stored but computed when needed                                                               |
+| **1:n relationship**             | foreign key in the table on the **n side** (`Student.ClassId`)                                            |
+| **1:1 relationship**             | foreign key with `UNIQUE` on one side, preferably the optional one; or merging both tables                |
+| **n:m relationship**             | its own **junction table** (_association table_) with foreign keys to both sides; together they form the primary key |
+| **Attributes of a relationship** | for n:m into the junction table, for 1:n into the table on the n side                                     |
+| **Weak entity type**             | primary key made of the owner's foreign key and its own partial key (`Room(BuildingId, Number)`)          |
+| **Mandatory participation**      | foreign key with `NOT NULL`                                                                               |
+
+For **generalisation**, there are three strategies, which object-relational mappers such as Entity Framework also offer:
+
+| Strategy                               | Implementation                                                                | Advantages and disadvantages                                           |
+| -------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Table per hierarchy**                | one table `Person` with all columns of all subtypes and a type column         | fast, no joins; but many `NULL` values, mandatory fields of the subtypes cannot be enforced |
+| **Table per type**                     | table `Person` with the shared columns, `Teacher` and `Student` with their own columns and the primary key of `Person` as a foreign key | cleanly normalised; but joins are needed for every query |
+| **Table per concrete type**            | only `Teacher` and `Student`, each with all columns                           | no joins; but queries across all persons need `UNION`, and shared columns are defined twice |
+
+### Example
+
+The ER model above results in this schema. In the table `Class`, an artificial key `Id` is used instead of the class name (see [Keys](/en/databases/relational-databases/#keys)); the name still stays unique thanks to `UNIQUE`.
+
+```sql
+CREATE TABLE Class (
+    Id    INT PRIMARY KEY,
+    Name  VARCHAR(10) NOT NULL UNIQUE,
+    Year  INT NOT NULL CHECK (Year BETWEEN 1 AND 5)
+);
+
+CREATE TABLE Student (
+    Id        INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    BirthDate DATE NOT NULL,
+    ClassId   INT NOT NULL REFERENCES Class(Id)  -- 1:n, mandatory
+);
+
+CREATE TABLE Subject (
+    Id   INT PRIMARY KEY,
+    Code VARCHAR(10) NOT NULL UNIQUE,
+    Name VARCHAR(100) NOT NULL
+);
+
+-- n:m relationship with the relationship attribute Value
+CREATE TABLE Grade (
+    StudentId INT  NOT NULL REFERENCES Student(Id),
+    SubjectId INT  NOT NULL REFERENCES Subject(Id),
+    Date      DATE NOT NULL,
+    Value     INT  NOT NULL CHECK (Value BETWEEN 1 AND 5),
+    PRIMARY KEY (StudentId, SubjectId, Date)
+);
+```
+
+## Tips for good models
+
+- **Nouns** in the requirements text are candidates for entity types or attributes, **verbs** for relationships.
+- If something is only a simple value, it is an attribute; if it has properties or relationships of its own, it is an entity type. A town is often just an attribute of an address, but in a logistics application with distances between towns it is an entity type.
+- Phrase both directions of every relationship in words: "A student attends exactly one class" and "A class is attended by at least one student".
+- Use consistent names: table names in the singular, column names without abbreviations, foreign keys following the pattern `TableId`.
+- **Artificial keys** (sequential numbers, GUIDs) are stable. **Natural keys** such as a social security number can change or be missing and are rarely suitable as primary keys.
+- Then [normalise](/en/databases/normalisation/) the model and check whether the most frequent queries can be answered well with it.
+
+## Further reading
+
+- Peter P. Chen: _The Entity-Relationship Model: Toward a Unified View of Data_, ACM Transactions on Database Systems, 1976
+- Ramez Elmasri, Shamkant B. Navathe: _Fundamentals of Database Systems_, Pearson (standard textbook)

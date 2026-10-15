@@ -1,0 +1,401 @@
+---
+title: Container und Orchestrierung
+description: "Docker im Detail mit Images, Layern, Dockerfiles für C# und Rust, Volumes, Netzwerken und Compose sowie Kubernetes mit Pods, Deployments, Services, Ingress, Skalierung, ConfigMaps und Secrets."
+sidebar:
+  order: 7
+---
+
+Was Container sind, wie sie sich von virtuellen Maschinen unterscheiden und welche grundlegenden Docker-Befehle es gibt, findest du unter [Virtualisierung](/de/deployment/virtualisation/#containervirtualisierung). Diese Seite baut darauf auf: Sie zeigt, wie man Images für eigene Anwendungen sinnvoll baut, wie mehrere Container zusammenarbeiten und wie man viele Container auf vielen Servern mit **Kubernetes** betreibt.
+
+## Images im Detail
+
+### Schichten und Cache
+
+Ein Image besteht aus übereinanderliegenden, **unveränderlichen Schichten** (_Layers_). Jede Anweisung im Dockerfile, die Dateien verändert (`RUN`, `COPY`, `ADD`), erzeugt eine neue Schicht, die nur die Unterschiede zur vorherigen enthält. Ein **Union-Dateisystem** (unter Linux meist OverlayFS) legt die Schichten übereinander und zeigt sie dem Container als ein einziges Dateisystem. Beim Start kommt eine beschreibbare Schicht hinzu.
+
+Jede Schicht wird über einen **Hash** (Digest) ihres Inhalts identifiziert. Daraus ergeben sich zwei Vorteile:
+
+- **Wiederverwendung:** Zehn Images, die auf demselben Basis-Image aufbauen, speichern dieses nur einmal.
+- **Build-Cache:** Beim erneuten Bauen verwendet Docker eine Schicht aus dem Cache, solange sich die Anweisung und ihre Eingabedateien nicht geändert haben. Ändert sich eine Schicht, müssen **alle folgenden** neu gebaut werden.
+
+Deshalb ordnet man Anweisungen von „ändert sich selten“ nach „ändert sich oft“: zuerst das Basis-Image und die Systempakete, dann die Abhängigkeiten der Anwendung und erst zum Schluss der eigene Quellcode. Eine Datei **`.dockerignore`** (ähnlich wie `.gitignore`) verhindert, dass Build-Ordner wie `bin/`, `obj/` oder `target/` und Geheimnisse wie `.env` in das Image kopiert werden.
+
+### Tags, Digests und Registries
+
+Ein Image wird mit **Registry/Repository:Tag** benannt, etwa `mcr.microsoft.com/dotnet/aspnet:10.0` oder `myregistry.azurecr.io/order-service:1.4.0`. Fehlt der Tag, wird `latest` verwendet. Ein Tag ist nur ein veränderlicher Name: `1.4.0` kann später auf ein anderes Image zeigen. Eindeutig ist nur der **Digest** (`@sha256:...`). In der Produktion sollte man deshalb nie `latest` verwenden, sondern feste Versionen.
+
+Images werden in einer **Registry** gespeichert und verteilt: Docker Hub, GitHub Container Registry (`ghcr.io`), Azure Container Registry, Amazon ECR. Das Format von Images und Containern ist von der **Open Container Initiative** (OCI) standardisiert, deshalb laufen Docker-Images auch mit Podman, containerd oder in Kubernetes.
+
+### Dockerfile für eine C#-Anwendung
+
+```dockerfile
+# Build-Stufe mit dem vollständigen .NET SDK
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Zuerst nur die Projektdatei: Pakete werden nur neu geladen, wenn sie sich ändert
+COPY OrderService.csproj .
+RUN dotnet restore
+
+# Danach der Quellcode, der sich häufig ändert
+COPY . .
+RUN dotnet publish -c Release -o /app --no-restore
+
+# Laufzeit-Stufe: nur die ASP.NET-Core-Laufzeit, kein SDK
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+
+# Nicht als root laufen; APP_UID ist in den .NET-Images vordefiniert
+USER $APP_UID
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "OrderService.dll"]
+```
+
+### Dockerfile für eine Rust-Anwendung
+
+Rust kompiliert zu einer einzigen ausführbaren Datei, die keine Laufzeitumgebung braucht. Das fertige Image kann deshalb sehr klein sein. Weil `cargo build` alle Abhängigkeiten neu kompiliert, sobald sich irgendein Quellcode ändert, baut man die Abhängigkeiten zuerst mit einem Platzhalter-`main.rs` in einer eigenen Schicht:
+
+```dockerfile
+FROM rust:1.90-slim-bookworm AS build
+WORKDIR /src
+
+# Abhängigkeiten mit einem leeren Programm vorkompilieren (wird gecacht)
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs \
+    && cargo build --release \
+    && rm -rf src
+
+# Eigenen Code kopieren und nur noch diesen kompilieren
+COPY src ./src
+RUN touch src/main.rs && cargo build --release
+
+# Laufzeit-Stufe: minimales Debian ohne Compiler
+FROM debian:bookworm-slim
+RUN useradd --system --uid 10001 app
+COPY --from=build /src/target/release/inventory /usr/local/bin/inventory
+USER app
+EXPOSE 3000
+ENTRYPOINT ["/usr/local/bin/inventory"]
+```
+
+Braucht die Anwendung TLS (etwa für HTTPS-Anfragen mit `reqwest`), muss im Laufzeit-Image zusätzlich das Paket `ca-certificates` installiert werden. Noch kleiner werden Images mit **Distroless**-Basis-Images (nur die nötigsten Bibliotheken, keine Shell) oder mit statisch gelinkten Programmen (`musl`) auf `scratch`.
+
+### Wichtige Anweisungen
+
+| Anweisung | Bedeutung |
+| --------- | --------- |
+| `FROM image AS name` | Basis-Image; mehrere `FROM` ergeben einen Multi-Stage-Build |
+| `ARG` | Variable nur während des Builds (`docker build --build-arg VERSION=1.2`) |
+| `ENV` | Umgebungsvariable im Image und im laufenden Container |
+| `COPY --from=build` | Dateien aus einer früheren Stufe übernehmen |
+| `USER` | Benutzer, unter dem die folgenden Befehle und der Container laufen. Container sollten nicht als `root` laufen, damit ein Angreifer bei einer Sicherheitslücke weniger Rechte hat. |
+| `HEALTHCHECK` | Befehl, mit dem Docker prüft, ob die Anwendung noch funktioniert |
+| `ENTRYPOINT` | fester Startbefehl des Containers |
+| `CMD` | Standardargumente bzw. Standardbefehl, der beim `docker run` überschrieben werden kann |
+
+`ENTRYPOINT` und `CMD` sollte man in der **Exec-Form** (JSON-Array) angeben. Dann läuft das Programm direkt als Prozess 1 und erhält Signale wie `SIGTERM` beim Stoppen. In der Shell-Form (`ENTRYPOINT dotnet app.dll`) startet stattdessen eine Shell, die Signale nicht weiterleitet, und der Container wird nach einer Wartezeit hart beendet.
+
+## Daten speichern: Volumes
+
+Die beschreibbare Schicht eines Containers verschwindet mit dem Container. Daten, die erhalten bleiben sollen, liegen außerhalb:
+
+| Art | Beispiel | Eigenschaften |
+| --- | -------- | ------------- |
+| **Named Volume** | `-v db-data:/var/lib/postgresql/data` | von Docker verwaltet, unabhängig vom Container, für Datenbanken und dauerhafte Daten |
+| **Bind Mount** | `-v ./config:/app/config` | ein Ordner des Hosts wird eingeblendet, praktisch in der Entwicklung (Quellcode, Konfiguration), aber abhängig vom Dateisystem des Hosts |
+| **tmpfs** | `--tmpfs /tmp` | nur im Arbeitsspeicher, für temporäre oder sensible Daten |
+
+```bash
+docker volume create db-data
+docker volume ls
+docker volume inspect db-data
+```
+
+## Netzwerke
+
+| Treiber | Bedeutung |
+| ------- | --------- |
+| **bridge** | Standard: ein virtuelles Netz auf dem Host, Container bekommen private IP-Adressen. Von außen erreichbar nur über veröffentlichte Ports (`-p 8080:8080`). |
+| **benutzerdefiniertes bridge** | wie oben, zusätzlich können sich Container über ihren **Namen** finden (eingebautes DNS). Container in verschiedenen Netzen sind voneinander isoliert. |
+| **host** | Der Container nutzt direkt den Netzwerkstack des Hosts, ohne Portweiterleitung. |
+| **none** | kein Netzwerk |
+| **overlay** | Netz über mehrere Hosts (Docker Swarm) |
+
+```bash
+docker network create shop-net
+docker run -d --name db --network shop-net --env-file db.env postgres:17   # db.env enthält POSTGRES_PASSWORD=... und gehört nicht ins Git-Repository
+docker run -d --name api --network shop-net -p 8080:8080 order-service:1.4.0
+# Im Container "api" ist die Datenbank unter dem Hostnamen "db" erreichbar
+```
+
+## Docker Compose
+
+Mit **Docker Compose** beschreibt man eine Anwendung aus mehreren Containern deklarativ in einer `compose.yaml`. Compose legt automatisch ein gemeinsames Netzwerk an, in dem sich die Dienste über ihren Namen erreichen.
+
+```yaml
+services:
+  api:
+    build: ./OrderService            # Image aus dem Dockerfile bauen
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Orders: "Host=db;Database=orders;Username=app;Password=${DB_PASSWORD}"
+    depends_on:
+      db:
+        condition: service_healthy   # erst starten, wenn die Datenbank bereit ist
+    restart: unless-stopped
+
+  inventory:
+    build: ./inventory               # der Rust-Dienst
+    environment:
+      DATABASE_URL: "postgres://app:${DB_PASSWORD}@db/orders"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${DB_PASSWORD}  # aus der Datei .env oder der Umgebung
+      POSTGRES_DB: orders
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d orders"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db-data:
+```
+
+| Befehl | Bedeutung |
+| ------ | --------- |
+| `docker compose up -d --build` | Images bauen und alle Dienste im Hintergrund starten |
+| `docker compose ps` | Status der Dienste |
+| `docker compose logs -f api` | Ausgaben eines Dienstes verfolgen |
+| `docker compose up -d --scale inventory=3` | einen Dienst mehrfach starten |
+| `docker compose down` | Container und Netzwerk entfernen (`-v` löscht auch die Volumes) |
+
+Compose eignet sich gut für die Entwicklung und für kleine Installationen auf einem einzelnen Server. Für viele Server, automatische Ausfallsicherheit und Skalierung braucht man einen **Orchestrator**.
+
+## Kubernetes
+
+**Kubernetes** (kurz **K8s**) ist ein quelloffenes System zur **Orchestrierung** von Containern. Es wurde von Google auf Basis seines internen Systems Borg entwickelt, 2014 veröffentlicht und wird heute von der Cloud Native Computing Foundation (CNCF) betreut. Kubernetes übernimmt:
+
+- Verteilung der Container auf die Server eines **Clusters** (_Scheduling_),
+- Neustart oder Ersatz ausgefallener Container (_Self-Healing_),
+- Skalierung und Lastverteilung,
+- Rolling Updates und Rollbacks ohne Ausfallzeit,
+- Service Discovery, Konfiguration und Geheimnisse.
+
+### Deklarativer Ansatz
+
+Man sagt Kubernetes nicht, **was es tun soll** („starte drei Container“), sondern beschreibt den **gewünschten Zustand** in YAML („es sollen immer drei Instanzen laufen“). **Controller** vergleichen in einer Endlosschleife (_Reconciliation Loop_) den gewünschten mit dem tatsächlichen Zustand und gleichen Abweichungen aus. Stürzt ein Container ab oder fällt ein Server aus, startet Kubernetes automatisch Ersatz.
+
+### Architektur
+
+| Komponente | Aufgabe |
+| ---------- | ------- |
+| **Control Plane** | die „Steuerzentrale“ des Clusters |
+| `kube-apiserver` | zentrale REST-Schnittstelle, über die alle Komponenten und `kubectl` kommunizieren |
+| `etcd` | verteilter Schlüssel-Wert-Speicher mit dem gesamten Clusterzustand, repliziert mit [Raft](/de/decentralised-systems/distributed-systems/#raft) |
+| `kube-scheduler` | wählt für neue Pods einen passenden Node aus (freie CPU, Speicher, Regeln) |
+| `kube-controller-manager` | führt die Controller aus (z. B. für Deployments und Nodes) |
+| **Worker Nodes** | die Server, auf denen die Anwendungen laufen |
+| `kubelet` | Agent auf jedem Node, startet und überwacht die Pods |
+| Container Runtime | führt die Container aus, meist **containerd** oder CRI-O |
+| `kube-proxy` | setzt die Netzwerkregeln für Services um |
+
+In der Cloud verwendet man meist einen **verwalteten Dienst**, bei dem der Anbieter die Control Plane betreibt: Azure Kubernetes Service (**AKS**), Amazon EKS oder Google GKE. Zum Lernen eignen sich lokale Cluster wie **minikube**, **kind** oder **k3s**.
+
+### Wichtige Objekte
+
+| Objekt | Zweck |
+| ------ | ----- |
+| **Pod** | kleinste Einheit: ein oder mehrere Container, die sich Netzwerk (eine IP-Adresse) und Volumes teilen. Pods sind kurzlebig und werden ersetzt statt repariert. |
+| **ReplicaSet** | sorgt dafür, dass eine bestimmte Anzahl gleicher Pods läuft |
+| **Deployment** | verwaltet ReplicaSets für zustandslose Anwendungen, ermöglicht Rolling Updates und Rollbacks |
+| **StatefulSet** | für zustandsbehaftete Anwendungen (Datenbanken) mit stabilen Namen und eigenem Speicher pro Pod |
+| **DaemonSet** | genau ein Pod pro Node, z. B. für Log- und Monitoring-Agenten |
+| **Job / CronJob** | einmalige bzw. zeitgesteuerte Aufgaben |
+| **Service** | stabile Adresse und Lastverteilung für eine Gruppe von Pods |
+| **Ingress** | HTTP-Routing von außen in den Cluster (Hostnamen, Pfade, TLS) |
+| **ConfigMap** | Konfiguration als Schlüssel-Wert-Paare |
+| **Secret** | vertrauliche Daten wie Passwörter und Schlüssel |
+| **PersistentVolumeClaim** | Anforderung von dauerhaftem Speicher |
+| **Namespace** | logische Trennung eines Clusters, etwa nach Team oder Umgebung |
+
+Objekte werden über **Labels** (Schlüssel-Wert-Paare wie `app: order-service`) gekennzeichnet und über **Selektoren** gefunden. So weiß ein Service, an welche Pods er Anfragen weiterleiten soll.
+
+### Deployment und Service
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: order-service
+  template:                          # Vorlage für die Pods
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: api
+          image: myregistry.azurecr.io/order-service:1.4.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: order-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: order-secrets
+                  key: db-password
+          resources:
+            requests:                # garantiert, wird für das Scheduling verwendet
+              cpu: "250m"            # 0,25 CPU-Kerne
+              memory: "256Mi"
+            limits:                  # Obergrenze
+              memory: "512Mi"
+          readinessProbe:            # erst Anfragen schicken, wenn bereit
+            httpGet:
+              path: /health/ready
+              port: 8080
+          livenessProbe:             # Container neu starten, wenn er hängt
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service               # leitet an alle Pods mit diesem Label weiter
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
+```
+
+Andere Pods im Cluster erreichen den Dienst jetzt über den DNS-Namen `order-service` (bzw. `order-service.<namespace>.svc.cluster.local`), egal auf welchen Nodes die drei Pods gerade laufen. Die drei **Probes** haben unterschiedliche Aufgaben: Die **Readiness Probe** entscheidet, ob ein Pod Anfragen erhält, die **Liveness Probe**, ob er neu gestartet wird, und eine **Startup Probe** schützt langsam startende Anwendungen vor einem verfrühten Neustart.
+
+| Service-Typ | Erreichbarkeit |
+| ----------- | -------------- |
+| **ClusterIP** | nur innerhalb des Clusters (Standard) |
+| **NodePort** | zusätzlich auf einem festen Port (30000 bis 32767) jedes Nodes |
+| **LoadBalancer** | zusätzlich über einen Load Balancer des Cloud-Anbieters mit öffentlicher IP |
+
+### Ingress
+
+Ein **Ingress** leitet HTTP- und HTTPS-Anfragen von außen anhand von Hostname und Pfad an Services weiter und terminiert TLS. Damit er wirkt, muss ein **Ingress Controller** im Cluster laufen.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shop
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [shop.example.at]
+      secretName: shop-tls
+  rules:
+    - host: shop.example.at
+      http:
+        paths:
+          - path: /api/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
+```
+
+Der weit verbreitete Controller **ingress-nginx** wird seit März 2026 nicht mehr gewartet. Als Nachfolger der Ingress-API empfiehlt das Kubernetes-Projekt die ausdrucksstärkere **Gateway API** (Objekte `Gateway` und `HTTPRoute`), die von vielen Controllern umgesetzt wird.
+
+### ConfigMaps und Secrets
+
+Konfiguration gehört nicht in das Image, damit dasselbe Image in Test und Produktion laufen kann (siehe [Twelve-Factor App](/de/decentralised-systems/cloud-native/#twelve-factor-app)).
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Orders__MaxItems: "50"
+```
+
+Das Secret selbst legt man nicht als YAML-Datei mit dem Klartextwert an, sondern direkt aus einer Datei, die nicht im Repository liegt:
+
+```bash
+kubectl create secret generic order-secrets --from-file=db-password=./db-password.txt
+```
+
+:::caution
+Secrets sind standardmäßig nur **Base64-kodiert**, nicht verschlüsselt. Wer die Objekte lesen darf, kann die Passwörter lesen. Man schützt sie deshalb mit Zugriffsrechten (RBAC), aktiviert die Verschlüsselung in etcd und bindet in der Cloud oft einen externen Tresor ein, etwa **Azure Key Vault**. Secret-YAML-Dateien mit echten Werten gehören nie in ein Git-Repository.
+:::
+
+### Skalieren und aktualisieren
+
+```bash
+kubectl apply -f deployment.yaml                 # gewünschten Zustand anwenden
+kubectl get pods -o wide                         # Pods und ihre Nodes anzeigen
+kubectl scale deployment order-service --replicas=5
+kubectl set image deployment/order-service api=myregistry.azurecr.io/order-service:1.5.0
+kubectl rollout status deployment/order-service  # Fortschritt des Rolling Updates
+kubectl rollout undo deployment/order-service    # zurück zur vorherigen Version
+kubectl logs -f deployment/order-service
+kubectl describe pod <pod-name>                  # Ereignisse, z. B. warum ein Pod nicht startet
+```
+
+Bei einem **Rolling Update** ersetzt Kubernetes die Pods schrittweise: Ein neuer Pod wird gestartet, sobald er bereit ist (Readiness Probe), wird ein alter beendet. So bleibt die Anwendung während des Updates erreichbar.
+
+Automatisch skaliert der **Horizontal Pod Autoscaler** (HPA) die Anzahl der Pods nach Auslastung:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: order-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: order-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70     # Ziel: 70 % der angeforderten CPU
+```
+
+Reichen die Nodes nicht mehr aus, fügt der **Cluster Autoscaler** des Cloud-Anbieters weitere Server hinzu. Mit **KEDA** lässt sich zusätzlich nach Ereignissen skalieren, etwa nach der Länge einer [Service-Bus-Queue](/de/decentralised-systems/communication-and-messaging/#azure-dienste).
+
+Für wiederverwendbare Paketierungen vieler YAML-Dateien gibt es den Paketmanager **Helm**. Wer keinen eigenen Cluster verwalten möchte, kann Container in Azure auch mit **Azure Container Apps** (verwaltetes Kubernetes ohne direkten Clusterzugriff, skaliert bis auf null) oder **Azure Container Instances** (einzelne Container) betreiben.
+
+## Weiterführende Quellen
+
+- [Docker Docs](https://docs.docker.com/), insbesondere „Building best practices“
+- [Kubernetes-Dokumentation](https://kubernetes.io/de/docs/home/) mit interaktiven Tutorials
+- Microsoft Learn: [Containerize a .NET app](https://learn.microsoft.com/de-de/dotnet/core/docker/build-container)

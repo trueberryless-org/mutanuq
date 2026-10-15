@@ -1,0 +1,140 @@
+---
+title: Operationsverstärker
+description: Idealer und realer Operationsverstärker, Komparator, invertierender und nichtinvertierender Verstärker, Spannungsfolger, Addierer, Subtrahierer, Integrator und Schmitt-Trigger.
+sidebar:
+  order: 9
+---
+
+Ein **Operationsverstärker** (OPV, _op-amp_) ist ein integrierter Verstärker mit zwei Eingängen und einem Ausgang. Er verstärkt die Differenz der Eingangsspannungen extrem stark. Erst die äußere Beschaltung mit wenigen Widerständen und Kondensatoren legt fest, was die Schaltung tut: verstärken, addieren, vergleichen, integrieren oder filtern. Der Name stammt aus Analogrechnern, die mit diesen Schaltungen Rechenoperationen ausführten.
+
+## Aufbau und Kenngrößen
+
+Der OPV hat einen **nichtinvertierenden Eingang** ($+$, $U_\mathrm{P}$) und einen **invertierenden Eingang** ($-$, $U_\mathrm{N}$). Er wird meist mit symmetrischer Spannung (z. B. $\pm 15\,\mathrm{V}$) oder mit einer einzelnen Spannung versorgt. Die Versorgungsanschlüsse werden in Schaltplänen oft weggelassen. Die Ausgangsspannung ist:
+
+$$
+U_\mathrm{a} = V_0 \cdot (U_\mathrm{P} - U_\mathrm{N}) = V_0 \cdot U_\mathrm{D}
+$$
+
+Sie kann die Versorgungsspannung nicht überschreiten. Je nach Typ bleibt sie ein bis zwei Volt darunter, nur **Rail-to-Rail**-OPVs kommen bis fast an die Versorgung heran.
+
+| Kenngröße                 | ideal          | real (Beispiel µA741)   |
+| ------------------------- | -------------- | ----------------------- |
+| Leerlaufverstärkung $V_0$ | $\infty$       | etwa $200\,000$ ($106\,\mathrm{dB}$) |
+| Eingangswiderstand        | $\infty$       | etwa $2\,\mathrm{M\Omega}$ (FET-Eingänge: $10^{12}\,\Omega$) |
+| Ausgangswiderstand        | $0$            | etwa $75\,\Omega$, mit Gegenkopplung viel kleiner |
+| Verstärkungs-Bandbreite-Produkt | $\infty$ | etwa $1\,\mathrm{MHz}$ |
+| Anstiegsrate (_slew rate_) | $\infty$      | $0{,}5\,\mathrm{V/\mu s}$ |
+| Offsetspannung            | $0$            | einige mV               |
+
+Moderne OPVs sind in vielen Punkten besser als der historische µA741, das Prinzip ist gleich. Das **Verstärkungs-Bandbreite-Produkt** (GBW) begrenzt die Bandbreite: Bei $1\,\mathrm{MHz}$ GBW reicht eine Schaltung mit Verstärkung $10$ nur bis etwa $100\,\mathrm{kHz}$.
+
+## Gegenkopplung und goldene Regeln
+
+Ohne Rückführung ist die Verstärkung so groß, dass schon wenige Mikrovolt Differenz den Ausgang an die Versorgungsgrenze treiben. Führt man einen Teil der Ausgangsspannung auf den **invertierenden** Eingang zurück (**Gegenkopplung**), regelt der OPV seinen Ausgang selbst so, dass die Differenzspannung praktisch null wird. Die Verstärkung hängt dann nur noch von den äußeren Widerständen ab.
+
+:::tip[Goldene Regeln für den idealen OPV mit Gegenkopplung]
+1. Die Spannung zwischen den Eingängen ist null: $U_\mathrm{P} = U_\mathrm{N}$.
+2. In die Eingänge fließt kein Strom.
+:::
+
+Mit diesen zwei Regeln und der Knotenregel lassen sich alle folgenden Schaltungen herleiten. Liegt $U_\mathrm{P}$ an Masse, liegt auch $U_\mathrm{N}$ auf $0\,\mathrm{V}$, ohne mit Masse verbunden zu sein. Man spricht von **virtueller Masse**.
+
+![Invertierender und nichtinvertierender Verstärker](/images/electrical-engineering/opamp-amplifiers_de.svg)
+
+## Komparator
+
+Ohne Gegenkopplung arbeitet der OPV als **Komparator** (Vergleicher). Der Ausgang springt an die positive Aussteuergrenze, wenn $U_\mathrm{P} > U_\mathrm{N}$, sonst an die negative:
+
+$$
+U_\mathrm{a} = \begin{cases} +U_\mathrm{sat} & \text{wenn } U_\mathrm{P} > U_\mathrm{N} \\ -U_\mathrm{sat} & \text{wenn } U_\mathrm{P} < U_\mathrm{N} \end{cases}
+$$
+
+Legt man an einen Eingang eine Referenzspannung, meldet der Ausgang, ob das Signal darüber oder darunter liegt, etwa als Dämmerungsschalter oder Überspannungswarnung. Für schnelle Vergleiche gibt es eigene Komparator-ICs (LM393) mit Open-Collector-Ausgang, der sich an Logikpegel anpassen lässt. Rauscht das Eingangssignal nahe der Schwelle, schaltet ein einfacher Komparator mehrmals hin und her. Abhilfe schafft der [Schmitt-Trigger](/de/electrical-engineering/operational-amplifiers/#schmitt-trigger).
+
+## Invertierender Verstärker
+
+Das Eingangssignal gelangt über $R_1$ an den invertierenden Eingang, $R_2$ führt vom Ausgang zurück, der nichtinvertierende Eingang liegt an Masse. Wegen der virtuellen Masse fließt durch $R_1$ der Strom $U_\mathrm{e}/R_1$. Er kann nicht in den OPV, also fließt er weiter durch $R_2$. Daraus folgt:
+
+$$
+\frac{U_\mathrm{e}}{R_1} = -\frac{U_\mathrm{a}}{R_2} \quad \Rightarrow \quad V = \frac{U_\mathrm{a}}{U_\mathrm{e}} = -\frac{R_2}{R_1} \qquad R_\mathrm{ein} = R_1
+$$
+
+Das Minus bedeutet eine Phasenumkehr um $180°$.
+
+:::tip[Beispiel]
+$R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 47\,\mathrm{k\Omega}$: $V = -4{,}7$. Aus $U_\mathrm{e} = 0{,}5\,\mathrm{V}$ wird $U_\mathrm{a} = -2{,}35\,\mathrm{V}$. Bei $U_\mathrm{e} = 4\,\mathrm{V}$ ergäben sich rechnerisch $-18{,}8\,\mathrm{V}$. Mit $\pm 15\,\mathrm{V}$ Versorgung geht der Ausgang aber in die Begrenzung bei etwa $-13{,}5\,\mathrm{V}$.
+:::
+
+## Nichtinvertierender Verstärker
+
+Das Signal liegt direkt am nichtinvertierenden Eingang. Der Ausgang wird über den Spannungsteiler $R_2$ (vom Ausgang) und $R_1$ (nach Masse) auf den invertierenden Eingang zurückgeführt. Weil $U_\mathrm{N} = U_\mathrm{e}$ sein muss:
+
+$$
+U_\mathrm{e} = U_\mathrm{a} \cdot \frac{R_1}{R_1 + R_2} \quad \Rightarrow \quad V = 1 + \frac{R_2}{R_1}
+$$
+
+Die Verstärkung ist immer mindestens $1$, das Signal wird nicht invertiert, und der Eingangswiderstand ist sehr groß. Mit $R_1 = 10\,\mathrm{k\Omega}$ und $R_2 = 47\,\mathrm{k\Omega}$ ist $V = 5{,}7$.
+
+## Spannungsfolger
+
+Verbindet man den Ausgang direkt mit dem invertierenden Eingang ($R_2 = 0$, $R_1 = \infty$), ist $V = 1$: $U_\mathrm{a} = U_\mathrm{e}$. Der **Spannungsfolger** (Impedanzwandler) verstärkt nicht, belastet aber die Quelle praktisch nicht und kann am Ausgang Strom liefern. Er puffert einen hochohmigen Spannungsteiler, einen Sensor oder eine Referenzspannung, bevor eine Last angeschlossen wird.
+
+## Addierer
+
+Mehrere Eingänge, jeweils über einen eigenen Widerstand an die virtuelle Masse eines invertierenden Verstärkers geführt, ergeben einen **Summierverstärker**. Die Ströme addieren sich im Knoten:
+
+$$
+U_\mathrm{a} = -R_\mathrm{f} \cdot \left(\frac{U_1}{R_1} + \frac{U_2}{R_2} + \ldots + \frac{U_n}{R_n}\right)
+$$
+
+Mit gleichen Widerständen ist $U_\mathrm{a} = -(U_1 + U_2 + \ldots)$. Da sich die Eingänge wegen der virtuellen Masse nicht gegenseitig beeinflussen, eignet sich die Schaltung als Audiomischpult. Gewichtet man die Eingangswiderstände mit Faktoren $1, 2, 4, 8$, entsteht ein einfacher [Digital-Analog-Umsetzer](/de/electrical-engineering/ad-da-conversion/#digital-analog-umsetzer).
+
+## Subtrahierer
+
+Der **Differenzverstärker** (Subtrahierer) verstärkt die Differenz zweier Spannungen. $U_1$ gelangt über $R_1$ an den invertierenden Eingang (Rückführung $R_2$), $U_2$ über den Spannungsteiler $R_3$, $R_4$ an den nichtinvertierenden Eingang. Mit $R_1 = R_3$ und $R_2 = R_4$ gilt:
+
+$$
+U_\mathrm{a} = \frac{R_2}{R_1} \cdot (U_2 - U_1)
+$$
+
+Gleichtaktanteile, die an beiden Eingängen gleich sind (etwa eingestreute Störungen), fallen heraus. Die Genauigkeit hängt davon ab, wie gut die Widerstände übereinstimmen. **Instrumentenverstärker** (z. B. INA128) enthalten drei OPVs mit abgeglichenen Widerständen und dienen zum Messen kleiner Brücken- und Sensorsignale.
+
+## Integrator und Differenzierer
+
+Ersetzt man im invertierenden Verstärker $R_2$ durch einen Kondensator $C$, lädt der Eingangsstrom $U_\mathrm{e}/R$ den Kondensator. Die Ausgangsspannung ist das Integral der Eingangsspannung:
+
+$$
+U_\mathrm{a}(t) = -\frac{1}{RC} \int_0^t U_\mathrm{e}\,\mathrm{d}t + U_\mathrm{a}(0)
+$$
+
+:::tip[Beispiel]
+$R = 10\,\mathrm{k\Omega}$, $C = 1\,\mathrm{\mu F}$, also $RC = 10\,\mathrm{ms}$. Bei konstant $U_\mathrm{e} = 1\,\mathrm{V}$ ändert sich die Ausgangsspannung mit $-1\,\mathrm{V}/10\,\mathrm{ms} = -100\,\mathrm{V/s}$. Nach $10\,\mathrm{ms}$ ist $U_\mathrm{a} = -1\,\mathrm{V}$, nach $50\,\mathrm{ms}$ $-5\,\mathrm{V}$. Eine Rechteckspannung wird zu einer Dreieckspannung.
+:::
+
+Ein realer Integrator läuft durch die Offsetspannung langsam in die Begrenzung. Ein großer Widerstand parallel zu $C$ oder ein Rücksetzschalter verhindert das. Integratoren werden in Funktionsgeneratoren, Reglern (I-Anteil) und Dual-Slope-AD-Wandlern verwendet.
+
+Vertauscht man $R$ und $C$, entsteht ein **Differenzierer** mit $U_\mathrm{a} = -RC \cdot \mathrm{d}U_\mathrm{e}/\mathrm{d}t$. Er ist empfindlich gegen hochfrequentes Rauschen und wird seltener verwendet.
+
+## Schmitt-Trigger
+
+Ein **Schmitt-Trigger** ist ein Komparator mit **Mitkopplung**: Ein Teil der Ausgangsspannung wird auf den **nichtinvertierenden** Eingang zurückgeführt. Dadurch gibt es zwei Schaltschwellen, eine zum Einschalten und eine zum Ausschalten. Der Abstand heißt **Hysterese**. Ein verrauschtes Signal, das langsam die Schwelle überquert, löst nur einen einzigen sauberen Schaltvorgang aus.
+
+**Invertierender Schmitt-Trigger**: Das Signal liegt am invertierenden Eingang, der Spannungsteiler aus $R_2$ (vom Ausgang) und $R_1$ (nach Masse) liefert die Schwelle am nichtinvertierenden Eingang:
+
+$$
+U_\mathrm{S} = \pm U_\mathrm{sat} \cdot \frac{R_1}{R_1 + R_2} \qquad U_\mathrm{H} = 2 \cdot U_\mathrm{sat} \cdot \frac{R_1}{R_1 + R_2}
+$$
+
+:::tip[Beispiel]
+$U_\mathrm{sat} = \pm 10\,\mathrm{V}$, $R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 40\,\mathrm{k\Omega}$: Die Schwellen liegen bei $\pm 10\,\mathrm{V} \cdot 10/50 = \pm 2\,\mathrm{V}$, die Hysterese beträgt $4\,\mathrm{V}$. Der Ausgang springt auf $-10\,\mathrm{V}$, wenn das Signal $+2\,\mathrm{V}$ überschreitet, und erst wieder auf $+10\,\mathrm{V}$, wenn es unter $-2\,\mathrm{V}$ fällt.
+:::
+
+Beim **nichtinvertierenden Schmitt-Trigger** gelangt das Signal über $R_1$ an den nichtinvertierenden Eingang, $R_2$ führt vom Ausgang dorthin zurück, der invertierende Eingang liegt an Masse. Die Schwellen sind dann $\pm U_\mathrm{sat} \cdot R_1/R_2$.
+
+Schmitt-Trigger formen Sensorsignale zu sauberen Rechtecksignalen, entprellen Taster zusammen mit einem RC-Glied und sind als Logikgatter erhältlich (74HC14). Viele Mikrocontroller-Eingänge haben eingebaute Schmitt-Trigger. Mit einem RC-Glied rückgekoppelt wird der Schmitt-Trigger zum Rechteckgenerator.
+
+## Weiterführende Quellen
+
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg.
+- [Texas Instruments: Op Amps for Everyone (SLOD006)](https://www.ti.com/lit/an/slod006b/slod006b.pdf)
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.

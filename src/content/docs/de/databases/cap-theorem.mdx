@@ -2,7 +2,7 @@
 title: CAP-Theorem
 description: Warum ein verteiltes Datenbanksystem bei einer Netzwerkpartition zwischen Konsistenz und Verfügbarkeit wählen muss.
 sidebar:
-  order: 4
+  order: 15
 ---
 
 Das **CAP-Theorem** (auch Brewers Theorem) wurde im Jahr 2000 von Eric Brewer formuliert und 2002 von Seth Gilbert und Nancy Lynch bewiesen. Es besagt, dass ein verteiltes Datenspeichersystem höchstens **zwei der drei** folgenden Eigenschaften gleichzeitig garantieren kann.
@@ -37,7 +37,7 @@ Ein CA-System ist nur möglich, wenn es keine Netzwerkpartitionen geben kann, al
 
 ## Zusammenhang mit ACID und BASE
 
-- CP-Systeme orientieren sich eher am [ACID-Modell](/de/databases/relational-databases/#acid-transaktionen) mit starker Konsistenz.
+- CP-Systeme orientieren sich eher am [ACID-Modell](/de/databases/transactions/#acid) mit starker Konsistenz.
 - AP-Systeme folgen meist dem [BASE-Modell](/de/databases/document-oriented-databases/#base) mit _Eventual Consistency_.
 
 ## Erweiterung: PACELC

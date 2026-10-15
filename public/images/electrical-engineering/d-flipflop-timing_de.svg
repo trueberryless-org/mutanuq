@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="800" height="340" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Zeitdiagramm eines D-Flip-Flops"><title>Zeitdiagramm eines D-Flip-Flops</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect width="800" height="340" rx="14" fill="#ffffff"/>
+<polyline points="145,50 145,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<polyline points="255,50 255,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<polyline points="365,50 365,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<polyline points="475,50 475,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<polyline points="585,50 585,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<polyline points="695,50 695,285" fill="none" stroke="#cbd5e1" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<text x="70" y="68.0" font-size="15" text-anchor="end" font-weight="700" fill="#1f2937">CLK</text>
+<polyline points="90,80 145,80 145,46 200,46 200,80 255,80 255,46 310,46 310,80 365,80 365,46 420,46 420,80 475,80 475,46 530,46 530,80 585,80 585,46 640,46 640,80 695,80 695,46 750,46 750,80 750,80" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round"/>
+<text x="70" y="153.0" font-size="15" text-anchor="end" font-weight="700" fill="#1f2937">D</text>
+<polyline points="90,165 178.0,165 178.0,131 326.5,131 326.5,165 398.0,165 398.0,131 431.0,131 431.0,165 552.0,165 552.0,131 667.5,131 667.5,165 750,165" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linejoin="round"/>
+<text x="70" y="238.0" font-size="15" text-anchor="end" font-weight="700" fill="#1f2937">Q</text>
+<polyline points="90,250 153.25,250 153.25,250 263.25,250 263.25,216 373.25,216 373.25,250 483.25,250 483.25,250 593.25,250 593.25,216 703.25,216 703.25,250 750,250" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+<text x="420" y="315" font-size="13" text-anchor="middle" font-weight="500" fill="#475569">steigende Flanken: Q übernimmt D</text>
+<rect x="389.75" y="123" width="49.5" height="50" rx="6" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="453.0" y="117" font-size="12" text-anchor="start" font-weight="500" fill="#d97706">kurzer Impuls zwischen den Flanken: ohne Wirkung</text>
+<polyline points="90,300 772.0,300" fill="none" stroke="#475569" stroke-width="1.4" stroke-linejoin="round" marker-end="url(#arr)"/>
+<text x="772.0" y="318" font-size="12" text-anchor="end" font-weight="500" fill="#475569">Zeit</text>
+</svg>

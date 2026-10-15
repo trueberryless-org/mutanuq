@@ -1,0 +1,315 @@
+---
+title: HTML
+description: Structure of an HTML document, semantic elements, text, links, images, lists, tables, forms with input types and validation, meta tags, accessibility and validation.
+sidebar:
+  order: 3
+---
+
+**HTML** (_Hypertext Markup Language_) describes the **structure and meaning** of the content of a web page: what is a heading, what is a paragraph, what is a link, what is a form? How the page looks is defined by [CSS](/en/web-technologies/css/), how it behaves by [JavaScript](/en/web-technologies/javascript/). This separation of content, presentation and behaviour makes pages maintainable, accessible and understandable for search engines. HTML is a **markup language**, not a programming language: there are no variables, branches or loops.
+
+## Elements and attributes
+
+An **element** consists of a start tag, the content and an end tag. **Attributes** are written in the start tag as `name="value"`.
+
+```html
+<a href="https://www.htl.at/" title="Website of the HTL">To the HTL</a>
+```
+
+- **Void elements** have no content and no end tag: `<br>`, `<img>`, `<input>`, `<meta>`, `<link>`, `<hr>`. The notation `<br />` is allowed but not necessary.
+- Elements are **nested** and must be closed in reverse order: `<p><strong>bold</strong></p>`, not `<p><strong>bold</p></strong>`.
+- **Global attributes** exist on every element: `id` (unique within the document), `class` (classes for CSS and JavaScript, several separated by spaces), `lang`, `title`, `hidden`, `data-*` (custom data for scripts).
+- Tag and attribute names are case-insensitive; lower case is customary.
+- **Comments** are written in `<!-- ... -->` and are visible to everyone in the page source.
+- Characters with a special meaning are written as **entities**: `&lt;` for `<`, `&gt;` for `>`, `&amp;` for `&`, `&quot;` for `"`, `&nbsp;` for a non-breaking space.
+
+## Basic structure
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Timetable of 3AHIT</title>
+    <meta name="description" content="Timetable and dates of class 3AHIT.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <h1>Timetable of 3AHIT</h1>
+    <p>Valid from September.</p>
+  </body>
+</html>
+```
+
+| Part                    | Purpose                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `<!DOCTYPE html>`       | The browser renders in standards mode. Without it, it switches to **quirks mode**, which imitates old browser bugs |
+| `<html lang="en">`      | root element. `lang` determines the language for screen readers, hyphenation and translation |
+| `<head>`                | metadata that is not displayed directly                                                    |
+| `<meta charset="utf-8">` | character encoding, must appear within the first 1024 bytes                              |
+| `<meta name="viewport">` | makes mobile devices display the page at device width instead of scaled down             |
+| `<title>`               | title in the browser tab, in bookmarks and search results                                  |
+| `<link rel="stylesheet">` | includes CSS                                                                             |
+| `<script defer>`        | includes JavaScript, executed after parsing                                                |
+| `<body>`                | the visible content                                                                        |
+
+## Semantic elements
+
+Pages used to consist of nested `<div>` elements without meaning. **Semantic elements** state what role an area has. Screen readers offer them as jump targets, search engines recognise the main content, and the code becomes more readable.
+
+| Element      | Meaning                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| `<header>`   | header area of the page or of a section: logo, title, search                                |
+| `<nav>`      | area containing the most important navigation links                                         |
+| `<main>`     | the **main content**, visible exactly once per page                                         |
+| `<article>`  | self-contained content that is understandable on its own: blog post, news item, product card |
+| `<section>`  | thematic section with its own heading                                                       |
+| `<aside>`    | content complementary to the main content: sidebar, info box                                |
+| `<footer>`   | footer area: imprint, contact, copyright                                                    |
+| `<figure>`, `<figcaption>` | figure, diagram or code example with a caption                                |
+| `<time datetime="2026-09-07">` | machine-readable date                                                 |
+| `<div>`, `<span>` | without meaning, only as a container for styling (`div` as a block, `span` within running text) |
+
+```html
+<body>
+  <header>
+    <a href="/"><img src="logo.svg" alt="HTL Sampletown"></a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/departments/">Departments</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>News</h1>
+    <article>
+      <h2>Open day</h2>
+      <p>On <time datetime="2026-11-27">27 November</time> all departments introduce themselves.</p>
+    </article>
+  </main>
+
+  <aside>
+    <h2>Dates</h2>
+    <p>Parents' evening on 12 December</p>
+  </aside>
+
+  <footer>
+    <p><a href="/imprint/">Imprint</a> · <a href="/privacy/">Privacy</a></p>
+  </footer>
+</body>
+```
+
+`<section>` and `<article>` should have a heading. If an area has no meaning of its own and no heading, `<div>` is correct.
+
+## Text
+
+- **Headings** `<h1>` to `<h6>` form the outline. There is one `<h1>` per page, and levels are not skipped (`<h2>` is followed by `<h3>`, not `<h4>`). Size is controlled by CSS, not by the choice of level.
+- `<p>` is a paragraph, `<br>` a line break within a paragraph (for example in addresses), not a way of creating spacing.
+- `<strong>` marks something **important**, `<em>` **emphasis** (changes the meaning of a sentence). `<b>` and `<i>` only highlight visually, without meaning (technical terms, titles).
+- `<code>` for code in text, `<pre>` for preformatted text with preserved spaces, `<kbd>` for keyboard input, `<blockquote>` and `<q>` for quotations, `<abbr title="Höhere Technische Lehranstalt">HTL</abbr>` for abbreviations, `<sub>` and `<sup>` for subscript and superscript (H<sub>2</sub>O, m<sup>2</sup>).
+
+HTML collapses **whitespace**: several spaces and line breaks in the source are displayed as a single space.
+
+## Links
+
+```html
+<a href="https://www.ris.bka.gv.at/">Legal Information System</a>  <!-- absolute URL -->
+<a href="contact.html">Contact</a>                                   <!-- relative to the page -->
+<a href="/imprint/">Imprint</a>                                      <!-- relative to the domain -->
+<a href="#events">to the dates</a>                                   <!-- jump to id="events" -->
+<a href="mailto:office@example.at">E-mail</a>
+<a href="tel:+4312345678">Call</a>
+<a href="handout.pdf" download>Download the handout</a>
+<a href="https://example.com/" target="_blank" rel="noopener">new tab</a>
+```
+
+The link text should describe the target. "Click here" is useless for screen reader users who have a list of all links read out to them. `rel="noopener"` prevents the new page from accessing the old one via `window.opener` (modern browsers set it automatically for `target="_blank"`).
+
+## Images and media
+
+```html
+<img src="school-building.jpg" alt="Main building of the HTL with a glass facade"
+     width="800" height="450" loading="lazy">
+
+<picture>
+  <source srcset="chart.avif" type="image/avif">
+  <source srcset="chart.webp" type="image/webp">
+  <img src="chart.png" alt="Bar chart: registrations rose by 30 % from 2022 to 2026">
+</picture>
+
+<video src="tour.mp4" controls width="640">
+  <track kind="captions" src="tour.en.vtt" srclang="en" label="English">
+</video>
+```
+
+- **`alt`** is mandatory. The alternative text replaces the image when it is not loaded or cannot be seen. It describes the **purpose** of the image, not "picture of …". Purely decorative images get `alt=""` so that screen readers skip them. For an image inside a link, `alt` describes the link target.
+- `width` and `height` reserve the space before the image has loaded and prevent layout shifts.
+- `loading="lazy"` loads images only when they come close to the visible area.
+- Formats: **JPEG** for photos, **PNG** for graphics with transparency, **SVG** for vector graphics and logos, **WebP** and **AVIF** as modern formats with stronger compression.
+- `<picture>` and `srcset` deliver suitable files depending on format or screen. `<video>` and `<audio>` embed media, `<track>` adds subtitles in WebVTT format.
+
+## Lists
+
+```html
+<ul>                       <!-- unordered list (bullet points) -->
+  <li>HTML</li>
+  <li>CSS</li>
+</ul>
+
+<ol start="3">             <!-- ordered list, starts at 3 -->
+  <li>Create the project</li>
+  <li>Write the code</li>
+</ol>
+
+<dl>                       <!-- description list -->
+  <dt>DOM</dt>
+  <dd>Tree representation of the document in the browser</dd>
+</dl>
+```
+
+Lists can be nested by placing a `<ul>` inside an `<li>`. Navigation menus are semantically lists of links.
+
+## Tables
+
+Tables are intended for **tabular data**, not for page layout (that is what [CSS Grid](/en/web-technologies/css/#grid) is for).
+
+```html
+<table>
+  <caption>Grades of 3AHIT in software development</caption>
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">1st semester</th>
+      <th scope="col">2nd semester</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Anna Huber</th>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th scope="row">Lukas Gruber</th>
+      <td colspan="2">exempt</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+`<tr>` is a row, `<th>` a header cell, `<td>` a data cell. `<caption>` labels the table, and `scope` tells screen readers whether a header cell belongs to a column or a row. `colspan` and `rowspan` merge cells across several columns or rows.
+
+## Forms
+
+Forms send input to the server. `action` is the target URL, `method` the HTTP method (`get` appends the data to the URL as a query, `post` sends it in the body). Every field needs a `name` attribute, otherwise it is not submitted.
+
+```html
+<form action="/registration" method="post">
+  <fieldset>
+    <legend>Registration for the open day</legend>
+
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" required minlength="2" maxlength="80"
+           autocomplete="name">
+
+    <label for="email">E-mail</label>
+    <input id="email" name="email" type="email" required autocomplete="email">
+
+    <label for="people">Number of people</label>
+    <input id="people" name="people" type="number" min="1" max="5" value="1">
+
+    <label for="date">Date</label>
+    <input id="date" name="date" type="date" min="2026-11-27" max="2026-11-28">
+
+    <label for="zip">Postcode</label>
+    <input id="zip" name="zip" type="text" inputmode="numeric" pattern="[0-9]{4}"
+           title="four-digit Austrian postcode">
+
+    <label for="department">Department</label>
+    <select id="department" name="department">
+      <option value="it">Information Technology</option>
+      <option value="et">Electrical Engineering</option>
+    </select>
+
+    <p>Specialisation:</p>
+    <label><input type="radio" name="track" value="sys" checked> Systems Engineering</label>
+    <label><input type="radio" name="track" value="med"> Media Technology</label>
+
+    <label for="questions">Questions</label>
+    <textarea id="questions" name="questions" rows="4"></textarea>
+
+    <label><input type="checkbox" name="privacy" required> I accept the privacy policy.</label>
+
+    <button type="submit">Register</button>
+  </fieldset>
+</form>
+```
+
+| Input type    | Purpose and behaviour                                                                   |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `text`        | single-line text (default)                                                               |
+| `email`, `url`, `tel` | e-mail, URL, telephone number. Mobile devices show suitable keyboards; `email` and `url` are checked for the correct format |
+| `password`    | hidden input                                                                             |
+| `number`, `range` | number as a field or slider, with `min`, `max`, `step`                              |
+| `date`, `time`, `datetime-local`, `month`, `week` | date and time pickers                       |
+| `checkbox`, `radio` | multiple or single choice. Radio buttons with the same `name` form a group     |
+| `file`        | upload a file, requires `method="post"` and `enctype="multipart/form-data"`             |
+| `color`, `search`, `hidden` | colour picker, search field, invisible value                                |
+| `submit`, `reset`, `button` | buttons; usually you write `<button>` instead                                 |
+
+The browser checks **validation attributes** before submitting: `required`, `min`, `max`, `step`, `minlength`, `maxlength`, `pattern` (regular expression that must match the whole value) and the type check of `email` and `url`. With CSS, valid and invalid fields can be styled via `:valid`, `:invalid` and `:user-invalid`.
+
+:::danger[Always validate on the server]
+Validation in the browser is only for convenience. Anyone can switch it off with the developer tools or send requests directly with `curl`. The server must check all input itself.
+:::
+
+## Meta tags
+
+```html
+<meta name="description" content="Short description for search results, about 150 characters.">
+<meta name="robots" content="noindex, nofollow">       <!-- do not include in search engines -->
+<link rel="canonical" href="https://www.example.at/news/">
+<meta name="theme-color" content="#2563eb">
+<!-- Open Graph: preview when shared on social networks and messengers -->
+<meta property="og:title" content="Open day">
+<meta property="og:image" content="https://www.example.at/og/open-day.png">
+```
+
+The formerly common `<meta name="keywords">` is no longer evaluated by the major search engines. More on this in [Accessibility and SEO](/en/web-technologies/web-accessibility-and-seo/#search-engine-optimisation).
+
+## Accessibility
+
+Accessible HTML results largely from correct semantics:
+
+- Every form field has a visible **`<label>`** that is linked via `for` and `id` (or by wrapping). Clicking the label puts the focus in the field, and screen readers read it out. A `placeholder` does not replace a label.
+- A logical **heading hierarchy** serves as a table of contents: screen reader users jump from heading to heading.
+- Use **native elements**: a `<button>` can be operated with the keyboard and is announced as a button, a `<div onclick="...">` is not.
+- **WAI-ARIA** (_Accessible Rich Internet Applications_) adds roles and states for custom widgets, for example `aria-label`, `aria-expanded`, `aria-live`, `role="tab"`. However, the first rule of ARIA is: no ARIA is better than bad ARIA. Where a native HTML element exists, use it.
+
+```html
+<!-- bad: not focusable, no role, cannot be triggered with the keyboard -->
+<div class="btn" onclick="save()">Save</div>
+
+<!-- good -->
+<button type="button" onclick="save()">Save</button>
+
+<!-- a button with only an icon needs an accessible name -->
+<button type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+```
+
+The guidelines and laws on this are covered on the page [Accessibility and SEO](/en/web-technologies/web-accessibility-and-seo/).
+
+## Validation
+
+Browsers are fault-tolerant and display even faulty HTML somehow, but every browser repairs it differently. The W3C **Nu Html Checker** ([validator.w3.org/nu](https://validator.w3.org/nu/)) checks a document against the HTML standard and reports, for example, unclosed elements, duplicate `id` values, missing `alt` attributes or incorrectly nested elements. The developer tools show the DOM as the browser actually built it in the **Elements** tab.
+
+## Further reading
+
+- [HTML: HyperText Markup Language](https://developer.mozilla.org/en-US/docs/Web/HTML) (MDN Web Docs)
+- [HTML Living Standard](https://html.spec.whatwg.org/multipage/) (WHATWG)
+- [Nu Html Checker](https://validator.w3.org/nu/) (W3C)

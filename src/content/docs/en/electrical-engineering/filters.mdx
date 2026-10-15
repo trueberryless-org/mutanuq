@@ -1,0 +1,157 @@
+---
+title: Filters
+description: RC and RL low-pass and high-pass filters, cut-off frequency, decibels, Bode plot, band-pass and band-stop, filter order and active filters.
+sidebar:
+  order: 6
+---
+
+A **filter** passes signals of certain frequencies and attenuates others. Filters separate wanted signals from interference, remove noise before an [AD converter](/en/electrical-engineering/ad-da-conversion/), smooth PWM signals, split audio signals between tweeters and woofers and suppress interference on supply lines. They rely on the fact that the reactances of inductors and capacitors depend on frequency (see [Alternating Current](/en/electrical-engineering/alternating-current/#impedance-of-r-l-and-c)).
+
+## Transfer function
+
+A filter is a two-port network with input voltage $\underline{U}_1$ and output voltage $\underline{U}_2$. Its behaviour is described by the complex **transfer function** (frequency response):
+
+$$
+\underline{H}(j\omega) = \frac{\underline{U}_2}{\underline{U}_1} = \lvert \underline{H} \rvert \angle \varphi
+$$
+
+The magnitude $\lvert \underline{H} \rvert$ is called the **magnitude response** and gives the gain (for passive filters the attenuation); the angle $\varphi$ is called the **phase response**.
+
+| Filter type   | passes                     | blocks                     |
+| ------------- | -------------------------- | -------------------------- |
+| Low-pass      | low frequencies, DC        | high frequencies           |
+| High-pass     | high frequencies           | low frequencies, DC        |
+| Band-pass     | one frequency band         | below and above it         |
+| Band-stop     | everything except one band | one frequency band         |
+
+## Decibels
+
+Because gains span many orders of magnitude, they are given logarithmically in **decibels** (dB). For voltages and currents the factor is 20, for powers 10, because power is proportional to the square of the voltage:
+
+$$
+a = 20 \cdot \lg\frac{U_2}{U_1}\,\mathrm{dB} \qquad a = 10 \cdot \lg\frac{P_2}{P_1}\,\mathrm{dB}
+$$
+
+| Voltage ratio       | Power ratio         | Decibels          |
+| ------------------- | ------------------- | ----------------- |
+| $100$               | $10\,000$           | $+40\,\mathrm{dB}$ |
+| $10$                | $100$               | $+20\,\mathrm{dB}$ |
+| $2$                 | $4$                 | $+6\,\mathrm{dB}$  |
+| $\sqrt{2} \approx 1.414$ | $2$            | $+3\,\mathrm{dB}$  |
+| $1$                 | $1$                 | $0\,\mathrm{dB}$   |
+| $1/\sqrt{2} \approx 0.707$ | $0.5$        | $-3\,\mathrm{dB}$  |
+| $0.5$               | $0.25$              | $-6\,\mathrm{dB}$  |
+| $0.1$               | $0.01$              | $-20\,\mathrm{dB}$ |
+
+The advantage: for cascaded stages dB values are simply added instead of multiplying factors. Absolute levels refer to a fixed quantity, for example **dBm** to $1\,\mathrm{mW}$ (Wi-Fi transmit power $20\,\mathrm{dBm} = 100\,\mathrm{mW}$) or **dBV** to $1\,\mathrm{V}$.
+
+## RC low-pass filter
+
+In an **RC low-pass filter** the resistor is in the series branch and the capacitor in parallel with the output. At low frequencies $X_C$ is large and almost the entire voltage is across the capacitor. At high frequencies the capacitor increasingly short-circuits the output. As a complex voltage divider:
+
+$$
+\underline{H} = \frac{\dfrac{1}{j\omega C}}{R + \dfrac{1}{j\omega C}} = \frac{1}{1 + j\omega RC} \qquad \lvert \underline{H} \rvert = \frac{1}{\sqrt{1 + (\omega RC)^2}} \qquad \varphi = -\arctan(\omega RC)
+$$
+
+### Cut-off frequency
+
+The **cut-off frequency** $f_\mathrm{c}$ is the frequency at which $X_C = R$. There the output voltage has fallen to $1/\sqrt{2} \approx 70.7\,\%$, which is $-3\,\mathrm{dB}$, and the output power has halved:
+
+$$
+f_\mathrm{c} = \frac{1}{2\pi RC} = \frac{1}{2\pi\tau} \qquad \lvert \underline{H}(f_\mathrm{c}) \rvert = \frac{1}{\sqrt{2}} \qquad \varphi(f_\mathrm{c}) = -45°
+$$
+
+Above $f_\mathrm{c}$ the magnitude response falls by **20 dB per decade** (tenfold frequency), which corresponds to about 6 dB per octave (doubling). The phase goes from $0°$ at low to $-90°$ at high frequencies.
+
+:::tip[Example]
+$R = 1.6\,\mathrm{k\Omega}$, $C = 100\,\mathrm{nF}$:
+
+$$
+f_\mathrm{c} = \frac{1}{2\pi \cdot 1600\,\Omega \cdot 10^{-7}\,\mathrm{F}} \approx 995\,\mathrm{Hz} \approx 1\,\mathrm{kHz}
+$$
+
+At $10\,\mathrm{kHz}$, $\lvert \underline{H} \rvert = 1/\sqrt{1 + (10/0.995)^2} \approx 0.099$, about $-20\,\mathrm{dB}$. A signal with $1\,\mathrm{V}$ amplitude appears at the output with only about $0.1\,\mathrm{V}$.
+:::
+
+## Bode plot
+
+The **Bode plot** shows the magnitude and phase response against frequency. The frequency axis is logarithmic, the magnitude response in dB. This turns the curves into straight lines over wide ranges, and you can sketch them quickly with **asymptotes**: for the low-pass $0\,\mathrm{dB}$ up to $f_\mathrm{c}$, then a straight line with $-20\,\mathrm{dB/decade}$. The largest deviation from the real curve is exactly at $f_\mathrm{c}$ and amounts to $3\,\mathrm{dB}$.
+
+![Bode plot of an RC low-pass filter](/images/electrical-engineering/lowpass-bode_en.svg)
+
+## RC high-pass filter
+
+Swapping resistor and capacitor gives a **high-pass filter**. The capacitor in the series branch blocks DC and low frequencies:
+
+$$
+\underline{H} = \frac{R}{R + \dfrac{1}{j\omega C}} = \frac{j\omega RC}{1 + j\omega RC} \qquad \lvert \underline{H} \rvert = \frac{\omega RC}{\sqrt{1 + (\omega RC)^2}} \qquad \varphi = 90° - \arctan(\omega RC)
+$$
+
+The cut-off frequency is the same as for the low-pass, $f_\mathrm{c} = 1/(2\pi RC)$, where the phase is $+45°$. Below $f_\mathrm{c}$ the magnitude response rises by $20\,\mathrm{dB/decade}$.
+
+A high-pass serves as a **coupling capacitor**: it removes the DC component (for example the operating point of an amplifier) and passes the AC signal. The AC coupling of an oscilloscope is exactly such a high-pass.
+
+## RL filters
+
+With an inductor instead of a capacitor, filters work the other way round because $X_L$ rises with frequency:
+
+| Filter       | Series branch | Shunt branch (output) | Cut-off frequency                |
+| ------------ | ------------- | --------------------- | -------------------------------- |
+| RC low-pass  | R             | C                     | $f_\mathrm{c} = \dfrac{1}{2\pi RC}$ |
+| RC high-pass | C             | R                     | $f_\mathrm{c} = \dfrac{1}{2\pi RC}$ |
+| RL low-pass  | L             | R                     | $f_\mathrm{c} = \dfrac{R}{2\pi L}$  |
+| RL high-pass | R             | L                     | $f_\mathrm{c} = \dfrac{R}{2\pi L}$  |
+
+The time constant of an RL network is $\tau = L/R$. RC filters are common in signal processing because capacitors are small, cheap and nearly ideal. Inductors are used at high currents, for example in mains filters and in the LC filters of switching regulators.
+
+## Behaviour in the time domain
+
+A low-pass smooths: a square wave is rounded into the charging and discharging curve of the capacitor. At frequencies far above $f_\mathrm{c}$ the low-pass approximately forms the mean value; this is how a PWM signal is turned into a DC voltage. The high-pass passes only the edges and produces spikes.
+
+Between the rise time $t_\mathrm{r}$ (from $10\,\%$ to $90\,\%$) and the cut-off frequency of a first-order low-pass:
+
+$$
+t_\mathrm{r} = \tau \cdot \ln 9 \approx 2.2\,\tau \qquad t_\mathrm{r} \approx \frac{0.35}{f_\mathrm{c}}
+$$
+
+This relationship determines the bandwidth an [oscilloscope](/en/electrical-engineering/measurement/#oscilloscope) needs for steep edges.
+
+## Band-pass and band-stop
+
+A **band-pass filter** passes only frequencies between a lower cut-off frequency $f_\mathrm{l}$ and an upper cut-off frequency $f_\mathrm{u}$. It is made by cascading a high-pass ($f_\mathrm{l}$) and a low-pass ($f_\mathrm{u}$), where $f_\mathrm{l} < f_\mathrm{u}$ must hold, or with a [resonant circuit](/en/electrical-engineering/alternating-current/#resonance).
+
+$$
+B = f_\mathrm{u} - f_\mathrm{l} \qquad f_\mathrm{m} = \sqrt{f_\mathrm{l} \cdot f_\mathrm{u}} \qquad Q = \frac{f_\mathrm{m}}{B}
+$$
+
+The **centre frequency** $f_\mathrm{m}$ is the geometric mean because the frequency axis is logarithmic. A telephone speech band-pass with $f_\mathrm{l} = 300\,\mathrm{Hz}$ and $f_\mathrm{u} = 3400\,\mathrm{Hz}$ has $B = 3100\,\mathrm{Hz}$ and $f_\mathrm{m} \approx 1010\,\mathrm{Hz}$.
+
+A **band-stop filter** suppresses a narrow band. Very narrow band-stops are called **notch filters** and remove, for example, $50\,\mathrm{Hz}$ mains hum from measurement signals. They are built with a series resonant circuit in the shunt branch (which short-circuits at resonance) or as a twin-T filter of resistors and capacitors.
+
+## Filter order
+
+The **order** of a filter is the number of independent energy stores (capacitors, inductors). It determines the steepness outside the passband:
+
+$$
+\text{roll-off} = n \cdot 20\,\mathrm{dB/decade}
+$$
+
+A second-order filter falls by $40\,\mathrm{dB/decade}$, a fourth-order filter by $80\,\mathrm{dB/decade}$. Simply cascading two passive RC low-pass filters gives second order, but the second stage loads the first, so the cut-off frequency shifts and the transition becomes soft. An impedance converter (voltage follower) between the stages prevents this.
+
+### Active filters
+
+**Active filters** use [operational amplifiers](/en/electrical-engineering/operational-amplifiers/). They need no inductors, can amplify, hardly load the source and can be cascaded easily. A common second-order circuit is the **Sallen-Key topology**. Depending on the component values, different characteristics result:
+
+| Characteristic | Property                                                     |
+| -------------- | ------------------------------------------------------------ |
+| Butterworth    | maximally flat passband, a good compromise                   |
+| Chebyshev      | steeper transition, but ripple in the passband               |
+| Bessel         | uniform delay, square waves keep their shape, gentle transition |
+
+Digital filters (FIR, IIR) calculate the same in software or in a DSP using sampled values.
+
+## Further reading
+
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press (chapter on active filters).
+- [Texas Instruments: Active Low-Pass Filter Design (Application Report SLOA049)](https://www.ti.com/lit/an/sloa049b/sloa049b.pdf)
+- [Wikipedia: Bode plot](https://en.wikipedia.org/wiki/Bode_plot)

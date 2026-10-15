@@ -1,0 +1,287 @@
+---
+title: Cloud Native
+description: "Cloud-native Anwendungen: VMs, Container und Serverless im Vergleich, Twelve-Factor App, Resilienzmuster, Observability, Service Mesh und Infrastructure as Code mit Bicep und Terraform."
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Cloud native** bezeichnet Anwendungen, die von Anfang an für den Betrieb in der Cloud entworfen wurden, statt nur eine bestehende Anwendung auf eine gemietete virtuelle Maschine zu verschieben (_Lift and Shift_). Die Cloud Native Computing Foundation (CNCF) nennt als typische Bausteine **Container**, **Service Meshes**, **Microservices**, **unveränderliche Infrastruktur** und **deklarative APIs**. Ziel sind lose gekoppelte Systeme, die belastbar, gut beobachtbar und leicht zu verwalten sind und sich mit Automatisierung häufig und gefahrlos ändern lassen.
+
+Wie man eine Anwendung in Microservices aufteilt, behandelt [Softwarearchitektur](/de/software-development/software-architecture/#monolith-und-microservices). Diese Seite beschreibt, was solche Dienste brauchen, um in der Cloud gut zu funktionieren.
+
+## VMs, Container und Serverless
+
+| Kriterium | Virtuelle Maschinen (IaaS) | Container (z. B. Kubernetes) | Serverless (FaaS, z. B. Azure Functions) |
+| --------- | -------------------------- | ---------------------------- | ---------------------------------------- |
+| Einheit | ganzes Betriebssystem | Anwendung mit ihren Abhängigkeiten | einzelne Funktion |
+| Verwaltung durch dich | Betriebssystem, Updates, Laufzeit, Anwendung | Images, Orchestrierung (bei verwaltetem Kubernetes teilweise) | nur der Code |
+| Startzeit | Minuten | Sekunden | Millisekunden bis Sekunden (Cold Start) |
+| Skalierung | langsam, ganze VMs | schnell, pro Container | automatisch, bis auf null |
+| Abrechnung | pro Laufzeit der VM | pro Laufzeit der Nodes bzw. Container | pro Ausführung und Ausführungszeit |
+| Laufzeitgrenzen | keine | keine | begrenzt (im Verbrauchstarif einige Minuten) |
+| Kontrolle | vollständig | hoch | gering, an das Modell des Anbieters gebunden |
+| Geeignet für | Altanwendungen, besondere Betriebssystemanforderungen | Microservices, dauerhaft laufende Dienste | ereignisgesteuerte, unregelmäßige Last, Klebecode zwischen Diensten |
+
+Die Grenzen verschwimmen: [Azure Functions](/de/decentralised-systems/azure-functions/) laufen auch in Containern, und Azure Container Apps bietet Container mit Serverless-Abrechnung. Grundlagen zu Container und Kubernetes findest du unter [Container und Orchestrierung](/de/decentralised-systems/containers-and-orchestration/).
+
+## Twelve-Factor App
+
+Die **Twelve-Factor App** ist eine Sammlung von Regeln, die Entwickler der Plattform Heroku 2011 veröffentlicht haben. Sie beschreibt, wie man Webanwendungen baut, die sich leicht in der Cloud betreiben, skalieren und automatisiert ausliefern lassen.
+
+| Nr. | Faktor | Bedeutung |
+| --- | ------ | --------- |
+| 1 | **Codebase** | eine Codebasis in der [Versionsverwaltung](/de/software-development/version-control/), viele Deployments (Test, Produktion) |
+| 2 | **Abhängigkeiten** | alle Abhängigkeiten explizit deklarieren und isolieren (NuGet, `Cargo.toml`), nichts voraussetzen, was „zufällig“ auf dem Server installiert ist |
+| 3 | **Konfiguration** | Konfiguration, die sich zwischen Umgebungen unterscheidet, in **Umgebungsvariablen** speichern, nicht im Code |
+| 4 | **Unterstützende Dienste** | Datenbanken, Queues, Caches als angehängte Ressourcen behandeln, die über eine URL austauschbar sind |
+| 5 | **Build, Release, Run** | Bauen, Zusammenführen mit Konfiguration und Ausführen strikt trennen; jedes Release ist unveränderlich |
+| 6 | **Prozesse** | die Anwendung als **zustandslose** Prozesse ausführen; Zustand liegt in Datenbanken oder Caches, nicht im Arbeitsspeicher oder auf der lokalen Platte |
+| 7 | **Bindung an Ports** | der Dienst bringt seinen Webserver selbst mit und wird über einen Port angeboten |
+| 8 | **Nebenläufigkeit** | horizontal skalieren, indem man mehr Prozesse startet |
+| 9 | **Einweggebrauch** (_Disposability_) | schnell starten und bei `SIGTERM` sauber herunterfahren (_Graceful Shutdown_), damit Instanzen jederzeit ersetzt werden können |
+| 10 | **Dev-Prod-Vergleichbarkeit** | Entwicklung, Test und Produktion möglichst gleich halten (gleiche Datenbank, gleiche Container) |
+| 11 | **Logs** | Logs als Ereignisstrom auf die Standardausgabe schreiben; Sammeln und Speichern übernimmt die Umgebung |
+| 12 | **Admin-Prozesse** | einmalige Verwaltungsaufgaben (z. B. Datenbankmigrationen) als eigene Prozesse in derselben Umgebung ausführen |
+
+Faktor 3 bedeutet in .NET zum Beispiel, dass die Umgebungsvariable `ConnectionStrings__Orders` den Eintrag `ConnectionStrings:Orders` aus der `appsettings.json` überschreibt. In Rust liest man sie mit `std::env::var("DATABASE_URL")`.
+
+## Resilienz
+
+In einem verteilten System fallen ständig irgendwo Teile aus. Eine cloud-native Anwendung muss damit rechnen (_Design for Failure_) und darf bei einem Fehler eines Dienstes nicht selbst ausfallen.
+
+| Muster | Idee |
+| ------ | ---- |
+| **Timeout** | Nie unbegrenzt auf eine Antwort warten. Ein hängender Aufruf blockiert sonst Threads und Verbindungen. |
+| **Retry mit exponentiellem Backoff** | Vorübergehende Fehler (Netzwerkaussetzer, `503`) durch Wiederholen beheben. Die Wartezeit verdoppelt sich mit jedem Versuch, damit ein überlasteter Dienst sich erholen kann. Ein zufälliger Anteil (**Jitter**) verhindert, dass alle Clients gleichzeitig wiederholen. Nur bei [idempotenten](/de/decentralised-systems/communication-and-messaging/#zustellgarantien-und-idempotenz) Operationen sicher. |
+| **Circuit Breaker** | Schlagen viele Aufrufe an einen Dienst fehl, „öffnet“ der Schutzschalter und weitere Aufrufe scheitern sofort, ohne den Dienst zu belasten. Nach einer Wartezeit werden einzelne Testaufrufe zugelassen (halb offen); gelingen sie, schließt er wieder. |
+| **Bulkhead** | Ressourcen (Threads, Verbindungen) pro Abhängigkeit begrenzen, wie Schotten in einem Schiff, damit ein langsamer Dienst nicht alle Ressourcen aufbraucht |
+| **Fallback** | bei einem Fehler eine Ersatzantwort liefern, etwa Daten aus dem Cache oder eine vereinfachte Ansicht |
+| **Health Checks** | Endpunkte wie `/health/live` und `/health/ready`, mit denen Load Balancer und Kubernetes den Zustand prüfen |
+
+In .NET stellt die Bibliothek **Polly** bzw. das Paket `Microsoft.Extensions.Http.Resilience` diese Muster fertig bereit. Das Prinzip eines Retry mit exponentiellem Backoff und Jitter zeigt das folgende Beispiel. Die simulierte Operation schlägt zweimal fehl und gelingt beim dritten Versuch:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int calls = 0;
+
+string result = await RetryAsync(async () =>
+{
+    calls++;
+    await Task.Delay(1);
+    if (calls < 3)
+    {
+        throw new HttpRequestException("Dienst nicht erreichbar");
+    }
+    return "OK";
+}, maxAttempts: 5, baseDelay: TimeSpan.FromMilliseconds(100));
+
+Console.WriteLine($"{result} nach {calls} Versuchen");
+// Versuch 1 fehlgeschlagen: Dienst nicht erreichbar
+// Versuch 2 fehlgeschlagen: Dienst nicht erreichbar
+// OK nach 3 Versuchen
+
+static async Task<T> RetryAsync<T>(Func<Task<T>> operation, int maxAttempts, TimeSpan baseDelay)
+{
+    for (int attempt = 1; ; attempt++)
+    {
+        try
+        {
+            return await operation();
+        }
+        catch (HttpRequestException ex) when (attempt < maxAttempts)
+        {
+            // 100, 200, 400 ... ms, davon zufällig 50 bis 100 % (Jitter)
+            double backoff = baseDelay.TotalMilliseconds * Math.Pow(2, attempt - 1);
+            double delay = backoff * (0.5 + Random.Shared.NextDouble() / 2);
+            Console.WriteLine($"Versuch {attempt} fehlgeschlagen: {ex.Message}");
+            await Task.Delay(TimeSpan.FromMilliseconds(delay));
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rand::Rng;
+use std::fmt::Display;
+use std::thread;
+use std::time::Duration;
+
+fn retry<T, E: Display>(
+    max_attempts: u32,
+    base_delay: Duration,
+    mut operation: impl FnMut() -> Result<T, E>,
+) -> Result<T, E> {
+    let mut attempt = 1;
+    loop {
+        match operation() {
+            Ok(value) => return Ok(value),
+            Err(error) if attempt < max_attempts => {
+                // 100, 200, 400 ... ms, davon zufällig 50 bis 100 % (Jitter)
+                let backoff = base_delay * 2u32.pow(attempt - 1);
+                let jitter = rand::rng().random_range(0.5..=1.0);
+                println!("Versuch {attempt} fehlgeschlagen: {error}");
+                thread::sleep(backoff.mul_f64(jitter));
+                attempt += 1;
+            }
+            Err(error) => return Err(error),
+        }
+    }
+}
+
+fn main() {
+    let mut calls = 0;
+    let result = retry(5, Duration::from_millis(100), || {
+        calls += 1;
+        if calls < 3 { Err("Dienst nicht erreichbar") } else { Ok("OK") }
+    });
+
+    match result {
+        Ok(value) => println!("{value} nach {calls} Versuchen"),
+        Err(error) => println!("Endgültig fehlgeschlagen: {error}"),
+    }
+    // Versuch 1 fehlgeschlagen: Dienst nicht erreichbar
+    // Versuch 2 fehlgeschlagen: Dienst nicht erreichbar
+    // OK nach 3 Versuchen
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Observability
+
+**Observability** (Beobachtbarkeit) bedeutet, dass man aus den Ausgaben eines Systems verstehen kann, was in seinem Inneren passiert, auch bei Fehlern, die man nicht vorhergesehen hat. Bei einem Monolithen genügt oft ein Blick in eine Logdatei. Durchläuft eine Anfrage aber zehn Dienste auf zwanzig Servern, braucht man mehr. Man spricht von den **drei Säulen**:
+
+| Säule | Inhalt | Beispiel |
+| ----- | ------ | -------- |
+| **Logs** | einzelne Ereignisse mit Zeitstempel, am besten **strukturiert** (JSON mit Feldern statt freiem Text) | `{"level":"Error","orderId":17,"msg":"Zahlung abgelehnt"}` |
+| **Metriken** | Zahlenwerte über die Zeit, billig zu speichern und gut für Alarme | Anfragen pro Sekunde, Fehlerrate, Antwortzeit (95. Perzentil), CPU, Queue-Länge |
+| **Traces** | der Weg einer einzelnen Anfrage durch alle Dienste, zerlegt in **Spans** mit Dauer | API Gateway 120 ms, davon Bestellservice 80 ms, davon Datenbank 65 ms |
+
+Damit Traces über Dienstgrenzen hinweg zusammenpassen, gibt jeder Dienst eine **Trace-ID** im HTTP-Header (`traceparent` nach dem W3C-Standard Trace Context) bzw. in den Nachrichtenmetadaten weiter. Über diese **Korrelations-ID** findet man auch alle Logzeilen einer Anfrage.
+
+Der herstellerneutrale Standard für das Erfassen aller drei Signale ist **OpenTelemetry** (CNCF). Ausgewertet werden die Daten zum Beispiel mit **Prometheus** und **Grafana**, mit Jaeger für Traces oder in Azure mit **Azure Monitor** und **Application Insights**. Klassisches Server-Monitoring mit SNMP und Syslog beschreibt [Monitoring](/de/deployment/operations/monitoring/).
+
+Für Alarme legt man **Service Level Objectives** (SLO) fest, etwa „99,9 % der Anfragen eines Monats sind erfolgreich und schneller als 300 ms“. Die gemessene Größe heißt **Service Level Indicator** (SLI), die vertragliche Zusage gegenüber Kunden **Service Level Agreement** (SLA).
+
+## Service Mesh
+
+Jeder Microservice braucht dieselben Querschnittsfunktionen: Verschlüsselung, Authentifizierung zwischen Diensten, Retries, Timeouts, Lastverteilung, Metriken und Traces. Statt sie in jede Anwendung einzubauen, übernimmt sie ein **Service Mesh**:
+
+- Neben jeden Dienst wird ein **Proxy** gestellt (klassisch als **Sidecar**-Container im selben Pod, z. B. Envoy). Der gesamte Netzwerkverkehr des Dienstes läuft durch diesen Proxy (**Data Plane**).
+- Eine **Control Plane** konfiguriert alle Proxys zentral.
+
+Damit erhält man ohne Codeänderung: **gegenseitiges TLS** (mTLS) zwischen allen Diensten, feingranulare Zugriffsregeln, einheitliche Metriken und Traces, Retries und Circuit Breaker sowie **Traffic Shifting** für **Canary Releases** (z. B. 5 % der Anfragen an die neue Version). Bekannte Service Meshes sind **Istio** und **Linkerd**. Der Preis ist zusätzliche Komplexität, Latenz und Ressourcenverbrauch. Neuere Varianten wie der Ambient-Modus von Istio verzichten deshalb auf einen Sidecar pro Pod und verwenden einen gemeinsamen Proxy pro Node.
+
+## Infrastructure as Code
+
+Bei **Infrastructure as Code** (IaC) wird die Infrastruktur (Netzwerke, Datenbanken, Storage Accounts, Kubernetes-Cluster) nicht im Portal zusammengeklickt, sondern in Dateien beschrieben, die in Git liegen. Vorteile:
+
+- **Wiederholbarkeit:** Test- und Produktionsumgebung entstehen aus demselben Code und sind gleich.
+- **Versionierung und Review:** Änderungen sind nachvollziehbar und können vor dem Einspielen geprüft werden (Pull Request).
+- **Automatisierung:** Eine CI/CD-Pipeline spielt Änderungen ein, auch eine verlorene Umgebung lässt sich in Minuten neu erstellen.
+- **Dokumentation:** Der Code beschreibt, wie die Infrastruktur aussieht.
+
+Man unterscheidet **imperative** Ansätze (Skripte mit Befehlen wie `az storage account create`) und **deklarative** Ansätze (Beschreibung des gewünschten Zustands, das Werkzeug berechnet die nötigen Änderungen). Deklarative Werkzeuge sind **idempotent**: Mehrfaches Ausführen ändert nichts, wenn die Infrastruktur bereits dem Code entspricht. Weicht die echte Infrastruktur vom Code ab, etwa weil jemand im Portal etwas geändert hat, spricht man von **Drift**.
+
+### Bicep
+
+**Bicep** ist die deklarative Sprache von Microsoft für Azure-Ressourcen. Sie wird in ARM-Templates (JSON) übersetzt und unterstützt alle Azure-Ressourcen am Tag ihrer Veröffentlichung. Den Zustand speichert Azure selbst.
+
+```bicep
+@description('Name des Storage Accounts: 3 bis 24 Kleinbuchstaben und Ziffern')
+param storageName string
+param location string = resourceGroup().location
+
+resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageName
+  location: location
+  sku: {
+    name: 'Standard_ZRS'          // zonenredundant
+  }
+  kind: 'StorageV2'
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+  }
+}
+
+output blobEndpoint string = storage.properties.primaryEndpoints.blob
+```
+
+```bash
+# Vorschau der Änderungen, dann ausrollen
+az deployment group what-if --resource-group rg-shop --template-file main.bicep --parameters storageName=stshop2026
+az deployment group create  --resource-group rg-shop --template-file main.bicep --parameters storageName=stshop2026
+```
+
+### Terraform
+
+**Terraform** von HashiCorp ist anbieterunabhängig: Über **Provider** verwaltet es Azure, AWS, Google Cloud, Kubernetes, DNS-Anbieter und vieles mehr mit derselben Sprache (HCL). Seit 2023 steht Terraform unter der nicht quelloffenen Business Source License, deshalb entstand der quelloffene Fork **OpenTofu** (Linux Foundation).
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.subscription_id
+}
+
+variable "subscription_id" {
+  type = string
+}
+
+resource "azurerm_resource_group" "shop" {
+  name     = "rg-shop"
+  location = "westeurope"
+}
+
+resource "azurerm_storage_account" "shop" {
+  name                     = "stshop2026"
+  resource_group_name      = azurerm_resource_group.shop.name   # Abhängigkeit wird erkannt
+  location                 = azurerm_resource_group.shop.location
+  account_tier             = "Standard"
+  account_replication_type = "ZRS"
+  min_tls_version          = "TLS1_2"
+}
+```
+
+```bash
+terraform init     # Provider herunterladen
+terraform plan     # geplante Änderungen anzeigen
+terraform apply    # Änderungen durchführen
+terraform destroy  # alles wieder entfernen
+```
+
+Terraform speichert den Zustand der verwalteten Ressourcen in einer **State-Datei**. Im Team liegt sie zentral (z. B. in einem Azure Storage Account mit Sperre), da sie sonst auseinanderläuft. Sie kann Geheimnisse enthalten und muss entsprechend geschützt werden.
+
+| | Bicep | Terraform / OpenTofu |
+| --- | --- | --- |
+| Anbieter | nur Azure | viele Clouds und Dienste |
+| Zustand | von Azure verwaltet | eigene State-Datei |
+| Vorschau | `what-if` | `plan` |
+| Neue Azure-Funktionen | sofort | sobald der Provider sie unterstützt |
+
+### GitOps
+
+Bei **GitOps** ist ein Git-Repository die einzige Quelle der Wahrheit für den gewünschten Zustand eines Systems. Ein Werkzeug im Cluster, etwa **Argo CD** oder **Flux**, vergleicht laufend die Kubernetes-YAML-Dateien im Repository mit dem Cluster und gleicht Unterschiede automatisch aus. Ein Deployment ist dann einfach ein gemergter Pull Request, ein Rollback ein `git revert`.
+
+## Weiterführende Quellen
+
+- [The Twelve-Factor App](https://12factor.net/de/)
+- [OpenTelemetry-Dokumentation](https://opentelemetry.io/docs/) und die [CNCF-Projektübersicht](https://www.cncf.io/projects/)
+- Microsoft Learn: [Bicep-Dokumentation](https://learn.microsoft.com/de-de/azure/azure-resource-manager/bicep/overview) und [Terraform-Dokumentation](https://developer.hashicorp.com/terraform/docs)

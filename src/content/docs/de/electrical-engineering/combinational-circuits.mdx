@@ -1,0 +1,177 @@
+---
+title: Schaltnetze
+description: Halbaddierer und Volladdierer, Ripple-Carry-Addierer, Subtraktion, Komparator, Multiplexer und Demultiplexer, Codierer und Decodierer, 7-Segment-Decoder und der Aufbau einer ALU.
+sidebar:
+  order: 12
+---
+
+Ein **Schaltnetz** (kombinatorische Schaltung) hat kein Gedächtnis: Die Ausgänge hängen nur von den aktuellen Eingängen ab. Ändert sich ein Eingang, folgen die Ausgänge nach der Gatterlaufzeit. Die Bausteine auf dieser Seite sind die Grundelemente jedes Prozessors: Rechenwerke, Vergleicher, Datenwege und Adressdecodierung. Wie man sie aus [Logikgattern](/de/electrical-engineering/digital-logic-gates/) entwirft, folgt immer dem Weg über Wahrheitstabelle und Minimierung.
+
+## Addierer
+
+### Halbaddierer
+
+Ein **Halbaddierer** addiert zwei einstellige Dualzahlen $A$ und $B$. Er liefert die Summenstelle $S$ und den Übertrag $C$ (_carry_):
+
+| $A$ | $B$ | $C$ | $S$ |
+| --- | --- | --- | --- |
+| 0   | 0   | 0   | 0   |
+| 0   | 1   | 0   | 1   |
+| 1   | 0   | 0   | 1   |
+| 1   | 1   | 1   | 0   |
+
+$$
+S = A \oplus B \qquad C = A \cdot B
+$$
+
+Er besteht also aus einem XOR und einem AND. Er heißt „halb“, weil er keinen Übertrag aus einer niedrigeren Stelle berücksichtigen kann.
+
+### Volladdierer
+
+Ein **Volladdierer** addiert drei Bits: $A$, $B$ und den eingehenden Übertrag $C_\mathrm{in}$. Das Ergebnis liegt zwischen 0 und 3 und passt in zwei Bits $C_\mathrm{out}$ und $S$:
+
+| $A$ | $B$ | $C_\mathrm{in}$ | $C_\mathrm{out}$ | $S$ |
+| --- | --- | --------------- | ---------------- | --- |
+| 0   | 0   | 0               | 0                | 0   |
+| 0   | 0   | 1               | 0                | 1   |
+| 0   | 1   | 0               | 0                | 1   |
+| 0   | 1   | 1               | 1                | 0   |
+| 1   | 0   | 0               | 0                | 1   |
+| 1   | 0   | 1               | 1                | 0   |
+| 1   | 1   | 0               | 1                | 0   |
+| 1   | 1   | 1               | 1                | 1   |
+
+$$
+S = A \oplus B \oplus C_\mathrm{in} \qquad C_\mathrm{out} = A B + C_\mathrm{in} (A \oplus B)
+$$
+
+Ein Volladdierer lässt sich aus zwei Halbaddierern und einem OR-Gatter bauen: Der erste addiert $A$ und $B$, der zweite addiert dazu $C_\mathrm{in}$, und das OR fasst die beiden Überträge zusammen. Die Summe $S$ ist 1, wenn eine ungerade Zahl von Eingängen 1 ist, $C_\mathrm{out}$ ist 1, wenn mindestens zwei Eingänge 1 sind (Mehrheitsfunktion).
+
+### Ripple-Carry-Addierer
+
+Für $n$-Bit-Zahlen schaltet man $n$ Volladdierer hintereinander. Der Übertrag jeder Stelle geht in die nächsthöhere. Beim niedrigsten Bit ist $C_\mathrm{in} = 0$. Der Übertrag aus dem höchsten Bit zeigt an, dass das Ergebnis nicht mehr in $n$ Bit passt (**Carry-Flag**).
+
+:::tip[Beispiel]
+$0110_2 + 0111_2$ (6 + 7):
+
+| Stelle          | 3 | 2 | 1 | 0 |
+| --------------- | - | - | - | - |
+| $A$             | 0 | 1 | 1 | 0 |
+| $B$             | 0 | 1 | 1 | 1 |
+| $C_\mathrm{in}$ | 1 | 1 | 0 | 0 |
+| $S$             | 1 | 1 | 0 | 1 |
+
+Ergebnis $1101_2 = 13$, kein Übertrag aus Stelle 3.
+:::
+
+Der Nachteil: Der Übertrag muss durch alle Stufen „durchrieseln“ (_ripple_). Die Laufzeit wächst linear mit der Bitbreite, bei 64 Bit ist das zu langsam. **Carry-Lookahead-Addierer** berechnen die Überträge parallel. Dazu bestimmt jede Stelle, ob sie einen Übertrag erzeugt ($G_i = A_i B_i$, _generate_) oder einen ankommenden weiterleitet ($P_i = A_i \oplus B_i$, _propagate_). Daraus folgt $C_{i+1} = G_i + P_i C_i$, und diese Gleichung lässt sich für alle Stellen ausmultiplizieren und in zwei Gatterstufen berechnen.
+
+### Subtraktion
+
+Subtrahiert wird mit demselben Addierer über das **Zweierkomplement**: $A - B = A + \overline{B} + 1$. Man invertiert $B$ mit XOR-Gattern (ein Steuersignal $\mathit{SUB} = 1$ an jedem zweiten XOR-Eingang) und setzt den Eingangsübertrag $C_\mathrm{in} = \mathit{SUB} = 1$. So wird ein Addierer mit einem Steuersignal zum **Addier-Subtrahier-Werk**.
+
+## Komparator
+
+Ein **Komparator** vergleicht zwei Dualzahlen. Für ein Bit gilt:
+
+$$
+(A > B) = A\overline{B} \qquad (A = B) = \overline{A \oplus B} \qquad (A < B) = \overline{A}B
+$$
+
+Für mehrere Bits vergleicht man vom höchstwertigen Bit an: $A > B$, wenn das höchste Bit größer ist oder die höchsten Bits gleich sind und der Rest größer ist. $A = B$ gilt, wenn alle Bits paarweise gleich sind, also bei einer UND-Verknüpfung aller XNOR-Ausgänge. Der 74HC85 vergleicht vier Bit und lässt sich für größere Breiten kaskadieren.
+
+## Multiplexer und Demultiplexer
+
+Ein **Multiplexer** (MUX, Datenselektor) schaltet einen von $2^n$ Dateneingängen auf einen Ausgang durch. Welcher, bestimmen $n$ Steuereingänge (Adresseingänge). Für einen 2:1-MUX mit Steuereingang $S$:
+
+$$
+Y = \overline{S} \cdot I_0 + S \cdot I_1
+$$
+
+Ein 4:1-MUX mit den Steuereingängen $S_1 S_0$:
+
+$$
+Y = \overline{S_1}\,\overline{S_0} I_0 + \overline{S_1} S_0 I_1 + S_1 \overline{S_0} I_2 + S_1 S_0 I_3
+$$
+
+Multiplexer wählen in Prozessoren Datenquellen aus, übertragen mehrere Signale nacheinander über eine Leitung (**Zeitmultiplex**) und können jede Schaltfunktion realisieren: Bei einem 8:1-MUX legt man die drei Variablen an die Steuereingänge und an die Dateneingänge die Spalte der Wahrheitstabelle als feste 0 und 1. Genau so funktionieren die Lookup-Tabellen in [FPGAs](/de/electrical-engineering/sequential-circuits/#programmierbare-logik).
+
+Ein **Demultiplexer** (DEMUX) macht das Gegenteil: Er verteilt einen Eingang auf einen von $2^n$ Ausgängen.
+
+## Codierer und Decodierer
+
+Ein **Decodierer** (Decoder) setzt einen $n$-Bit-Code in eine 1-aus-$2^n$-Darstellung um: Genau ein Ausgang ist aktiv. Ein 2:4-Decoder hat die Ausgänge
+
+$$
+Y_0 = \overline{A_1}\,\overline{A_0} \quad Y_1 = \overline{A_1} A_0 \quad Y_2 = A_1 \overline{A_0} \quad Y_3 = A_1 A_0
+$$
+
+Decoder wählen in Rechnern über die höherwertigen Adressbits den richtigen Speicherbaustein aus (**Adressdecodierung**, _chip select_). Der 74HC138 ist ein 3:8-Decoder mit aktiv-Low-Ausgängen. Ein Decoder mit Freigabeeingang ist zugleich ein Demultiplexer.
+
+Ein **Codierer** (Encoder) macht das Umgekehrte: Er gibt die Nummer des aktiven Eingangs als Dualzahl aus. Ein **Prioritätsencoder** liefert bei mehreren aktiven Eingängen die Nummer des höchstwertigen. Damit stellt ein Interrupt-Controller fest, welche Anforderung Vorrang hat, oder eine Tastatur, welche Taste gedrückt ist.
+
+## 7-Segment-Decoder
+
+Eine **7-Segment-Anzeige** stellt Ziffern mit sieben Leuchtsegmenten a bis g dar: a oben, dann im Uhrzeigersinn b (rechts oben), c (rechts unten), d (unten), e (links unten), f (links oben) und g in der Mitte. Bei **gemeinsamer Kathode** werden die Segmente mit High angesteuert, bei **gemeinsamer Anode** mit Low. Jedes Segment braucht einen eigenen [Vorwiderstand](/de/electrical-engineering/semiconductors-and-diodes/#leuchtdiode).
+
+Ein **7-Segment-Decoder** wandelt eine BCD-Ziffer $x_3 x_2 x_1 x_0$ in die sieben Segmentsignale um (1 = Segment leuchtet). Hier die Darstellung mit Segment a bei der 6 und Segment d bei der 9:
+
+| Ziffer | $x_3 x_2 x_1 x_0$ | a | b | c | d | e | f | g |
+| ------ | ----------------- | - | - | - | - | - | - | - |
+| 0      | 0000              | 1 | 1 | 1 | 1 | 1 | 1 | 0 |
+| 1      | 0001              | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+| 2      | 0010              | 1 | 1 | 0 | 1 | 1 | 0 | 1 |
+| 3      | 0011              | 1 | 1 | 1 | 1 | 0 | 0 | 1 |
+| 4      | 0100              | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+| 5      | 0101              | 1 | 0 | 1 | 1 | 0 | 1 | 1 |
+| 6      | 0110              | 1 | 0 | 1 | 1 | 1 | 1 | 1 |
+| 7      | 0111              | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
+| 8      | 1000              | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| 9      | 1001              | 1 | 1 | 1 | 1 | 0 | 1 | 1 |
+
+Für jedes Segment stellt man ein eigenes KV-Diagramm auf, die Codes 10 bis 15 sind Don't Cares. Für Segment a:
+
+| $x_3 x_2$ \ $x_1 x_0$ | 00 | 01 | 11 | 10 |
+| --------------------- | -- | -- | -- | -- |
+| **00**                | 1  | 0  | 1  | 1  |
+| **01**                | 0  | 1  | 1  | 1  |
+| **11**                | X  | X  | X  | X  |
+| **10**                | 1  | 1  | X  | X  |
+
+$$
+a = x_3 + x_1 + x_2 x_0 + \overline{x_2}\,\overline{x_0}
+$$
+
+Der Block $x_3$ umfasst die beiden unteren Zeilen, $x_1$ die beiden rechten Spalten, $x_2 x_0$ den mittleren Viererblock und $\overline{x_2}\,\overline{x_0}$ die vier Ecken. Fertige Bausteine sind der 74LS47 (gemeinsame Anode) und der CD4511 (gemeinsame Kathode). Mit Mikrocontrollern decodiert man meist in Software über eine Tabelle.
+
+## Arithmetisch-logische Einheit
+
+Die **ALU** (_arithmetic logic unit_) ist das Rechenwerk eines Prozessors. Sie berechnet aus zwei Operanden $A$ und $B$ ein Ergebnis, ausgewählt durch einen **Operationscode**. Im Prinzip besteht sie aus mehreren Schaltnetzen, die parallel alle Ergebnisse berechnen, und einem Multiplexer, der das gewünschte auswählt:
+
+| Opcode | Operation          | Schaltnetz                         |
+| ------ | ------------------ | ---------------------------------- |
+| 00     | $A \land B$        | AND-Gatter je Bit                  |
+| 01     | $A \lor B$         | OR-Gatter je Bit                   |
+| 10     | $A + B$            | Addierer                           |
+| 11     | $A - B$            | Addierer mit invertiertem $B$ und $C_\mathrm{in} = 1$ |
+
+Zusätzlich setzt die ALU **Flags** im Statusregister, die bedingte Sprünge auswerten:
+
+| Flag          | Bedeutung                                                        |
+| ------------- | ---------------------------------------------------------------- |
+| Z (_zero_)    | Ergebnis ist 0 (NOR über alle Ergebnisbits)                       |
+| C (_carry_)   | Übertrag aus dem höchsten Bit, bei vorzeichenlosen Zahlen ein Überlauf |
+| N (_negative_) | höchstes Ergebnisbit ist 1, bei Zweierkomplement also negativ   |
+| V (_overflow_) | Überlauf bei vorzeichenbehafteten Zahlen: Übertrag in das und aus dem höchsten Bit sind verschieden |
+
+Ein Vergleich `a < b` in einem Programm wird im Prozessor als Subtraktion ausgeführt, deren Ergebnis verworfen wird, nur die Flags bleiben. Der historische Baustein 74181 war eine 4-Bit-ALU mit 32 Funktionen.
+
+## Hazards
+
+Weil Signale unterschiedlich lange durch Gatter laufen, kann ein Ausgang kurzzeitig einen falschen Wert annehmen, obwohl er laut Wahrheitstabelle konstant bleiben müsste (**Hazard**, _glitch_). Beispiel: $Y = A\overline{C} + BC$ mit $A = B = 1$. Wechselt $C$, schaltet ein Term ab und der andere zu, und für die Dauer einer Gatterlaufzeit sind möglicherweise beide 0. Ein zusätzlicher Konsensterm $AB$ (im KV-Diagramm ein Block über die Grenze der beiden anderen) verhindert das. In getakteten Schaltungen stören Hazards meist nicht, weil die Flip-Flops erst übernehmen, wenn alle Signale stabil sind (siehe [Schaltwerke](/de/electrical-engineering/sequential-circuits/)).
+
+## Weiterführende Quellen
+
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- [Nand2Tetris: Projekte 1 bis 3 (Gatter, Addierer, ALU)](https://www.nand2tetris.org/)

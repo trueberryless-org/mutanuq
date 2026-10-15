@@ -1,0 +1,221 @@
+---
+title: Incident Response und Forensik
+description: Ablauf der Behandlung von Sicherheitsvorfällen nach NIST SP 800-61, Meldepflichten, CERTs in Österreich, Grundlagen der IT-Forensik sowie Business Continuity mit RTO und RPO.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Kein Schutz ist vollkommen. Früher oder später wird jede Organisation von einem Sicherheitsvorfall getroffen. Entscheidend ist dann, wie schnell er erkannt wird, wie geordnet die Reaktion abläuft und wie rasch der Betrieb wieder läuft. Wer erst im Ernstfall überlegt, wer zuständig ist, wo die Backups liegen und wen man anrufen muss, verliert wertvolle Stunden und zerstört oft unabsichtlich Beweise.
+
+## Ereignis und Vorfall
+
+Ein **Sicherheitsereignis** (_Security Event_) ist jede beobachtbare Begebenheit mit möglichem Sicherheitsbezug, etwa ein fehlgeschlagener Login oder ein blockierter Verbindungsversuch. Täglich gibt es davon tausende. Ein **Sicherheitsvorfall** (_Incident_) ist ein Ereignis, das die Vertraulichkeit, Integrität oder Verfügbarkeit tatsächlich beeinträchtigt oder unmittelbar bedroht: ein infizierter Rechner, ein übernommenes Konto, ein Datenabfluss, ein Ransomware-Angriff. Die **Incident Response** (Vorfallsbehandlung) ist der geplante Umgang damit.
+
+## Ablauf der Vorfallsbehandlung
+
+Das NIST beschreibt in **SP 800-61** einen Kreislauf aus vier Phasen, der in Lehrbüchern und Prüfungen der Standard ist:
+
+| Phase                                         | Inhalt                                                                                         |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **1. Vorbereitung** (_Preparation_)           | Incident-Response-Plan, Team und Zuständigkeiten, Kontaktlisten, Werkzeuge, Playbooks, Übungen, Schutzmaßnahmen |
+| **2. Erkennung und Analyse** (_Detection & Analysis_) | Alarme auswerten, Vorfall bestätigen, Umfang und Schwere einschätzen, priorisieren, dokumentieren |
+| **3. Eindämmung, Beseitigung, Wiederherstellung** (_Containment, Eradication & Recovery_) | Ausbreitung stoppen, Ursache und Schadsoftware entfernen, Systeme sauber wiederherstellen |
+| **4. Nachbereitung** (_Post-Incident Activity_) | Lessons Learned: Was ist passiert, was hat funktioniert, was wird verbessert?                |
+
+Die Phasen 2 und 3 wechseln sich oft mehrfach ab: Während der Eindämmung tauchen neue Erkenntnisse auf, die eine erneute Analyse erfordern. Die Nachbereitung fließt in die Vorbereitung des nächsten Vorfalls ein. Das SANS Institute verwendet ein gleichwertiges Modell mit sechs Schritten (_Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned_). Die 2025 erschienene Revision 3 von SP 800-61 ordnet die Vorfallsbehandlung zusätzlich in die sechs Funktionen des NIST Cybersecurity Framework 2.0 ein (_Govern, Identify, Protect, Detect, Respond, Recover_) und betont, dass Incident Response Teil des gesamten Risikomanagements ist.
+
+### Vorbereitung
+
+- **Incident-Response-Plan** mit Rollen, Eskalationsstufen und Entscheidungsbefugnissen: Wer darf einen Server vom Netz nehmen oder die Produktion stoppen?
+- **Kontaktliste**, auch auf Papier: Geschäftsführung, IT-Dienstleister, Versicherung, Rechtsberatung, Datenschutzbeauftragte, CERT, Polizei.
+- **Playbooks** für typische Vorfälle (Phishing, Ransomware, kompromittiertes Konto) mit konkreten Schritten.
+- Funktionierende, offline verfügbare **Backups** und Netzwerkdokumentation.
+- **Kommunikation außerhalb der betroffenen Systeme** (_Out of Band_): Wenn Mailserver und Teams kompromittiert sind, liest der Angreifer möglicherweise mit.
+- **Übungen**, etwa als Planspiel am Tisch (_Tabletop Exercise_).
+
+### Eindämmung, Beseitigung, Wiederherstellung
+
+Die **Eindämmung** (_Containment_) verhindert weiteren Schaden: betroffene Rechner vom Netz trennen (am Switch oder per EDR isolieren), kompromittierte Konten sperren und Passwörter zurücksetzen, Verbindungen zu Command-and-Control-Servern an der Firewall blockieren. Rechner sollten dabei möglichst **nicht ausgeschaltet** werden, weil sonst der Arbeitsspeicher mit wertvollen Spuren verloren geht. Man unterscheidet die kurzfristige Eindämmung (sofort) und die langfristige (Übergangslösungen, bis die Systeme bereinigt sind).
+
+Bei der **Beseitigung** (_Eradication_) werden Schadsoftware, Hintertüren und angelegte Konten entfernt und die ausgenutzte Schwachstelle geschlossen. Weil Angreifer oft mehrere Hintertüren hinterlassen, werden kompromittierte Systeme meist **neu aufgesetzt** statt „gereinigt“.
+
+Die **Wiederherstellung** (_Recovery_) bringt die Systeme aus sauberen Quellen und geprüften Backups zurück in den Betrieb, nach Priorität der Geschäftsprozesse, und überwacht sie verstärkt, um eine Rückkehr des Angreifers zu bemerken.
+
+Bei **Ransomware** raten Behörden wie das Bundeskriminalamt und das BSI davon ab, Lösegeld zu zahlen: Es gibt keine Garantie, dass der Schlüssel funktioniert oder gestohlene Daten gelöscht werden, die Zahlung finanziert weitere Angriffe, und zahlende Opfer werden häufiger erneut angegriffen.
+
+### Meldepflichten
+
+| Pflicht                         | Wer, an wen, wann                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| **DSGVO Art. 33**               | Verletzung des Schutzes personenbezogener Daten: Meldung an die **Datenschutzbehörde** binnen **72 Stunden**, außer es besteht voraussichtlich kein Risiko für die Betroffenen |
+| **DSGVO Art. 34**               | bei hohem Risiko zusätzlich Benachrichtigung der **betroffenen Personen**                     |
+| **NIS2 bzw. NISG 2026**         | erhebliche Sicherheitsvorfälle bei wesentlichen und wichtigen Einrichtungen: **Frühwarnung binnen 24 Stunden**, Meldung binnen 72 Stunden, Abschlussbericht binnen eines Monats an das zuständige CSIRT |
+| **Strafanzeige** (freiwillig)   | bei der Polizei, in Österreich zuständig ist das Cybercrime-Competence-Center (C4) im Bundeskriminalamt |
+
+Mehr zu NIS2 und DSGVO steht unter [Informationssicherheitsmanagement](/de/it-security/information-security-management/).
+
+### Nachbereitung
+
+Nach jedem größeren Vorfall folgt eine Besprechung ohne Schuldzuweisungen (_blameless Post-Mortem_): Zeitlinie des Angriffs, Ursache (_Root Cause_), Wirksamkeit der Reaktion, konkrete Verbesserungen mit Verantwortlichen und Fristen. Kennzahlen wie die **Mean Time to Detect** (MTTD, mittlere Zeit bis zur Erkennung) und die **Mean Time to Respond** (MTTR) zeigen, ob die Organisation besser wird.
+
+## CERT und CSIRT
+
+Ein **CERT** (_Computer Emergency Response Team_) oder **CSIRT** (_Computer Security Incident Response Team_) ist ein Team von Fachleuten, das Sicherheitsvorfälle behandelt, vor Bedrohungen warnt und bei der Bewältigung hilft. Beide Begriffe werden gleichbedeutend verwendet. Größere Unternehmen haben eigene CSIRTs, daneben gibt es nationale und branchenspezifische Teams.
+
+| Team                          | Aufgabe                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| **CERT.at**                   | nationales CERT Österreichs, betrieben von nic.at (Registrierungsstelle für `.at`), Warnungen, Koordination, Ansprechpartner für Unternehmen und Bevölkerung |
+| **GovCERT Austria**           | CERT für die öffentliche Verwaltung                                                       |
+| **Sektor-CERTs**              | etwa AEC (_Austrian Energy CERT_) für die Energiewirtschaft                               |
+| **MilCERT**                   | CERT des Österreichischen Bundesheers                                                     |
+| **CERT-Bund**, **CERT-EU**    | CERT des deutschen BSI bzw. der EU-Institutionen                                         |
+
+Die nationalen CSIRTs der EU-Mitgliedstaaten arbeiten im **CSIRTs Network** zusammen, unterstützt von der EU-Agentur für Cybersicherheit **ENISA**. Weltweit vernetzt sind CERTs über das **FIRST** (_Forum of Incident Response and Security Teams_). CERT.at veröffentlicht laufend Warnungen zu kritischen Lücken und informiert Betreiber, deren Systeme aus dem Internet erkennbar verwundbar sind.
+
+## IT-Forensik
+
+Die **IT-Forensik** sichert und analysiert digitale Spuren, um einen Vorfall aufzuklären: Wie kam der Angreifer herein, was hat er getan, welche Daten sind betroffen, wer war es? Ergebnisse sollen auch vor Gericht verwertbar sein. Daraus ergeben sich die Grundsätze:
+
+- **Integrität**: Beweismittel dürfen nicht verändert werden. Untersucht wird immer eine Kopie, nie das Original.
+- **Dokumentation**: Jeder Schritt wird mit Zeit, Person und Werkzeug protokolliert.
+- **Nachvollziehbarkeit**: Eine andere Fachperson muss mit denselben Daten und Werkzeugen zum selben Ergebnis kommen.
+- **Rechtmäßigkeit**: Die Untersuchung muss Datenschutz und Arbeitsrecht beachten, etwa bei privaten Daten von Mitarbeitenden (in Österreich auch die Mitwirkungsrechte des Betriebsrats).
+
+### Beweismittelkette
+
+Die **Beweismittelkette** (_Chain of Custody_) dokumentiert lückenlos, wer ein Beweisstück wann, wo und wozu in der Hand hatte, von der Sicherstellung bis zur Vorlage vor Gericht. Für jedes Beweisstück (etwa eine Festplatte) werden Beschreibung, Seriennummer, Fundort, Zeitpunkt, alle Übergaben mit Unterschrift sowie Hashwerte der Abbilder festgehalten. Eine Lücke in dieser Kette kann die Beweiskraft zunichtemachen, weil eine Manipulation nicht mehr ausgeschlossen werden kann.
+
+### Reihenfolge der Flüchtigkeit
+
+Daten sind unterschiedlich flüchtig. Gesichert wird deshalb vom flüchtigsten zum beständigsten (_Order of Volatility_, nach RFC 3227):
+
+1. CPU-Register und Cache
+2. Routingtabelle, ARP-Cache, Prozesstabelle, Kernel-Statistiken, **Arbeitsspeicher**
+3. temporäre Dateisysteme
+4. **Festplatten** und andere Datenträger
+5. entfernte Protokolle und Überwachungsdaten
+6. physische Konfiguration und Netzwerktopologie
+7. Archivmedien wie Backup-Bänder
+
+Der Arbeitsspeicher enthält laufende Prozesse, offene Netzwerkverbindungen, entschlüsselte Daten, Passwörter und dateilose Schadsoftware. Wer einen Rechner einfach ausschaltet, verliert all das. Deshalb unterscheidet man die **Live-Analyse** am laufenden System von der **Post-mortem-Analyse** am ausgeschalteten System bzw. dessen Abbild.
+
+### Abbilder erstellen
+
+Datenträger werden als **forensisches Abbild** (_Image_) gesichert: eine bitgenaue Kopie aller Sektoren, einschließlich gelöschter Bereiche und des freien Speichers. Ein **Schreibblocker** (_Write Blocker_) zwischen Datenträger und Analyserechner verhindert, dass das Betriebssystem beim Anschließen etwas auf das Original schreibt. Unmittelbar nach dem Erstellen wird von Original und Abbild ein **Hashwert** (SHA-256) berechnet. Stimmen beide überein, ist das Abbild exakt. Ein späterer erneuter Vergleich beweist, dass es seitdem nicht verändert wurde.
+
+```bash
+# bitgenaues Abbild des Datenträgers /dev/sdb erstellen (hinter einem Schreibblocker)
+sudo dd if=/dev/sdb of=beweis_001.img bs=4M conv=noerror,sync status=progress
+
+# Hashwerte von Original und Abbild berechnen und vergleichen
+sudo sha256sum /dev/sdb beweis_001.img
+```
+
+In der Praxis verwendet man spezialisierte Werkzeuge wie **FTK Imager**, `dc3dd` oder `ewfacquire`, die Hashwerte gleich mitberechnen und Metadaten im Format **E01** speichern. Den Arbeitsspeicher sichert man mit Werkzeugen wie WinPmem oder LiME und analysiert ihn mit **Volatility**. Für die Auswertung von Datenträgern gibt es etwa **Autopsy** mit **The Sleuth Kit**.
+
+Wie ein Hashwert über eine große Datei berechnet wird, ohne sie ganz in den Speicher zu laden, zeigt das folgende Programm. Es liest die Datei blockweise und füttert die Hashfunktion schrittweise:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+
+const string path = "beweis_001.img";
+File.WriteAllText(path, "Inhalt des gesicherten Datenträgers"); // Beispieldatei
+
+string hashBefore = ImageHasher.Sha256Of(path);
+Console.WriteLine($"SHA-256: {hashBefore}");
+
+// später: erneut berechnen und vergleichen
+string hashLater = ImageHasher.Sha256Of(path);
+Console.WriteLine(hashBefore == hashLater ? "Abbild unverändert" : "ACHTUNG: Abbild verändert");
+
+public static class ImageHasher
+{
+    public static string Sha256Of(string path)
+    {
+        using FileStream stream = File.OpenRead(path);
+        byte[] hash = SHA256.HashData(stream); // liest den Stream blockweise
+        return Convert.ToHexStringLower(hash);
+    }
+}
+
+// Ausgabe:
+// SHA-256: 8b125f333a512a2adbcc926080d0527dfc970a9f1dae0ba7af007a7571aa3888
+// Abbild unverändert
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+use std::fs::File;
+use std::io::{self, BufReader};
+
+fn sha256_of(path: &str) -> io::Result<String> {
+    let mut reader = BufReader::new(File::open(path)?);
+    let mut hasher = Sha256::new();
+    io::copy(&mut reader, &mut hasher)?; // liest die Datei blockweise
+    Ok(hex::encode(hasher.finalize()))
+}
+
+fn main() -> io::Result<()> {
+    let path = "beweis_001.img";
+    std::fs::write(path, "Inhalt des gesicherten Datenträgers")?; // Beispieldatei
+
+    let hash_before = sha256_of(path)?;
+    println!("SHA-256: {hash_before}");
+
+    // später: erneut berechnen und vergleichen
+    let hash_later = sha256_of(path)?;
+    println!("{}", if hash_before == hash_later { "Abbild unverändert" } else { "ACHTUNG: Abbild verändert" });
+    Ok(())
+}
+
+// Ausgabe:
+// SHA-256: 8b125f333a512a2adbcc926080d0527dfc970a9f1dae0ba7af007a7571aa3888
+// Abbild unverändert
+```
+
+</TabItem>
+</Tabs>
+
+### Analyse
+
+Bei der Auswertung erstellt man eine **Zeitlinie** (_Timeline_) aller Ereignisse aus Dateisystem-Zeitstempeln, Logs und weiteren Artefakten. Typische Spuren unter Windows sind Ereignisprotokolle, die Registry (zuletzt verwendete Dateien, Autostart-Einträge), Prefetch-Dateien (welche Programme wann liefen), der Browserverlauf und gelöschte Dateien im Papierkorb oder im nicht zugeordneten Speicher. Werkzeuge der Angreifer verraten sich oft durch ungewöhnliche Dienste, geplante Aufgaben oder PowerShell-Befehle. Die Ergebnisse werden in einem **Bericht** zusammengefasst, der für Nicht-Fachleute verständlich ist und Fakten klar von Vermutungen trennt.
+
+## Business Continuity und Disaster Recovery
+
+Das **Business Continuity Management** (BCM) sorgt dafür, dass die wichtigsten Geschäftsprozesse auch bei schweren Störungen (Cyberangriff, Brand, Hochwasser, Stromausfall, Ausfall eines Dienstleisters) weiterlaufen oder schnell wieder anlaufen. Standards sind **ISO 22301** und der **BSI-Standard 200-4**. Das **Disaster Recovery** (DR) ist der IT-Teil davon: die Wiederherstellung von Systemen und Daten.
+
+Grundlage ist eine **Business-Impact-Analyse** (BIA): Für jeden Geschäftsprozess wird ermittelt, welcher Schaden bei einem Ausfall entsteht und wie lange er höchstens ausfallen darf. Daraus ergeben sich die Kennzahlen:
+
+| Kennzahl                                         | Frage                                                         | Beispiel                     |
+| ------------------------------------------------ | ------------------------------------------------------------- | ---------------------------- |
+| **RTO** (_Recovery Time Objective_)              | Wie lange darf es dauern, bis das System wieder läuft?        | Webshop: 4 Stunden           |
+| **RPO** (_Recovery Point Objective_)             | Wie viel Datenverlust (gemessen als Zeitspanne) ist tragbar?  | Bestellungen: 15 Minuten     |
+| **MTPD** (_Maximum Tolerable Period of Disruption_) | Ab wann gefährdet der Ausfall das Unternehmen ernsthaft?   | 2 Tage                       |
+
+Das **RPO** bestimmt, wie oft gesichert oder repliziert werden muss: Bei einem RPO von 15 Minuten reicht eine nächtliche Sicherung nicht, nötig ist etwa eine laufende Replikation der Datenbank. Das **RTO** bestimmt die Art der Wiederherstellung: Ein Bandrücksicherung von mehreren Terabyte dauert Stunden bis Tage, ein vorbereitetes Ersatzsystem übernimmt in Minuten. Je kleiner RTO und RPO, desto teurer die Lösung. Das RTO muss kleiner als die MTPD sein.
+
+![Zeitachse mit RPO vor und RTO nach einem Ausfall](/images/it-security/rto-rpo_de.svg)
+
+Für die Wiederherstellung gibt es Ausweichstandorte unterschiedlicher Bereitschaft:
+
+| Art           | Ausstattung                                                    | Zeit bis zum Betrieb | Kosten  |
+| ------------- | -------------------------------------------------------------- | -------------------- | ------- |
+| **Hot Site**  | voll ausgestattet, Daten laufend repliziert                    | Minuten bis Stunden  | hoch    |
+| **Warm Site** | Hardware und Netz vorhanden, Daten müssen eingespielt werden    | Stunden bis Tage     | mittel  |
+| **Cold Site** | nur Räume, Strom und Klimatisierung                            | Tage bis Wochen      | gering  |
+
+Heute übernimmt oft die Cloud die Rolle des Ausweichstandorts (_Disaster Recovery as a Service_). Notfallpläne werden regelmäßig **getestet**, vom Durchsprechen am Tisch bis zur echten Umschaltung, denn erst der Test zeigt, ob RTO und RPO eingehalten werden. Technische Grundlagen zu redundanten Systemen beschreibt die Seite [Hochverfügbarkeit](/de/deployment/operations/high_availability/).
+
+## Weiterführende Quellen
+
+- [NIST SP 800-61 Rev. 3: Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
+- [CERT.at](https://www.cert.at/) (nationales CERT Österreichs) und [Onlinesicherheit.gv.at](https://www.onlinesicherheit.gv.at/)
+- [BSI-Standard 200-4: Business Continuity Management](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/BSI-Standards/bsi-standards_node.html)

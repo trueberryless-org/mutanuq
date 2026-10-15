@@ -1,0 +1,258 @@
+---
+title: UML
+description: Die Unified Modeling Language mit Klassen-, Objekt-, Anwendungsfall-, Sequenz-, Aktivitäts-, Zustands-, Komponenten- und Verteilungsdiagramm.
+sidebar:
+  order: 18
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Unified Modeling Language** (UML) ist eine grafische Sprache, mit der man Softwaresysteme beschreibt, bevor oder während man sie programmiert. Sie wird von der **Object Management Group** (OMG) standardisiert, die aktuelle Version ist UML 2.5.1. Diagramme helfen, Entwürfe im Team zu besprechen, Anforderungen mit Auftraggebern abzustimmen und bestehende Systeme zu dokumentieren. Man muss nicht jedes Detail modellieren: Ein Diagramm ist gut, wenn es die Frage beantwortet, für die es gezeichnet wurde.
+
+## Diagrammarten
+
+UML 2.5 kennt 14 Diagrammarten in zwei Gruppen:
+
+| Gruppe                    | Diagramm                     | Zeigt                                                                 |
+| ------------------------- | ---------------------------- | --------------------------------------------------------------------- |
+| **Strukturdiagramme**     | **Klassendiagramm**          | Klassen, ihre Attribute, Methoden und Beziehungen                     |
+|                           | Objektdiagramm               | konkrete Objekte und ihre Werte zu einem Zeitpunkt                    |
+|                           | Paketdiagramm                | Gliederung in Pakete und deren Abhängigkeiten                         |
+|                           | **Komponentendiagramm**      | austauschbare Bausteine und ihre Schnittstellen                       |
+|                           | **Verteilungsdiagramm**      | Hardware, Server und welche Software wo läuft                         |
+|                           | Kompositionsstrukturdiagramm | inneren Aufbau einer Klasse                                           |
+|                           | Profildiagramm               | Erweiterungen der UML selbst                                          |
+| **Verhaltensdiagramme**   | **Anwendungsfalldiagramm**   | was das System für wen leistet                                        |
+|                           | **Aktivitätsdiagramm**       | Abläufe und Algorithmen                                               |
+|                           | **Zustandsdiagramm**         | Zustände eines Objekts und Übergänge                                  |
+| davon **Interaktionsdiagramme** | **Sequenzdiagramm**    | Nachrichten zwischen Objekten in zeitlicher Reihenfolge               |
+|                           | Kommunikationsdiagramm       | Nachrichten mit Fokus auf die Verbindungen                            |
+|                           | Zeitverlaufsdiagramm         | Zustandsänderungen über eine Zeitachse                                |
+|                           | Interaktionsübersichtsdiagramm | Zusammenspiel mehrerer Interaktionen                                |
+
+Die fett gedruckten Diagramme werden in der Praxis und im Unterricht am häufigsten verwendet.
+
+## Klassendiagramm
+
+Das Klassendiagramm zeigt die **statische Struktur** eines Systems. Eine Klasse wird als Rechteck mit drei Bereichen gezeichnet: Name, Attribute und Operationen (Methoden).
+
+![UML-Klassendiagramm einer Schulverwaltung mit Interface, abstrakter Klasse, Vererbung, Aggregation, Komposition und Assoziation](/images/software_development/uml_class_diagram_de.svg)
+
+### Notation
+
+- **Attribut**: `Sichtbarkeit name: Typ [Multiplizität] = Standardwert`, zum Beispiel `- grades: int[0..*]`.
+- **Operation**: `Sichtbarkeit name(parameter: Typ): Rückgabetyp`, zum Beispiel `+ Add(s: Student): void`.
+- **Sichtbarkeit**: `+` public, `-` private, `#` protected, `~` package (in C# ungefähr `internal`).
+- **Statische** Elemente werden unterstrichen.
+- **Abstrakte** Klassen und Operationen werden _kursiv_ geschrieben oder mit `{abstract}` gekennzeichnet.
+- **Interfaces** erhalten den Stereotyp `«interface»`.
+
+### Beziehungen
+
+![Übersicht der Beziehungen im UML-Klassendiagramm mit ihren Pfeilarten](/images/software_development/uml_relationships_de.svg)
+
+| Beziehung        | Linie und Ende                                       | Bedeutung                                                    |
+| ---------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| **Vererbung**    | durchgezogen, leeres Dreieck zur Oberklasse          | „ist ein“                                                    |
+| **Realisierung** | gestrichelt, leeres Dreieck zum Interface            | Klasse implementiert Interface                               |
+| **Assoziation**  | durchgezogene Linie, optional mit Pfeil (Navigierbarkeit) | Objekte kennen einander                                 |
+| **Aggregation**  | leere Raute beim Ganzen                              | „hat ein“, Teile können unabhängig existieren                |
+| **Komposition**  | gefüllte Raute beim Ganzen                           | „besteht aus“, Teile werden mit dem Ganzen gelöscht          |
+| **Abhängigkeit** | gestrichelt, offener Pfeil                           | verwendet kurzzeitig, etwa als Parameter                     |
+
+**Multiplizitäten** an den Enden einer Assoziation geben an, wie viele Objekte beteiligt sind: `1` (genau eins), `0..1` (keins oder eins), `*` oder `0..*` (beliebig viele), `1..*` (mindestens eins), `2..4` (zwei bis vier). Im Diagramm oben gehört jede `SchoolClass` zu genau einer `School`, und eine `School` hat mindestens eine `SchoolClass`.
+
+### Vom Diagramm zum Code
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+public interface IGradable
+{
+    double AverageGrade();
+}
+
+public abstract class Person(string name, DateOnly birthDate)
+{
+    protected string name = name;
+    protected DateOnly birthDate = birthDate;
+
+    public int Age()
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        int age = today.Year - birthDate.Year;
+        if (birthDate.AddYears(age) > today) age--; // Geburtstag noch nicht erreicht
+        return age;
+    }
+
+    public abstract string Describe();
+}
+
+public class Student(string name, DateOnly birthDate, int studentId)
+    : Person(name, birthDate), IGradable
+{
+    private readonly int studentId = studentId;
+    private readonly List<int> grades = [];
+
+    public double AverageGrade() => grades.Count == 0 ? 0 : grades.Average();
+
+    public override string Describe() => $"{name} ({studentId})";
+}
+
+public class SchoolClass(string name)
+{
+    private readonly string name = name;
+    private readonly List<Student> students = []; // Aggregation: Schüler existieren auch ohne Klasse
+
+    public void Add(Student s) => students.Add(s);
+}
+
+public class School(string name)
+{
+    private readonly string name = name;
+    private readonly List<SchoolClass> classes = []; // Komposition: Klassen entstehen nur in der Schule
+
+    public SchoolClass Open(string className)
+    {
+        var c = new SchoolClass(className);
+        classes.Add(c);
+        return c;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::rc::Rc;
+
+pub trait Gradable {
+    fn average_grade(&self) -> f64;
+}
+
+// Rust hat keine Vererbung: gemeinsame Daten werden per Komposition eingebettet
+pub struct Person {
+    name: String,
+    birth_year: u32,
+}
+
+pub trait Describe {
+    fn describe(&self) -> String;
+}
+
+pub struct Student {
+    person: Person,
+    student_id: u32,
+    grades: Vec<u8>,
+}
+
+impl Gradable for Student {
+    fn average_grade(&self) -> f64 {
+        if self.grades.is_empty() {
+            return 0.0;
+        }
+        self.grades.iter().map(|&g| g as f64).sum::<f64>() / self.grades.len() as f64
+    }
+}
+
+impl Describe for Student {
+    fn describe(&self) -> String {
+        format!("{} ({})", self.person.name, self.student_id)
+    }
+}
+
+// Aggregation: geteilte Referenzen, Schüler existieren unabhängig
+pub struct SchoolClass {
+    name: String,
+    students: Vec<Rc<Student>>,
+}
+
+// Komposition: die Schule besitzt ihre Klassen
+pub struct School {
+    name: String,
+    classes: Vec<SchoolClass>,
+}
+
+impl School {
+    pub fn open(&mut self, name: &str) -> &mut SchoolClass {
+        self.classes.push(SchoolClass { name: name.to_string(), students: Vec::new() });
+        self.classes.last_mut().unwrap()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Aggregation und Komposition sehen im Code oft gleich aus. Der Unterschied liegt in der **Lebensdauer**: Bei der Komposition erzeugt und besitzt das Ganze seine Teile. In Rust wird das sichtbar, weil die Schule ihre Klassen direkt im `Vec` besitzt, während Klassen ihre Schüler über geteilte Referenzen (`Rc`) kennen.
+
+### Objektdiagramm
+
+Ein **Objektdiagramm** ist eine Momentaufnahme: Es zeigt konkrete Objekte mit Werten. Der Name wird unterstrichen und hat die Form `objektname: Klasse`, zum Beispiel <u>`anna: Student`</u> mit `studentId = 4711`. Objektdiagramme helfen, ein Klassendiagramm an einem Beispiel zu überprüfen.
+
+## Anwendungsfalldiagramm
+
+Das **Anwendungsfalldiagramm** (_Use-Case-Diagramm_) zeigt aus Sicht der Benutzer, **was** ein System leistet, nicht wie. Es wird früh in der [Anforderungsanalyse](/de/software-development/software-engineering/#anforderungsanalyse) eingesetzt.
+
+![UML-Anwendungsfalldiagramm einer Notenverwaltung mit include- und extend-Beziehungen](/images/software_development/uml_use_case_de.svg)
+
+- **Akteur** (Strichmännchen): eine Rolle, die mit dem System interagiert, etwa eine Person oder ein anderes System.
+- **Anwendungsfall** (Ellipse): eine Funktion mit Nutzen für einen Akteur.
+- **Systemgrenze** (Rechteck): was zum System gehört.
+- **«include»**: Der Basisfall enthält den eingebundenen Fall **immer** (jedes Eintragen einer Note erfordert eine Anmeldung). Der Pfeil zeigt zum eingebundenen Fall.
+- **«extend»**: Der erweiternde Fall kommt **nur unter einer Bedingung** dazu (Eltern werden nur bei einer negativen Note benachrichtigt). Der Pfeil zeigt zum Basisfall.
+- **Generalisierung** zwischen Akteuren oder Anwendungsfällen wird wie Vererbung mit leerem Dreieck gezeichnet.
+
+Zu jedem Anwendungsfall gehört eine textuelle **Beschreibung** mit Akteur, Vorbedingung, Ablauf (Standardablauf und Alternativen) und Nachbedingung.
+
+## Sequenzdiagramm
+
+Das **Sequenzdiagramm** zeigt, welche Nachrichten Objekte in welcher **zeitlichen Reihenfolge** austauschen. Die Zeit läuft von oben nach unten.
+
+![UML-Sequenzdiagramm einer Anmeldung mit Browser, Controller, Repository und Datenbank](/images/software_development/uml_sequence_de.svg)
+
+| Element                | Darstellung                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Lebenslinie**        | Rechteck mit unterstrichenem Namen und gestrichelter Linie nach unten           |
+| **Aktivierungsbalken** | schmales Rechteck, solange das Objekt arbeitet                                  |
+| **synchrone Nachricht** | durchgezogener Pfeil mit gefüllter Spitze; der Sender wartet auf die Antwort   |
+| **asynchrone Nachricht** | durchgezogener Pfeil mit offener Spitze; der Sender wartet nicht              |
+| **Antwort**            | gestrichelter Pfeil mit offener Spitze                                          |
+| **Selbstaufruf**       | Pfeil, der zur eigenen Lebenslinie zurückführt                                  |
+| **kombiniertes Fragment** | Rahmen mit Operator: `alt` (Alternativen), `opt` (optional), `loop` (Schleife), `par` (parallel) |
+
+## Aktivitätsdiagramm
+
+Das **Aktivitätsdiagramm** beschreibt **Abläufe**: Geschäftsprozesse, Anwendungsfälle im Detail oder Algorithmen. Es ist der Nachfolger des Flussdiagramms und kann zusätzlich parallele Abläufe darstellen.
+
+![UML-Aktivitätsdiagramm einer Bestellung mit Verzweigung, Gabelung und Vereinigung](/images/software_development/uml_activity_de.svg)
+
+- **Startknoten**: gefüllter Kreis. **Endknoten**: gefüllter Kreis mit Ring.
+- **Aktion**: Rechteck mit abgerundeten Ecken.
+- **Verzweigung** (_decision_) und **Zusammenführung** (_merge_): Raute. An den ausgehenden Kanten stehen **Bedingungen** in eckigen Klammern (_Guards_), die sich gegenseitig ausschließen müssen.
+- **Gabelung** (_fork_) und **Vereinigung** (_join_): dicker Balken. Nach einer Gabelung laufen die Zweige parallel; die Vereinigung wartet, bis alle fertig sind.
+- **Aktivitätsbereiche** (_Swimlanes_): Spalten, die zeigen, wer eine Aktion ausführt, etwa Kunde, Verkauf und Lager.
+
+## Zustandsdiagramm
+
+Das **Zustandsdiagramm** (_State Machine Diagram_) zeigt, welche **Zustände** ein Objekt annehmen kann und durch welche **Ereignisse** es von einem Zustand in einen anderen wechselt. Es eignet sich für Objekte mit klar unterscheidbaren Zuständen: Bestellungen, Ampeln, Verbindungen, Spielfiguren.
+
+![UML-Zustandsdiagramm einer Bestellung mit den Zuständen Neu, Bezahlt, Versandt und Storniert](/images/software_development/uml_state_de.svg)
+
+Ein Übergang wird mit `Ereignis [Bedingung] / Aktion` beschriftet. Zustände können eigene Aktionen haben: `entry /` beim Betreten, `exit /` beim Verlassen und `do /` während des Aufenthalts. Zustandsdiagramme lassen sich direkt mit dem Entwurfsmuster [State](/de/software-development/design-patterns/#state) oder mit einem Enum und `match` umsetzen. Sie entsprechen den [endlichen Automaten](/de/computer-science/automata-and-formal-languages/) der theoretischen Informatik.
+
+## Komponenten- und Verteilungsdiagramm
+
+- Das **Komponentendiagramm** zeigt die großen Bausteine eines Systems (etwa Weboberfläche, Bestellservice, Zahlungsservice) als Rechtecke mit dem Stereotyp `«component»`. **Bereitgestellte Schnittstellen** werden als Kreis („Lollipop“) gezeichnet, **benötigte Schnittstellen** als Halbkreis („Socket“).
+- Das **Verteilungsdiagramm** (_Deployment Diagram_) zeigt die Hardware und Ausführungsumgebungen als dreidimensionale Quader (**Knoten**), etwa Webserver, Datenbankserver und Clients, sowie die **Artefakte** (Programme, Dateien), die darauf installiert sind, und die Kommunikationswege zwischen ihnen (zum Beispiel `«HTTPS»`).
+
+## Werkzeuge
+
+UML-Diagramme zeichnet man mit Werkzeugen wie **draw.io** (diagrams.net), **Enterprise Architect**, **Visual Paradigm** oder **StarUML**. Textbasierte Werkzeuge wie **PlantUML** und **Mermaid** erzeugen Diagramme aus einer einfachen Beschreibungssprache, die man wie Code in der Versionsverwaltung ablegen kann. Rider und Visual Studio können Klassendiagramme aus bestehendem Code erzeugen.
+
+## Weiterführende Quellen
+
+- [UML-Spezifikation der OMG](https://www.omg.org/spec/UML/)
+- Martin Fowler: _UML Distilled_, Addison-Wesley (kompakte Einführung)

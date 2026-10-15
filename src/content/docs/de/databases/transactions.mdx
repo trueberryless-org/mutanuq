@@ -1,0 +1,306 @@
+---
+title: Transaktionen
+description: ACID, Transaktionen in SQL und im Programmcode, Anomalien und Isolationsstufen, Sperren und Zwei-Phasen-Sperrprotokoll, Deadlocks, optimistische Verfahren, MVCC, Recovery und Datensicherung.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **Transaktion** ist eine Folge von Datenbankoperationen, die als Einheit behandelt wird: Entweder werden alle Operationen ausgeführt oder keine. Das klassische Beispiel ist eine Überweisung. Werden 200 Euro von Annas Konto abgebucht, aber wegen eines Stromausfalls nicht auf Bens Konto gutgeschrieben, ist das Geld verschwunden. Eine Transaktion verhindert das.
+
+## Transaktionen in SQL
+
+```sql
+CREATE TABLE Konto (
+    Id      INT PRIMARY KEY,
+    Inhaber VARCHAR(50) NOT NULL,
+    Saldo   DECIMAL(12, 2) NOT NULL CHECK (Saldo >= 0)
+);
+INSERT INTO Konto VALUES (1, 'Anna', 500), (2, 'Ben', 100);
+
+BEGIN;
+UPDATE Konto SET Saldo = Saldo - 200 WHERE Id = 1;
+UPDATE Konto SET Saldo = Saldo + 200 WHERE Id = 2;
+COMMIT;
+```
+
+| Befehl                | Wirkung                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `BEGIN` / `START TRANSACTION` | beginnt eine Transaktion (SQL Server: `BEGIN TRANSACTION`)                             |
+| `COMMIT`              | schließt die Transaktion ab, alle Änderungen werden dauerhaft und für andere sichtbar           |
+| `ROLLBACK`            | bricht die Transaktion ab und macht alle ihre Änderungen rückgängig                            |
+| `SAVEPOINT name`      | setzt einen Zwischenpunkt                                                                      |
+| `ROLLBACK TO SAVEPOINT name` | nimmt nur die Änderungen seit dem Zwischenpunkt zurück                                  |
+
+Ohne `BEGIN` arbeiten die meisten Systeme im **Autocommit-Modus**: Jede einzelne Anweisung ist eine eigene Transaktion. Oracle beginnt dagegen automatisch eine Transaktion, die man selbst mit `COMMIT` abschließen muss.
+
+```sql
+BEGIN;
+UPDATE Konto SET Saldo = Saldo - 50 WHERE Id = 2;
+SAVEPOINT nach_abbuchung;
+UPDATE Konto SET Saldo = Saldo + 50 WHERE Id = 99;   -- kein Konto 99, ändert nichts
+ROLLBACK TO SAVEPOINT nach_abbuchung;
+UPDATE Konto SET Saldo = Saldo + 50 WHERE Id = 1;
+COMMIT;
+
+SELECT Inhaber, Saldo FROM Konto ORDER BY Id;   -- Anna 350, Ben 250
+```
+
+## ACID
+
+Datenbanksysteme garantieren für Transaktionen vier Eigenschaften, die nach ihren Anfangsbuchstaben **ACID** heißen (Theo Härder und Andreas Reuter, 1983):
+
+| Eigenschaft                    | Bedeutung                                                                                                            | Umsetzung                                         |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **Atomicity** (Atomarität)     | Alles oder nichts. Schlägt ein Schritt fehl, werden alle bisherigen Änderungen der Transaktion zurückgenommen.       | Undo-Informationen im Protokoll                   |
+| **Consistency** (Konsistenz)   | Eine Transaktion führt die Datenbank von einem gültigen Zustand in einen gültigen Zustand. Nach dem `COMMIT` sind alle Integritätsbedingungen erfüllt. | Constraints, Trigger                              |
+| **Isolation**                  | Gleichzeitig laufende Transaktionen beeinflussen sich nicht. Das Ergebnis ist so, als wären sie nacheinander gelaufen. | Sperren oder Mehrversionen (MVCC)                 |
+| **Durability** (Dauerhaftigkeit) | Nach dem `COMMIT` bleiben die Änderungen erhalten, auch bei Absturz oder Stromausfall.                             | Write-Ahead-Log auf nichtflüchtigem Speicher      |
+
+Konsistenz bedeutet hier, dass die Regeln der Datenbank eingehalten werden. Das ist etwas anderes als das C im [CAP-Theorem](/de/databases/cap-theorem/), wo Konsistenz bedeutet, dass alle Knoten eines verteilten Systems dieselben Daten sehen. Viele [NoSQL-Datenbanken](/de/databases/document-oriented-databases/#base) verzichten zugunsten der Skalierbarkeit auf einen Teil der ACID-Garantien und folgen dem **BASE**-Modell.
+
+## Transaktionen im Programmcode
+
+In Anwendungen wird die Transaktion über die Datenbankschnittstelle gesteuert. Wichtig ist, dass bei jedem Fehler ein Rollback erfolgt. In C# geschieht das, wenn das Transaktionsobjekt ohne `Commit` freigegeben wird, in Rust, wenn es ohne `commit` den Gültigkeitsbereich verlässt. Die Beispiele verwenden eine SQLite-Datenbank im Arbeitsspeicher (mehr dazu unter [Datenbankzugriff](/de/databases/database-access/)).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Data.Sqlite;
+
+using var connection = new SqliteConnection("Data Source=:memory:");
+connection.Open();
+
+var setup = connection.CreateCommand();
+setup.CommandText = """
+    CREATE TABLE Konto (Id INTEGER PRIMARY KEY, Inhaber TEXT NOT NULL,
+                        Saldo INTEGER NOT NULL CHECK (Saldo >= 0));
+    INSERT INTO Konto VALUES (1, 'Anna', 500), (2, 'Ben', 100);
+    """;
+setup.ExecuteNonQuery();
+
+Transfer(connection, 1, 2, 200);
+try
+{
+    Transfer(connection, 1, 2, 1000);   // Annas Saldo würde negativ
+}
+catch (SqliteException e)
+{
+    Console.WriteLine($"Abgebrochen: {e.Message}");
+}
+
+var query = connection.CreateCommand();
+query.CommandText = "SELECT Inhaber, Saldo FROM Konto ORDER BY Id";
+using var reader = query.ExecuteReader();
+while (reader.Read())
+{
+    Console.WriteLine($"{reader.GetString(0)}: {reader.GetInt32(1)} Euro");
+}
+
+static void Transfer(SqliteConnection connection, int from, int to, int amount)
+{
+    using var transaction = connection.BeginTransaction();
+
+    var credit = connection.CreateCommand();
+    credit.Transaction = transaction;
+    credit.CommandText = "UPDATE Konto SET Saldo = Saldo + $amount WHERE Id = $id";
+    credit.Parameters.AddWithValue("$amount", amount);
+    credit.Parameters.AddWithValue("$id", to);
+    credit.ExecuteNonQuery();
+
+    var debit = connection.CreateCommand();
+    debit.Transaction = transaction;
+    debit.CommandText = "UPDATE Konto SET Saldo = Saldo - $amount WHERE Id = $id";
+    debit.Parameters.AddWithValue("$amount", amount);
+    debit.Parameters.AddWithValue("$id", from);
+    debit.ExecuteNonQuery();   // wirft bei Verletzung des CHECK-Constraints
+
+    transaction.Commit();          // wird bei einer Exception nicht erreicht: Rollback
+}
+// Ausgabe:
+// Abgebrochen: SQLite Error 19: 'CHECK constraint failed: Saldo >= 0'.
+// Anna: 300 Euro
+// Ben: 300 Euro
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rusqlite::{Connection, Result, params};
+
+fn transfer(conn: &mut Connection, from: i64, to: i64, amount: i64) -> Result<()> {
+    let tx = conn.transaction()?;
+    tx.execute("UPDATE Konto SET Saldo = Saldo + ?1 WHERE Id = ?2", params![amount, to])?;
+    // das ? beendet die Funktion bei einem Fehler, tx wird ohne commit freigegeben: Rollback
+    tx.execute("UPDATE Konto SET Saldo = Saldo - ?1 WHERE Id = ?2", params![amount, from])?;
+    tx.commit()
+}
+
+fn main() -> Result<()> {
+    let mut conn = Connection::open_in_memory()?;
+    conn.execute_batch(
+        "CREATE TABLE Konto (Id INTEGER PRIMARY KEY, Inhaber TEXT NOT NULL,
+                             Saldo INTEGER NOT NULL CHECK (Saldo >= 0));
+         INSERT INTO Konto VALUES (1, 'Anna', 500), (2, 'Ben', 100);",
+    )?;
+
+    transfer(&mut conn, 1, 2, 200)?;
+    if let Err(e) = transfer(&mut conn, 1, 2, 1000) {
+        println!("Abgebrochen: {e}");
+    }
+
+    let mut stmt = conn.prepare("SELECT Inhaber, Saldo FROM Konto ORDER BY Id")?;
+    let accounts = stmt.query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, i64>(1)?)))?;
+    for account in accounts {
+        let (owner, balance) = account?;
+        println!("{owner}: {balance} Euro");
+    }
+    Ok(())
+}
+// Ausgabe:
+// Abgebrochen: CHECK constraint failed: Saldo >= 0
+// Anna: 300 Euro
+// Ben: 300 Euro
+```
+
+</TabItem>
+</Tabs>
+
+Die Gutschrift für Ben wird zuerst ausgeführt und war bereits erfolgreich, als die Abbuchung scheitert. Trotzdem hat Ben am Ende 300 und nicht 1 300 Euro, weil der Rollback auch die Gutschrift zurücknimmt.
+
+## Probleme bei gleichzeitigem Zugriff
+
+Laufen mehrere Transaktionen gleichzeitig ohne ausreichende Isolation, können folgende **Anomalien** auftreten. $T_1$ und $T_2$ sind zwei Transaktionen, die Zeit läuft von oben nach unten.
+
+### Verlorene Änderung
+
+Beide Transaktionen lesen denselben Wert und schreiben ihn verändert zurück. Die zweite überschreibt die erste (_Lost Update_):
+
+| $T_1$                              | $T_2$                              | Saldo in der Datenbank |
+| ---------------------------------- | ---------------------------------- | ---------------------- |
+| liest Saldo: 500                   |                                    | 500                    |
+|                                    | liest Saldo: 500                   | 500                    |
+| schreibt 500 − 200 = 300           |                                    | 300                    |
+|                                    | schreibt 500 + 100 = 600           | 600                    |
+| `COMMIT`                           | `COMMIT`                           | 600 statt 400          |
+
+Die Lösung ist, die Änderung in einer Anweisung zu schreiben (`SET Saldo = Saldo - 200`) oder die Zeile beim Lesen mit `SELECT ... FOR UPDATE` zu sperren.
+
+### Weitere Anomalien
+
+- **Dirty Read** (schmutziges Lesen): $T_2$ liest einen Wert, den $T_1$ geändert, aber noch nicht bestätigt hat. Macht $T_1$ danach einen `ROLLBACK`, hat $T_2$ mit einem Wert gearbeitet, den es nie gegeben hat.
+- **Non-repeatable Read** (nicht wiederholbares Lesen): $T_1$ liest eine Zeile zweimal und erhält verschiedene Werte, weil $T_2$ sie dazwischen geändert und bestätigt hat.
+- **Phantom Read**: $T_1$ führt dieselbe Abfrage zweimal aus und erhält beim zweiten Mal **zusätzliche Zeilen**, weil $T_2$ dazwischen passende Zeilen eingefügt hat.
+- **Serialisierungsanomalie** (_Write Skew_): Zwei Transaktionen lesen überlappende Daten, ändern verschiedene Zeilen, und das Ergebnis ist mit keiner Reihenfolge der beiden vereinbar. Beispiel: Zwei Ärztinnen prüfen gleichzeitig, ob noch jemand Bereitschaft hat, sehen beide „ja, die andere“ und tragen sich beide aus.
+
+## Isolationsstufen
+
+Volle Isolation kostet Leistung, weil Transaktionen dann aufeinander warten müssen. Der SQL-Standard definiert deshalb vier **Isolationsstufen**, zwischen denen man wählen kann:
+
+| Isolationsstufe      | Dirty Read | Non-repeatable Read | Phantom Read |
+| -------------------- | ---------- | ------------------- | ------------ |
+| `READ UNCOMMITTED`   | möglich    | möglich             | möglich      |
+| `READ COMMITTED`     | nein       | möglich             | möglich      |
+| `REPEATABLE READ`    | nein       | nein                | möglich      |
+| `SERIALIZABLE`       | nein       | nein                | nein         |
+
+Verlorene Änderungen dürfen in keiner Stufe auftreten, wenn Änderungen mit `UPDATE ... SET x = x - 200` geschrieben werden. Liest eine Anwendung den Wert aber zuerst und schreibt später einen berechneten Wert zurück, schützt erst `REPEATABLE READ` oder eine Sperre davor.
+
+```sql
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT SUM(Saldo) FROM Konto;
+COMMIT;
+```
+
+Die Standardstufe ist in PostgreSQL, SQL Server und Oracle `READ COMMITTED`, in MySQL mit InnoDB `REPEATABLE READ`. Die Umsetzung weicht teils vom Standard ab: PostgreSQL behandelt `READ UNCOMMITTED` wie `READ COMMITTED` und verhindert schon in `REPEATABLE READ` Phantome. Bei `SERIALIZABLE` kann eine Transaktion mit einem Serialisierungsfehler abgebrochen werden. Die Anwendung muss sie dann wiederholen.
+
+## Sperrverfahren
+
+Die klassische Umsetzung der Isolation sind **Sperren** (_Locks_):
+
+- Eine **Lesesperre** (_Shared Lock_, S) erlaubt anderen ebenfalls zu lesen, aber nicht zu schreiben.
+- Eine **Schreibsperre** (_Exclusive Lock_, X) erlaubt anderen weder zu lesen noch zu schreiben.
+
+| angefordert \ gehalten | keine | S    | X    |
+| ---------------------- | ----- | ---- | ---- |
+| **S**                  | ja    | ja   | nein |
+| **X**                  | ja    | nein | nein |
+
+Sperren können verschieden **grob** sein: für eine Zeile, eine Speicherseite oder eine ganze Tabelle. Zeilensperren erlauben mehr Parallelität, verursachen aber mehr Verwaltungsaufwand.
+
+Das **Zwei-Phasen-Sperrprotokoll** (2PL) garantiert serialisierbare Abläufe: Jede Transaktion fordert in einer **Wachstumsphase** alle Sperren an und gibt sie in einer **Schrumpfungsphase** wieder frei. Nach der ersten Freigabe darf sie keine neue Sperre mehr anfordern. Beim **strikten 2PL**, das Datenbanksysteme verwenden, werden die Schreibsperren erst beim `COMMIT` oder `ROLLBACK` freigegeben. So kann keine andere Transaktion unbestätigte Daten lesen.
+
+Mit `SELECT ... FOR UPDATE` sperrst du Zeilen, die du später ändern willst, schon beim Lesen:
+
+```sql
+BEGIN;
+SELECT Saldo FROM Konto WHERE Id = 1 FOR UPDATE;   -- andere warten hier
+UPDATE Konto SET Saldo = 250 WHERE Id = 1;
+COMMIT;
+```
+
+### Deadlocks
+
+Ein **Deadlock** entsteht, wenn zwei Transaktionen jeweils auf eine Sperre warten, die die andere hält:
+
+| $T_1$                                   | $T_2$                                   |
+| --------------------------------------- | --------------------------------------- |
+| sperrt Konto 1                          |                                         |
+|                                         | sperrt Konto 2                          |
+| will Konto 2 sperren, wartet auf $T_2$  |                                         |
+|                                         | will Konto 1 sperren, wartet auf $T_1$  |
+
+Keine der beiden kann je weiterlaufen. Datenbanksysteme erkennen solche Zyklen in einem **Wartegraphen**, brechen eine der Transaktionen mit einem Fehler ab und lassen die andere weiterlaufen. Die Anwendung muss die abgebrochene Transaktion wiederholen. Vermeiden lassen sich Deadlocks, indem alle Transaktionen Sperren in **derselben Reihenfolge** anfordern, etwa immer zuerst das Konto mit der kleineren Nummer, und indem Transaktionen kurz gehalten werden. Die Bedingungen für Deadlocks sind dieselben wie bei [Threads](/de/software-development/concurrency/).
+
+## Optimistische Verfahren und MVCC
+
+Sperren sind **pessimistisch**: Sie gehen davon aus, dass Konflikte häufig sind. Bei Daten, die selten gleichzeitig geändert werden, ist die **optimistische Nebenläufigkeitskontrolle** effizienter. Jede Zeile erhält eine Versionsnummer. Eine Änderung gelingt nur, wenn die Version seit dem Lesen gleich geblieben ist:
+
+```sql
+ALTER TABLE Konto ADD COLUMN Version INT NOT NULL DEFAULT 1;
+
+-- die Anwendung hat Saldo 250 mit Version 1 gelesen
+UPDATE Konto SET Saldo = 300, Version = Version + 1
+WHERE Id = 1 AND Version = 1;      -- 1 Zeile geändert: erfolgreich
+
+UPDATE Konto SET Saldo = 400, Version = Version + 1
+WHERE Id = 1 AND Version = 1;      -- 0 Zeilen geändert: jemand war schneller
+```
+
+Meldet die Datenbank 0 geänderte Zeilen, liest die Anwendung den Datensatz neu und zeigt dem Benutzer den Konflikt an oder wiederholt die Berechnung. Entity Framework unterstützt das über Concurrency Tokens (`[ConcurrencyCheck]`, `[Timestamp]`), wirft dann eine `DbUpdateConcurrencyException` und eignet sich besonders für Webanwendungen, in denen zwischen Lesen und Speichern Minuten vergehen können.
+
+**Multiversion Concurrency Control** (MVCC) geht noch weiter: Bei jeder Änderung wird eine neue Version der Zeile angelegt, statt die alte zu überschreiben. Jede Transaktion sieht einen konsistenten **Schnappschuss** zum Zeitpunkt ihres Beginns (oder ihrer Anweisung). Dadurch müssen Lesende nie auf Schreibende warten und umgekehrt. Nur zwei Schreibende auf dieselbe Zeile blockieren sich. Alte Versionen, die keine Transaktion mehr sehen kann, werden später aufgeräumt, in PostgreSQL von `VACUUM`. MVCC verwenden PostgreSQL, Oracle, MySQL (InnoDB) und optional SQL Server (_Snapshot Isolation_).
+
+## Recovery
+
+Damit Atomarität und Dauerhaftigkeit auch bei einem Absturz gelten, schreiben Datenbanksysteme jede Änderung zuerst in ein **Transaktionsprotokoll** (_Log_), bevor die eigentlichen Datenseiten auf den Datenträger geschrieben werden. Dieses Prinzip heißt **Write-Ahead-Logging** (WAL).
+
+- Ein `COMMIT` gilt erst als abgeschlossen, wenn sein Protokolleintrag dauerhaft auf dem Datenträger steht. Die geänderten Datenseiten dürfen später geschrieben werden.
+- In regelmäßigen **Checkpoints** werden alle geänderten Seiten aus dem Arbeitsspeicher geschrieben. Ältere Protokolleinträge werden danach für die Wiederherstellung nicht mehr gebraucht.
+
+Nach einem Absturz liest die Recovery-Komponente das Protokoll ab dem letzten Checkpoint:
+
+1. **Redo**: Änderungen bestätigter Transaktionen, die noch nicht in den Datenseiten angekommen sind, werden wiederholt.
+2. **Undo**: Änderungen von Transaktionen, die zum Zeitpunkt des Absturzes noch liefen, werden rückgängig gemacht.
+
+Danach ist die Datenbank in einem konsistenten Zustand, der alle bestätigten und keine unbestätigten Transaktionen enthält. Das bekannteste Verfahren dafür heißt ARIES (IBM, 1992).
+
+## Datensicherung
+
+Das Transaktionsprotokoll schützt vor Abstürzen, aber nicht vor einem defekten Datenträger, einem versehentlichen `DROP TABLE` oder Ransomware. Dafür braucht es Sicherungen:
+
+| Art                        | Beschreibung                                                                                          | Beispiel (PostgreSQL)      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------- |
+| **Logische Sicherung**     | SQL-Anweisungen, die Schema und Daten neu erzeugen; portabel zwischen Versionen, aber langsam bei großen Datenbanken | `pg_dump`, `pg_restore` |
+| **Physische Sicherung**    | Kopie der Datendateien; schnell, aber an die Version gebunden                                         | `pg_basebackup`            |
+| **Protokollarchivierung**  | fortlaufende Kopie des Transaktionsprotokolls; zusammen mit einer physischen Sicherung ist eine Wiederherstellung auf jeden beliebigen Zeitpunkt möglich (_Point-in-Time Recovery_) | WAL-Archivierung |
+
+Vollständige, differenzielle und inkrementelle Sicherungen, Aufbewahrung und die 3-2-1-Regel beschreibt die Seite [Sicherungsstrategien](/de/deployment/security-strategies/). Eine Sicherung ist erst dann etwas wert, wenn die Wiederherstellung regelmäßig getestet wird.
+
+## Weiterführende Quellen
+
+- [PostgreSQL-Dokumentation: Concurrency Control](https://www.postgresql.org/docs/current/mvcc.html) und [Reliability and the Write-Ahead Log](https://www.postgresql.org/docs/current/wal.html)
+- Theo Härder, Andreas Reuter: _Principles of Transaction-Oriented Database Recovery_, ACM Computing Surveys, 1983

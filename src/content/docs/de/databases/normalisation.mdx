@@ -1,0 +1,205 @@
+---
+title: Normalisierung
+description: Anomalien, funktionale Abhängigkeiten, Armstrong-Axiome, Attributhülle und Schlüsselbestimmung sowie alle Normalformen von 1NF bis 5NF mit durchgerechneten Beispielen.
+sidebar:
+  order: 4
+---
+
+**Normalisierung** ist ein Verfahren, mit dem Tabellen so zerlegt werden, dass jede Information nur an einer Stelle gespeichert ist. Ein schlecht normalisiertes Schema führt zu Widersprüchen in den Daten, verschwendet Speicherplatz und macht Änderungen fehleranfällig. Die Regeln dafür sind die **Normalformen**, die Edgar F. Codd ab 1970 und später andere Forscher formuliert haben. Jede Normalform setzt die vorherige voraus.
+
+## Anomalien
+
+Ausgangspunkt ist eine Tabelle, in der alles gemeinsam gespeichert wird:
+
+| SchuelerNr | Name       | Klasse | Klassenvorstand | Kurs     | Kursleiter |
+| ---------- | ---------- | ------ | --------------- | -------- | ---------- |
+| 1          | Anna Huber | 3AHIT  | Mayer           | Robotik  | Gruber     |
+| 1          | Anna Huber | 3AHIT  | Mayer           | Spanisch | Lopez      |
+| 2          | Ben Wolf   | 3AHIT  | Mayer           | Robotik  | Gruber     |
+| 3          | Clara Berg | 4AHIT  | Steiner         | Spanisch | Lopez      |
+
+Dass Mayer der Klassenvorstand der 3AHIT ist, steht hier dreimal. Diese **Redundanz** verursacht drei Arten von **Anomalien**:
+
+- **Änderungsanomalie** (_Update-Anomalie_): Bekommt die 3AHIT einen neuen Klassenvorstand, müssen drei Zeilen geändert werden. Vergisst man eine, widersprechen sich die Daten.
+- **Einfügeanomalie**: Ein neuer Kurs „Fotografie“ kann erst gespeichert werden, wenn sich ein Schüler dafür anmeldet, weil `SchuelerNr` Teil des Schlüssels ist und nicht `NULL` sein darf.
+- **Löschanomalie**: Meldet sich Clara von Spanisch ab und wird ihre einzige Zeile gelöscht, geht auch die Information verloren, dass Steiner Klassenvorstand der 4AHIT ist.
+
+## Funktionale Abhängigkeiten
+
+Die Normalformen werden über **funktionale Abhängigkeiten** (FA) definiert. Ein Attribut $B$ ist funktional abhängig von $A$, geschrieben $A \rightarrow B$, wenn zu jedem Wert von $A$ genau ein Wert von $B$ gehört. $A$ heißt **Determinante**.
+
+Im Beispiel gelten unter anderem:
+
+$$
+\begin{aligned}
+\text{SchuelerNr} &\rightarrow \text{Name}, \text{Klasse} \\
+\text{Klasse} &\rightarrow \text{Klassenvorstand} \\
+\text{Kurs} &\rightarrow \text{Kursleiter}
+\end{aligned}
+$$
+
+Funktionale Abhängigkeiten ergeben sich aus der **Bedeutung** der Daten, nicht aus zufälligen Werten in einer Tabelle. Dass in den vier Zeilen oben jeder Name nur einmal vorkommt, heißt nicht, dass $\text{Name} \rightarrow \text{SchuelerNr}$ gilt, denn zwei Schüler können gleich heißen.
+
+| Art                    | Bedeutung                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Voll funktional**    | $B$ hängt vom gesamten zusammengesetzten Schlüssel ab, aber von keiner echten Teilmenge.               |
+| **Partiell**           | $B$ hängt schon von einem Teil des Schlüssels ab: $\text{SchuelerNr} \rightarrow \text{Name}$, obwohl der Schlüssel $(\text{SchuelerNr}, \text{Kurs})$ ist. |
+| **Transitiv**          | $B$ hängt über ein Nichtschlüsselattribut vom Schlüssel ab: $\text{SchuelerNr} \rightarrow \text{Klasse} \rightarrow \text{Klassenvorstand}$. |
+| **Trivial**            | $B$ ist Teil von $A$, etwa $(\text{SchuelerNr}, \text{Kurs}) \rightarrow \text{Kurs}$. Sie gilt immer. |
+
+### Armstrong-Axiome
+
+Aus gegebenen Abhängigkeiten lassen sich weitere ableiten. Die drei **Armstrong-Axiome** (William Armstrong, 1974) reichen dafür aus. Für Attributmengen $X$, $Y$, $Z$ gilt:
+
+| Regel              | Aussage                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| **Reflexivität**   | Ist $Y \subseteq X$, dann gilt $X \rightarrow Y$.             |
+| **Verstärkung**    | Aus $X \rightarrow Y$ folgt $XZ \rightarrow YZ$.              |
+| **Transitivität**  | Aus $X \rightarrow Y$ und $Y \rightarrow Z$ folgt $X \rightarrow Z$. |
+
+Daraus folgen die praktischen Regeln **Vereinigung** (aus $X \rightarrow Y$ und $X \rightarrow Z$ folgt $X \rightarrow YZ$), **Zerlegung** (aus $X \rightarrow YZ$ folgt $X \rightarrow Y$) und **Pseudotransitivität** (aus $X \rightarrow Y$ und $WY \rightarrow Z$ folgt $WX \rightarrow Z$).
+
+### Attributhülle und Schlüssel
+
+Die **Attributhülle** $X^+$ ist die Menge aller Attribute, die von $X$ funktional abhängen. Sie wird schrittweise berechnet:
+
+1. Beginne mit $X^+ = X$.
+2. Für jede Abhängigkeit $A \rightarrow B$, deren linke Seite $A$ vollständig in $X^+$ liegt, füge $B$ zu $X^+$ hinzu.
+3. Wiederhole Schritt 2, bis sich $X^+$ nicht mehr ändert.
+
+Gegeben sei die Relation $R(A, B, C, D, E)$ mit den Abhängigkeiten $A \rightarrow B$, $B \rightarrow C$ und $CD \rightarrow E$. Für $X = \{A, D\}$:
+
+| Schritt | Angewendete Abhängigkeit | $X^+$                    |
+| ------- | ------------------------ | ------------------------ |
+| Start   |                          | $\{A, D\}$               |
+| 1       | $A \rightarrow B$        | $\{A, B, D\}$            |
+| 2       | $B \rightarrow C$        | $\{A, B, C, D\}$         |
+| 3       | $CD \rightarrow E$       | $\{A, B, C, D, E\}$      |
+
+Weil $\{A, D\}^+$ alle Attribute enthält, ist $\{A, D\}$ ein **Superschlüssel**. Weil weder $\{A\}^+ = \{A, B, C\}$ noch $\{D\}^+ = \{D\}$ alle Attribute enthält, ist er auch minimal, also ein **Schlüsselkandidat**.
+
+:::tip[Schlüssel schnell finden]
+Attribute, die auf **keiner rechten Seite** vorkommen (hier $A$ und $D$), müssen in jedem Schlüssel enthalten sein, weil sie von nichts abhängen. Beginne mit dieser Menge und berechne ihre Hülle. Enthält sie schon alle Attribute, ist sie der einzige Schlüsselkandidat.
+:::
+
+Attribute, die Teil eines Schlüsselkandidaten sind, heißen **Schlüsselattribute** (_prim_), alle anderen **Nichtschlüsselattribute**.
+
+## Die Normalformen
+
+### 1. Normalform (1NF)
+
+Eine Relation ist in der **1. Normalform**, wenn alle Attributwerte **atomar** sind und es keine Wiederholungsgruppen gibt.
+
+| SchuelerNr | Name       | Kurse              |
+| ---------- | ---------- | ------------------ |
+| 1          | Anna Huber | Robotik, Spanisch  |
+
+verletzt die 1NF zweifach: `Kurse` enthält mehrere Werte, und `Name` lässt sich in Vor- und Nachname zerlegen. Die Lösung ist eine eigene Zeile pro Kurs und je eine Spalte für Vor- und Nachnamen. Spalten wie `Kurs1`, `Kurs2`, `Kurs3` sind ebenfalls eine Wiederholungsgruppe und keine Lösung.
+
+Was „atomar“ heißt, hängt von der Verwendung ab. Eine Adresse kann als ein Text atomar sein, wenn nie nach der Postleitzahl gesucht wird. Ein Datum gilt als atomar, obwohl es aus Tag, Monat und Jahr besteht.
+
+### 2. Normalform (2NF)
+
+Eine Relation ist in der **2. Normalform**, wenn sie in 1NF ist und jedes Nichtschlüsselattribut **voll funktional** von jedem Schlüsselkandidaten abhängt. Es darf also keine partielle Abhängigkeit geben.
+
+Die Ausgangstabelle hat den Schlüssel $(\text{SchuelerNr}, \text{Kurs})$. `Name`, `Klasse` und `Klassenvorstand` hängen aber nur von `SchuelerNr` ab, `Kursleiter` nur von `Kurs`. Jede partielle Abhängigkeit wird in eine eigene Tabelle ausgelagert:
+
+- `Schueler(SchuelerNr, Vorname, Nachname, Klasse, Klassenvorstand)`
+- `Kurs(Kurs, Kursleiter)`
+- `Kursbuchung(SchuelerNr, Kurs)`
+
+Eine Relation, deren Schlüsselkandidaten nur aus einem Attribut bestehen, ist automatisch in 2NF.
+
+### 3. Normalform (3NF)
+
+Eine Relation ist in der **3. Normalform**, wenn sie in 2NF ist und kein Nichtschlüsselattribut **transitiv** von einem Schlüssel abhängt. Kein Nichtschlüsselattribut darf also von einem anderen Nichtschlüsselattribut abhängen.
+
+In `Schueler` gilt $\text{SchuelerNr} \rightarrow \text{Klasse} \rightarrow \text{Klassenvorstand}$. Der Klassenvorstand gehört zur Klasse, nicht zum Schüler, und wird ausgelagert:
+
+- `Schueler(SchuelerNr, Vorname, Nachname, Klasse)`
+- `Klasse(Klasse, Klassenvorstand)`
+
+Merksatz für die ersten drei Normalformen: Jedes Nichtschlüsselattribut hängt vom **Schlüssel** ab (1NF), vom **ganzen Schlüssel** (2NF) und von **nichts als dem Schlüssel** (3NF).
+
+Das fertige Schema in SQL:
+
+```sql
+CREATE TABLE Klasse (
+    Name            VARCHAR(10) PRIMARY KEY,
+    Klassenvorstand VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Schueler (
+    SchuelerNr INT PRIMARY KEY,
+    Vorname    VARCHAR(50) NOT NULL,
+    Nachname   VARCHAR(50) NOT NULL,
+    Klasse     VARCHAR(10) NOT NULL REFERENCES Klasse(Name)
+);
+
+CREATE TABLE Kurs (
+    Name       VARCHAR(50) PRIMARY KEY,
+    Kursleiter VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Kursbuchung (
+    SchuelerNr INT         REFERENCES Schueler(SchuelerNr),
+    Kurs       VARCHAR(50) REFERENCES Kurs(Name),
+    PRIMARY KEY (SchuelerNr, Kurs)
+);
+```
+
+Alle drei Anomalien sind beseitigt: Der Klassenvorstand steht genau einmal in `Klasse`, ein Kurs kann ohne Teilnehmer angelegt werden, und das Löschen einer Kursbuchung löscht keine anderen Informationen. Mit einem Join lässt sich die ursprüngliche Tabelle jederzeit wieder herstellen.
+
+### Boyce-Codd-Normalform (BCNF)
+
+Eine Relation ist in der **Boyce-Codd-Normalform**, wenn für jede nicht triviale funktionale Abhängigkeit $X \rightarrow Y$ die Determinante $X$ ein Superschlüssel ist. Die BCNF verschärft die 3NF: Die 3NF erlaubt noch Abhängigkeiten, deren rechte Seite ein Schlüsselattribut ist.
+
+Ein Unterschied tritt nur bei mehreren, sich überlappenden Schlüsselkandidaten auf. Beispiel: In der Tabelle `Betreuung(Schueler, Fach, Lehrer)` unterrichtet jede Lehrkraft nur ein Fach ($\text{Lehrer} \rightarrow \text{Fach}$), und jeder Schüler hat pro Fach genau eine Lehrkraft ($\text{Schueler}, \text{Fach} \rightarrow \text{Lehrer}$).
+
+| Schueler | Fach | Lehrer  |
+| -------- | ---- | ------- |
+| Anna     | AM   | Pichler |
+| Ben      | AM   | Pichler |
+| Anna     | SEW  | Kern    |
+| Ben      | SEW  | Hofer   |
+
+Schlüsselkandidaten sind $(\text{Schueler}, \text{Fach})$ und $(\text{Schueler}, \text{Lehrer})$. Alle Attribute sind Schlüsselattribute, deshalb ist die Tabelle in 3NF. Die Determinante `Lehrer` ist aber kein Superschlüssel, deshalb ist die Tabelle nicht in BCNF: Dass Pichler AM unterrichtet, steht zweimal. Die Zerlegung in `LehrerFach(Lehrer, Fach)` und `Betreuung(Schueler, Lehrer)` ist in BCNF.
+
+Diese Zerlegung hat einen Preis: Die Abhängigkeit $\text{Schueler}, \text{Fach} \rightarrow \text{Lehrer}$ lässt sich in keiner der beiden Tabellen mehr mit einem einfachen Constraint prüfen. Eine Zerlegung in BCNF ist **nicht immer abhängigkeitserhaltend**, eine Zerlegung in 3NF dagegen schon. In der Praxis gilt deshalb die 3NF als Ziel und die BCNF, wo sie ohne Verlust möglich ist.
+
+### 4. Normalform (4NF)
+
+Eine Relation ist in der **4. Normalform**, wenn sie in BCNF ist und keine nicht trivialen **mehrwertigen Abhängigkeiten** enthält. Eine mehrwertige Abhängigkeit $A \twoheadrightarrow B$ liegt vor, wenn zu einem Wert von $A$ eine **Menge** von Werten von $B$ gehört, die unabhängig von den übrigen Attributen ist.
+
+| Schueler | Sprache  | Hobby   |
+| -------- | -------- | ------- |
+| Anna     | Englisch | Klettern |
+| Anna     | Englisch | Gitarre |
+| Anna     | Spanisch | Klettern |
+| Anna     | Spanisch | Gitarre |
+
+Sprachen und Hobbys haben nichts miteinander zu tun, trotzdem muss jede Kombination gespeichert werden. Lernt Anna Italienisch, sind zwei neue Zeilen nötig. Die Tabelle ist in BCNF, weil alle drei Spalten gemeinsam der Schlüssel sind, aber es gilt $\text{Schueler} \twoheadrightarrow \text{Sprache}$ und $\text{Schueler} \twoheadrightarrow \text{Hobby}$. Die Lösung sind zwei Tabellen `Sprachkenntnis(Schueler, Sprache)` und `Hobby(Schueler, Hobby)`.
+
+### 5. Normalform (5NF)
+
+Eine Relation ist in der **5. Normalform** (_Projection-Join-Normalform_), wenn sie sich nicht weiter verlustfrei in kleinere Tabellen zerlegen lässt, außer in solche, die jeweils einen Schlüsselkandidaten enthalten. Verletzt wird sie durch **Verbundabhängigkeiten**: Eine Tabelle lässt sich nur in drei oder mehr Teile verlustfrei zerlegen, aber in keine zwei.
+
+Beispiel: `Einsatz(Lehrer, Fach, Klasse)` mit der Regel „Unterrichtet eine Lehrkraft ein Fach, unterrichtet sie in einer Klasse, und wird das Fach in dieser Klasse unterrichtet, dann unterrichtet sie es dort auch“. Unter dieser Regel lässt sich die Tabelle verlustfrei in `(Lehrer, Fach)`, `(Lehrer, Klasse)` und `(Fach, Klasse)` zerlegen. Solche Regeln sind selten, deshalb spielt die 5NF in der Praxis kaum eine Rolle.
+
+## Eigenschaften einer guten Zerlegung
+
+Eine Zerlegung einer Tabelle in mehrere kleinere muss zwei Eigenschaften haben:
+
+- **Verlustfrei** (_lossless join_): Der Join der Teiltabellen ergibt genau die ursprüngliche Tabelle, ohne fehlende und ohne zusätzliche, erfundene Zeilen. Eine Zerlegung von $R$ in $R_1$ und $R_2$ ist verlustfrei, wenn die gemeinsamen Attribute $R_1 \cap R_2$ ein Schlüssel von $R_1$ oder von $R_2$ sind. Bei der Zerlegung von `Schueler` und `Klasse` ist das gemeinsame Attribut `Klasse` der Schlüssel von `Klasse`.
+- **Abhängigkeitserhaltend**: Jede funktionale Abhängigkeit lässt sich innerhalb einer einzelnen Teiltabelle prüfen.
+
+Der **Synthesealgorithmus** von Bernstein (1976) erzeugt aus einer Menge funktionaler Abhängigkeiten immer ein Schema in 3NF, das beide Eigenschaften erfüllt: Für jede Abhängigkeit einer minimalen Überdeckung entsteht eine Tabelle, und falls keine davon einen Schlüssel der Ausgangsrelation enthält, kommt eine Tabelle mit einem Schlüssel hinzu.
+
+## Denormalisierung
+
+Jede Zerlegung bedeutet zusätzliche Joins beim Lesen. Wenn Abfragen dadurch zu langsam werden, kann man bewusst Redundanz einführen (**Denormalisierung**), etwa einen vorberechneten Notendurchschnitt in der Tabelle `Schueler` oder einen Sternschema-Entwurf im [Data Warehouse](/de/databases/data-warehouse/). Die Redundanz muss dann von der Datenbank selbst konsistent gehalten werden, zum Beispiel mit [Triggern](/de/databases/sql-advanced/#trigger) oder einer materialisierten Sicht. Normalisiere zuerst und denormalisiere nur gezielt, wenn Messungen ein Problem zeigen.
+
+## Weiterführende Quellen
+
+- Alfons Kemper, André Eickler: _Datenbanksysteme. Eine Einführung_, De Gruyter, Kapitel „Relationale Entwurfstheorie“
+- William Kent: _A Simple Guide to Five Normal Forms in Relational Database Theory_, Communications of the ACM, 1983

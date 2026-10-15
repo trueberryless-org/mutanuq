@@ -1,0 +1,243 @@
+---
+title: Software Architecture
+description: Architectural styles such as layered architecture, client-server, MVC, MVP, MVVM, hexagonal architecture, microservices and event-driven systems as well as repository and dependency injection in C# and Rust.
+sidebar:
+  order: 22
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Software architecture** describes the fundamental structure of a system: which building blocks it consists of, which responsibility each building block has and how they communicate with each other. Architectural decisions are hard to reverse because many other decisions build on them. While [design patterns](/en/software-development/design-patterns/) describe the interplay of a few classes, architecture is about the big picture.
+
+## Quality goals
+
+An architecture is never "right" or "wrong", but more or less suitable for the most important **quality goals** of a system: maintainability, scalability, availability, security, performance, testability (see [Software Quality](/en/project_management/quality_management/software_quality/)). These goals often contradict each other: a distributed system scales better than a single process but is harder to test and operate. Good architecture means weighing these **trade-offs** deliberately and documenting the decisions.
+
+## Layered architecture
+
+**Layered architecture** divides a system into layers stacked on top of each other. Each layer only uses the services of the layer below it.
+
+| Layer                        | Task                                                         | Examples                                    |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| **Presentation layer**       | input and output, user interface or API endpoints            | WPF windows, web pages, REST controllers    |
+| **Business logic layer**     | domain rules and processes                                   | checking an order, calculating a price      |
+| **Data access layer**        | reading and storing data                                     | repositories, ORM, file access              |
+| **Data storage**             | the actual storage                                           | database server, file system                |
+
+- In a **strict** layered architecture, a layer may only use the layer directly below it; in a **relaxed** one, deeper layers as well.
+- Advantages: clear separation of tasks ([separation of concerns](/en/software-development/clean-code/#basic-principles)), replaceable layers, easy to understand.
+- Disadvantage: changes to a data field often run through all layers.
+
+If the layers are distributed across different machines, they are called **tiers**: in a **two-tier architecture**, a client accesses the database server directly; in a **three-tier architecture**, an application server with the business logic sits in between.
+
+## Client-server
+
+In the **client-server model**, a central **server** offers services that many **clients** use over the network (see [Network Programming](/en/software-development/network-programming/#client-server-model)). Depending on how much logic the client contains, there are **thin clients** (such as a web browser that only displays) and **fat clients** (a desktop application with its own logic). In the opposite model, **peer-to-peer**, all participants have equal rights and are client and server at the same time, for example in BitTorrent.
+
+## MVC, MVP and MVVM
+
+In applications with a user interface, these three patterns separate the **presentation** from the **data** and the **logic**. All of them have the **model** with the domain data and rules and the **view**, which displays.
+
+| Pattern  | Mediator            | Flow                                                                                                            | Typical use                               |
+| -------- | ------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **MVC** (_Model-View-Controller_) | **controller** | The controller receives input, changes the model and selects the view that displays the model. | web applications (ASP.NET Core MVC, Ruby on Rails, Spring MVC) |
+| **MVP** (_Model-View-Presenter_)  | **presenter**  | The view is passive and forwards all input to the presenter, which changes the model and updates the view through an interface. | Windows Forms, Android (formerly) |
+| **MVVM** (_Model-View-ViewModel_) | **view model** | The view is coupled to the view model through **data binding** and updates itself; the view model does not know the view. | WPF, MAUI, Avalonia, Angular |
+
+The original MVC comes from Trygve Reenskaug, who developed it for Smalltalk at Xerox PARC at the end of the 1970s. A detailed MVVM example is shown on the page [GUI Programming](/en/software-development/gui-programming/#data-binding-and-mvvm).
+
+## Hexagonal architecture and clean architecture
+
+In a classic layered architecture, the business logic depends on the data access layer. **Hexagonal architecture** (_ports and adapters_, Alistair Cockburn) and the **clean architecture** built on it (Robert C. Martin) reverse this dependency:
+
+- The **core** contains the domain classes and rules. It depends on nothing outside, neither the database nor the framework nor the user interface.
+- The core defines **ports**: interfaces for what it needs from outside (such as `IOrderRepository`) or offers.
+- **Adapters** on the outside implement these ports: a database adapter, a REST controller, an adapter for tests.
+- **Dependency rule**: dependencies always point inwards. This is the [dependency inversion principle](/en/software-development/clean-code/#dependency-inversion-principle) at the architectural level.
+
+This way, the business logic can be tested without a database, and the database or the user interface can be replaced without changing the core.
+
+## Repository
+
+The **repository** pattern (from _Domain-Driven Design_ by Eric Evans) encapsulates data access behind an interface that behaves like an in-memory collection of objects: `Add`, `GetById`, `FindByCustomer`, `Remove`. The business logic does not know whether the data comes from an SQL database, a file or a web service. For tests, the repository is replaced by an in-memory variant. The counterpart **unit of work** collects all changes of an operation and saves them together in a [transaction](/en/databases/transactions/). The `DbContext` of Entity Framework Core combines both patterns.
+
+For transferring data between layers or over the network, **DTOs** (_data transfer objects_) are often used: simple objects without logic that contain exactly the data to be transferred, for example without a user's password hash.
+
+## Dependency injection
+
+So that classes only depend on abstractions, they must not create their dependencies themselves with `new`. Instead, the dependencies are passed in from outside, usually through the constructor (**constructor injection**). This principle is called **dependency injection** (DI). The place where all objects are created and wired together is called the **composition root**, typically the program start.
+
+In larger .NET applications, a **DI container** does this work: you register which implementation is used for which interface, and the container creates objects including all their dependencies automatically. You also define the **lifetime**:
+
+| Lifetime      | Meaning                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| **Singleton** | one instance for the entire runtime of the application                                        |
+| **Scoped**    | one instance per scope, in ASP.NET Core per HTTP request (in Blazor Server per connection)    |
+| **Transient** | a new instance on every request                                                               |
+
+Rust has no widely used DI container. Dependencies are passed explicitly through constructors or generic parameters, which the compiler checks completely.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+
+// composition root: registration
+var services = new ServiceCollection();
+services.AddSingleton<IClock, SystemClock>();
+services.AddScoped<IOrderRepository, InMemoryOrderRepository>();
+services.AddTransient<OrderService>();
+
+using var provider = services.BuildServiceProvider();
+using (var scope = provider.CreateScope())
+{
+    // the container creates OrderService including repository and clock
+    var orders = scope.ServiceProvider.GetRequiredService<OrderService>();
+    orders.Place(new Order(1, "keyboard"));
+    orders.Place(new Order(2, "mouse"));
+    Console.WriteLine(orders.Summary()); // 2 orders, last: mouse
+}
+
+public record Order(int Id, string Item);
+
+public interface IClock { DateTime Now { get; } }
+public class SystemClock : IClock { public DateTime Now => DateTime.Now; }
+
+// port: repository interface
+public interface IOrderRepository
+{
+    void Add(Order order);
+    IReadOnlyList<Order> All();
+}
+
+// adapter: in-memory implementation (in reality, for example, with Entity Framework)
+public class InMemoryOrderRepository : IOrderRepository
+{
+    private readonly List<Order> _orders = [];
+    public void Add(Order order) => _orders.Add(order);
+    public IReadOnlyList<Order> All() => _orders;
+}
+
+// business logic: only knows abstractions
+public class OrderService(IOrderRepository repository, IClock clock)
+{
+    public void Place(Order order)
+    {
+        if (clock.Now.Year < 2000) throw new InvalidOperationException("System clock set incorrectly");
+        repository.Add(order);
+    }
+
+    public string Summary() => $"{repository.All().Count} orders, last: {repository.All()[^1].Item}";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Clone, Debug)]
+struct Order {
+    id: u32,
+    item: String,
+}
+
+trait Clock {
+    fn now_secs(&self) -> u64;
+}
+
+struct SystemClock;
+
+impl Clock for SystemClock {
+    fn now_secs(&self) -> u64 {
+        SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
+    }
+}
+
+// port: repository interface
+trait OrderRepository {
+    fn add(&mut self, order: Order);
+    fn all(&self) -> &[Order];
+}
+
+// adapter: in-memory implementation
+#[derive(Default)]
+struct InMemoryOrderRepository {
+    orders: Vec<Order>,
+}
+
+impl OrderRepository for InMemoryOrderRepository {
+    fn add(&mut self, order: Order) { self.orders.push(order); }
+    fn all(&self) -> &[Order] { &self.orders }
+}
+
+// business logic: generic over the abstractions
+struct OrderService<R: OrderRepository, C: Clock> {
+    repository: R,
+    clock: C,
+}
+
+impl<R: OrderRepository, C: Clock> OrderService<R, C> {
+    fn place(&mut self, order: Order) -> Result<(), String> {
+        if self.clock.now_secs() < 946_684_800 {
+            return Err("System clock set incorrectly".into()); // before the year 2000
+        }
+        self.repository.add(order);
+        Ok(())
+    }
+
+    fn summary(&self) -> String {
+        let all = self.repository.all();
+        format!("{} orders, last: {}", all.len(), all.last().map_or("-", |o| &o.item))
+    }
+}
+
+fn main() {
+    // composition root: wire the dependencies together explicitly
+    let mut orders = OrderService { repository: InMemoryOrderRepository::default(), clock: SystemClock };
+    orders.place(Order { id: 1, item: "keyboard".into() }).unwrap();
+    orders.place(Order { id: 2, item: "mouse".into() }).unwrap();
+    println!("{}", orders.summary()); // 2 orders, last: mouse
+}
+```
+
+</TabItem>
+</Tabs>
+
+A **service locator**, where classes fetch their dependencies themselves from a global container (`ServiceLocator.Get<IClock>()`), is considered an **anti-pattern**: the dependencies are then no longer visible in the constructor, and errors only show up at runtime.
+
+## Monolith and microservices
+
+| Aspect              | Monolith                                                   | Microservices                                                         |
+| ------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| Structure           | a single application, one deployment                       | many small, independent services, each with its own database          |
+| Communication       | method calls within the same process                       | network (HTTP/REST, gRPC, messages)                                   |
+| Scaling             | only as a whole                                            | every service individually                                            |
+| Deployment          | everything at once                                         | every service independently, frequent releases possible               |
+| Technology          | uniform                                                    | freely chosen per service                                             |
+| Complexity          | low at first, grows with size                              | high operational and network complexity from the start                |
+| Failures            | one error can bring everything down                        | partial failures, distributed debugging, [consistency](/en/databases/cap-theorem/) is hard |
+| Suitable for        | small to medium-sized teams and applications               | large organisations with many independent teams                       |
+
+Microservices are cut along domain boundaries (_bounded contexts_), such as ordering, payment, shipping. A common middle ground is the **modular monolith**: one application with clearly separated modules that can later be extracted as separate services if needed. Microservices are usually operated in [containers](/en/deployment/virtualisation/) orchestrated by Kubernetes. The basics of distributed systems are covered in the chapter [Decentralised Systems](/en/decentralised-systems/).
+
+## Event-driven architecture
+
+In an **event-driven architecture**, components communicate through **events** instead of direct calls: the order service publishes "order placed", and the warehouse, invoicing and email sending react to it independently. A **message broker** such as RabbitMQ, Apache Kafka or Azure Service Bus delivers the messages (**publish-subscribe**). Senders and receivers are decoupled in time and space: the receiver does not have to be running when the event occurs. In return, the flow is harder to follow, and data is only **eventually consistent**.
+
+Other styles are **serverless** (functions executed on demand by the cloud, see [Azure Functions](/en/decentralised-systems/azure-functions/)) and **pipes and filters** (data flows through a chain of processing steps, as with Unix pipes).
+
+## Documenting architecture
+
+- **arc42**: a widely used, free template for architecture documentation with twelve chapters, including goals, constraints, context, building block view, runtime view, deployment view, decisions and risks.
+- **C4 model** (Simon Brown): describes a system at four zoom levels, namely **context** (the system and its environment), **container** (applications and databases), **component** and **code**.
+- **Architecture decision records** (ADR): short documents that each record an important decision with its context, alternatives and reasoning.
+- [UML](/en/software-development/uml/): component, deployment and sequence diagrams.
+
+## Further reading
+
+- [arc42](https://arc42.org/) and the [C4 model](https://c4model.com/)
+- Martin Fowler: [Microservices](https://martinfowler.com/articles/microservices.html) and _Patterns of Enterprise Application Architecture_, Addison-Wesley 2002
+- [Dependency injection in .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) (Microsoft Learn)

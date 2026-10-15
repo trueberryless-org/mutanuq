@@ -1,0 +1,48 @@
+---
+title: Electrical Engineering and Electronics
+description: Fundamentals of electrical engineering, electronics and digital technology for HTL information technology, from DC circuits to semiconductors, sequential circuits and measurement.
+sidebar:
+  label: Overview
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+Every computer, every router and every microcontroller is ultimately an electronic circuit. If you understand how voltage, current and components interact, you can connect hardware safely, narrow down faults, size power supplies and follow how transistors become logic gates and logic gates become processors.
+
+At the HTL for information technology these topics are taught in the subject **Systemtechnik** (systems engineering, part electrical engineering and electronics), mainly in the first to third year: first DC circuits, measurement and passive components, then AC circuits, semiconductors, basic electronic circuits and digital technology. In the lab exercises you build circuits and measure them with a multimeter and an oscilloscope. Programming microcontrollers is covered in [Embedded Programming](/en/embedded-programming/).
+
+## Fundamentals of electrical engineering
+
+<CardGrid>
+  <LinkCard title="Basic Electrical Quantities" href="/en/electrical-engineering/basic-quantities/" description="Charge, current, voltage, resistance, power, sources, E-series and colour code." />
+  <LinkCard title="DC Circuits" href="/en/electrical-engineering/dc-circuits/" description="Ohm, Kirchhoff, dividers, bridge, network analysis and equivalent sources." />
+  <LinkCard title="Electric Field and Capacitors" href="/en/electrical-engineering/electric-field-and-capacitors/" description="Field strength, capacitance, energy, charging and discharging with τ = RC." />
+  <LinkCard title="Magnetism and Inductors" href="/en/electrical-engineering/magnetism-and-inductors/" description="Magnetic field, induction, inductance, transformer, motor and generator." />
+  <LinkCard title="Alternating Current" href="/en/electrical-engineering/alternating-current/" description="RMS value, phasors, impedance, resonance, power and three-phase AC." />
+  <LinkCard title="Filters" href="/en/electrical-engineering/filters/" description="Low-pass, high-pass, cut-off frequency, decibels and Bode plot." />
+</CardGrid>
+
+## Electronics
+
+<CardGrid>
+  <LinkCard title="Semiconductors and Diodes" href="/en/electrical-engineering/semiconductors-and-diodes/" description="pn junction, Zener diode, LED series resistor, rectifiers and solar cell." />
+  <LinkCard title="Transistors" href="/en/electrical-engineering/transistors/" description="Bipolar transistor and MOSFET as switches, CMOS and amplifiers." />
+  <LinkCard title="Operational Amplifiers" href="/en/electrical-engineering/operational-amplifiers/" description="Amplifier circuits, comparator, integrator and Schmitt trigger." />
+  <LinkCard title="Power Supplies" href="/en/electrical-engineering/power-supplies/" description="Linear and switching regulators, batteries, PoE and UPS." />
+</CardGrid>
+
+## Digital technology
+
+<CardGrid>
+  <LinkCard title="Logic Gates" href="/en/electrical-engineering/digital-logic-gates/" description="Logic levels, basic gates, NAND logic and Karnaugh maps." />
+  <LinkCard title="Combinational Circuits" href="/en/electrical-engineering/combinational-circuits/" description="Adders, multiplexers, decoders, 7-segment decoder and ALU." />
+  <LinkCard title="Sequential Circuits" href="/en/electrical-engineering/sequential-circuits/" description="Flip-flops, registers, counters, state machines, memory and FPGA." />
+  <LinkCard title="AD and DA Conversion" href="/en/electrical-engineering/ad-da-conversion/" description="Sampling theorem, quantisation, SAR converter and R-2R ladder." />
+</CardGrid>
+
+## Practice
+
+<CardGrid>
+  <LinkCard title="Measurement" href="/en/electrical-engineering/measurement/" description="Multimeter, measurement errors, uncertainty, oscilloscope and function generator." />
+  <LinkCard title="Electrical Safety" href="/en/electrical-engineering/electrical-safety/" description="Hazards, protective measures, RCD, five safety rules and ESD." />
+</CardGrid>

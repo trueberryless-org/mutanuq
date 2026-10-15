@@ -1,0 +1,157 @@
+---
+title: Layout und Gestaltung
+description: Gestaltungsprinzipien, Gestaltgesetze, Raster, Goldener Schnitt, Weißraum, visuelle Hierarchie, Corporate Design und Druckvorstufe.
+sidebar:
+  order: 4
+---
+
+Ein **Layout** ordnet Text, Bilder und grafische Elemente auf einer Fläche an, sei es eine Buchseite, ein Plakat, eine Website oder ein App-Bildschirm. Ziel ist nicht in erster Linie Schönheit, sondern Verständlichkeit: Der Betrachter soll sofort erkennen, was wichtig ist, was zusammengehört und in welcher Reihenfolge er lesen soll. Dafür gibt es Prinzipien, die auf der menschlichen Wahrnehmung beruhen und sich in Print und Web gleichermaßen anwenden lassen.
+
+## Gestaltungsprinzipien
+
+Robin Williams fasst in _The Non-Designer's Design Book_ vier Grundprinzipien zusammen (im Englischen nach den Anfangsbuchstaben **CRAP** oder umgekehrt PARC genannt):
+
+| Prinzip | Bedeutung | Beispiel |
+| --- | --- | --- |
+| **Nähe** (_Proximity_) | Zusammengehöriges steht nahe beisammen, Unzusammenhängendes weiter entfernt | Bildunterschrift direkt am Bild; Abstand zwischen Formulargruppen |
+| **Ausrichtung** (_Alignment_) | jedes Element ist an einer gedachten Linie mit anderen Elementen ausgerichtet, nichts wird beliebig platziert | linke Textkante, Bilder und Überschrift auf derselben Achse |
+| **Wiederholung** (_Repetition_) | gleiche Elemente sehen gleich aus: Farben, Schriften, Abstände, Icons | alle Überschriften zweiter Ebene identisch, einheitliche Buttons |
+| **Kontrast** (_Contrast_) | was verschieden ist, soll deutlich verschieden aussehen | große fette Überschrift gegen kleinen Fließtext, eine Akzentfarbe für die Hauptaktion |
+
+Ein Kontrast muss deutlich sein. Zwei fast gleich große Schriften oder zwei ähnliche Blautöne wirken wie ein Versehen, nicht wie eine Absicht.
+
+## Gestaltgesetze
+
+Die **Gestaltpsychologie** (Max Wertheimer, Wolfgang Köhler, Kurt Koffka, ab etwa 1910 bis 1920er-Jahre) untersucht, wie das Gehirn einzelne Reize zu ganzen Formen ordnet. Ihre Gesetze erklären, warum Gestaltungsprinzipien funktionieren:
+
+| Gesetz | Aussage | Anwendung |
+| --- | --- | --- |
+| **Gesetz der Nähe** | nahe beieinanderliegende Elemente werden als Gruppe wahrgenommen | Abstände gliedern Inhalte ohne Linien und Kästen |
+| **Gesetz der Ähnlichkeit** | ähnlich aussehende Elemente (Farbe, Form, Größe) gehören zusammen | alle Links in derselben Farbe |
+| **Gesetz der Geschlossenheit** | unvollständige Formen werden zu geschlossenen ergänzt | Logos mit Lücken (WWF-Panda) |
+| **Gesetz der guten Fortsetzung** (Kontinuität) | Elemente auf einer Linie oder Kurve werden als zusammengehörig gesehen | Karussells, deren angeschnittenes letztes Element zum Wischen einlädt |
+| **Gesetz des gemeinsamen Schicksals** | Elemente, die sich gemeinsam bewegen oder verändern, gehören zusammen | gemeinsam aufklappende Menüpunkte |
+| **Figur-Grund-Beziehung** | das Auge trennt eine Figur vom Hintergrund | modale Dialoge vor abgedunkeltem Hintergrund |
+| **Gesetz der Prägnanz** (guten Gestalt) | Formen werden so einfach wie möglich interpretiert | einfache, klare Icons |
+| **Gesetz der gemeinsamen Region** | Elemente in einem gemeinsamen Bereich (Fläche, Rahmen) gehören zusammen | Karten (_Cards_) in Webdesigns |
+| **Gesetz der Verbundenheit** | durch Linien verbundene Elemente gehören zusammen, stärker als Nähe oder Ähnlichkeit | Schritte eines Fortschrittsbalkens |
+
+## Raster und Satzspiegel
+
+### Satzspiegel
+
+Der **Satzspiegel** ist die Fläche einer Seite, die mit Text und Bildern bedruckt wird. Die Ränder heißen **Stege**: Bundsteg (innen, an der Bindung), Kopfsteg (oben), Außensteg und Fußsteg. In einem Buch liegt der Satzspiegel nicht mittig: Die beiden Bundstege einer Doppelseite wirken zusammen wie ein Steg, deshalb ist jeder einzeln schmal.
+
+Eine klassische Konstruktion ist die **Neunerteilung**: Breite und Höhe der Seite werden in je neun Teile geteilt. Der Satzspiegel beginnt einen Teil vom Bund und einen Teil vom Kopf und ist sechs Teile breit und hoch. Bund-, Kopf-, Außen- und Fußsteg stehen dann im Verhältnis 1 : 1 : 2 : 2.
+
+### Gestaltungsraster
+
+Ein **Gestaltungsraster** (_Grid_) teilt den Satzspiegel in Spalten, Zeilen und Module mit festen Abständen. Bekannt wurde es durch die Schweizer Typografie, etwa Josef Müller-Brockmann (_Rastersysteme für die visuelle Gestaltung_, 1981).
+
+- **Spalten** (_Columns_) und **Spaltenabstände** (_Gutter_)
+- **Ränder** (_Margins_)
+- **Module**: Felder aus Spalten und Zeilen, in denen Elemente platziert werden
+- **Grundlinienraster**: alle Textzeilen stehen auf einem gemeinsamen Raster, damit Zeilen benachbarter Spalten auf gleicher Höhe liegen
+
+Ein Raster sorgt für Ausrichtung und Wiederholung über viele Seiten hinweg und beschleunigt die Arbeit, weil nicht jede Seite neu erfunden werden muss. Im Webdesign sind **12-spaltige Raster** verbreitet, weil sich 12 durch 2, 3, 4 und 6 teilen lässt. Bei kleineren Bildschirmen werden Spalten zusammengelegt (zum Beispiel 12, 8 und 4 Spalten). Technisch setzt man das mit [CSS Grid und Flexbox](/de/web-technologies/css/#grid) um. Abstände folgen oft einem festen Grundmaß, etwa einem Vielfachen von 8 px.
+
+## Goldener Schnitt
+
+Eine Strecke ist im **Goldenen Schnitt** geteilt, wenn sich die ganze Strecke zum größeren Teil verhält wie der größere zum kleineren Teil:
+
+$$
+\frac{a + b}{a} = \frac{a}{b} = \varphi = \frac{1 + \sqrt{5}}{2} \approx 1{,}618
+$$
+
+Die Teilung liegt also bei rund 61,8 % zu 38,2 %. Die Verhältnisse aufeinanderfolgender **Fibonacci-Zahlen** (1, 1, 2, 3, 5, 8, 13, 21, …) nähern sich $\varphi$ an, deshalb verwendet man in der Praxis oft 5 : 8 oder 8 : 13. Der Goldene Schnitt wird für Seitenformate, die Aufteilung von Layouts (etwa Inhalt und Seitenleiste) und Bildkompositionen verwendet. Die [Drittelregel](/de/media-technology/digital-images/#bildgestaltung) der Fotografie ist eine vereinfachte Form.
+
+:::tip[Beispiel]
+Eine Website ist 960 px breit. Im Goldenen Schnitt geteilt, bekommt der Inhaltsbereich $960 / 1{,}618 \approx 593$ px und die Seitenleiste $960 - 593 = 367$ px.
+:::
+
+Zum Vergleich: Die Papierformate der Reihe A (ISO 216, früher DIN 476) haben das Seitenverhältnis $1 : \sqrt{2} \approx 1 : 1{,}414$. Dieses Verhältnis bleibt beim Halbieren erhalten: Zwei A4-Blätter ergeben A3, ein A4-Blatt in der Mitte gefaltet zwei A5-Seiten. A0 hat eine Fläche von 1 m², A4 misst 210 mm × 297 mm.
+
+## Weißraum
+
+**Weißraum** (_White Space_, Negativraum) ist die leere Fläche zwischen und um Elemente, unabhängig von ihrer Farbe. Er ist kein verschenkter Platz, sondern ein Gestaltungsmittel:
+
+- **Mikroweißraum**: Abstände zwischen Buchstaben, Zeilen, Absätzen, Listenpunkten. Er bestimmt die Lesbarkeit.
+- **Makroweißraum**: Ränder und Abstände zwischen großen Bereichen. Er gliedert die Seite und lenkt den Blick.
+
+Viel Weißraum wirkt hochwertig, ruhig und konzentriert (Luxusmarken, Apple), wenig Weißraum dicht, informativ und günstig (Discounter-Prospekte, Tageszeitungen). Ein Element mit viel Raum um sich herum zieht Aufmerksamkeit an.
+
+## Visuelle Hierarchie
+
+Die **visuelle Hierarchie** legt fest, in welcher Reihenfolge der Betrachter Elemente wahrnimmt. Mittel sind:
+
+- **Größe**: Große Elemente werden zuerst gesehen.
+- **Farbe und Kontrast**: Eine kräftige Akzentfarbe auf ruhigem Grund springt ins Auge.
+- **Position**: Was oben links steht, wird in Sprachen mit Leserichtung von links nach rechts zuerst gelesen.
+- **Weißraum und Isolation**: Ein freistehendes Element wird betont.
+- **Bilder und Gesichter**: Menschen schauen zuerst auf Gesichter und folgen deren Blickrichtung.
+
+Blickverlaufsstudien (_Eye Tracking_) zeigen typische Muster:
+
+- **F-Muster**: Bei textlastigen Seiten lesen Benutzer die ersten Zeilen, dann einen kürzeren Abschnitt weiter unten und überfliegen den Rest am linken Rand. Wichtiges gehört deshalb an den Anfang von Überschriften und Absätzen.
+- **Z-Muster**: Bei wenig Text (Landingpages, Plakate) wandert der Blick von links oben nach rechts oben, diagonal nach links unten und wieder nach rechts. Logo links oben, Handlungsaufforderung (_Call to Action_) rechts unten.
+
+**Gleichgewicht** entsteht symmetrisch (ruhig, formell) oder asymmetrisch (spannender, verlangt mehr Gefühl für Gewichtung).
+
+## Corporate Design
+
+Die **Corporate Identity** (CI) ist das Selbstverständnis eines Unternehmens und umfasst Verhalten (_Corporate Behaviour_), Kommunikation (_Corporate Communication_) und das Erscheinungsbild, das **Corporate Design** (CD). Ein einheitliches Corporate Design macht ein Unternehmen auf jedem Medium wiedererkennbar und wirkt professionell und vertrauenswürdig.
+
+| Element | Inhalt |
+| --- | --- |
+| **Logo** | Wortmarke (nur Schrift, etwa Google), Bildmarke (nur Symbol, etwa Apple), Wort-Bild-Marke (beides, etwa Adidas); Varianten für hellen und dunklen Grund, einfarbig; Schutzzone und Mindestgröße |
+| **Hausfarben** | Primär- und Sekundärfarben mit genauen Werten für jedes Medium: CMYK, RGB/Hex, Sonderfarbe (Pantone oder HKS) |
+| **Hausschrift** | Schriften für Überschriften und Text, mit Ersatzschriften für Office und Web |
+| **Bildsprache** | Stil von Fotos und Illustrationen: Motive, Licht, Farbstimmung, Bildausschnitte |
+| **Gestaltungsraster** | Vorlagen für Briefpapier, Visitenkarten, Präsentationen, Website, Social Media |
+| **Tonalität** | Sprache und Ansprache (du oder Sie), Wortwahl |
+
+Alle Regeln werden in einem **Styleguide** (Designhandbuch, _Brand Manual_) festgehalten, damit verschiedene Agenturen und Abteilungen einheitlich arbeiten. Im digitalen Bereich wird er zu einem [Designsystem](/de/media-technology/user-experience/#designsysteme) mit fertigen Komponenten erweitert.
+
+Ein gutes **Logo** ist einfach, einprägsam, unverwechselbar, funktioniert in jeder Größe (vom Favicon mit 16 px bis zum Plakat) und auch einfarbig. Es wird deshalb immer als **Vektorgrafik** angelegt.
+
+## Druckvorstufe
+
+Die **Druckvorstufe** (_Prepress_) umfasst alle Arbeiten, bis eine Datei druckreif ist. Typische Anforderungen einer Druckerei:
+
+- **Beschnitt** (Anschnitt, _Bleed_): Elemente, die bis zum Rand reichen sollen, werden über das Endformat hinaus angelegt, meist **3 mm** auf jeder Seite. Beim Schneiden des Papierstapels entstehen kleine Toleranzen, ohne Beschnitt würden weiße Blitzer am Rand sichtbar. Ein A4-Flyer wird also mit 216 mm × 303 mm angelegt.
+- **Sicherheitsabstand**: Wichtige Inhalte wie Text halten mindestens 3 bis 5 mm Abstand zum Endformat, damit sie nicht angeschnitten werden.
+- **Schneidemarken** zeigen, wo geschnitten wird.
+- **Farbmodus CMYK** mit dem von der Druckerei vorgegebenen [ICC-Profil](/de/media-technology/colour/#farbmanagement), etwa PSO Coated v3 für gestrichenes Papier. Der **Gesamtfarbauftrag** (Summe von C, M, Y und K) darf je nach Papier und Profil etwa 300 bis 330 % nicht überschreiten, sonst trocknet die Farbe nicht.
+- **Sonderfarben** (Pantone, HKS) für exakte Hausfarben, die mit CMYK nicht erreichbar sind.
+- **Bilder** mit rund 300 ppi in Endgröße.
+- **Schwarzer Text** nur in 100 % K (nicht vierfarbig), damit kleine Schrift ohne Passerprobleme scharf bleibt. Große schwarze Flächen werden als **Tiefschwarz** mit zusätzlichem Cyan unterlegt.
+- **Schriften** vollständig eingebettet.
+
+### PDF/X
+
+**PDF/X** ist eine Normenreihe (ISO 15930) für den Austausch druckfertiger Dateien. Sie schränkt PDF auf das ein, was im Druck zuverlässig funktioniert:
+
+| Standard | Eigenschaften |
+| --- | --- |
+| **PDF/X-1a** | nur CMYK und Sonderfarben, keine Transparenz, alle Schriften eingebettet |
+| **PDF/X-3** | erlaubt zusätzlich geräteunabhängige Farben (RGB oder Lab mit ICC-Profil) |
+| **PDF/X-4** | wie X-3, zusätzlich echte Transparenzen und Ebenen; heute meist empfohlen |
+
+Alle Varianten verlangen einen **Output Intent**: die Angabe, für welche Druckbedingung (welches Profil) die Datei bestimmt ist.
+
+### Druckverfahren
+
+| Verfahren | Prinzip | Einsatz |
+| --- | --- | --- |
+| **Offsetdruck** | indirekter Flachdruck über ein Gummituch, Druckplatten nötig | hohe Auflagen: Bücher, Zeitschriften, Prospekte |
+| **Digitaldruck** | Toner oder Tinte direkt aus der Datei, keine Platten | kleine Auflagen, personalisierte Drucke |
+| **Siebdruck** | Farbe wird durch ein Sieb gedrückt | Textilien, Plakate, Werbetechnik |
+| **Tiefdruck** | Farbe aus Vertiefungen eines Zylinders | sehr hohe Auflagen: Kataloge, Verpackungen |
+
+Papier wird nach **Grammatur** (Flächengewicht in g/m²) und Oberfläche unterschieden: **gestrichenes** Papier (glänzend oder matt, Farben brillant) und **ungestrichenes** Papier (Naturpapier, saugt mehr Farbe auf, Farben matter). Kopierpapier hat meist 80 g/m², Visitenkarten 300 bis 400 g/m².
+
+## Weiterführende Quellen
+
+- Robin Williams: _The Non-Designer's Design Book_. 4. Auflage, San Francisco: Peachpit Press, 2014
+- Josef Müller-Brockmann: _Rastersysteme für die visuelle Gestaltung_. Sulgen: Niggli, 1981
+- [European Color Initiative (ECI): Offset-Profile und PDF/X](https://www.eci.org/)

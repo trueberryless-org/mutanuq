@@ -1,0 +1,372 @@
+---
+title: Memory Management
+description: Stack and heap, value and reference types, garbage collection in C# as well as ownership, borrowing and lifetimes in Rust.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Every program needs main memory for its data. When this memory is reserved and when it is released again determines the speed, stability and security of a program. C# and Rust solve this problem in two very different ways: C# with a **garbage collector**, Rust with the **ownership system**, which the compiler checks.
+
+## Stack and heap
+
+A running program uses two memory areas for data:
+
+| Property             | Stack                                                       | Heap                                                                |
+| -------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| Organisation         | a stack following the LIFO principle (_last in, first out_) | free memory blocks that are handed out on demand                     |
+| Content              | local variables, parameters, return addresses               | objects whose size or lifetime is only known at runtime             |
+| Reserving / releasing | automatically when entering and leaving a method           | explicitly (C), by a garbage collector (C#) or by ownership (Rust)  |
+| Speed                | very fast, only one pointer is moved                         | slower, the allocator has to find a free block                       |
+| Size                 | small (typically 1 to 8 MiB per thread)                      | large, limited by main memory                                        |
+
+With every method call, a **stack frame** containing the parameters and local variables is created on the stack and removed again when the method returns. If a method calls itself too often, the stack is full and the program aborts with a **stack overflow** (see [Recursion](/en/software-development/recursion/)).
+
+## Memory errors
+
+In languages with manual memory management such as C, the programmer has to release every reserved block with `free`. This leads to typical errors:
+
+| Error                  | Description                                                                                   | Consequence                              |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **Memory leak**        | Memory is never released although it is no longer needed.                                    | The program uses more and more memory.   |
+| **Dangling pointer**   | A pointer refers to memory that has already been released (_use after free_).                 | wrong data, crash, security hole         |
+| **Double free**        | The same block is released twice.                                                             | corrupted management data, crash         |
+| **Buffer overflow**    | Data is written past the end of an array.                                                     | overwritten data, security hole          |
+| **Data race**          | Two threads access the same data at the same time and at least one of them writes.            | random errors that are hard to reproduce |
+
+Microsoft and Google's Chromium project report that around 70 % of serious security vulnerabilities in their C and C++ codebases are caused by such memory errors. C# prevents most of them at runtime, Rust already at compile time.
+
+## Value and reference types in C#
+
+C# distinguishes two kinds of types:
+
+- **Value types** (`struct`, `enum`, all numeric types, `bool`, `char`): the variable contains the value itself. An assignment **copies** the value.
+- **Reference types** (`class`, `record`, `interface`, `string`, arrays, delegates): the object lives on the heap, the variable only contains a **reference** (address) to it. An assignment copies the reference, and afterwards both variables point to the same object.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var p1 = new PointStruct { X = 1 };
+var p2 = p1;       // copy of the value
+p2.X = 99;
+Console.WriteLine(p1.X); // 1, p1 is unchanged
+
+var c1 = new PointClass { X = 1 };
+var c2 = c1;       // copy of the reference
+c2.X = 99;
+Console.WriteLine(c1.X); // 99, both point to the same object
+
+PointClass? nothing = null; // references can be null
+
+struct PointStruct { public int X; }
+class PointClass { public int X; }
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// In Rust, the type does not decide between value and reference semantics.
+// Values are always stored directly; references (&) and Box are written explicitly.
+#[derive(Clone, Copy)]
+struct Point { x: i32 }
+
+fn main() {
+    let p1 = Point { x: 1 };
+    let mut p2 = p1;          // copy, because Point implements the Copy trait
+    p2.x = 99;
+    println!("{}", p1.x);     // 1
+
+    let mut p3 = Point { x: 1 };
+    let r = &mut p3;          // mutable reference to p3
+    r.x = 99;
+    println!("{}", p3.x);     // 99
+
+    let on_heap: Box<Point> = Box::new(Point { x: 5 }); // value on the heap
+    println!("{}", on_heap.x);
+}
+```
+
+</TabItem>
+</Tabs>
+
+Value types are suitable for small, immutable data such as coordinates or amounts of money. If a value type is assigned to a variable of type `object` or an interface, the runtime has to wrap it in an object on the heap (**boxing**). Unwrapping it is called **unboxing**. Both cost time and were one reason for the introduction of [generics](/en/software-development/generics-and-collections/).
+
+`string` is a special case: it is a reference type but **immutable**. Every apparent change such as `s += "x"` creates a new object. If you assemble many parts, use a `StringBuilder` instead.
+
+## Garbage collection in .NET
+
+The **garbage collector** (GC) of the CLR automatically releases objects on the heap as soon as no reference points to them anymore. It does not run on a fixed schedule but when memory is running low.
+
+1. **Mark**: starting from the **roots** (local variables on the stack, static fields, CPU registers), the GC follows all references and marks every reachable object.
+2. **Sweep**: all unmarked objects are garbage and are released.
+3. **Compact**: the surviving objects are moved together so that one large free block is available again.
+
+Because most objects only live for a short time, .NET divides the heap into **generations**:
+
+| Generation      | Content                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| **Gen 0**       | newly created objects; collected very often and quickly                                        |
+| **Gen 1**       | objects that survived one collection; a buffer between short-lived and long-lived objects      |
+| **Gen 2**       | long-lived objects such as caches; collected rarely                                            |
+| **LOH**         | _large object heap_ for objects of 85,000 bytes or more; collected together with Gen 2        |
+
+The GC completely prevents dangling pointers and double frees. It does have drawbacks, though: it needs additional memory and CPU time, and it is **not predictable** when an object is actually released. Memory leaks are still possible, for example when a long-lived object still holds a reference to an object that is no longer needed through an event (`event`).
+
+### IDisposable and using
+
+The GC only takes care of main memory. Other resources such as files, network connections or database connections must be closed **immediately** after use. The interface `IDisposable` with the method `Dispose()` exists for this purpose. The `using` statement calls `Dispose()` automatically at the end of the block, even if an exception occurs.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using (var writer = new StreamWriter("log.txt"))
+{
+    writer.WriteLine("Start");
+} // writer.Dispose() closes the file here
+
+// short form: Dispose at the end of the enclosing block
+using var reader = new StreamReader("log.txt");
+Console.WriteLine(reader.ReadLine()); // Start
+
+// custom class with a resource
+using (var connection = new FakeConnection())
+{
+    Console.WriteLine("connection in use");
+}
+
+class FakeConnection : IDisposable
+{
+    public FakeConnection() => Console.WriteLine("opened");
+    public void Dispose() => Console.WriteLine("closed");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fs::File;
+use std::io::{BufRead, BufReader, Write};
+
+struct FakeConnection;
+
+impl FakeConnection {
+    fn open() -> Self {
+        println!("opened");
+        FakeConnection
+    }
+}
+
+// Drop corresponds to Dispose, but it is always called automatically
+impl Drop for FakeConnection {
+    fn drop(&mut self) {
+        println!("closed");
+    }
+}
+
+fn main() -> std::io::Result<()> {
+    {
+        let mut file = File::create("log.txt")?;
+        writeln!(file, "Start")?;
+    } // file is closed here
+
+    let reader = BufReader::new(File::open("log.txt")?);
+    println!("{}", reader.lines().next().unwrap()?); // Start
+
+    {
+        let _connection = FakeConnection::open();
+        println!("connection in use");
+    } // drop is called here
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust does not need `using`: every value is cleaned up automatically at the end of its scope. This principle is called **RAII** (_Resource Acquisition Is Initialization_) and comes from C++.
+
+## Ownership in Rust
+
+Rust works without a garbage collector and is still memory safe. This is made possible by the **ownership system**, whose rules the compiler checks during compilation. It costs no time at runtime.
+
+The three basic rules:
+
+1. Every value has exactly one variable as its **owner**.
+2. There can only be **one** owner at any time.
+3. When the owner goes out of scope, the value is released (`drop`).
+
+### Move
+
+If you assign a value that owns heap memory (such as a `String` or a `Vec`) to another variable or pass it to a function, ownership is **moved**. The old variable is invalid afterwards. This way, memory can never be released twice.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// In C#, two references point to the same list after the assignment.
+var a = new List<int> { 1, 2, 3 };
+var b = a;
+b.Add(4);
+Console.WriteLine(a.Count); // 4, a sees the change as well
+
+// A real copy has to be created explicitly.
+var copy = new List<int>(a);
+copy.Add(5);
+Console.WriteLine(a.Count); // 4
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn print_all(v: Vec<i32>) {
+    println!("{v:?}");
+} // v is released here
+
+fn main() {
+    let a = vec![1, 2, 3];
+    let b = a;            // ownership moves from a to b
+    // println!("{a:?}"); // error: value borrowed here after move
+
+    let copy = b.clone(); // deep copy, explicitly requested
+    print_all(b);         // ownership moves into the function
+    // b is no longer valid here
+    println!("{copy:?}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+Simple types that live entirely on the stack (all numeric types, `bool`, `char` as well as tuples and arrays of them) implement the **`Copy`** trait. They are copied instead of moved on assignment. Custom structs can derive `Copy` if all of their fields are `Copy`. With **`Clone`**, you explicitly create a deep copy.
+
+### Borrowing
+
+So that you do not have to move a value for every function call, you can **borrow** it. A reference `&T` only allows reading, a reference `&mut T` also allows changing. The compiler's **borrow checker** enforces two rules:
+
+- At any time, there are **either** any number of shared references `&T` **or** exactly one mutable reference `&mut T`.
+- A reference must never live longer than the value it points to.
+
+The first rule prevents data races, the second one prevents dangling pointers.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var names = new List<string> { "Ada", "Linus" };
+
+// C# allows changing a list while iterating over it,
+// but only detects the error at runtime:
+try
+{
+    foreach (var name in names)
+    {
+        if (name == "Ada") names.Add("Grace");
+    }
+}
+catch (InvalidOperationException e)
+{
+    Console.WriteLine(e.Message); // Collection was modified...
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn total_length(names: &[String]) -> usize {
+    names.iter().map(|n| n.len()).sum() // read only
+}
+
+fn add_name(names: &mut Vec<String>, name: &str) {
+    names.push(name.to_string()); // change
+}
+
+fn main() {
+    let mut names = vec![String::from("Ada"), String::from("Linus")];
+    println!("{}", total_length(&names)); // 8
+    add_name(&mut names, "Grace");
+
+    // The same mistake as in the C# example does not compile in Rust:
+    // for name in &names {
+    //     names.push(name.clone()); // cannot borrow `names` as mutable
+    // }
+    println!("{names:?}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Lifetimes
+
+A **lifetime** describes how long a reference is valid. Usually the compiler infers it. If a function returns a reference that can come from several parameters, you have to state the relationship with a lifetime annotation such as `'a`.
+
+```rust
+// The result lives at most as long as the shorter-lived of the two parameters.
+fn longer<'a>(a: &'a str, b: &'a str) -> &'a str {
+    if a.len() >= b.len() { a } else { b }
+}
+
+fn main() {
+    let first = String::from("Krems");
+    let result;
+    {
+        let second = String::from("Wien");
+        result = longer(&first, &second);
+        println!("{result}"); // Krems
+    }
+    // println!("{result}"); // error: `second` does not live long enough
+}
+```
+
+### Smart pointers
+
+For cases in which a single owner is not enough, the standard library offers **smart pointers**:
+
+| Type          | Purpose                                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| `Box<T>`      | A value on the heap with exactly one owner, for example for recursive data structures or trait objects. |
+| `Rc<T>`       | Several owners through a **reference count**; the value is released when the count reaches 0.          |
+| `Arc<T>`      | Like `Rc`, but with an atomic counter and therefore shareable between threads.                          |
+| `RefCell<T>`  | Moves the check of the borrowing rules to runtime (_interior mutability_), usually combined with `Rc`.  |
+| `Mutex<T>`    | Mutual exclusion for mutable data shared between threads, usually combined with `Arc` (see [Concurrency](/en/software-development/concurrency/)). |
+
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn main() {
+    let shared = Rc::new(RefCell::new(vec![1, 2]));
+    let other_owner = Rc::clone(&shared);       // count becomes 2
+
+    other_owner.borrow_mut().push(3);           // change through the second owner
+    println!("{:?}", shared.borrow());          // [1, 2, 3]
+    println!("{}", Rc::strong_count(&shared));  // 2
+}
+```
+
+:::caution[Cycles]
+Reference counting cannot release cyclic structures: if two `Rc` point at each other, neither count reaches 0 and a memory leak occurs. Back references, for example from a child to the parent node of a tree, are therefore stored as a weak reference `Weak<T>`. The .NET garbage collector, by contrast, detects such cycles on its own.
+:::
+
+## Comparison
+
+| Aspect                       | C (manual)               | C# (garbage collector)                  | Rust (ownership)                           |
+| ---------------------------- | ------------------------ | --------------------------------------- | ------------------------------------------ |
+| Releasing heap memory        | `free` by the programmer | automatic, time undetermined            | automatic at the end of the scope          |
+| Dangling pointer, double free | possible                | impossible                              | impossible (compiler error)                |
+| Data races                   | possible                 | possible                                | impossible (compiler error)                |
+| Runtime cost                 | none                     | GC pauses, additional memory            | none                                       |
+| Learning effort              | high, error-prone        | low                                     | high at first (borrow checker)             |
+| Releasing other resources    | manual                   | `IDisposable` and `using`               | automatic through `Drop`                   |
+
+## Further reading
+
+- [Fundamentals of garbage collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals) (Microsoft Learn)
+- [Understanding Ownership](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html) (The Rust Programming Language)

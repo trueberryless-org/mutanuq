@@ -1,0 +1,245 @@
+---
+title: Grundlagen der IT-Sicherheit
+description: Schutzziele, Bedrohung, Schwachstelle und Risiko, Angriffsfläche, Sicherheitsprinzipien wie Defence in Depth, Least Privilege und Zero Trust sowie Risikobewertung.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+IT-Sicherheit schützt Informationen und die Systeme, die sie verarbeiten, vor Verlust, Manipulation, unbefugtem Zugriff und Ausfall. Vollständige Sicherheit gibt es nicht: Jede Maßnahme kostet Geld, Zeit und Bequemlichkeit, und ein entschlossener Angreifer findet oft einen Weg. Ziel ist deshalb, die **Risiken** zu kennen und sie mit angemessenem Aufwand auf ein akzeptables Maß zu senken.
+
+## Begriffsabgrenzung
+
+| Begriff                   | Bedeutung                                                                                                   |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Informationssicherheit** | Schutz aller Informationen, egal ob digital, auf Papier oder im Kopf von Mitarbeitenden                    |
+| **IT-Sicherheit**          | Teil der Informationssicherheit, der elektronisch gespeicherte Informationen und IT-Systeme betrifft      |
+| **Cybersicherheit**        | IT-Sicherheit mit Blick auf vernetzte Systeme und Angriffe über das Internet                               |
+| **Datenschutz**            | Schutz von **Personen** vor Missbrauch ihrer personenbezogenen Daten (Grundrecht, DSGVO)                   |
+| **Datensicherheit**        | technische und organisatorische Maßnahmen, die Daten schützen, etwa Backups und Verschlüsselung           |
+
+Im Deutschen deckt „Sicherheit“ zwei englische Begriffe ab: **Security** (Schutz des Systems vor absichtlichen Angriffen von außen) und **Safety** (Schutz der Umgebung vor Fehlfunktionen des Systems, Funktionssicherheit). Eine Ampelsteuerung muss beides erfüllen: Sie darf nicht manipulierbar sein und darf bei einem Defekt nie allen Richtungen gleichzeitig Grün zeigen.
+
+## Schutzziele
+
+Die drei klassischen Schutzziele werden nach ihren englischen Anfangsbuchstaben **CIA-Triade** genannt:
+
+| Schutzziel                          | Bedeutung                                                                      | Typische Maßnahmen                         | Angriff darauf                    |
+| ----------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ | --------------------------------- |
+| **Vertraulichkeit** (_Confidentiality_) | Nur Berechtigte können Informationen lesen.                                | Verschlüsselung, Zugriffskontrolle         | Abhören, Datendiebstahl           |
+| **Integrität** (_Integrity_)        | Daten sind vollständig und unverändert, Änderungen sind erkennbar.              | Hashwerte, MACs, Signaturen, Versionierung | Manipulation von Überweisungen    |
+| **Verfügbarkeit** (_Availability_)  | Systeme und Daten stehen zur Verfügung, wenn sie gebraucht werden.             | Redundanz, Backups, USV, DDoS-Schutz       | DoS-Angriff, Ransomware           |
+
+Dazu kommen weitere Schutzziele, die oft als Teil der Integrität betrachtet werden:
+
+- **Authentizität**: Die Echtheit einer Person, eines Systems oder einer Nachricht ist überprüfbar. Du weißt, dass die E-Mail wirklich von deiner Bank stammt.
+- **Verbindlichkeit** bzw. **Nichtabstreitbarkeit** (_Non-Repudiation_): Wer eine Handlung ausgeführt hat, kann sie später nicht glaubhaft abstreiten, etwa eine digital signierte Bestellung.
+- **Zurechenbarkeit** (_Accountability_): Jede Aktion lässt sich eindeutig einem Benutzer zuordnen. Voraussetzung sind persönliche Konten (keine Sammelkonten) und Protokollierung.
+
+Für den Datenschutz kommen **Anonymität** und **Pseudonymität** hinzu. Die Schutzziele können einander widersprechen: Je stärker du Daten verschlüsselst und den Zugang beschränkst, desto eher sind sie im Notfall nicht verfügbar, etwa wenn der Schlüssel verloren geht.
+
+## Bedrohung, Schwachstelle und Risiko
+
+| Begriff                          | Bedeutung                                                                                 | Beispiel                                          |
+| -------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **Schutzobjekt** (_Asset_)       | alles, was für die Organisation einen Wert hat                                            | Kundendatenbank, Webserver, Ruf des Unternehmens  |
+| **Bedrohung** (_Threat_)         | möglicher Umstand oder möglicher Akteur, der einem Schutzobjekt schaden kann                | Ransomware-Gruppe, Hochwasser, Fehlbedienung      |
+| **Schwachstelle** (_Vulnerability_) | Schwäche, durch die eine Bedrohung wirksam werden kann                                 | ungepatchter Server, schwaches Passwort           |
+| **Gefährdung**                   | Bedrohung, die durch eine konkrete Schwachstelle auf ein Objekt trifft (Begriff des BSI)  | Ransomware trifft auf ungepatchten Server         |
+| **Exploit**                      | Programm oder Technik, die eine Schwachstelle ausnutzt                                    | Skript, das eine Lücke im Webserver ausnutzt      |
+| **Zero-Day**                     | Schwachstelle, die der Hersteller noch nicht kennt oder für die es noch keinen Patch gibt | Lücke, die schon vor dem Patch angegriffen wird   |
+| **Angriff**                      | vorsätzliche Handlung, die eine Schwachstelle ausnutzt                                    | Einbruch in den Webserver                         |
+| **Risiko**                       | Kombination aus Eintrittswahrscheinlichkeit und Schadensausmaß                            | siehe unten                                       |
+
+Eine Bedrohung allein ist noch kein Risiko: Ein Hochwasser bedroht einen Serverraum im fünften Stock kaum, weil dort die Schwachstelle (Lage im Keller) fehlt. Das Risiko wird häufig vereinfacht als Produkt angegeben:
+
+$$
+\text{Risiko} = \text{Eintrittswahrscheinlichkeit} \cdot \text{Schadensausmaß}
+$$
+
+Das Schadensausmaß kann in Euro beziffert werden (quantitative Bewertung) oder auf einer Skala wie „gering, mittel, hoch, sehr hoch“ (qualitative Bewertung). In der Praxis ist die qualitative Bewertung verbreiteter, weil sich Wahrscheinlichkeiten für Cyberangriffe kaum exakt angeben lassen.
+
+## Angriffsfläche
+
+Die **Angriffsfläche** (_Attack Surface_) ist die Summe aller Stellen, an denen ein Angreifer ansetzen kann: offene Ports, Webformulare, APIs, installierte Programme, Benutzerkonten, USB-Anschlüsse und nicht zuletzt die Menschen, die getäuscht werden können. Jeder zusätzliche Dienst und jedes zusätzliche Konto vergrößert sie. Deshalb gilt: Was nicht gebraucht wird, wird deaktiviert oder deinstalliert (siehe [Systemhärtung](/de/it-security/system-hardening/)).
+
+Man unterscheidet die **digitale** (Netzwerk, Software), die **physische** (Zutritt zu Räumen, Geräte) und die **soziale** Angriffsfläche (Mitarbeitende, die auf Phishing hereinfallen können).
+
+## Sicherheitsprinzipien
+
+Viele dieser Prinzipien gehen auf die Arbeit von Jerome Saltzer und Michael Schroeder (1975) zurück und gelten bis heute.
+
+### Defence in Depth
+
+**Defence in Depth** (gestaffelte Verteidigung) verlässt sich nie auf eine einzige Maßnahme, sondern legt mehrere unabhängige Schutzschichten übereinander, wie die Mauern, Gräben und Tore einer Burg. Fällt eine Schicht, hält die nächste den Angreifer auf oder macht ihn zumindest sichtbar.
+
+| Schicht              | Beispiele                                                         |
+| -------------------- | ----------------------------------------------------------------- |
+| Richtlinien, Menschen | Sicherheitsrichtlinie, Schulungen gegen Phishing                 |
+| Physisch             | Zutrittskontrolle zum Serverraum, versperrte Racks               |
+| Perimeter            | Firewall, E-Mail-Filter                                          |
+| Netzwerk             | Segmentierung in VLANs, IDS                                      |
+| Host                 | Patches, Härtung, Virenschutz bzw. EDR                           |
+| Anwendung            | Eingabeprüfung, sichere Authentifizierung                        |
+| Daten                | Verschlüsselung, Backups, Zugriffsrechte                         |
+
+### Least Privilege und Need to Know
+
+Nach dem Prinzip der **minimalen Rechte** (_Least Privilege_) erhält jeder Benutzer und jeder Prozess nur die Rechte, die er für seine Aufgabe unbedingt braucht, und nur so lange, wie er sie braucht. Ein Webserver läuft nicht als `root`, und Administratoren arbeiten im Alltag mit einem normalen Konto. Wird ein Konto übernommen, bleibt der Schaden so begrenzt.
+
+**Need to Know** wendet dasselbe Prinzip auf Informationen an: Auch wer formal berechtigt wäre, sieht nur die Daten, die er für seine Arbeit kennen muss.
+
+### Weitere Prinzipien
+
+- **Funktionstrennung** (_Separation of Duties_): Kritische Vorgänge erfordern mehrere Personen, etwa das Vier-Augen-Prinzip bei Überweisungen oder getrennte Rollen für Entwickeln und Freigeben.
+- **Sichere Voreinstellungen** (_Fail-safe Defaults_): Ohne ausdrückliche Erlaubnis ist alles verboten (_Default Deny_). Fällt ein Sicherheitssystem aus, soll es in einen sicheren Zustand gehen (_fail closed_), also eher sperren als öffnen.
+- **Einfachheit** (_Economy of Mechanism_, KISS): Einfache Mechanismen lassen sich besser prüfen und haben weniger Fehler.
+- **Vollständige Kontrolle** (_Complete Mediation_): Jeder Zugriff wird geprüft, nicht nur der erste.
+- **Offenes Design**: Die Sicherheit darf nicht davon abhängen, dass der Mechanismus geheim bleibt. Geheim ist nur der Schlüssel (siehe [Kerckhoffs’ Prinzip](/de/it-security/cryptography/#kerckhoffs-prinzip)). Das Gegenteil heißt abwertend **Security by Obscurity**.
+- **Psychologische Akzeptanz**: Sicherheitsmaßnahmen, die zu umständlich sind, werden umgangen. Ein Passwort, das niemand merken kann, landet auf einem Zettel am Bildschirm.
+
+### Security by Design und by Default
+
+**Security by Design** bedeutet, Sicherheit von Anfang an in Anforderungen, Architektur und Code einzuplanen, statt sie am Ende „aufzusetzen“. Nachträgliche Korrekturen sind teurer und oft unvollständig. Werkzeuge dafür sind Bedrohungsmodellierung (etwa nach **STRIDE**: _Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege_), sichere Programmierrichtlinien und Sicherheitstests.
+
+**Security by Default** bedeutet, dass ein Produkt im Auslieferungszustand sicher konfiguriert ist: keine Standardpasswörter, unnötige Dienste deaktiviert, Verschlüsselung eingeschaltet. Die DSGVO fordert in Art. 25 Ähnliches für den Datenschutz (_Privacy by Design and by Default_), der europäische **Cyber Resilience Act** schreibt es für Produkte mit digitalen Elementen vor.
+
+### Zero Trust
+
+Klassische Netzwerke folgen dem Burgmodell: Außen ist feindlich, innen ist vertrauenswürdig. Hat ein Angreifer den Perimeter einmal überwunden, etwa über einen infizierten Laptop, kann er sich im internen Netz frei bewegen (_Lateral Movement_).
+
+**Zero Trust** (NIST SP 800-207) gibt dieses implizite Vertrauen auf: „Never trust, always verify“. Jeder Zugriff wird einzeln geprüft, unabhängig davon, ob er aus dem Firmennetz oder dem Internet kommt. Kernelemente sind:
+
+- starke Authentifizierung jedes Benutzers und jedes Geräts, meist mit MFA,
+- Prüfung des Gerätezustands (gepatcht, verschlüsselt, verwaltet),
+- Zugriff nur auf einzelne Anwendungen statt auf ganze Netze, nach Least Privilege,
+- feine Segmentierung (Mikrosegmentierung) und durchgehende Verschlüsselung,
+- laufende Überwachung und Neubewertung während der Sitzung.
+
+Zero Trust ist kein Produkt, sondern ein Architekturprinzip, das schrittweise eingeführt wird.
+
+## Risikobewertung
+
+Eine **Risikoanalyse** beantwortet systematisch die Fragen: Was ist schützenswert, was kann passieren, wie wahrscheinlich ist es und wie groß wäre der Schaden?
+
+1. **Schutzobjekte erfassen**: Daten, Anwendungen, Systeme, Räume, Personen.
+2. **Schutzbedarf feststellen**: Für jedes Schutzziel wird bewertet, wie schwer ein Schaden wöge. Das BSI verwendet die Kategorien **normal**, **hoch** und **sehr hoch**. Ein System erbt dabei den höchsten Schutzbedarf der Anwendungen, die darauf laufen (**Maximumprinzip**).
+3. **Bedrohungen und Schwachstellen ermitteln**: etwa mit Katalogen wie den elementaren Gefährdungen des BSI.
+4. **Risiken bewerten**: Eintrittswahrscheinlichkeit und Schadensausmaß einschätzen, in eine **Risikomatrix** eintragen.
+5. **Risiken behandeln** und das verbleibende **Restrisiko** von der Geschäftsführung bewusst akzeptieren lassen.
+
+Eine typische Risikomatrix mit je vier Stufen:
+
+| Wahrscheinlichkeit \\ Schaden | gering (1) | mittel (2) | hoch (3) | sehr hoch (4) |
+| ----------------------------- | ---------- | ---------- | -------- | ------------- |
+| **sehr häufig (4)**           | mittel     | hoch       | sehr hoch | sehr hoch    |
+| **häufig (3)**                | gering     | mittel     | hoch     | sehr hoch     |
+| **selten (2)**                | gering     | mittel     | mittel   | hoch          |
+| **sehr selten (1)**           | gering     | gering     | gering   | mittel        |
+
+Für die **Risikobehandlung** gibt es vier Strategien:
+
+| Strategie                  | Vorgehen                                                  | Beispiel                                          |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| **Vermeiden**              | die riskante Tätigkeit nicht ausführen                    | keinen Webshop betreiben, Dienst abschalten        |
+| **Vermindern**             | Wahrscheinlichkeit oder Schaden durch Maßnahmen senken    | Patches, MFA, Backups                             |
+| **Übertragen** (Transfer)  | den finanziellen Schaden auf andere verlagern             | Cyberversicherung, Auslagerung an Dienstleister   |
+| **Akzeptieren**            | das Risiko bewusst tragen, weil Maßnahmen zu teuer wären  | seltener, kleiner Schaden                         |
+
+Übertragen lässt sich nur der finanzielle Schaden, nicht die Verantwortung: Wer die Kundendaten an einen Cloud-Anbieter auslagert, bleibt nach der DSGVO für ihren Schutz verantwortlich.
+
+Das folgende Programm bewertet einige Risiken mit einer vereinfachten Punkteskala (Produkt aus Wahrscheinlichkeit und Schaden, jeweils 1 bis 4) und sortiert sie nach Dringlichkeit:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+List<Risk> risks =
+[
+    new("Ransomware über Phishing-Mail", Likelihood: 3, Impact: 4),
+    new("Ausfall der Festplatte im NAS", Likelihood: 2, Impact: 2),
+    new("Wasserschaden im Serverraum", Likelihood: 1, Impact: 4),
+    new("Passwort-Spraying gegen VPN", Likelihood: 3, Impact: 3),
+];
+
+foreach (var risk in risks.OrderByDescending(r => r.Score))
+    Console.WriteLine($"{risk.Score,2} {risk.Level,-9} {risk.Name}");
+
+public record Risk(string Name, int Likelihood, int Impact)
+{
+    public int Score => Likelihood * Impact;
+
+    public string Level => Score switch
+    {
+        >= 12 => "sehr hoch",
+        >= 8 => "hoch",
+        >= 4 => "mittel",
+        _ => "gering",
+    };
+}
+
+// Ausgabe:
+// 12 sehr hoch Ransomware über Phishing-Mail
+//  9 hoch      Passwort-Spraying gegen VPN
+//  4 mittel    Ausfall der Festplatte im NAS
+//  4 mittel    Wasserschaden im Serverraum
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Risk {
+    name: &'static str,
+    likelihood: u8,
+    impact: u8,
+}
+
+impl Risk {
+    fn score(&self) -> u8 {
+        self.likelihood * self.impact
+    }
+
+    fn level(&self) -> &'static str {
+        match self.score() {
+            12.. => "sehr hoch",
+            8.. => "hoch",
+            4.. => "mittel",
+            _ => "gering",
+        }
+    }
+}
+
+fn main() {
+    let mut risks = vec![
+        Risk { name: "Ransomware über Phishing-Mail", likelihood: 3, impact: 4 },
+        Risk { name: "Ausfall der Festplatte im NAS", likelihood: 2, impact: 2 },
+        Risk { name: "Wasserschaden im Serverraum", likelihood: 1, impact: 4 },
+        Risk { name: "Passwort-Spraying gegen VPN", likelihood: 3, impact: 3 },
+    ];
+    // stabile Sortierung: gleiche Werte behalten ihre Reihenfolge
+    risks.sort_by_key(|r| std::cmp::Reverse(r.score()));
+
+    for risk in &risks {
+        println!("{:2} {:<9} {}", risk.score(), risk.level(), risk.name);
+    }
+}
+
+// Ausgabe:
+// 12 sehr hoch Ransomware über Phishing-Mail
+//  9 hoch      Passwort-Spraying gegen VPN
+//  4 mittel    Ausfall der Festplatte im NAS
+//  4 mittel    Wasserschaden im Serverraum
+```
+
+</TabItem>
+</Tabs>
+
+Die Punkteskala ist eine Vereinfachung: Ein Risiko mit Wahrscheinlichkeit 1 und Schaden 4 (existenzbedrohend) wiegt in der Praxis oft schwerer als eines mit 4 und 1. Deshalb verwenden viele Organisationen statt des Produkts eine Matrix wie oben, in der solche Fälle bewusst höher eingestuft werden. Den organisatorischen Rahmen für das Risikomanagement beschreibt die Seite [Informationssicherheitsmanagement](/de/it-security/information-security-management/).
+
+## Weiterführende Quellen
+
+- [BSI-Standard 200-3: Risikoanalyse auf der Basis von IT-Grundschutz](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/BSI-Standards/bsi-standards_node.html) (Bundesamt für Sicherheit in der Informationstechnik)
+- [NIST SP 800-207: Zero Trust Architecture](https://csrc.nist.gov/pubs/sp/800/207/final) (National Institute of Standards and Technology)
+- Claudia Eckert: _IT-Sicherheit. Konzepte, Verfahren, Protokolle_. De Gruyter Oldenbourg (Standardlehrbuch)

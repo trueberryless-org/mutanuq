@@ -2,7 +2,7 @@
 title: Dokumentenorientierte Datenbanken
 description: "NoSQL-Datenbanken, die Daten als flexible JSON-Dokumente speichern: Konzepte, BASE-Modell, MongoDB und CouchDB."
 sidebar:
-  order: 2
+  order: 13
 ---
 
 Dokumentenorientierte Datenbanken gehören zu den sogenannten **NoSQL-Datenbanken** („Not only SQL“). Anstatt Daten auf mehrere Tabellen mit festen Spalten zu verteilen, speichern sie zusammengehörige Informationen als **Dokumente**, meist im JSON-Format oder in einer binären Variante davon (BSON bei MongoDB). Ein Dokument kann verschachtelte Objekte und Listen enthalten und muss keinem festen Schema folgen.
@@ -28,7 +28,7 @@ Was in einer [relationalen Datenbank](/de/databases/relational-databases/) auf d
   Dokumente entsprechen weitgehend den Objekten im Programmcode. Eine aufwändige Übersetzung zwischen Objekten und Tabellen (_Object-Relational Mapping_) entfällt.
 
 - **Schnelle Lesezugriffe**  
-  Da zusammengehörige Daten in einem Dokument gespeichert sind, können sie mit einem einzigen Zugriff gelesen werden, ohne teure [JOIN-Operationen](/de/databases/relational-databases/#join-operationen).
+  Da zusammengehörige Daten in einem Dokument gespeichert sind, können sie mit einem einzigen Zugriff gelesen werden, ohne teure [JOIN-Operationen](/de/databases/sql-queries/#joins).
 
 - **Horizontale Skalierbarkeit**  
   Dokumente sind voneinander unabhängig und lassen sich daher gut auf viele Server verteilen (_Sharding_). So können sehr große Datenmengen und hohe Lasten bewältigt werden.
@@ -60,7 +60,7 @@ Beim Entwurf muss man entscheiden, ob zusammengehörige Daten **eingebettet** (_
 
 ### BASE
 
-Transaktionen sind mehrere Operationen, welche so zu einer Einheit verbunden sind, dass entweder alle oder gar kein Schritt ausgeführt wird. Verteilte NoSQL-Datenbanken lockern die strengen [ACID-Garantien](/de/databases/relational-databases/#acid-transaktionen) jedoch zugunsten von Verfügbarkeit und Skalierbarkeit. Garantiert ist oft nur, dass Änderungen an einem **einzelnen** Dokument atomar sind. Das Akronym BASE steht für folgende Eigenschaften bei dokumentenorientierten Datenbanken:
+Verteilte NoSQL-Datenbanken lockern die strengen [ACID-Garantien](/de/databases/transactions/#acid) jedoch zugunsten von Verfügbarkeit und Skalierbarkeit. Garantiert ist oft nur, dass Änderungen an einem **einzelnen** Dokument atomar sind. Das Akronym BASE steht für folgende Eigenschaften bei dokumentenorientierten Datenbanken:
 
 - **B**asically **A**vailable  
   Die Daten sind jederzeit zugänglich und erreichbar, auch wenn einzelne Knoten ausfallen.

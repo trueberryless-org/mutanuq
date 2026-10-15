@@ -1,0 +1,204 @@
+---
+title: Operating Systems
+description: Tasks of an operating system, kernel types, user and kernel mode, system calls, the boot process with UEFI and systemd, drivers, shells, and Windows, Linux and macOS compared.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+An **operating system** (OS) is the software that manages a computer's hardware and gives application programs a uniform, secure environment. Without an operating system, every program would itself have to know how to talk to this particular SSD, how to divide up memory and how to share the processor with other programs. This page covers how operating systems are built. The management of [processes](/en/computer-science/processes-and-threads/), [memory](/en/computer-science/memory-management-os/) and [file systems](/en/computer-science/file-systems/) each have their own page; practical work with Linux is under [Linux basics](/en/deployment/linux_server/linux_basics/).
+
+## Tasks of an operating system
+
+An operating system can be described from two points of view:
+
+- As an **extended machine** (abstraction): it hides complicated hardware behind simple concepts. A program writes to a **file** instead of addressing sectors on a disk. It runs in a **process** as if it had the processor to itself and sees its own **address space** as if all memory belonged to it.
+- As a **resource manager**: it shares processor time, memory, devices and network fairly and securely between programs and users and prevents one program from interfering with others.
+
+| Task                       | Examples                                                                  |
+| -------------------------- | ------------------------------------------------------------------------- |
+| **Process management**     | creating and terminating processes, scheduling, synchronisation, communication |
+| **Memory management**      | allocating and protecting memory, virtual memory, swapping                |
+| **File management**        | file systems, directories, access rights                                  |
+| **Device management**      | drivers, input/output, interrupts, buffers                                |
+| **User management and security** | login, permissions, process isolation, logging                      |
+| **Networking**             | protocol stack (TCP/IP), sockets                                          |
+| **User interface**         | shell, graphical interface                                                |
+
+### Types of operating systems
+
+| Type                             | Characteristic                                                              | Examples                            |
+| -------------------------------- | --------------------------------------------------------------------------- | ----------------------------------- |
+| **Desktop**                      | interactive, graphical interface                                            | Windows, macOS, Linux distributions |
+| **Server**                       | services for many users, stability, remote administration                   | Windows Server, Linux (Debian, RHEL, Ubuntu Server) |
+| **Mobile**                       | touch, power saving, app sandboxes                                          | Android (Linux kernel), iOS         |
+| **Real-time operating system** (RTOS) | guaranteed maximum response times (**hard** real time) rather than just high throughput | FreeRTOS, Zephyr, QNX, VxWorks |
+| **Embedded**                     | tailored to one device, few resources                                       | router firmware, embedded Linux     |
+| **Batch processing**             | jobs processed one after another without interaction, historically on mainframes | z/OS (today also interactive) |
+
+Development went from batch processing via **multiprogramming** (several programs in memory; while one waits for input/output, another computes) to **time-sharing** (many users at once, each getting short time slices). Today all widely used systems are **multi-user** and **multitasking** systems.
+
+## User mode and kernel mode
+
+If every program accessed the hardware directly, a faulty program could crash the whole computer or read other people's data. Processors therefore have at least two **privilege levels**:
+
+- In **kernel mode** (privileged mode), all instructions are allowed: access to devices, disabling interrupts, changing page tables. The core of the operating system runs here.
+- In **user mode**, privileged instructions are blocked and a process only sees its own memory. All applications run here.
+
+x86 has four **rings** (ring 0 = kernel to ring 3 = user); in practice only ring 0 and ring 3 are used. ARM calls the levels _exception levels_ (EL0 for applications, EL1 for the kernel, EL2 for the hypervisor). If a program in user mode attempts a privileged instruction or an access to someone else's memory, the processor raises an exception and the operating system terminates the process (on Linux with the signal `SIGSEGV`, "Segmentation fault").
+
+### System calls
+
+A program in user mode cannot read a file from the SSD by itself. It asks the kernel to do so with a **system call** (_syscall_):
+
+1. The program calls a library function, for example `File.ReadAllText` in .NET or `std::fs::read_to_string` in Rust. This ultimately calls a function of the C library or the Windows API.
+2. The library places the **system call number** and the parameters in registers and executes a special instruction (`syscall` on x86-64, `svc` on ARM, `ecall` on RISC-V).
+3. The processor switches to kernel mode and jumps to a fixed entry point in the kernel.
+4. The kernel checks the parameters and permissions, performs the operation and puts the result in a register.
+5. The processor returns to user mode and the program continues.
+
+| Area           | Linux (POSIX)                         | Windows (Win32 API)                     |
+| -------------- | ------------------------------------- | --------------------------------------- |
+| Processes      | `fork`, `execve`, `exit`, `waitpid`   | `CreateProcess`, `ExitProcess`, `WaitForSingleObject` |
+| Files          | `open`, `read`, `write`, `close`      | `CreateFile`, `ReadFile`, `WriteFile`, `CloseHandle` |
+| Memory         | `mmap`, `brk`                         | `VirtualAlloc`                          |
+| Communication  | `pipe`, `socket`, `kill`              | `CreatePipe`, `socket`                  |
+
+A system call is considerably more expensive than a normal function call because the mode switch takes time. That is why libraries buffer input and output and only call the kernel when a buffer is full. On Linux, `strace` shows all system calls of a program; on Windows, _Process Monitor_ does.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// each of these lines leads to system calls internally (open, write, read, close, unlink)
+string path = Path.Combine(Path.GetTempPath(), "syscall-demo.txt");
+File.WriteAllText(path, "Hello kernel");
+string content = File.ReadAllText(path);
+File.Delete(path);
+Console.WriteLine(content);                           // Hello kernel
+
+// information provided by the operating system
+Console.WriteLine(Environment.ProcessId > 0);        // True
+Console.WriteLine(Environment.ProcessorCount >= 1);  // True
+Console.WriteLine(OperatingSystem.IsLinux() || OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()); // True
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fs;
+
+fn main() -> std::io::Result<()> {
+    // each of these lines leads to system calls internally (open, write, read, close, unlink)
+    let path = std::env::temp_dir().join("syscall-demo.txt");
+    fs::write(&path, "Hello kernel")?;
+    let content = fs::read_to_string(&path)?;
+    fs::remove_file(&path)?;
+    println!("{content}");                                   // Hello kernel
+
+    // information provided by the operating system
+    println!("{}", std::process::id() > 0);                  // true
+    println!("{}", ["linux", "windows", "macos"].contains(&std::env::consts::OS)); // true
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+An excerpt from `strace` for a program that reads a file shows the actual calls:
+
+```text
+openat(AT_FDCWD, "/tmp/syscall-demo.txt", O_RDONLY|O_CLOEXEC) = 3
+read(3, "Hello kernel", 8192)           = 12
+close(3)                                = 0
+write(1, "Hello kernel\n", 13)          = 13
+```
+
+The number `3` is a **file descriptor**, a number under which the kernel manages the open file for this process. Descriptors 0, 1 and 2 are standard input, standard output and standard error.
+
+## Kernel types
+
+The **kernel** is the part of the operating system that runs in kernel mode. How much functionality belongs in the kernel is a fundamental design decision.
+
+| Kernel type     | Structure                                                              | Advantages                                | Disadvantages                                 | Examples                     |
+| --------------- | ---------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------------- | ---------------------------- |
+| **monolithic**  | all services (scheduler, memory, file systems, drivers, network) in one large program in kernel mode | fast, because components call each other directly | a faulty driver can crash the whole system | Linux, FreeBSD |
+| **microkernel** | only the essentials in the kernel: address spaces, threads, inter-process communication. Drivers and file systems run as processes in user mode | stable, secure, components can be restarted individually, formally verifiable | slower because of many messages and mode switches | QNX, MINIX 3, seL4 |
+| **hybrid**      | microkernel structure, but for speed many services still run in kernel mode | compromise                          | microkernel advantages only partly realised   | Windows NT (Windows 10/11), macOS (XNU) |
+
+Linux is monolithic but **modular**: drivers and file systems can be loaded and unloaded at run time as **kernel modules** (`lsmod`, `modprobe`). The "monolith versus microkernel" debate became famous in 1992, when the computer scientist Andrew Tanenbaum called Linux "obsolete" and Linus Torvalds disagreed.
+
+## Boot process
+
+The **boot process** leads from switching on to logging in. Using a Linux PC with UEFI as an example:
+
+1. **Power on**: the PSU reports stable voltages (_power good_), and the processor starts at a fixed address in the firmware.
+2. **UEFI firmware**: hardware initialisation and [POST](/en/computer-science/hardware/#post). The firmware reads the boot order from NVRAM.
+3. **EFI system partition** (ESP): a small FAT32 partition on which the boot loaders are stored as `.efi` files. With **Secure Boot** enabled, the firmware checks their signature.
+4. **Boot loader** (GRUB 2 or systemd-boot): shows a menu if needed, loads the **kernel** and the **initramfs** (a small file system in RAM with the drivers needed to mount the real root partition, for example for NVMe, RAID or encryption) and passes kernel parameters.
+5. **Kernel**: unpacks itself, initialises memory management, the scheduler and drivers, mounts the root partition and starts the first process.
+6. **init** (PID 1): on today's distributions this is **systemd**. It starts services in parallel according to their dependencies until the desired **target** is reached (`multi-user.target` for servers, `graphical.target` for desktops). Older systems used SysVinit with **runlevels**.
+7. **Login**: a login prompt on the console or a display manager (GDM, SDDM) with a graphical login.
+
+**Windows** works in a similar way: the firmware starts the **Windows Boot Manager** (`bootmgfw.efi`) on the ESP, which reads the boot configuration (BCD) and starts `winload.efi`. This loads the kernel `ntoskrnl.exe` with the hardware abstraction layer and the boot drivers. Then come the session manager `smss.exe`, `wininit.exe` with the services and `winlogon.exe` with the login screen.
+
+With the old **BIOS boot process**, the firmware instead loaded the first sector of the disk (the **master boot record**, 512 bytes) and ran the small piece of boot code it contained. Partitioning with MBR and GPT is described on the page [File systems](/en/computer-science/file-systems/#partitioning).
+
+## Drivers
+
+A **device driver** is the part of the operating system that controls a particular device. It translates the kernel's general requests ("read block 4711") into the specific commands of the hardware (write registers, set up DMA, handle interrupts). This way the rest of the system does not need to know the details of every device.
+
+- On Linux, drivers are usually part of the kernel source code and available as modules. Devices appear as files under `/dev` (e.g. `/dev/nvme0n1`); the `udev` service detects new devices and loads suitable modules.
+- On Windows, drivers are `.sys` files installed with an `.inf` file. 64-bit Windows only loads **signed** kernel-mode drivers. Device Manager shows their status.
+- Many devices follow **standard classes** (USB HID for keyboards, USB mass storage, NVMe, AHCI) and therefore work with a generic driver of the operating system.
+
+Because drivers run in kernel mode, they are a frequent cause of crashes. A faulty driver can trigger a blue screen (Windows) or a **kernel panic** (Linux). Modern systems therefore move some drivers into user mode (Windows UMDF, printer and many USB drivers).
+
+## Shells and user interfaces
+
+The **shell** is the interface between user and operating system. The name comes from the image of the shell around the kernel.
+
+- A **command-line shell** (CLI) reads commands, starts programs, connects them via pipes and can run scripts. On Linux and macOS, **Bash** and **Zsh** are common; on Windows, **PowerShell** (object-oriented, see [PowerShell](/en/deployment/windows_server/powershell/)) and the old command prompt `cmd.exe`.
+- A **graphical user interface** (GUI) with windows, mouse and touch: Windows Explorer, macOS Finder, and on Linux desktop environments such as GNOME and KDE Plasma on top of a display server (X11 or Wayland).
+
+For servers and automation the command line matters more: it is scriptable, needs few resources and works over SSH.
+
+## Windows, Linux and macOS
+
+| Feature             | Windows                               | Linux                                        | macOS                                   |
+| ------------------- | ------------------------------------- | -------------------------------------------- | --------------------------------------- |
+| Maker               | Microsoft                             | community (kernel by Linus Torvalds, 1991), distributions by companies and projects | Apple |
+| Kernel              | Windows NT (hybrid)                   | Linux (monolithic, modular)                  | XNU (hybrid of the Mach microkernel and BSD) |
+| Licence             | proprietary, paid                     | **GPLv2** (kernel), distributions mostly free | proprietary, parts (Darwin) open source |
+| Default file system | NTFS                                  | ext4, Btrfs, XFS                             | APFS                                    |
+| Paths               | `C:\Users\anna`, drive letters        | `/home/anna`, one directory tree             | `/Users/anna`, one directory tree       |
+| Case sensitivity of file names | not distinguished          | distinguished                                | not distinguished by default            |
+| Software installation | installers, Microsoft Store, `winget` | package managers (`apt`, `dnf`, `pacman`) | App Store, `.dmg`, Homebrew             |
+| Configuration       | registry, group policies              | text files under `/etc`                      | property lists (`.plist`)               |
+| Standard            | own API (Win32)                       | largely **POSIX**-compliant                  | POSIX-certified (UNIX 03)               |
+| Main use            | desktop, businesses, gaming           | servers, cloud, containers, embedded, supercomputers, Android | creative work, development |
+
+**POSIX** (_Portable Operating System Interface_, IEEE 1003) is a standard for the interface of Unix-like systems: system calls, shell and tools. Programs that only use POSIX can be compiled on Linux, macOS and BSD. On Windows, **WSL** (_Windows Subsystem for Linux_) provides a Linux environment with a real Linux kernel in a lightweight virtual machine.
+
+### Licences and distributions
+
+The Linux kernel alone is not yet a complete operating system. A **distribution** bundles it with system programs (mostly from the GNU project), a package manager, an installer and a desktop. Well-known distributions and their families are described in [Linux basics](/en/deployment/linux_server/linux_basics/#distributions).
+
+| Licence model                 | Meaning                                                                   | Examples                          |
+| ----------------------------- | ------------------------------------------------------------------------- | --------------------------------- |
+| **proprietary**               | source code secret, use only under a licence agreement                    | Windows, macOS                    |
+| **copyleft** (e.g. GPL)       | free to use, modify and pass on, but derived works must use the same licence | Linux kernel, GNU tools        |
+| **permissive** (BSD, MIT, Apache) | free to use, also in proprietary software; only attribution required  | FreeBSD, large parts of macOS and Android |
+
+**Open source** means that the source code is published under a licence approved by the Open Source Initiative. Free of charge and open source are not the same thing: Red Hat Enterprise Linux is open source, but support and updates are only available with a paid subscription.
+
+Running several operating systems on one computer at the same time is made possible by [virtualisation](/en/deployment/virtualisation/).
+
+## Further reading
+
+- Andrew S. Tanenbaum, Herbert Bos: _Modern Operating Systems_, Pearson
+- Abraham Silberschatz, Peter B. Galvin, Greg Gagne: _Operating System Concepts_, Wiley
+- [The Linux Kernel documentation](https://docs.kernel.org/)

@@ -1,0 +1,313 @@
+---
+title: Differential Equations
+description: "Ordinary differential equations: separation of variables, first-order linear ODEs, growth models, RC and RL circuits, second-order linear ODEs, damped oscillations, slope fields and Euler's method."
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **differential equation** (DE, here ODE for ordinary differential equation) is an equation in which an unknown function appears together with its derivatives. It does not describe the state of a system directly but how it changes: the rate of cooling depends on the temperature difference, the charging current of a capacitor on its voltage, the acceleration of a spring on its displacement. From this law of change and the initial state, the behaviour over time is calculated.
+
+## Basic terms
+
+| Term | Meaning | Example |
+| ---- | ------- | ------- |
+| ordinary DE | the unknown function depends on one variable | $y'(t) = -2\,y(t)$ |
+| order | highest derivative that occurs | $y'' + 4y = 0$ is second order |
+| linear | $y$ and its derivatives occur only to the first power and are not multiplied together | $y' + 3y = 5$ (linear), $y' = y^2$ (non-linear) |
+| homogeneous | linear and without a term depending only on $x$ (forcing term $= 0$) | $y' + 3y = 0$ |
+| general solution | solution with as many free constants as the order | $y = C \cdot e^{-2t}$ |
+| particular solution | solution with specific values of the constants | $y = 5 \cdot e^{-2t}$ |
+| initial value problem | DE plus initial conditions that determine the constants | $y' = -2y$, $y(0) = 5$ |
+
+A solution is a **function**, not a number. Whether a function solves a DE is checked by substitution.
+
+:::tip[Example: Check]
+Does $y = C \cdot e^{-2t}$ solve the DE $y' = -2y$? We have $y' = -2C e^{-2t} = -2 \cdot y$. The equation holds for every $C$. With $y(0) = 5$ it follows that $C = 5$.
+:::
+
+## Slope field
+
+A first-order DE $y' = f(x, y)$ gives, at every point of the plane, the slope of the solution curve through that point. Drawing short line segments with this slope at many points gives the **slope field** (direction field). Solution curves are tangent to these segments everywhere; exactly one solution passes through each point. The slope field shows the qualitative behaviour (growth, approach to a limit, equilibria) without having to solve the DE. GeoGebra draws it with the command `SlopeField`.
+
+## Separation of variables
+
+If the DE can be written in the form $y' = g(x) \cdot h(y)$, you bring all $y$ terms to one side and all $x$ terms to the other and integrate both sides:
+
+$$
+\frac{\mathrm{d}y}{\mathrm{d}x} = g(x) \cdot h(y) \quad\Rightarrow\quad \int \frac{1}{h(y)}\,\mathrm{d}y = \int g(x)\,\mathrm{d}x
+$$
+
+:::tip[Example]
+$y' = x \cdot y$ with $y(0) = 3$:
+
+$$
+\frac{\mathrm{d}y}{y} = x\,\mathrm{d}x \quad\Rightarrow\quad \ln\lvert y \rvert = \frac{x^2}{2} + C_1 \quad\Rightarrow\quad y = C \cdot e^{\frac{x^2}{2}}
+$$
+
+Here $C = \pm e^{C_1}$. From $y(0) = C = 3$ the solution is $y = 3\,e^{\frac{x^2}{2}}$.
+:::
+
+The constant of integration is only needed on one side. Dividing by $h(y)$ may lose the constant solution $y = 0$; here it is included as $C = 0$.
+
+## First-order linear DEs
+
+The most common form in engineering has constant coefficients:
+
+$$
+y' + a \cdot y = b
+$$
+
+### Homogeneous equation
+
+For $b = 0$, separation of variables gives
+
+$$
+y' + a y = 0 \quad\Rightarrow\quad y_h = C \cdot e^{-a x}
+$$
+
+### Constant forcing term
+
+If $b \neq 0$ is constant, the general solution is the sum of the homogeneous solution and a particular solution $y_p$. The constant function $y_p = \frac{b}{a}$ satisfies the equation (because $y_p' = 0$). Therefore:
+
+$$
+y = y_h + y_p = C \cdot e^{-a x} + \frac{b}{a}
+$$
+
+For $a > 0$, the exponential term decays and $y$ approaches the **steady-state value** $\frac{b}{a}$. The principle "general solution = homogeneous solution + one particular solution" applies to all linear DEs. For a non-constant forcing term, $y_p$ is found with a suitable trial function or by **variation of constants** (replacing $C$ by a function $C(x)$).
+
+## Growth and decay models
+
+| Model | DE | Solution | Behaviour |
+| ----- | -- | -------- | --------- |
+| exponential | $N' = k \cdot N$ | $N(t) = N_0 \cdot e^{k t}$ | change proportional to the amount; $k > 0$ growth, $k < 0$ decay |
+| limited | $N' = k \cdot (S - N)$ | $N(t) = S - (S - N_0) \cdot e^{-k t}$ | change proportional to the distance from the limit $S$ |
+| logistic | $N' = r \cdot N \cdot \left(1 - \frac{N}{S}\right)$ | $N(t) = \dfrac{S}{1 + \left(\frac{S}{N_0} - 1\right) e^{-r t}}$ | initially exponential, then saturation at $S$ |
+
+These functions are described on the page on [exponential functions](/en/mathematics/functions/exponential-and-logarithmic-functions/); here you can see where they come from.
+
+:::tip[Example: Logistic growth of an app]
+An app has 100 users, the potential market is $S = 10{,}000$ and the growth rate is $r = 0.5$ per week:
+
+$$
+N(t) = \frac{10\,000}{1 + 99 \cdot e^{-0.5 t}} \qquad N(10) \approx 5999
+$$
+
+The number of users grows fastest at the point of inflection $N = \frac{S}{2}$, i.e. when $99 \cdot e^{-0.5 t} = 1$, so $t = \frac{\ln 99}{0.5} \approx 9.2$ weeks.
+:::
+
+### Newton's law of cooling
+
+A body at temperature $T$ in surroundings at temperature $T_U$ cools faster the greater the temperature difference:
+
+$$
+T' = -k \cdot (T - T_U) \quad\Rightarrow\quad T(t) = T_U + (T_0 - T_U) \cdot e^{-k t}
+$$
+
+This is limited growth (or decrease) with the limit $T_U$.
+
+:::tip[Example: Coffee]
+A coffee is at $90\ \text{°C}$, the room at $20\ \text{°C}$. After 10 minutes the coffee is at $60\ \text{°C}$.
+
+$$
+60 = 20 + 70 \cdot e^{-10k} \quad\Rightarrow\quad k = \frac{\ln\frac{70}{40}}{10} \approx 0.0560\ \text{min}^{-1}
+$$
+
+When will it be only $40\ \text{°C}$? $\;40 = 20 + 70 e^{-k t} \Rightarrow t = \frac{\ln 3.5}{k} \approx 22.4\ \text{min}$.
+:::
+
+### RC and RL circuits
+
+When **charging a capacitor** through a resistor, Kirchhoff's voltage law gives $U_0 = R \cdot i + u_C$ with $i = C \cdot u_C'$:
+
+$$
+R C \cdot u_C' + u_C = U_0 \quad\Rightarrow\quad u_C(t) = U_0 \left(1 - e^{-\frac{t}{\tau}}\right) \qquad \tau = R C
+$$
+
+When **switching on an inductor**, $U_0 = R \cdot i + L \cdot i'$:
+
+$$
+L \cdot i' + R \cdot i = U_0 \quad\Rightarrow\quad i(t) = \frac{U_0}{R} \left(1 - e^{-\frac{t}{\tau}}\right) \qquad \tau = \frac{L}{R}
+$$
+
+Both are first-order linear DEs with a constant forcing term. After one time constant $\tau$, $1 - e^{-1} \approx 63\,\%$ of the final value is reached, after $5\tau$ more than $99\,\%$.
+
+:::tip[Example: RL circuit]
+$U_0 = 10\ \text{V}$, $R = 100\ \Omega$, $L = 0.5\ \text{H}$: $\;\tau = \frac{0.5}{100} = 5\ \text{ms}$, final current $\frac{U_0}{R} = 0.1\ \text{A}$. After $10\ \text{ms}$:
+
+$$
+i(10\ \text{ms}) = 0.1 \cdot \left(1 - e^{-2}\right) \approx 0.0865\ \text{A}
+$$
+:::
+
+## Second-order linear DEs
+
+Oscillations in mechanics and electrical engineering lead to second-order linear DEs with constant coefficients:
+
+$$
+y'' + a \cdot y' + b \cdot y = 0
+$$
+
+### Characteristic equation
+
+The trial function $y = e^{\lambda x}$ gives $e^{\lambda x}(\lambda^2 + a\lambda + b) = 0$. Since $e^{\lambda x}$ is never zero, $\lambda$ must satisfy the **characteristic equation**:
+
+$$
+\lambda^2 + a \lambda + b = 0 \qquad \lambda_{1,2} = -\frac{a}{2} \pm \sqrt{\frac{a^2}{4} - b}
+$$
+
+Depending on the discriminant there are three cases:
+
+| Roots of the characteristic equation | General solution |
+| ------------------------------------ | ---------------- |
+| two distinct real roots $\lambda_1 \neq \lambda_2$ | $y = C_1 e^{\lambda_1 x} + C_2 e^{\lambda_2 x}$ |
+| one repeated real root $\lambda$ | $y = (C_1 + C_2 x) \cdot e^{\lambda x}$ |
+| [complex conjugate](/en/mathematics/algebra/complex-numbers/) roots $\lambda = \alpha \pm j\omega$ | $y = e^{\alpha x} \cdot \big(C_1 \cos(\omega x) + C_2 \sin(\omega x)\big)$ |
+
+The two constants are determined by two initial conditions, usually $y(0)$ and $y'(0)$.
+
+:::tip[Examples]
+**Two real roots:** $y'' + 5y' + 6y = 0$, $y(0) = 1$, $y'(0) = 0$. From $\lambda^2 + 5\lambda + 6 = 0$: $\lambda_1 = -2$, $\lambda_2 = -3$:
+
+$$
+y = C_1 e^{-2x} + C_2 e^{-3x} \qquad
+\begin{aligned}
+y(0) &= C_1 + C_2 = 1 \\
+y'(0) &= -2C_1 - 3C_2 = 0
+\end{aligned}
+\quad\Rightarrow\quad C_1 = 3,\ C_2 = -2
+$$
+
+Solution: $y = 3e^{-2x} - 2e^{-3x}$.
+
+**Repeated root:** $y'' + 4y' + 4y = 0$: $\;(\lambda + 2)^2 = 0$, $\lambda = -2$, $\;y = (C_1 + C_2 x)\,e^{-2x}$.
+
+**Complex roots:** $y'' + 2y' + 5y = 0$: $\;\lambda = -1 \pm \sqrt{1 - 5} = -1 \pm 2j$, $\;y = e^{-x}\big(C_1 \cos 2x + C_2 \sin 2x\big)$.
+:::
+
+If the equation is inhomogeneous, $y'' + a y' + b y = s(x)$, a particular solution is again added to the homogeneous solution. For a constant forcing term $s(x) = c$, $y_p = \frac{c}{b}$; for $s(x) = \sin(\omega x)$ the trial function is $y_p = A \sin(\omega x) + B \cos(\omega x)$. If the driving frequency matches the natural frequency of a weakly damped system, the amplitude becomes very large (**resonance**).
+
+## Damped oscillations
+
+A spring-mass system with mass $m$, spring constant $c$ and damping $d$ (friction proportional to velocity) obeys
+
+$$
+m \ddot{x} + d \dot{x} + c x = 0 \quad\Leftrightarrow\quad \ddot{x} + 2\delta \dot{x} + \omega_0^2 x = 0 \qquad \delta = \frac{d}{2m},\ \omega_0 = \sqrt{\frac{c}{m}}
+$$
+
+Here $\omega_0$ is the **angular frequency** of the undamped oscillation and $\delta$ the **decay constant**. The three cases of the characteristic equation $\lambda = -\delta \pm \sqrt{\delta^2 - \omega_0^2}$ have a clear physical meaning:
+
+| Case | Condition | Behaviour |
+| ---- | --------- | --------- |
+| underdamped | $\delta < \omega_0$ | damped oscillation $x(t) = A\,e^{-\delta t} \cos(\omega_d t + \varphi)$ with $\omega_d = \sqrt{\omega_0^2 - \delta^2}$ |
+| critically damped | $\delta = \omega_0$ | fastest return to rest without overshoot |
+| overdamped | $\delta > \omega_0$ | slow creep back to rest, no oscillation |
+| undamped | $\delta = 0$ | harmonic oscillation $x(t) = A \cos(\omega_0 t + \varphi)$ |
+
+Shock absorbers and analogue pointer instruments are designed close to critical damping.
+
+### Electrical resonant circuit
+
+In the **series RLC circuit**, Kirchhoff's voltage law gives for the capacitor charge $q$: $L \ddot{q} + R \dot{q} + \frac{1}{C} q = 0$. This is the same equation with
+
+$$
+\delta = \frac{R}{2L} \qquad \omega_0 = \frac{1}{\sqrt{LC}}
+$$
+
+The inductance corresponds to the mass, the resistance to the damping and $\frac{1}{C}$ to the spring constant.
+
+:::tip[Example]
+$L = 10\ \text{mH}$, $C = 1\ \mu\text{F}$, $R = 20\ \Omega$:
+
+$$
+\omega_0 = \frac{1}{\sqrt{0.01 \cdot 10^{-6}}} = 10\,000\ \text{s}^{-1} \qquad \delta = \frac{20}{2 \cdot 0.01} = 1000\ \text{s}^{-1}
+$$
+
+Since $\delta < \omega_0$, the circuit oscillates with damping at $\omega_d = \sqrt{10^8 - 10^6} \approx 9950\ \text{s}^{-1}$, i.e. about $f = \frac{\omega_d}{2\pi} \approx 1.58\ \text{kHz}$. The amplitude decreases with $e^{-1000 t}$; after $1\ \text{ms}$ it has fallen to $e^{-1} \approx 37\,\%$.
+:::
+
+## Euler's method
+
+Many DEs cannot be solved in closed form. Then the solution is calculated [numerically](/en/mathematics/analysis/numerical-methods/). The simplest method is **Euler's method** (polygon method): from a known point you move a small step $h$ further with the slope given by the slope field:
+
+$$
+x_{n+1} = x_n + h \qquad y_{n+1} = y_n + h \cdot f(x_n, y_n)
+$$
+
+:::tip[Example]
+$y' = y$, $y(0) = 1$, exact solution $y = e^x$. With $h = 0.1$, each step is $y_{n+1} = y_n + 0.1\,y_n = 1.1\,y_n$:
+
+| $x$ | $0$ | $0.1$ | $0.2$ | $0.3$ | … | $1$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| $y$ (Euler) | $1$ | $1.1$ | $1.21$ | $1.331$ | … | $1.1^{10} \approx 2.5937$ |
+| $e^x$ | $1$ | $1.1052$ | $1.2214$ | $1.3499$ | … | $2.7183$ |
+
+The error at $x = 1$ is about $4.6\,\%$. With $h = 0.01$ you get $1.01^{100} \approx 2.7048$ (error $0.5\,\%$).
+:::
+
+The error is roughly proportional to the step size $h$ (a first-order method). More accurate methods such as the fourth-order **Runge-Kutta method** evaluate the slope several times per step; they are used in simulation software and physics engines for games. For this, second-order DEs are written as a system of two first-order DEs (position and velocity).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// Euler's method for y' = f(x, y) from x0 to xEnd
+static double Euler(Func<double, double, double> f, double x0, double y0, double xEnd, double h)
+{
+    int steps = (int)Math.Round((xEnd - x0) / h);
+    double x = x0, y = y0;
+    for (int i = 0; i < steps; i++)
+    {
+        y += h * f(x, y);
+        x += h;
+    }
+    return y;
+}
+
+var inv = CultureInfo.InvariantCulture;
+foreach (double h in new[] { 0.1, 0.01, 0.001 })
+{
+    double y = Euler((_, v) => v, 0, 1, 1, h);
+    Console.WriteLine(string.Create(inv, $"h = {h}: y(1) ≈ {y:F6}, error {Math.E - y:F6}"));
+}
+// h = 0.1: y(1) ≈ 2.593742, error 0.124539
+// h = 0.01: y(1) ≈ 2.704814, error 0.013468
+// h = 0.001: y(1) ≈ 2.716924, error 0.001358
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Euler's method for y' = f(x, y) from x0 to x_end
+fn euler(f: impl Fn(f64, f64) -> f64, x0: f64, y0: f64, x_end: f64, h: f64) -> f64 {
+    let steps = ((x_end - x0) / h).round() as usize;
+    let (mut x, mut y) = (x0, y0);
+    for _ in 0..steps {
+        y += h * f(x, y);
+        x += h;
+    }
+    y
+}
+
+fn main() {
+    for h in [0.1, 0.01, 0.001] {
+        let y = euler(|_x, v| v, 0.0, 1.0, 1.0, h);
+        println!("h = {h}: y(1) ≈ {y:.6}, error {:.6}", std::f64::consts::E - y);
+    }
+    // h = 0.1: y(1) ≈ 2.593742, error 0.124539
+    // h = 0.01: y(1) ≈ 2.704814, error 0.013468
+    // h = 0.001: y(1) ≈ 2.716924, error 0.001358
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Further reading
+
+- [Lothar Papula: Mathematik für Ingenieure und Naturwissenschaftler, Volume 2 (Springer Vieweg)](https://link.springer.com/book/10.1007/978-3-658-07790-7)
+- [MIT OpenCourseWare 18.03: Differential Equations](https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/)

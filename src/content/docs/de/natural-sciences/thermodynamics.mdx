@@ -1,0 +1,287 @@
+---
+title: Wärmelehre
+description: Temperatur und Temperaturskalen, Wärmeausdehnung, Wärme und spezifische Wärmekapazität, Phasenübergänge, Wärmetransport, ideales Gas, Hauptsätze, Entropie, Wärmekraftmaschinen und Wärmepumpen.
+sidebar:
+  order: 9
+---
+
+Die **Wärmelehre** (Thermodynamik) beschreibt Temperatur, Wärme und die Umwandlung von Wärme in Arbeit. Sie erklärt, warum Brücken Dehnfugen brauchen, wie ein Kühlschrank funktioniert und warum kein Kraftwerk einen Wirkungsgrad von 100 % erreichen kann.
+
+## Temperatur
+
+Die **Temperatur** ist ein Maß für die mittlere kinetische Energie der ungeordneten Teilchenbewegung. Je heißer ein Körper, desto heftiger schwingen oder fliegen seine Atome und Moleküle. Bringt man zwei Körper in Kontakt, gleichen sich ihre Temperaturen an (thermisches Gleichgewicht, manchmal „nullter Hauptsatz“ genannt); darauf beruht jedes Thermometer.
+
+### Temperaturskalen
+
+| Skala | Fixpunkte | Umrechnung |
+| --- | --- | --- |
+| **Kelvin** (SI) | absoluter Nullpunkt $0\,\mathrm{K}$, definiert über $k_\mathrm{B}$ | $T = \vartheta / {}^\circ\mathrm{C} + 273{,}15$ (in K) |
+| **Celsius** | Eis schmilzt bei $0\,^\circ\mathrm{C}$, Wasser siedet bei $100\,^\circ\mathrm{C}$ (bei $1013\,\mathrm{hPa}$) | $\vartheta = T/\mathrm{K} - 273{,}15$ (in °C) |
+| **Fahrenheit** (USA) | $32\,^\circ\mathrm{F}$ und $212\,^\circ\mathrm{F}$ | $\vartheta_\mathrm{F} = 1{,}8 \cdot \vartheta_\mathrm{C} + 32$ |
+
+Der **absolute Nullpunkt** $0\,\mathrm{K} = -273{,}15\,^\circ\mathrm{C}$ ist die tiefste mögliche Temperatur; er lässt sich nicht erreichen (dritter Hauptsatz). Ein Kelvin ist gleich groß wie ein Grad Celsius, Temperatur**differenzen** sind deshalb in K und °C zahlengleich und werden in K angegeben. In physikalischen Formeln wie dem Gasgesetz oder Stefan-Boltzmann muss immer die absolute Temperatur in Kelvin stehen.
+
+## Wärmeausdehnung
+
+Fast alle Stoffe dehnen sich beim Erwärmen aus, weil die Teilchen stärker schwingen und mehr Platz brauchen.
+
+$$
+\Delta l = \alpha \cdot l_0 \cdot \Delta T, \qquad \Delta V = \gamma \cdot V_0 \cdot \Delta T, \qquad \gamma \approx 3\alpha \;(\text{Festkörper})
+$$
+
+| Stoff | Längenausdehnungskoeffizient $\alpha$ in $10^{-6}\,\mathrm{K^{-1}}$ |
+| --- | --- |
+| Invar (Eisen-Nickel) | 1,2 |
+| Glas (Quarzglas / Fensterglas) | 0,5 / 9 |
+| Beton | etwa 12 |
+| Stahl | 12 |
+| Kupfer | 17 |
+| Aluminium | 23 |
+
+:::tip[Beispiel: Schiene]
+Eine $30\,\mathrm{m}$ lange Stahlschiene erwärmt sich von $-10\,^\circ\mathrm{C}$ auf $40\,^\circ\mathrm{C}$: $\Delta l = 12 \cdot 10^{-6} \cdot 30 \cdot 50 = 0{,}018\,\mathrm{m} = 18\,\mathrm{mm}$. Ohne Dehnfuge oder Vorspannung würde sie sich verbiegen. Weil Beton und Stahl fast denselben Koeffizienten haben, funktioniert Stahlbeton.
+:::
+
+Anwendungen: Bimetallstreifen (Thermostat, Überlastschutz) aus zwei Metallen mit verschiedenem $\alpha$ krümmen sich beim Erwärmen. Flüssigkeitsthermometer nutzen die Volumenausdehnung.
+
+**Anomalie des Wassers**: Wasser hat seine größte Dichte bei $4\,^\circ\mathrm{C}$ und dehnt sich beim Gefrieren um etwa 9 % aus. Seen frieren daher von oben zu, am Grund bleibt $4\,^\circ\mathrm{C}$ warmes Wasser, und Fische überleben. Frostsprengung von Gestein und geplatzte Wasserleitungen sind die Kehrseite.
+
+## Wärme und Wärmekapazität
+
+**Wärme** $Q$ ist Energie, die aufgrund eines Temperaturunterschieds übertragen wird, immer vom wärmeren zum kälteren Körper. Ihre Einheit ist das Joule. Die zugeführte Wärme erhöht die **innere Energie** $U$ des Körpers.
+
+Um einen Körper zu erwärmen, braucht man
+
+$$
+Q = c \cdot m \cdot \Delta T
+$$
+
+Die **spezifische Wärmekapazität** $c$ in $\mathrm{J/(kg\,K)}$ gibt an, wie viel Energie $1\,\mathrm{kg}$ eines Stoffs für $1\,\mathrm{K}$ Erwärmung braucht. Das Produkt $C = c \cdot m$ heißt Wärmekapazität des Körpers.
+
+| Stoff | $c$ in $\mathrm{J/(kg\,K)}$ |
+| --- | --- |
+| Wasser | 4186 (rund 4190) |
+| Eis | 2100 |
+| Luft (bei konstantem Druck) | 1005 |
+| Aluminium | 900 |
+| Beton | etwa 880 |
+| Eisen, Stahl | 450 |
+| Kupfer | 385 |
+
+Wasser hat eine außergewöhnlich hohe Wärmekapazität. Darum eignet es sich als Kühlmittel und Wärmespeicher, und darum ist das Klima am Meer ausgeglichener als im Landesinneren.
+
+:::tip[Beispiel: Wasserkocher]
+$2\,\mathrm{L}$ Wasser ($2\,\mathrm{kg}$) von $15\,^\circ\mathrm{C}$ auf $100\,^\circ\mathrm{C}$: $Q = 4186 \cdot 2 \cdot 85 = 712\,\mathrm{kJ}$. Ein Wasserkocher mit $2\,\mathrm{kW}$ braucht bei 100 % Wirkungsgrad $712\,000/2000 = 356\,\mathrm{s} \approx 6\,\mathrm{min}$. Das sind $0{,}2\,\mathrm{kWh}$.
+:::
+
+### Mischungsregel
+
+Werden zwei Körper gemischt und geht keine Wärme an die Umgebung verloren, gibt der wärmere so viel Wärme ab, wie der kältere aufnimmt (**Richmannsche Mischungsregel**):
+
+$$
+c_1 m_1 (\vartheta_1 - \vartheta_\mathrm{m}) = c_2 m_2 (\vartheta_\mathrm{m} - \vartheta_2)
+$$
+
+Für zwei Wassermengen ($c$ kürzt sich): $0{,}2\,\mathrm{kg}$ bei $80\,^\circ\mathrm{C}$ und $0{,}3\,\mathrm{kg}$ bei $20\,^\circ\mathrm{C}$ ergeben $\vartheta_\mathrm{m} = \frac{0{,}2 \cdot 80 + 0{,}3 \cdot 20}{0{,}5} = 44\,^\circ\mathrm{C}$.
+
+## Phasenübergänge
+
+Stoffe kommen in den Aggregatzuständen fest, flüssig und gasförmig vor. Bei einem Phasenübergang ändert sich die Temperatur nicht, obwohl Wärme zu- oder abgeführt wird. Die Energie wird gebraucht, um Bindungen zwischen den Teilchen zu lösen, und heißt **latente Wärme** (Umwandlungswärme):
+
+$$
+Q = L \cdot m
+$$
+
+| Übergang | Umkehrung | Wasser |
+| --- | --- | --- |
+| Schmelzen (fest → flüssig) | Erstarren | spezifische Schmelzwärme $L_\mathrm{s} = 334\,\mathrm{kJ/kg}$ bei $0\,^\circ\mathrm{C}$ |
+| Verdampfen (flüssig → gasförmig) | Kondensieren | spezifische Verdampfungswärme $L_\mathrm{v} = 2257\,\mathrm{kJ/kg}$ bei $100\,^\circ\mathrm{C}$ |
+| Sublimieren (fest → gasförmig) | Resublimieren | Reif, Gefriertrocknung |
+
+Die Verdampfungswärme ist bei Wasser mehr als fünfmal so groß wie die Energie, die man braucht, um es von $0$ auf $100\,^\circ\mathrm{C}$ zu erwärmen. Schwitzen kühlt deshalb sehr wirksam: Verdunstendes Wasser entzieht der Haut diese Energie. Umgekehrt verbrüht Wasserdampf stärker als kochendes Wasser, weil er beim Kondensieren auf der Haut die Verdampfungswärme freisetzt.
+
+Der Siedepunkt hängt vom Druck ab. Auf dem Großglockner siedet Wasser schon bei etwa $88\,^\circ\mathrm{C}$, im Dampfdruckkochtopf erst bei etwa $120\,^\circ\mathrm{C}$.
+
+:::tip[Beispiel: Eis zu Wasser]
+$0{,}5\,\mathrm{kg}$ Eis von $-10\,^\circ\mathrm{C}$ soll zu Wasser von $20\,^\circ\mathrm{C}$ werden:
+
+1. Eis erwärmen: $2100 \cdot 0{,}5 \cdot 10 = 10{,}5\,\mathrm{kJ}$
+2. Schmelzen: $334\,000 \cdot 0{,}5 = 167\,\mathrm{kJ}$
+3. Wasser erwärmen: $4186 \cdot 0{,}5 \cdot 20 = 41{,}9\,\mathrm{kJ}$
+
+Summe: $219\,\mathrm{kJ}$. Der größte Teil steckt im Schmelzen.
+:::
+
+## Wärmetransport
+
+| Art | Mechanismus | Beispiele |
+| --- | --- | --- |
+| **Wärmeleitung** | Energieweitergabe von Teilchen zu Teilchen, ohne Materialtransport | Löffel im Tee, Hauswand |
+| **Konvektion** (Wärmeströmung) | erwärmtes Fluid strömt und nimmt Energie mit | Heizkörper, Golfstrom, Wind |
+| **Wärmestrahlung** | elektromagnetische Strahlung (Infrarot), auch im Vakuum | Sonne, Lagerfeuer, Wärmebildkamera |
+
+### Wärmeleitung
+
+Der **Wärmestrom** $\Phi = Q/t$ durch eine Wand der Dicke $d$ und Fläche $A$ beträgt (Gesetz von Fourier):
+
+$$
+\Phi = \lambda \cdot A \cdot \frac{\Delta T}{d}, \qquad [\Phi] = \mathrm{W}
+$$
+
+Die **Wärmeleitfähigkeit** $\lambda$ in $\mathrm{W/(m\,K)}$ beträgt für Kupfer etwa $400$, Stahl $50$, Beton $2$, Glas $1$, Ziegel $0{,}5$ bis $0{,}8$, Wasser $0{,}6$, Holz $0{,}13$, Polystyrol-Dämmplatten (EPS) $0{,}035$ und ruhende Luft $0{,}026$. Gute Dämmstoffe schließen viel ruhende Luft ein.
+
+Im Bauwesen verwendet man den **Wärmedurchgangskoeffizienten** (U-Wert) eines Bauteils in $\mathrm{W/(m^2\,K)}$, der auch die Übergänge an den Oberflächen enthält: $\Phi = U \cdot A \cdot \Delta T$. Je kleiner der U-Wert, desto besser die Dämmung. Moderne Dreifachverglasung erreicht etwa $0{,}6$ bis $0{,}8\,\mathrm{W/(m^2\,K)}$.
+
+:::tip[Beispiel: Dämmplatte]
+$10\,\mathrm{m^2}$ EPS mit $15\,\mathrm{cm}$ Dicke bei $20\,\mathrm{K}$ Temperaturdifferenz: $\Phi = 0{,}035 \cdot 10 \cdot 20/0{,}15 = 46{,}7\,\mathrm{W}$. Dieselbe Fläche aus $15\,\mathrm{cm}$ Beton ($\lambda = 2$) ließe $2{,}7\,\mathrm{kW}$ durch.
+:::
+
+### Wärmestrahlung
+
+Jeder Körper strahlt abhängig von seiner Temperatur elektromagnetische Energie ab. Ein idealer **schwarzer Körper** strahlt nach dem **Stefan-Boltzmann-Gesetz**
+
+$$
+P = \varepsilon \sigma A T^4, \qquad \sigma = 5{,}670 \cdot 10^{-8}\,\mathrm{\frac{W}{m^2\,K^4}}
+$$
+
+mit dem Emissionsgrad $\varepsilon$ ($1$ für den schwarzen Körper, $0{,}95$ für menschliche Haut, unter $0{,}1$ für poliertes Metall). Wegen $T^4$ strahlt ein doppelt so heißer Körper 16-mal so viel ab. $1\,\mathrm{m^2}$ schwarze Fläche bei $300\,\mathrm{K}$ strahlt $459\,\mathrm{W}$ ab; ein Körper nimmt aber zugleich Strahlung der Umgebung auf, netto zählt $\varepsilon\sigma A (T^4 - T_\mathrm{U}^4)$.
+
+Das **Wiensche Verschiebungsgesetz** gibt die Wellenlänge maximaler Abstrahlung an:
+
+$$
+\lambda_\mathrm{max} = \frac{b}{T}, \qquad b = 2{,}898 \cdot 10^{-3}\,\mathrm{m\,K}
+$$
+
+Die Sonne ($5772\,\mathrm{K}$) strahlt am stärksten bei $502\,\mathrm{nm}$ (sichtbares Licht), die Erde ($288\,\mathrm{K}$) bei $10\,\mathrm{\mu m}$ (Infrarot). Dieser Unterschied ist die Grundlage des [Treibhauseffekts](/de/natural-sciences/energy-and-climate-physics/#treibhauseffekt).
+
+## Ideales Gas
+
+Ein **ideales Gas** ist ein Modell: Punktförmige Teilchen ohne Kräfte untereinander, die nur elastisch zusammenstoßen. Reale Gase verhalten sich bei niedrigem Druck und hoher Temperatur annähernd ideal (Luft bei Raumbedingungen sehr gut).
+
+### Zustandsgleichung
+
+$$
+p V = n R T = N k_\mathrm{B} T
+$$
+
+- $n$: Stoffmenge in mol, $N = n N_\mathrm{A}$: Teilchenzahl
+- $R = N_\mathrm{A} k_\mathrm{B} = 8{,}314\,\mathrm{J/(mol\,K)}$: universelle Gaskonstante
+- $T$ in Kelvin, $p$ in Pa, $V$ in $\mathrm{m^3}$
+
+Ein Mol eines idealen Gases nimmt bei $0\,^\circ\mathrm{C}$ und $101\,325\,\mathrm{Pa}$ das **molare Volumen** $V_\mathrm{m} = \frac{8{,}314 \cdot 273{,}15}{101\,325} = 22{,}4\,\mathrm{L}$ ein, unabhängig von der Gasart.
+
+### Spezielle Gasgesetze
+
+Für eine abgeschlossene Gasmenge gilt $\frac{p V}{T} = \text{konstant}$. Hält man eine Größe fest:
+
+| Gesetz | konstant | Beziehung |
+| --- | --- | --- |
+| Boyle-Mariotte (isotherm) | $T$ | $p_1 V_1 = p_2 V_2$ |
+| Gay-Lussac (isobar) | $p$ | $\frac{V_1}{T_1} = \frac{V_2}{T_2}$ |
+| Amontons (isochor) | $V$ | $\frac{p_1}{T_1} = \frac{p_2}{T_2}$ |
+
+:::tip[Beispiel: Autoreifen]
+Ein Reifen hat bei $10\,^\circ\mathrm{C}$ einen Überdruck von $2{,}2\,\mathrm{bar}$, also absolut $2{,}2 + 1{,}013 = 3{,}213\,\mathrm{bar}$. Nach der Fahrt ist er $40\,^\circ\mathrm{C}$ warm, das Volumen bleibt fast gleich:
+
+$$
+p_2 = p_1 \cdot \frac{T_2}{T_1} = 3{,}213 \cdot \frac{313{,}15}{283{,}15} = 3{,}55\,\mathrm{bar}
+$$
+
+Der Überdruck steigt auf $2{,}54\,\mathrm{bar}$. Rechnet man fälschlich mit °C und Überdruck, käme ein viel zu großer Wert heraus. Darum misst man den Reifendruck im kalten Zustand.
+:::
+
+### Kinetische Gastheorie
+
+Der Druck eines Gases entsteht durch die Stöße der Teilchen auf die Wand. Die mittlere kinetische Energie eines Teilchens ist proportional zur absoluten Temperatur:
+
+$$
+\overline{E}_\mathrm{kin} = \frac{3}{2} k_\mathrm{B} T, \qquad v_\mathrm{rms} = \sqrt{\frac{3 R T}{M}}
+$$
+
+Stickstoffmoleküle ($M = 0{,}028\,\mathrm{kg/mol}$) fliegen bei $300\,\mathrm{K}$ im quadratischen Mittel mit $\sqrt{3 \cdot 8{,}314 \cdot 300/0{,}028} = 517\,\mathrm{m/s}$, schneller als der Schall.
+
+## Erster Hauptsatz
+
+Der **erste Hauptsatz** ist der Energieerhaltungssatz für thermodynamische Systeme: Die innere Energie eines Systems ändert sich nur durch zugeführte Wärme und am System verrichtete Arbeit.
+
+$$
+\Delta U = Q + W
+$$
+
+Hier zählen Wärme und Arbeit positiv, wenn sie dem System **zugeführt** werden (in der Physik übliche Konvention). In Technikbüchern findet man auch $\Delta U = Q - W$, wobei $W$ dann die **vom** System abgegebene Arbeit ist. Beide sagen dasselbe. Eine Folgerung: Ein **Perpetuum mobile erster Art**, das Arbeit aus nichts erzeugt, ist unmöglich.
+
+Bei einem Gas ist die Volumenarbeit $W = -\int p\,\mathrm{d}V$ (Kompression: $\mathrm{d}V < 0$, Arbeit wird zugeführt). Im $p$-$V$-Diagramm ist die Arbeit die Fläche unter der Kurve.
+
+| Zustandsänderung | Bedingung | Energiebilanz | Arbeit |
+| --- | --- | --- | --- |
+| **isochor** | $V$ konstant | $\Delta U = Q$ | $W = 0$ |
+| **isobar** | $p$ konstant | $\Delta U = Q + W$ | $W = -p\,\Delta V$ |
+| **isotherm** | $T$ konstant | $\Delta U = 0$, also $Q = -W$ | $W = -nRT \ln\frac{V_2}{V_1}$ |
+| **adiabatisch** | kein Wärmeaustausch, $Q = 0$ | $\Delta U = W$ | $p V^\kappa = \text{konstant}$ |
+
+Der **Adiabatenexponent** $\kappa = c_p/c_V$ beträgt für Luft $1{,}4$. Beim schnellen Zusammendrücken steigt die Temperatur stark: Luft von $20\,^\circ\mathrm{C}$ auf ein Zehntel ihres Volumens verdichtet erreicht $T_2 = T_1 \cdot 10^{\kappa - 1} = 293 \cdot 10^{0{,}4} = 736\,\mathrm{K}$ (etwa $460\,^\circ\mathrm{C}$). Darauf beruht die Selbstzündung im Dieselmotor. Umgekehrt kühlt sich aufsteigende Luft beim Ausdehnen ab, deshalb ist es auf Bergen kälter.
+
+:::tip[Beispiel: isotherme Expansion]
+$1\,\mathrm{mol}$ Gas dehnt sich bei $300\,\mathrm{K}$ auf das doppelte Volumen aus. Es gibt die Arbeit $nRT\ln 2 = 8{,}314 \cdot 300 \cdot 0{,}693 = 1{,}73\,\mathrm{kJ}$ ab und nimmt dieselbe Wärme aus der Umgebung auf, damit seine Temperatur gleich bleibt.
+:::
+
+## Zweiter Hauptsatz und Entropie
+
+Der erste Hauptsatz verbietet nicht, dass sich ein Glas Wasser von selbst abkühlt und dabei die Tischplatte erwärmt. Dass das nie passiert, regelt der **zweite Hauptsatz**. Gleichwertige Formulierungen:
+
+- **Clausius**: Wärme fließt von selbst nur vom wärmeren zum kälteren Körper.
+- **Kelvin-Planck**: Es gibt keine periodisch arbeitende Maschine, die Wärme aus einem Reservoir vollständig in Arbeit umwandelt (kein **Perpetuum mobile zweiter Art**).
+- **Entropie**: In einem abgeschlossenen System nimmt die Entropie nie ab.
+
+Die **Entropie** $S$ ist ein Maß für die Zahl der mikroskopischen Anordnungen, die zum selben makroskopischen Zustand passen, anschaulich für die „Unordnung“ und die Entwertung von Energie. Für eine Wärmezufuhr bei konstanter Temperatur gilt
+
+$$
+\Delta S = \frac{Q}{T}, \qquad [S] = \mathrm{J/K}
+$$
+
+Schmilzt $1\,\mathrm{kg}$ Eis bei $273{,}15\,\mathrm{K}$, steigt seine Entropie um $334\,000/273{,}15 = 1223\,\mathrm{J/K}$. Bei allen realen (irreversiblen) Vorgängen wie Reibung, Wärmeleitung oder Mischen wächst die Gesamtentropie. Energie geht nie verloren, aber sie wird zunehmend unbrauchbar, weil sie sich als Wärme niedriger Temperatur verteilt.
+
+Der **dritte Hauptsatz** besagt, dass die Entropie eines perfekten Kristalls bei $T \to 0$ gegen null geht und der absolute Nullpunkt in endlich vielen Schritten nicht erreichbar ist.
+
+## Wärmekraftmaschinen
+
+Eine **Wärmekraftmaschine** (Dampfturbine, Verbrennungsmotor) nimmt Wärme $Q_\mathrm{zu}$ aus einem heißen Reservoir (Temperatur $T_\mathrm{h}$) auf, wandelt einen Teil in Arbeit $W$ um und gibt den Rest $Q_\mathrm{ab}$ an ein kaltes Reservoir ($T_\mathrm{k}$) ab, etwa an Kühlwasser oder die Umgebung. Diese Abwärme ist nach dem zweiten Hauptsatz unvermeidlich.
+
+$$
+\eta = \frac{W}{Q_\mathrm{zu}} = 1 - \frac{Q_\mathrm{ab}}{Q_\mathrm{zu}}
+$$
+
+Den höchsten möglichen Wirkungsgrad erreicht der idealisierte, reversible **Carnot-Prozess** (zwei Isothermen, zwei Adiabaten):
+
+$$
+\eta_\mathrm{C} = 1 - \frac{T_\mathrm{k}}{T_\mathrm{h}}
+$$
+
+:::tip[Beispiel: Dampfkraftwerk]
+Frischdampf mit $800\,\mathrm{K}$, Kühlwasser mit $300\,\mathrm{K}$: $\eta_\mathrm{C} = 1 - 300/800 = 62{,}5\,\%$. Reale Kohlekraftwerke erreichen 40 bis 45 %. Höhere Wirkungsgrade erfordern höhere Dampftemperaturen, was Werkstoffe begrenzen. Kraft-Wärme-Kopplung nutzt die Abwärme für Fernwärme und erhöht so die Brennstoffausnutzung.
+:::
+
+Der **Ottomotor** arbeitet nach dem Otto-Kreisprozess (zwei Adiabaten, zwei Isochoren). Sein theoretischer Wirkungsgrad hängt vom Verdichtungsverhältnis $\varepsilon = V_\mathrm{max}/V_\mathrm{min}$ ab: $\eta = 1 - \varepsilon^{1-\kappa}$, für $\varepsilon = 10$ also $60\,\%$. Reale Motoren erreichen wegen Reibung, Wärmeverlusten und unvollständiger Verbrennung 25 bis 35 %.
+
+## Wärmepumpe und Kältemaschine
+
+Eine **Wärmepumpe** oder **Kältemaschine** ist eine umgekehrt betriebene Wärmekraftmaschine: Mit Arbeit $W$ (meist elektrisch über einen Kompressor) „pumpt“ sie Wärme vom kalten zum warmen Reservoir. Der zweite Hauptsatz wird nicht verletzt, weil Arbeit aufgewendet wird.
+
+Ein Kältemittel verdampft im Verdampfer bei niedrigem Druck und nimmt dabei Wärme aus der kalten Umgebung auf. Der Kompressor verdichtet den Dampf, der dadurch heiß wird. Im Kondensator gibt er Wärme an die warme Seite ab und verflüssigt sich. Ein Expansionsventil senkt den Druck wieder.
+
+Die Güte beschreibt die **Leistungszahl** (COP, _coefficient of performance_):
+
+| Gerät | Nutzen | Leistungszahl | Carnot-Grenze |
+| --- | --- | --- | --- |
+| Wärmepumpe (Heizen) | abgegebene Wärme $Q_\mathrm{h}$ | $\varepsilon_\mathrm{WP} = \frac{Q_\mathrm{h}}{W}$ | $\frac{T_\mathrm{h}}{T_\mathrm{h} - T_\mathrm{k}}$ |
+| Kühlschrank, Klimaanlage | entzogene Wärme $Q_\mathrm{k}$ | $\varepsilon_\mathrm{K} = \frac{Q_\mathrm{k}}{W}$ | $\frac{T_\mathrm{k}}{T_\mathrm{h} - T_\mathrm{k}}$ |
+
+:::tip[Beispiel: Luft-Wasser-Wärmepumpe]
+Außenluft $0\,^\circ\mathrm{C}$ ($273{,}15\,\mathrm{K}$), Fußbodenheizung $35\,^\circ\mathrm{C}$ ($308{,}15\,\mathrm{K}$). Carnot-Grenze: $308{,}15/35 = 8{,}8$. Reale Geräte erreichen etwa die Hälfte, also eine Leistungszahl um $4$: Aus $1\,\mathrm{kWh}$ Strom werden $4\,\mathrm{kWh}$ Wärme, $3\,\mathrm{kWh}$ davon stammen aus der Umgebungsluft. Je kleiner der Temperaturunterschied, desto effizienter arbeitet die Wärmepumpe; deshalb passt sie gut zu Fußbodenheizungen mit niedriger Vorlauftemperatur.
+:::
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Wärmelehre, leifiphysik.de
+- Österreichische Energieagentur und klimaaktiv: Wärmepumpen, klimaaktiv.at

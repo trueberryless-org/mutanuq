@@ -1,0 +1,157 @@
+---
+title: Layout and Design
+description: Design principles, Gestalt laws, grids, the golden ratio, white space, visual hierarchy, corporate design and prepress.
+sidebar:
+  order: 4
+---
+
+A **layout** arranges text, images and graphic elements on a surface, be it a book page, a poster, a website or an app screen. The primary goal is not beauty but clarity: viewers should immediately recognise what is important, what belongs together and in which order to read. There are principles for this that are based on human perception and apply equally to print and the web.
+
+## Design principles
+
+In _The Non-Designer's Design Book_, Robin Williams summarises four basic principles (called **CRAP** after their initial letters, or PARC in reverse):
+
+| Principle | Meaning | Example |
+| --- | --- | --- |
+| **Proximity** | related items are placed close together, unrelated items further apart | caption directly at the image; space between form groups |
+| **Alignment** | every element is aligned with other elements on an imaginary line, nothing is placed arbitrarily | left text edge, images and heading on the same axis |
+| **Repetition** | the same elements look the same: colours, typefaces, spacing, icons | all second-level headings identical, consistent buttons |
+| **Contrast** | things that are different should look clearly different | large bold heading against small body text, one accent colour for the main action |
+
+A contrast has to be clear. Two typefaces of almost the same size or two similar shades of blue look like a mistake, not like an intention.
+
+## Gestalt laws
+
+**Gestalt psychology** (Max Wertheimer, Wolfgang Köhler, Kurt Koffka, from about 1910 to the 1920s) studies how the brain organises individual stimuli into whole forms. Its laws explain why design principles work:
+
+| Law | Statement | Application |
+| --- | --- | --- |
+| **Law of proximity** | elements close to each other are perceived as a group | spacing structures content without lines and boxes |
+| **Law of similarity** | elements that look similar (colour, shape, size) belong together | all links in the same colour |
+| **Law of closure** | incomplete shapes are completed into closed ones | logos with gaps (WWF panda) |
+| **Law of good continuation** (continuity) | elements on a line or curve are seen as belonging together | carousels whose cut-off last item invites swiping |
+| **Law of common fate** | elements that move or change together belong together | menu items that expand together |
+| **Figure-ground relationship** | the eye separates a figure from the background | modal dialogues in front of a dimmed background |
+| **Law of Prägnanz** (good form) | shapes are interpreted as simply as possible | simple, clear icons |
+| **Law of common region** | elements in a shared area (surface, frame) belong together | cards in web design |
+| **Law of connectedness** | elements connected by lines belong together, more strongly than through proximity or similarity | steps of a progress indicator |
+
+## Grids and type area
+
+### Type area
+
+The **type area** is the part of a page that is printed with text and images. The edges are called **margins**: inner margin (at the binding, gutter), top margin (head), outer margin and bottom margin (foot). In a book, the type area is not centred: the two inner margins of a spread act together as one margin, so each one alone is narrow.
+
+A classic construction is the **division into ninths**: the width and height of the page are each divided into nine parts. The type area starts one part from the binding and one part from the top and is six parts wide and high. Inner, top, outer and bottom margins are then in the ratio 1 : 1 : 2 : 2.
+
+### Layout grid
+
+A **layout grid** divides the type area into columns, rows and modules with fixed spacing. It became famous through Swiss typography, for example Josef Müller-Brockmann (_Grid Systems in Graphic Design_, 1981).
+
+- **Columns** and the spaces between them (**gutters**)
+- **Margins**
+- **Modules**: fields formed by columns and rows in which elements are placed
+- **Baseline grid**: all lines of text sit on a common grid, so that lines in neighbouring columns are at the same height
+
+A grid ensures alignment and repetition across many pages and speeds up work because not every page has to be invented anew. In web design, **12-column grids** are common because 12 is divisible by 2, 3, 4 and 6. On smaller screens columns are merged (for example 12, 8 and 4 columns). Technically this is implemented with [CSS Grid and Flexbox](/en/web-technologies/css/#grid). Spacing often follows a fixed base unit, such as a multiple of 8 px.
+
+## Golden ratio
+
+A line segment is divided in the **golden ratio** if the whole segment relates to the larger part as the larger part relates to the smaller one:
+
+$$
+\frac{a + b}{a} = \frac{a}{b} = \varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618
+$$
+
+The division is therefore about 61.8 % to 38.2 %. The ratios of consecutive **Fibonacci numbers** (1, 1, 2, 3, 5, 8, 13, 21, …) approach $\varphi$, so in practice 5 : 8 or 8 : 13 is often used. The golden ratio is used for page formats, for dividing layouts (such as content and sidebar) and for image composition. The [rule of thirds](/en/media-technology/digital-images/#composition) in photography is a simplified form.
+
+:::tip[Example]
+A website is 960 px wide. Divided in the golden ratio, the content area gets $960 / 1.618 \approx 593$ px and the sidebar $960 - 593 = 367$ px.
+:::
+
+For comparison: the A series paper formats (ISO 216, formerly DIN 476) have the aspect ratio $1 : \sqrt{2} \approx 1 : 1.414$. This ratio is preserved when halving: two A4 sheets make A3, one A4 sheet folded in the middle gives two A5 pages. A0 has an area of 1 m², A4 measures 210 mm × 297 mm.
+
+## White space
+
+**White space** (negative space) is the empty area between and around elements, regardless of its colour. It is not wasted space but a design tool:
+
+- **Micro white space**: spacing between letters, lines, paragraphs, list items. It determines readability.
+- **Macro white space**: margins and spacing between large areas. It structures the page and guides the eye.
+
+Plenty of white space looks high-quality, calm and focused (luxury brands, Apple); little white space looks dense, informative and cheap (discount store leaflets, daily newspapers). An element with a lot of space around it attracts attention.
+
+## Visual hierarchy
+
+The **visual hierarchy** determines the order in which viewers perceive elements. The means are:
+
+- **Size**: large elements are seen first.
+- **Colour and contrast**: a strong accent colour on a calm background catches the eye.
+- **Position**: in languages read from left to right, what is at the top left is read first.
+- **White space and isolation**: a free-standing element is emphasised.
+- **Images and faces**: people look at faces first and follow their line of sight.
+
+Eye-tracking studies show typical patterns:
+
+- **F-pattern**: on text-heavy pages users read the first lines, then a shorter section further down, and scan the rest along the left edge. Important information therefore belongs at the beginning of headings and paragraphs.
+- **Z-pattern**: with little text (landing pages, posters), the eye moves from top left to top right, diagonally to bottom left and to the right again. Logo top left, call to action bottom right.
+
+**Balance** is achieved symmetrically (calm, formal) or asymmetrically (more dynamic, requires more feeling for visual weight).
+
+## Corporate design
+
+**Corporate identity** (CI) is a company's self-image and comprises behaviour (_corporate behaviour_), communication (_corporate communication_) and the visual appearance, the **corporate design** (CD). A consistent corporate design makes a company recognisable on every medium and looks professional and trustworthy.
+
+| Element | Content |
+| --- | --- |
+| **Logo** | wordmark (lettering only, such as Google), pictorial mark (symbol only, such as Apple), combination mark (both, such as Adidas); variants for light and dark backgrounds, single-colour; clear space and minimum size |
+| **Brand colours** | primary and secondary colours with exact values for every medium: CMYK, RGB/hex, spot colour (Pantone or HKS) |
+| **Brand typefaces** | typefaces for headings and text, with substitutes for Office and the web |
+| **Imagery** | style of photos and illustrations: subjects, light, colour mood, framing |
+| **Layout grid** | templates for letterheads, business cards, presentations, website, social media |
+| **Tone of voice** | language and form of address (informal or formal), choice of words |
+
+All rules are recorded in a **style guide** (design manual, _brand manual_) so that different agencies and departments work consistently. In the digital world it is extended into a [design system](/en/media-technology/user-experience/#design-systems) with ready-made components.
+
+A good **logo** is simple, memorable, distinctive, works at any size (from a 16 px favicon to a poster) and also in a single colour. It is therefore always created as a **vector graphic**.
+
+## Prepress
+
+**Prepress** covers all the work needed until a file is ready for print. Typical requirements of a print shop:
+
+- **Bleed**: elements that should extend to the edge are placed beyond the final format, usually by **3 mm** on each side. Cutting the paper stack involves small tolerances; without bleed, white slivers would show at the edge. An A4 flyer is therefore set up at 216 mm × 303 mm.
+- **Safety margin**: important content such as text keeps at least 3 to 5 mm away from the final format so that it is not cut off.
+- **Crop marks** show where to cut.
+- **CMYK colour mode** with the [ICC profile](/en/media-technology/colour/#colour-management) specified by the print shop, such as PSO Coated v3 for coated paper. The **total area coverage** (sum of C, M, Y and K) must not exceed about 300 to 330 % depending on paper and profile, otherwise the ink does not dry.
+- **Spot colours** (Pantone, HKS) for exact brand colours that cannot be reached with CMYK.
+- **Images** at about 300 ppi at final size.
+- **Black text** only in 100 % K (not four-colour), so that small type stays sharp without registration problems. Large black areas are underlaid with additional cyan as **rich black**.
+- **Fonts** fully embedded.
+
+### PDF/X
+
+**PDF/X** is a series of standards (ISO 15930) for exchanging print-ready files. It restricts PDF to what works reliably in print:
+
+| Standard | Properties |
+| --- | --- |
+| **PDF/X-1a** | CMYK and spot colours only, no transparency, all fonts embedded |
+| **PDF/X-3** | additionally allows device-independent colours (RGB or Lab with an ICC profile) |
+| **PDF/X-4** | like X-3, plus live transparency and layers; usually recommended today |
+
+All variants require an **output intent**: the statement of which printing condition (which profile) the file is intended for.
+
+### Printing processes
+
+| Process | Principle | Use |
+| --- | --- | --- |
+| **Offset printing** | indirect planographic printing via a rubber blanket, printing plates needed | large runs: books, magazines, brochures |
+| **Digital printing** | toner or ink directly from the file, no plates | small runs, personalised prints |
+| **Screen printing** | ink is pressed through a mesh | textiles, posters, signage |
+| **Gravure printing** | ink from recesses in a cylinder | very large runs: catalogues, packaging |
+
+Paper is distinguished by **grammage** (weight per area in g/m²) and surface: **coated** paper (gloss or matt, brilliant colours) and **uncoated** paper (absorbs more ink, colours more muted). Copy paper is usually 80 g/m², business cards 300 to 400 g/m².
+
+## Further reading
+
+- Robin Williams: _The Non-Designer's Design Book_. 4th edition, San Francisco: Peachpit Press, 2014
+- Josef Müller-Brockmann: _Grid Systems in Graphic Design_. Sulgen: Niggli, 1981
+- [European Color Initiative (ECI): offset profiles and PDF/X](https://www.eci.org/)

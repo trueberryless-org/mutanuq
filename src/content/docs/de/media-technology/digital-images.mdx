@@ -1,0 +1,280 @@
+---
+title: Digitale Bilder
+description: Raster- und Vektorgrafik, Auflösung und Dateigröße, Kompression, Bildformate, Alphakanal, Bildbearbeitung und Grundlagen der Fotografie.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein digitales Bild ist eine Beschreibung, aus der ein Gerät ein sichtbares Bild erzeugt. Wie diese Beschreibung aufgebaut ist, entscheidet darüber, ob sich ein Bild verlustfrei vergrößern lässt, wie groß die Datei wird und für welchen Zweck sie taugt. Für Website, Plakat und Logo braucht man deshalb unterschiedliche Bildarten und Formate.
+
+## Raster- und Vektorgrafik
+
+Eine **Rastergrafik** (_Bitmap_, Pixelgrafik) besteht aus einem Gitter von **Pixeln** (_picture elements_). Jedes Pixel speichert eine Farbe. Fotos, Scans und Screenshots sind Rastergrafiken.
+
+Eine **Vektorgrafik** beschreibt ein Bild durch geometrische Objekte: Punkte, Linien, Bézierkurven, Kreise und Flächen mit Eigenschaften wie Füllfarbe und Strichstärke. Erst beim Anzeigen wird die Beschreibung in Pixel umgerechnet (**Rasterung**, _Rendering_).
+
+| Eigenschaft | Rastergrafik | Vektorgrafik |
+| --- | --- | --- |
+| Aufbau | Pixelraster | mathematisch beschriebene Formen |
+| Skalierung | Vergrößern macht Pixel sichtbar oder unscharf | beliebig ohne Qualitätsverlust |
+| Dateigröße | wächst mit der Pixelzahl | wächst mit der Zahl der Objekte |
+| geeignet für | Fotos, feine Farbverläufe, Texturen | Logos, Icons, Schriften, Diagramme, Pläne |
+| Formate | JPEG, PNG, GIF, WebP, AVIF, TIFF, RAW | SVG, AI, EPS, PDF (kann beides enthalten) |
+| Programme | Photoshop, GIMP, Affinity Photo | Illustrator, Inkscape, Affinity Designer, Figma |
+
+Eine Vektorgrafik lässt sich jederzeit in eine Rastergrafik umwandeln. Der umgekehrte Weg (**Vektorisierung**, _Tracing_) gelingt nur bei einfachen Motiven gut.
+
+## Auflösung
+
+Die **Pixelmaße** (zum Beispiel 1920 × 1080 px) geben an, wie viele Pixel ein Bild hat. Wie groß es ausgegeben wird, hängt zusätzlich von der **Auflösung** ab:
+
+- **ppi** (_pixels per inch_): Pixel pro Zoll im Bild oder auf dem Bildschirm
+- **dpi** (_dots per inch_): Druckpunkte pro Zoll eines Druckers oder Belichters. Im Alltag werden beide Begriffe oft gleichbedeutend verwendet.
+- **lpi** (_lines per inch_) oder Linien pro cm: Rasterweite im Offsetdruck, wie dicht die Rasterpunkte stehen
+
+Ein Zoll (_inch_) sind 2,54 cm. Zwischen Pixelzahl, Auflösung und Ausgabegröße gilt:
+
+$$
+\text{Ausgabegröße in Zoll} = \frac{\text{Pixel}}{\text{ppi}}, \qquad \text{benötigte Pixel} = \frac{\text{Größe in cm}}{2{,}54} \cdot \text{ppi}
+$$
+
+| Zweck | übliche Auflösung | Grund |
+| --- | --- | --- |
+| Offsetdruck (Broschüre, Magazin) | 300 ppi | doppelte Rasterweite von 60 Linien/cm (150 lpi) |
+| Großformatdruck (Plakat, Banner) | 100 bis 150 ppi | wird aus größerer Entfernung betrachtet |
+| Bildschirm | nur die Pixelmaße zählen | ein Bild mit 800 px Breite ist auf jedem Bildschirm 800 Bildschirmpixel breit (bei 100 % Skalierung) |
+
+Die oft genannten „72 dpi fürs Web“ sind ein Überbleibsel aus der Zeit der ersten Macintosh-Bildschirme. Im Browser hat der ppi-Wert in der Datei keine Bedeutung. Wichtig ist bei hochauflösenden Displays (Retina, Skalierung 200 %), Bilder mit doppelten Pixelmaßen bereitzustellen, etwa über `srcset` in HTML.
+
+:::tip[Beispiel: A4 in Druckqualität]
+Ein A4-Blatt misst 21 cm × 29,7 cm. Bei 300 ppi braucht man
+
+$$
+\frac{21}{2{,}54} \cdot 300 \approx 2480\ \text{px} \quad \text{und} \quad \frac{29{,}7}{2{,}54} \cdot 300 \approx 3508\ \text{px}
+$$
+
+Ein Foto mit 6000 × 4000 px (24 Megapixel) lässt sich bei 300 ppi also bis $6000 / 300 = 20$ Zoll $= 50{,}8$ cm Breite drucken.
+:::
+
+**Interpolation** (Hochrechnen auf mehr Pixel) erzeugt keine neuen Details. Die Software errechnet Zwischenwerte aus den Nachbarpixeln (Verfahren: Pixelwiederholung, bilinear, bikubisch, KI-basiertes Hochskalieren), das Bild wird größer, aber nicht schärfer.
+
+## Dateigröße
+
+Die Größe eines **unkomprimierten** Rasterbilds ist
+
+$$
+\text{Größe in Byte} = \text{Breite} \cdot \text{Höhe} \cdot \frac{\text{Farbtiefe in Bit}}{8}
+$$
+
+Für das A4-Bild mit 24 Bit Farbtiefe: $2480 \cdot 3508 \cdot 3 = 26\,099\,520$ Byte, also rund 26,1 MB oder 24,9 MiB. Im CMYK-Modus (4 Kanäle zu 8 Bit) sind es ein Drittel mehr. Ein Full-HD-Bild (1920 × 1080, 24 Bit) hat unkomprimiert 6 220 800 Byte, also rund 6,2 MB.
+
+:::note
+1 MB (Megabyte) sind $10^6$ Byte, 1 MiB (Mebibyte) sind $2^{20} = 1\,048\,576$ Byte. Betriebssysteme zeigen oft MiB an und schreiben trotzdem „MB“.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // Dezimalpunkt
+const double CmPerInch = 2.54;
+
+// benötigte Pixel für eine Druckgröße in cm
+static int PixelsFor(double sizeCm, int ppi) => (int)Math.Round(sizeCm / CmPerInch * ppi);
+
+// unkomprimierte Dateigröße in Byte
+static long RawSize(int width, int height, int bitsPerPixel) => (long)width * height * bitsPerPixel / 8;
+
+int w = PixelsFor(21.0, 300), h = PixelsFor(29.7, 300);
+Console.WriteLine($"A4 bei 300 ppi: {w} × {h} px");                     // A4 bei 300 ppi: 2480 × 3508 px
+
+long rgb = RawSize(w, h, 24), cmyk = RawSize(w, h, 32);
+Console.WriteLine($"RGB:  {rgb} Byte = {rgb / 1e6:F1} MB = {rgb / 1048576.0:F1} MiB");
+Console.WriteLine($"CMYK: {cmyk} Byte = {cmyk / 1e6:F1} MB");
+// RGB:  26099520 Byte = 26.1 MB = 24.9 MiB
+// CMYK: 34799360 Byte = 34.8 MB
+
+// maximale Druckbreite eines 24-Megapixel-Fotos bei 300 ppi
+Console.WriteLine($"{6000.0 / 300 * CmPerInch:F1} cm");                    // 50.8 cm
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const CM_PER_INCH: f64 = 2.54;
+
+/// benötigte Pixel für eine Druckgröße in cm
+fn pixels_for(size_cm: f64, ppi: u32) -> u32 {
+    (size_cm / CM_PER_INCH * ppi as f64).round() as u32
+}
+
+/// unkomprimierte Dateigröße in Byte
+fn raw_size(width: u32, height: u32, bits_per_pixel: u32) -> u64 {
+    width as u64 * height as u64 * bits_per_pixel as u64 / 8
+}
+
+fn main() {
+    let (w, h) = (pixels_for(21.0, 300), pixels_for(29.7, 300));
+    println!("A4 bei 300 ppi: {w} × {h} px"); // A4 bei 300 ppi: 2480 × 3508 px
+
+    let (rgb, cmyk) = (raw_size(w, h, 24), raw_size(w, h, 32));
+    println!("RGB:  {rgb} Byte = {:.1} MB = {:.1} MiB", rgb as f64 / 1e6, rgb as f64 / 1048576.0);
+    println!("CMYK: {cmyk} Byte = {:.1} MB", cmyk as f64 / 1e6);
+    // RGB:  26099520 Byte = 26.1 MB = 24.9 MiB
+    // CMYK: 34799360 Byte = 34.8 MB
+
+    // maximale Druckbreite eines 24-Megapixel-Fotos bei 300 ppi
+    println!("{:.1} cm", 6000.0 / 300.0 * CM_PER_INCH); // 50.8 cm
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Kompression
+
+Unkomprimierte Bilder sind für Web und Versand zu groß. **Kompression** verringert die Datenmenge, indem sie Redundanz (Wiederholungen) und Irrelevanz (für das Auge unwichtige Details) entfernt.
+
+| Art | Prinzip | Verfahren | Beispiele |
+| --- | --- | --- | --- |
+| **verlustfrei** (_lossless_) | entfernt nur Redundanz, das Original lässt sich Bit für Bit wiederherstellen | Lauflängencodierung (RLE), LZW, Deflate (LZ77 + Huffman) | PNG, GIF, TIFF mit LZW |
+| **verlustbehaftet** (_lossy_) | entfernt zusätzlich Information, die das Auge kaum vermisst | Transformation (DCT), Quantisierung, Farbunterabtastung | JPEG, WebP lossy, AVIF |
+
+### So arbeitet JPEG
+
+1. **Farbraumwandlung** von RGB nach **YCbCr**: Y ist die Helligkeit (Luminanz), Cb und Cr sind die Farbanteile (Chrominanz).
+2. **Farbunterabtastung** (_Chroma Subsampling_): Das Auge sieht Helligkeitsunterschiede viel feiner als Farbunterschiede, deshalb werden die Farbkanäle meist mit halber Auflösung gespeichert (4:2:0).
+3. Aufteilung in **Blöcke von 8 × 8 Pixeln** und **diskrete Kosinustransformation** (DCT): Jeder Block wird als Summe von Mustern verschiedener Frequenz dargestellt.
+4. **Quantisierung**: Hohe Frequenzen (feine Details) werden grob gerundet oder auf null gesetzt. Hier geht Information verloren, der Qualitätsregler steuert diesen Schritt.
+5. **Entropiecodierung** (Huffman): Die vielen Nullen werden verlustfrei kompakt gespeichert.
+
+Typische **Artefakte** sind sichtbare 8 × 8-Blöcke und Schlieren an harten Kanten (_Ringing_). Deshalb eignet sich JPEG schlecht für Text, Screenshots und Logos. Jedes erneute Speichern als JPEG verliert weitere Qualität (**Generationsverlust**), daher bearbeitet man immer im verlustfreien Format und exportiert erst am Ende.
+
+## Bildformate
+
+| Format | Kompression | Farbtiefe | Transparenz | Animation | typischer Einsatz |
+| --- | --- | --- | --- | --- | --- |
+| **JPEG** (.jpg) | verlustbehaftet (DCT) | 24 Bit | nein | nein | Fotos im Web und in Kameras |
+| **PNG** | verlustfrei (Deflate) | bis 48 Bit, auch indiziert | Alphakanal | nein (APNG schon) | Screenshots, Grafiken, Logos als Raster |
+| **GIF** | verlustfrei (LZW) | 8 Bit indiziert, 256 Farben | 1 Bit (an/aus) | ja | einfache Animationen |
+| **WebP** | verlustbehaftet oder verlustfrei | 24 Bit | Alphakanal | ja | Web, kleiner als JPEG und PNG |
+| **AVIF** | verlustbehaftet oder verlustfrei (AV1) | 8, 10 oder 12 Bit, HDR | Alphakanal | ja | Web, sehr gute Kompression |
+| **HEIF** (.heic) | verlustbehaftet (HEVC) | 8 oder 10 Bit, HDR | Alphakanal | Bildfolgen | Standardformat auf iPhones |
+| **TIFF** | keine, LZW oder ZIP | bis 32 Bit pro Kanal, CMYK | Alphakanal, Ebenen | nein | Druckvorstufe, Archiv |
+| **RAW** (.cr3, .nef, .arw, .dng) | keine oder verlustfrei | 12 bis 14 Bit Sensordaten | nein | nein | professionelle Fotografie |
+| **SVG** | Text (XML), optional gzip | beliebig | ja | ja (CSS, SMIL) | Logos, Icons, Diagramme im Web |
+
+Ein **RAW**-Bild enthält die unverarbeiteten Sensordaten der Kamera. Weißabgleich, Belichtungskorrektur und Schärfung lassen sich später verlustfrei ändern, weil noch mehr Tonwertreserven vorhanden sind. Die Formate sind herstellerabhängig, **DNG** (Adobe) ist ein offenes RAW-Format.
+
+Als Faustregel für das Web gilt: Fotos als AVIF oder WebP mit JPEG als Rückfallebene, Grafiken mit Transparenz als PNG oder WebP, Logos und Icons als SVG.
+
+## Alphakanal
+
+Der **Alphakanal** ist ein vierter Kanal neben R, G und B, der für jedes Pixel die **Deckkraft** speichert: 0 ist vollständig transparent, der Höchstwert (255 bei 8 Bit) ist vollständig deckend. Damit sind weiche Kanten, Schatten und halbtransparente Flächen möglich. GIF kennt nur eine transparente Palettenfarbe, deshalb entstehen dort gezackte Ränder.
+
+Beim **Überlagern** (_Alpha Compositing_) wird die Farbe eines Vordergrundpixels $C_v$ mit Deckkraft $\alpha$ (0 bis 1) über einen Hintergrund $C_h$ gelegt:
+
+$$
+C = \alpha \cdot C_v + (1 - \alpha) \cdot C_h
+$$
+
+Ein rotes Pixel (255, 0, 0) mit $\alpha = 0{,}5$ über Weiß ergibt (255, 128, 128), also Rosa.
+
+## Bildbearbeitung
+
+### Ebenen und Masken
+
+- **Ebenen** (_Layers_) liegen wie Folien übereinander. Jede Ebene lässt sich getrennt bearbeiten, verschieben und ausblenden.
+- Eine **Ebenenmaske** blendet Teile einer Ebene aus, ohne Pixel zu löschen: Weiß in der Maske zeigt, Schwarz verbirgt, Grautöne machen teilweise transparent. Das ist **nicht destruktiv**, weil man die Maske jederzeit ändern kann.
+- **Einstellungsebenen** wenden Korrekturen (Helligkeit, Farbe) auf darunterliegende Ebenen an, ohne deren Pixel zu verändern.
+- **Füllmethoden** (_Blend Modes_) bestimmen, wie eine Ebene mit der darunter verrechnet wird: _Multiplizieren_ dunkelt ab (wie übereinanderliegende Folien), _Negativ multiplizieren_ (_Screen_) hellt auf.
+- **Auswahlen** (Rechteck, Lasso, Zauberstab, Auswahl nach Farbbereich oder per KI) begrenzen, wo ein Werkzeug wirkt.
+
+### Histogramm
+
+Das **Histogramm** zeigt die Verteilung der Tonwerte: Auf der x-Achse liegen die Helligkeitswerte von 0 (Schwarz, links) bis 255 (Weiß, rechts), auf der y-Achse die Anzahl der Pixel mit diesem Wert.
+
+- Berge vor allem links: Bild ist eher dunkel (oder unterbelichtet).
+- Berge vor allem rechts: Bild ist eher hell (oder überbelichtet).
+- Ein hoher Balken ganz am Rand bedeutet **Clipping**: Diese Bereiche sind reines Schwarz oder Weiß ohne Zeichnung, die Information ist verloren.
+- Ein schmales Histogramm in der Mitte deutet auf ein flaues, kontrastarmes Bild hin.
+
+### Tonwertkorrektur und Gradationskurven
+
+Mit der **Tonwertkorrektur** (_Levels_) setzt man drei Regler im Histogramm: den **Schwarzpunkt** (welcher Wert wird zu 0), den **Weißpunkt** (welcher Wert wird zu 255) und den **Mittelton**-Regler (Gamma). Zieht man Schwarz- und Weißpunkt an die Enden des Histogramms, nutzt das Bild den vollen Tonwertumfang und wirkt kontrastreicher.
+
+Die **Gradationskurve** (_Curves_) ordnet jedem Eingangswert einen Ausgangswert zu. Die Diagonale lässt das Bild unverändert. Eine **S-Kurve** dunkelt Tiefen ab und hellt Lichter auf und erhöht so den Kontrast in den Mitteltönen. Anders als die Tonwertkorrektur erlaubt die Kurve beliebig viele Stützpunkte und getrennte Kurven pro Farbkanal.
+
+### Weitere Werkzeuge
+
+- **Weißabgleich**: Lichtquellen haben unterschiedliche **Farbtemperatur** (Glühlampe rund 2700 bis 3200 K, Tageslicht rund 5500 bis 6500 K). Der Weißabgleich korrigiert einen Farbstich, sodass Weißes weiß aussieht.
+- **Freistellen** (_Crop_) und **Geraderichten** des Horizonts.
+- **Retusche** mit Stempel und Reparaturpinsel, um Störungen zu entfernen.
+- **Schärfen** (zum Beispiel _Unscharf maskieren_) erhöht den Kontrast an Kanten. Zu starkes Schärfen erzeugt helle Säume.
+- **Neuberechnung** (_Resampling_) beim Skalieren: Pixelwiederholung (hart, für Pixelgrafik), bilinear oder bikubisch (weich, für Fotos).
+
+## Fotografie
+
+### Belichtungsdreieck
+
+Wie hell ein Foto wird, bestimmen drei Einstellungen. Jede hat neben der Helligkeit eine zweite, gestalterische Wirkung:
+
+![Belichtungsdreieck mit Blende, Belichtungszeit und ISO und ihren Nebenwirkungen](/images/media-technology/exposure_triangle_de.svg)
+
+| Einstellung | wirkt auf | Nebenwirkung |
+| --- | --- | --- |
+| **Blende** | Lichtmenge pro Zeit durch das Objektiv | **Schärfentiefe**: offene Blende (kleine Blendenzahl) gibt wenig Schärfentiefe, unscharfer Hintergrund |
+| **Belichtungszeit** | wie lange Licht auf den Sensor fällt | **Bewegungsunschärfe**: kurze Zeiten frieren Bewegung ein, lange zeigen sie als Wischer |
+| **ISO** | Verstärkung des Sensorsignals | **Bildrauschen**: hohe ISO-Werte rauschen stärker |
+
+Die **Blendenzahl** ist das Verhältnis von Brennweite $f$ zum Durchmesser $D$ der Eintrittspupille:
+
+$$
+k = \frac{f}{D}
+$$
+
+Die Fläche der Öffnung wächst mit $D^2$. Die Standardreihe der Blendenzahlen steigt deshalb jeweils um den Faktor $\sqrt{2}$: f/1,4, f/2, f/2,8, f/4, f/5,6, f/8, f/11, f/16, f/22. Jeder Schritt (eine **Blendenstufe**, _Stop_) halbiert die Lichtmenge. Auch Belichtungszeit (1/500 s → 1/250 s) und ISO (100 → 200) werden in Stufen gezählt: Verdoppeln bedeutet eine Stufe mehr Licht.
+
+Daraus folgt das **Reziprozitätsgesetz**: f/8 bei 1/125 s ergibt dieselbe Helligkeit wie f/5,6 bei 1/250 s (eine Stufe mehr Blende, eine Stufe weniger Zeit). Welche Kombination man wählt, entscheidet über die Bildwirkung: Für ein Porträt mit unscharfem Hintergrund wählt man eine offene Blende, für eine Landschaft mit durchgehender Schärfe f/8 bis f/11, für Sport eine kurze Belichtungszeit.
+
+:::tip[Faustregel aus der Hand]
+Ohne Bildstabilisator verwackelt ein Foto kaum, wenn die Belichtungszeit höchstens $1 / \text{Brennweite}$ beträgt (Kleinbild-äquivalent): bei 50 mm also 1/50 s oder kürzer.
+:::
+
+Die **Schärfentiefe** hängt nicht nur von der Blende ab. Sie wird kleiner bei längerer Brennweite, geringerem Aufnahmeabstand und größerem Sensor.
+
+### Brennweite und Bildwinkel
+
+Die **Brennweite** bestimmt den **Bildwinkel**: Je länger die Brennweite, desto kleiner der Ausschnitt und desto größer erscheint das Motiv. Bezugsgröße ist das **Kleinbildformat** (Vollformat) mit einem Sensor von 36 mm × 24 mm.
+
+| Brennweite (Kleinbild) | Bezeichnung | Einsatz |
+| --- | --- | --- |
+| unter 24 mm | Ultraweitwinkel | Architektur, Innenräume, starke Perspektive |
+| 24 bis 35 mm | Weitwinkel | Landschaft, Reportage |
+| etwa 50 mm | Normalbrennweite | entspricht ungefähr dem natürlichen Seheindruck |
+| 70 bis 135 mm | leichtes Tele | Porträt, schmeichelhafte Proportionen |
+| über 135 mm | Tele | Sport, Tiere, verdichtete Perspektive |
+
+Kleinere Sensoren schneiden einen Teil des Bildes aus. Der **Cropfaktor** (APS-C etwa 1,5, Micro Four Thirds 2) gibt an, welche Kleinbild-Brennweite den gleichen Bildwinkel liefert: 35 mm an APS-C wirken wie rund 52 mm.
+
+### Bildgestaltung
+
+- **Drittelregel**: Das Bild wird durch je zwei waagrechte und senkrechte Linien in neun gleiche Felder geteilt. Wichtige Motive liegen auf den Linien oder ihren Schnittpunkten, der Horizont auf dem oberen oder unteren Drittel. Das wirkt spannender als eine mittige Anordnung. Der **Goldene Schnitt** ist eine ähnliche, etwas engere Teilung (siehe [Layout und Gestaltung](/de/media-technology/layout-and-design/#goldener-schnitt)).
+- **Führende Linien**: Straßen, Zäune oder Flüsse lenken den Blick zum Motiv.
+- **Rahmen im Bild**: Türen, Fenster oder Äste rahmen das Motiv ein.
+- **Symmetrie und Muster** erzeugen Ruhe, ein Bruch im Muster zieht den Blick an.
+- **Vordergrund** gibt Tiefe, besonders bei Weitwinkelaufnahmen.
+- **Blickrichtung und Bewegungsraum**: Vor einer Person oder einem fahrenden Auto lässt man mehr Platz als dahinter.
+- **Perspektive**: Froschperspektive lässt Motive mächtig wirken, Vogelperspektive klein. Auf Augenhöhe wirkt ein Porträt neutral.
+- **Gerader Horizont** und ein **ruhiger Hintergrund** ohne störende Elemente.
+
+## Weiterführende Quellen
+
+- [W3C: Scalable Vector Graphics (SVG) 2](https://www.w3.org/TR/SVG2/)
+- [MDN: Leitfaden zu Bilddateitypen und -formaten](https://developer.mozilla.org/de/docs/Web/Media/Guides/Formats/Image_types)
+- Bryan Peterson: _Understanding Exposure_. 4. Auflage, New York: Amphoto Books, 2016

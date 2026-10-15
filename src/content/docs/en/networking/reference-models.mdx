@@ -1,0 +1,108 @@
+---
+title: Reference Models
+description: The seven layers of the OSI model and the TCP/IP model with PDUs, devices and protocols per layer, encapsulation and decapsulation, and a comparison of the two models.
+sidebar:
+  order: 2
+---
+
+Network communication is too complex to solve as a single problem. **Layered models** break it down into subtasks that build on each other. Each layer offers a service to the layer above and uses the service of the layer below. This has three advantages: protocols of one layer can be replaced without changing the others (WLAN instead of cable, IPv6 instead of IPv4), manufacturers can build products for individual layers independently of each other, and troubleshooting can proceed layer by layer.
+
+## The OSI model
+
+The **OSI reference model** (_Open Systems Interconnection_) was published by ISO in 1984 as ISO 7498 (today ISO/IEC 7498-1). The OSI protocols themselves did not catch on, but the model is the standard vocabulary for talking about networks: "a layer 2 problem", "a layer 3 switch".
+
+| No. | Layer | Function | PDU | Devices | Examples |
+| --- | --- | --- | --- | --- | --- |
+| 7 | **Application** | interface to network applications | data | proxy, next-generation firewall | HTTP, DNS, SMTP, FTP, SSH, DHCP |
+| 6 | **Presentation** | data format, character encoding, compression, encryption | data | | TLS (partly), JPEG, UTF-8, ASN.1 |
+| 5 | **Session** | setting up and tearing down sessions, synchronisation | data | | RPC, NetBIOS, SMB sessions |
+| 4 | **Transport** | end-to-end connection between processes, ports, reliability, flow control | segment (TCP), datagram (UDP) | firewall (port filter) | TCP, UDP |
+| 3 | **Network** | logical addressing, path selection between networks | packet | router, layer 3 switch | IPv4, IPv6, ICMP, OSPF |
+| 2 | **Data link** | access to the medium, physical addressing, error detection in the local network | frame | switch, bridge, NIC, AP | Ethernet (802.3), WLAN (802.11), PPP, ARP |
+| 1 | **Physical** | transmission of bits as electrical, optical or radio signals | bit | hub, repeater, cable, connector, modem | 1000BASE-T, line codes, pin assignments |
+
+Layers 5 to 7 are often grouped as the **application-oriented** layers, layers 1 to 4 as the **transport-oriented** layers.
+
+:::tip[Mnemonic]
+From bottom to top: "**P**lease **D**o **N**ot **T**hrow **S**ausage **P**izza **A**way" (Physical, Data link, Network, Transport, Session, Presentation, Application). From top to bottom: "**A**ll **P**eople **S**eem **T**o **N**eed **D**ata **P**rocessing".
+:::
+
+### Sublayers of the data link layer
+
+IEEE divides layer 2 into two sublayers:
+
+- **LLC** (_Logical Link Control_, IEEE 802.2): interface to the network layer, identifies which layer 3 protocol is being carried.
+- **MAC** (_Media Access Control_): access to the medium (CSMA/CD for Ethernet, CSMA/CA for WLAN), addressing with MAC addresses, framing and checksum. This part differs for each type of medium.
+
+### Key concepts
+
+- A **PDU** (_Protocol Data Unit_) is the data unit of a layer: header (control information) plus payload (**SDU**, _Service Data Unit_).
+- **Horizontal communication**: each layer communicates logically with the same layer at the peer, using a shared protocol. The sender's TCP talks to the receiver's TCP.
+- **Vertical communication**: physically, data is only passed between adjacent layers within a device and is only really transmitted at layer 1.
+
+## The TCP/IP model
+
+The **TCP/IP model** (also the DoD model or internet model) came out of the development of the ARPANET and describes the protocols actually used on the internet. RFC 1122 defines four layers:
+
+| TCP/IP layer | corresponds to OSI | Protocols |
+| --- | --- | --- |
+| **Application** | 5, 6, 7 | HTTP, DNS, DHCP, SMTP, IMAP, SSH, FTP, SNMP, NTP |
+| **Transport** | 4 | TCP, UDP, (QUIC over UDP) |
+| **Internet** | 3 | IPv4, IPv6, ICMP, ICMPv6, IPsec |
+| **Link** (_Network Access_) | 1, 2 | Ethernet, WLAN, PPP, ARP |
+
+Many textbooks (Tanenbaum, Kurose/Ross) use a **hybrid five-layer model** in which the link layer is split into physical and data link. In practice this model is the most useful: the names of layers 1 to 4 come from OSI, the protocols from TCP/IP.
+
+:::note[Edge cases]
+Not every protocol can be assigned to exactly one layer. **ARP** links layers 2 and 3, **OSPF** is a routing protocol carried directly in IP but exchanging layer 3 information, and **TLS** sits between transport and application. Models are tools for thinking, not laws of nature.
+:::
+
+## Encapsulation and decapsulation
+
+When sending, each layer passes its data down, and the layer below adds its own header. This process is called **encapsulation**. Layer 2 additionally appends a **trailer** with the checksum (FCS).
+
+```text
+Application   [                 HTTP data                  ]
+Transport     [TCP header][          HTTP data             ]   segment
+Internet      [IP header][TCP header][      HTTP data      ]   packet
+Link          [Eth header][IP header][TCP header][data][FCS]   frame
+Physical      0110100101010001110101...                         bits
+```
+
+At the receiver the process runs in reverse: each layer evaluates its header, removes it and passes the content to the correct layer above (**decapsulation**). How the layer knows where the data belongs is stated in the header: the **EtherType** field in the Ethernet header says whether IPv4 (0x0800) or IPv6 (0x86DD) follows, the **Protocol** field in the IPv4 header whether TCP (6) or UDP (17) follows, and the **destination port number** in the TCP header which application receives the data.
+
+On the way, a **switch** decapsulates only up to layer 2 and looks at the destination MAC address. A **router** decapsulates up to layer 3, looks up the route, builds a new layer 2 header for the next link and encapsulates again. This is why the MAC addresses change at every router while the IP addresses stay the same from source to destination (except with [NAT](/en/networking/nat-and-acl/)).
+
+### Calculating overhead
+
+Every header costs bandwidth. For a full Ethernet frame with TCP/IPv4 (without options):
+
+| Component | Bytes |
+| --- | --- |
+| Payload (TCP payload, **MSS**) | 1460 |
+| TCP header | 20 |
+| IPv4 header | 20 |
+| = IP packet (**MTU**) | 1500 |
+| Ethernet header (destination MAC, source MAC, EtherType) and FCS | 14 + 4 |
+| Preamble and SFD | 8 |
+| Interframe gap | 12 |
+| = time occupied on the wire | 1538 |
+
+The efficiency is therefore $1460 / 1538 \approx 94.9\,\%$. Over a gigabit link, at most about 949 Mbit/s of payload can be transferred. With small packets, for example VoIP with 20 to 160 bytes of payload, the share of overhead is much larger.
+
+## Comparison of the models
+
+| Feature | OSI | TCP/IP |
+| --- | --- | --- |
+| Layers | 7 | 4 (or hybrid 5) |
+| Origin | model first, then protocols (ISO, 1984) | protocols first, then model (ARPANET, 1970s) |
+| Use | vocabulary, teaching, troubleshooting | foundation of the internet |
+| Layers 5 to 7 | separate | combined into one application layer |
+| Layers 1 and 2 | separate and described in detail | only "link"; TCP/IP leaves the details to IEEE and others |
+| Transport | connection-oriented and connectionless | TCP (connection-oriented) and UDP (connectionless) |
+
+## Further reading
+
+- [RFC 1122: Requirements for Internet Hosts, Communication Layers](https://www.rfc-editor.org/rfc/rfc1122)
+- ISO/IEC 7498-1:1994, _Information technology: Open Systems Interconnection, Basic Reference Model_
+- Andrew S. Tanenbaum, Nick Feamster, David J. Wetherall: _Computer Networks_, 6th edition, Pearson 2021, chapter 1

@@ -1,0 +1,221 @@
+---
+title: Incident Response and Forensics
+description: Handling security incidents according to NIST SP 800-61, reporting obligations, CERTs in Austria, basics of digital forensics, and business continuity with RTO and RPO.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+No protection is perfect. Sooner or later every organisation is hit by a security incident. What matters then is how quickly it is detected, how orderly the response is and how fast operations are running again. Whoever only starts to think in an emergency about who is responsible, where the backups are and whom to call loses valuable hours and often destroys evidence unintentionally.
+
+## Event and incident
+
+A **security event** is any observable occurrence with a possible security relevance, for example a failed login or a blocked connection attempt. There are thousands of them every day. A **security incident** is an event that actually impairs or immediately threatens confidentiality, integrity or availability: an infected computer, a compromised account, a data leak, a ransomware attack. **Incident response** is the planned way of dealing with it.
+
+## The incident response process
+
+In **SP 800-61**, NIST describes a cycle of four phases, which is the standard in textbooks and exams:
+
+| Phase                                         | Content                                                                                        |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **1. Preparation**                            | incident response plan, team and responsibilities, contact lists, tools, playbooks, exercises, protective measures |
+| **2. Detection and analysis**                 | evaluate alerts, confirm the incident, assess scope and severity, prioritise, document         |
+| **3. Containment, eradication and recovery**  | stop the spread, remove cause and malware, restore systems cleanly                             |
+| **4. Post-incident activity**                 | lessons learned: what happened, what worked, what will be improved?                            |
+
+Phases 2 and 3 often alternate several times: during containment new findings emerge that require renewed analysis. Post-incident activity feeds into preparation for the next incident. The SANS Institute uses an equivalent model with six steps (_preparation, identification, containment, eradication, recovery, lessons learned_). Revision 3 of SP 800-61, published in 2025, additionally places incident response within the six functions of the NIST Cybersecurity Framework 2.0 (_govern, identify, protect, detect, respond, recover_) and stresses that incident response is part of overall risk management.
+
+### Preparation
+
+- **Incident response plan** with roles, escalation levels and decision-making powers: who may take a server off the network or stop production?
+- **Contact list**, also on paper: management, IT service provider, insurance, legal advice, data protection officer, CERT, police.
+- **Playbooks** for typical incidents (phishing, ransomware, compromised account) with concrete steps.
+- Working, offline-available **backups** and network documentation.
+- **Communication outside the affected systems** (_out of band_): if mail server and Teams are compromised, the attacker may be reading along.
+- **Exercises**, for example as a tabletop exercise.
+
+### Containment, eradication, recovery
+
+**Containment** prevents further damage: disconnect affected computers from the network (at the switch or isolate them via EDR), block compromised accounts and reset passwords, block connections to command-and-control servers at the firewall. Computers should, if possible, **not be switched off**, because the memory with valuable traces would otherwise be lost. One distinguishes short-term containment (immediate) and long-term containment (interim solutions until the systems are cleaned).
+
+During **eradication**, malware, backdoors and accounts created by the attacker are removed and the exploited vulnerability is closed. Because attackers often leave several backdoors, compromised systems are usually **rebuilt** rather than "cleaned".
+
+**Recovery** brings the systems back into operation from clean sources and verified backups, in order of business process priority, and monitors them more closely in order to notice the attacker returning.
+
+In the case of **ransomware**, authorities such as the Austrian Federal Criminal Police Office and the German BSI advise against paying the ransom: there is no guarantee that the key works or that stolen data is deleted, the payment finances further attacks, and paying victims are attacked again more often.
+
+### Reporting obligations
+
+| Obligation                      | Who, to whom, when                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| **GDPR Art. 33**                | personal data breach: notification to the **data protection authority** within **72 hours**, unless it is unlikely to result in a risk to the data subjects |
+| **GDPR Art. 34**                | if there is a high risk, additionally inform the **data subjects**                            |
+| **NIS2 or NISG 2026**           | significant incidents at essential and important entities: **early warning within 24 hours**, notification within 72 hours, final report within one month to the competent CSIRT |
+| **Criminal complaint** (voluntary) | with the police; in Austria the Cybercrime Competence Centre (C4) at the Federal Criminal Police Office is responsible |
+
+More on NIS2 and the GDPR can be found under [Information Security Management](/en/it-security/information-security-management/).
+
+### Post-incident activity
+
+Every major incident is followed by a meeting without assigning blame (_blameless post-mortem_): timeline of the attack, root cause, effectiveness of the response, concrete improvements with owners and deadlines. Metrics such as the **mean time to detect** (MTTD) and the **mean time to respond** (MTTR) show whether the organisation is getting better.
+
+## CERT and CSIRT
+
+A **CERT** (_computer emergency response team_) or **CSIRT** (_computer security incident response team_) is a team of experts that handles security incidents, warns about threats and helps with recovery. The two terms are used synonymously. Larger companies have their own CSIRTs, and there are also national and sector-specific teams.
+
+| Team                          | Task                                                                                      |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| **CERT.at**                   | Austria's national CERT, operated by nic.at (the registry for `.at`), warnings, coordination, point of contact for businesses and the public |
+| **GovCERT Austria**           | CERT for public administration                                                            |
+| **Sector CERTs**              | for example AEC (_Austrian Energy CERT_) for the energy sector                             |
+| **MilCERT**                   | CERT of the Austrian Armed Forces                                                         |
+| **CERT-Bund**, **CERT-EU**    | CERT of the German BSI and of the EU institutions respectively                           |
+
+The national CSIRTs of the EU member states cooperate in the **CSIRTs Network**, supported by the EU Agency for Cybersecurity **ENISA**. Worldwide, CERTs are connected via **FIRST** (_Forum of Incident Response and Security Teams_). CERT.at continuously publishes warnings about critical flaws and informs operators whose systems are recognisably vulnerable from the internet.
+
+## Digital forensics
+
+**Digital forensics** secures and analyses digital traces in order to clarify an incident: how did the attacker get in, what did they do, which data is affected, who was it? Results should also be admissible in court. This leads to the principles:
+
+- **Integrity**: evidence must not be altered. Investigations always work on a copy, never on the original.
+- **Documentation**: every step is recorded with time, person and tool.
+- **Reproducibility**: another expert must reach the same result with the same data and tools.
+- **Lawfulness**: the investigation must respect data protection and employment law, for example regarding employees' private data (in Austria also the works council's rights of co-determination).
+
+### Chain of custody
+
+The **chain of custody** documents without gaps who had a piece of evidence in their hands, when, where and for what purpose, from seizure to presentation in court. For every piece of evidence (for example a hard disk) the description, serial number, place of discovery, time, all handovers with signatures and the hash values of the images are recorded. A gap in this chain can destroy the evidential value, because manipulation can then no longer be ruled out.
+
+### Order of volatility
+
+Data differs in how volatile it is. It is therefore secured from the most volatile to the most persistent (_order of volatility_, according to RFC 3227):
+
+1. CPU registers and cache
+2. routing table, ARP cache, process table, kernel statistics, **memory**
+3. temporary file systems
+4. **disks** and other storage media
+5. remote logging and monitoring data
+6. physical configuration and network topology
+7. archival media such as backup tapes
+
+Memory contains running processes, open network connections, decrypted data, passwords and fileless malware. Whoever simply switches a computer off loses all of this. One therefore distinguishes **live analysis** on the running system from **post-mortem analysis** on the switched-off system or its image.
+
+### Creating images
+
+Storage media are secured as a **forensic image**: a bit-for-bit copy of all sectors, including deleted areas and free space. A **write blocker** between storage medium and analysis computer prevents the operating system from writing anything to the original when it is connected. Immediately after creation, a **hash value** (SHA-256) of original and image is computed. If both match, the image is exact. A later repeated comparison proves that it has not been altered since.
+
+```bash
+# create a bit-for-bit image of the storage device /dev/sdb (behind a write blocker)
+sudo dd if=/dev/sdb of=evidence_001.img bs=4M conv=noerror,sync status=progress
+
+# compute and compare the hash values of original and image
+sudo sha256sum /dev/sdb evidence_001.img
+```
+
+In practice one uses specialised tools such as **FTK Imager**, `dc3dd` or `ewfacquire`, which compute the hash values at the same time and store metadata in the **E01** format. Memory is captured with tools such as WinPmem or LiME and analysed with **Volatility**. For analysing storage media there is, for example, **Autopsy** with **The Sleuth Kit**.
+
+The following program shows how a hash value is computed over a large file without loading it into memory completely. It reads the file block by block and feeds the hash function step by step:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Security.Cryptography;
+
+const string path = "evidence_001.img";
+File.WriteAllText(path, "Contents of the secured storage device"); // example file
+
+string hashBefore = ImageHasher.Sha256Of(path);
+Console.WriteLine($"SHA-256: {hashBefore}");
+
+// later: recompute and compare
+string hashLater = ImageHasher.Sha256Of(path);
+Console.WriteLine(hashBefore == hashLater ? "image unchanged" : "WARNING: image altered");
+
+public static class ImageHasher
+{
+    public static string Sha256Of(string path)
+    {
+        using FileStream stream = File.OpenRead(path);
+        byte[] hash = SHA256.HashData(stream); // reads the stream block by block
+        return Convert.ToHexStringLower(hash);
+    }
+}
+
+// Output:
+// SHA-256: fde22e7a71a4d3db8df17f1c2823300a19ea4f16cb697565b48dfdad17e653da
+// image unchanged
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use sha2::{Digest, Sha256};
+use std::fs::File;
+use std::io::{self, BufReader};
+
+fn sha256_of(path: &str) -> io::Result<String> {
+    let mut reader = BufReader::new(File::open(path)?);
+    let mut hasher = Sha256::new();
+    io::copy(&mut reader, &mut hasher)?; // reads the file block by block
+    Ok(hex::encode(hasher.finalize()))
+}
+
+fn main() -> io::Result<()> {
+    let path = "evidence_001.img";
+    std::fs::write(path, "Contents of the secured storage device")?; // example file
+
+    let hash_before = sha256_of(path)?;
+    println!("SHA-256: {hash_before}");
+
+    // later: recompute and compare
+    let hash_later = sha256_of(path)?;
+    println!("{}", if hash_before == hash_later { "image unchanged" } else { "WARNING: image altered" });
+    Ok(())
+}
+
+// Output:
+// SHA-256: fde22e7a71a4d3db8df17f1c2823300a19ea4f16cb697565b48dfdad17e653da
+// image unchanged
+```
+
+</TabItem>
+</Tabs>
+
+### Analysis
+
+During analysis a **timeline** of all events is created from file system timestamps, logs and other artefacts. Typical traces on Windows are event logs, the registry (recently used files, autostart entries), prefetch files (which programs ran when), browser history and deleted files in the recycle bin or in unallocated space. Attackers' tools often give themselves away through unusual services, scheduled tasks or PowerShell commands. The results are summarised in a **report** that is understandable for non-experts and clearly separates facts from assumptions.
+
+## Business continuity and disaster recovery
+
+**Business continuity management** (BCM) ensures that the most important business processes keep running or restart quickly even during severe disruptions (cyber attack, fire, flood, power cut, failure of a service provider). Standards are **ISO 22301** and **BSI Standard 200-4**. **Disaster recovery** (DR) is the IT part of it: restoring systems and data.
+
+The basis is a **business impact analysis** (BIA): for every business process it is determined what damage an outage causes and how long it may be down at most. This yields the key figures:
+
+| Key figure                                       | Question                                                      | Example                      |
+| ------------------------------------------------ | ------------------------------------------------------------- | ---------------------------- |
+| **RTO** (_recovery time objective_)              | How long may it take until the system is running again?       | web shop: 4 hours            |
+| **RPO** (_recovery point objective_)             | How much data loss (measured as a time span) is acceptable?   | orders: 15 minutes           |
+| **MTPD** (_maximum tolerable period of disruption_) | From when does the outage seriously endanger the company?  | 2 days                       |
+
+The **RPO** determines how often data must be backed up or replicated: with an RPO of 15 minutes a nightly backup is not enough; for example continuous replication of the database is needed. The **RTO** determines the type of recovery: restoring several terabytes from tape takes hours to days, whereas a prepared standby system takes over in minutes. The smaller RTO and RPO, the more expensive the solution. The RTO must be smaller than the MTPD.
+
+![Timeline with RPO before and RTO after an outage](/images/it-security/rto-rpo_en.svg)
+
+For recovery there are alternative sites of differing readiness:
+
+| Type          | Equipment                                                      | Time to operation    | Cost    |
+| ------------- | -------------------------------------------------------------- | -------------------- | ------- |
+| **Hot site**  | fully equipped, data replicated continuously                   | minutes to hours     | high    |
+| **Warm site** | hardware and network available, data must be restored          | hours to days        | medium  |
+| **Cold site** | only rooms, power and air conditioning                         | days to weeks        | low     |
+
+Today the cloud often takes on the role of the alternative site (_disaster recovery as a service_). Contingency plans are **tested** regularly, from talking them through at a table to an actual failover, because only a test shows whether RTO and RPO are met. Technical basics of redundant systems are described on the page [High Availability](/en/deployment/operations/high_availability/).
+
+## Further reading
+
+- [NIST SP 800-61 Rev. 3: Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
+- [CERT.at](https://www.cert.at/en/) (Austria's national CERT) and [Onlinesicherheit.gv.at](https://www.onlinesicherheit.gv.at/) (Austrian government portal for online safety, in German)
+- [BSI Standard 200-4: Business Continuity Management](https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/BSI-Standards/bsi-standards_node.html)

@@ -1,0 +1,213 @@
+---
+title: Elektrizität und Magnetismus
+description: Physikalische Grundlagen von Ladung, Coulombschem Gesetz, elektrischem Feld und Potential, Kondensator, Strom und Widerstand, Magnetfeld, Lorentzkraft, Induktion und elektromagnetischen Wellen.
+sidebar:
+  order: 13
+---
+
+Elektrische und magnetische Erscheinungen sind zwei Seiten einer einzigen Wechselwirkung, des **Elektromagnetismus**. Er hält Atome und Moleküle zusammen, bestimmt die Chemie und ist die Grundlage aller Elektrotechnik und Elektronik. Diese Seite behandelt die physikalischen Grundlagen; Schaltungen, Netzwerke und Wechselstromtechnik sind Thema der Elektrotechnik.
+
+## Elektrische Ladung
+
+Die **elektrische Ladung** $Q$ ist eine Eigenschaft von Teilchen. Es gibt zwei Arten, positiv und negativ: Gleichnamige Ladungen stoßen sich ab, ungleichnamige ziehen sich an. Die Einheit ist das **Coulomb**, $1\,\mathrm{C} = 1\,\mathrm{A\,s}$.
+
+- Ladung ist **gequantelt**: Jede frei beobachtbare Ladung ist ein ganzzahliges Vielfaches der **Elementarladung** $e = 1{,}602\,176\,634 \cdot 10^{-19}\,\mathrm{C}$. Ein Elektron trägt $-e$, ein Proton $+e$. Millikan bestimmte $e$ 1909 mit seinem Öltröpfchenversuch.
+- Ladung ist **erhalten**: In einem abgeschlossenen System bleibt die Summe aller Ladungen konstant. Beim Reiben eines Luftballons am Pullover werden nur Elektronen verschoben.
+- Ein Körper ist neutral, wenn er gleich viele positive und negative Ladungen enthält.
+
+**Leiter** (Metalle, Elektrolyte) enthalten frei bewegliche Ladungsträger, **Isolatoren** (Glas, Kunststoff) nicht. Halbleiter liegen dazwischen (siehe [Moderne Physik](/de/natural-sciences/modern-physics/#halbleiter)). Bringt man einen geladenen Körper in die Nähe eines Leiters, verschieben sich dessen Ladungen (**Influenz**).
+
+## Coulombsches Gesetz
+
+Zwei punktförmige Ladungen $Q_1$ und $Q_2$ im Abstand $r$ üben aufeinander die Kraft
+
+$$
+F = \frac{1}{4\pi\varepsilon_0} \cdot \frac{Q_1 \cdot Q_2}{r^2}
+$$
+
+aus. Die **elektrische Feldkonstante** ist $\varepsilon_0 = 8{,}854 \cdot 10^{-12}\,\mathrm{A\,s/(V\,m)}$, der Vorfaktor $\frac{1}{4\pi\varepsilon_0} = 8{,}988 \cdot 10^9\,\mathrm{N\,m^2/C^2}$. Das Gesetz hat dieselbe Form wie das [Gravitationsgesetz](/de/natural-sciences/gravitation/), ist aber ungeheuer viel stärker: Zwischen Proton und Elektron ist die elektrische Anziehung etwa $10^{39}$-mal so groß wie die Gravitation.
+
+:::tip[Beispiel]
+Zwei Ladungen von je $1\,\mathrm{\mu C}$ im Abstand von $10\,\mathrm{cm}$:
+
+$$
+F = 8{,}988 \cdot 10^9 \cdot \frac{(10^{-6})^2}{0{,}1^2} = 0{,}899\,\mathrm{N}
+$$
+:::
+
+In einem Material mit der Permittivitätszahl $\varepsilon_\mathrm{r}$ (Wasser etwa 80) ist die Kraft um diesen Faktor kleiner. Deshalb lösen sich Salze in Wasser so gut.
+
+## Elektrisches Feld
+
+Eine Ladung erzeugt um sich ein **elektrisches Feld**. Die **elektrische Feldstärke** ist die Kraft auf eine positive Probeladung $q$, geteilt durch diese:
+
+$$
+\vec E = \frac{\vec F}{q}, \qquad [E] = \mathrm{N/C} = \mathrm{V/m}
+$$
+
+Für eine Punktladung gilt $E = \frac{1}{4\pi\varepsilon_0}\frac{Q}{r^2}$; im Abstand von $10\,\mathrm{cm}$ von $1\,\mathrm{\mu C}$ sind das $8{,}99 \cdot 10^5\,\mathrm{V/m}$.
+
+**Feldlinien** veranschaulichen das Feld: Sie beginnen an positiven und enden an negativen Ladungen, zeigen in Richtung der Kraft auf eine positive Ladung, schneiden sich nie und stehen senkrecht auf Leiteroberflächen. Ihre Dichte zeigt die Feldstärke. Zwischen zwei parallelen, entgegengesetzt geladenen Platten ist das Feld **homogen**.
+
+Im Inneren eines Leiters ist das elektrostatische Feld null, die Ladungen sitzen an der Oberfläche. Ein geschlossener Metallkäfig schirmt deshalb äußere Felder ab (**Faradayscher Käfig**): Auto und Flugzeug schützen bei Blitzschlag, Mikrowellenherd und Abschirmbleche halten Strahlung zurück.
+
+## Potential und Spannung
+
+Wird eine Ladung im Feld verschoben, verrichtet das Feld Arbeit, analog zur Hubarbeit im Schwerefeld. Das **elektrische Potential** $\varphi$ ist die potentielle Energie pro Ladung. Die **Spannung** ist die Potentialdifferenz zwischen zwei Punkten:
+
+$$
+U = \varphi_\mathrm{A} - \varphi_\mathrm{B} = \frac{W}{q}, \qquad [U] = \mathrm{J/C} = \mathrm{V} \;(\text{Volt})
+$$
+
+Im homogenen Feld eines Plattenkondensators mit Plattenabstand $d$ gilt
+
+$$
+E = \frac{U}{d}
+$$
+
+Durchläuft eine Ladung $q$ die Spannung $U$, gewinnt sie die Energie $W = q U$. Für ein Elektron und $1\,\mathrm{V}$ ist das ein **Elektronvolt**.
+
+:::tip[Beispiel: Elektronenkanone]
+Ein Elektron wird aus der Ruhe mit $U = 1\,\mathrm{kV}$ beschleunigt. Es gewinnt $1\,\mathrm{keV}$, also
+
+$$
+\frac{1}{2} m_\mathrm{e} v^2 = e U \quad\Rightarrow\quad v = \sqrt{\frac{2 e U}{m_\mathrm{e}}} = \sqrt{\frac{2 \cdot 1{,}602 \cdot 10^{-19} \cdot 1000}{9{,}109 \cdot 10^{-31}}} = 1{,}88 \cdot 10^7\,\mathrm{m/s}
+$$
+
+Das sind über 6 % der Lichtgeschwindigkeit; ab einigen zehn Kilovolt muss man relativistisch rechnen.
+:::
+
+**Äquipotentialflächen** verbinden Punkte gleichen Potentials und stehen senkrecht auf den Feldlinien. Entlang einer Äquipotentialfläche verschiebt man eine Ladung ohne Arbeit.
+
+## Kondensator
+
+Ein **Kondensator** besteht aus zwei voneinander isolierten Leitern (Platten), die entgegengesetzte Ladungen $+Q$ und $-Q$ speichern. Die gespeicherte Ladung ist proportional zur Spannung; der Proportionalitätsfaktor ist die **Kapazität**:
+
+$$
+C = \frac{Q}{U}, \qquad [C] = \mathrm{C/V} = \mathrm{F} \;(\text{Farad})
+$$
+
+Für einen Plattenkondensator mit Fläche $A$, Abstand $d$ und Dielektrikum $\varepsilon_\mathrm{r}$:
+
+$$
+C = \varepsilon_0 \varepsilon_\mathrm{r} \frac{A}{d}, \qquad W = \frac{1}{2} C U^2
+$$
+
+:::tip[Beispiel]
+Zwei Platten mit je $100\,\mathrm{cm^2}$ im Abstand von $1\,\mathrm{mm}$ in Luft: $C = 8{,}854 \cdot 10^{-12} \cdot \frac{0{,}01}{0{,}001} = 88{,}5\,\mathrm{pF}$. Bei $100\,\mathrm{V}$ speichert er $Q = 8{,}85\,\mathrm{nC}$ und $W = 0{,}44\,\mathrm{\mu J}$. Ein Farad ist eine riesige Kapazität; übliche Bauteile liegen im Bereich pF bis mF, Superkondensatoren erreichen einige tausend Farad.
+:::
+
+Der Energieinhalt steckt im elektrischen Feld zwischen den Platten. Kondensatoren glätten Spannungen in Netzteilen, speichern Energie für Blitzgeräte und bilden Speicherzellen im DRAM.
+
+## Elektrischer Strom und Widerstand
+
+Der **elektrische Strom** ist bewegte Ladung. Die **Stromstärke** gibt an, wie viel Ladung pro Zeit durch einen Leiterquerschnitt fließt:
+
+$$
+I = \frac{\mathrm{d}Q}{\mathrm{d}t}, \qquad [I] = \mathrm{A} \;(\text{Ampere})
+$$
+
+In Metallen bewegen sich Elektronen, in Elektrolyten und Gasen auch Ionen. Die **technische Stromrichtung** ist von Plus nach Minus festgelegt, die Elektronen fließen umgekehrt. Ihre Driftgeschwindigkeit beträgt nur Bruchteile eines Millimeters pro Sekunde; das Signal breitet sich dagegen fast mit Lichtgeschwindigkeit aus, weil das Feld alle Elektronen im Leiter gleichzeitig anschiebt.
+
+Ein Strom fließt nur, wenn eine Spannung anliegt und der Stromkreis geschlossen ist. Bei vielen Leitern (Metalle bei konstanter Temperatur) ist der Strom proportional zur Spannung, das ist das **ohmsche Gesetz**:
+
+$$
+U = R \cdot I, \qquad R = \rho \frac{l}{A}, \qquad [R] = \mathrm{V/A} = \Omega
+$$
+
+Der **spezifische Widerstand** $\rho$ ist eine Materialeigenschaft: Kupfer $1{,}72 \cdot 10^{-8}\,\Omega\,\mathrm{m}$ ($0{,}0172\,\Omega\,\mathrm{mm^2/m}$), Aluminium $2{,}7 \cdot 10^{-8}\,\Omega\,\mathrm{m}$. Eine $100\,\mathrm{m}$ lange Kupferleitung mit $1{,}5\,\mathrm{mm^2}$ hat $R = 0{,}0172 \cdot 100/1{,}5 = 1{,}15\,\Omega$. Der Widerstand von Metallen steigt mit der Temperatur, weil die Gitterschwingungen die Elektronen stärker streuen.
+
+Die elektrische **Leistung** ist $P = U \cdot I = R I^2 = \frac{U^2}{R}$. Im Widerstand wird sie in Wärme umgewandelt (**Joulesche Wärme**), was Heizdraht und Sicherung nutzen.
+
+## Magnetismus und Magnetfeld
+
+**Dauermagnete** haben einen Nord- und einen Südpol; gleichnamige Pole stoßen sich ab, ungleichnamige ziehen sich an. Magnetische Pole treten immer paarweise auf: Zerbricht man einen Magneten, erhält man zwei vollständige Magnete. Eisen, Nickel und Kobalt sind **ferromagnetisch** und werden von Magneten angezogen.
+
+Hans Christian Ørsted entdeckte 1820, dass auch ein stromdurchflossener Leiter eine Kompassnadel ablenkt: **Jeder elektrische Strom erzeugt ein Magnetfeld.** Auch Dauermagnetismus geht letztlich auf die Bewegung und den Spin von Elektronen zurück.
+
+Das Magnetfeld wird durch die **magnetische Flussdichte** $\vec B$ beschrieben, Einheit **Tesla** ($1\,\mathrm{T} = 1\,\mathrm{V\,s/m^2}$). **Magnetische Feldlinien** sind geschlossen: Außerhalb eines Magneten laufen sie vom Nord- zum Südpol, innen zurück.
+
+| Anordnung | Flussdichte |
+| --- | --- |
+| gerader langer Leiter, Abstand $r$ | $B = \frac{\mu_0 I}{2\pi r}$, Feldlinien sind konzentrische Kreise |
+| lange Spule, $N$ Windungen, Länge $l$ | $B = \mu_0 \mu_\mathrm{r} \frac{N I}{l}$, innen homogen |
+
+Die **magnetische Feldkonstante** ist $\mu_0 = 1{,}257 \cdot 10^{-6}\,\mathrm{V\,s/(A\,m)}$. Ein Eisenkern mit großer Permeabilitätszahl $\mu_\mathrm{r}$ (bis zu mehreren tausend) verstärkt das Feld einer Spule enorm (**Elektromagnet**).
+
+:::tip[Beispiel]
+Ein Leiter mit $10\,\mathrm{A}$ erzeugt in $5\,\mathrm{cm}$ Abstand $B = \frac{1{,}257 \cdot 10^{-6} \cdot 10}{2\pi \cdot 0{,}05} = 40\,\mathrm{\mu T}$, ähnlich viel wie das Erdmagnetfeld (in Österreich rund $48\,\mathrm{\mu T}$). Eine luftgefüllte Spule mit $500$ Windungen auf $20\,\mathrm{cm}$ Länge erreicht bei $2\,\mathrm{A}$ im Inneren $B = 1{,}257 \cdot 10^{-6} \cdot 500 \cdot 2/0{,}2 = 6{,}3\,\mathrm{mT}$.
+:::
+
+Das **Erdmagnetfeld** entsteht durch Strömungen im flüssigen äußeren Erdkern. Sein magnetischer Südpol liegt nahe dem geographischen Nordpol, deshalb zeigt der Nordpol der Kompassnadel nach Norden. Es schirmt geladene Teilchen des Sonnenwinds ab; wo sie an den Polen eindringen, entstehen Polarlichter.
+
+## Lorentzkraft
+
+Auf eine Ladung $q$, die sich mit der Geschwindigkeit $\vec v$ durch ein Magnetfeld bewegt, wirkt die **Lorentzkraft**:
+
+$$
+\vec F_\mathrm{L} = q \cdot (\vec v \times \vec B), \qquad F_\mathrm{L} = q v B \sin\alpha
+$$
+
+Sie steht senkrecht auf $\vec v$ und $\vec B$ (Drei-Finger-Regel der rechten Hand für positive Ladungen: Daumen $\vec v$, Zeigefinger $\vec B$, Mittelfinger $\vec F$). Weil sie senkrecht zur Bewegung wirkt, verrichtet sie keine Arbeit, sie ändert nur die Richtung. Fliegt ein geladenes Teilchen senkrecht zu einem homogenen Feld, bewegt es sich auf einer Kreisbahn:
+
+$$
+q v B = \frac{m v^2}{r} \quad\Rightarrow\quad r = \frac{m v}{q B}
+$$
+
+Das Elektron aus dem Beispiel oben ($1{,}88 \cdot 10^7\,\mathrm{m/s}$) beschreibt in $B = 1\,\mathrm{mT}$ einen Kreis mit $r = 10{,}7\,\mathrm{cm}$. Damit bestimmt man im Fadenstrahlrohr die spezifische Ladung $e/m$; Massenspektrometer und Teilchenbeschleuniger beruhen auf demselben Prinzip.
+
+Auf einen stromdurchflossenen Leiter der Länge $l$ senkrecht zum Feld wirkt die Kraft
+
+$$
+F = I \cdot l \cdot B
+$$
+
+Ein Leiter mit $5\,\mathrm{A}$ und $10\,\mathrm{cm}$ Länge in $0{,}2\,\mathrm{T}$ erfährt $0{,}1\,\mathrm{N}$. Das ist das Prinzip des **Elektromotors** und des Lautsprechers. Die Lorentzkraft auf die Elektronen in einem Leiterplättchen verursacht auch den **Hall-Effekt**: Quer zum Strom entsteht eine Spannung proportional zu $B$; Hall-Sensoren messen damit Magnetfelder und Drehzahlen.
+
+## Elektromagnetische Induktion
+
+Michael Faraday entdeckte 1831 die Umkehrung: Ein sich **änderndes** Magnetfeld erzeugt eine Spannung. Maßgeblich ist der **magnetische Fluss** $\Phi = B \cdot A \cdot \cos\alpha$ (Einheit Weber, $1\,\mathrm{Wb} = 1\,\mathrm{V\,s}$) durch eine Leiterschleife. Das **Induktionsgesetz** lautet:
+
+$$
+U_\mathrm{ind} = -N \frac{\mathrm{d}\Phi}{\mathrm{d}t}
+$$
+
+Der Fluss kann sich ändern, weil sich $B$ ändert (Transformator), weil sich die Fläche ändert oder weil sich die Schleife dreht (Generator).
+
+Das Minuszeichen drückt die **Lenzsche Regel** aus: Der induzierte Strom ist so gerichtet, dass sein Magnetfeld der Ursache der Induktion entgegenwirkt. Sie folgt aus der Energieerhaltung; andernfalls würde sich die Bewegung selbst verstärken.
+
+:::tip[Beispiel]
+Eine Spule mit $200$ Windungen und $10\,\mathrm{cm^2}$ Querschnitt steht senkrecht in einem Feld, das in $0{,}1\,\mathrm{s}$ gleichmäßig von $0{,}5\,\mathrm{T}$ auf null abnimmt: $U = 200 \cdot \frac{0{,}5 \cdot 10^{-3}}{0{,}1} = 1\,\mathrm{V}$.
+:::
+
+Anwendungen:
+
+- **Generator**: Eine Spule dreht sich mit $\omega$ im Magnetfeld, $U(t) = N B A \omega \sin(\omega t)$. So entsteht Wechselspannung in fast allen Kraftwerken.
+- **Transformator**: Zwei Spulen auf einem Eisenkern; im Idealfall gilt $\frac{U_1}{U_2} = \frac{N_1}{N_2}$. Hohe Übertragungsspannungen senken die Leitungsverluste ($P_\mathrm{V} = R I^2$).
+- **Wirbelströme** in Metallplatten bremsen Bewegungen (Wirbelstrombremse in Zügen) und erwärmen den Topfboden beim Induktionsherd.
+- Kabelloses Laden, RFID und NFC, Induktionsschleifen an Ampeln, dynamisches Mikrofon.
+
+Ändert sich der Strom in einer Spule, induziert ihr eigenes Feld eine Gegenspannung (**Selbstinduktion**), $U = -L \frac{\mathrm{d}I}{\mathrm{d}t}$ mit der Induktivität $L$ in Henry.
+
+## Elektromagnetische Wellen
+
+James Clerk Maxwell fasste 1864 alle Gesetze der Elektrizität und des Magnetismus in vier Gleichungen zusammen. Qualitativ besagen sie:
+
+1. Elektrische Ladungen sind Quellen des elektrischen Feldes (Coulomb).
+2. Es gibt keine magnetischen Einzelladungen; magnetische Feldlinien sind geschlossen.
+3. Ein sich änderndes Magnetfeld erzeugt ein elektrisches Wirbelfeld (Induktion).
+4. Elektrische Ströme **und sich ändernde elektrische Felder** erzeugen ein Magnetfeld.
+
+Punkt 4 war Maxwells entscheidende Ergänzung. Aus 3 und 4 folgt: Ein sich änderndes elektrisches Feld erzeugt ein Magnetfeld, das wiederum ein elektrisches Feld erzeugt, und so weiter. Die Felder lösen sich von ihrer Quelle und breiten sich als **elektromagnetische Welle** aus, auch im Vakuum. Elektrisches und magnetisches Feld schwingen senkrecht zueinander und zur Ausbreitungsrichtung (Transversalwelle). Die Theorie sagt die Geschwindigkeit voraus:
+
+$$
+c = \frac{1}{\sqrt{\mu_0 \varepsilon_0}} = 2{,}998 \cdot 10^8\,\mathrm{m/s}
+$$
+
+Dass dieser Wert mit der gemessenen Lichtgeschwindigkeit übereinstimmte, zeigte: **Licht ist eine elektromagnetische Welle.** Heinrich Hertz wies 1886 Radiowellen experimentell nach. Erzeugt werden solche Wellen von beschleunigten Ladungen, etwa den schwingenden Elektronen in einer Antenne (Hertzscher Dipol). Den gesamten Frequenzbereich zeigt das [elektromagnetische Spektrum](/de/natural-sciences/optics/#das-elektromagnetische-spektrum).
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- Wolfgang Demtröder: _Experimentalphysik 2: Elektrizität und Optik_, Springer Spektrum
+- LEIFIphysik: Elektrizitätslehre und Elektromagnetismus, leifiphysik.de

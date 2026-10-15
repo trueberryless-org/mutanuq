@@ -1,0 +1,234 @@
+---
+title: Echtzeitsysteme
+description: "Harte und weiche Echtzeit, Determinismus, RTOS-Konzepte wie Tasks und Scheduling (RMS, EDF), Prioritätsinversion, Semaphore, Queues, FreeRTOS und Watchdog."
+sidebar:
+  order: 16
+---
+
+Ein **Echtzeitsystem** ist ein System, bei dem ein Ergebnis nur dann korrekt ist, wenn es **logisch richtig** ist und **rechtzeitig** vorliegt. Eine Airbag-Steuerung, die den Aufprall richtig erkennt, aber den Airbag erst nach $100\,\mathrm{ms}$ zündet, hat versagt. Jede Aufgabe hat deshalb eine **Deadline**, also einen spätesten Zeitpunkt, bis zu dem sie erledigt sein muss.
+
+:::tip[Merke]
+Echtzeit bedeutet nicht „schnell“, sondern **vorhersagbar**. Ein System, das garantiert innerhalb von einer Sekunde reagiert, ist echtzeitfähig. Ein PC, der meistens in einer Millisekunde, aber manchmal erst nach zwei Sekunden reagiert, ist es nicht.
+:::
+
+## Harte, feste und weiche Echtzeit
+
+| Art | Folge einer verpassten Deadline | Beispiele |
+| --- | ------------------------------- | --------- |
+| **Harte Echtzeit** (_hard real time_) | Systemversagen, mögliche Gefahr für Mensch und Maschine. Die Deadline muss **immer** eingehalten werden. | Airbag, ABS, Herzschrittmacher, Steuerung einer Presse, Flugsteuerung |
+| **Feste Echtzeit** (_firm real time_) | Das verspätete Ergebnis ist wertlos und wird verworfen, aber es entsteht kein Schaden. | Messwerterfassung, bei der einzelne Messwerte fehlen dürfen |
+| **Weiche Echtzeit** (_soft real time_) | Die Qualität sinkt, das Ergebnis ist aber noch brauchbar. | Video- und Audiostreaming, VoIP, Benutzeroberflächen |
+
+## Wichtige Begriffe
+
+- **Determinismus:** Bei gleichen Eingaben und gleichem Zustand verhält sich das System zeitlich immer gleich. Die maximale Reaktionszeit ist bekannt und garantiert.
+- **Latenz:** Zeit zwischen einem Ereignis (z. B. einem Interrupt) und der Reaktion darauf.
+- **Jitter:** Schwankung der Latenz bzw. der Periodendauer. Bei einer Regelung, die alle $10\,\mathrm{ms}$ laufen soll, aber manchmal nach 9 und manchmal nach $12\,\mathrm{ms}$ läuft, beträgt der Jitter $3\,\mathrm{ms}$.
+- **WCET** (_Worst Case Execution Time_): die längste mögliche Ausführungszeit einer Aufgabe. Für harte Echtzeit muss man mit der WCET rechnen, nicht mit dem Durchschnitt.
+- **Periodische Tasks** laufen in festen Abständen (Periode $T$), **aperiodische** und **sporadische Tasks** werden durch Ereignisse ausgelöst.
+
+Was die Vorhersagbarkeit stört: Caches, Pipelines und Sprungvorhersage moderner Prozessoren, dynamische Speicherverwaltung (`malloc`), Garbage Collection, virtueller Speicher mit Auslagerung sowie Betriebssysteme, die ihre Aufgaben nach Fairness statt nach Dringlichkeit verteilen. Deshalb verwendet man für harte Echtzeit einfache Mikrocontroller oder spezielle Echtzeitbetriebssysteme.
+
+## Programmstrukturen
+
+### Superloop
+
+Die einfachste Struktur ist die bisher verwendete **Arbeitsschleife** (_Superloop_): Alle Aufgaben werden in `while(1)` nacheinander abgearbeitet. Die Reaktionszeit ist die Dauer eines ganzen Schleifendurchlaufs. Sie ist einfach zu verstehen, wird aber unberechenbar, sobald eine Aufgabe lange dauert oder mit `_delay_ms()` wartet.
+
+### Superloop mit Interrupts
+
+Zeitkritische Ereignisse werden in [Interrupts](/de/embedded-programming/interrupts/) erfasst (Vordergrund), die ISR setzt nur ein Flag, die eigentliche Arbeit erfolgt in der Schleife (Hintergrund). Mit einem [Timer](/de/embedded-programming/timer/) im CTC-Modus als Zeitbasis erreicht man einfache periodische Abläufe. Für mehrere unabhängige Aufgaben mit unterschiedlichen Perioden und Prioritäten wird das schnell unübersichtlich.
+
+### Echtzeitbetriebssystem
+
+Ein **Echtzeitbetriebssystem** (_Real-Time Operating System_, RTOS) teilt die Anwendung in mehrere **Tasks** auf, die scheinbar parallel laufen, und entscheidet nach festen, vorhersagbaren Regeln, welcher Task als Nächstes die CPU bekommt. Bekannte RTOS sind **FreeRTOS** (MIT-Lizenz, sehr verbreitet auf Mikrocontrollern), **Zephyr** (Linux Foundation), **VxWorks** und **QNX** (kommerziell, z. B. in Luft- und Raumfahrt und Fahrzeugen) sowie **RTEMS**. Seit Version 6.12 (2024) ist außerdem die Echtzeiterweiterung **PREEMPT_RT** im Linux-Kernel enthalten, womit Linux für viele weiche und manche harte Echtzeitanwendungen genutzt werden kann.
+
+## RTOS-Konzepte
+
+### Tasks und ihre Zustände
+
+Ein **Task** ist eine Funktion mit Endlosschleife, eigenem Stack und eigener **Priorität**. Jeder Task befindet sich in einem von mehreren Zuständen:
+
+| Zustand       | Bedeutung |
+| ------------- | --------- |
+| **Running**   | Der Task wird gerade ausgeführt (auf einem Einkernprozessor immer genau einer). |
+| **Ready**     | Der Task könnte laufen, wartet aber, weil ein Task mit höherer oder gleicher Priorität läuft. |
+| **Blocked**   | Der Task wartet auf ein Ereignis: Ablauf einer Zeit, Daten in einer Queue, Freigabe eines Semaphors. Er verbraucht keine Rechenzeit. |
+| **Suspended** | Der Task wurde explizit angehalten und nimmt nicht am Scheduling teil. |
+
+Der Wechsel von einem Task zum anderen heißt **Kontextwechsel** (_Context Switch_): Der Scheduler sichert die Register des alten Tasks auf dessen Stack und lädt die des neuen. Ausgelöst wird der Scheduler durch einen periodischen Timer-Interrupt (**Tick**, typischerweise $1\,\mathrm{ms}$) oder wenn ein Task blockiert bzw. ein Ereignis einen Task aufweckt.
+
+Wenn kein Task bereit ist, läuft der **Idle-Task** mit der niedrigsten Priorität. Er kann den Prozessor in einen Stromsparmodus versetzen.
+
+### Scheduling-Verfahren
+
+- **Kooperativ:** Ein Task läuft, bis er die CPU freiwillig abgibt. Einfach, aber ein fehlerhafter Task blockiert alle anderen.
+- **Präemptiv, prioritätsbasiert:** Es läuft immer der bereite Task mit der höchsten Priorität. Wird ein höher priorisierter Task bereit, wird der laufende sofort unterbrochen (**Präemption**). Das ist das Standardverfahren in RTOS.
+- **Round Robin / Time Slicing:** Tasks mit **gleicher** Priorität bekommen abwechselnd eine Zeitscheibe.
+
+Wie man die Prioritäten vergibt, damit alle Deadlines eingehalten werden, beantworten zwei klassische Verfahren. Dabei ist $C_i$ die WCET und $T_i$ die Periode (gleich der Deadline) von Task $i$. Die **Auslastung** (_Utilization_) ist
+
+$$
+U = \sum_{i=1}^{n} \frac{C_i}{T_i}
+$$
+
+Bei $U > 1$ ist die CPU überlastet, und kein Verfahren kann alle Deadlines einhalten.
+
+#### Rate Monotonic Scheduling (RMS)
+
+Beim **Rate Monotonic Scheduling** bekommt der Task mit der **kürzesten Periode die höchste Priorität**. Die Prioritäten sind statisch, also zur Laufzeit fest. Liu und Layland haben 1973 gezeigt: Alle Deadlines werden sicher eingehalten, wenn
+
+$$
+U \le n \cdot \left(2^{1/n} - 1\right)
+$$
+
+Für $n = 1$ ist die Grenze 1, für $n = 2$ etwa $0{,}828$, für $n = 3$ etwa $0{,}780$, und für sehr viele Tasks nähert sie sich $\ln 2 \approx 0{,}693$. Die Bedingung ist **hinreichend, aber nicht notwendig**: Liegt $U$ darüber, kann das System trotzdem funktionieren, man muss es dann genauer analysieren (Antwortzeitanalyse).
+
+**Beispiel:** Drei Tasks mit $(C, T)$ = $(1\,\mathrm{ms}, 4\,\mathrm{ms})$, $(2\,\mathrm{ms}, 6\,\mathrm{ms})$, $(1\,\mathrm{ms}, 10\,\mathrm{ms})$:
+
+$$
+U = \frac{1}{4} + \frac{2}{6} + \frac{1}{10} \approx 0{,}683 \le 0{,}780
+$$
+
+Mit RMS (Priorität: Task 1 vor Task 2 vor Task 3) werden alle Deadlines eingehalten.
+
+#### Earliest Deadline First (EDF)
+
+Bei **Earliest Deadline First** läuft immer der Task, dessen Deadline am **nächsten** liegt. Die Prioritäten ändern sich also zur Laufzeit (dynamisch). Für unabhängige, periodische Tasks auf einem Prozessor gilt:
+
+$$
+U \le 1
+$$
+
+EDF kann die CPU damit vollständig auslasten. Dafür ist es aufwendiger umzusetzen, und bei Überlast verpassen unter Umständen viele Tasks ihre Deadline (Dominoeffekt), während bei RMS nur die niedrig priorisierten betroffen sind. In der Praxis verwenden die meisten RTOS feste Prioritäten.
+
+### Kommunikation und Synchronisation
+
+Tasks teilen sich Daten und Peripherie. Ohne Schutz entstehen dieselben Probleme wie bei Threads auf dem PC (siehe [Nebenläufigkeit](/de/software-development/concurrency/)). Ein RTOS bietet dafür:
+
+| Mittel | Zweck |
+| ------ | ----- |
+| **Queue** (Warteschlange) | Daten zwischen Tasks oder von einer ISR an einen Task übergeben (FIFO, Kopie der Daten). Ein Task kann blockiert auf neue Daten warten. |
+| **Binärer Semaphor** | Signalisieren eines Ereignisses, typischerweise von einer ISR an einen Task (**Deferred Interrupt Processing**: Die ISR bleibt kurz, die Arbeit erledigt ein Task). |
+| **Zählender Semaphor** | Verwaltet mehrere gleichartige Ressourcen oder zählt Ereignisse. |
+| **Mutex** | Gegenseitiger Ausschluss beim Zugriff auf eine gemeinsame Ressource (z. B. UART, SPI-Bus). Nur der Task, der den Mutex genommen hat, darf ihn zurückgeben. |
+| **Event Groups / Task Notifications** | Warten auf ein oder mehrere Ereignisse (Bits) |
+
+### Prioritätsinversion
+
+Bei der **Prioritätsinversion** muss ein hoch priorisierter Task auf einen niedrig priorisierten warten, und ein mittlerer Task verlängert diese Wartezeit unbegrenzt:
+
+1. Task **L** (niedrige Priorität) nimmt einen Mutex, etwa für den SPI-Bus.
+2. Task **H** (hohe Priorität) wird bereit, unterbricht L und will denselben Mutex. Er blockiert und wartet auf L.
+3. Task **M** (mittlere Priorität) wird bereit. Da M wichtiger ist als L, unterbricht M den Task L.
+4. Solange M läuft, kann L den Mutex nicht freigeben, und H wartet, obwohl er die höchste Priorität hat.
+
+Bekannt wurde das Problem 1997 durch den Mars-Rover **Mars Pathfinder**, dessen Rechner sich wegen einer Prioritätsinversion wiederholt durch den Watchdog neu startete. Die Lösung wurde von der Erde aus per Konfigurationsänderung eingespielt.
+
+Lösungen:
+
+- **Prioritätsvererbung** (_Priority Inheritance_): Solange L einen Mutex hält, auf den H wartet, erhält L vorübergehend die Priorität von H. M kann L dann nicht mehr verdrängen. FreeRTOS-Mutexe verwenden dieses Verfahren automatisch, binäre Semaphore nicht.
+- **Priority Ceiling**: Jeder Mutex hat eine feste Obergrenze, nämlich die höchste Priorität aller Tasks, die ihn verwenden. Wer den Mutex nimmt, läuft sofort mit dieser Priorität. Das verhindert zusätzlich Deadlocks.
+
+## Beispiel mit FreeRTOS
+
+Ein Sensor-Task misst alle $100\,\mathrm{ms}$ die Temperatur und legt den Wert in eine Queue. Ein Anzeige-Task wartet auf neue Werte und gibt sie über den UART aus, der mit einem Mutex geschützt ist. Die Funktionen `read_temperature()`, `uart_init()` und `uart_print_int()` stehen für die eigene Hardwareansteuerung.
+
+```c
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+
+static QueueHandle_t temperatureQueue;
+static SemaphoreHandle_t uartMutex;
+
+static void vSensorTask(void *pvParameters) {
+    TickType_t lastWake = xTaskGetTickCount();
+    for (;;) {
+        int16_t value = read_temperature();
+        xQueueSend(temperatureQueue, &value, 0);              // nicht warten, wenn voll
+        xTaskDelayUntil(&lastWake, pdMS_TO_TICKS(100));       // genau alle 100 ms
+    }
+}
+
+static void vDisplayTask(void *pvParameters) {
+    int16_t value;
+    for (;;) {
+        // blockiert, bis ein Wert in der Queue liegt
+        if (xQueueReceive(temperatureQueue, &value, portMAX_DELAY) == pdPASS) {
+            xSemaphoreTake(uartMutex, portMAX_DELAY);
+            uart_print_int(value);
+            xSemaphoreGive(uartMutex);
+        }
+    }
+}
+
+int main(void) {
+    uart_init();
+    temperatureQueue = xQueueCreate(10, sizeof(int16_t)); // Platz für 10 Werte
+    uartMutex = xSemaphoreCreateMutex();                  // mit Prioritätsvererbung
+
+    // Funktion, Name, Stackgröße (in Worten), Parameter, Priorität, Handle
+    xTaskCreate(vSensorTask, "Sensor", 128, NULL, 2, NULL);
+    xTaskCreate(vDisplayTask, "Display", 128, NULL, 1, NULL);
+
+    vTaskStartScheduler();   // kehrt nur zurück, wenn zu wenig Speicher vorhanden ist
+    for (;;);
+}
+```
+
+Wichtig ist der Unterschied zwischen `vTaskDelay()` und `xTaskDelayUntil()`: `vTaskDelay(100)` wartet 100 Ticks ab **jetzt**, die Periode wird also um die Ausführungszeit des Tasks länger und schwankt. `xTaskDelayUntil()` wartet bis zu einem **absoluten** Zeitpunkt und hält die Periode exakt ein. Im Gegensatz zu `_delay_ms()` blockiert der Task dabei, und andere Tasks können laufen.
+
+Aus einer ISR dürfen nur die Funktionen mit der Endung `FromISR` aufgerufen werden, weil eine ISR nicht blockieren darf:
+
+```c
+static SemaphoreHandle_t buttonSemaphore;   // mit xSemaphoreCreateBinary() erzeugt
+
+// Name und Form der ISR hängen von der Plattform ab
+void button_isr(void) {
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    xSemaphoreGiveFromISR(buttonSemaphore, &higherPriorityTaskWoken);
+    // sofort zum geweckten Task wechseln, falls er wichtiger ist
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+static void vButtonTask(void *pvParameters) {
+    for (;;) {
+        xSemaphoreTake(buttonSemaphore, portMAX_DELAY);  // wartet auf die ISR
+        handle_button();                                 // eigentliche Arbeit
+    }
+}
+```
+
+## Watchdog
+
+Ein **Watchdog** ist ein unabhängiger Hardware-Timer, der den Mikrocontroller zurücksetzt, wenn er abläuft. Das Programm muss ihn regelmäßig zurücksetzen („den Hund füttern“). Hängt sich das Programm in einer Endlosschleife oder einem Deadlock auf, bleibt das Zurücksetzen aus, und der Watchdog löst einen **Reset** aus. Das System kommt so wieder in einen definierten Zustand.
+
+Der ATmega328P hat einen Watchdog mit eigenem 128-kHz-Oszillator und Zeiten von $16\,\mathrm{ms}$ bis $8\,\mathrm{s}$:
+
+```c
+#include <avr/io.h>
+#include <avr/wdt.h>
+
+int main(void) {
+    if (MCUSR & (1<<WDRF)) {
+        // der letzte Reset kam vom Watchdog: Fehler protokollieren
+    }
+    MCUSR = 0;
+    wdt_enable(WDTO_500MS);   // Reset, wenn 500 ms lang nicht zurückgesetzt wird
+
+    while (1) {
+        do_work();            // muss garantiert kürzer als 500 ms dauern
+        wdt_reset();          // Watchdog zurücksetzen
+    }
+}
+```
+
+Den Watchdog darf man nicht einfach in einem Timer-Interrupt zurücksetzen, denn der Interrupt läuft meist weiter, auch wenn das Hauptprogramm hängt. In einem RTOS setzt man ihn deshalb in einem eigenen Überwachungstask zurück, und zwar nur dann, wenn sich alle anderen Tasks innerhalb ihrer Zeit gemeldet haben.
+
+## Weiterführende Quellen
+
+- Richard Barry: _Mastering the FreeRTOS Real Time Kernel_ (kostenlos auf [freertos.org](https://www.freertos.org/)) und die dortige API-Dokumentation
+- C. L. Liu, J. W. Layland: _Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment_, Journal of the ACM, 1973
+- Giorgio Buttazzo: _Hard Real-Time Computing Systems_, Springer
