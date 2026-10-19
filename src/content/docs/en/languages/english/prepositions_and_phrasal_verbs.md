@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-Prepositions can rarely be translated word for word: „am Montag“ is `on Monday`, „am Bahnhof“ is `at the station`, „im Internet“ is `on the internet`. Many prepositions are part of fixed combinations (_collocations_) and have to be learnt together with the word. **Phrasal verbs** are verbs with a particle (`set up`, `log in`) whose meaning often cannot be worked out from their parts.
+Prepositions can rarely be translated word for word from German: one German preposition may correspond to `on` in `on Monday` and to `at` in `at the station`, and English says `on the internet`, not ~~in the internet~~. Many prepositions are part of fixed combinations (_collocations_) and have to be learnt together with the word. **Phrasal verbs** are verbs with a particle (`set up`, `log in`) whose meaning often cannot be worked out from their parts.
 
 ## Prepositions of time
 
@@ -34,7 +34,7 @@ No preposition is used with `this`, `next`, `last`, `every`, `today`, `tomorrow`
 | `within`                   | inside a period                                  | `within 24 hours`                                     |
 | `on time` / `in time`      | punctual / early enough                          | `The train was on time.` / `We arrived in time for the start.` |
 
-:::caution[„bis“: by or until]
+:::caution[by or until]
 `by` means "at the latest" (an action is completed by then), `until` means "all the time up to" (a state continues): `Finish the report by Friday.` versus `I'll work on it until Friday.`
 :::
 

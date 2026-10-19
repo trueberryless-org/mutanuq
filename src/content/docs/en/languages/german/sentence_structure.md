@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-**Syntax** (Satzlehre) describes how words are put together to form sentences. It is the basis of punctuation: almost all German comma rules depend on whether you are dealing with a main or subordinate clause, an infinitive group or an insertion. It also helps you describe the sentence structure of a text in a text analysis (paratactic, hypotactic, ellipses).
+**Syntax** describes how words are put together to form sentences. It is the basis of punctuation: almost all German comma rules depend on whether you are dealing with a main or subordinate clause, an infinitive group or an insertion. It also helps you describe the sentence structure of a text in a text analysis (paratactic, hypotactic, ellipses).
 
 ## Clause elements (Satzglieder)
 
@@ -42,7 +42,7 @@ With the **question test**, you identify _which_ clause element you are looking 
 
 ### Subject and predicate
 
--   The **subject** is in the nominative. The finite verb agrees with it in person and number (agreement, Kongruenz): Die Daten **werden** gesichert (the data is backed up), not `*wird`.
+-   The **subject** is in the nominative. The finite verb agrees with it in person and number: Die Daten **werden** gesichert (the data is backed up), not `*wird`.
 -   The **predicate** consists of the finite verb and any other verb parts (participle, infinitive, separated prefix). In a declarative sentence, it forms a **sentence bracket** (Satzklammer): Er **ruft** seine Mutter **an** (he phones his mother). Sie **hat** das Programm **getestet** (she has tested the program).
 -   A **predicative complement** (predicate nominative or predicative adjective) completes the verbs sein, werden, bleiben, heißen: Sie **ist Informatikerin** (she is a computer scientist). Das bleibt **schwierig** (that remains difficult).
 
@@ -88,7 +88,7 @@ An **attribute** is not a clause element but part of one: it describes a noun in
 | adverb attribute          | das Haus **dort** (the house over there)              |
 | attributive clause (relative clause) | das Programm, **das ich geschrieben habe** (the program that I wrote) |
 
-## Sentence types (Satzarten)
+## Sentence types
 
 | Sentence type          | Verb position | Punctuation | Example                               |
 | ---------------------- | ------------- | ----------- | ------------------------------------- |

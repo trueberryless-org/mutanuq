@@ -33,7 +33,7 @@ The **Pareto chart** sorts causes of defects by frequency in descending order an
 
 ### Cause-and-effect diagram
 
-The **cause-and-effect diagram** (Ishikawa or fishbone diagram) collects possible causes of a problem sorted by category. The six Ms are often used; in English they are usually named people, machine, method, material, measurement and environment.
+The **cause-and-effect diagram** (Ishikawa or fishbone diagram) collects possible causes of a problem sorted by category. Typical categories are people, machine, method, material, measurement and environment.
 
 ![Ishikawa diagram on why a website loads slowly](/images/project_management/ishikawa_en.svg)
 

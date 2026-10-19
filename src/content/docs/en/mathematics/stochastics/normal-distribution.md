@@ -194,4 +194,4 @@ The exponential distribution is **memoryless**: the probability of working for a
 ## Further reading
 
 - [NIST/SEMATECH e-Handbook of Statistical Methods: Normal Distribution](https://www.itl.nist.gov/div898/handbook/eda/section3/eda3661.htm)
-- [Formula collection for the SRDP Angewandte Mathematik (matura.gv.at)](https://www.matura.gv.at/)
+- [Formula collection for the SRDP in Applied Mathematics (matura.gv.at)](https://www.matura.gv.at/)

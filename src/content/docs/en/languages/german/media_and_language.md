@@ -26,12 +26,12 @@ The **functions** of the media in a democracy are information, opinion-forming, 
 
 ### Press freedom
 
-**Press freedom** is the right to publish information and opinions without state censorship. In Austria it is protected by the constitution, among other things by Article 13 of the Basic Law of 1867 (Staatsgrundgesetz) and Article 10 of the European Convention on Human Rights (ECHR), which has constitutional status in Austria. It is not unlimited: defamation, slander, incitement to hatred and National Socialist activities are criminal offences, and the Media Act (Mediengesetz) protects personal rights.
+**Press freedom** is the right to publish information and opinions without state censorship. In Austria it is protected by the constitution, among other things by Article 13 of the Basic Law of 1867 and Article 10 of the European Convention on Human Rights (ECHR), which has constitutional status in Austria. It is not unlimited: defamation, slander, incitement to hatred and National Socialist activities are criminal offences, and the Media Act protects personal rights.
 
 | Institution             | Task                                                                       |
 | ----------------------- | -------------------------------------------------------------------------- |
 | KommAustria             | state media authority: licensing and supervision of broadcasting           |
-| Austrian Press Council (Presserat) | voluntary self-regulation of the print media, examines breaches of the code of ethics (e.g. diligence, protection of privacy, separation of advertising and editorial content) |
+| Austrian Press Council  | voluntary self-regulation of the print media, examines breaches of the code of ethics (e.g. diligence, protection of privacy, separation of advertising and editorial content) |
 | Media Act               | governs, among other things, the imprint, disclosure of owners, counter-statements and labelling of advertising |
 
 International organisations such as **Reporters Without Borders** publish an annual press freedom index comparing the situation in individual countries.
@@ -103,10 +103,10 @@ German belongs to the **Germanic** branch of the **Indo-European** language fami
 | Stage                       | Period (approx.)     | Features and records                                                       |
 | --------------------------- | -------------------- | -------------------------------------------------------------------------- |
 | Germanic                    | from the 1st millennium BC | the **First (Germanic) Sound Shift** separates Germanic from other Indo-European languages: Latin pater, English father; Latin tres, English three |
-| Old High German (Althochdeutsch) | 750 to 1050     | the **Second (High German) Sound Shift** separates High German from Low German and English: English apple, German Apfel; English ten, German zehn; English make, German machen. Records: Merseburg Charms, Hildebrandslied, glosses in monasteries |
-| Middle High German (Mittelhochdeutsch) | 1050 to 1350 | courtly poetic language: Nibelungenlied, Minnesang, Walther von der Vogelweide; unstressed final vowels weakened to e |
-| Early New High German (Frühneuhochdeutsch) | 1350 to 1650 | **printing** (Gutenberg, around 1450), chancery languages, **Luther's Bible translation** (New Testament 1522, complete 1534); **New High German diphthongisation**: MHG mîn niuwez hûs became mein neues Haus (my new house) |
-| New High German (Neuhochdeutsch) | from 1650       | language societies, standardisation of grammar and spelling, Konrad Duden's dictionary (1880), uniform spelling (1901/1902), spelling reform (1996, revised 2006), 2024 version |
+| Old High German             | 750 to 1050     | the **Second (High German) Sound Shift** separates High German from Low German and English: English apple, German Apfel; English ten, German zehn; English make, German machen. Records: Merseburg Charms, Hildebrandslied, glosses in monasteries |
+| Middle High German          | 1050 to 1350 | courtly poetic language: Nibelungenlied, Minnesang, Walther von der Vogelweide; unstressed final vowels weakened to e |
+| Early New High German       | 1350 to 1650 | **printing** (Gutenberg, around 1450), chancery languages, **Luther's Bible translation** (New Testament 1522, complete 1534); **New High German diphthongisation**: MHG mîn niuwez hûs became mein neues Haus (my new house) |
+| New High German             | from 1650       | language societies, standardisation of grammar and spelling, Konrad Duden's dictionary (1880), uniform spelling (1901/1902), spelling reform (1996, revised 2006), 2024 version |
 
 The literature of the individual periods can be found under [Literature](/en/languages/literature/).
 
@@ -116,11 +116,11 @@ A language is not a uniform system. Depending on region, social group and situat
 
 | Variety               | Determined by           | Description and examples                                                     |
 | --------------------- | ----------------------- | ---------------------------------------------------------------------------- |
-| standard language (Standardsprache, Hochsprache) | supra-regional norm | laid down in dictionaries and grammars; language of school, authorities, news |
-| colloquial language (Umgangssprache) | situation | everyday language between standard and dialect, regionally coloured         |
-| dialect (Dialekt, Mundart) | region             | own sounds, words and grammar; in Austria mainly **Bavarian** dialects, in Vorarlberg and parts of Tyrol **Alemannic** |
+| standard language     | supra-regional norm     | laid down in dictionaries and grammars; language of school, authorities, news |
+| colloquial language   | situation               | everyday language between standard and dialect, regionally coloured         |
+| dialect               | region                  | own sounds, words and grammar; in Austria mainly **Bavarian** dialects, in Vorarlberg and parts of Tyrol **Alemannic** |
 | sociolect             | social group            | the language of a group, such as youth language or professional jargon       |
-| technical language (Fachsprache) | field        | precise technical terms, often loanwords and abbreviations (IT: Router, Commit, Deployment) |
+| technical language    | field                   | precise technical terms, often loanwords and abbreviations (IT: Router, Commit, Deployment) |
 | ethnolect             | origin                  | a way of speaking shaped by contact with other languages                     |
 | idiolect              | person                  | an individual's personal way of speaking                                     |
 
@@ -134,7 +134,7 @@ German is a **pluricentric language**: it has several centres with their own, eq
 -   When Austria joined the EU in 1995, **Protocol No. 10** laid down that 23 Austrian terms (mainly food names such as Erdäpfel, Paradeiser, Topfen, Marillen, Schlagobers) are used in EU legal texts on an equal footing with the terms used in Germany.
 -   Examples of Austrianisms can be found under [Spelling](/en/languages/german/spelling/#austrian-features).
 
-Variants used only in Germany are called **Teutonisms** (Deutschlandismen), Swiss variants **Helvetisms**.
+Variants used only in Germany are called **Teutonisms**, Swiss variants **Helvetisms**.
 
 ## Further reading
 

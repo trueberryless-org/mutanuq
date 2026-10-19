@@ -59,7 +59,7 @@ GDP is not a measure of prosperity or quality of life:
 - Environmental damage is not deducted. Repairing damage after a storm even increases GDP.
 - The distribution of income is not taken into account.
 
-Complementary measures are the UN's **Human Development Index** (income, life expectancy, education) and in Austria Statistics Austria's indicator set **"How's Austria?"** (_Wie geht's Österreich?_), which looks at material prosperity, quality of life and the environment together.
+Complementary measures are the UN's **Human Development Index** (income, life expectancy, education) and in Austria Statistics Austria's indicator set **"How's Austria?"**, which looks at material prosperity, quality of life and the environment together.
 
 ## Business cycle
 
@@ -138,7 +138,7 @@ The EU rules (Maastricht criteria, Stability and Growth Pact) require
 - the **deficit** to be at most **3 % of GDP** and
 - **public debt** to be at most **60 % of GDP** or to fall sufficiently quickly.
 
-Since the reform of the EU fiscal rules in 2024, each state also agrees a multi-year path for its net expenditure. In 2025, Austria had a deficit of **4.2 % of GDP** (around €21.5 billion) and debt of around **€418 billion**, just over 80 % of GDP. Because of the excessive deficit, the Council of the EU opened an **excessive deficit procedure** against Austria on 8 July 2025. Austria must bring the deficit back below 3 % by 2028 and report on its measures every six months. Compliance with the fiscal rules is monitored in Austria by the **Fiscal Advisory Council** (Fiskalrat).
+Since the reform of the EU fiscal rules in 2024, each state also agrees a multi-year path for its net expenditure. In 2025, Austria had a deficit of **4.2 % of GDP** (around €21.5 billion) and debt of around **€418 billion**, just over 80 % of GDP. Because of the excessive deficit, the Council of the EU opened an **excessive deficit procedure** against Austria on 8 July 2025. Austria must bring the deficit back below 3 % by 2028 and report on its measures every six months. Compliance with the fiscal rules is monitored in Austria by the **Fiscal Advisory Council**.
 
 High debt is problematic because **interest payments** take up a growing share of the budget, leaving less room for investment, education or crisis aid, because rating agencies may downgrade creditworthiness, and because future generations bear the burden.
 

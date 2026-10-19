@@ -57,7 +57,7 @@ Verbs such as `give`, `send`, `show`, `offer`, `tell`, `teach`, `lend`, `pay` ha
 | They gave **me** **a new laptop**.          | **I** was given a new laptop.                    | **A new laptop** was given to me.               |
 | The company offered **her** **a job**.      | **She** was offered a job.                       | **A job** was offered to her.                   |
 
-The passive with the person as subject is more usual in English and has no direct German equivalent („Mir wurde ein Laptop gegeben.“).
+The passive with the person as subject is more usual in English and has no direct German equivalent.
 
 ## Passive with prepositional verbs
 

@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-English has three time levels (present, past, future) and four aspects: **simple**, **progressive** (also called _continuous_), **perfect** and **perfect progressive**. Together they give twelve tense forms. The aspect expresses how the speaker sees an action: as a fact or habit (simple), as in progress (progressive) or as completed with reference to a later point in time (perfect). German has no progressive form and uses its Perfekt for completed past actions, which is where most mistakes come from.
+English has three time levels (present, past, future) and four aspects: **simple**, **progressive** (also called _continuous_), **perfect** and **perfect progressive**. Together they give twelve tense forms. The aspect expresses how the speaker sees an action: as a fact or habit (simple), as in progress (progressive) or as completed with reference to a later point in time (perfect). German has no progressive form and often uses its perfect tense for completed past actions, which is where most mistakes come from.
 
 ## Overview
 
@@ -179,7 +179,7 @@ After `when`, `if`, `as soon as`, `before`, `after`, `until` and `unless`, Engli
 
 ## Present perfect or past simple
 
-In spoken German, people usually tell stories in the Perfekt: „Ich habe ihn gestern gesehen.“ In English, the choice does not depend on whether you speak or write but on the **time reference**:
+In spoken German, people usually tell stories in the perfect tense, even with a finished time such as "yesterday". In English, the choice does not depend on whether you speak or write but on the **time reference**:
 
 | Past simple                                              | Present perfect                                         |
 | -------------------------------------------------------- | ------------------------------------------------------- |
@@ -190,7 +190,7 @@ In spoken German, people usually tell stories in the Perfekt: „Ich habe ihn ge
 | `When did you start?`                                    | ~~When have you started?~~ (a question about a point in time never takes the present perfect) |
 
 :::danger[Typical mistake]
-„Ich wohne seit 2015 hier.“ is in the present tense in German. In English it must be `I have lived here since 2015.` (not: ~~I live here since 2015.~~). Likewise „Wie lange lernst du schon Englisch?“ becomes `How long have you been learning English?`
+German uses the present tense for a state that began in the past and still continues. In English it must be `I have lived here since 2015.` (not: ~~I live here since 2015.~~). Likewise: `How long have you been learning English?` (not ~~How long do you learn English?~~)
 :::
 
 ### since and for
@@ -198,7 +198,7 @@ In spoken German, people usually tell stories in the Perfekt: „Ich habe ihn ge
 -   `since` + **point in time**: `since 2015`, `since Monday`, `since I was ten`
 -   `for` + **period of time**: `for five years`, `for two hours`, `for a long time`
 
-Both correspond to German „seit“. `since` can also mean "because" (`Since it was late, we left.`).
+German uses one word for both. `since` can also mean "because" (`Since it was late, we left.`).
 
 ## Stative verbs
 
@@ -226,27 +226,27 @@ Some verbs have both a state meaning and an action meaning:
 
 The following irregular verbs are particularly frequent:
 
-| Base form | Past simple   | Past participle  | German         |
-| --------- | ------------- | ---------------- | -------------- |
-| be        | was/were      | been             | sein           |
-| begin     | began         | begun            | beginnen       |
-| bring     | brought       | brought          | bringen        |
-| buy       | bought        | bought           | kaufen         |
-| choose    | chose         | chosen           | wählen         |
-| do        | did           | done             | tun            |
-| find      | found         | found            | finden         |
-| forget    | forgot        | forgotten        | vergessen      |
-| get       | got           | got (AmE gotten) | bekommen       |
-| go        | went          | gone             | gehen          |
-| know      | knew          | known            | wissen         |
-| lead      | led           | led              | führen         |
-| make      | made          | made             | machen         |
-| run       | ran           | run              | laufen         |
-| send      | sent          | sent             | senden         |
-| take      | took          | taken            | nehmen         |
-| teach     | taught        | taught           | unterrichten   |
-| think     | thought       | thought          | denken         |
-| write     | wrote         | written          | schreiben      |
+| Base form | Past simple   | Past participle  |
+| --------- | ------------- | ---------------- |
+| be        | was/were      | been             |
+| begin     | began         | begun            |
+| bring     | brought       | brought          |
+| buy       | bought        | bought           |
+| choose    | chose         | chosen           |
+| do        | did           | done             |
+| find      | found         | found            |
+| forget    | forgot        | forgotten        |
+| get       | got           | got (AmE gotten) |
+| go        | went          | gone             |
+| know      | knew          | known            |
+| lead      | led           | led              |
+| make      | made          | made             |
+| run       | ran           | run              |
+| send      | sent          | sent             |
+| take      | took          | taken            |
+| teach     | taught        | taught           |
+| think     | thought       | thought          |
+| write     | wrote         | written          |
 
 ## Further reading
 

@@ -24,7 +24,7 @@ With the **fall of the Berlin Wall** on 9 November 1989, the Cold War ended, and
 
 ### Literature of reunification
 
-Many authors dealt with the end of the GDR and reunification (Wendeliteratur). Well-known works are Thomas Brussig's "Am kürzeren Ende der Sonnenallee" (1999), Ingo Schulze's "Simple Storys" (Simple Stories, 1998) and Uwe Tellkamp's "Der Turm" (The Tower, 2008), which describes the life of a Dresden family in the last years of the GDR.
+Many authors dealt with the end of the GDR and reunification. Well-known works are Thomas Brussig's "Am kürzeren Ende der Sonnenallee" (1999), Ingo Schulze's "Simple Storys" (Simple Stories, 1998) and Uwe Tellkamp's "Der Turm" (The Tower, 2008), which describes the life of a Dresden family in the last years of the GDR.
 
 ### Pop literature
 

@@ -123,6 +123,6 @@ You describe graphs and charts with the vocabulary under [Technical English](/en
 
 ## Further reading
 
--   [matura.gv.at: Reife- und Diplomprüfung, modern foreign languages](https://www.matura.gv.at/)
+-   [matura.gv.at: Matura and diploma examination, modern foreign languages](https://www.matura.gv.at/) (in German)
 -   [Council of Europe: Common European Framework of Reference for Languages](https://www.coe.int/en/web/common-european-framework-reference-languages)
 -   [British Council LearnEnglish: Speaking B2](https://learnenglish.britishcouncil.org/skills/speaking/b2-speaking)

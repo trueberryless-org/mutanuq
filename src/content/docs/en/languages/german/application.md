@@ -8,15 +8,15 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-At the latest for the **compulsory internship** (Pflichtpraktikum), you need a complete application at the HTL. An application is advertising for yourself: it should show that you are a good fit for the position and get you an interview. HR staff often read dozens of applications and decide quickly which ones to look at more closely. This is why a clear structure, a concrete link to the position and error-free language count.
+At the latest for the **compulsory internship**, you need a complete application at the HTL. An application is advertising for yourself: it should show that you are a good fit for the position and get you an interview. HR staff often read dozens of applications and decide quickly which ones to look at more closely. This is why a clear structure, a concrete link to the position and error-free language count.
 
 ## Parts of an application
 
 | Part                       | Content                                                            |
 | -------------------------- | ------------------------------------------------------------------ |
-| cover letter (Bewerbungsschreiben, Anschreiben) | why this position, why you, why this company; one page at most |
-| CV (Lebenslauf)            | tabular overview of education, experience and skills               |
-| attachments (Anlagen)      | school reports (the most recent annual reports), internship confirmations, certificates (e.g. Cisco, language certificates) |
+| cover letter               | why this position, why you, why this company; one page at most |
+| CV                         | tabular overview of education, experience and skills               |
+| attachments                | school reports (the most recent annual reports), internship confirmations, certificates (e.g. Cisco, language certificates) |
 | optional                   | cover page, letter of motivation, link to projects (GitHub, portfolio) |
 
 ## Cover letter
@@ -52,9 +52,9 @@ One page, contact person's name spelt correctly, no spelling mistakes (have some
 
 ### Letter of motivation
 
-A **letter of motivation** (Motivationsschreiben) is required above all for university places, scholarships, stays abroad or as a supplement to the cover letter. It is usually longer (one to two pages) and focuses on your **reasons**: why are you interested in this subject or programme? What has shaped you so far? What goals are you pursuing? The structure follows the cover letter; the tone is a little more personal but remains factual.
+A **letter of motivation** is required above all for university places, scholarships, stays abroad or as a supplement to the cover letter. It is usually longer (one to two pages) and focuses on your **reasons**: why are you interested in this subject or programme? What has shaped you so far? What goals are you pursuing? The structure follows the cover letter; the tone is a little more personal but remains factual.
 
-## CV (Lebenslauf)
+## CV
 
 ### Tabular CV
 
@@ -116,7 +116,7 @@ Example opening sentence:
 
 The **STAR method** helps you tell examples in a structured way: **S**ituation, **T**ask, **A**ction (what you did), **R**esult.
 
-Under the **Equal Treatment Act** (Gleichbehandlungsgesetz), questions about pregnancy, religion, sexual orientation or political views are generally not permitted because they can lead to discrimination. You do not have to answer them.
+Under the **Equal Treatment Act**, questions about pregnancy, religion, sexual orientation or political views are generally not permitted because they can lead to discrimination. You do not have to answer them.
 
 ### After the interview
 

@@ -10,7 +10,7 @@ tableOfContents:
 
 Punctuation marks structure a text and make its organisation visible to the reader. Unlike English, German punctuation follows mainly the **grammatical structure** of the sentence, not pauses in speech. This is why you need the terms from [Sentence structure](/en/languages/german/sentence_structure/) for the comma rules: main clause, subordinate clause, infinitive group, insertion.
 
-The basis is the **Official Rules** (Amtliches Regelwerk) in the 2024 version. The punctuation chapter was restructured and simplified. The most important change in content: infinitive groups must now **always** be separated by a comma.
+The basis is the **Official Rules** in the 2024 version. The punctuation chapter was restructured and simplified. The most important change in content: infinitive groups must now **always** be separated by a comma.
 
 ## Comma
 
@@ -116,7 +116,7 @@ There is a comma before `als` and `wie` only if a complete subordinate clause (w
 
 The comma after the closing quotation mark is used even if the direct speech ends with a question or exclamation mark. A full stop at the end of direct speech is dropped if the reporting clause follows.
 
-## Full stop (Punkt)
+## Full stop
 
 The full stop ends a declarative sentence. It is also used:
 
@@ -127,7 +127,7 @@ If a sentence ends with an abbreviation that has a full stop, you do not add a s
 
 **Ellipsis dots** (three dots) show that something has been left out. If a whole word or part of a sentence is missing, there is a space before them: Er murmelte: „Das ist doch ...“
 
-## Colon (Doppelpunkt)
+## Colon
 
 The colon announces something:
 
@@ -137,14 +137,14 @@ The colon announces something:
 
 After the colon, you capitalise if a complete sentence follows; otherwise lowercase (except nouns).
 
-## Semicolon (Semikolon)
+## Semicolon
 
-The **semicolon** (Strichpunkt) separates more strongly than a comma and less strongly than a full stop. It joins main clauses of equal rank that are closely related in content, and structures long lists with subgroups.
+The **semicolon** separates more strongly than a comma and less strongly than a full stop. It joins main clauses of equal rank that are closely related in content, and structures long lists with subgroups.
 
 > Das Projekt ist abgeschlossen; die Dokumentation fehlt aber noch.
 > Wir brauchen Hardware: Router, Switches; Software: Betriebssystem, Treiber; Zubehör: Kabel, Dübel.
 
-## Quotation marks (Anführungszeichen)
+## Quotation marks
 
 Quotation marks indicate direct speech, quotations, titles of works and words that are being talked about or from which the writer distances themself.
 
@@ -162,13 +162,13 @@ Use quotation marks for the **titles** of books, films, newspapers and articles:
 The English character `"` (straight, high) or the English form with both marks high is not correct in German running text. Word processors set the German marks automatically if the language is set to German (Austria).
 :::
 
-## Dash (Gedankenstrich)
+## Dash
 
-The **dash** (Gedankenstrich) is a horizontal line clearly longer than the hyphen (typographically an en rule) and, unlike the hyphen, has **a space before and after it** in German. It announces something unexpected or encloses an insertion that is to be emphasised more strongly than with commas. With an insertion, one dash goes before and one after it; a comma that would be needed without the insertion follows the second dash.
+The **dash** is a horizontal line clearly longer than the hyphen (typographically an en rule) and, unlike the hyphen, has **a space before and after it** in German. It announces something unexpected or encloses an insertion that is to be emphasised more strongly than with commas. With an insertion, one dash goes before and one after it; a comma that would be needed without the insertion follows the second dash.
 
 There is no dedicated key for it on the keyboard; word processors usually replace a hyphen between two spaces automatically. Many style guides recommend using it sparingly. In non-fiction texts, brackets, commas or a colon often do the same job. The line between two numbers or places (pages 12 to 15, the route from Vienna to Graz) is read as „bis“ (to) and has no spaces.
 
-## Brackets (Klammern)
+## Brackets
 
 Round brackets enclose **additions and explanations** that are not necessary for the sentence.
 
@@ -176,7 +176,7 @@ Round brackets enclose **additions and explanations** that are not necessary for
 
 Punctuation of the surrounding sentence goes after the closing bracket: Sie kam spät (wie immer)**.** If a whole sentence is in brackets, its full stop belongs inside the bracket. Square brackets are used for your own additions and omissions in quotations: „Er [der Autor] kritisiert [...] die Schulpolitik.“
 
-## Apostrophe (Apostroph)
+## Apostrophe
 
 The apostrophe (`'`) shows that letters have been left out.
 
@@ -188,14 +188,14 @@ The apostrophe (`'`) shows that letters have been left out.
 There is no apostrophe in the **plural** or in the normal **genitive**: die Autos (not `*Auto's`), die PCs (not `*PC's`), Peters Handy (not `*Peter's Handy` in running text). English learners in particular tend to carry over the English possessive apostrophe.
 :::
 
-## Hyphen (Bindestrich)
+## Hyphen
 
-The hyphen is a word mark, not a punctuation mark: it stands without spaces inside compounds (IT-Abteilung, Open-Source-Software) and as a suspension hyphen (Ein- und Ausgabe). You will find the rules under [Spelling](/en/languages/german/spelling/#hyphen-bindestrich).
+The hyphen is a word mark, not a punctuation mark: it stands without spaces inside compounds (IT-Abteilung, Open-Source-Software) and as a suspension hyphen (Ein- und Ausgabe). You will find the rules under [Spelling](/en/languages/german/spelling/#hyphen).
 
 ## Question mark and exclamation mark
 
 -   The **question mark** follows direct questions: Wann beginnt die Prüfung? After an **indirect** question (subordinate clause), there is no question mark but a full stop: Sie fragt, wann die Prüfung beginnt.
--   The **exclamation mark** (in Austria: Rufzeichen) follows commands, exclamations, wishes and emphatic statements: Komm sofort! Das ist ja großartig! In letters, it can replace the comma after the salutation, in which case the following text starts with a capital: Sehr geehrte Frau Huber!
+-   The **exclamation mark** follows commands, exclamations, wishes and emphatic statements: Komm sofort! Das ist ja großartig! In letters, it can replace the comma after the salutation, in which case the following text starts with a capital: Sehr geehrte Frau Huber!
 
 In non-fiction texts, never put several question or exclamation marks in a row (`?!`, `!!!`).
 

@@ -71,7 +71,7 @@ The question mark depends on the introduction: after `Could you tell me ...?` th
 
 ### Question tags
 
-A question tag is a short question at the end of a sentence (German „..., oder?“, „..., nicht wahr?“). It is formed with the auxiliary of the sentence and a pronoun.
+A question tag is a short question at the end of a sentence. It is formed with the auxiliary of the sentence and a pronoun.
 
 -   **positive sentence, negative tag:** `You're coming, aren't you?`
 -   **negative sentence, positive tag:** `She doesn't like tea, does she?`

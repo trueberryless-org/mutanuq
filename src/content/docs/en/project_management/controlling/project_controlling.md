@@ -197,7 +197,7 @@ With the earned value analysis, many further key figures can be calculated that 
 
 ## Controlling process
 
-Most projects start with a customer explaining the idea of the product in a meeting and wanting the company to implement these requirements quickly, cheaply and with high quality. The company starts planning by first defining the goals. Project controlling can provide the planning employees with plenty of information that could be useful. After frequent exchanges between the requirements specification (Lastenheft) and the functional specification (Pflichtenheft), the project can then officially start.
+Most projects start with a customer explaining the idea of the product in a meeting and wanting the company to implement these requirements quickly, cheaply and with high quality. The company starts planning by first defining the goals. Project controlling can provide the planning employees with plenty of information that could be useful. After frequent exchanges between the requirements specification and the functional specification, the project can then officially start.
 
 From the implementation phase onwards, the task of controlling becomes even more important. It now has to regularly take a status sample, which is examined for deviations (for example using a target/actual comparison). If deviations occur, controlling must define measures that flow directly into the implementation. In addition, some dates in the planning will probably have to be changed and communicated to the customer. This process repeats until the product is finished.
 

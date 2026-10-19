@@ -47,7 +47,7 @@ The ECB measures the **money supply** in three aggregates:
 
 ### Measurement: CPI and HICP
 
-**Statistics Austria** measures inflation monthly with the **consumer price index** (CPI, German VPI). It is based on a **basket** of several hundred goods and services bought by an average Austrian household (food, rent, energy, fuel, clothing, mobile and internet tariffs, package holidays ...). Each item is weighted according to its share of spending; the weights come from the household budget survey and are updated regularly. Prices are collected throughout Austria.
+**Statistics Austria** measures inflation monthly with the **consumer price index** (CPI). It is based on a **basket** of several hundred goods and services bought by an average Austrian household (food, rent, energy, fuel, clothing, mobile and internet tariffs, package holidays ...). Each item is weighted according to its share of spending; the weights come from the household budget survey and are updated regularly. Prices are collected throughout Austria.
 
 The index refers to a **base year** that is given the value 100 (e.g. CPI 2020 = 100). An index value of 129.5 means that the basket costs 29.5 % more than in the base year. The **inflation rate** is the change in the index compared with the previous year or the same month of the previous year:
 
@@ -59,8 +59,8 @@ $$
 
 | Index | Purpose |
 | ----- | ------- |
-| **CPI** (consumer price index, VPI) | national index, basis for **indexation clauses** (rents, maintenance, contracts), wage negotiations and the annual pension adjustment |
-| **HICP** (harmonised index of consumer prices, HVPI) | according to an EU-wide uniform method so that inflation can be compared between countries; basis of ECB monetary policy. It also includes, for example, the spending of foreign tourists in Austria. |
+| **CPI** (consumer price index) | national index, basis for **indexation clauses** (rents, maintenance, contracts), wage negotiations and the annual pension adjustment |
+| **HICP** (harmonised index of consumer prices) | according to an EU-wide uniform method so that inflation can be compared between countries; basis of ECB monetary policy. It also includes, for example, the spending of foreign tourists in Austria. |
 | **Mini and micro basket** | price development of the weekly or daily shop; closer to "perceived" inflation |
 
 Inflation in Austria (CPI, annual average) was 8.6 % in 2022, 7.8 % in 2023, 2.9 % in 2024 and 3.6 % in 2025. In 2022 and 2023 it was driven mainly by the sharp rise in energy prices after the Russian attack on Ukraine, in 2025 among other things by the rise in electricity prices after the electricity price cap expired.
@@ -91,7 +91,7 @@ A **wage-price spiral** is dangerous: higher prices lead to higher wage demands,
 - **Losers:** savers (savings lose value), creditors, people on fixed incomes, low-income households who spend a large share on food and energy.
 - **Winners:** debtors (debts lose real value), including the state as a large debtor, and owners of real assets (property, gold).
 - Uncertainty makes planning and investment harder, and prices lose their signalling function.
-- With a progressive tax scale, incomes that only rise with inflation slip into higher tax brackets (**bracket creep**, German _kalte Progression_). In Austria, the tax brackets have therefore been adjusted to inflation every year since 2023 (see [taxes](/en/economy_and_law/accounting/taxes/)).
+- With a progressive tax scale, incomes that only rise with inflation slip into higher tax brackets (**bracket creep**). In Austria, the tax brackets have therefore been adjusted to inflation every year since 2023 (see [taxes](/en/economy_and_law/accounting/taxes/)).
 
 Moderate, stable inflation, on the other hand, is considered unproblematic and even desirable, because it leaves room for adjustments and keeps a distance from deflation.
 

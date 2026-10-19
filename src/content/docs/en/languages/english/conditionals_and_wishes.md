@@ -46,7 +46,7 @@ Instead of `will`, the main clause can contain a modal verb (`can`, `may`, `migh
 
 ## Second conditional
 
-An unlikely or imaginary (unreal) condition in the present or future. The past simple in the if-clause does not express past time but distance from reality, like the German Konjunktiv II.
+An unlikely or imaginary (unreal) condition in the present or future. The past simple in the if-clause does not express past time but distance from reality.
 
 -   `If I had more money, I would buy a new graphics card.` (I do not have enough money.)
 -   `If I won the lottery, I would travel around the world.`

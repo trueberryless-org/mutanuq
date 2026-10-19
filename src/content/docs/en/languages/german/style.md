@@ -10,16 +10,16 @@ tableOfContents:
 
 Good style means that a text is worded appropriately for **its readers** and **its purpose**. Minutes need different language from an opinion speech. In the SRDP in German, style is assessed in several criteria: in "style and expression" (Stil und Ausdruck: word choice, sentence structure, register, suitability for the text type) and in "text structure" (Textstruktur: organisation, coherence). The following rules are not rigid laws, but they help you write clearly and precisely.
 
-## Registers (Stilebenen)
+## Registers
 
 | Register                 | Features                                             | Example                                    | Use                                    |
 | ------------------------ | ---------------------------------------------------- | ------------------------------------------ | -------------------------------------- |
-| formal, literary (gehoben) | refined words, often loanwords, long sentences       | Er verschied im Kreise seiner Lieben. (He passed away surrounded by his loved ones.) | speeches on formal occasions, literature |
+| formal, literary         | refined words, often loanwords, long sentences       | Er verschied im Kreise seiner Lieben. (He passed away surrounded by his loved ones.) | speeches on formal occasions, literature |
 | standard (neutral)       | generally understandable, factual                    | Er starb im Kreis seiner Familie. (He died surrounded by his family.) | non-fiction, Matura text types |
-| colloquial (umgangssprachlich) | relaxed, shortened forms, regional words       | Er ist gestorben, die ganze Familie war da. | conversations, chat, informal e-mail  |
-| slang to vulgar (salopp bis vulgär) | flippant, coarse, sometimes offensive     | Er hat den Löffel abgegeben. (He kicked the bucket.) | avoid in school texts         |
+| colloquial               | relaxed, shortened forms, regional words       | Er ist gestorben, die ganze Familie war da. | conversations, chat, informal e-mail  |
+| slang to vulgar          | flippant, coarse, sometimes offensive     | Er hat den Löffel abgegeben. (He kicked the bucket.) | avoid in school texts         |
 
-**Standard German** applies to the Matura text types. Colloquial language only makes sense as a deliberate stylistic device (for example in an opinion speech to people your own age). It is important to keep to one register and not to switch between registers without a reason (**break in style**, Stilbruch).
+**Standard German** applies to the Matura text types. Colloquial language only makes sense as a deliberate stylistic device (for example in an opinion speech to people your own age). It is important to keep to one register and not to switch between registers without a reason (**break in style**).
 
 ## Nominal style and verbal style
 
@@ -52,7 +52,7 @@ Words repeated in quick succession sound monotonous. Use:
 
 Note: in **technical texts** and definitions, repetition is often necessary. If you change the term there, the reader will think something else is meant (server, host and computer do not always mean the same thing). Deliberate repetition as a stylistic device (anaphora) is allowed.
 
-## Filler words (Füllwörter)
+## Filler words
 
 Filler words carry no information and weaken statements. Delete them if the sentence means the same without them.
 
@@ -79,7 +79,7 @@ Write English terms according to German rules: nouns capitalised, compounds as o
 
 ## Gender-inclusive language
 
-**Gender-inclusive language** (geschlechtergerechte Sprache) is meant to make all genders visible or to address people neutrally. Many people find the generic masculine („die Schüler“ for everyone) ambiguous because it is unclear whether women are included. In Austria there is no uniform legal requirement for all texts, but there are guidelines, for example from the Ministry of Education, and the requirement of linguistic equal treatment in the federal civil service. Many schools and companies have their own rules.
+**Gender-inclusive language** is meant to make all genders visible or to address people neutrally. Many people find the generic masculine („die Schüler“ for everyone) ambiguous because it is unclear whether women are included. In Austria there is no uniform legal requirement for all texts, but there are guidelines, for example from the Ministry of Education, and the requirement of linguistic equal treatment in the federal civil service. Many schools and companies have their own rules.
 
 | Option                               | Example                                        | Note                                                       |
 | ------------------------------------ | ---------------------------------------------- | ---------------------------------------------------------- |
@@ -103,7 +103,7 @@ For your texts:
 
 A text is **coherent** if its sentences and paragraphs are recognisably connected. Connectives, references and a clear paragraph structure achieve this.
 
-### Connectives (Konnektoren)
+### Connectives
 
 Connectives show the logical relationship between statements.
 

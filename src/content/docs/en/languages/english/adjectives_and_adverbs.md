@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-**Adjectives** describe nouns (`a fast computer`); **adverbs** describe verbs, adjectives, other adverbs or whole sentences (`It runs fast.`, `extremely fast`, `Fortunately, ...`). In German, adjective and adverb often look the same („Er fährt schnell.“); in English they usually do not: `He is a careful driver.` versus `He drives carefully.`
+**Adjectives** describe nouns (`a fast computer`); **adverbs** describe verbs, adjectives, other adverbs or whole sentences (`It runs fast.`, `extremely fast`, `Fortunately, ...`). In German, adjective and adverb often look the same; in English they usually do not: `He is a careful driver.` versus `He drives carefully.`
 
 ## Forming adverbs
 
@@ -97,7 +97,7 @@ Some two-syllable adjectives have both forms: `clever`, `narrow`, `quiet`, `simp
 After `than` and `as`, neutral English uses the object pronoun (`She is taller than me.`); formal English uses subject + verb (`She is taller than I am.`).
 
 :::caution
-~~more better~~, ~~more faster~~ and ~~the most best~~ are wrong: compare only once. German „als“ in comparisons is `than`, not ~~then~~ or ~~as~~.
+~~more better~~, ~~more faster~~ and ~~the most best~~ are wrong: compare only once. After a comparative, use `than`, not ~~then~~ or ~~as~~.
 :::
 
 ## Order of adjectives

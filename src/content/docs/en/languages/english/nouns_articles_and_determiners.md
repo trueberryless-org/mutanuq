@@ -73,7 +73,7 @@ The choice depends on the **sound**, not on the letter:
 ### Indefinite article a/an
 
 -   first mention, one of many: `I've bought a new laptop.`
--   **jobs** and membership (unlike German): `She is an engineer.` („Sie ist Ingenieurin.“)
+-   **jobs** and membership (unlike German): `She is an engineer.`
 -   `What a ...!`, `such a ...`, `quite a ...`: `What a great idea!`
 -   frequency, prices, speed: `twice a week`, `€5 a kilo`, `100 km an hour`
 
@@ -93,7 +93,7 @@ The choice depends on the **sound**, not on the letter:
 
 No article is used with:
 
--   plural and uncountable nouns in a **general sense**: `Computers have changed our lives.`, `Life is short.`, `Software is expensive.` (German: „Das Leben ist kurz.“)
+-   plural and uncountable nouns in a **general sense**: `Computers have changed our lives.`, `Life is short.`, `Software is expensive.`
 -   most countries, cities, streets, lakes, single mountains: `Austria`, `Vienna`, `Oxford Street`, `Lake Constance`, `Mount Everest`
 -   languages, school subjects, sports, meals: `I speak English.`, `We have maths.`, `I play football.`, `Breakfast is ready.`
 -   days, months, holidays: `on Monday`, `in May`, `at Christmas`
@@ -161,7 +161,7 @@ With names ending in `-s`, both `James's` and `James'` are possible.
 | they             | their                          | theirs                     |
 
 -   `its` (possessive) has no apostrophe; `it's` = `it is` or `it has`. Likewise `whose` (possessive) and `who's` (`who is`).
--   With parts of the body and clothes, English uses a possessive determiner where German uses the article: `I broke my arm.` („Ich habe mir den Arm gebrochen.“), `He put his hands in his pockets.`
+-   With parts of the body and clothes, English uses a possessive determiner where German uses the article: `I broke my arm.`, `He put his hands in his pockets.`
 
 ## Further reading
 

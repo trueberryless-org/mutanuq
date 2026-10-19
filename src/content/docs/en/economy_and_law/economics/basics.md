@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-**Business administration** (German _Betriebswirtschaftslehre_, BWL) examines how an individual company is managed well. **Economics** (German _Volkswirtschaftslehre_, VWL) looks at the economy of an entire country or of the world. A distinction is made between:
+**Business administration** examines how an individual company is managed well. **Economics** looks at the economy of an entire country or of the world. A distinction is made between:
 
 - **Microeconomics:** the behaviour of individual households and companies and price formation in individual markets (see [markets and prices](/en/economy_and_law/economics/markets-and-prices/)).
 - **Macroeconomics:** aggregate quantities such as economic growth, inflation, unemployment and public debt (see [economic policy](/en/economy_and_law/economics/economic-policy/)).
@@ -25,7 +25,7 @@ A **need** is the feeling of a lack, combined with the wish to remove it (hunger
 
 A ranking of needs is described by [Maslow's hierarchy of needs](/en/economy_and_law/leadership/#maslows-hierarchy-of-needs). The boundary between cultural and luxury needs shifts over time: a mobile phone was a luxury in the 1990s, today a smartphone is part of the normal standard of living.
 
-A need for which purchasing power (money) is available is called **demand in the narrow sense** (German _Bedarf_). When this demand actually becomes effective in the market, i.e. something is bought, it is called **effective demand** (German _Nachfrage_).
+A need for which purchasing power (money) is available is called **demand in the narrow sense**. When this demand actually becomes effective in the market, i.e. something is bought, it is called **effective demand**.
 
 $$
 \text{need} + \text{purchasing power} = \text{demand} \quad \xrightarrow{\text{purchase decision}} \quad \text{effective demand}

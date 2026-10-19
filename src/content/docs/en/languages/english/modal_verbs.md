@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-Modal verbs (_modal auxiliaries_) change the meaning of a main verb: they express ability, permission, obligation, advice or probability. They cause many mistakes for German speakers, because some look like German words but are used differently (`must not` does not mean „muss nicht“).
+Modal verbs (_modal auxiliaries_) change the meaning of a main verb: they express ability, permission, obligation, advice or probability. They cause many mistakes for German speakers, because some look like German words but are used differently (`must not` does not mean "not have to").
 
 ## Grammatical features
 
@@ -52,7 +52,7 @@ The true modal verbs (`can`, `could`, `may`, `might`, `must`, `shall`, `should`,
 | `needn't`, `don't need to` | no necessity                                           | `You needn't print the document.`                 |
 
 :::danger[False friend: must not]
-„Du musst nicht kommen.“ means `You don't have to come.` or `You needn't come.`, **not** ~~You mustn't come.~~ (that would mean „Du darfst nicht kommen“).
+If something is not necessary, say `You don't have to come.` or `You needn't come.`, **not** ~~You mustn't come.~~ (that would mean that you are not allowed to come).
 :::
 
 `must` has no past form. For past obligation use `had to`: `Yesterday I had to restart the server three times.`

@@ -1,6 +1,6 @@
 ---
 title: Open Letter
-description: "Characteristics and structure of an open letter (Offener Brief) from the header to the signature, with useful phrases and how it differs from a letter to the editor."
+description: "Characteristics and structure of an open letter from the header to the signature, with useful phrases and how it differs from a letter to the editor."
 sidebar:
   order: 9
 tableOfContents:
@@ -11,7 +11,7 @@ tableOfContents:
 The open letter (Offener Brief) is an appellative, opinion-based text type written in the present tense and the present perfect. It is addressed to a specific person or institution (for example a mayor, a ministry or a company) but is made **public**, for instance in a newspaper, on a website or on social media. So you write for two groups at once: the person addressed and the public, who read along and are meant to build up pressure.
 
 :::note[Matura]
-Since the main exam date in 2020, the open letter is no longer part of the catalogue of text types for the written SRDP in German. It is, however, still set in class tests (Schularbeiten), and its structure and argumentation technique also help you with the [letter to the editor](/en/languages/german_text_types/letter_to_the_editor/) and the [opinion speech](/en/languages/german_text_types/opinion_speech/).
+Since the main exam date in 2020, the open letter is no longer part of the catalogue of text types for the written SRDP in German. It is, however, still set in class tests, and its structure and argumentation technique also help you with the [letter to the editor](/en/languages/german_text_types/letter_to_the_editor/) and the [opinion speech](/en/languages/german_text_types/opinion_speech/).
 :::
 
 ## Characteristics
@@ -102,5 +102,5 @@ The signature follows. In an open letter from a group, there are often several n
 
 ## Further reading
 
--   [Austrian Ministry of Education: Reife- und Diplomprüfung](https://www.matura.gv.at/)
+-   [Austrian Ministry of Education: Matura and diploma examination](https://www.matura.gv.at/) (in German)
 -   [Wikipedia: Open letter](https://en.wikipedia.org/wiki/Open_letter)

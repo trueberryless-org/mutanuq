@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-Besides writing, the HTL German curriculum focuses on **listening and speaking**: you should be able to hold conversations, take part in discussions, give presentations and document meetings. Communication models help you understand and avoid misunderstandings. They are also typical material for the oral part of the Reife- und Diplomprüfung.
+Besides writing, the HTL German curriculum focuses on **listening and speaking**: you should be able to hold conversations, take part in discussions, give presentations and document meetings. Communication models help you understand and avoid misunderstandings. They are also typical material for the oral part of the Matura.
 
 ## Communication models
 
@@ -69,7 +69,7 @@ Misunderstandings arise when sender and receiver emphasise different sides. If t
 
 ### I-messages
 
-**I-messages** (Ich-Botschaften) describe your own perception and its effect instead of accusing the other person. They avoid defensiveness and justification.
+**I-messages** describe your own perception and its effect instead of accusing the other person. They avoid defensiveness and justification.
 
 | You-message                          | I-message                                                                     |
 | ------------------------------------ | ----------------------------------------------------------------------------- |
@@ -185,7 +185,7 @@ You build **arguments** using the pattern **claim, reason, evidence (example)**.
 
 A **debate** is a strictly regulated form of argument about a yes/no question („Soll ...?“, should ...?). The pro and contra sides have fixed speaking times. A common procedure (for example in the competition „Jugend debattiert“) is: **opening round** (each person states their position), **open debate** (direct exchange) and **closing round** (each person sums up; changing one's mind is allowed). A jury usually assesses subject knowledge, expressiveness, ability to engage in dialogue and persuasiveness.
 
-## Minutes (Protokoll)
+## Minutes
 
 **Minutes** record the course and results of a meeting, session or experiment in writing. They are factual and objective, written in the **present tense**, and contributions are reproduced in **reported speech** (subjunctive) (see [Verb forms](/en/languages/german/verb_forms/#reported-speech-indirekte-rede)).
 

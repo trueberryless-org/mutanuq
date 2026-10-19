@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-At an HTL, the **diploma thesis** (Diplomarbeit) is part of the Reife- und Diplomprüfung (RDP, the school-leaving and diploma examination). It is an independently written, practice-oriented project, usually done in a team and often with a company as the client. It consists of the written thesis and its **presentation and discussion** in front of the examination board. Even though the diploma thesis is not a university project, the same basic rules of academic work apply: traceability, honesty in dealing with sources and a clear structure.
+At an HTL, the **diploma thesis** is part of the school-leaving and diploma examination. It is an independently written, practice-oriented project, usually done in a team and often with a company as the client. It consists of the written thesis and its **presentation and discussion** in front of the examination board. Even though the diploma thesis is not a university project, the same basic rules of academic work apply: traceability, honesty in dealing with sources and a clear structure.
 
 ## Overview of the process
 
@@ -21,7 +21,7 @@ At an HTL, the **diploma thesis** (Diplomarbeit) is part of the Reife- und Diplo
 | submission                | formal check, plagiarism check, upload, printed copies          | submitted diploma thesis         |
 | presentation and discussion | talk to the examination board, answer questions               | assessment                       |
 
-Throughout the work, each team member keeps a **progress log** (Begleitprotokoll) documenting work steps, time spent and meetings with the supervisor. It shows who independently produced which part.
+Throughout the work, each team member keeps a **progress log** documenting work steps, time spent and meetings with the supervisor. It shows who independently produced which part.
 
 ## Choosing a topic
 
@@ -140,7 +140,7 @@ Footnotes:
 
 ### Reference list
 
-The **reference list** (Literaturverzeichnis) contains **all** cited sources and **only** those, ordered alphabetically by the authors' surnames. Figures and tables from other sources also need a reference (in the caption) and appear in the list of figures or tables.
+The **reference list** contains **all** cited sources and **only** those, ordered alphabetically by the authors' surnames. Figures and tables from other sources also need a reference (in the caption) and appear in the list of figures or tables.
 
 ## Plagiarism
 
@@ -153,7 +153,7 @@ The **reference list** (Literaturverzeichnis) contains **all** cited sources and
 -   **self-plagiarism:** reusing your own previously assessed work without saying so
 -   **unlabelled AI text:** passing off AI-generated passages as your own wording
 
-Diploma theses are checked with plagiarism software. With the **declaration of authorship** (Eigenständigkeitserklärung), you confirm that you wrote the thesis yourself and named all sources and tools. Proven plagiarism means that the thesis cannot be assessed. Copied **program code** (for example from Stack Overflow or open-source projects) must also be credited with its source and licence.
+Diploma theses are checked with plagiarism software. With the **declaration of authorship**, you confirm that you wrote the thesis yourself and named all sources and tools. Proven plagiarism means that the thesis cannot be assessed. Copied **program code** (for example from Stack Overflow or open-source projects) must also be credited with its source and licence.
 
 ## Structure of the diploma thesis
 
@@ -182,7 +182,7 @@ The **abstract** is a self-contained summary (usually 150 to 300 words) in **Ger
 
 ### Language
 
-Academic language is **factual, precise and traceable**. Avoid colloquial language, exaggeration and unsupported judgements. Whether you use `ich` (I) and `wir` (we) depends on the requirements; in diploma theses, `wir` is usually accepted for team decisions. Advice on nominal style, the passive and coherence can be found under [Style](/en/languages/german/style/).
+Academic language is **factual, precise and traceable**. Avoid colloquial language, exaggeration and unsupported judgements. Whether you may write in the first person (I, we) depends on the requirements; in diploma theses, "we" is usually accepted for team decisions. Advice on nominal style, the passive and coherence can be found under [Style](/en/languages/german/style/).
 
 ## Formal requirements
 
@@ -205,7 +205,7 @@ Use the automatic features of your word processor (styles, automatic table of co
 AI tools such as chatbots, translation programs, spelling checkers or code assistants can help with the work, for example with structuring ideas, revising wording or finding programming errors. Whether and for what they may be used is decided by the school and the supervisor. In general:
 
 -   **Responsibility:** you are responsible for every sentence and every line of code in your thesis. Always check facts supplied by an AI against reliable sources.
--   **Labelling:** use AI tools transparently. In a **list of tools** (Hilfsmittelverzeichnis) or in the declaration of authorship, state which tool (name, version, date) you used, for what and in which chapters. Mark AI wording you adopt like a quotation.
+-   **Labelling:** use AI tools transparently. In a **list of tools** or in the declaration of authorship, state which tool (name, version, date) you used, for what and in which chapters. Mark AI wording you adopt like a quotation.
 -   **Documentation:** save important inputs (prompts) and outputs so that you can show your use on request. Also record the use in the progress log.
 -   **Data protection:** do not enter confidential company data or personal data into public AI services.
 

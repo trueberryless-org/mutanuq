@@ -8,9 +8,9 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-German spelling is laid down in the **Official Rules** (Amtliches Regelwerk) of the Council for German Orthography (Rat für deutsche Rechtschreibung). They apply in Germany, Austria, Switzerland, Liechtenstein, South Tyrol and the German-speaking Community of Belgium. Since 1 July 2024, the revised version with a new word list has been binding for schools and public administration. In Austria, the **Österreichisches Wörterbuch** (ÖWB, currently in its 44th edition) is the official reference dictionary for schools; the Duden is also permitted. In the SRDP, spelling mistakes count towards the criterion "normative language accuracy" (Normative Sprachrichtigkeit).
+German spelling is laid down in the **Official Rules** of the Council for German Orthography. They apply in Germany, Austria, Switzerland, Liechtenstein, South Tyrol and the German-speaking Community of Belgium. Since 1 July 2024, the revised version with a new word list has been binding for schools and public administration. In Austria, the **Österreichisches Wörterbuch** (ÖWB, currently in its 44th edition) is the official reference dictionary for schools; the Duden is also permitted. In the SRDP, spelling mistakes count towards the criterion "normative language accuracy" (Normative Sprachrichtigkeit).
 
-## Capitalisation (Groß- und Kleinschreibung)
+## Capitalisation
 
 ### Basic rules
 
@@ -106,7 +106,7 @@ Changes within a word family follow vowel length: wissen, er **weiß**, er **wus
 
 Remember: if you can replace the word with `dieses`, `welches` or `dies`, write `das`; otherwise write `dass`. After verbs of saying, thinking and feeling (sagen, glauben, hoffen, wissen), `dass` usually follows.
 
-## Loanwords (Fremdwörter)
+## Loanwords
 
 Loanwords often keep their original spelling (Computer, Software, Chance, Restaurant). Many, however, have been adapted to German spelling, or there are two permitted variants:
 
@@ -122,7 +122,7 @@ With the 2024 version, some rarely used Germanised variants were removed from th
 
 English compounds made of nouns are written **as one word** or with a **hyphen**, never apart: Homeoffice, Desktop-PC, Open-Source-Software, Know-how, E-Mail. Verbs from English are conjugated the German way: downloaden, ich habe die Datei **downgeloadet**; updaten, **upgedatet**.
 
-## Hyphen (Bindestrich)
+## Hyphen
 
 The hyphen (`-`) joins parts of words:
 
@@ -178,7 +178,7 @@ For some words, two spellings are correct: `selbstständig / selbständig` (inde
 
 German is a **pluricentric language** with several equally valid standard varieties (see [Media and language](/en/languages/german/media_and_language/)). Austrian Standard German is neither a dialect nor a mistake: words listed as Austrian in the ÖWB are correct in the Matura.
 
-### Austrianisms (Austriazismen)
+### Austrianisms
 
 | Austria           | Germany            | English          |
 | ----------------- | ------------------ | ---------------- |

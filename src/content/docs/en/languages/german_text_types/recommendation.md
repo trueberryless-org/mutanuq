@@ -1,6 +1,6 @@
 ---
 title: Recommendation
-description: "Characteristics and structure of a recommendation (Empfehlung): describe the subject, assess it against criteria and give reasoned advice."
+description: "Characteristics and structure of a recommendation: describe the subject, assess it against criteria and give reasoned advice."
 sidebar:
   order: 10
 tableOfContents:
@@ -81,4 +81,4 @@ In the conclusion, you summarise your verdict and state the recommendation clear
 
 ## Further reading
 
--   [Austrian Ministry of Education: Reife- und Diplomprüfung](https://www.matura.gv.at/)
+-   [Austrian Ministry of Education: Matura and diploma examination](https://www.matura.gv.at/) (in German)

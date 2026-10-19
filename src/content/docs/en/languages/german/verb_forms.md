@@ -8,9 +8,9 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-A finite verb shows not only person and number but also **time** (tense), **voice** (active or passive) and **mood** (Modus). For the Matura, the tenses matter above all when summarising and analysing, and Konjunktiv I matters in reported speech: anyone who reproduces statements from a source text must mark them correctly as someone else's statements.
+A finite verb shows not only person and number but also **time** (tense), **voice** (active or passive) and **mood**. For the Matura, the tenses matter above all when summarising and analysing, and Konjunktiv I matters in reported speech: anyone who reproduces statements from a source text must mark them correctly as someone else's statements.
 
-## Tenses (Tempora)
+## Tenses
 
 German has six tenses. The present and preterite are **simple** forms; the others are **compound** forms built with auxiliary verbs.
 
@@ -78,7 +78,7 @@ The passive makes sense when the doer is unimportant, unknown or obvious, for ex
 
 Substitutes for the passive are `man` (Man installiert den Server), `sich lassen` (Das Problem lässt sich lösen, the problem can be solved), `sein + zu + infinitive` (Die Aufgabe ist bis Freitag zu erledigen, the task must be completed by Friday) and adjectives in `-bar` (Das Problem ist lösbar, the problem is solvable).
 
-## Moods (Modi)
+## Moods
 
 The mood shows how the speaker views a statement.
 

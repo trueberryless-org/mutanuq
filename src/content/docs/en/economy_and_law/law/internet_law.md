@@ -26,7 +26,7 @@ Providers that only store third-party content (such as a forum or a social media
 
 ## Legal notice and disclosure
 
-In everyday language, this is called the **Impressum** (legal notice). Legally, it consists of several obligations:
+In everyday language, this is simply called the **legal notice**. Legally, it consists of several obligations:
 
 - the information obligations under § 5 ECG (see above),
 - the disclosure under § 25 Media Act: for "small" websites that do not go beyond presenting one's personal life or a company, the name or company name, the object of the company and the place of residence or registered office of the media owner are sufficient,

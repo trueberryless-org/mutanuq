@@ -8,7 +8,7 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-With reported speech (_indirect speech_) you pass on what someone said without quoting them word for word. German uses the Konjunktiv I for this („Er sagte, er sei krank.“), while English moves the tense one step back into the past (_backshift_). You need reported speech for reports, summaries of interviews and minutes of meetings.
+With reported speech (_indirect speech_) you pass on what someone said without quoting them word for word. Unlike German, which uses a special verb form for this, English moves the tense one step back into the past (_backshift_). You need reported speech for reports, summaries of interviews and minutes of meetings.
 
 ## say and tell
 

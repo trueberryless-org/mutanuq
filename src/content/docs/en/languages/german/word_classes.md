@@ -8,11 +8,11 @@ tableOfContents:
   maxHeadingLevel: 3
 ---
 
-Every word can be assigned to a **word class** (Wortart). If you can identify word classes reliably, you will find the rules of capitalisation, punctuation and syntax much easier, because almost all of these rules are linked to word classes. German schools usually distinguish ten word classes.
+Every word can be assigned to a **word class**. If you can identify word classes reliably, you will find the rules of capitalisation, punctuation and syntax much easier, because almost all of these rules are linked to word classes. German schools usually distinguish ten word classes.
 
 ## Overview
 
-The most important division is by whether a word **changes its form** (inflection, Flexion):
+The most important division is by whether a word **changes its form** (inflection):
 
 | Group                         | Word classes                                       | Change                                       |
 | ----------------------------- | -------------------------------------------------- | -------------------------------------------- |
@@ -22,10 +22,10 @@ The most important division is by whether a word **changes its form** (inflectio
 | invariable (particles in the wider sense) | adverb, preposition, conjunction, interjection | none                                  |
 
 :::note
-Some grammars (such as the Duden grammar) group words like `sehr` (very), `nur` (only), `ja`, `doch` into a separate word class called **particle** (Partikel: degree, focus and modal particles). At school, they are usually counted as adverbs.
+Some grammars (such as the Duden grammar) group words like `sehr` (very), `nur` (only), `ja`, `doch` into a separate word class called **particle** (degree, focus and modal particles). At school, they are usually counted as adverbs.
 :::
 
-## Noun (Nomen, Substantiv)
+## Noun
 
 Nouns denote living beings, things, concepts and processes: `Lehrerin` (female teacher), `Laptop`, `Freiheit` (freedom), `das Laufen` (running). In German they are always **capitalised** and can take an article.
 
@@ -68,7 +68,7 @@ German has four cases. You identify them with the matching question:
 
 ### Declension
 
-**Declension** (Deklination) is the change of a noun (with its article) by case and number. There are three classes:
+**Declension** is the change of a noun (with its article) by case and number. There are three classes:
 
 | Case | strong (masc./neut.) | weak (n-declension) | feminine |
 | ---- | -------------------- | ------------------- | -------- |
@@ -85,7 +85,7 @@ German has four cases. You identify them with the matching question:
 -   **Feminine** nouns do not change in the singular.
 -   In the **dative plural**, every noun ends in -n unless the plural ends in -s: `mit den Kindern` (with the children), but `mit den Autos`.
 
-## Article (Artikel)
+## Article
 
 The article accompanies the noun and shows gender, number and case.
 
@@ -102,7 +102,7 @@ The article accompanies the noun and shows gender, number and case.
 
 `kein` (no, not a) is declined like `ein` but also has plural forms (keine, keiner, keinen, keine).
 
-## Pronoun (Pronomen)
+## Pronoun
 
 Pronouns stand for a noun (replacing it) or accompany it (as a determiner).
 
@@ -126,7 +126,7 @@ The personal pronouns are declined as follows:
 | dat. | mir  | dir  | ihm | ihr       | ihm | uns | euch | ihnen / Ihnen |
 | acc. | mich | dich | ihn | sie       | es  | uns | euch | sie / Sie |
 
-## Adjective (Adjektiv)
+## Adjective
 
 Adjectives describe properties: `schnell` (fast), `neu` (new), `digital`. They can be used **attributively** (before the noun, declined: der schnelle Rechner), **predicatively** (with sein, werden, bleiben, not declined: Der Rechner ist schnell) or **adverbially** (with the verb, not declined: Der Rechner arbeitet schnell).
 
@@ -163,7 +163,7 @@ Which ending an attributive adjective takes depends on what precedes it. The rul
 
 The mixed declension is strong where `ein` has no ending (nom. masc., nom./acc. neut.) and weak everywhere else.
 
-### Comparison (Komparation)
+### Comparison
 
 | Degree       | Formation           | Example                        |
 | ------------ | ------------------- | ------------------------------ |
@@ -179,7 +179,7 @@ In comparisons, `wie` follows the positive and `als` follows the comparative: �
 
 ## Verb
 
-Verbs denote actions, processes and states: `programmieren` (to program), `wachsen` (to grow), `liegen` (to lie). In the sentence they form the predicate. Changing the form of a verb is called **conjugation** (Konjugation).
+Verbs denote actions, processes and states: `programmieren` (to program), `wachsen` (to grow), `liegen` (to lie). In the sentence they form the predicate. Changing the form of a verb is called **conjugation**.
 
 ### Conjugation
 
@@ -228,9 +228,9 @@ Adverbs such as `deshalb` (therefore), `trotzdem` (nevertheless), `außerdem` (m
 
 A few adverbs can be compared: `oft, öfter, am öftesten` (often), `gern, lieber, am liebsten` (gladly), `bald, eher, am ehesten` (soon).
 
-## Preposition (Präposition)
+## Preposition
 
-Prepositions establish relationships between words (spatial, temporal, causal, modal). They determine the **case** of the following word (government, Rektion).
+Prepositions establish relationships between words (spatial, temporal, causal, modal). They determine the **case** of the following word (government).
 
 | Case                  | Prepositions                                                                  |
 | --------------------- | ----------------------------------------------------------------------------- |
@@ -243,7 +243,7 @@ With **two-way prepositions** (Wechselpräpositionen): the question `Wohin?` (wh
 
 In standard German, `wegen`, `trotz` and `während` take the genitive (wegen **des** Regens, because of the rain). The dative (`wegen dem Regen`) is colloquial and should be avoided in the Matura. Preposition and article often merge: an dem to `am`, in dem to `im`, zu der to `zur`, von dem to `vom`.
 
-## Conjunction (Konjunktion)
+## Conjunction
 
 Conjunctions link words, phrases and clauses.
 
@@ -256,7 +256,7 @@ Compare: „Ich bleibe zu Hause, **denn** ich **bin** krank“ (main clause, ver
 
 How subordinating conjunctions are classified by meaning (temporal, causal, concessive ...) is explained in [Sentence structure](/en/languages/german/sentence_structure/).
 
-## Numeral (Numerale)
+## Numeral
 
 Numerals indicate quantities and order. Many grammars count them as adjectives because they behave similarly.
 
@@ -271,7 +271,7 @@ Numerals indicate quantities and order. Many grammars count them as adjectives b
 
 Numbers below one million are written **as one word** when spelt out (`dreihundertvierundzwanzig`, 324); millions and billions are nouns (`zwei Millionen`). In running text, numbers up to twelve are usually written out and larger numbers in digits.
 
-## Interjection (Interjektion)
+## Interjection
 
 Interjections express feelings or reactions or imitate sounds: `ach`, `au`, `hurra`, `oh`, `pfui`, `hallo`, `psst`, `peng`. They usually stand outside the sentence structure and are separated by a comma or exclamation mark: „**Ach**, das habe ich vergessen.“ (Oh, I forgot that.)
 

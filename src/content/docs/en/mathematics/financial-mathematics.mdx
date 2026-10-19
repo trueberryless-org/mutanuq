@@ -38,7 +38,7 @@ $$
 Z = 5000 \cdot 0.03 \cdot \frac{120}{360} = 50\ \text{€}
 $$
 
-In Austria the bank withholds **25 % capital gains tax** (Kapitalertragsteuer, KESt), so €37.50 is paid out. The interest rate after tax is therefore only $3\,\% \cdot 0.75 = 2.25\,\%$.
+In Austria the bank withholds **25 % capital gains tax** (KESt), so €37.50 is paid out. The interest rate after tax is therefore only $3\,\% \cdot 0.75 = 2.25\,\%$.
 :::
 
 ## Compound interest
@@ -78,7 +78,7 @@ $$
 Conversely, the **equivalent** (conformal) period rate is the one that gives exactly the same final value after one year as the annual rate $i$: $\;i_m = \sqrt[m]{1 + i} - 1$. At 3 % p.a., the equivalent monthly rate is $\sqrt[12]{1.03} - 1 \approx 0.2466\,\%$, slightly less than the relative rate of $0.25\,\%$.
 
 :::note
-For consumer loans in Austria, the Consumer Credit Act (Verbraucherkreditgesetz, VKrG) requires the **annual percentage rate** (effektiver Jahreszinssatz) to be stated. It includes not only compounding within the year but also processing fees and other costs, and is therefore the right figure for comparing offers.
+For consumer loans in Austria, the Consumer Credit Act (VKrG) requires the **annual percentage rate** to be stated. It includes not only compounding within the year but also processing fees and other costs, and is therefore the right figure for comparing offers.
 :::
 
 ### Continuous compounding
@@ -97,10 +97,10 @@ Continuous compounding is rare in practice but is used in theory (e.g. in option
 
 ## Annuities
 
-An **annuity** (Rente) is a sequence of equal payments $R$ at equal time intervals, for example monthly savings, rent or loan instalments. A distinction is made between:
+An **annuity** is a sequence of equal payments $R$ at equal time intervals, for example monthly savings, rent or loan instalments. A distinction is made between:
 
-- **ordinary annuity** (nachschüssig): payment at the end of each period (loan instalments, salaries),
-- **annuity due** (vorschüssig): payment at the start of each period (rent, insurance premiums, many savings plans).
+- **ordinary annuity**: payment at the end of each period (loan instalments, salaries),
+- **annuity due**: payment at the start of each period (rent, insurance premiums, many savings plans).
 
 The payment period must match the interest period. For monthly payments and an annual rate, you therefore use the equivalent monthly rate.
 
@@ -126,14 +126,14 @@ Values for an annuity due are larger by the factor $q$ because each payment earn
 The present value means: a single payment of €10,502.48 today is worth exactly as much as the ten payments at the end of each year.
 :::
 
-:::tip[Example: Monthly savings plan (Bausparen)]
-In Austria, a building savings contract (Bausparvertrag) usually runs for 6 years. €100 is paid in at the end of each month, with interest at 3 % p.a. With the equivalent monthly rate $i_{12} = \sqrt[12]{1.03} - 1 \approx 0.0024663$ and $n = 72$ months:
+:::tip[Example: Building savings contract]
+In Austria, a building savings contract usually runs for 6 years. €100 is paid in at the end of each month, with interest at 3 % p.a. With the equivalent monthly rate $i_{12} = \sqrt[12]{1.03} - 1 \approx 0.0024663$ and $n = 72$ months:
 
 $$
 E = 100 \cdot \frac{(1 + i_{12})^{72} - 1}{i_{12}} \approx 7868.25\ \text{€}
 $$
 
-€7200 was paid in. With Bausparen, a state premium (Bausparprämie) is added, whose percentage is set anew each year; KESt is deducted from the interest.
+€7200 was paid in. With a building savings contract, a state premium is added, whose percentage is set anew each year; KESt is deducted from the interest.
 :::
 
 ### Calculating the payment or the term
@@ -173,7 +173,7 @@ The interest in each row is 5 % of the balance at the start of the year; the rep
 
 ### Instalment loan
 
-With an **instalment loan** (Ratentilgung), the repayment is the same in every period: $T = \frac{K_0}{n}$. The payment (repayment plus interest) falls from year to year.
+With an **instalment loan**, the repayment is the same in every period: $T = \frac{K_0}{n}$. The payment (repayment plus interest) falls from year to year.
 
 :::tip[Example]
 The same loan with equal repayments, $T = \frac{10\,000}{5} = 2000$ €:
@@ -275,7 +275,7 @@ Whether an investment pays off is assessed with dynamic methods that take the ti
 
 ### Net present value
 
-The **net present value** (NPV, Kapitalwert) is the sum of all payments discounted to time $0$. With the initial outlay $I_0$, the net cash inflows $R_t$ and the discount rate $i$:
+The **net present value** (NPV) is the sum of all payments discounted to time $0$. With the initial outlay $I_0$, the net cash inflows $R_t$ and the discount rate $i$:
 
 $$
 C_0 = -I_0 + \sum_{t=1}^{n} \frac{R_t}{q^t}
@@ -303,7 +303,7 @@ For the server investment, $C_0(8\,\%) \approx 176.29$ € and $C_0(9\,\%) \appr
 
 ## Depreciation
 
-Fixed assets such as computers, machines or vehicles lose value over time. **Depreciation** (in Austrian tax law: Absetzung für Abnutzung, AfA) spreads the acquisition cost over the useful life:
+Fixed assets such as computers, machines or vehicles lose value over time. **Depreciation** spreads the acquisition cost over the useful life:
 
 | Method | Depreciation amount | Book value after $t$ years |
 | ------ | ------------------- | -------------------------- |
