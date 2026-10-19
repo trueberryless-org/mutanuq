@@ -1,0 +1,206 @@
+---
+title: IPv6
+description: Aufbau und Kurzschreibweise von IPv6-Adressen, Adresstypen, /64-Präfixe, EUI-64, SLAAC, DHCPv6, Neighbor Discovery, ICMPv6 und Übergangsverfahren von IPv4.
+sidebar:
+  order: 6
+---
+
+**IPv6** (RFC 8200) ist der Nachfolger von IPv4. Der wichtigste Grund für seine Entwicklung war der knappe IPv4-Adressraum: Mit 32 Bit gibt es nur rund 4,3 Milliarden Adressen, weniger als Menschen auf der Erde, und NAT ist nur eine Notlösung. IPv6-Adressen sind **128 Bit** lang, das ergibt $2^{128} \approx 3{,}4 \cdot 10^{38}$ Adressen. Daneben vereinfacht IPv6 den Header, verzichtet auf Broadcasts und bringt die automatische Adresskonfiguration mit. Laut der Statistik von Google erreichen Mitte der 2020er-Jahre weltweit rund 40 bis 50 % der Nutzer Google über IPv6. Fast alle Netze laufen daher im **Dual Stack** mit beiden Protokollen.
+
+## Adressformat
+
+Eine IPv6-Adresse wird als acht Gruppen (_Hextets_) zu je 16 Bit in Hexadezimal geschrieben, getrennt durch Doppelpunkte:
+
+```text
+2001:0db8:0000:0000:0000:ff00:0042:8329
+```
+
+### Kurzschreibweise
+
+RFC 5952 legt fest, wie Adressen verkürzt werden:
+
+1. **Führende Nullen** in jeder Gruppe dürfen weggelassen werden: `0db8` wird `db8`, `0042` wird `42`, `0000` wird `0`.
+2. **Eine** zusammenhängende Folge von Nullgruppen darf durch `::` ersetzt werden, aber nur **einmal** pro Adresse, sonst wäre nicht eindeutig, wie viele Gruppen jedes `::` vertritt.
+3. Gibt es mehrere Nullfolgen, wird die **längste** ersetzt, bei gleicher Länge die **erste**. Eine einzelne Nullgruppe wird nicht durch `::` ersetzt.
+4. Hexadezimalziffern werden **klein** geschrieben.
+
+```text
+2001:0db8:0000:0000:0000:ff00:0042:8329  ->  2001:db8::ff00:42:8329
+fe80:0000:0000:0000:0a1b:00ff:fe3c:0001  ->  fe80::a1b:ff:fe3c:1
+2001:0db8:0000:0001:0000:0000:0000:0001  ->  2001:db8:0:1::1
+0000:0000:0000:0000:0000:0000:0000:0001  ->  ::1
+```
+
+Zum **Expandieren** zählt man die vorhandenen Gruppen und füllt bei `::` so viele Nullgruppen auf, dass es acht werden: `2001:db8:a::1` hat vier Gruppen, `::` steht also für vier Nullgruppen: `2001:0db8:000a:0000:0000:0000:0000:0001`.
+
+Präfixe werden wie bei IPv4 mit Schrägstrich angegeben: `2001:db8:acad:1::/64`. In URLs muss eine IPv6-Adresse in eckige Klammern: `http://[2001:db8::1]:8080/`.
+
+## Der IPv6-Header
+
+Der IPv6-Header hat eine **feste Länge von 40 Byte**, was die Verarbeitung in Routern vereinfacht.
+
+| Feld | Bits | Bedeutung |
+| --- | --- | --- |
+| Version | 4 | 6 |
+| Traffic Class | 8 | entspricht DSCP/ECN bei IPv4 |
+| Flow Label | 20 | kennzeichnet zusammengehörige Pakete eines Datenflusses |
+| Payload Length | 16 | Länge der Nutzdaten |
+| **Next Header** | 8 | Typ des folgenden Headers (6 TCP, 17 UDP, 58 ICMPv6 oder ein Erweiterungsheader) |
+| **Hop Limit** | 8 | entspricht der TTL |
+| Quelladresse | 128 | |
+| Zieladresse | 128 | |
+
+Gegenüber IPv4 fehlen die **Header-Prüfsumme** (Schicht 2 und 4 prüfen ohnehin) und die **Fragmentierungsfelder**: Router fragmentieren nie, nur der Absender darf das, über einen Erweiterungsheader. Ist ein Paket zu groß, schickt der Router eine ICMPv6-Meldung „Packet Too Big“ zurück. Jeder IPv6-Link muss eine MTU von mindestens **1280 Byte** unterstützen. Optionale Funktionen stehen in **Erweiterungsheadern** (_Extension Headers_), die über das Feld Next Header verkettet sind.
+
+## Adresstypen
+
+IPv6 kennt **keine Broadcasts**. Ihre Aufgaben übernehmen Multicasts, die nur die Geräte verarbeiten, die sie betreffen.
+
+| Typ | Präfix | Zweck |
+| --- | --- | --- |
+| **Global Unicast** (GUA) | `2000::/3` (beginnt mit 2 oder 3) | weltweit eindeutig und im Internet routbar, entspricht öffentlichen IPv4-Adressen |
+| **Link-Local** (LLA) | `fe80::/10` | nur im eigenen Segment gültig, wird nie geroutet. Jedes IPv6-Interface hat eine, sie wird für NDP und als Next Hop in Routingtabellen verwendet |
+| **Unique Local** (ULA) | `fc00::/7`, in der Praxis `fd00::/8` | privat, im Internet nicht geroutet, ähnlich RFC 1918 (RFC 4193). Die nächsten 40 Bit sollen zufällig sein, damit zusammengelegte Netze nicht kollidieren |
+| **Multicast** | `ff00::/8` | an eine Gruppe |
+| **Anycast** | aus dem Unicast-Bereich | dieselbe Adresse auf mehreren Geräten, das Paket geht an das nächstgelegene (etwa bei DNS-Root-Servern) |
+| Loopback | `::1/128` | eigener Rechner |
+| Unspezifiziert | `::/128` | „noch keine Adresse“, Quelladresse beim Start |
+| Dokumentation | `2001:db8::/32` | für Beispiele (RFC 3849) |
+| IPv4-mapped | `::ffff:0:0/96` | IPv4-Adresse in IPv6-Darstellung, z. B. `::ffff:192.0.2.1` |
+
+Ein Interface hat bei IPv6 fast immer **mehrere Adressen** gleichzeitig: mindestens eine Link-Local-Adresse, meist eine oder mehrere globale Adressen und es ist Mitglied in mehreren Multicast-Gruppen.
+
+### Multicast-Adressen
+
+| Adresse | Gruppe |
+| --- | --- |
+| `ff02::1` | alle Knoten im Segment (ersetzt den Broadcast) |
+| `ff02::2` | alle Router im Segment |
+| `ff02::5`, `ff02::6` | OSPFv3-Router, OSPFv3-DR/BDR |
+| `ff02::9` | RIPng-Router |
+| `ff02::a` | EIGRP-Router |
+| `ff02::1:2` | alle DHCPv6-Server und -Relays |
+| `ff02::1:ffXX:XXXX` | **Solicited-Node-Multicast**: aus `ff02::1:ff` und den letzten 24 Bit der Unicast-Adresse |
+
+Die zweite Hexziffer nach `ff` gibt Flags an, die dritte den **Gültigkeitsbereich** (_Scope_): 2 Link-Local, 5 Site-Local, e global.
+
+## Struktur einer globalen Adresse
+
+```text
+| Global Routing Prefix | Subnet ID |      Interface ID       |
+|        48 Bit         |  16 Bit   |         64 Bit          |
+   2001:0db8:acad       :   0001    :  0000:0000:0000:0001
+```
+
+- Das **Global Routing Prefix** weist der Provider zu. Unternehmen erhalten üblicherweise ein /48, Privatkunden meist ein /56 oder /64.
+- Die **Subnet ID** vergibt die Organisation selbst. Bei einem /48 sind das 16 Bit, also 65 536 Subnetze.
+- Die **Interface ID** kennzeichnet das Gerät im Subnetz.
+
+Ein Subnetz hat in IPv6 **immer ein /64-Präfix**. Das wirkt verschwenderisch ($2^{64}$ Adressen für ein LAN), ist aber Voraussetzung für SLAAC und vereinfacht die Planung: Subnetting heißt bei IPv6 einfach, die Subnet ID hochzuzählen. Aus `2001:db8:acad::/48` entstehen `2001:db8:acad:1::/64`, `2001:db8:acad:2::/64` und so weiter. Es ist üblich, die Subnet ID an die VLAN-Nummer anzulehnen, etwa `2001:db8:acad:10::/64` für VLAN 10. Für Punkt-zu-Punkt-Verbindungen zwischen Routern wird oft ein /127 verwendet (RFC 6164).
+
+## Interface ID und EUI-64
+
+Die 64 Bit lange Interface ID kann auf mehrere Arten entstehen:
+
+- **manuell**, bei Routern und Servern, etwa `::1` für das Gateway,
+- per **EUI-64** aus der MAC-Adresse,
+- **zufällig**, wie es Windows, macOS, Android und iOS standardmäßig tun (RFC 8981 für temporäre Adressen, RFC 7217 für stabile, aber nicht aus der MAC abgeleitete Adressen),
+- per **DHCPv6**.
+
+Beim **EUI-64-Verfahren** wird die 48-Bit-MAC in der Mitte geteilt, `FFFE` eingefügt und das 7. Bit von links (das U/L-Bit) invertiert:
+
+```text
+MAC-Adresse:          00-1A-2B-3C-4D-5E
+geteilt, FFFE dazu:   001A:2B  FF:FE  3C:4D5E
+7. Bit invertieren:   00 = 0000 0000  ->  0000 0010 = 02
+Interface ID:         021a:2bff:fe3c:4d5e
+mit Präfix:           2001:db8:acad:1:21a:2bff:fe3c:4d5e
+```
+
+Der Nachteil: Die MAC-Adresse und damit das Gerät ist in jeder Adresse erkennbar, auch wenn es das Netz wechselt. Deshalb verwenden Endgeräte heute zufällige Interface IDs, EUI-64 findet man vor allem bei Link-Local-Adressen von Routern.
+
+## Adresskonfiguration
+
+### SLAAC
+
+Mit **SLAAC** (_Stateless Address Autoconfiguration_, RFC 4862) konfiguriert sich ein Host ohne DHCP-Server:
+
+1. Der Host bildet eine **Link-Local-Adresse** (`fe80::` + Interface ID).
+2. Er prüft per **DAD** (_Duplicate Address Detection_), ob die Adresse schon vergeben ist: Er sendet eine Neighbor Solicitation an die Solicited-Node-Adresse. Antwortet niemand, gehört sie ihm.
+3. Er sendet eine **Router Solicitation** (RS) an `ff02::2`.
+4. Der Router antwortet mit einem **Router Advertisement** (RA) an `ff02::1`. Router senden RAs auch periodisch von sich aus (bei Cisco alle 200 s).
+5. Aus dem Präfix im RA und der Interface ID bildet der Host seine globale Adresse und prüft sie wieder per DAD.
+6. Die **Link-Local-Adresse des Routers** (die Quelladresse des RA) wird sein **Default-Gateway**.
+
+Ein Cisco-Router sendet RAs erst, wenn mit `ipv6 unicast-routing` IPv6-Routing aktiviert ist.
+
+### Flags im Router Advertisement
+
+Über drei Flags teilt der Router mit, wie Hosts ihre Konfiguration beziehen sollen:
+
+| Methode | A-Flag | O-Flag | M-Flag | Adresse von | DNS-Server von |
+| --- | --- | --- | --- | --- | --- |
+| **nur SLAAC** | 1 | 0 | 0 | SLAAC | RA (Option RDNSS, RFC 8106) |
+| **SLAAC + zustandsloses DHCPv6** | 1 | 1 | 0 | SLAAC | DHCPv6 |
+| **zustandsbehaftetes DHCPv6** | 0 | (1) | 1 | DHCPv6 | DHCPv6 |
+
+Das A-Flag (_Autonomous_) steht in der Präfixinformation, O (_Other configuration_) und M (_Managed address configuration_) im RA selbst.
+
+### DHCPv6
+
+**DHCPv6** (RFC 8415) arbeitet über UDP mit Port **546** (Client) und **547** (Server). Clients senden an die Multicast-Adresse `ff02::1:2`.
+
+- **Zustandslos** (_stateless_): Der Server liefert nur zusätzliche Informationen wie DNS-Server und Domänenname (Nachrichten INFORMATION-REQUEST und REPLY). Er merkt sich nichts über die Clients.
+- **Zustandsbehaftet** (_stateful_): Der Server vergibt Adressen und führt Buch darüber, ähnlich DHCPv4 (Nachrichten SOLICIT, ADVERTISE, REQUEST, REPLY).
+
+:::caution
+DHCPv6 liefert **kein Default-Gateway**. Das Gateway kommt immer aus dem Router Advertisement, auch bei zustandsbehaftetem DHCPv6.
+:::
+
+Mit **Prefix Delegation** (DHCPv6-PD) erhält ein Heimrouter vom Provider ein ganzes Präfix (etwa ein /56), das er selbst in /64-Subnetze aufteilt.
+
+## Neighbor Discovery Protocol
+
+Das **Neighbor Discovery Protocol** (NDP, RFC 4861) ersetzt ARP, ICMP Router Discovery und ICMP Redirect. Es besteht aus fünf ICMPv6-Nachrichten:
+
+| Typ | Nachricht | Zweck |
+| --- | --- | --- |
+| 133 | **Router Solicitation** (RS) | Host sucht Router |
+| 134 | **Router Advertisement** (RA) | Router teilt Präfix, Gateway und Konfigurationsmethode mit |
+| 135 | **Neighbor Solicitation** (NS) | Adressauflösung und DAD |
+| 136 | **Neighbor Advertisement** (NA) | Antwort mit der MAC-Adresse |
+| 137 | Redirect | besseres Gateway |
+
+Zur **Adressauflösung** sendet ein Host eine NS nicht als Broadcast, sondern an die **Solicited-Node-Multicast-Adresse** des Ziels. Für `2001:db8::a:b3c4:d5e6` ist das `ff02::1:ffc4:d5e6`. Diese Gruppe hat meist nur ein einziges Mitglied, die Netzwerkkarte kann alle anderen Frames schon in Hardware verwerfen. Die gelernten Zuordnungen stehen im **Neighbor Cache** (`netsh interface ipv6 show neighbors` unter Windows, `ip -6 neigh` unter Linux).
+
+NDP ist wie ARP nicht authentifiziert. Gefälschte RAs können ein ganzes Netz auf ein falsches Gateway umleiten. Switches bieten dagegen **RA Guard**.
+
+## ICMPv6
+
+**ICMPv6** (RFC 4443, Next Header 58) ist für IPv6 noch wichtiger als ICMP für IPv4, weil NDP, SLAAC und die Path MTU Discovery darauf aufbauen. Wer ICMPv6 in einer Firewall komplett sperrt, legt IPv6 lahm.
+
+| Typ | Nachricht |
+| --- | --- |
+| 1 | Destination Unreachable |
+| 2 | **Packet Too Big** (für Path MTU Discovery, da Router nicht fragmentieren) |
+| 3 | Time Exceeded (Hop Limit 0) |
+| 128 / 129 | Echo Request / Echo Reply (`ping`) |
+| 133 bis 137 | NDP |
+
+## Übergangsverfahren
+
+IPv4 und IPv6 sind nicht kompatibel: Ein reiner IPv6-Host kann keinen reinen IPv4-Host erreichen. Für die lange Übergangszeit gibt es drei Ansätze:
+
+| Ansatz | Prinzip | Beispiele |
+| --- | --- | --- |
+| **Dual Stack** | Geräte und Router sprechen beide Protokolle parallel. Bevorzugt wird IPv6 (Verfahren _Happy Eyeballs_ probiert beide und nimmt das schnellere) | Standard in Unternehmensnetzen |
+| **Tunneling** | IPv6-Pakete werden in IPv4-Pakete gekapselt (oder umgekehrt), um ein Netz der anderen Version zu durchqueren | 6in4 (IP-Protokoll 41), GRE, 6rd, **DS-Lite** (IPv4 in IPv6 zum Provider, dort Carrier-Grade-NAT) |
+| **Übersetzung** | ein Gateway übersetzt zwischen IPv6 und IPv4 | **NAT64** mit **DNS64** (Präfix `64:ff9b::/96`, RFC 6146), 464XLAT in Mobilfunknetzen |
+
+Bei NAT64 erzeugt der DNS64-Server für Namen, die nur einen A-Eintrag haben, eine synthetische AAAA-Antwort aus dem Präfix `64:ff9b::/96` und der IPv4-Adresse. Der IPv6-Client schickt seine Pakete dorthin, und das NAT64-Gateway übersetzt sie nach IPv4. Ältere Tunnelverfahren wie 6to4 und Teredo gelten als veraltet.
+
+## Weiterführende Quellen
+
+- [RFC 8200: Internet Protocol, Version 6 (IPv6) Specification](https://www.rfc-editor.org/rfc/rfc8200)
+- [RFC 4291: IP Version 6 Addressing Architecture](https://www.rfc-editor.org/rfc/rfc4291)
+- [RFC 4861: Neighbor Discovery for IP version 6](https://www.rfc-editor.org/rfc/rfc4861)

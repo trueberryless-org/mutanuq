@@ -1,0 +1,262 @@
+---
+title: Distributed Databases
+description: Replication with leaders and followers, synchronous and asynchronous, quorums, partitioning and sharding with consistent hashing, distributed transactions with two-phase commit and sagas, consistency models and consensus.
+sidebar:
+  order: 14
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **distributed database** stores its data on several computers (_nodes_) connected by a network and still appears to the application as a single database. Reasons for distribution are:
+
+- **Scalability**: a single server reaches limits in storage space, main memory or requests per second. Several servers share the load.
+- **Availability**: if one node fails, others take over. The database stays reachable.
+- **Low latency**: copies close to the users, for example in Europe and America, shorten response times.
+
+The two basic techniques are **replication** (the same data on several nodes) and **partitioning** (different data on different nodes). They are usually combined: every partition is replicated to several nodes.
+
+## Replication
+
+### Leaders and followers
+
+In the most widespread method, one node, the **leader** (also _primary_, formerly _master_), accepts all writes. It writes the changes to its transaction log and sends them to the **followers** (_replicas_), which apply them in the same order. Reads can also be answered by the followers. For applications with many reads and few writes, that is, most web applications, this multiplies read performance.
+
+| Replication      | Process                                                                    | Advantage                       | Disadvantage                                                  |
+| ---------------- | -------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------- |
+| **Synchronous**  | The leader only confirms the `COMMIT` once the followers have stored the change. | no data loss if the leader fails | every write waits for the network; if a follower fails, writing blocks |
+| **Asynchronous** | The leader confirms immediately and sends the change afterwards.           | fast, independent of followers  | followers lag behind (_replication lag_); if the leader fails, the latest changes are lost |
+| **Semi-synchronous** | at least one follower synchronous, the rest asynchronous               | compromise                      |                                                               |
+
+If the leader fails, a follower is promoted to the new leader (**failover**). It must be ensured that two nodes never believe at the same time that they are the leader (**split brain**), otherwise contradictory changes arise. The basics of high availability and failover are described on the page [High Availability](/en/deployment/operations/high_availability/).
+
+With asynchronous replication, an application can see outdated data: a user changes their profile, and the next page is loaded from a follower that does not have the change yet. A remedy is to read data that users have changed themselves from the leader for a while (**read-your-writes consistency**).
+
+### Multiple leaders and leaderless replication
+
+With **multi-leader replication**, several nodes, for example one per data centre, accept writes and synchronise with each other. If two leaders change the same record at the same time, a **conflict** arises that has to be resolved, for example with "the last change wins" (_last write wins_) or by merging.
+
+**Leaderless replication** (modelled on Amazon Dynamo, for example in Cassandra) sends every write and read to several nodes. With $N$ copies, $W$ confirmed writes and $R$ nodes queried when reading:
+
+$$
+W + R > N
+$$
+
+Then the nodes that wrote and the nodes that are read overlap in at least one node, and the read returns the newest value. A common choice is $N = 3$, $W = 2$, $R = 2$ (**quorum**). With $W = 1$ and $R = 1$, the system becomes faster but may return outdated values.
+
+## Partitioning
+
+If a table becomes too large for one server, it is split. With **vertical partitioning**, columns are separated, for example rarely needed large columns into a table of their own. With **horizontal partitioning**, rows are distributed across several parts. If the parts are on different servers, this is called **sharding**, and the parts are called **shards**.
+
+| Method                    | Assignment                                                   | Advantage                                  | Disadvantage                                               |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
+| **Range**                 | key ranges, such as last names A to F, G to M, ...            | range queries hit few shards               | uneven distribution, **hotspots** (for example all new data in the shard with the current date) |
+| **Hash**                  | shard = hash value of the key modulo the number of shards    | even distribution                          | range queries have to ask all shards; new shards move almost all data |
+| **Consistent hashing**    | position on a hash ring                                      | even, and adding a shard moves only a small part | somewhat more complex                                |
+| **Directory**             | a mapping table says where each key is stored                 | completely flexible                        | the directory is an additional bottleneck                  |
+
+The choice of the **partition key** determines performance. A good key distributes the load evenly, and the most frequent queries only affect one shard. For a school administration system with many schools, the school ID is a good partition key: almost all queries only affect one school.
+
+### Partitioning in PostgreSQL
+
+A large table can also be partitioned on a single server. Queries that restrict the partition key then only read the affected partitions (**partition pruning**), and old data can be removed by dropping a whole partition instead of deleting millions of rows with `DELETE`.
+
+```sql
+CREATE TABLE Measurement (
+    SensorId INT NOT NULL,
+    Time     DATE NOT NULL,
+    Value    NUMERIC(6, 2)
+) PARTITION BY RANGE (Time);
+
+CREATE TABLE Measurement_2024 PARTITION OF Measurement FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+CREATE TABLE Measurement_2025 PARTITION OF Measurement FOR VALUES FROM ('2025-01-01') TO ('2026-01-01');
+
+INSERT INTO Measurement VALUES (1, '2024-06-01', 21.5), (1, '2025-03-15', 19.0), (2, '2025-07-02', 27.3);
+
+SELECT tableoid::regclass AS Partition, * FROM Measurement ORDER BY Time;
+
+DROP TABLE Measurement_2024;   -- remove all data from 2024 at once
+```
+
+### Consistent hashing
+
+With simple hashing (`hash(key) % n`), adding a server changes the assignment of almost all keys, and almost all data would have to be moved. **Consistent hashing** avoids this: servers and keys are mapped onto the same circle of numbers (_ring_). A key belongs to the first server that follows it clockwise. If a server is added, it only takes over the keys between itself and its predecessor. So that the distribution becomes even, every server gets many positions on the ring (**virtual nodes**). Cassandra, DynamoDB and many distributed caches work this way.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text;
+
+string[] keys = Enumerable.Range(1, 1000).Select(i => $"student:{i}").ToArray();
+
+var ring3 = new HashRing(["A", "B", "C"]);
+var ring4 = new HashRing(["A", "B", "C", "D"]);
+var before = keys.Select(ring3.NodeFor).ToArray();
+var after = keys.Select(ring4.NodeFor).ToArray();
+
+Console.WriteLine("3 servers: " + Distribution(before));
+Console.WriteLine("4 servers: " + Distribution(after));
+Console.WriteLine($"Moved with ring:   {before.Zip(after).Count(p => p.First != p.Second)}");
+Console.WriteLine($"Moved with modulo: {keys.Count(k => HashRing.Hash(k) % 3 != HashRing.Hash(k) % 4)}");
+
+static string Distribution(string[] nodes) =>
+    string.Join(", ", nodes.GroupBy(n => n).OrderBy(g => g.Key).Select(g => $"{g.Key}={g.Count()}"));
+
+public class HashRing
+{
+    private readonly List<(uint Position, string Node)> ring = [];
+
+    public HashRing(IEnumerable<string> nodes, int virtualNodes = 100)
+    {
+        foreach (var node in nodes)
+            for (int i = 0; i < virtualNodes; i++)
+                ring.Add((Hash($"{node}#{i}"), node));
+        ring.Sort();
+    }
+
+    public string NodeFor(string key)
+    {
+        uint hash = Hash(key);
+        // first virtual node clockwise, wrapping around at the end
+        foreach (var (position, node) in ring)
+            if (position >= hash) return node;
+        return ring[0].Node;
+    }
+
+    // FNV-1a with the MurmurHash3 finaliser for good mixing
+    public static uint Hash(string text)
+    {
+        uint h = 2166136261;
+        foreach (byte b in Encoding.UTF8.GetBytes(text))
+        {
+            h ^= b;
+            h *= 16777619;
+        }
+        h ^= h >> 16; h *= 0x85ebca6b;
+        h ^= h >> 13; h *= 0xc2b2ae35;
+        h ^= h >> 16;
+        return h;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::BTreeMap;
+
+struct HashRing {
+    ring: Vec<(u32, String)>,
+}
+
+impl HashRing {
+    fn new(nodes: &[&str], virtual_nodes: u32) -> Self {
+        let mut ring: Vec<(u32, String)> = nodes
+            .iter()
+            .flat_map(|node| (0..virtual_nodes).map(move |i| (hash(&format!("{node}#{i}")), node.to_string())))
+            .collect();
+        ring.sort();
+        HashRing { ring }
+    }
+
+    fn node_for(&self, key: &str) -> &str {
+        let h = hash(key);
+        // first virtual node clockwise, wrapping around at the end
+        let index = self.ring.partition_point(|(position, _)| *position < h);
+        &self.ring[index % self.ring.len()].1
+    }
+}
+
+// FNV-1a with the MurmurHash3 finaliser for good mixing
+fn hash(text: &str) -> u32 {
+    let mut h: u32 = 2166136261;
+    for b in text.bytes() {
+        h ^= b as u32;
+        h = h.wrapping_mul(16777619);
+    }
+    h ^= h >> 16;
+    h = h.wrapping_mul(0x85ebca6b);
+    h ^= h >> 13;
+    h = h.wrapping_mul(0xc2b2ae35);
+    h ^= h >> 16;
+    h
+}
+
+fn distribution(nodes: &[&str]) -> String {
+    let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for node in nodes {
+        *counts.entry(node).or_default() += 1;
+    }
+    counts.iter().map(|(node, count)| format!("{node}={count}")).collect::<Vec<_>>().join(", ")
+}
+
+fn main() {
+    let keys: Vec<String> = (1..=1000).map(|i| format!("student:{i}")).collect();
+    let ring3 = HashRing::new(&["A", "B", "C"], 100);
+    let ring4 = HashRing::new(&["A", "B", "C", "D"], 100);
+    let before: Vec<&str> = keys.iter().map(|k| ring3.node_for(k)).collect();
+    let after: Vec<&str> = keys.iter().map(|k| ring4.node_for(k)).collect();
+
+    println!("3 servers: {}", distribution(&before));
+    println!("4 servers: {}", distribution(&after));
+    let moved = before.iter().zip(&after).filter(|(a, b)| a != b).count();
+    println!("Moved with ring:   {moved}");
+    let moved_modulo = keys.iter().filter(|k| hash(k) % 3 != hash(k) % 4).count();
+    println!("Moved with modulo: {moved_modulo}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+```text
+3 servers: A=364, B=310, C=326
+4 servers: A=292, B=255, C=232, D=221
+Moved with ring:   221
+Moved with modulo: 750
+```
+
+With the ring, exactly the 221 keys that the new server D takes over are moved, roughly a quarter. With modulo hashing, three quarters of all data would have to move.
+
+## Distributed transactions
+
+If a transaction affects data on several nodes, all of them must commit together or all must roll back. The classic method is the **two-phase commit** (2PC) with a **coordinator**:
+
+1. **Prepare phase**: the coordinator asks all participants whether they can commit. Every participant writes its changes durably to its log, keeps its locks and answers "yes" or "no".
+2. **Commit phase**: if all have answered "yes", the coordinator sends `COMMIT`, otherwise `ROLLBACK`. The participants carry out the decision and release the locks.
+
+The disadvantage: if the coordinator fails after the first phase, the participants do not know how to decide and keep their locks until it is back (**blocking protocol**). 2PC is also slow because several network round trips are needed.
+
+In microservice architectures, in which every service has its own database, **sagas** are therefore often used: a business transaction is split into local transactions of the individual services. If a step fails, **compensating transactions** undo the previous steps in business terms, for example a refund for a payment already debited. Intermediate states are visible to others.
+
+## Consistency models
+
+How current the read data is in a distributed system is described by the **consistency model**. From strong to weak:
+
+| Model                         | Guarantee                                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------------------------- |
+| **Linearisability** (_strong consistency_) | The system behaves like a single copy. Every read sees the last confirmed write. |
+| **Causal consistency**        | Related changes are seen by everyone in the same order: an answer never appears before the question. |
+| **Read-your-writes**          | A user always sees their own changes.                                                         |
+| **Monotonic reads**           | Whoever has seen a value never sees an older one afterwards.                                  |
+| **Eventual consistency**      | Without new changes, all copies eventually become identical.                                  |
+
+The stronger the model, the more coordination between the nodes is needed, and the higher latency and the risk of unavailability become. This trade-off is described by the [CAP theorem](/en/databases/cap-theorem/) and its extension PACELC.
+
+## Consensus
+
+So that several nodes can agree on a leader or on the order of changes, even if individual nodes fail or messages are lost, a **consensus algorithm** is needed. The best known are **Paxos** (Leslie Lamport, submitted in 1989, published in 1998) and the easier to understand **Raft** (Diego Ongaro and John Ousterhout, 2014):
+
+- One node is the **leader**, the others are followers. The leader regularly sends signs of life (_heartbeats_).
+- If they stop, a follower stands as a candidate. Whoever receives the votes of the **majority** becomes the new leader for a new term.
+- A change counts as committed as soon as the majority has stored it.
+
+Because a majority is always needed, an odd number of nodes is used: three nodes can cope with the failure of one, five with the failure of two. Raft is used, among others, in etcd (the configuration database of Kubernetes), Consul, CockroachDB and MongoDB (in a modified form).
+
+**NewSQL** databases such as Google Spanner, CockroachDB, YugabyteDB and TiDB combine these techniques: they partition automatically, replicate every partition with Raft or Paxos and still offer SQL and distributed ACID transactions.
+
+## Further reading
+
+- Martin Kleppmann: _Designing Data-Intensive Applications_, O'Reilly (chapters 5 to 9)
+- Diego Ongaro, John Ousterhout: [In Search of an Understandable Consensus Algorithm (Raft)](https://raft.github.io/raft.pdf), 2014

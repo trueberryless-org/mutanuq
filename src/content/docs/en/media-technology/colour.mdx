@@ -1,0 +1,431 @@
+---
+title: Colour
+description: Colour perception, the colour models RGB, CMYK, HSL and Lab, colour spaces, colour depth, colour management, gamma, Itten's colour theory and WCAG contrast.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Colour is not a property of an object but a sensation: light reaches the eye, and the brain interprets the signal as colour. Anyone who designs media therefore needs to know two sides. The technical side describes how screens, printers and files display and store colours. The design side describes how colours work on the viewer and how to combine them so that a design is legible, coherent and accessible to everyone.
+
+## Light and colour perception
+
+Light is electromagnetic radiation. The human eye perceives wavelengths from about **380 nm** (violet) to **780 nm** (red). White light, such as sunlight, contains all wavelengths of this range. An object looks red because it mainly reflects the long wavelengths and absorbs the rest.
+
+The retina contains two kinds of sensory cells:
+
+- **Rods** (around 120 million) are very sensitive to light but do not distinguish colours. They are used for vision at dusk, which is why everything looks grey at night.
+- **Cones** (around 6 million) are responsible for colour vision. There are three types with different sensitivities: for short (S, blue), medium (M, green) and long (L, red) wavelengths.
+
+From the ratio in which the three cone types are stimulated, the brain computes the colour sensation (**trichromatic theory** after Young and Helmholtz). All colour technology is based on this: a screen does not need a light source for every wavelength, three primary colours are enough to produce almost any colour sensation. Two different spectra that look the same are called **metameric**.
+
+Around 8 % of men and 0.5 % of women have a **colour vision deficiency**, usually a red-green deficiency. A design must therefore never convey information through colour alone.
+
+## Colour models
+
+A **colour model** describes how a colour is expressed as numbers. It only defines the kind of description, not which colour a particular value produces exactly (that needs a colour space, see below).
+
+![Additive colour mixing with red, green and blue and subtractive colour mixing with cyan, magenta and yellow](/images/media-technology/colour_mixing_en.svg)
+
+### RGB: additive colour mixing
+
+In **additive colour mixing**, light is added. The starting point is black (no light), the primary colours are **red, green and blue**. All three at full intensity produce white.
+
+- red + green = yellow
+- green + blue = cyan
+- red + blue = magenta
+- red + green + blue = white
+
+RGB is the model of all self-luminous devices: screens, projectors, smartphones, digital cameras and scanners. Each channel is usually stored with 8 bits, i.e. with values from 0 to 255.
+
+### CMY and CMYK: subtractive colour mixing
+
+In **subtractive colour mixing**, light is taken away. The starting point is white paper, which reflects all light. Each ink acts as a filter and absorbs part of the spectrum: **cyan** absorbs red, **magenta** absorbs green, **yellow** absorbs blue. CMY is therefore the exact counterpart of RGB.
+
+- cyan + magenta = blue
+- magenta + yellow = red
+- cyan + yellow = green
+- cyan + magenta + yellow = black in theory
+
+In practice the three colours only produce a muddy dark brown. Printers therefore add **black** (**K** for _key_, the key plate to which the others are aligned). Black gives deeper shadows and crisp text without registration problems, saves expensive coloured ink and reduces the amount of ink on the paper, which then dries faster.
+
+A simple conversion from RGB (values from 0 to 1) to CMYK is:
+
+$$
+K = 1 - \max(R, G, B), \qquad C = \frac{1 - R - K}{1 - K}, \quad M = \frac{1 - G - K}{1 - K}, \quad Y = \frac{1 - B - K}{1 - K}
+$$
+
+This formula is only a teaching example. Real prepress work uses ICC profiles, because the result depends on paper, printing process and inks.
+
+### HSV and HSL
+
+RGB is technically convenient but not intuitive for people: which values give a slightly paler orange? **HSV** and **HSL** describe a colour the way people talk about it:
+
+| Quantity | Meaning | Range |
+| --- | --- | --- |
+| **H** (hue) | angle on the colour wheel: 0° red, 120° green, 240° blue | 0° to 360° |
+| **S** (saturation) | purity of the colour, 0 % is grey | 0 % to 100 % |
+| **V** (value) in HSV | 100 % is the purest, brightest colour | 0 % to 100 % |
+| **L** (lightness) in HSL | 0 % black, 50 % pure colour, 100 % white | 0 % to 100 % |
+
+HSV is common in the colour pickers of image editors, HSL in CSS (`hsl(221 83% 53%)`). Both are mere conversions of RGB and inherit its weakness: equal L values do not mean equal perceived brightness. Pure yellow and pure blue both have L = 50 %, but yellow looks much brighter.
+
+The conversion from RGB to HSL (all channels from 0 to 1) uses the maximum $M$ and the minimum $m$ of the three channels, $\Delta = M - m$:
+
+$$
+L = \frac{M + m}{2}, \qquad S = \begin{cases} 0 & \Delta = 0 \\ \dfrac{\Delta}{1 - \lvert 2L - 1 \rvert} & \text{otherwise} \end{cases}
+$$
+
+$$
+H = 60^\circ \cdot \begin{cases} \dfrac{G - B}{\Delta} \bmod 6 & M = R \\[2mm] \dfrac{B - R}{\Delta} + 2 & M = G \\[2mm] \dfrac{R - G}{\Delta} + 4 & M = B \end{cases}
+$$
+
+### CIE Lab
+
+In 1931 the **CIE** (_Commission Internationale de l'Éclairage_) described all colours visible to humans in a measurable way for the first time, with the colour space **XYZ**. The model derived from it, **CIE L\*a\*b\*** (1976), has three axes:
+
+- **L\***: lightness from 0 (black) to 100 (white)
+- **a\***: axis from green (negative) to red (positive)
+- **b\***: axis from blue (negative) to yellow (positive)
+
+Lab is **device-independent**: a Lab value describes a colour as a standard observer sees it, regardless of which device produces it. Lab is also approximately **perceptually uniform**: equal distances in the space correspond roughly to equally large perceived colour differences. The distance between two colours is called **ΔE** (delta E). A ΔE below about 1 is barely visible, which is why print shops state tolerances as ΔE. In colour management, Lab acts as the intermediary between devices. CSS also supports such colour values with `lab()` and `oklch()`.
+
+## Colour spaces
+
+A **colour space** defines which concrete colours the numbers of a colour model stand for. It is defined by the chromaticities of the three primaries, the **white point** and the transfer function (gamma). The set of all colours a colour space or device can reproduce is its **gamut**. In the CIE chromaticity diagram, an RGB colour space is a triangle whose corners are the primaries.
+
+| Colour space | Origin | Use |
+| --- | --- | --- |
+| **sRGB** | HP and Microsoft 1996, standard IEC 61966-2-1 | standard for the web, operating systems and inexpensive monitors; an image without a profile is assumed to be sRGB |
+| **Adobe RGB (1998)** | Adobe | larger than sRGB, especially in greens and cyans; photography intended for print |
+| **Display P3** | Apple, primaries of DCI-P3 (cinema), white point D65 | about a quarter larger than sRGB; current smartphones, laptops and monitors |
+| **Rec. 2020** (ITU-R BT.2020) | ITU | very large colour space for UHD television and HDR |
+| **ISO Coated v2, PSO Coated v3** | ECI, FOGRA | CMYK colour spaces for offset printing on coated paper |
+
+The same RGB value `(0, 255, 0)` is a more saturated green in Display P3 than in sRGB. An image without an embedded profile may therefore look different on different devices.
+
+## Colour depth
+
+**Colour depth** states how many bits are stored per pixel (or per channel). With $n$ bits, $2^n$ levels are possible.
+
+| Colour depth | Colours | Use |
+| --- | --- | --- |
+| 1 bit | 2 (black, white) | line art, fax |
+| 8 bit indexed | 256 from a palette | GIF, simple graphics |
+| 8 bit greyscale | 256 shades of grey | black-and-white photos |
+| 24 bit (3 × 8 bit, **true colour**) | $2^{24} = 16\,777\,216$ | standard for screen and web |
+| 32 bit (RGBA) | 16.7 million colours + 256 levels of transparency | images with an alpha channel |
+| 30 bit (3 × 10 bit) | $2^{30} \approx 1.07$ billion | HDR video, professional monitors |
+| 48 bit (3 × 16 bit) | $2^{48}$ | image editing, RAW development |
+
+More bits per channel prevent **banding** (visible steps in gradients), especially when an image is edited heavily. This is why photos are often edited at 16 bits per channel and only the result is saved with 8 bits.
+
+## Hex notation
+
+On the web, RGB colours are usually given in **hexadecimal**: `#RRGGBB`, two hex digits (00 to FF, i.e. 0 to 255) per channel.
+
+| Hex | RGB | Colour |
+| --- | --- | --- |
+| `#FF0000` | 255, 0, 0 | red |
+| `#00FF00` | 0, 255, 0 | green |
+| `#0000FF` | 0, 0, 255 | blue |
+| `#FFFFFF` | 255, 255, 255 | white |
+| `#808080` | 128, 128, 128 | medium grey |
+| `#2563EB` | 37, 99, 235 | the blue of this website |
+
+A conversion example: `EB` = $14 \cdot 16 + 11 = 235$. The short form `#RGB` doubles every digit (`#F80` = `#FF8800`). `#RRGGBBAA` adds an alpha channel (`#2563EB80` is the blue at about 50 % opacity).
+
+## Gamma
+
+The eye does not respond linearly to brightness: we perceive differences in dark tones much more strongly than equally large differences in light tones. If the physical amount of light were stored linearly in 8 bits, many levels would be wasted on light tones and the dark tones would be too coarse.
+
+Colour values are therefore encoded with a **gamma curve**. The stored value $V$ and the amount of light $L$ (both from 0 to 1) are approximately related as follows:
+
+$$
+L = V^{\gamma}, \qquad \gamma \approx 2.2
+$$
+
+A stored value of 50 % (128) therefore corresponds to only about 22 % of the light. Strictly speaking, sRGB uses a piecewise function with a linear part near black:
+
+$$
+C_{\text{linear}} = \begin{cases} \dfrac{C}{12.92} & C \le 0.04045 \\[2mm] \left(\dfrac{C + 0.055}{1.055}\right)^{2.4} & \text{otherwise} \end{cases}
+$$
+
+Operations such as blurring, scaling or cross-fading are only physically correct in **linear** space. Programs that compute directly with gamma-encoded values produce, for example, transitions between strong colours that are too dark.
+
+## Colour management
+
+Every device has its own gamut: a scanner sees differently from a camera, a monitor displays differently from how a printer prints. **Colour management** ensures that a colour looks as similar as possible from capture to output.
+
+- An **ICC profile** (standard of the _International Color Consortium_) describes the colour space of a device or a file. It translates device values into a device-independent **profile connection space** (_PCS_, Lab or XYZ) and back.
+- The operating system's **colour management module** (CMM) converts from source to destination using two profiles: camera RGB → PCS → monitor RGB or → print CMYK.
+- A monitor is **calibrated** and **profiled** with a measuring device (colorimeter), otherwise the preview is not accurate.
+- With a **soft proof**, the software simulates on screen how an image will look in print.
+
+If a colour does not fit into the destination colour space (_out of gamut_), the **rendering intent** decides how it is converted:
+
+| Rendering intent | Behaviour | Use |
+| --- | --- | --- |
+| **perceptual** | compresses the whole gamut, relationships between colours are preserved | photos with many saturated colours |
+| **relative colorimetric** | reproduces in-gamut colours exactly, clips the rest, adapts the white point | default for most print jobs |
+| **absolute colorimetric** | like relative, but without white point adaptation (paper white is simulated) | proofs |
+| **saturation** | keeps colours as vivid as possible, hues may shift | business graphics, charts |
+
+:::tip[Remember]
+For the web: export images in **sRGB** and embed the profile. For print: edit in RGB with a large colour space and convert to **CMYK** only at the end, using the print shop's profile.
+:::
+
+## Colour theory
+
+### Colour wheel
+
+The best-known colour wheel in design theory comes from **Johannes Itten** (Bauhaus). It has 12 segments:
+
+- **primary colours** (first order): yellow, red, blue
+- **secondary colours** (second order): orange, violet, green, each mixed from two primaries
+- **tertiary colours** (third order): six mixtures of a primary and an adjacent secondary colour, such as yellow-orange
+
+Itten's wheel comes from painting and is not colorimetrically exact: red and blue cannot be mixed into a pure violet. Digital design therefore usually works with the RGB colour wheel (hue H in HSL), whose opposite pairs are red and cyan, green and magenta, blue and yellow. The principle of the harmonies stays the same.
+
+### Colour harmonies
+
+Harmonies describe geometric arrangements on the colour wheel that experience shows to work well together:
+
+| Harmony | Selection on the colour wheel | Effect |
+| --- | --- | --- |
+| **monochromatic** | one hue in different lightnesses and saturations | calm, uniform |
+| **analogous** | two to four adjacent hues | harmonious, natural |
+| **complementary** | two opposite colours (180°) | strong contrast, lively |
+| **split complementary** | one colour and the two neighbours of its complement | high contrast, but less tension |
+| **triadic** | three colours 120° apart | balanced, colourful |
+| **tetradic** | four colours as a rectangle or square | varied, hard to balance |
+
+A proven rule of thumb for distribution is **60-30-10**: 60 % main colour, 30 % secondary colour, 10 % accent colour.
+
+### Itten's seven colour contrasts
+
+| Contrast | Description |
+| --- | --- |
+| **contrast of hue** | pure, unmixed colours side by side, strongest with yellow, red and blue |
+| **light-dark contrast** | difference in lightness, strongest with black and white; important for legibility |
+| **cold-warm contrast** | warm colours (yellow to red) against cold ones (green to blue); warm colours seem closer, cold ones further away |
+| **complementary contrast** | colours opposite each other on the wheel intensify each other |
+| **simultaneous contrast** | the eye simultaneously generates the complement of a colour: a grey looks greenish on a red background |
+| **contrast of saturation** | saturated against dull, broken colours (difference in purity) |
+| **contrast of extension** | proportion of the colour areas: a small area of yellow balances a large area of violet |
+
+### Colour psychology
+
+Colours evoke associations, but these depend on culture and context:
+
+| Colour | common association in Europe | typical use |
+| --- | --- | --- |
+| red | energy, love, danger, urgency | warnings, sales, food |
+| blue | trust, calm, competence | banks, insurers, IT |
+| green | nature, health, permission | organic products, confirmations |
+| yellow | attention, optimism | notices, warning signs (with black) |
+| black | elegance, luxury, mourning | luxury brands |
+| white | purity, clarity (mourning in parts of East Asia) | medicine, minimalist design |
+
+In user interfaces, meanings have become firmly established: red for errors and deletion, green for success, yellow or orange for warnings.
+
+## Contrast and accessibility
+
+The W3C's [**Web Content Accessibility Guidelines**](/en/web-technologies/web-accessibility-and-seo/) (WCAG, currently 2.2) specify how strongly text must stand out from its background. In Austria they are mandatory for public bodies through the Web Accessibility Act (WZG) and, since 28 June 2025, also for many private products and services through the Accessibility Act (BaFG) (level AA via the standard EN 301 549).
+
+The basis is the **relative luminance** $L$ of a colour. First the sRGB channels are linearised with the gamma function shown above, then added with weights. Green contributes most because the eye is most sensitive to it:
+
+$$
+L = 0.2126 \cdot R_{\text{lin}} + 0.7152 \cdot G_{\text{lin}} + 0.0722 \cdot B_{\text{lin}}
+$$
+
+The **contrast ratio** of two colours with $L_1$ (lighter) and $L_2$ (darker) is
+
+$$
+K = \frac{L_1 + 0.05}{L_2 + 0.05}
+$$
+
+It ranges from 1:1 (same colour) to 21:1 (black on white). The term 0.05 accounts for ambient light falling on the screen.
+
+| Success criterion | Level | Minimum contrast |
+| --- | --- | --- |
+| 1.4.3 Contrast (Minimum), normal text | AA | 4.5:1 |
+| 1.4.3 large text (from 18 pt or 14 pt bold) | AA | 3:1 |
+| 1.4.6 Contrast (Enhanced), normal text | AAA | 7:1 |
+| 1.4.6 large text | AAA | 4.5:1 |
+| 1.4.11 Non-text Contrast (controls, icons, charts) | AA | 3:1 |
+
+In addition, criterion 1.4.1 requires that colour is **never the only means** of conveying information: a required field is not only outlined in red but also gets an error message as text.
+
+:::tip[Example]
+Grey `#767676` on white: the luminance of `#767676` is 0.181, that of white is 1. The ratio is $(1 + 0.05) / (0.181 + 0.05) \approx 4.54$. This is the lightest neutral grey that still meets AA for normal text on white. `#777777` only reaches 4.48:1.
+:::
+
+The following program reads hex colours, converts them to HSL and checks the contrast ratio:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// decimal point as in CSS, independent of the system language
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+var blue = Rgb.FromHex("#2563EB");
+var (h, s, l) = blue.ToHsl();
+Console.WriteLine($"HSL: {h:F0}° {s * 100:F0} % {l * 100:F0} %"); // HSL: 221° 83 % 53 %
+
+var white = Rgb.FromHex("#FFF");
+foreach (var color in new[] { blue, Rgb.FromHex("#767676"), Rgb.FromHex("#777777") })
+{
+    double ratio = Rgb.ContrastRatio(color, white);
+    string verdict = ratio >= 4.5 ? "meets AA" : "too weak";
+    Console.WriteLine($"{color} on white: {ratio:F2}:1, {verdict}");
+}
+// #2563EB on white: 5.17:1, meets AA
+// #767676 on white: 4.54:1, meets AA
+// #777777 on white: 4.48:1, too weak
+
+public readonly record struct Rgb(byte R, byte G, byte B)
+{
+    public static Rgb FromHex(string hex)
+    {
+        hex = hex.TrimStart('#');
+        if (hex.Length == 3) // short form #RGB: double every digit
+            hex = string.Concat(hex.Select(c => $"{c}{c}"));
+        int value = Convert.ToInt32(hex, 16);
+        return new Rgb((byte)(value >> 16), (byte)((value >> 8) & 0xFF), (byte)(value & 0xFF));
+    }
+
+    public override string ToString() => $"#{R:X2}{G:X2}{B:X2}";
+
+    // hue in degrees, saturation and lightness from 0 to 1
+    public (double H, double S, double L) ToHsl()
+    {
+        double r = R / 255.0, g = G / 255.0, b = B / 255.0;
+        double max = Math.Max(r, Math.Max(g, b)), min = Math.Min(r, Math.Min(g, b));
+        double delta = max - min;
+        double l = (max + min) / 2;
+        if (delta == 0) return (0, 0, l); // grey: no hue
+        double s = delta / (1 - Math.Abs(2 * l - 1));
+        double h = max == r ? (g - b) / delta % 6
+                 : max == g ? (b - r) / delta + 2
+                 : (r - g) / delta + 4;
+        h *= 60;
+        if (h < 0) h += 360;
+        return (h, s, l);
+    }
+
+    static double Linear(byte channel)
+    {
+        double c = channel / 255.0;
+        return c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    public double Luminance() => 0.2126 * Linear(R) + 0.7152 * Linear(G) + 0.0722 * Linear(B);
+
+    public static double ContrastRatio(Rgb a, Rgb b)
+    {
+        double la = a.Luminance(), lb = b.Luminance();
+        return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Rgb {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+
+impl Rgb {
+    fn from_hex(hex: &str) -> Result<Rgb, std::num::ParseIntError> {
+        let hex = hex.trim_start_matches('#');
+        // short form #RGB: double every digit
+        let full: String = if hex.len() == 3 {
+            hex.chars().flat_map(|c| [c, c]).collect()
+        } else {
+            hex.to_string()
+        };
+        let value = u32::from_str_radix(&full, 16)?;
+        Ok(Rgb {
+            r: (value >> 16) as u8,
+            g: (value >> 8) as u8,
+            b: value as u8,
+        })
+    }
+
+    /// hue in degrees, saturation and lightness from 0 to 1
+    fn to_hsl(self) -> (f64, f64, f64) {
+        let (r, g, b) = (self.r as f64 / 255.0, self.g as f64 / 255.0, self.b as f64 / 255.0);
+        let max = r.max(g).max(b);
+        let min = r.min(g).min(b);
+        let delta = max - min;
+        let l = (max + min) / 2.0;
+        if delta == 0.0 {
+            return (0.0, 0.0, l); // grey: no hue
+        }
+        let s = delta / (1.0 - (2.0 * l - 1.0).abs());
+        let h = if max == r {
+            ((g - b) / delta).rem_euclid(6.0)
+        } else if max == g {
+            (b - r) / delta + 2.0
+        } else {
+            (r - g) / delta + 4.0
+        };
+        (h * 60.0, s, l)
+    }
+
+    fn luminance(self) -> f64 {
+        let linear = |channel: u8| {
+            let c = channel as f64 / 255.0;
+            if c <= 0.04045 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
+        };
+        0.2126 * linear(self.r) + 0.7152 * linear(self.g) + 0.0722 * linear(self.b)
+    }
+}
+
+impl std::fmt::Display for Rgb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "#{:02X}{:02X}{:02X}", self.r, self.g, self.b)
+    }
+}
+
+fn contrast_ratio(a: Rgb, b: Rgb) -> f64 {
+    let (la, lb) = (a.luminance(), b.luminance());
+    (la.max(lb) + 0.05) / (la.min(lb) + 0.05)
+}
+
+fn main() -> Result<(), std::num::ParseIntError> {
+    let blue = Rgb::from_hex("#2563EB")?;
+    let (h, s, l) = blue.to_hsl();
+    println!("HSL: {h:.0}° {:.0} % {:.0} %", s * 100.0, l * 100.0); // HSL: 221° 83 % 53 %
+
+    let white = Rgb::from_hex("#FFF")?;
+    for color in [blue, Rgb::from_hex("#767676")?, Rgb::from_hex("#777777")?] {
+        let ratio = contrast_ratio(color, white);
+        let verdict = if ratio >= 4.5 { "meets AA" } else { "too weak" };
+        println!("{color} on white: {ratio:.2}:1, {verdict}");
+    }
+    // #2563EB on white: 5.17:1, meets AA
+    // #767676 on white: 4.54:1, meets AA
+    // #777777 on white: 4.48:1, too weak
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Further reading
+
+- [W3C: Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/)
+- [International Color Consortium: Introduction to the ICC profile format](https://www.color.org/iccprofile.xalter)
+- Johannes Itten: _The Art of Color_. New York: Van Nostrand Reinhold, 1961

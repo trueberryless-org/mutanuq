@@ -1,0 +1,256 @@
+---
+title: Gleichstromkreise
+description: Ohmsches Gesetz, Kirchhoffsche Regeln, Reihen- und Parallelschaltung, Spannungs- und Stromteiler, Brücke, Stern-Dreieck, Netzwerkanalyse und Ersatzquellen.
+sidebar:
+  order: 2
+---
+
+Ein **Stromkreis** besteht mindestens aus einer Quelle, einem Verbraucher und den Leitungen dazwischen. Strom fließt nur, wenn der Kreis geschlossen ist. Mit dem ohmschen Gesetz und den beiden Kirchhoffschen Regeln lässt sich jedes Netzwerk aus Quellen und Widerständen berechnen. Die übrigen Verfahren auf dieser Seite sind Abkürzungen, die die Rechnung vereinfachen.
+
+## Ohmsches Gesetz
+
+Bei einem **ohmschen Widerstand** ist der Strom proportional zur Spannung. Die Kennlinie $I(U)$ ist eine Gerade durch den Ursprung, ihre Steigung ist der Leitwert $G = 1/R$:
+
+$$
+U = R \cdot I \qquad I = \frac{U}{R} \qquad R = \frac{U}{I}
+$$
+
+Das Gesetz gilt für Metalle bei konstanter Temperatur. Bauteile wie Glühlampen, Dioden oder NTC-Widerstände haben gekrümmte Kennlinien. Für sie gibt man den Widerstand in einem Arbeitspunkt an, den **differenziellen Widerstand** $r = \Delta U / \Delta I$.
+
+:::tip[Beispiel]
+An einem Widerstand mit $470\,\Omega$ liegen $9\,\mathrm{V}$. Es fließt $I = 9\,\mathrm{V} / 470\,\Omega \approx 19{,}1\,\mathrm{mA}$, die Verlustleistung beträgt $P = U \cdot I \approx 0{,}17\,\mathrm{W}$.
+:::
+
+## Kirchhoffsche Regeln
+
+### Knotenregel
+
+Ein **Knoten** ist ein Verbindungspunkt von mindestens drei Leitungen. Ladung kann sich in einem Knoten nicht ansammeln, deshalb gilt die **Knotenregel** (1. Kirchhoffsches Gesetz, KCL, _Kirchhoff's current law_):
+
+$$
+\sum I_\mathrm{zu} = \sum I_\mathrm{ab} \qquad \text{bzw.} \qquad \sum_k I_k = 0
+$$
+
+Zufließende Ströme zählt man positiv, abfließende negativ. Fließen in einen Knoten $3\,\mathrm{A}$ und $2\,\mathrm{A}$ hinein, müssen insgesamt $5\,\mathrm{A}$ hinausfließen.
+
+### Maschenregel
+
+Eine **Masche** ist ein geschlossener Umlauf in einem Netzwerk. Weil das Potenzial eines Punktes eindeutig ist, ist die Summe aller Spannungen in einem Umlauf null. Das ist die **Maschenregel** (2. Kirchhoffsches Gesetz, KVL, _Kirchhoff's voltage law_):
+
+$$
+\sum_k U_k = 0
+$$
+
+Man wählt einen Umlaufsinn. Spannungspfeile in Umlaufrichtung zählen positiv, entgegengesetzte negativ. Für eine Quelle $U_0$ mit zwei Widerständen in Serie ergibt sich $U_0 - U_1 - U_2 = 0$, also $U_0 = U_1 + U_2$.
+
+:::tip[Vorgehen bei Netzwerken]
+1. Für jeden Zweig eine Stromrichtung annehmen (beliebig) und die Spannungspfeile an den Widerständen in Stromrichtung einzeichnen.
+2. Bei $k$ Knoten $k - 1$ Knotengleichungen aufstellen.
+3. Bei $z$ Zweigen $z - (k - 1)$ unabhängige Maschengleichungen aufstellen.
+4. Das [lineare Gleichungssystem](/de/mathematics/algebra/systems-of-linear-equations/) lösen. Ein negatives Ergebnis bedeutet nur, dass der Strom entgegen der angenommenen Richtung fließt.
+:::
+
+### Durchgerechnetes Beispiel
+
+Zwei Quellen $U_1 = 12\,\mathrm{V}$ und $U_2 = 6\,\mathrm{V}$ speisen über $R_1 = 2\,\Omega$ und $R_2 = 3\,\Omega$ einen gemeinsamen Knoten N, von dem aus $R_3 = 6\,\Omega$ nach Masse führt. Die Minuspole beider Quellen liegen an Masse. Die Ströme $I_1$ (durch $R_1$) und $I_2$ (durch $R_2$) werden in den Knoten hinein angenommen, $I_3$ fließt durch $R_3$ nach Masse.
+
+Knotenregel in N und die beiden Maschen (links über $U_1$, $R_1$, $R_3$ und rechts über $U_2$, $R_2$, $R_3$):
+
+$$
+\begin{aligned}
+I_1 + I_2 - I_3 &= 0 \\
+2\,\Omega \cdot I_1 + 6\,\Omega \cdot I_3 &= 12\,\mathrm{V} \\
+3\,\Omega \cdot I_2 + 6\,\Omega \cdot I_3 &= 6\,\mathrm{V}
+\end{aligned}
+$$
+
+Setzt man $I_1 = (12 - 6 I_3)/2$ und $I_2 = (6 - 6 I_3)/3$ in die Knotengleichung ein, folgt $6 - 3I_3 + 2 - 2I_3 - I_3 = 0$, also $I_3 = 4/3\,\mathrm{A} \approx 1{,}33\,\mathrm{A}$. Daraus ergeben sich $I_1 = 2\,\mathrm{A}$ und $I_2 = -2/3\,\mathrm{A} \approx -0{,}67\,\mathrm{A}$. Der negative Wert zeigt: Der Strom durch $R_2$ fließt aus dem Knoten heraus in die Quelle $U_2$ hinein. Am Knoten liegt $U_\mathrm{N} = R_3 \cdot I_3 = 8\,\mathrm{V}$.
+
+Dieses Netzwerk wird unten mit den anderen Verfahren noch einmal gelöst, damit du die Ergebnisse vergleichen kannst.
+
+## Reihenschaltung
+
+In einer **Reihenschaltung** (Serienschaltung) fließt durch alle Widerstände derselbe Strom. Die Teilspannungen addieren sich zur Gesamtspannung, und die Widerstände addieren sich:
+
+$$
+R_\mathrm{ges} = R_1 + R_2 + \ldots + R_n \qquad I = \frac{U}{R_\mathrm{ges}} \qquad \frac{U_1}{U_2} = \frac{R_1}{R_2}
+$$
+
+Am größten Widerstand fällt die größte Spannung ab. Der Gesamtwiderstand ist immer größer als der größte Einzelwiderstand. $100\,\Omega$, $220\,\Omega$ und $330\,\Omega$ in Reihe ergeben $650\,\Omega$.
+
+## Parallelschaltung
+
+In einer **Parallelschaltung** liegt an allen Widerständen dieselbe Spannung. Die Teilströme addieren sich, ebenso die Leitwerte:
+
+$$
+\frac{1}{R_\mathrm{ges}} = \frac{1}{R_1} + \frac{1}{R_2} + \ldots + \frac{1}{R_n} \qquad G_\mathrm{ges} = G_1 + G_2 + \ldots
+$$
+
+Für zwei Widerstände gilt die Formel „Produkt durch Summe“:
+
+$$
+R_1 \parallel R_2 = \frac{R_1 \cdot R_2}{R_1 + R_2}
+$$
+
+Der Gesamtwiderstand ist immer kleiner als der kleinste Einzelwiderstand. $100\,\Omega \parallel 400\,\Omega = 40\,000/500\,\Omega = 80\,\Omega$. $n$ gleiche Widerstände $R$ parallel ergeben $R/n$.
+
+**Gemischte Schaltungen** löst man schrittweise von innen nach außen: Man fasst erkennbare Reihen- und Parallelschaltungen zusammen, bis nur ein Ersatzwiderstand übrig bleibt, und rechnet dann die Ströme und Spannungen zurück.
+
+## Spannungsteiler
+
+Ein **Spannungsteiler** aus zwei Widerständen in Reihe liefert eine kleinere Spannung als die Eingangsspannung. Ein Potenziometer ist ein einstellbarer Spannungsteiler.
+
+![Unbelasteter und belasteter Spannungsteiler](/images/electrical-engineering/voltage-divider_de.svg)
+
+**Unbelastet** (kein Strom am Ausgang) gilt:
+
+$$
+U_2 = U \cdot \frac{R_2}{R_1 + R_2}
+$$
+
+**Belastet** mit einem Lastwiderstand $R_\mathrm{L}$ parallel zu $R_2$ muss man $R_2$ durch $R_2 \parallel R_\mathrm{L}$ ersetzen. Die Ausgangsspannung sinkt.
+
+:::tip[Beispiel]
+$U = 12\,\mathrm{V}$, $R_1 = 10\,\mathrm{k\Omega}$, $R_2 = 5\,\mathrm{k\Omega}$.
+
+- Unbelastet: $U_2 = 12\,\mathrm{V} \cdot \dfrac{5}{15} = 4\,\mathrm{V}$.
+- Belastet mit $R_\mathrm{L} = 10\,\mathrm{k\Omega}$: $R_2 \parallel R_\mathrm{L} = 3{,}33\,\mathrm{k\Omega}$, also $U_2 = 12\,\mathrm{V} \cdot \dfrac{3{,}33}{13{,}33} = 3\,\mathrm{V}$.
+:::
+
+Damit ein Spannungsteiler „steif“ ist, also die Last die Spannung kaum verändert, sollte der **Querstrom** durch $R_2$ deutlich größer sein als der Laststrom. Als Faustregel wählt man den Querstrom mindestens zehnmal so groß. Für größere Lasten verwendet man statt eines Spannungsteilers einen [Spannungsregler](/de/electrical-engineering/power-supplies/) oder einen [Spannungsfolger](/de/electrical-engineering/operational-amplifiers/#spannungsfolger).
+
+## Stromteiler
+
+In einer Parallelschaltung teilt sich der Gesamtstrom im umgekehrten Verhältnis der Widerstände auf. Durch den kleineren Widerstand fließt der größere Strom:
+
+$$
+\frac{I_1}{I_2} = \frac{R_2}{R_1} \qquad I_1 = I \cdot \frac{R_2}{R_1 + R_2}
+$$
+
+Beachte: Im Zähler steht der **andere** Widerstand. Teilt sich $I = 30\,\mathrm{mA}$ auf $R_1 = 100\,\Omega$ und $R_2 = 200\,\Omega$ auf, fließen $I_1 = 30\,\mathrm{mA} \cdot 200/300 = 20\,\mathrm{mA}$ und $I_2 = 10\,\mathrm{mA}$.
+
+## Brückenschaltung
+
+Eine **Brückenschaltung** besteht aus zwei parallelen Spannungsteilern. Der linke Zweig besteht aus $R_1$ (oben) und $R_2$ (unten), der rechte aus $R_3$ (oben) und $R_4$ (unten). Die **Brückenspannung** $U_\mathrm{B}$ wird zwischen den beiden Mittelpunkten gemessen. Die Brücke ist **abgeglichen** ($U_\mathrm{B} = 0$), wenn beide Teiler dasselbe Verhältnis haben:
+
+$$
+\frac{R_1}{R_2} = \frac{R_3}{R_4}
+$$
+
+Bei der **Wheatstone-Messbrücke** ist $R_4 = R_x$ unbekannt. Man verändert einen bekannten Widerstand, bis ein empfindliches Messgerät null anzeigt, und berechnet $R_x = R_3 \cdot R_2 / R_1$. Das Ergebnis hängt nicht von der Versorgungsspannung ab und ist deshalb sehr genau.
+
+:::tip[Beispiel]
+Mit $R_1 = 1\,\mathrm{k\Omega}$, $R_2 = 2\,\mathrm{k\Omega}$ und $R_3 = 1{,}5\,\mathrm{k\Omega}$ ist die Brücke bei $R_x = 1{,}5 \cdot 2 / 1\,\mathrm{k\Omega} = 3\,\mathrm{k\Omega}$ abgeglichen.
+
+Verstimmte Brücke: $U = 10\,\mathrm{V}$, $R_1 = R_2 = R_3 = 1\,\mathrm{k\Omega}$, $R_4 = 1{,}1\,\mathrm{k\Omega}$. Am linken unteren Widerstand liegen $5\,\mathrm{V}$, am rechten $10\,\mathrm{V} \cdot 1{,}1/2{,}1 \approx 5{,}238\,\mathrm{V}$. Die Brückenspannung beträgt etwa $0{,}238\,\mathrm{V}$.
+:::
+
+Verstimmte Brücken nutzt man mit Sensoren, etwa Dehnungsmessstreifen oder Pt100: Eine kleine Widerstandsänderung erzeugt eine messbare Brückenspannung um null herum.
+
+## Stern-Dreieck-Umwandlung
+
+Manche Netzwerke, etwa eine Brücke mit Widerstand im Brückenzweig, enthalten weder reine Reihen- noch Parallelschaltungen. Dann hilft es, drei Widerstände in **Dreieckschaltung** (zwischen den Knoten a, b, c) durch drei gleichwertige Widerstände in **Sternschaltung** (von jedem Knoten zu einem neuen Mittelpunkt) zu ersetzen oder umgekehrt.
+
+Dreieck in Stern (Produkt der beiden angrenzenden Dreieckswiderstände durch die Summe aller drei):
+
+$$
+R_\mathrm{a} = \frac{R_\mathrm{ab} \cdot R_\mathrm{ca}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}} \quad
+R_\mathrm{b} = \frac{R_\mathrm{ab} \cdot R_\mathrm{bc}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}} \quad
+R_\mathrm{c} = \frac{R_\mathrm{bc} \cdot R_\mathrm{ca}}{R_\mathrm{ab} + R_\mathrm{bc} + R_\mathrm{ca}}
+$$
+
+Stern in Dreieck:
+
+$$
+R_\mathrm{ab} = R_\mathrm{a} + R_\mathrm{b} + \frac{R_\mathrm{a} R_\mathrm{b}}{R_\mathrm{c}} \quad
+R_\mathrm{bc} = R_\mathrm{b} + R_\mathrm{c} + \frac{R_\mathrm{b} R_\mathrm{c}}{R_\mathrm{a}} \quad
+R_\mathrm{ca} = R_\mathrm{c} + R_\mathrm{a} + \frac{R_\mathrm{c} R_\mathrm{a}}{R_\mathrm{b}}
+$$
+
+Bei drei gleichen Widerständen gilt einfach $R_\mathrm{Stern} = R_\mathrm{Dreieck}/3$. Ein Dreieck aus dreimal $30\,\Omega$ entspricht einem Stern aus dreimal $10\,\Omega$.
+
+## Netzwerkanalyse
+
+Für größere Netzwerke werden die Kirchhoffschen Gleichungen schnell unübersichtlich. Systematische Verfahren verringern die Zahl der Unbekannten.
+
+### Maschenstromverfahren
+
+Man ordnet jeder unabhängigen Masche einen gedachten **Maschenstrom** zu. Der Strom in einem Zweig, der zu zwei Maschen gehört, ist die Differenz der beiden Maschenströme. Die Knotenregel ist damit automatisch erfüllt, man braucht nur die Maschengleichungen.
+
+Für das Beispiel oben mit den Maschenströmen $I_\mathrm{a}$ (links) und $I_\mathrm{b}$ (rechts), beide im Uhrzeigersinn:
+
+$$
+\begin{aligned}
+(R_1 + R_3) I_\mathrm{a} - R_3 I_\mathrm{b} &= U_1 & \Rightarrow \quad 8 I_\mathrm{a} - 6 I_\mathrm{b} &= 12 \\
+-R_3 I_\mathrm{a} + (R_2 + R_3) I_\mathrm{b} &= -U_2 & \Rightarrow \quad -6 I_\mathrm{a} + 9 I_\mathrm{b} &= -6
+\end{aligned}
+$$
+
+Die Lösung ist $I_\mathrm{a} = 2\,\mathrm{A}$, $I_\mathrm{b} = 2/3\,\mathrm{A}$. Der Strom durch $R_3$ ist $I_\mathrm{a} - I_\mathrm{b} = 4/3\,\mathrm{A}$, wie oben.
+
+### Knotenpotenzialverfahren
+
+Man wählt einen Bezugsknoten (Masse) und stellt für jeden anderen Knoten die Knotenregel auf, wobei die Ströme durch die Potenziale ausgedrückt werden. Bei $k$ Knoten erhält man nur $k - 1$ Gleichungen. Für das Beispiel gibt es nur einen unbekannten Knoten N:
+
+$$
+\frac{U_\mathrm{N} - 12\,\mathrm{V}}{2\,\Omega} + \frac{U_\mathrm{N} - 6\,\mathrm{V}}{3\,\Omega} + \frac{U_\mathrm{N}}{6\,\Omega} = 0
+$$
+
+Mal $6\,\Omega$ ergibt $3U_\mathrm{N} - 36 + 2U_\mathrm{N} - 12 + U_\mathrm{N} = 0$, also $U_\mathrm{N} = 8\,\mathrm{V}$. Das ist hier mit Abstand der kürzeste Weg. Schaltungssimulatoren wie SPICE arbeiten intern mit diesem Verfahren.
+
+## Überlagerungssatz
+
+In einem **linearen** Netzwerk (nur Quellen und ohmsche Widerstände) darf man die Wirkung jeder Quelle einzeln berechnen und die Ergebnisse addieren (**Superposition**). Die jeweils anderen Spannungsquellen werden dabei kurzgeschlossen, Stromquellen werden entfernt (Leerlauf).
+
+Für das Beispiel:
+
+- Nur $U_1$ ($U_2$ kurzgeschlossen): $R_2 \parallel R_3 = 2\,\Omega$, Gesamtwiderstand $4\,\Omega$, Strom $3\,\mathrm{A}$, Knotenspannung $3\,\mathrm{A} \cdot 2\,\Omega = 6\,\mathrm{V}$.
+- Nur $U_2$ ($U_1$ kurzgeschlossen): $R_1 \parallel R_3 = 1{,}5\,\Omega$, Gesamtwiderstand $4{,}5\,\Omega$, Strom $1{,}33\,\mathrm{A}$, Knotenspannung $1{,}33\,\mathrm{A} \cdot 1{,}5\,\Omega = 2\,\mathrm{V}$.
+- Überlagert: $U_\mathrm{N} = 6\,\mathrm{V} + 2\,\mathrm{V} = 8\,\mathrm{V}$.
+
+Leistungen dürfen nicht überlagert werden, weil $P = I^2 R$ nicht linear ist. Man überlagert Ströme oder Spannungen und berechnet die Leistung danach.
+
+## Ersatzspannungsquelle und Ersatzstromquelle
+
+Jedes lineare Netzwerk verhält sich an zwei Klemmen wie eine einzige reale Quelle. Das ist der **Satz von Thévenin** (Ersatzspannungsquelle: $U_0$ mit $R_\mathrm{i}$ in Reihe) bzw. der **Satz von Norton** (Ersatzstromquelle: $I_\mathrm{K}$ mit $R_\mathrm{i}$ parallel).
+
+1. Den Lastwiderstand abtrennen.
+2. **Leerlaufspannung** $U_0$ an den offenen Klemmen berechnen.
+3. **Innenwiderstand** $R_\mathrm{i}$: alle Spannungsquellen kurzschließen, Stromquellen entfernen und den Widerstand zwischen den Klemmen berechnen.
+4. Der **Kurzschlussstrom** ist $I_\mathrm{K} = U_0 / R_\mathrm{i}$.
+
+:::tip[Beispiel]
+Im Netzwerk von oben wird $R_3$ als Last betrachtet. Ohne $R_3$ fließt im Kreis aus beiden Quellen $I = (12 - 6)\,\mathrm{V} / 5\,\Omega = 1{,}2\,\mathrm{A}$, die Leerlaufspannung ist $U_0 = 12\,\mathrm{V} - 2\,\Omega \cdot 1{,}2\,\mathrm{A} = 9{,}6\,\mathrm{V}$. Der Innenwiderstand ist $R_\mathrm{i} = 2\,\Omega \parallel 3\,\Omega = 1{,}2\,\Omega$, der Kurzschlussstrom $I_\mathrm{K} = 8\,\mathrm{A}$.
+
+Mit $R_3 = 6\,\Omega$ angeschlossen: $U_\mathrm{N} = 9{,}6\,\mathrm{V} \cdot 6/7{,}2 = 8\,\mathrm{V}$. Der Vorteil: Für jeden anderen Lastwiderstand genügt jetzt ein einfacher Spannungsteiler.
+:::
+
+## Leistungsanpassung
+
+An welchem Lastwiderstand gibt eine Quelle die meiste Leistung ab? Die Leistung am Verbraucher ist
+
+$$
+P_\mathrm{L} = I^2 R_\mathrm{L} = \frac{U_0^2 \cdot R_\mathrm{L}}{(R_\mathrm{i} + R_\mathrm{L})^2}
+$$
+
+Ableiten und null setzen ergibt das Maximum bei $R_\mathrm{L} = R_\mathrm{i}$ (**Leistungsanpassung**). Dann gilt
+
+$$
+P_\mathrm{max} = \frac{U_0^2}{4 R_\mathrm{i}} \qquad \eta = \frac{R_\mathrm{L}}{R_\mathrm{i} + R_\mathrm{L}} = 50\,\%
+$$
+
+Für das Beispiel oben: $R_\mathrm{L} = 1{,}2\,\Omega$ liefert $P_\mathrm{max} = 9{,}6^2/(4 \cdot 1{,}2)\,\mathrm{W} = 19{,}2\,\mathrm{W}$.
+
+| Betriebsart              | Bedingung                          | Anwendung                                        |
+| ------------------------ | ---------------------------------- | ------------------------------------------------ |
+| Leistungsanpassung       | $R_\mathrm{L} = R_\mathrm{i}$      | Antennen, Hochfrequenzleitungen ($50\,\Omega$), Audio-Endstufen früher |
+| Spannungsanpassung       | $R_\mathrm{L} \gg R_\mathrm{i}$    | Energieversorgung, Netzteile, Messeingänge: hoher Wirkungsgrad |
+| Stromanpassung           | $R_\mathrm{L} \ll R_\mathrm{i}$    | Stromquellen, Strommessung                       |
+
+Im Stromnetz wäre Leistungsanpassung unsinnig: Die Hälfte der Energie ginge im Innenwiderstand verloren. Deshalb arbeiten Energieversorgung und Netzteile mit Spannungsanpassung.
+
+## Weiterführende Quellen
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg.
+- [Falstad Circuit Simulator](https://www.falstad.com/circuit/) zum Ausprobieren von Schaltungen im Browser

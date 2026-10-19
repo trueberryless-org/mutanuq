@@ -1,0 +1,276 @@
+---
+title: Audio
+description: Sound and decibels, sample rate, bit depth and data rate, audio formats, psychoacoustics, microphones, audio editing and loudness in LUFS.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Sound is often underestimated in media production, although viewers forgive a blurry picture more readily than poorly intelligible sound. Anyone who produces podcasts, videos or games needs to understand how sound is created, how it is stored and compressed digitally, and how to record and edit it.
+
+## Sound
+
+**Sound** is a mechanical wave: pressure variations that propagate through a medium such as air. In air at 20 °C, the **speed of sound** is about $c = 343\ \mathrm{m/s}$.
+
+| Quantity | Meaning | Perception |
+| --- | --- | --- |
+| **Frequency** $f$ in Hz | oscillations per second | pitch |
+| **Amplitude** | strength of the pressure variation (sound pressure $p$ in Pa) | loudness |
+| **Waveform**, overtones | composition of fundamental and multiples | timbre (a violin and a piano sound different on the same note) |
+
+Wavelength and frequency are related by $\lambda = c / f$. A tone of 20 Hz has a wavelength of about 17 m, one of 20 kHz only 1.7 cm. This is why low tones can hardly be blocked by walls and why small loudspeakers cannot produce deep bass.
+
+An **octave** corresponds to doubling the frequency. Concert pitch A4 is 440 Hz; one octave higher is 880 Hz.
+
+### Hearing range
+
+Humans hear frequencies from about **20 Hz to 20 kHz**. The upper limit falls with age, in adults often to 15 kHz and below. The ear is most sensitive between about 2 and 5 kHz, which is also where the consonants important for speech intelligibility lie. Sound below 20 Hz is called **infrasound**, above 20 kHz **ultrasound**.
+
+### Sound pressure level
+
+The ear processes sound pressures from $20\ \mu\mathrm{Pa}$ (threshold of hearing) to over $20\ \mathrm{Pa}$ (threshold of pain), a range of more than a million. It also perceives loudness roughly logarithmically. The **sound pressure level** is therefore given in **decibels** (dB SPL):
+
+$$
+L_p = 20 \cdot \log_{10}\left(\frac{p}{p_0}\right)\ \mathrm{dB}, \qquad p_0 = 20\ \mu\mathrm{Pa}
+$$
+
+| Level | Example |
+| --- | --- |
+| 0 dB | threshold of hearing |
+| 30 dB | whispering, quiet bedroom |
+| 60 dB | normal conversation |
+| 85 dB | heavy road traffic; from here, continuous exposure damages hearing |
+| 100 dB | nightclub, jackhammer |
+| 120 to 130 dB | threshold of pain, nearby jet aircraft |
+
+Important relationships:
+
+- **+6 dB** means double the sound pressure, because $20 \cdot \log_{10} 2 \approx 6$.
+- **+3 dB** means double the sound power, such as two equally loud sources instead of one.
+- **+10 dB** is perceived as roughly **twice as loud**.
+
+Measuring devices usually weight the level with the **A-weighting** (dB(A)), which, like the ear, gives less weight to low and very high frequencies.
+
+In digital technology, levels are measured in **dBFS** (_full scale_): 0 dBFS is the highest representable value, all other values are negative. If 0 dBFS is exceeded, the peaks are cut off (**clipping**), which sounds harsh and distorted and cannot be undone.
+
+## Digitisation
+
+A microphone converts sound into a continuous electrical voltage (analogue signal). An **analogue-to-digital converter** (ADC) turns it into numbers. The method is called **pulse-code modulation** (PCM) and has two steps:
+
+1. **Sampling**: at fixed time intervals the instantaneous value is measured. The number of measurements per second is the **sample rate** $f_s$.
+2. **Quantisation**: each measured value is rounded to one of $2^n$ levels. $n$ is the **bit depth** (resolution).
+
+### Sampling theorem
+
+According to the **sampling theorem** of Nyquist and Shannon, a signal can only be reconstructed without error if the sample rate is **more than twice** the highest frequency it contains:
+
+$$
+f_s > 2 \cdot f_{\max}
+$$
+
+Half the sample rate is called the **Nyquist frequency**. Frequencies above it are not simply dropped but mirrored as false, lower frequencies (**aliasing**). A low-pass filter (_anti-aliasing filter_) therefore removes everything above the Nyquist frequency before sampling.
+
+For the hearing range up to 20 kHz, more than 40 kHz is needed. The **CD** uses 44.1 kHz; the margin above 40 kHz leaves room for the filter slope. Video, broadcasting and film use **48 kHz**; studios often record at 96 kHz.
+
+### Bit depth and dynamic range
+
+Rounding creates a small error, the **quantisation noise**. Each additional bit halves it and improves the distance between the loudest signal and the noise by about 6 dB. For a sine signal:
+
+$$
+\text{dynamic range} \approx 6.02 \cdot n + 1.76\ \mathrm{dB}
+$$
+
+| Bit depth | Levels | Dynamic range | Use |
+| --- | --- | --- | --- |
+| 8 bit | 256 | about 50 dB | telephony (with companding), old games |
+| 16 bit | 65,536 | about 98 dB | CD, playback |
+| 24 bit | 16,777,216 | about 146 dB (theoretical) | recording and editing |
+| 32-bit floating point | | practically unlimited | internal processing in audio programs |
+
+Recording is done at 24 bits because you can then set levels with enough reserve (_headroom_) without quiet passages disappearing into the noise. When reducing to 16 bits, a very quiet noise is added (**dithering**), which prevents audible distortion of quiet signals.
+
+### Data rate
+
+The data rate of uncompressed PCM data is
+
+$$
+\text{data rate} = f_s \cdot n \cdot \text{channels}
+$$
+
+:::tip[Example: audio CD]
+$44\,100\ \mathrm{Hz} \cdot 16\ \mathrm{bit} \cdot 2 = 1\,411\,200\ \mathrm{bit/s} = 1411.2\ \mathrm{kbit/s}$.
+One minute of stereo audio needs $1\,411\,200 \cdot 60 / 8 = 10\,584\,000$ bytes, i.e. about 10.6 MB. An MP3 file at 128 kbit/s is about eleven times smaller.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // decimal point
+
+// data rate in bit/s for uncompressed PCM audio
+static long DataRate(int sampleRate, int bitDepth, int channels) =>
+    (long)sampleRate * bitDepth * channels;
+
+// sound pressure level in dB SPL from the sound pressure in Pa
+static double SoundPressureLevel(double pascal) => 20 * Math.Log10(pascal / 20e-6);
+
+long cd = DataRate(44_100, 16, 2);
+long studio = DataRate(48_000, 24, 2);
+Console.WriteLine($"CD: {cd / 1000.0} kbit/s");                     // CD: 1411.2 kbit/s
+Console.WriteLine($"48 kHz/24 bit: {studio / 1000.0} kbit/s");      // 48 kHz/24 bit: 2304 kbit/s
+
+double bytesPerMinute = cd * 60 / 8.0;
+Console.WriteLine($"1 min CD: {bytesPerMinute / 1e6:F1} MB");      // 1 min CD: 10.6 MB
+Console.WriteLine($"Ratio to MP3 at 128 kbit/s: {cd / 128_000.0:F1} : 1"); // 11.0 : 1
+
+Console.WriteLine($"{SoundPressureLevel(2.0):F0} dB SPL");         // 100 dB SPL
+Console.WriteLine($"16 bit: {6.02 * 16 + 1.76:F0} dB dynamic range");   // 16 bit: 98 dB dynamic range
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// data rate in bit/s for uncompressed PCM audio
+fn data_rate(sample_rate: u32, bit_depth: u32, channels: u32) -> u64 {
+    sample_rate as u64 * bit_depth as u64 * channels as u64
+}
+
+/// sound pressure level in dB SPL from the sound pressure in Pa
+fn sound_pressure_level(pascal: f64) -> f64 {
+    20.0 * (pascal / 20e-6).log10()
+}
+
+fn main() {
+    let cd = data_rate(44_100, 16, 2);
+    let studio = data_rate(48_000, 24, 2);
+    println!("CD: {} kbit/s", cd as f64 / 1000.0); // CD: 1411.2 kbit/s
+    println!("48 kHz/24 bit: {} kbit/s", studio as f64 / 1000.0); // 48 kHz/24 bit: 2304 kbit/s
+
+    let bytes_per_minute = cd as f64 * 60.0 / 8.0;
+    println!("1 min CD: {:.1} MB", bytes_per_minute / 1e6); // 1 min CD: 10.6 MB
+    println!("Ratio to MP3 at 128 kbit/s: {:.1} : 1", cd as f64 / 128_000.0); // 11.0 : 1
+
+    println!("{:.0} dB SPL", sound_pressure_level(2.0)); // 100 dB SPL
+    println!("16 bit: {:.0} dB dynamic range", 6.02 * 16.0 + 1.76); // 16 bit: 98 dB dynamic range
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Audio formats
+
+| Format | Compression | Properties | Use |
+| --- | --- | --- | --- |
+| **WAV** | none (PCM) | container by Microsoft and IBM (1991), lossless, large | recording, editing, exchange |
+| **AIFF** | none (PCM) | Apple's counterpart | studio on macOS |
+| **FLAC** | lossless | open, about 50 to 70 % of the original size | archive, high-quality music |
+| **ALAC** | lossless | Apple Lossless | lossless Apple Music |
+| **MP3** | lossy | MPEG-1 Audio Layer III, Fraunhofer IIS, up to 320 kbit/s; patents expired in 2017 | universally compatible |
+| **AAC** | lossy | MPEG-2/MPEG-4, better than MP3 at the same bitrate | streaming, YouTube, Apple, audio track in MP4 |
+| **Opus** | lossy | IETF RFC 6716 (2012), open, 6 to 510 kbit/s, very low latency | WebRTC, video conferencing, speech and music on the web |
+| **Ogg Vorbis** | lossy | open, predecessor of Opus | games, formerly Spotify |
+
+For **bitrate**, a distinction is made between **CBR** (_constant bitrate_, steady data rate, good for streaming) and **VBR** (_variable bitrate_, more bits for complex passages, better quality at the same file size).
+
+## Psychoacoustics and lossy compression
+
+Lossy audio formats remove what the ear does not perceive anyway. **Psychoacoustics** describes what that is:
+
+- **Absolute threshold of hearing**: quiet tones below the frequency-dependent threshold are inaudible, especially at very low and very high frequencies.
+- **Frequency masking**: a loud tone masks quieter tones of similar frequency. Next to a loud trumpet you do not hear a quiet flute in the same range.
+- **Temporal masking**: a loud event masks quiet tones shortly after it (up to about 200 ms) and even shortly before it (a few ms).
+- **Critical bands**: hearing analyses sound in about 24 frequency bands within which tones mask each other.
+
+An encoder such as MP3 or AAC works like this:
+
+1. A **filter bank** or transform (MDCT) splits the signal into many frequency bands.
+2. A **psychoacoustic model** calculates the **masking threshold** for each time segment: below this limit, nothing is audible in each band.
+3. Each band is **quantised** only as precisely as necessary for the resulting noise to stay below the masking threshold. Completely masked components are dropped.
+4. The data is coded losslessly (Huffman).
+5. For stereo, **joint stereo** (mid-side coding) is often used: instead of left and right, sum and difference are stored; the difference is very small when the channels are similar.
+
+At too low a bitrate, **artefacts** become audible: bubbly, metallic highs, a dull sound or **pre-echoes** before sharp attacks such as castanets.
+
+## Microphones
+
+| Type | Principle | Properties | Use |
+| --- | --- | --- | --- |
+| **Dynamic microphone** | moving coil in a magnetic field (induction) | sturdy, handles high levels, needs no power supply | live vocals, stage, loud instruments, podcasts in noisy environments |
+| **Condenser microphone** | diaphragm as a capacitor plate, capacitance changes | very sensitive, detailed, needs **phantom power** (48 V) | studio, speech, acoustic instruments |
+| **Ribbon microphone** | thin metal ribbon in a magnetic field | warm sound, delicate | studio, brass |
+
+The **polar pattern** states from which directions a microphone picks up sound:
+
+| Polar pattern | Pick-up | Use |
+| --- | --- | --- |
+| **Omnidirectional** | evenly from all directions | room recordings, lavalier microphones |
+| **Cardioid** | mainly from the front, insensitive at the back | vocals, speech, standard |
+| **Supercardioid, hypercardioid** | even narrower at the front, slight sensitivity at the back | stage, noisy environments |
+| **Figure-8** | front and back, not from the sides | interviews with two people, stereo techniques |
+| **Shotgun** (lobar) | highly directional | film: on a boom pole above the frame |
+
+Directional microphones show the **proximity effect**: the closer the sound source, the stronger the bass. For film and video, **lavalier microphones** (clip-on microphones) are also used, often wireless.
+
+Professional microphones are connected via **XLR** cables (balanced, insensitive to interference) to an **audio interface**. It contains preamplifiers, phantom power and the A/D converter.
+
+Tips for good recordings:
+
+- Set the level so that peaks are around −12 to −6 dBFS (enough headroom, no clipping).
+- Choose a quiet room with little reverberation: carpets, curtains and furniture damp reflections. Reverberation can hardly be removed later.
+- A **pop filter** against plosives (p, b) and a distance of about 10 to 20 cm for speech.
+- Always monitor with headphones.
+
+## Audio editing
+
+Editing is done in a **DAW** (_digital audio workstation_) such as Audacity, Reaper, Adobe Audition, Logic Pro or Pro Tools.
+
+- **Cutting**: place cuts at **zero crossings** or add short **fades**, otherwise clicks occur. Between two clips a **crossfade** is used.
+- **Normalisation**: the whole signal is amplified evenly so that the highest peak reaches a target value (**peak normalisation**, for example −1 dBFS) or the loudness reaches a target value (**loudness normalisation** to a LUFS value). The dynamics remain unchanged.
+- **Equaliser** (EQ): boosts or cuts frequency ranges. A **high-pass filter** (_low cut_) at about 80 Hz removes rumble and hum from speech recordings; a slight boost at 2 to 5 kHz improves intelligibility.
+- **Compressor**: reduces the **dynamic range**, i.e. the difference between quiet and loud passages. Speech becomes more even and can be made louder overall.
+- **Limiter**: a compressor with a very high ratio that prevents peaks from exceeding a limit.
+- **Noise gate**: mutes the signal below a threshold, for example in speech pauses.
+- **De-esser**: attenuates harsh sibilants (s, sh).
+- **Noise reduction**: learns a noise profile and subtracts it.
+- **Reverb** and **panning** (distribution between left and right) for spatial effect.
+
+### Compressor
+
+| Parameter | Meaning |
+| --- | --- |
+| **Threshold** | compression starts above this level |
+| **Ratio** | how strongly: at 4:1, 4 dB above the threshold become only 1 dB |
+| **Attack** | how quickly the compressor kicks in (a few ms) |
+| **Release** | how quickly it lets go again |
+| **Make-up gain** | gain afterwards to compensate for the level loss |
+
+:::tip[Example]
+Threshold −20 dB, ratio 4:1. A signal at −8 dB is 12 dB above the threshold. After compression it is only $12 / 4 = 3$ dB above, so the output is at −17 dB. A signal at −25 dB remains unchanged.
+:::
+
+## Loudness
+
+The peak level says little about how loud a piece sounds: a heavily compressed song sounds much louder than a dynamic orchestral piece with the same peak value. In the past, this led to the **loudness war**: music and advertising were compressed more and more to sound louder than the competition.
+
+Today perceived **loudness** is measured in **LUFS** (_loudness units relative to full scale_, 1 LU corresponds to 1 dB) according to **ITU-R BS.1770**. The method weights frequencies similarly to the ear (K-weighting) and ignores silence. A distinction is made between momentary (400 ms), short-term (3 s) and **integrated loudness** (over the whole piece). **True peak** (dBTP) also takes into account peaks between samples.
+
+| Area | Target value |
+| --- | --- |
+| television and radio in Europe (**EBU R 128**, including ORF) | −23 LUFS, true peak at most −1 dBTP |
+| Spotify, YouTube | about −14 LUFS |
+| Apple Music | about −16 LUFS |
+| podcasts | usually −16 LUFS (stereo) |
+
+Streaming services normalise all tracks to their target value. An overly compressed song is therefore turned down and then has only disadvantages: less dynamics at the same loudness.
+
+## Further reading
+
+- [EBU R 128: Loudness normalisation and permitted maximum level of audio signals](https://tech.ebu.ch/publications/r128)
+- [IETF RFC 6716: Definition of the Opus Audio Codec](https://www.rfc-editor.org/rfc/rfc6716)
+- Michael Dickreiter et al. (eds.): _Handbuch der Tonstudiotechnik_. Berlin: De Gruyter

@@ -1,14 +1,49 @@
 ---
 title: Datenbanken
-description: Relationale und dokumentenorientierte Datenbanken, Datenbankschemata und das CAP-Theorem.
+description: Datenmodellierung, das relationale Modell, Normalisierung, SQL, Transaktionen, Datenbanksicherheit, Zugriff aus C# und Rust, NoSQL, verteilte Datenbanken, Data Warehouse und Datenformate.
 sidebar:
   label: Überblick
 ---
 
-import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
 Fast jede Anwendung muss Daten dauerhaft speichern, von der Notenverwaltung der Schule über den Webshop bis zur Smartphone-App. Ein **Datenbankmanagementsystem** (DBMS) übernimmt diese Aufgabe: Es speichert Daten strukturiert, stellt ihre Konsistenz sicher, regelt den gleichzeitigen Zugriff vieler Benutzer und schützt die Daten bei Systemausfällen.
 
-## Was dich erwartet
+An der HTL wird dieser Stoff im Fach **Informationssysteme** (INSY) unterrichtet, ergänzt durch Projekte in Softwareentwicklung und Informationstechnischen Projekten. Alle SQL-Beispiele wurden in PostgreSQL ausgeführt, alle C#- und Rust-Beispiele mit .NET 10 und Rust (Edition 2024).
 
-<GroupPageCards directory="databases" />
+## Entwurf
+
+<CardGrid>
+  <LinkCard title="Datenmodellierung" href="/de/databases/data-modelling/" description="Entwurfsphasen, ER-Modell in Chen- und Krähenfußnotation, Kardinalitäten und die Abbildung auf Tabellen." />
+  <LinkCard title="Relationale Datenbanken" href="/de/databases/relational-databases/" description="Relationen, Schlüssel, Integritätsbedingungen, Aufbau eines DBMS und Produkte." />
+  <LinkCard title="Relationale Algebra" href="/de/databases/relational-algebra/" description="Selektion, Projektion, Joins, Division und Abfrageoptimierung." />
+  <LinkCard title="Normalisierung" href="/de/databases/normalisation/" description="Anomalien, funktionale Abhängigkeiten und alle Normalformen von 1NF bis 5NF." />
+  <LinkCard title="Datenbankschema" href="/de/databases/schema/" description="Schemaebenen und Constraints." />
+</CardGrid>
+
+## SQL
+
+<CardGrid>
+  <LinkCard title="SQL: DDL und DML" href="/de/databases/sql-ddl-dml/" description="Datentypen, Tabellen anlegen und ändern, Daten einfügen, ändern und löschen." />
+  <LinkCard title="SQL-Abfragen" href="/de/databases/sql-queries/" description="SELECT, Joins, Gruppierung, Unterabfragen, CTEs und Fensterfunktionen." />
+  <LinkCard title="Sichten, Indizes, Funktionen und Trigger" href="/de/databases/sql-advanced/" description="Views, B-Baum-Indizes, EXPLAIN, PL/pgSQL und Trigger." />
+</CardGrid>
+
+## Betrieb und Anwendung
+
+<CardGrid>
+  <LinkCard title="Transaktionen" href="/de/databases/transactions/" description="ACID, Isolationsstufen, Sperren, Deadlocks, MVCC, Recovery und Datensicherung." />
+  <LinkCard title="Datenbanksicherheit" href="/de/databases/database-security/" description="Rollen und Rechte, Row-Level Security, SQL-Injection und Datenschutz." />
+  <LinkCard title="Datenbankzugriff aus Programmen" href="/de/databases/database-access/" description="ADO.NET, rusqlite, Repository-Muster und Entity Framework Core." />
+</CardGrid>
+
+## Jenseits des relationalen Modells
+
+<CardGrid>
+  <LinkCard title="NoSQL im Überblick" href="/de/databases/nosql/" description="Schlüssel-Wert-, Wide-Column-, Graph-, Zeitreihen- und Suchdatenbanken." />
+  <LinkCard title="Dokumentenorientierte Datenbanken" href="/de/databases/document-oriented-databases/" description="JSON-Dokumente, BASE, MongoDB und CouchDB." />
+  <LinkCard title="Verteilte Datenbanken" href="/de/databases/distributed-databases/" description="Replikation, Sharding, konsistentes Hashing, Zwei-Phasen-Commit und Konsens." />
+  <LinkCard title="CAP-Theorem" href="/de/databases/cap-theorem/" description="Konsistenz und Verfügbarkeit bei Netzwerkpartitionen, PACELC." />
+  <LinkCard title="Data Warehouse" href="/de/databases/data-warehouse/" description="OLAP, ETL, Sternschema, ROLLUP und CUBE, Data Lakes." />
+  <LinkCard title="Datenformate" href="/de/databases/data-formats/" description="XML, XML Schema, XPath, JSON, JSON Schema, YAML und CSV." />
+</CardGrid>

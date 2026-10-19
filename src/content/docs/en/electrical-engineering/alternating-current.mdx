@@ -1,0 +1,202 @@
+---
+title: Alternating Current
+description: Sinusoidal quantities, RMS value, phasor diagram and complex notation, impedance of R, L and C, RLC circuits, resonance, power, power factor and three-phase systems.
+sidebar:
+  order: 5
+---
+
+The power grid does not supply DC but a sinusoidal AC voltage. It can easily be converted to other voltages with transformers, and generators produce it directly. Signals in communications engineering also consist of sine waves. With AC, inductors and capacitors behave like frequency-dependent resistances, and current and voltage are shifted relative to each other. Complex notation turns this back into simple calculations as in a DC circuit.
+
+## Sinusoidal quantities
+
+A sinusoidal voltage is fully described by three quantities:
+
+$$
+u(t) = \hat{u} \cdot \sin(\omega t + \varphi_u)
+$$
+
+| Quantity             | Symbol       | Meaning                                                        |
+| -------------------- | ------------ | -------------------------------------------------------------- |
+| Amplitude, peak value | $\hat{u}$   | largest instantaneous value                                    |
+| Peak-to-peak value   | $u_\mathrm{pp}$ | distance from positive to negative peak, $2\hat{u}$         |
+| Period               | $T$          | duration of one cycle in s                                     |
+| Frequency            | $f$          | cycles per second, $f = 1/T$ in Hz                             |
+| Angular frequency    | $\omega$     | $\omega = 2\pi f$ in $1/\mathrm{s}$                            |
+| Phase angle          | $\varphi_u$  | shift relative to the time origin                              |
+
+Lower-case letters ($u$, $i$) denote instantaneous values, capitals ($U$, $I$) RMS values. The European grid has $f = 50\,\mathrm{Hz}$, so $T = 20\,\mathrm{ms}$ and $\omega = 314.16\,\mathrm{s^{-1}}$.
+
+The **phase shift** between voltage and current is $\varphi = \varphi_u - \varphi_i$. If $\varphi > 0$, the voltage leads the current.
+
+### RMS value
+
+The **RMS value** (effective value) of an AC voltage is the value of a DC voltage that produces the same heating power in an ohmic resistor. It is the root mean square:
+
+$$
+U = \sqrt{\frac{1}{T} \int_0^T u^2(t)\,\mathrm{d}t} \qquad \text{for a sine:} \quad U = \frac{\hat{u}}{\sqrt{2}} \approx 0.707 \cdot \hat{u}
+$$
+
+The mains voltage of $230\,\mathrm{V}$ is an RMS value. The peak value is $230\,\mathrm{V} \cdot \sqrt{2} \approx 325\,\mathrm{V}$, the peak-to-peak value about $650\,\mathrm{V}$. Insulation and capacitors must be rated for the peak value.
+
+The **rectified mean value** (mean of the absolute value) of a sine is $\overline{\lvert u \rvert} = \frac{2}{\pi}\hat{u} \approx 0.637\,\hat{u}$. This gives the **form factor** $U/\overline{\lvert u \rvert} \approx 1.11$ and the **crest factor** $\hat{u}/U = \sqrt{2}$. These values only apply to sine waves, which matters for meters (see [Measurement](/en/electrical-engineering/measurement/#rms-measurement)).
+
+## Phasors and complex notation
+
+A sinusoidal quantity can be represented as a **phasor** rotating anticlockwise at $\omega$. Its length is the amplitude (or usually the RMS value), its angle the phase angle. The projection onto the vertical axis gives the instantaneous value. Because all quantities in a circuit have the same frequency, all phasors rotate together, and they are drawn as a stationary **phasor diagram**. Adding sinusoidal quantities of the same frequency thus becomes vector addition.
+
+Mathematically, phasors are [complex numbers](/en/mathematics/algebra/complex-numbers/). In electrical engineering the imaginary unit is written $j$ (because $i$ is used for current) and complex quantities are underlined:
+
+$$
+\underline{U} = U \cdot e^{j\varphi_u} = U \angle \varphi_u = U\cos\varphi_u + jU\sin\varphi_u
+$$
+
+Multiplication and division are done in polar form (multiply magnitudes, add angles), addition and subtraction in rectangular form. With complex quantities Ohm's law applies as in the DC circuit, and all methods from [DC circuits](/en/electrical-engineering/dc-circuits/) (Kirchhoff, voltage divider, equivalent sources) remain valid.
+
+## Impedance of R, L and C
+
+The complex resistance is called **impedance** $\underline{Z} = \underline{U}/\underline{I}$. Its real part is the **resistance** $R$, its imaginary part the **reactance** $X$:
+
+$$
+\underline{Z} = R + jX = Z \angle \varphi \qquad Z = \sqrt{R^2 + X^2} \qquad \varphi = \arctan\frac{X}{R}
+$$
+
+| Component   | Impedance                                    | Reactance                       | Phase      | Mnemonic                             |
+| ----------- | -------------------------------------------- | ------------------------------- | ---------- | ------------------------------------ |
+| Resistor    | $\underline{Z}_R = R$                        | $0$                             | $0°$       | $u$ and $i$ in phase                 |
+| Inductor    | $\underline{Z}_L = j\omega L$                | $X_L = \omega L$                | $+90°$     | voltage leads current by $90°$       |
+| Capacitor   | $\underline{Z}_C = \dfrac{1}{j\omega C} = -\dfrac{j}{\omega C}$ | $X_C = \dfrac{1}{\omega C}$ | $-90°$ | current leads voltage by $90°$ |
+
+:::tip[Remember]
+"CIVIL": in a capacitor (C) current (I) leads voltage (V); voltage (V) leads current (I) in an inductor (L). The inductor blocks high frequencies ($X_L$ rises with $f$), the capacitor blocks low frequencies and DC ($X_C$ falls with $f$).
+:::
+
+At $50\,\mathrm{Hz}$ a $0.5\,\mathrm{H}$ inductor has a reactance of $X_L = 314.16 \cdot 0.5\,\Omega \approx 157.1\,\Omega$, a $10\,\mathrm{\mu F}$ capacitor a reactance of $X_C = 1/(314.16 \cdot 10^{-5})\,\Omega \approx 318.3\,\Omega$.
+
+The reciprocal of the impedance is the **admittance** $\underline{Y} = 1/\underline{Z} = G + jB$ with the conductance $G$ and the susceptance $B$. In parallel circuits admittances add.
+
+## RLC circuits
+
+### Series circuit
+
+In a series circuit the same current flows through all components. The impedances add up:
+
+$$
+\underline{Z} = R + j\left(\omega L - \frac{1}{\omega C}\right) \qquad Z = \sqrt{R^2 + (X_L - X_C)^2}
+$$
+
+If $X_L$ predominates, the circuit behaves **inductively** ($\varphi > 0$); if $X_C$ predominates, **capacitively** ($\varphi < 0$).
+
+:::tip[Example: RLC series circuit on the mains]
+$R = 100\,\Omega$, $L = 0.5\,\mathrm{H}$, $C = 10\,\mathrm{\mu F}$ on $230\,\mathrm{V}$, $50\,\mathrm{Hz}$.
+
+$$
+X = X_L - X_C = 157.1\,\Omega - 318.3\,\Omega = -161.2\,\Omega
+$$
+
+$$
+Z = \sqrt{100^2 + 161.2^2}\,\Omega \approx 189.7\,\Omega \qquad \varphi = \arctan\frac{-161.2}{100} \approx -58.2°
+$$
+
+The current is $I = 230\,\mathrm{V}/189.7\,\Omega \approx 1.21\,\mathrm{A}$ and leads the voltage by $58.2°$ (capacitive). The partial voltages are $U_R \approx 121\,\mathrm{V}$, $U_L \approx 190\,\mathrm{V}$, $U_C \approx 386\,\mathrm{V}$.
+
+$U_C$ is larger than the mains voltage. This is not a mistake: partial voltages add as phasors, not as magnitudes. $U_L$ and $U_C$ are shifted by $180°$ relative to each other and partly cancel: $\sqrt{121^2 + (190 - 386)^2} \approx 230\,\mathrm{V}$.
+:::
+
+### Parallel circuit
+
+In a parallel circuit all components have the same voltage. The admittances are added:
+
+$$
+\underline{Y} = \frac{1}{R} + j\left(\omega C - \frac{1}{\omega L}\right) \qquad I = U \cdot Y
+$$
+
+The branch currents $I_R = U/R$, $I_L = U/X_L$ and $I_C = U/X_C$ add as phasors: $I = \sqrt{I_R^2 + (I_C - I_L)^2}$.
+
+## Resonance
+
+At a particular frequency the inductive and capacitive reactances are equal and cancel each other. This is the **resonant frequency** (Thomson's formula):
+
+$$
+X_L = X_C \quad \Rightarrow \quad \omega_0 = \frac{1}{\sqrt{LC}} \qquad f_0 = \frac{1}{2\pi\sqrt{LC}}
+$$
+
+| Property at $f_0$     | Series resonant circuit                         | Parallel resonant circuit                      |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Impedance             | **minimum**, $Z = R$                            | **maximum** (ideally infinite)                 |
+| Current from the source | maximum                                       | minimum                                        |
+| Special feature       | voltages across L and C are $Q$ times $U$ (voltage magnification) | currents in L and C are $Q$ times $I$ (current magnification) |
+| Phase                 | $\varphi = 0°$                                  | $\varphi = 0°$                                 |
+
+The **quality factor** $Q$ indicates how sharp the resonance is. For the series resonant circuit:
+
+$$
+Q = \frac{X_{L}}{R} = \frac{1}{R}\sqrt{\frac{L}{C}} \qquad B = \frac{f_0}{Q}
+$$
+
+$B$ is the **bandwidth** between the two frequencies at which the current has fallen to $1/\sqrt{2}$ of the maximum.
+
+:::tip[Example]
+For the series circuit above, $f_0 = 1/(2\pi\sqrt{0.5 \cdot 10^{-5}})\,\mathrm{Hz} \approx 71.2\,\mathrm{Hz}$. The quality factor is $Q = \frac{1}{100}\sqrt{0.5/10^{-5}} \approx 2.24$, the bandwidth $B \approx 31.8\,\mathrm{Hz}$. At $71.2\,\mathrm{Hz}$ and $230\,\mathrm{V}$, $2.3\,\mathrm{A}$ would flow, and L and C would each have about $514\,\mathrm{V}$ across them.
+:::
+
+Resonant circuits select a station in radios, generate frequencies in oscillators and are used in filters (see [Filters](/en/electrical-engineering/filters/#band-pass-and-band-stop)). Unwanted resonances can destroy components through overvoltage.
+
+## Power in AC circuits
+
+If current and voltage are out of phase, part of the energy oscillates back and forth between the source and the inductors or capacitors without being used. There are three kinds of power:
+
+| Power          | Formula                      | Unit                       | Meaning                                         |
+| -------------- | ---------------------------- | -------------------------- | ----------------------------------------------- |
+| Active power   | $P = U I \cos\varphi$        | watt (W)                   | converted into heat, light or work              |
+| Reactive power | $Q = U I \sin\varphi$        | volt-ampere reactive (var) | oscillates between source and fields            |
+| Apparent power | $S = U I$                    | volt-ampere (VA)           | loads cables, transformers, generators          |
+
+The three powers form the **power triangle**:
+
+$$
+S = \sqrt{P^2 + Q^2} \qquad \underline{S} = \underline{U} \cdot \underline{I}^* = P + jQ
+$$
+
+The **power factor** $\cos\varphi = P/S$ indicates what share of the apparent power is active power. For the RLC series circuit above, $S = 230\,\mathrm{V} \cdot 1.21\,\mathrm{A} \approx 279\,\mathrm{VA}$, $P = I^2 R \approx 147\,\mathrm{W}$, $Q \approx -237\,\mathrm{var}$ (capacitive) and $\cos\varphi \approx 0.53$.
+
+**Power factor correction**: motors and ballasts are inductive. The reactive power loads the cables without benefit. A capacitor connected in parallel supplies the reactive power locally, so the grid only has to transport active power. Large consumers pay separately for reactive energy if their $\cos\varphi$ is too low.
+
+:::note
+Computer power supplies draw non-sinusoidal currents without countermeasures. Here too $S > P$. That is why power supplies from $75\,\mathrm{W}$ have power factor correction (PFC), and UPS units are rated in VA and W (see [Power Supplies](/en/electrical-engineering/power-supplies/#uninterruptible-power-supply)).
+:::
+
+## Three-phase AC
+
+The public grid is a **three-phase system**. Three line conductors L1, L2, L3 carry voltages of equal amplitude and frequency, each shifted by $120°$ relative to the others. In addition there are the neutral conductor N and the protective earth PE.
+
+- The **phase voltage** (line conductor to N) is $230\,\mathrm{V}$.
+- The **line voltage** (between two line conductors) is $\sqrt{3} \cdot 230\,\mathrm{V} \approx 400\,\mathrm{V}$.
+
+This is why it is called the $230/400\,\mathrm{V}$ grid. The factor $\sqrt{3}$ comes from the phasor difference of two phasors shifted by $120°$. With balanced loading the sum of the three currents is zero and the neutral conductor carries no current.
+
+### Star and delta connection
+
+| Connection      | Voltage across the load        | Current                       |
+| --------------- | ------------------------------ | ----------------------------- |
+| Star (Y)        | $U_\mathrm{ph} = U/\sqrt{3} = 230\,\mathrm{V}$ | $I_\mathrm{L} = I_\mathrm{ph}$ |
+| Delta (Δ)       | $U_\mathrm{ph} = U = 400\,\mathrm{V}$ | $I_\mathrm{L} = \sqrt{3} \cdot I_\mathrm{ph}$ |
+
+The power of a balanced three-phase load is the same formula in both cases, with the line voltage $U$ and the line current $I$:
+
+$$
+P = \sqrt{3} \cdot U \cdot I \cdot \cos\varphi
+$$
+
+:::tip[Example]
+A motor on $400\,\mathrm{V}$ draws $10\,\mathrm{A}$ per line conductor at $\cos\varphi = 0.85$: $P = \sqrt{3} \cdot 400\,\mathrm{V} \cdot 10\,\mathrm{A} \cdot 0.85 \approx 5.89\,\mathrm{kW}$.
+:::
+
+The same three resistors draw **three times** the power in delta as in star, because each has $\sqrt{3}$ times the voltage across it. The **star-delta starting** of large motors uses this effect: they start in star with reduced starting current and are then switched to delta.
+
+Advantages of three-phase AC: with three or four conductors it transmits three times the power of a single-phase circuit, the total power is constant over time (no pulsation), and motors start with the rotating field without aids. Households usually receive all three phases; the socket circuits are distributed among the phases, and large loads such as cookers or wall boxes use three-phase power.
+
+## Further reading
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- Hughes, E.: _Electrical and Electronic Technology_. Pearson.
+- [Wikipedia: Phasor](https://en.wikipedia.org/wiki/Phasor)

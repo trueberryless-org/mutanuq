@@ -1,0 +1,442 @@
+---
+title: Speicherverwaltung im Betriebssystem
+description: Logische und physische Adressen, zusammenhängende Speicherzuteilung, Fragmentierung, Paging mit Adressumsetzung und TLB, Segmentierung, virtueller Speicher und Seitenersetzungsverfahren.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Der Hauptspeicher muss zwischen dem Betriebssystem und vielen gleichzeitig laufenden Prozessen aufgeteilt werden. Die **Speicherverwaltung** des Betriebssystems sorgt dafür, dass jeder Prozess genug Speicher bekommt, dass kein Prozess fremden Speicher lesen oder überschreiben kann und dass Programme mehr Speicher verwenden können, als physisch vorhanden ist. Diese Seite zeigt die Sicht des Betriebssystems. Wie ein Programm innerhalb seines Adressraums Stack und Heap nutzt, beschreibt die Seite [Speicherverwaltung](/de/software-development/memory-management/) in der Softwareentwicklung.
+
+## Adressräume
+
+Ein Programm verwendet **logische** (virtuelle) Adressen. Der Speicherbaustein wird mit **physischen** Adressen angesprochen. Die Umsetzung übernimmt bei jedem Speicherzugriff die **MMU** (_Memory Management Unit_) im Prozessor, gesteuert durch Tabellen, die das Betriebssystem verwaltet.
+
+Diese Trennung hat drei Vorteile:
+
+- **Verschiebbarkeit** (_Relocation_): Ein Programm kann an jeder beliebigen physischen Stelle liegen, ohne dass seine Adressen geändert werden müssen.
+- **Schutz**: Jeder Prozess sieht nur seinen eigenen Adressraum. Adressen anderer Prozesse kann er gar nicht ausdrücken.
+- **Virtueller Speicher**: Teile des Adressraums müssen gar nicht im RAM liegen.
+
+Die einfachste Form ist ein **Basisregister** und ein **Grenzregister** (_Base_ und _Limit_): Jede logische Adresse wird mit dem Grenzregister verglichen (bei Überschreitung gibt es eine Schutzverletzung) und dann zum Basisregister addiert. Liegt ein Prozess ab der physischen Adresse 300 000 und ist 120 000 Byte groß, wird die logische Adresse 1000 zur physischen 301 000, die logische Adresse 130 000 löst einen Fehler aus.
+
+## Zusammenhängende Speicherzuteilung
+
+Bei der **zusammenhängenden Zuteilung** bekommt jeder Prozess einen einzigen Block. Mit festen Partitionen ist das einfach, aber unflexibel. Bei **variablen Partitionen** bekommt jeder Prozess genau so viel, wie er braucht. Mit der Zeit entsteht ein Flickenteppich aus belegten Blöcken und freien **Lücken** (_Holes_). Für eine neue Anforderung muss eine Lücke gewählt werden:
+
+| Strategie      | wählt …                                           | Eigenschaft                                                      |
+| -------------- | ------------------------------------------------- | ---------------------------------------------------------------- |
+| **First Fit**  | die erste ausreichend große Lücke                 | schnell, in der Praxis gut                                       |
+| **Next Fit**   | die nächste passende Lücke ab der letzten Position | verteilt die Belegung, meist etwas schlechter als First Fit     |
+| **Best Fit**   | die kleinste ausreichend große Lücke              | lässt große Lücken übrig, erzeugt aber viele winzige Restlücken; ganze Liste durchsuchen |
+| **Worst Fit**  | die größte Lücke                                  | Restlücken bleiben groß genug für weitere Prozesse, in der Praxis meist am schlechtesten |
+
+:::tip[Beispiel]
+Freie Lücken (in dieser Reihenfolge, Größen in KiB): 100, 500, 200, 300, 600. Nacheinander werden 212, 417, 112 und 426 KiB angefordert.
+
+| Anforderung | First Fit             | Best Fit              | Worst Fit             |
+| ----------- | --------------------- | --------------------- | --------------------- |
+| 212         | 500 → Rest 288        | 300 → Rest 88         | 600 → Rest 388        |
+| 417         | 600 → Rest 183        | 500 → Rest 83         | 500 → Rest 83         |
+| 112         | 288 → Rest 176        | 200 → Rest 88         | 388 → Rest 276        |
+| 426         | **keine Lücke groß genug** | 600 → Rest 174   | **keine Lücke groß genug** |
+
+Hier kann nur Best Fit alle vier Anforderungen erfüllen. Bei First Fit sind insgesamt noch $100 + 176 + 200 + 300 + 183 = 959$ KiB frei, aber keine einzelne Lücke ist groß genug.
+:::
+
+### Fragmentierung
+
+- **Externe Fragmentierung**: Insgesamt ist genug Speicher frei, aber in viele kleine, nicht zusammenhängende Lücken zerstückelt, wie im Beispiel bei First Fit. Abhilfe ist **Kompaktierung** (alle Prozesse zusammenschieben, aufwendig) oder ein Verfahren ohne zusammenhängende Zuteilung wie Paging.
+- **Interne Fragmentierung**: Ein Prozess bekommt mehr Speicher, als er braucht, weil nur in festen Einheiten zugeteilt wird. Der Rest innerhalb des Blocks ist verschwendet. Bei Paging verschwendet ein Prozess im Mittel eine halbe Seite.
+
+Das **Buddy-System** ist ein Kompromiss, den der Linux-Kernel für physische Seiten verwendet: Speicher wird nur in Blöcken von Zweierpotenzen vergeben. Ein großer Block wird so lange halbiert, bis er passt, und zwei freie „Buddies“ werden beim Freigeben wieder verschmolzen.
+
+## Paging
+
+Beim **Paging** wird der logische Adressraum in **Seiten** (_Pages_) fester Größe und der physische Speicher in gleich große **Seitenrahmen** (_Frames_, Kacheln) eingeteilt. Jede Seite kann in jedem beliebigen Rahmen liegen. Damit gibt es keine externe Fragmentierung mehr. Die übliche Seitengröße ist **4 KiB**, für große Datenmengen gibt es zusätzlich große Seiten (_Huge Pages_, 2 MiB oder 1 GiB).
+
+Für jeden Prozess führt das Betriebssystem eine **Seitentabelle**, die zu jeder Seitennummer die Rahmennummer enthält. Ein Eintrag (_Page Table Entry_, PTE) enthält außerdem Steuerbits:
+
+| Bit                        | Bedeutung                                                          |
+| -------------------------- | ------------------------------------------------------------------ |
+| **Present/Valid**          | die Seite liegt im Hauptspeicher                                   |
+| **Read/Write**             | Schreiben erlaubt                                                  |
+| **User/Supervisor**        | auch im Benutzermodus zugreifbar                                   |
+| **Referenced** (_Accessed_) | die Seite wurde seit dem letzten Zurücksetzen benutzt (für die Seitenersetzung) |
+| **Dirty** (_Modified_)     | die Seite wurde verändert und muss vor dem Verdrängen zurückgeschrieben werden |
+| **NX** (_No Execute_)      | Code auf dieser Seite darf nicht ausgeführt werden (Schutz vor eingeschleustem Code) |
+
+### Adressumsetzung
+
+Weil die Seitengröße eine Zweierpotenz $2^k$ ist, zerfällt eine logische Adresse ohne Rechnung in zwei Teile: Die oberen Bits sind die **Seitennummer** $p$, die unteren $k$ Bits der **Offset** $d$ innerhalb der Seite. Die MMU ersetzt die Seitennummer durch die Rahmennummer $f$ aus der Seitentabelle, der Offset bleibt gleich:
+
+$$
+p = \left\lfloor \frac{\text{logische Adresse}}{\text{Seitengröße}} \right\rfloor \qquad d = \text{logische Adresse} \bmod \text{Seitengröße}
+$$
+
+$$
+\text{physische Adresse} = f \cdot \text{Seitengröße} + d
+$$
+
+:::tip[Beispiel: Seitengröße 1 KiB = 1024 Byte]
+Seitentabelle: Seite 0 → Rahmen 5, Seite 1 → Rahmen 2, Seite 2 → Rahmen 7, Seite 3 → nicht im Speicher, Seite 4 → Rahmen 9.
+
+Logische Adresse **5000**:
+
+- $p = \lfloor 5000 / 1024 \rfloor = 4$, $d = 5000 - 4 \cdot 1024 = 904$
+- Seite 4 liegt in Rahmen 9.
+- physische Adresse $= 9 \cdot 1024 + 904 = 10\,120$
+
+Binär sieht man, dass nur die Bits ausgetauscht werden: $5000 = \underbrace{000100}_{p = 4}\,\underbrace{1110001000}_{d = 904}{}_2$ wird zu $\underbrace{001001}_{f = 9}\,\underbrace{1110001000}_{d = 904}{}_2 = 10\,120$.
+
+Die logische Adresse **3100** liegt auf Seite 3, die nicht im Speicher ist: Die MMU löst einen **Seitenfehler** aus.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const int PageSize = 1024;
+int?[] pageTable = [5, 2, 7, null, 9];   // null = Seite nicht im Speicher
+
+foreach (int address in new[] { 5000, 1500, 3100 })
+{
+    int page = address / PageSize;
+    int offset = address % PageSize;
+    string result = pageTable[page] is int frame
+        ? $"physisch {frame * PageSize + offset}"
+        : "Seitenfehler";
+    Console.WriteLine($"{address} -> Seite {page}, Offset {offset}: {result}");
+}
+// Ausgabe:
+// 5000 -> Seite 4, Offset 904: physisch 10120
+// 1500 -> Seite 1, Offset 476: physisch 2524
+// 3100 -> Seite 3, Offset 28: Seitenfehler
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    const PAGE_SIZE: u32 = 1024;
+    let page_table: [Option<u32>; 5] = [Some(5), Some(2), Some(7), None, Some(9)];
+
+    for address in [5000, 1500, 3100] {
+        let page = address / PAGE_SIZE;
+        let offset = address % PAGE_SIZE;
+        let result = match page_table[page as usize] {
+            Some(frame) => format!("physisch {}", frame * PAGE_SIZE + offset),
+            None => "Seitenfehler".to_string(),
+        };
+        println!("{address} -> Seite {page}, Offset {offset}: {result}");
+    }
+}
+// Ausgabe:
+// 5000 -> Seite 4, Offset 904: physisch 10120
+// 1500 -> Seite 1, Offset 476: physisch 2524
+// 3100 -> Seite 3, Offset 28: Seitenfehler
+```
+
+</TabItem>
+</Tabs>
+
+### Mehrstufige Seitentabellen
+
+Eine einstufige Tabelle wäre riesig: Bei 32-Bit-Adressen und 4-KiB-Seiten gibt es $2^{32} / 2^{12} = 2^{20}$ Seiten. Mit 4 Byte pro Eintrag braucht jeder Prozess eine Tabelle von 4 MiB, auch wenn er nur wenig Speicher nutzt. Bei 64-Bit-Adressen wäre es völlig unmöglich.
+
+**Mehrstufige Seitentabellen** teilen die Seitennummer in mehrere Teile, die nacheinander als Index in Tabellen verschiedener Ebenen dienen. Tabellen für ungenutzte Bereiche werden gar nicht angelegt.
+
+| System             | Aufteilung der virtuellen Adresse              | Ebenen |
+| ------------------ | ---------------------------------------------- | ------ |
+| x86 (32 Bit)       | 10 + 10 + 12 Bit Offset                        | 2      |
+| x86-64 (48 Bit)    | 9 + 9 + 9 + 9 + 12 Bit Offset                  | 4      |
+| x86-64 mit 5-Level-Paging (57 Bit) | 9 + 9 + 9 + 9 + 9 + 12 Bit Offset | 5      |
+
+Jede Tabelle hat bei x86-64 genau $2^9 = 512$ Einträge zu 8 Byte, also genau 4 KiB und passt in eine Seite. Der Nachteil: Eine Adressumsetzung braucht vier zusätzliche Speicherzugriffe. Eine Alternative ist die **invertierte Seitentabelle** mit einem Eintrag pro physischem Rahmen statt pro virtueller Seite, durchsucht über eine Hashtabelle.
+
+### TLB
+
+Damit nicht jeder Speicherzugriff mehrere zusätzliche Zugriffe auf Seitentabellen kostet, speichert die MMU zuletzt verwendete Umsetzungen in einem kleinen, sehr schnellen assoziativen Cache, dem **TLB** (_Translation Lookaside Buffer_). Er hat typischerweise einige Dutzend bis wenige tausend Einträge, und wegen der Lokalität liegt die **Trefferrate** meist über 99 %.
+
+Die **effektive Zugriffszeit** bei einstufiger Seitentabelle mit TLB-Trefferrate $h$, TLB-Zugriffszeit $t_{\text{TLB}}$ und Speicherzugriffszeit $t_M$:
+
+$$
+t_{\text{eff}} = h \cdot (t_{\text{TLB}} + t_M) + (1 - h) \cdot (t_{\text{TLB}} + 2\,t_M)
+$$
+
+Beispiel: $h = 0{,}98$, $t_{\text{TLB}} = 1\,\mathrm{ns}$, $t_M = 100\,\mathrm{ns}$ ergibt $0{,}98 \cdot 101\,\mathrm{ns} + 0{,}02 \cdot 201\,\mathrm{ns} = 103\,\mathrm{ns}$, nur 3 % mehr als ohne Adressumsetzung.
+
+Beim Kontextwechsel gehören die TLB-Einträge zum falschen Adressraum. Sie müssen gelöscht werden (_TLB Flush_), oder jeder Eintrag trägt eine Kennung des Adressraums (_ASID_ bzw. _PCID_ bei x86).
+
+## Segmentierung
+
+Bei der **Segmentierung** wird der Adressraum nicht in gleich große Seiten, sondern in logische Einheiten unterschiedlicher Größe geteilt: Code, globale Daten, Heap, Stack, Bibliotheken. Eine logische Adresse besteht aus **Segmentnummer und Offset**. Die **Segmenttabelle** enthält für jedes Segment Basisadresse, Länge und Zugriffsrechte. Ist der Offset größer als die Länge, löst die Hardware eine Schutzverletzung aus.
+
+| Merkmal            | Paging                                     | Segmentierung                                |
+| ------------------ | ------------------------------------------ | -------------------------------------------- |
+| Einheiten          | gleich groß, für den Programmierer unsichtbar | unterschiedlich groß, entsprechen logischen Programmteilen |
+| Fragmentierung     | intern (halbe Seite pro Bereich)           | extern                                       |
+| Schutz und Teilen  | pro Seite                                  | pro logischer Einheit, natürlicher           |
+| heute              | Standard                                   | bei x86-64 weitgehend abgeschafft (flaches Modell) |
+
+Historisch wurden beide kombiniert (**segmentiertes Paging**, z. B. x86 im 32-Bit-Modus). Heute verwenden alle verbreiteten Betriebssysteme reines Paging. Der Begriff „Segmentation fault“ für einen unerlaubten Zugriff stammt aus dieser Zeit.
+
+## Virtueller Speicher
+
+**Virtueller Speicher** erlaubt, dass nur die gerade benötigten Seiten eines Prozesses im RAM liegen, der Rest auf der SSD oder Festplatte (in der **Auslagerungsdatei**, unter Windows `pagefile.sys`, unter Linux in einer **Swap-Partition** oder Swap-Datei). Dadurch:
+
+- können Programme größer sein als der physische Speicher,
+- passen mehr Prozesse gleichzeitig in den Speicher,
+- startet ein Programm schneller, weil nicht alles sofort geladen werden muss (**Demand Paging**: eine Seite wird erst beim ersten Zugriff geladen),
+- können Prozesse Seiten gemeinsam nutzen (Programmbibliotheken, Copy-on-Write nach `fork`).
+
+### Seitenfehler
+
+Greift ein Prozess auf eine Seite zu, deren Present-Bit nicht gesetzt ist, löst die MMU einen **Seitenfehler** (_Page Fault_) aus. Das ist kein Programmfehler, sondern ein normaler Vorgang:
+
+1. Die MMU erkennt das fehlende Present-Bit und löst eine Ausnahme aus, der Prozessor springt in den Kernel.
+2. Der Kernel prüft, ob der Zugriff überhaupt erlaubt ist. Wenn nicht, wird der Prozess beendet (Segmentation fault).
+3. Er sucht einen freien Rahmen. Gibt es keinen, wählt die **Seitenersetzungsstrategie** ein Opfer aus. Ist dessen Dirty-Bit gesetzt, wird es zuerst auf den Datenträger zurückgeschrieben.
+4. Die benötigte Seite wird vom Datenträger in den Rahmen geladen. Währenddessen ist der Prozess blockiert, und ein anderer darf rechnen.
+5. Seitentabelle aktualisieren, Present-Bit setzen.
+6. Den unterbrochenen Befehl erneut ausführen.
+
+Seitenfehler sind teuer. Mit Speicherzugriffszeit $t_M$, Seitenfehlerrate $p$ und Bearbeitungszeit $t_F$ eines Seitenfehlers gilt:
+
+$$
+t_{\text{eff}} = (1 - p) \cdot t_M + p \cdot t_F
+$$
+
+Bei $t_M = 100\,\mathrm{ns}$, $t_F = 8\,\mathrm{ms}$ (Festplatte) und nur einem Seitenfehler pro 1000 Zugriffe ($p = 0{,}001$) ergibt sich $0{,}999 \cdot 100\,\mathrm{ns} + 0{,}001 \cdot 8\,000\,000\,\mathrm{ns} \approx 8{,}1\,\mathrm{\mu s}$. Der Rechner wird um den Faktor 81 langsamer. Mit einer SSD ist $t_F$ etwa hundertmal kleiner, aber immer noch um Größenordnungen größer als $t_M$.
+
+## Seitenersetzung
+
+Ist kein Rahmen frei, muss eine Seite verdrängt werden. Ideal ist eine Seite, die lange nicht mehr gebraucht wird.
+
+| Verfahren                       | verdrängt …                                                         | Bemerkung                                        |
+| ------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| **OPT** (optimal, Belady)       | die Seite, die am längsten **in der Zukunft** nicht gebraucht wird   | nicht umsetzbar, weil die Zukunft unbekannt ist. Dient als Vergleichsmaßstab |
+| **FIFO**                        | die Seite, die am längsten im Speicher ist                          | einfach, berücksichtigt aber nicht, ob eine Seite oft benutzt wird. Zeigt die Belady-Anomalie |
+| **LRU** (_Least Recently Used_) | die Seite, die am längsten **nicht benutzt** wurde                   | gute Annäherung an OPT, genaue Umsetzung aber teuer (Zeitstempel bei jedem Zugriff) |
+| **Clock** (_Second Chance_)     | wie FIFO, aber eine Seite mit gesetztem Referenced-Bit bekommt eine zweite Chance: Bit löschen und weitergehen | effiziente LRU-Annäherung mit dem Hardware-Bit, in echten Systemen verbreitet |
+| **NRU** (_Not Recently Used_)   | eine Seite aus der niedrigsten Klasse nach Referenced- und Dirty-Bit | unveränderte, nicht benutzte Seiten zuerst      |
+| **LFU** (_Least Frequently Used_) | die am seltensten benutzte Seite                                  | alte, früher häufig benutzte Seiten bleiben zu lange |
+
+Beim **Clock-Algorithmus** sind die Rahmen im Kreis angeordnet, ein Zeiger zeigt auf den ältesten. Bei einem Seitenfehler wird geprüft: Ist das Referenced-Bit 0, wird diese Seite ersetzt. Ist es 1, wird es auf 0 gesetzt, und der Zeiger rückt weiter. Eine häufig benutzte Seite hat ihr Bit bei der nächsten Runde wieder gesetzt und überlebt.
+
+### Beispielrechnung
+
+Referenzfolge **1 2 3 4 1 2 5 1 2 3 4 5** mit **3 Rahmen**. F markiert einen Seitenfehler.
+
+**FIFO**: 9 Seitenfehler
+
+| Referenz  | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Rahmen 1  | 1 | 1 | 1 | 4 | 4 | 4 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Rahmen 2  |   | 2 | 2 | 2 | 1 | 1 | 1 | 1 | 1 | 3 | 3 | 3 |
+| Rahmen 3  |   |   | 3 | 3 | 3 | 2 | 2 | 2 | 2 | 2 | 4 | 4 |
+| Fehler    | F | F | F | F | F | F | F |   |   | F | F |   |
+
+**OPT**: 7 Seitenfehler. Bei der Referenz 4 wird 3 verdrängt, weil 1 und 2 früher wieder gebraucht werden.
+
+| Referenz  | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Rahmen 1  | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 3 | 4 | 4 |
+| Rahmen 2  |   | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Rahmen 3  |   |   | 3 | 4 | 4 | 4 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Fehler    | F | F | F | F |   |   | F |   |   | F | F |   |
+
+**LRU**: 10 Seitenfehler. Bei der Referenz 3 wird 5 verdrängt, die am längsten nicht benutzte Seite.
+
+| Referenz  | 1 | 2 | 3 | 4 | 1 | 2 | 5 | 1 | 2 | 3 | 4 | 5 |
+| --------- | - | - | - | - | - | - | - | - | - | - | - | - |
+| Rahmen 1  | 1 | 1 | 1 | 4 | 4 | 4 | 5 | 5 | 5 | 3 | 3 | 3 |
+| Rahmen 2  |   | 2 | 2 | 2 | 1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 |
+| Rahmen 3  |   |   | 3 | 3 | 3 | 2 | 2 | 2 | 2 | 2 | 2 | 5 |
+| Fehler    | F | F | F | F | F | F | F |   |   | F | F | F |
+
+Diese spezielle Folge ist für LRU ungünstig. Bei typischen Programmen mit Lokalität liegt LRU nahe an OPT und deutlich vor FIFO.
+
+### Belady-Anomalie
+
+Man würde erwarten, dass mehr Rahmen nie zu mehr Seitenfehlern führen. Bei FIFO stimmt das nicht: Dieselbe Referenzfolge erzeugt mit **4 Rahmen 10** Seitenfehler statt 9 mit 3 Rahmen. Diese **Belady-Anomalie** (László Bélády, 1969) kann bei OPT und LRU nicht auftreten, weil bei ihnen die Seiten im Speicher mit $n$ Rahmen immer eine Teilmenge der Seiten mit $n + 1$ Rahmen sind (**Stack-Algorithmen**).
+
+| Rahmen | FIFO | LRU | OPT |
+| ------ | ---- | --- | --- |
+| 3      | 9    | 10  | 7   |
+| 4      | 10   | 8   | 6   |
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] refs = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5];
+
+foreach (int frames in new[] { 3, 4 })
+{
+    Console.WriteLine($"{frames} Rahmen: FIFO {Paging.Fifo(refs, frames)}, " +
+                      $"LRU {Paging.Lru(refs, frames)}, OPT {Paging.Opt(refs, frames)}");
+}
+// Ausgabe:
+// 3 Rahmen: FIFO 9, LRU 10, OPT 7
+// 4 Rahmen: FIFO 10, LRU 8, OPT 6
+
+static class Paging
+{
+    public static int Fifo(int[] refs, int frames)
+    {
+        var memory = new Queue<int>();
+        int faults = 0;
+        foreach (int page in refs)
+        {
+            if (memory.Contains(page)) continue;
+            faults++;
+            if (memory.Count == frames) memory.Dequeue();   // älteste Seite raus
+            memory.Enqueue(page);
+        }
+        return faults;
+    }
+
+    public static int Lru(int[] refs, int frames)
+    {
+        var memory = new List<int>();                       // vorne: am längsten unbenutzt
+        int faults = 0;
+        foreach (int page in refs)
+        {
+            if (!memory.Remove(page))
+            {
+                faults++;
+                if (memory.Count == frames) memory.RemoveAt(0);
+            }
+            memory.Add(page);                               // zuletzt benutzt ans Ende
+        }
+        return faults;
+    }
+
+    public static int Opt(int[] refs, int frames)
+    {
+        var memory = new List<int>();
+        int faults = 0;
+        for (int i = 0; i < refs.Length; i++)
+        {
+            if (memory.Contains(refs[i])) continue;
+            faults++;
+            if (memory.Count == frames)
+            {
+                // Seite, deren nächste Verwendung am weitesten entfernt ist
+                int victim = memory.MaxBy(p =>
+                {
+                    int next = Array.IndexOf(refs, p, i + 1);
+                    return next < 0 ? int.MaxValue : next;
+                });
+                memory.Remove(victim);
+            }
+            memory.Add(refs[i]);
+        }
+        return faults;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+fn fifo(refs: &[u32], frames: usize) -> usize {
+    let mut memory = VecDeque::new();
+    let mut faults = 0;
+    for &page in refs {
+        if memory.contains(&page) {
+            continue;
+        }
+        faults += 1;
+        if memory.len() == frames {
+            memory.pop_front(); // älteste Seite raus
+        }
+        memory.push_back(page);
+    }
+    faults
+}
+
+fn lru(refs: &[u32], frames: usize) -> usize {
+    let mut memory: Vec<u32> = Vec::new(); // vorne: am längsten unbenutzt
+    let mut faults = 0;
+    for &page in refs {
+        if let Some(pos) = memory.iter().position(|&p| p == page) {
+            memory.remove(pos);
+        } else {
+            faults += 1;
+            if memory.len() == frames {
+                memory.remove(0);
+            }
+        }
+        memory.push(page); // zuletzt benutzt ans Ende
+    }
+    faults
+}
+
+fn opt(refs: &[u32], frames: usize) -> usize {
+    let mut memory: Vec<u32> = Vec::new();
+    let mut faults = 0;
+    for (i, &page) in refs.iter().enumerate() {
+        if memory.contains(&page) {
+            continue;
+        }
+        faults += 1;
+        if memory.len() == frames {
+            // Seite, deren nächste Verwendung am weitesten entfernt ist
+            let next_use = |p: u32| refs[i + 1..].iter().position(|&r| r == p).unwrap_or(usize::MAX);
+            if let Some(pos) = (0..memory.len()).max_by_key(|&k| next_use(memory[k])) {
+                memory.remove(pos);
+            }
+        }
+        memory.push(page);
+    }
+    faults
+}
+
+fn main() {
+    let refs = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5];
+    for frames in [3, 4] {
+        println!(
+            "{frames} Rahmen: FIFO {}, LRU {}, OPT {}",
+            fifo(&refs, frames),
+            lru(&refs, frames),
+            opt(&refs, frames)
+        );
+    }
+}
+// Ausgabe:
+// 3 Rahmen: FIFO 9, LRU 10, OPT 7
+// 4 Rahmen: FIFO 10, LRU 8, OPT 6
+```
+
+</TabItem>
+</Tabs>
+
+## Thrashing
+
+Bekommt ein Prozess weniger Rahmen, als er für seine aktuell benutzten Seiten braucht, verdrängt jeder Seitenfehler eine Seite, die gleich wieder gebraucht wird. Das System ist fast nur noch mit Ein- und Auslagern beschäftigt, die CPU-Auslastung bricht ein, die Festplatte arbeitet ununterbrochen. Dieser Zustand heißt **Thrashing** (Seitenflattern).
+
+Ein naiver Scheduler verschlimmert das noch: Er sieht die niedrige CPU-Auslastung und startet weitere Prozesse, die noch weniger Rahmen übrig lassen. Gegenmaßnahmen:
+
+- **Working-Set-Modell** (Peter Denning): Die Menge der Seiten, die ein Prozess in einem Zeitfenster benutzt hat, ist sein **Working Set**. Ein Prozess wird nur ausgeführt, wenn sein ganzes Working Set in den Speicher passt.
+- **Seitenfehlerfrequenz** überwachen: Hat ein Prozess zu viele Seitenfehler, bekommt er mehr Rahmen, bei sehr wenigen werden ihm Rahmen entzogen.
+- Prozesse vorübergehend vollständig auslagern und so die Zahl der aktiven Prozesse senken.
+- Mehr RAM einbauen.
+
+## Swapping
+
+Beim klassischen **Swapping** wird ein ganzer Prozess aus dem Hauptspeicher auf den Datenträger ausgelagert und später wieder eingelagert, wenn er rechnen soll. Das war vor dem Paging die einzige Möglichkeit, mehr Prozesse zu betreiben, als in den Speicher passen. Heute wird der Begriff meist für das Auslagern einzelner Seiten verwendet: Linux nennt den Auslagerungsbereich „Swap“, und `free -h` zeigt dessen Belegung. Unter Linux steuert der Parameter `vm.swappiness`, wie früh der Kernel auslagert. Windows und macOS komprimieren selten benutzte Seiten außerdem im RAM, bevor sie sie auslagern (**Speicherkomprimierung**), und Linux bietet dafür `zram` und `zswap`.
+
+Läuft der Speicher trotzdem voll, beendet der **OOM-Killer** (_Out of Memory_) unter Linux einen Prozess, um das System zu retten.
+
+## Weiterführende Quellen
+
+- Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/), Teil „Virtualization“ (Kapitel zu Paging, TLB und Swapping)
+- Abraham Silberschatz, Peter B. Galvin, Greg Gagne: _Operating System Concepts_, Kapitel „Main Memory“ und „Virtual Memory“, Wiley
+- [Memory Management](https://docs.kernel.org/admin-guide/mm/index.html) (Linux-Kernel-Dokumentation)

@@ -1,0 +1,255 @@
+---
+title: Basic Electrical Quantities
+description: Charge, current, voltage, resistance, conductance, resistivity, temperature coefficient, energy, power, efficiency, sources, E-series and colour code.
+sidebar:
+  order: 1
+---
+
+Every calculation in electrical engineering rests on a few basic quantities. If you know what charge, current, voltage and resistance mean physically and how they relate, you can reduce even complicated circuits to simple laws.
+
+## SI units and prefixes
+
+Electrical quantities are given in the **International System of Units** (SI). The base unit of electrical engineering is the **ampere** (A); all other electrical units are derived from it and from the metre, kilogram and second.
+
+| Quantity         | Symbol        | Unit               | Relationship                                   |
+| ---------------- | ------------- | ------------------ | ---------------------------------------------- |
+| Charge           | $Q$           | coulomb (C)        | $1\,\mathrm{C} = 1\,\mathrm{A \cdot s}$        |
+| Current          | $I$           | ampere (A)         | SI base unit                                   |
+| Voltage          | $U$ (also $V$) | volt (V)          | $1\,\mathrm{V} = 1\,\mathrm{W/A}$              |
+| Resistance       | $R$           | ohm ($\Omega$)     | $1\,\Omega = 1\,\mathrm{V/A}$                  |
+| Conductance      | $G$           | siemens (S)        | $1\,\mathrm{S} = 1/\Omega$                     |
+| Energy, work     | $W$           | joule (J)          | $1\,\mathrm{J} = 1\,\mathrm{W \cdot s}$        |
+| Power            | $P$           | watt (W)           | $1\,\mathrm{W} = 1\,\mathrm{V \cdot A}$        |
+| Capacitance      | $C$           | farad (F)          | $1\,\mathrm{F} = 1\,\mathrm{C/V}$              |
+| Inductance       | $L$           | henry (H)          | $1\,\mathrm{H} = 1\,\mathrm{V \cdot s/A}$      |
+| Frequency        | $f$           | hertz (Hz)         | $1\,\mathrm{Hz} = 1/\mathrm{s}$                |
+
+This site uses the symbol $U$ for voltage, as is usual in German-speaking countries and in IEC standards. English textbooks often write $V$.
+
+Values much larger or smaller than the unit are written with **prefixes**. They correspond to powers of ten with exponents divisible by 3 (engineering notation).
+
+| Prefix  | Symbol  | Factor     | Example                           |
+| ------- | ------- | ---------- | --------------------------------- |
+| tera    | T       | $10^{12}$  | data rate $1\,\mathrm{Tbit/s}$    |
+| giga    | G       | $10^{9}$   | clock frequency $3\,\mathrm{GHz}$ |
+| mega    | M       | $10^{6}$   | input resistance $10\,\mathrm{M\Omega}$ |
+| kilo    | k       | $10^{3}$   | resistor $4.7\,\mathrm{k\Omega}$  |
+| milli   | m       | $10^{-3}$  | LED current $20\,\mathrm{mA}$     |
+| micro   | µ       | $10^{-6}$  | electrolytic capacitor $100\,\mathrm{\mu F}$ |
+| nano    | n       | $10^{-9}$  | gate delay $10\,\mathrm{ns}$      |
+| pico    | p       | $10^{-12}$ | capacitor $22\,\mathrm{pF}$       |
+
+:::tip[Remember]
+Always calculate in base units with powers of ten. $4.7\,\mathrm{k\Omega} \cdot 2\,\mathrm{mA} = 4.7 \cdot 10^3\,\Omega \cdot 2 \cdot 10^{-3}\,\mathrm{A} = 9.4\,\mathrm{V}$. Kilo times milli cancels out.
+:::
+
+## Charge
+
+**Electric charge** $Q$ is a property of particles. Electrons carry negative charge, protons positive charge. Every charge is an integer multiple of the **elementary charge**:
+
+$$
+e = 1.602\,176\,634 \cdot 10^{-19}\,\mathrm{C}
+$$
+
+Since the 2019 SI redefinition this value is fixed exactly. One coulomb therefore corresponds to about $6.24 \cdot 10^{18}$ electrons. Like charges repel each other, unlike charges attract. In a closed system the total charge is conserved.
+
+In metals the outer electrons of the atoms are not tightly bound. These **free electrons** move through the atomic lattice and make metals good **conductors**. **Insulators** (plastic, glass, ceramics) have practically no free charge carriers; **semiconductors** lie in between (see [Semiconductors and Diodes](/en/electrical-engineering/semiconductors-and-diodes/)).
+
+## Current
+
+**Electric current** is the directed movement of charge carriers. The **current** indicates how much charge flows through a cross-section of a conductor per unit of time:
+
+$$
+I = \frac{Q}{t} \qquad \text{in general} \qquad i(t) = \frac{\mathrm{d}q}{\mathrm{d}t}
+$$
+
+:::tip[Example]
+A battery delivers a current of $2\,\mathrm{A}$ for $10\,\mathrm{s}$. The charge transported is $Q = I \cdot t = 2\,\mathrm{A} \cdot 10\,\mathrm{s} = 20\,\mathrm{C}$, which is about $1.25 \cdot 10^{20}$ electrons.
+:::
+
+The **current density** $J = I/A$ (in $\mathrm{A/mm^2}$) determines how much a conductor heats up. That is why larger currents need thicker cables.
+
+### Conventional and electron current direction
+
+Historically it was defined that current flows from the positive to the negative terminal outside the source. This is the **conventional current direction**, used in all circuit diagrams and formulas. In metals the negatively charged electrons actually move from the negative to the positive terminal; this is the **electron flow direction**. For calculations the difference does not matter as long as you use one direction consistently.
+
+### Direct current and alternating current
+
+**Direct current** (DC) always flows in the same direction with the same magnitude, for example from a battery. **Alternating current** (AC) periodically changes direction and magnitude; in the European grid it is sinusoidal at $50\,\mathrm{Hz}$ (see [Alternating Current](/en/electrical-engineering/alternating-current/)). **Mixed current** consists of a DC and an AC component.
+
+## Voltage
+
+Separating charges requires work. The **voltage** $U$ between two points is the work per charge that is released or must be expended when moving the charge between these points:
+
+$$
+U = \frac{W}{Q}
+$$
+
+Voltage is therefore always a quantity **between two points**. The **potential** $\varphi$ of a point is the voltage relative to a reference point, usually **ground** (GND, $0\,\mathrm{V}$). The voltage between two points is the potential difference $U_{12} = \varphi_1 - \varphi_2$.
+
+In the circuit diagram the **voltage arrow** points from the higher to the lower potential (from plus to minus). For a **load**, current and voltage arrows point in the same direction (passive sign convention); for a **source** they point in opposite directions.
+
+## Resistance and conductance
+
+**Electrical resistance** $R$ describes how strongly a component opposes the flow of current. It is the ratio of voltage to current (Ohm's law, see [DC Circuits](/en/electrical-engineering/dc-circuits/)):
+
+$$
+R = \frac{U}{I} \qquad G = \frac{1}{R} = \frac{I}{U}
+$$
+
+**Conductance** $G$ is the reciprocal of resistance, unit siemens (S). A resistance of $50\,\Omega$ has a conductance of $20\,\mathrm{mS}$. In parallel circuits conductances are more convenient because they simply add up.
+
+### Resistivity
+
+The resistance of a wire depends on the material, the length $l$ and the cross-section $A$:
+
+$$
+R = \frac{\rho \cdot l}{A} = \frac{l}{\kappa \cdot A}
+$$
+
+The **resistivity** $\rho$ (rho) is a material constant. In practice it is given in $\Omega \cdot \mathrm{mm^2/m}$ because cable cross-sections are given in $\mathrm{mm^2}$. Its reciprocal is the **electrical conductivity** $\kappa$ (kappa) in $\mathrm{m/(\Omega \cdot mm^2)}$, also called $\sigma$.
+
+| Material   | $\rho$ in $\Omega \cdot \mathrm{mm^2/m}$ at $20\,°\mathrm{C}$ | $\kappa$ in $\mathrm{m/(\Omega \cdot mm^2)}$ | $\alpha_{20}$ in $1/\mathrm{K}$ |
+| ---------- | ----------------------- | ------------- | ----------------- |
+| Silver     | $0.016$                 | $62$          | $0.0038$          |
+| Copper     | $0.0178$                | $56$          | $0.0039$          |
+| Gold       | $0.022$                 | $45$          | $0.0037$          |
+| Aluminium  | $0.028$                 | $36$          | $0.0040$          |
+| Constantan | $0.49$                  | $2.0$         | about $0$         |
+
+:::tip[Example: cable resistance]
+A device is connected via a $50\,\mathrm{m}$ copper cable with $1.5\,\mathrm{mm^2}$. The current flows there and back, so the conductor length is $100\,\mathrm{m}$:
+
+$$
+R = \frac{0.0178\,\Omega \cdot \mathrm{mm^2/m} \cdot 100\,\mathrm{m}}{1.5\,\mathrm{mm^2}} \approx 1.19\,\Omega
+$$
+
+At $10\,\mathrm{A}$, $11.9\,\mathrm{V}$ are dropped across the cable and are missing at the device (voltage drop).
+:::
+
+### Temperature coefficient
+
+Resistance changes with temperature. For moderate temperature changes the relationship is approximately linear:
+
+$$
+R_\vartheta = R_{20} \cdot (1 + \alpha_{20} \cdot \Delta\vartheta) \qquad \Delta\vartheta = \vartheta - 20\,°\mathrm{C}
+$$
+
+The **temperature coefficient** $\alpha$ gives the relative change in resistance per kelvin. Metals have a positive $\alpha$: the lattice atoms vibrate more strongly at higher temperature and impede the electrons. Such materials are called **PTC** (positive temperature coefficient). Semiconductors and carbon have a negative $\alpha$ because heat releases more charge carriers; they are called **NTC** (negative temperature coefficient) or thermistors. Alloys such as constantan have almost no $\alpha$ and are suitable for precision and measuring resistors.
+
+:::tip[Example]
+A copper winding has a resistance of $10\,\Omega$ at $20\,°\mathrm{C}$. During operation it heats up to $80\,°\mathrm{C}$:
+
+$$
+R_{80} = 10\,\Omega \cdot (1 + 0.0039\,\mathrm{K^{-1}} \cdot 60\,\mathrm{K}) = 12.34\,\Omega
+$$
+
+The resistance rises by more than $23\,\%$. Conversely, the temperature can be determined from the change in resistance; this is how platinum temperature sensors such as the Pt100 ($100\,\Omega$ at $0\,°\mathrm{C}$) work.
+:::
+
+## Energy and power
+
+**Electrical power** indicates how much energy is converted per unit of time. With $R = U/I$ there are three forms:
+
+$$
+P = U \cdot I = I^2 \cdot R = \frac{U^2}{R}
+$$
+
+**Electrical energy** (work) is power multiplied by time:
+
+$$
+W = P \cdot t
+$$
+
+Households calculate in kilowatt-hours: $1\,\mathrm{kWh} = 1000\,\mathrm{W} \cdot 3600\,\mathrm{s} = 3.6 \cdot 10^6\,\mathrm{J}$.
+
+:::tip[Example: energy costs]
+A $2\,\mathrm{kW}$ fan heater runs for $3$ hours. It uses $W = 2\,\mathrm{kW} \cdot 3\,\mathrm{h} = 6\,\mathrm{kWh}$. At a price of $0.30\,€/\mathrm{kWh}$ this costs $1.80\,€$. On the $230\,\mathrm{V}$ grid it draws $I = P/U = 2000\,\mathrm{W} / 230\,\mathrm{V} \approx 8.7\,\mathrm{A}$.
+:::
+
+Components have a **maximum power dissipation**. A resistor in the 0207 package typically handles $0.25\,\mathrm{W}$. If $50\,\mathrm{mA}$ flow through $220\,\Omega$, that is $P = (0.05\,\mathrm{A})^2 \cdot 220\,\Omega = 0.55\,\mathrm{W}$, too much for this resistor.
+
+## Efficiency
+
+No device converts the energy supplied without losses. Usually part of it is lost as heat. The **efficiency** $\eta$ (eta) is the ratio of output power to input power:
+
+$$
+\eta = \frac{P_\mathrm{out}}{P_\mathrm{in}} = \frac{P_\mathrm{out}}{P_\mathrm{out} + P_\mathrm{loss}} \qquad 0 \le \eta < 1
+$$
+
+For stages connected in series the efficiencies multiply: $\eta_\mathrm{total} = \eta_1 \cdot \eta_2 \cdot \ldots$
+
+:::tip[Example]
+A motor draws $1.2\,\mathrm{kW}$ and delivers $1.0\,\mathrm{kW}$ of mechanical power. $\eta = 1.0/1.2 \approx 83.3\,\%$; the power loss is $200\,\mathrm{W}$. If it is supplied by a power supply with $\eta = 90\,\%$, $\eta_\mathrm{total} = 0.833 \cdot 0.9 = 75\,\%$.
+:::
+
+## Voltage sources
+
+An **ideal voltage source** always supplies the same voltage regardless of the current. Real sources (battery, power supply, generator) have an **internal resistance** $R_\mathrm{i}$. They are modelled as an ideal source with the **open-circuit voltage** (source voltage) $U_0$ and an internal resistance in series. The **terminal voltage** falls as the current increases:
+
+$$
+U_\mathrm{T} = U_0 - I \cdot R_\mathrm{i}
+$$
+
+| Operating case | Condition               | Result                                        |
+| -------------- | ----------------------- | --------------------------------------------- |
+| Open circuit   | $R_\mathrm{L} \to \infty$, $I = 0$ | $U_\mathrm{T} = U_0$               |
+| Short circuit  | $R_\mathrm{L} = 0$      | $I_\mathrm{SC} = U_0 / R_\mathrm{i}$, $U_\mathrm{T} = 0$ |
+| Matching       | $R_\mathrm{L} = R_\mathrm{i}$ | maximum power at the load, $U_\mathrm{T} = U_0/2$ |
+
+:::tip[Example]
+A battery has $U_0 = 12\,\mathrm{V}$ and $R_\mathrm{i} = 0.5\,\Omega$. With a $5.5\,\Omega$ load, $I = 12\,\mathrm{V} / (0.5\,\Omega + 5.5\,\Omega) = 2\,\mathrm{A}$ flows and the terminal voltage is $12\,\mathrm{V} - 2\,\mathrm{A} \cdot 0.5\,\Omega = 11\,\mathrm{V}$. In a short circuit $24\,\mathrm{A}$ would flow.
+:::
+
+$R_\mathrm{i}$ is determined from two measurements: $R_\mathrm{i} = \Delta U / \Delta I$. An **ideal current source**, by contrast, always supplies the same current regardless of the load. Real current sources have a very large internal resistance in parallel with the source. Every real voltage source can be converted into an equivalent current source (see [Thévenin and Norton equivalents](/en/electrical-engineering/dc-circuits/#thévenin-and-norton-equivalents)).
+
+## Resistors in practice
+
+### E-series
+
+Resistors, capacitors and Zener diodes are not manufactured in arbitrary values but according to the **E-series** (IEC 60063). The number indicates how many values there are per decade. The values follow a geometric series with the factor $\sqrt[n]{10}$, so that neighbouring values with their tolerances roughly touch each other.
+
+| Series | Values per decade | Tolerance      |
+| ------ | ----------------- | -------------- |
+| E6     | 6                 | $\pm 20\,\%$   |
+| E12    | 12                | $\pm 10\,\%$   |
+| E24    | 24                | $\pm 5\,\%$    |
+| E48    | 48                | $\pm 2\,\%$    |
+| E96    | 96                | $\pm 1\,\%$    |
+| E192   | 192               | $\pm 0.5\,\%$ and better |
+
+You should know the **E12 series** by heart: 1.0 1.2 1.5 1.8 2.2 2.7 3.3 3.9 4.7 5.6 6.8 8.2. The **E24 series** adds 1.1 1.3 1.6 2.0 2.4 3.0 3.6 4.3 5.1 6.2 7.5 9.1 in between. Every value exists in all decades, for example $4.7\,\Omega$, $47\,\Omega$, $470\,\Omega$, $4.7\,\mathrm{k\Omega}$.
+
+If a calculation gives a value that is not in the series, choose the nearest standard value and check whether the circuit still works with it. For series resistors choose the next larger value when in doubt, so that the current does not become too large.
+
+### Colour code
+
+Leaded resistors carry coloured bands. With **4 bands** the first two bands are digits, the third is the multiplier and the fourth the tolerance. With **5 bands** (precision resistors) there are three digits, multiplier and tolerance. The tolerance band usually has a slight gap to the others.
+
+| Colour  | Digit  | Multiplier    | Tolerance       |
+| ------- | ------ | ------------- | --------------- |
+| black   | 0      | $10^0$        |                 |
+| brown   | 1      | $10^1$        | $\pm 1\,\%$     |
+| red     | 2      | $10^2$        | $\pm 2\,\%$     |
+| orange  | 3      | $10^3$        |                 |
+| yellow  | 4      | $10^4$        |                 |
+| green   | 5      | $10^5$        | $\pm 0.5\,\%$   |
+| blue    | 6      | $10^6$        | $\pm 0.25\,\%$  |
+| violet  | 7      | $10^7$        | $\pm 0.1\,\%$   |
+| grey    | 8      | $10^8$        | $\pm 0.05\,\%$  |
+| white   | 9      | $10^9$        |                 |
+| gold    |        | $10^{-1}$     | $\pm 5\,\%$     |
+| silver  |        | $10^{-2}$     | $\pm 10\,\%$    |
+
+:::tip[Examples]
+- yellow, violet, red, gold: $47 \cdot 10^2\,\Omega = 4.7\,\mathrm{k\Omega}$, $\pm 5\,\%$, so between $4.465\,\mathrm{k\Omega}$ and $4.935\,\mathrm{k\Omega}$.
+- brown, black, black, red, brown: $100 \cdot 10^2\,\Omega = 10\,\mathrm{k\Omega}$, $\pm 1\,\%$.
+:::
+
+SMD resistors carry a numeric code: with **103** the first two digits are the value and the last one is the number of zeros, so $10\,000\,\Omega = 10\,\mathrm{k\Omega}$. **4R7** means $4.7\,\Omega$; the R stands for the decimal point.
+
+## Further reading
+
+- [BIPM: The International System of Units (SI Brochure)](https://www.bipm.org/en/publications/si-brochure)
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- IEC 60062: _Marking codes for resistors and capacitors_ and IEC 60063: _Preferred number series for resistors and capacitors_.

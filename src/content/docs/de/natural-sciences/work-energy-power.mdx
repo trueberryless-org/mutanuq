@@ -1,0 +1,168 @@
+---
+title: Arbeit, Energie und Leistung
+description: Mechanische Arbeit, kinetische, potentielle und Spannenergie, Energieerhaltungssatz, Leistung, Wirkungsgrad und die Energieeinheiten J, kWh und eV.
+sidebar:
+  order: 4
+---
+
+Energie ist die zentrale Erhaltungsgröße der Physik. Viele Aufgaben, die mit den Bewegungsgleichungen mühsam sind, lassen sich mit einer Energiebilanz in wenigen Zeilen lösen, weil man den genauen Verlauf der Bewegung nicht kennen muss.
+
+## Arbeit
+
+Wird ein Körper durch eine Kraft $\vec F$ entlang des Weges $\vec s$ verschoben, verrichtet die Kraft **mechanische Arbeit**:
+
+$$
+W = \vec F \cdot \vec s = F \cdot s \cdot \cos\varphi, \qquad [W] = \mathrm{N\,m} = \mathrm{J} \;(\text{Joule})
+$$
+
+$\varphi$ ist der Winkel zwischen Kraft und Weg. Nur die Kraftkomponente in Wegrichtung verrichtet Arbeit:
+
+- $\varphi = 0^\circ$: $W = F s$ (maximal)
+- $\varphi = 90^\circ$: $W = 0$. Wer einen Koffer waagrecht trägt, verrichtet physikalisch keine Arbeit am Koffer, ebenso die Zentripetalkraft bei der Kreisbewegung.
+- $\varphi = 180^\circ$: $W = -F s$. Reibung verrichtet negative Arbeit, sie entzieht dem Körper Energie.
+
+Ist die Kraft nicht konstant, integriert man: $W = \int_{s_1}^{s_2} F(s)\,\mathrm{d}s$. Im $F$-$s$-Diagramm ist die Arbeit die Fläche unter der Kurve.
+
+| Arbeitsform | Formel | Beispiel |
+| --- | --- | --- |
+| Hubarbeit | $W = m g h$ | Kiste ins Regal heben |
+| Beschleunigungsarbeit | $W = \frac{1}{2} m (v_2^2 - v_1^2)$ | Auto beschleunigen |
+| Spannarbeit | $W = \frac{1}{2} D s^2$ | Feder dehnen (Dreiecksfläche unter $F = Ds$) |
+| Reibungsarbeit | $W = \mu F_\mathrm{N} s$ | Schlitten ziehen |
+
+:::tip[Beispiel: Hubarbeit]
+Eine Kiste mit $20\,\mathrm{kg}$ wird $1{,}5\,\mathrm{m}$ hoch gehoben: $W = 20 \cdot 9{,}81 \cdot 1{,}5 = 294\,\mathrm{J}$. Schiebt man sie stattdessen reibungsfrei über eine schiefe Ebene auf dieselbe Höhe, ist die Kraft kleiner, der Weg länger und die Arbeit gleich groß (**goldene Regel der Mechanik**: Was man an Kraft spart, muss man an Weg zusetzen).
+:::
+
+## Energie
+
+**Energie** ist die Fähigkeit, Arbeit zu verrichten (oder Wärme abzugeben, Licht auszusenden). Arbeit ist die Energie, die durch eine Kraft übertragen wird. Beide haben die Einheit Joule.
+
+### Kinetische Energie
+
+Ein bewegter Körper besitzt **kinetische Energie** (Bewegungsenergie):
+
+$$
+E_\mathrm{kin} = \frac{1}{2} m v^2
+$$
+
+Sie wächst quadratisch mit der Geschwindigkeit. Das erklärt, warum Unfälle bei höherer Geschwindigkeit so viel schwerer sind.
+
+:::tip[Beispiel: Auto]
+Ein Auto mit $1200\,\mathrm{kg}$ hat bei $50\,\mathrm{km/h}$ ($13{,}9\,\mathrm{m/s}$) eine kinetische Energie von $\frac{1}{2} \cdot 1200 \cdot 13{,}9^2 = 116\,\mathrm{kJ}$, bei $100\,\mathrm{km/h}$ das Vierfache, $463\,\mathrm{kJ}$. Diese Energie müssen die Bremsen in Wärme umwandeln.
+:::
+
+Der **Arbeitssatz** (Energiesatz für die kinetische Energie) besagt: Die Arbeit der resultierenden Kraft ist gleich der Änderung der kinetischen Energie, $W_\mathrm{res} = \Delta E_\mathrm{kin}$.
+
+### Potentielle Energie
+
+Ein Körper in der Höhe $h$ über einem gewählten Nullniveau besitzt **potentielle Energie** (Lageenergie):
+
+$$
+E_\mathrm{pot} = m g h
+$$
+
+Das Nullniveau ist frei wählbar, physikalisch bedeutsam sind nur Differenzen. Die Formel gilt nahe der Erdoberfläche, wo $g$ konstant ist; allgemein siehe [Gravitation](/de/natural-sciences/gravitation/#potentielle-energie-im-gravitationsfeld).
+
+### Spannenergie
+
+Eine um $s$ gedehnte oder gestauchte Feder speichert **Spannenergie** (elastische Energie):
+
+$$
+E_\mathrm{sp} = \frac{1}{2} D s^2
+$$
+
+Eine Feder mit $D = 500\,\mathrm{N/m}$, $10\,\mathrm{cm}$ zusammengedrückt, speichert $\frac{1}{2} \cdot 500 \cdot 0{,}1^2 = 2{,}5\,\mathrm{J}$.
+
+### Weitere Energieformen
+
+Neben mechanischer Energie gibt es innere (thermische) Energie, chemische Energie, elektrische Energie, Strahlungsenergie und Kernenergie. Energie kann zwischen diesen Formen umgewandelt werden, etwa in einem Kraftwerk oder einem Elektromotor (siehe [Energie und Klima](/de/natural-sciences/energy-and-climate-physics/)).
+
+## Energieerhaltungssatz
+
+> In einem abgeschlossenen System bleibt die Gesamtenergie konstant. Energie kann weder erzeugt noch vernichtet, sondern nur umgewandelt werden.
+
+Wirken nur **konservative Kräfte** (Gewichtskraft, Federkraft), bleibt die **mechanische Energie** erhalten:
+
+$$
+E_\mathrm{kin} + E_\mathrm{pot} + E_\mathrm{sp} = \text{konstant}
+$$
+
+Konservativ heißt eine Kraft, wenn ihre Arbeit nur von Anfangs- und Endpunkt abhängt, nicht vom Weg. Reibung ist **nicht** konservativ: Sie wandelt mechanische Energie in innere Energie (Wärme) um. Die Gesamtenergie bleibt dann trotzdem erhalten, nur die mechanische nicht.
+
+:::tip[Beispiel: Achterbahn]
+Ein Wagen startet aus der Ruhe in $30\,\mathrm{m}$ Höhe. Ohne Reibung gilt $m g h = \frac{1}{2} m v^2$, also am tiefsten Punkt
+
+$$
+v = \sqrt{2 g h} = \sqrt{2 \cdot 9{,}81 \cdot 30} = 24{,}3\,\mathrm{m/s} \approx 87\,\mathrm{km/h}
+$$
+
+Die Masse kürzt sich, und die Form der Strecke spielt keine Rolle. Mit den Bewegungsgleichungen müsste man jeden Abschnitt einzeln berechnen.
+:::
+
+:::tip[Beispiel: Federpistole]
+Eine Feder ($D = 500\,\mathrm{N/m}$, um $10\,\mathrm{cm}$ gespannt) schießt eine Kugel mit $m = 10\,\mathrm{g}$ senkrecht nach oben. Aus $\frac{1}{2} D s^2 = m g h$ folgt $h = \frac{2{,}5}{0{,}01 \cdot 9{,}81} = 25{,}5\,\mathrm{m}$ (ohne Luftwiderstand).
+:::
+
+## Leistung
+
+Die **Leistung** gibt an, wie schnell Arbeit verrichtet oder Energie umgewandelt wird:
+
+$$
+P = \frac{W}{t} = \frac{\Delta E}{\Delta t}, \qquad [P] = \mathrm{J/s} = \mathrm{W} \;(\text{Watt})
+$$
+
+Bei konstanter Kraft in Bewegungsrichtung folgt mit $W = F s$ und $v = s/t$:
+
+$$
+P = F \cdot v
+$$
+
+Darum braucht ein Auto bei hoher Geschwindigkeit viel Leistung: Der Luftwiderstand wächst mit $v^2$, die Leistung zu seiner Überwindung also mit $v^3$.
+
+:::tip[Beispiel: Kran]
+Ein Kran hebt $500\,\mathrm{kg}$ in $20\,\mathrm{s}$ um $12\,\mathrm{m}$. Arbeit $W = 500 \cdot 9{,}81 \cdot 12 = 58{,}9\,\mathrm{kJ}$, Leistung $P = 58\,860/20 = 2{,}94\,\mathrm{kW}$.
+:::
+
+Die veraltete Einheit Pferdestärke ($1\,\mathrm{PS} = 735{,}5\,\mathrm{W}$) findet man noch bei Autos; gesetzlich ist das Kilowatt.
+
+## Wirkungsgrad
+
+Keine Maschine wandelt die zugeführte Energie vollständig in die gewünschte Form um, ein Teil wird zu Wärme. Der **Wirkungsgrad** $\eta$ (eta) ist das Verhältnis von Nutzen zu Aufwand:
+
+$$
+\eta = \frac{P_\mathrm{ab}}{P_\mathrm{zu}} = \frac{E_\mathrm{nutz}}{E_\mathrm{zu}} < 1
+$$
+
+Bei hintereinander geschalteten Wandlern multiplizieren sich die Wirkungsgrade: $\eta_\mathrm{ges} = \eta_1 \cdot \eta_2 \cdot \eta_3 \cdots$
+
+:::tip[Beispiel]
+Der Kranmotor nimmt $3{,}5\,\mathrm{kW}$ elektrische Leistung auf. Sein Wirkungsgrad ist $\eta = 2{,}94/3{,}5 = 0{,}84 = 84\,\%$. Treibt er über ein Getriebe mit $\eta = 0{,}95$ an, ist der Gesamtwirkungsgrad $0{,}84 \cdot 0{,}95 = 0{,}80$.
+:::
+
+| Wandler (Richtwerte) | Wirkungsgrad |
+| --- | --- |
+| großer Elektromotor, Transformator | 95 bis 99 % |
+| Wasserkraftwerk | 85 bis 90 % |
+| Gas-und-Dampf-Kraftwerk | etwa 60 % |
+| Kohlekraftwerk | 40 bis 45 % |
+| Ottomotor im Auto | 25 bis 35 % |
+| Photovoltaikmodul | 18 bis 23 % |
+| Glühlampe (Licht) | etwa 3 % |
+
+## Energieeinheiten
+
+| Einheit | Umrechnung | Verwendung |
+| --- | --- | --- |
+| Joule ($\mathrm{J}$) | $1\,\mathrm{J} = 1\,\mathrm{N\,m} = 1\,\mathrm{W\,s}$ | SI-Einheit |
+| Kilowattstunde ($\mathrm{kWh}$) | $1\,\mathrm{kWh} = 1000\,\mathrm{W} \cdot 3600\,\mathrm{s} = 3{,}6\,\mathrm{MJ}$ | Stromrechnung |
+| Elektronvolt ($\mathrm{eV}$) | $1\,\mathrm{eV} = 1{,}602\,176\,634 \cdot 10^{-19}\,\mathrm{J}$ | Atom- und Kernphysik |
+| Kalorie ($\mathrm{cal}$, veraltet) | $1\,\mathrm{cal} = 4{,}184\,\mathrm{J}$ | Nährwerte („kcal“) |
+
+Ein Elektronvolt ist die Energie, die ein Elektron beim Durchlaufen einer Spannung von $1\,\mathrm{V}$ gewinnt ($W = e \cdot U$). Ein österreichischer Haushalt verbraucht im Jahr grob $3000$ bis $4000\,\mathrm{kWh}$ Strom, das sind etwa $11$ bis $14\,\mathrm{GJ}$.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Arbeit, Energie und Leistung, leifiphysik.de
+- Österreichische Energieagentur: Energieeffizienz und Energieeinheiten, energyagency.at

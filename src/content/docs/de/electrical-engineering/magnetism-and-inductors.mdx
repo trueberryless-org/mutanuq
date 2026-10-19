@@ -1,0 +1,215 @@
+---
+title: Magnetismus und Spule
+description: Magnetisches Feld, Durchflutung, Feldstärke, Fluss und Flussdichte, Lorentzkraft, Induktionsgesetz, Induktivität, Schaltvorgänge an der Spule, Transformator, Motor und Generator.
+sidebar:
+  order: 4
+---
+
+Jeder Strom erzeugt ein Magnetfeld, und jedes sich ändernde Magnetfeld erzeugt eine Spannung. Auf diesen beiden Zusammenhängen beruhen Transformatoren, Motoren, Generatoren, Relais, Lautsprecher, Festplatten, induktives Laden und die Spulen in Schaltnetzteilen.
+
+## Magnetisches Feld
+
+Ein **Magnetfeld** ist der Raum, in dem auf Magnete, magnetisierbare Stoffe (Eisen, Nickel, Kobalt) und bewegte Ladungen Kräfte wirken. **Magnetische Feldlinien** sind immer geschlossen: Außerhalb eines Magneten verlaufen sie vom Nordpol zum Südpol, innen vom Süd- zum Nordpol. Es gibt keine einzelnen magnetischen Pole. Gleichnamige Pole stoßen einander ab, ungleichnamige ziehen einander an.
+
+Um einen **stromdurchflossenen Leiter** bilden die Feldlinien konzentrische Kreise. Die Richtung ergibt die **Rechte-Hand-Regel**: Zeigt der Daumen in die technische Stromrichtung, zeigen die gekrümmten Finger die Richtung der Feldlinien. Bei einer **Spule** überlagern sich die Felder der Windungen. Innen entsteht ein nahezu homogenes Feld, außen ähnelt es dem eines Stabmagneten. Umfassen die Finger die Spule in Stromrichtung, zeigt der Daumen zum Nordpol.
+
+## Magnetische Größen
+
+| Größe                  | Zeichen   | Einheit                                      | Formel                       |
+| ---------------------- | --------- | -------------------------------------------- | ---------------------------- |
+| Durchflutung           | $\Theta$  | A                                            | $\Theta = N \cdot I$         |
+| magnetische Feldstärke | $H$       | A/m                                          | $H = \dfrac{\Theta}{l} = \dfrac{N \cdot I}{l}$ |
+| magnetische Flussdichte | $B$      | Tesla, $1\,\mathrm{T} = 1\,\mathrm{V \cdot s/m^2}$ | $B = \mu_0 \cdot \mu_\mathrm{r} \cdot H$ |
+| magnetischer Fluss     | $\Phi$    | Weber, $1\,\mathrm{Wb} = 1\,\mathrm{V \cdot s}$ | $\Phi = B \cdot A$        |
+
+Die **Durchflutung** ist die Ursache des Feldes: $N$ Windungen mit dem Strom $I$ wirken wie ein Leiter mit dem Strom $N \cdot I$. Die **Feldstärke** verteilt die Durchflutung auf die mittlere Feldlinienlänge $l$. Für einen langen geraden Leiter ist im Abstand $r$ die Feldlinienlänge $2\pi r$, also $H = I/(2\pi r)$.
+
+Die **Flussdichte** $B$ gibt an, wie stark das Feld tatsächlich wirkt. Sie hängt vom Material ab:
+
+$$
+B = \mu_0 \cdot \mu_\mathrm{r} \cdot H \qquad \mu_0 \approx 4\pi \cdot 10^{-7}\,\mathrm{\frac{V \cdot s}{A \cdot m}} \approx 1{,}257 \cdot 10^{-6}\,\mathrm{\frac{H}{m}}
+$$
+
+$\mu_0$ ist die **magnetische Feldkonstante**, $\mu_\mathrm{r}$ die **Permeabilitätszahl** des Materials. Der **Fluss** $\Phi$ ist die Flussdichte mal der durchsetzten Fläche, anschaulich die Gesamtzahl der Feldlinien.
+
+:::tip[Beispiel]
+Eine Spule mit $N = 500$ Windungen und $l = 10\,\mathrm{cm}$ Länge führt $I = 0{,}2\,\mathrm{A}$:
+
+$$
+H = \frac{500 \cdot 0{,}2\,\mathrm{A}}{0{,}1\,\mathrm{m}} = 1000\,\mathrm{\frac{A}{m}} \qquad B_\mathrm{Luft} = 1{,}257 \cdot 10^{-6} \cdot 1000\,\mathrm{T} \approx 1{,}26\,\mathrm{mT}
+$$
+
+Mit einem Eisenkern ($\mu_\mathrm{r} = 1000$) wären es $1{,}26\,\mathrm{T}$. Das zeigt, warum Spulen für starke Felder einen Eisenkern haben.
+:::
+
+### Magnetische Werkstoffe
+
+| Stoffgruppe        | $\mu_\mathrm{r}$         | Beispiele                    |
+| ------------------ | ------------------------ | ---------------------------- |
+| diamagnetisch      | knapp unter $1$          | Kupfer, Wasser, Bismut       |
+| paramagnetisch     | knapp über $1$           | Aluminium, Platin, Luft      |
+| ferromagnetisch    | $100$ bis über $100\,000$, nicht konstant | Eisen, Nickel, Kobalt, Ferrite |
+
+Bei ferromagnetischen Stoffen ist $\mu_\mathrm{r}$ nicht konstant. Die Magnetisierungskennlinie $B(H)$ flacht ab, wenn alle Elementarmagnete ausgerichtet sind (**Sättigung**, bei Eisen etwa $1{,}5$ bis $2\,\mathrm{T}$). Beim Ummagnetisieren durchläuft das Material eine **Hystereseschleife**. Die eingeschlossene Fläche entspricht der Energie, die pro Zyklus als Wärme verloren geht. **Weichmagnetische** Stoffe (Elektroblech, Ferrit) haben eine schmale Schleife und eignen sich für Transformatoren und Spulen. **Hartmagnetische** Stoffe (NdFeB, AlNiCo) haben eine hohe Remanenz und Koerzitivfeldstärke und eignen sich für Dauermagnete.
+
+## Kraft im Magnetfeld
+
+### Kraft auf einen Leiter
+
+Ein stromdurchflossener Leiter der Länge $l$ senkrecht zu einem Magnetfeld erfährt eine Kraft:
+
+$$
+F = B \cdot I \cdot l \qquad \text{allgemein} \quad F = B \cdot I \cdot l \cdot \sin\alpha
+$$
+
+Die Richtung ergibt die **Linke-Hand-Regel** (Motorregel): Feldlinien treten in die Handfläche ein, die Finger zeigen in Stromrichtung, der Daumen zeigt die Kraftrichtung.
+
+:::tip[Beispiel]
+Ein Leiter mit $20\,\mathrm{cm}$ wirksamer Länge führt $10\,\mathrm{A}$ in einem Feld mit $0{,}5\,\mathrm{T}$. Er wird mit $F = 0{,}5\,\mathrm{T} \cdot 10\,\mathrm{A} \cdot 0{,}2\,\mathrm{m} = 1\,\mathrm{N}$ abgelenkt.
+:::
+
+### Lorentzkraft
+
+Die Ursache dieser Kraft ist die **Lorentzkraft** auf jede einzelne bewegte Ladung:
+
+$$
+F = Q \cdot v \cdot B \qquad \vec{F} = Q \cdot \vec{v} \times \vec{B}
+$$
+
+Sie steht senkrecht auf Geschwindigkeit und Feld. Damit werden Elektronenstrahlen abgelenkt, und sie erklärt den **Hall-Effekt**: In einem stromdurchflossenen Plättchen im Magnetfeld werden die Ladungsträger zur Seite gedrängt, quer zum Strom entsteht die Hall-Spannung. **Hall-Sensoren** messen so Magnetfelder, Drehzahlen, Positionen und Ströme ohne Kontakt.
+
+## Induktion
+
+### Induktionsgesetz
+
+Ändert sich der magnetische Fluss durch eine Leiterschleife, wird in ihr eine Spannung **induziert**. Das **faradaysche Induktionsgesetz** für eine Spule mit $N$ Windungen lautet:
+
+$$
+u_\mathrm{i} = -N \cdot \frac{\mathrm{d}\Phi}{\mathrm{d}t} \approx -N \cdot \frac{\Delta\Phi}{\Delta t}
+$$
+
+Es kommt nur auf die **Änderung** an. Ein konstantes Feld induziert nichts. Der Fluss kann sich ändern, weil sich der Strom im felderzeugenden Leiter ändert (Transformator), weil sich ein Magnet bewegt oder weil sich die Schleife im Feld dreht (Generator).
+
+Das Minuszeichen ist die **lenzsche Regel**: Der induzierte Strom ist so gerichtet, dass sein Magnetfeld der Ursache der Induktion entgegenwirkt. Ohne diese Regel würde ein Generator Energie aus dem Nichts erzeugen.
+
+:::tip[Beispiel]
+In einer Spule mit $100$ Windungen ändert sich der Fluss in $10\,\mathrm{ms}$ um $2\,\mathrm{mWb}$. Der Betrag der induzierten Spannung ist
+
+$$
+u_\mathrm{i} = 100 \cdot \frac{0{,}002\,\mathrm{Wb}}{0{,}01\,\mathrm{s}} = 20\,\mathrm{V}
+$$
+:::
+
+Ein gerader Leiter der Länge $l$, der sich mit der Geschwindigkeit $v$ senkrecht durch ein Feld $B$ bewegt, erzeugt die **Bewegungsinduktion** $u_\mathrm{i} = B \cdot l \cdot v$.
+
+**Wirbelströme** entstehen, wenn sich der Fluss in einem massiven leitenden Körper ändert. Sie erwärmen ihn. Bei Induktionsherden und Wirbelstrombremsen ist das gewollt, in Transformatorkernen nicht. Deshalb bestehen Kerne aus dünnen, gegeneinander isolierten Blechen oder aus Ferrit.
+
+### Selbstinduktion und Induktivität
+
+Ändert sich der Strom in einer Spule, ändert sich ihr eigenes Magnetfeld, und sie induziert in sich selbst eine Spannung, die der Änderung entgegenwirkt (**Selbstinduktion**). Wie stark das ist, beschreibt die **Induktivität** $L$:
+
+$$
+u_L = L \cdot \frac{\mathrm{d}i}{\mathrm{d}t} \qquad [L] = \mathrm{\frac{V \cdot s}{A}} = \mathrm{H}\ (\text{Henry})
+$$
+
+Für eine lange Zylinderspule mit Querschnitt $A$ und Länge $l$ gilt:
+
+$$
+L = \frac{\mu_0 \cdot \mu_\mathrm{r} \cdot N^2 \cdot A}{l}
+$$
+
+Die Induktivität wächst mit dem **Quadrat** der Windungszahl.
+
+:::tip[Beispiel]
+Luftspule mit $N = 200$, $A = 1\,\mathrm{cm^2} = 10^{-4}\,\mathrm{m^2}$, $l = 2\,\mathrm{cm}$:
+
+$$
+L = \frac{1{,}257 \cdot 10^{-6}\,\mathrm{H/m} \cdot 200^2 \cdot 10^{-4}\,\mathrm{m^2}}{0{,}02\,\mathrm{m}} \approx 0{,}25\,\mathrm{mH}
+$$
+:::
+
+Eine Spule speichert Energie im Magnetfeld:
+
+$$
+W = \frac{1}{2} L I^2
+$$
+
+Spulen in Reihe addieren sich wie Widerstände ($L = L_1 + L_2$), parallel wie Widerstände parallel, solange sie nicht magnetisch gekoppelt sind.
+
+## Schaltvorgänge an der Spule
+
+Die Spule verhält sich zum Strom wie der Kondensator zur Spannung: Ihr Strom kann sich nicht sprunghaft ändern. Wird eine Spule mit dem Widerstand $R$ (Wicklungswiderstand plus Vorwiderstand) an $U_0$ gelegt, steigt der Strom exponentiell:
+
+$$
+\tau = \frac{L}{R} \qquad i(t) = \frac{U_0}{R} \cdot \left(1 - e^{-t/\tau}\right) \qquad u_L(t) = U_0 \cdot e^{-t/\tau}
+$$
+
+Im ersten Moment liegt die volle Spannung an der Spule, der Strom ist null. Nach $5\tau$ fließt praktisch der Endstrom $U_0/R$, und an einer idealen Spule liegt keine Spannung mehr. Die Werte $63\,\%$ nach $1\tau$ usw. gelten wie beim [Kondensator](/de/electrical-engineering/electric-field-and-capacitors/#laden-und-entladen).
+
+:::tip[Beispiel]
+Ein Relais hat $L = 100\,\mathrm{mH}$ und $R = 50\,\Omega$. Die Zeitkonstante ist $\tau = 0{,}1\,\mathrm{H} / 50\,\Omega = 2\,\mathrm{ms}$. Nach etwa $10\,\mathrm{ms}$ hat der Strom seinen Endwert erreicht.
+:::
+
+### Abschaltspannung und Freilaufdiode
+
+Beim **Abschalten** will die Spule den Strom weitertreiben. Wird der Stromkreis schlagartig unterbrochen, ist $\mathrm{d}i/\mathrm{d}t$ sehr groß und es entsteht eine hohe **Induktionsspannung**, oft hunderte Volt. Sie kann Transistoren zerstören und erzeugt an mechanischen Kontakten Funken. Abhilfe schafft eine **Freilaufdiode** antiparallel zur Spule (Kathode an Plus): Sie sperrt im Betrieb und übernimmt beim Abschalten den Strom, der dann über den Spulenwiderstand abklingt. Jede Relais- oder Motoransteuerung mit einem [Transistor](/de/electrical-engineering/transistors/) braucht deshalb eine solche Diode.
+
+Gezielt genutzt wird die Abschaltspannung in der Zündspule von Benzinmotoren und im [Aufwärtswandler](/de/electrical-engineering/power-supplies/#schaltregler).
+
+## Transformator
+
+Ein **Transformator** besteht aus zwei Spulen auf einem gemeinsamen Eisenkern. Eine Wechselspannung an der **Primärspule** ($N_1$) erzeugt einen sich ständig ändernden Fluss, der über den Kern auch die **Sekundärspule** ($N_2$) durchsetzt und dort eine Spannung induziert. Mit Gleichspannung funktioniert ein Transformator nicht, weil sich der Fluss nicht ändert.
+
+Für den idealen (verlustfreien) Transformator gilt mit dem **Übersetzungsverhältnis** $\ddot{u}$:
+
+$$
+\ddot{u} = \frac{N_1}{N_2} = \frac{U_1}{U_2} = \frac{I_2}{I_1} \qquad P_1 = P_2
+$$
+
+Die Spannungen verhalten sich wie die Windungszahlen, die Ströme umgekehrt. Ein Lastwiderstand erscheint auf der Primärseite mit dem Faktor $\ddot{u}^2$ (**Impedanztransformation**): $Z_1 = \ddot{u}^2 \cdot Z_2$.
+
+:::tip[Beispiel]
+Ein Netztransformator setzt $230\,\mathrm{V}$ auf $12\,\mathrm{V}$ herab und hat primär $1150$ Windungen. $\ddot{u} = 230/12 \approx 19{,}17$, also braucht die Sekundärwicklung $N_2 = 1150 \cdot 12/230 = 60$ Windungen. Entnimmt man sekundär $2\,\mathrm{A}$, fließen primär (ideal) $I_1 = 2\,\mathrm{A}/19{,}17 \approx 0{,}104\,\mathrm{A}$. Die Leistung ist auf beiden Seiten $24\,\mathrm{W}$.
+:::
+
+Reale Transformatoren haben **Kupferverluste** (Wicklungswiderstand, $I^2 R$) und **Eisenverluste** (Hysterese und Wirbelströme). Große Transformatoren erreichen Wirkungsgrade über $99\,\%$. Weitere Aufgaben neben dem Spannungsändern sind die **galvanische Trennung** (keine leitende Verbindung zwischen Netz und Sekundärseite, wichtig für die [Sicherheit](/de/electrical-engineering/electrical-safety/)) und die Anpassung von Impedanzen, etwa in Netzwerkkarten (Ethernet-Übertrager).
+
+Weil die induzierte Spannung proportional zu $\mathrm{d}\Phi/\mathrm{d}t$ ist, braucht ein Transformator bei höherer Frequenz für dieselbe Leistung viel weniger Eisen und Windungen. Darauf beruht die geringe Größe von [Schaltnetzteilen](/de/electrical-engineering/power-supplies/).
+
+Das Stromnetz nutzt Transformatoren, um elektrische Energie bei hoher Spannung (in Österreich bis $380\,\mathrm{kV}$) und damit kleinem Strom zu übertragen. Die Leitungsverluste $I^2 R$ sinken mit dem Quadrat des Stroms.
+
+## Motoren und Generatoren
+
+### Generator
+
+Dreht sich eine Spule in einem Magnetfeld (oder ein Magnet in einer Spule), ändert sich der Fluss durch die Spule sinusförmig, und es wird eine **sinusförmige Wechselspannung** induziert:
+
+$$
+u(t) = \hat{u} \cdot \sin(\omega t) \qquad \hat{u} = N \cdot B \cdot A \cdot \omega
+$$
+
+So erzeugen Kraftwerksgeneratoren und Fahrraddynamos Strom. Drei um $120°$ versetzte Wicklungen liefern [Dreiphasenwechselstrom](/de/electrical-engineering/alternating-current/#dreiphasenwechselstrom).
+
+### Elektromotoren
+
+Ein Motor ist die Umkehrung des Generators: Die Kraft auf stromdurchflossene Leiter im Magnetfeld erzeugt ein Drehmoment.
+
+| Motortyp                        | Prinzip                                                                                         | Anwendung                          |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Gleichstrommotor (bürstenbehaftet) | Ein **Kommutator** polt den Strom im Läufer bei jeder halben Umdrehung um, damit das Drehmoment gleich gerichtet bleibt | Spielzeug, Kfz-Hilfsantriebe |
+| bürstenloser Gleichstrommotor (BLDC) | Eine Elektronik schaltet die Ständerwicklungen um, der Läufer ist ein Dauermagnet             | Lüfter, Festplatten, Drohnen       |
+| Schrittmotor                    | Der Läufer folgt schrittweise den nacheinander bestromten Wicklungen                           | 3D-Drucker, Positionierung         |
+| Asynchronmotor                  | Ein **Drehfeld** aus drei Phasen induziert Ströme im Kurzschlussläufer, der etwas langsamer als das Feld läuft (Schlupf) | Industrieantriebe, Pumpen |
+| Synchronmotor                   | Der Läufer (Magnet) dreht sich genau mit dem Drehfeld                                          | Elektroautos, Uhren                |
+
+Jeder drehende Motor wirkt gleichzeitig als Generator und erzeugt eine Gegenspannung, die mit der Drehzahl steigt. Deshalb nimmt ein Motor beim Anlaufen (Drehzahl null) einen viel größeren Strom auf als im Betrieb.
+
+### Relais
+
+Ein **Relais** ist ein elektromagnetischer Schalter: Ein kleiner Steuerstrom durch die Spule zieht einen Anker an, der Kontakte für einen getrennten Laststromkreis schließt oder öffnet. Relais trennen Steuer- und Laststromkreis galvanisch, sind aber langsam und verschleißen. Halbleiter-Relais (Solid State Relays) schalten ohne Mechanik.
+
+## Weiterführende Quellen
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- [Wikipedia: Elektromagnetische Induktion](https://de.wikipedia.org/wiki/Elektromagnetische_Induktion)
+- Fischer, R.: _Elektrische Maschinen_. Hanser.

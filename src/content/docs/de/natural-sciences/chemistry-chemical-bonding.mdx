@@ -1,0 +1,119 @@
+---
+title: Chemische Bindung
+description: Ionenbindung, Elektronenpaarbindung mit Lewis-Formeln und Oktettregel, Metallbindung, Molekülgeometrie nach VSEPR sowie zwischenmolekulare Kräfte und ihre Folgen.
+sidebar:
+  order: 33
+---
+
+Atome verbinden sich, weil der gebundene Zustand energieärmer ist als die getrennten Atome. Meist erreichen sie dabei eine Edelgaskonfiguration (siehe [Valenzelektronen](/de/natural-sciences/chemistry-atomic-structure/#valenzelektronen)). Welche Bindungsart entsteht, hängt von der Differenz der [Elektronegativitäten](/de/natural-sciences/chemistry-periodic-table/#periodische-trends) $\Delta\mathrm{EN}$ ab.
+
+| Bindungspartner          | $\Delta\mathrm{EN}$ (Richtwert) | Bindung                         | Beispiel              |
+| ------------------------ | ------------------------------- | ------------------------------- | --------------------- |
+| Nichtmetall + Nichtmetall | unter 0,4                      | unpolare Elektronenpaarbindung  | $\mathrm{H_2}$, $\mathrm{Cl_2}$, $\mathrm{CH_4}$ |
+| Nichtmetall + Nichtmetall | 0,4 bis 1,7                    | polare Elektronenpaarbindung    | $\mathrm{H_2O}$, $\mathrm{HCl}$, $\mathrm{NH_3}$ |
+| Metall + Nichtmetall     | über 1,7                        | Ionenbindung                    | $\mathrm{NaCl}$, $\mathrm{MgO}$ |
+| Metall + Metall          | (klein)                         | Metallbindung                   | Cu, Fe, Messing       |
+
+Die Grenzen sind fließend und in Lehrbüchern unterschiedlich angegeben; es gibt alle Übergänge zwischen rein kovalenter und rein ionischer Bindung.
+
+## Ionenbindung
+
+Ein Metallatom gibt Elektronen ab, ein Nichtmetallatom nimmt sie auf. Die entstandenen **Kationen** und **Anionen** ziehen sich elektrostatisch an und bilden ein regelmäßiges **Ionengitter**. Im Natriumchlorid-Gitter ist jedes $\mathrm{Na^+}$ von sechs $\mathrm{Cl^-}$ umgeben und umgekehrt (Koordinationszahl 6). Es gibt keine einzelnen Moleküle; die Formel $\mathrm{NaCl}$ gibt nur das Zahlenverhältnis an.
+
+Die **Verhältnisformel** eines Salzes ergibt sich daraus, dass die Gesamtladung null ist:
+
+| Ionen                                   | Formel             |
+| --------------------------------------- | ------------------ |
+| $\mathrm{Ca^{2+}}$ und $\mathrm{Cl^-}$  | $\mathrm{CaCl_2}$  |
+| $\mathrm{Al^{3+}}$ und $\mathrm{O^{2-}}$ | $\mathrm{Al_2O_3}$ |
+| $\mathrm{Na^+}$ und $\mathrm{SO_4^{2-}}$ | $\mathrm{Na_2SO_4}$ |
+| $\mathrm{NH_4^+}$ und $\mathrm{NO_3^-}$ | $\mathrm{NH_4NO_3}$ |
+
+**Eigenschaften von Salzen**: hohe Schmelztemperaturen (NaCl $801\,\mathrm{°C}$), weil viele starke Anziehungskräfte überwunden werden müssen; hart, aber spröde, weil beim Verschieben einer Gitterebene gleich geladene Ionen nebeneinander zu liegen kommen und sich abstoßen; als Feststoff nicht leitend, als Schmelze oder in Wasser gelöst leitend, weil die Ionen dann beweglich sind.
+
+## Elektronenpaarbindung
+
+Zwischen Nichtmetallatomen entsteht eine **Elektronenpaarbindung** (kovalente Bindung, Atombindung): Die Atome teilen sich ein oder mehrere Elektronenpaare, die beiden Kernen gemeinsam gehören. So entstehen **Moleküle**.
+
+### Lewis-Formeln und Oktettregel
+
+In der **Lewis-Formel** (Valenzstrichformel) steht jeder Strich für ein Elektronenpaar: zwischen zwei Atomen für ein bindendes Paar, an einem Atom für ein freies (nichtbindendes) Paar. Nach der **Oktettregel** ist jedes Atom der 2. Periode von vier Elektronenpaaren umgeben, Wasserstoff von einem.
+
+Vorgehen beim Zeichnen:
+
+1. Valenzelektronen aller Atome addieren (bei Ionen die Ladung berücksichtigen) und durch zwei teilen: Zahl der Elektronenpaare.
+2. Gerüst aufstellen; das Atom mit den meisten Bindungen (meist das am wenigsten elektronegative, nie H) steht in der Mitte.
+3. Einfachbindungen setzen, restliche Paare als freie Paare verteilen, bis jedes Atom ein Oktett hat.
+4. Fehlen Elektronen zum Oktett, freie Paare in Doppel- oder Dreifachbindungen umwandeln.
+
+| Molekül          | Valenzelektronen (Paare) | Bindungen am Zentralatom   | freie Paare am Zentralatom | Lewis-Formel (ohne freie Paare der Randatome) |
+| ---------------- | ------------------------ | -------------------------- | -------------------------- | ------------------------------- |
+| $\mathrm{H_2O}$  | $6 + 2 = 8$ (4)          | 2 Einfachbindungen         | 2                          | $\mathrm{H{-}\overline{\underline{O}}{-}H}$ |
+| $\mathrm{NH_3}$  | $5 + 3 = 8$ (4)          | 3 Einfachbindungen         | 1                          | $\mathrm{H{-}\overline{N}{-}H}$, drittes H unten am N |
+| $\mathrm{CH_4}$  | $4 + 4 = 8$ (4)          | 4 Einfachbindungen         | 0                          | C mit vier Strichen zu je einem H |
+| $\mathrm{CO_2}$  | $4 + 12 = 16$ (8)        | 2 Doppelbindungen          | 0                          | $\mathrm{O{=}C{=}O}$, je 2 freie Paare an O |
+| $\mathrm{N_2}$   | $10$ (5)                 | 1 Dreifachbindung          | je 1                       | $\mathrm{\lvert N{\equiv}N \rvert}$ |
+| $\mathrm{HCN}$   | $1 + 4 + 5 = 10$ (5)     | 1 Einfach-, 1 Dreifachbindung | 0 (am N: 1)             | $\mathrm{H{-}C{\equiv}N\rvert}$ |
+
+:::tip[Beispiel: Kohlenstoffdioxid]
+C hat 4, jedes O hat 6 Valenzelektronen: $4 + 2 \cdot 6 = 16$ Elektronen, also 8 Paare. Mit zwei Einfachbindungen hätte C kein Oktett. Erst mit zwei Doppelbindungen $\mathrm{O{=}C{=}O}$ und je zwei freien Paaren an den Sauerstoffatomen haben alle drei Atome ein Oktett.
+:::
+
+Ausnahmen gibt es: Bor in $\mathrm{BF_3}$ hat nur sechs Elektronen, Schwefel in $\mathrm{SF_6}$ zwölf (Elemente ab der 3. Periode können das Oktett überschreiten). Bei der **koordinativen Bindung** stammen beide Bindungselektronen von einem Partner, etwa wenn Ammoniak mit seinem freien Paar ein Proton bindet: $\mathrm{NH_3 + H^+ \rightarrow NH_4^+}$.
+
+### Polare und unpolare Bindungen
+
+Bei gleicher Elektronegativität (etwa $\mathrm{Cl{-}Cl}$) sind die Bindungselektronen gleichmäßig verteilt: **unpolare** Bindung. Bei unterschiedlicher EN zieht das elektronegativere Atom die Elektronen stärker zu sich; es erhält eine **Partialladung** $\delta^-$, der Partner $\delta^+$. In $\mathrm{H{-}Cl}$ ist $\Delta\mathrm{EN} = 3{,}16 - 2{,}20 = 0{,}96$, die Bindung ist **polar**.
+
+Ob ein Molekül als Ganzes ein **Dipol** ist, hängt zusätzlich von seiner Form ab: $\mathrm{CO_2}$ hat zwei polare Bindungen, ist aber linear, die beiden Teildipole heben sich auf. $\mathrm{H_2O}$ ist gewinkelt und deshalb ein Dipol.
+
+## Metallbindung
+
+In Metallen geben die Atome ihre Valenzelektronen ab. Die positiven **Atomrümpfe** bilden ein Metallgitter, die Elektronen bewegen sich frei als **Elektronengas** zwischen ihnen und halten das Gitter zusammen. Das Modell erklärt die typischen Metalleigenschaften:
+
+- **elektrische Leitfähigkeit**: Die freien Elektronen bewegen sich beim Anlegen einer Spannung gerichtet. Mit steigender Temperatur schwingen die Rümpfe stärker und behindern sie, der Widerstand steigt.
+- **Wärmeleitfähigkeit**: Die Elektronen transportieren Bewegungsenergie.
+- **Verformbarkeit** (Duktilität): Gitterebenen können gegeneinander gleiten, ohne dass die Bindung reißt, weil das Elektronengas überall bindet. Deshalb lassen sich Kupferdrähte ziehen.
+- **metallischer Glanz**: Die freien Elektronen reflektieren Licht.
+
+## Molekülgeometrie (VSEPR)
+
+Das **VSEPR-Modell** (_Valence Shell Electron Pair Repulsion_, Elektronenpaarabstoßungsmodell) sagt die räumliche Form von Molekülen voraus: Die Elektronenpaare um ein Zentralatom stoßen sich ab und ordnen sich möglichst weit voneinander entfernt an. Mehrfachbindungen zählen wie eine Bindung, freie Elektronenpaare brauchen etwas mehr Platz als bindende.
+
+| Elektronenpaare (bindend + frei) | Anordnung       | Molekülform           | Winkel           | Beispiel                |
+| -------------------------------- | --------------- | --------------------- | ---------------- | ----------------------- |
+| 2 + 0                            | linear          | linear                | $180°$           | $\mathrm{CO_2}$, $\mathrm{BeCl_2}$ |
+| 3 + 0                            | trigonal planar | trigonal planar       | $120°$           | $\mathrm{BF_3}$         |
+| 4 + 0                            | tetraedrisch    | tetraedrisch          | $109{,}5°$       | $\mathrm{CH_4}$, $\mathrm{SiCl_4}$ |
+| 3 + 1                            | tetraedrisch    | trigonal-pyramidal    | $\approx 107°$   | $\mathrm{NH_3}$         |
+| 2 + 2                            | tetraedrisch    | gewinkelt             | $\approx 104{,}5°$ | $\mathrm{H_2O}$       |
+| 6 + 0                            | oktaedrisch     | oktaedrisch           | $90°$            | $\mathrm{SF_6}$         |
+
+## Zwischenmolekulare Kräfte
+
+Zwischen Molekülen wirken schwächere Anziehungskräfte als innerhalb der Moleküle. Sie bestimmen Schmelz- und Siedetemperatur, Löslichkeit und Viskosität.
+
+| Kraft                          | Ursache                                                       | Stärke        | Beispiel                 |
+| ------------------------------ | ------------------------------------------------------------- | ------------- | ------------------------ |
+| **Van-der-Waals-Kräfte** (London-Kräfte) | kurzzeitige, zufällige Ladungsverschiebungen erzeugen induzierte Dipole; wirken zwischen allen Molekülen, stärker bei größerer Oberfläche und Elektronenzahl | schwach | Alkane, Edelgase, $\mathrm{I_2}$ |
+| **Dipol-Dipol-Kräfte**         | Anziehung zwischen permanenten Dipolen                        | mittel        | $\mathrm{HCl}$, Aceton   |
+| **Wasserstoffbrücken**         | stark positiviertes H (gebunden an F, O oder N) zieht ein freies Elektronenpaar eines F-, O- oder N-Atoms an | stark (für zwischenmolekulare Kräfte) | $\mathrm{H_2O}$, $\mathrm{NH_3}$, $\mathrm{HF}$, DNA |
+| **Ion-Dipol-Kräfte**           | Ionen ziehen Dipolmoleküle an (**Hydratation**)               | stark         | Salz löst sich in Wasser |
+
+Alle diese Kräfte sind viel schwächer als Ionen-, Elektronenpaar- oder Metallbindungen.
+
+### Auswirkungen auf Siedetemperaturen
+
+- In einer homologen Reihe steigt die Siedetemperatur mit der Molekülgröße, weil die Van-der-Waals-Kräfte zunehmen: Methan $-162\,\mathrm{°C}$, Propan $-42\,\mathrm{°C}$, Octan $126\,\mathrm{°C}$.
+- Wasserstoffbrücken heben die Siedetemperatur stark an. Wasser ($M = 18\,\mathrm{g/mol}$) siedet bei $100\,\mathrm{°C}$, das schwerere Schwefelwasserstoff $\mathrm{H_2S}$ ($34\,\mathrm{g/mol}$) schon bei $-60\,\mathrm{°C}$. Ohne Wasserstoffbrücken wäre Wasser bei Raumtemperatur ein Gas.
+- Im Eis ordnen die Wasserstoffbrücken die Moleküle in einem weitmaschigen Gitter. Deshalb ist Eis weniger dicht als flüssiges Wasser.
+
+### Löslichkeit
+
+Es gilt die Faustregel **„Ähnliches löst sich in Ähnlichem“**: Polare Stoffe und Salze lösen sich in polaren Lösungsmitteln (Wasser, **hydrophil**), unpolare Stoffe in unpolaren Lösungsmitteln (Benzin, Öl, **lipophil** bzw. **hydrophob**). Öl löst sich nicht in Wasser, weil die Wassermoleküle untereinander Wasserstoffbrücken bilden und die unpolaren Ölmoleküle ausschließen. Tenside (Seifen) haben einen polaren und einen unpolaren Teil und vermitteln deshalb zwischen beiden. Ethanol mischt sich mit Wasser und mit Benzin, weil es eine polare OH-Gruppe und einen kleinen unpolaren Rest hat.
+
+## Weiterführende Quellen
+
+- Charles E. Mortimer, Ulrich Müller: _Chemie. Das Basiswissen der Chemie_, Thieme
+- [Chemical Bonding](https://chem.libretexts.org/Bookshelves/General_Chemistry) (LibreTexts General Chemistry)
+- [IUPAC Gold Book](https://goldbook.iupac.org/) (Definitionen der Fachbegriffe)

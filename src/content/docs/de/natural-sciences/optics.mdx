@@ -1,0 +1,245 @@
+---
+title: Optik
+description: Lichtgeschwindigkeit, Reflexion, Brechung und Snelliussches Gesetz, Totalreflexion und Glasfaser, Linsen und Spiegel mit Abbildungsgleichung, optische Geräte, Beugung, Interferenz, Polarisation und elektromagnetisches Spektrum.
+sidebar:
+  order: 12
+---
+
+Die **Optik** ist die Lehre vom Licht. Je nach Fragestellung beschreibt man Licht als Strahl (geometrische Optik), als Welle (Wellenoptik) oder als Strom von Photonen ([Quantenoptik](/de/natural-sciences/modern-physics/#photonen)). Für Spiegel, Linsen und Kameras reicht das Strahlenmodell; Farben dünner Schichten, Beugung und Polarisation erklärt erst das Wellenmodell.
+
+## Licht und Lichtgeschwindigkeit
+
+Licht ist eine elektromagnetische Welle mit Wellenlängen von etwa $380\,\mathrm{nm}$ (violett) bis $780\,\mathrm{nm}$ (rot). Im Vakuum breitet es sich mit der **Lichtgeschwindigkeit**
+
+$$
+c = 299\,792\,458\,\mathrm{m/s} \approx 3 \cdot 10^8\,\mathrm{m/s}
+$$
+
+aus. Seit 1983 ist dieser Wert exakt festgelegt und definiert den Meter. Licht braucht von der Sonne zur Erde etwa $8{,}3\,\mathrm{min}$, vom Mond $1{,}3\,\mathrm{s}$. In Materie ist Licht langsamer. Das Verhältnis heißt **Brechzahl** (Brechungsindex):
+
+$$
+n = \frac{c}{c_\mathrm{Medium}} \ge 1
+$$
+
+| Medium | Brechzahl $n$ (gelbes Licht) |
+| --- | --- |
+| Vakuum | 1 (exakt) |
+| Luft | 1,0003 (meist als 1 gerechnet) |
+| Wasser | 1,33 |
+| Glas (Kronglas) | etwa 1,5 |
+| Kern einer Glasfaser | etwa 1,47 |
+| Diamant | 2,42 |
+
+Ein Medium mit größerem $n$ heißt **optisch dichter**.
+
+## Reflexion
+
+Trifft Licht auf eine glatte Grenzfläche, wird es reflektiert. Es gilt das **Reflexionsgesetz**:
+
+> Einfallswinkel gleich Reflexionswinkel. Einfallender Strahl, Einfallslot und reflektierter Strahl liegen in einer Ebene.
+
+Die Winkel werden zum **Einfallslot** (Senkrechte auf die Fläche) gemessen. An rauen Flächen wird Licht in alle Richtungen gestreut (**diffuse Reflexion**); deshalb sieht man nicht leuchtende Gegenstände überhaupt.
+
+Ein **ebener Spiegel** erzeugt ein virtuelles, aufrechtes, gleich großes Bild, das genauso weit hinter dem Spiegel liegt wie der Gegenstand davor.
+
+## Brechung
+
+Beim Übergang in ein anderes Medium ändert Licht seine Richtung, weil sich seine Geschwindigkeit ändert. Das **Brechungsgesetz von Snellius** lautet:
+
+$$
+n_1 \sin\alpha = n_2 \sin\beta
+$$
+
+$\alpha$ ist der Einfallswinkel, $\beta$ der Brechungswinkel, beide zum Lot gemessen. Beim Übergang ins optisch dichtere Medium wird der Strahl **zum Lot hin** gebrochen, beim Übergang ins dünnere **vom Lot weg**.
+
+:::tip[Beispiel]
+Licht fällt aus Luft unter $30^\circ$ auf Glas ($n = 1{,}5$): $\sin\beta = \frac{1 \cdot \sin 30^\circ}{1{,}5} = 0{,}333$, also $\beta = 19{,}5^\circ$.
+:::
+
+Brechung erklärt, warum ein Stab im Wasser geknickt wirkt und warum ein Schwimmbecken flacher aussieht, als es ist.
+
+### Dispersion
+
+Die Brechzahl hängt von der Wellenlänge ab: Blaues Licht wird stärker gebrochen als rotes (**Dispersion**). Ein Prisma zerlegt weißes Licht deshalb in seine Spektralfarben; ein Regenbogen entsteht durch Brechung und Reflexion in Wassertropfen. Bei Linsen verursacht die Dispersion Farbsäume (chromatische Aberration).
+
+## Totalreflexion
+
+Geht Licht vom optisch dichteren ins dünnere Medium ($n_1 > n_2$), wird der Brechungswinkel größer als der Einfallswinkel. Ab dem **Grenzwinkel** $\alpha_\mathrm{G}$ wäre $\beta = 90^\circ$; für größere Winkel wird das Licht vollständig reflektiert (**Totalreflexion**):
+
+$$
+\sin\alpha_\mathrm{G} = \frac{n_2}{n_1}
+$$
+
+Für Glas gegen Luft ist $\alpha_\mathrm{G} = \arcsin(1/1{,}5) = 41{,}8^\circ$, für Wasser gegen Luft $48{,}8^\circ$. Totalreflexion ist verlustfrei, deshalb verwendet man Umlenkprismen in Ferngläsern statt Spiegeln. Das Funkeln von Diamanten beruht auf dem kleinen Grenzwinkel von $24{,}4^\circ$.
+
+### Lichtwellenleiter
+
+Eine **Glasfaser** besteht aus einem Kern mit höherer Brechzahl und einem Mantel mit niedrigerer. Licht, das flach genug auf die Grenzfläche trifft, wird immer wieder totalreflektiert und so über Kilometer geleitet. Glasfasern übertragen Daten in Netzwerken mit Infrarotlicht bei $850\,\mathrm{nm}$, $1310\,\mathrm{nm}$ oder $1550\,\mathrm{nm}$, wo die Dämpfung des Glases am geringsten ist.
+
+Die **numerische Apertur** gibt an, unter welchem Winkel $\theta_\mathrm{max}$ (aus Luft) Licht noch eingekoppelt wird:
+
+$$
+\mathrm{NA} = \sin\theta_\mathrm{max} = \sqrt{n_\mathrm{Kern}^2 - n_\mathrm{Mantel}^2}
+$$
+
+:::tip[Beispiel: Glasfaser]
+Kern $n = 1{,}48$, Mantel $n = 1{,}46$: Grenzwinkel im Kern $\arcsin(1{,}46/1{,}48) = 80{,}6^\circ$ (gegen das Lot), $\mathrm{NA} = \sqrt{1{,}48^2 - 1{,}46^2} = 0{,}24$, Akzeptanzwinkel $\theta_\mathrm{max} = 14{,}0^\circ$.
+:::
+
+| Fasertyp | Kerndurchmesser | Eigenschaft |
+| --- | --- | --- |
+| Multimode | $50$ oder $62{,}5\,\mathrm{\mu m}$ | viele Lichtwege mit verschiedener Laufzeit (Modendispersion), kurze Strecken im Gebäude |
+| Singlemode | etwa $9\,\mathrm{\mu m}$ | nur ein Lichtweg, große Reichweiten und Bandbreiten |
+
+## Linsen
+
+Eine **Linse** ist ein lichtdurchlässiger Körper mit gekrümmten Flächen, der Licht durch Brechung sammelt oder zerstreut.
+
+- **Sammellinse** (konvex, in der Mitte dicker): Parallel einfallendes Licht trifft sich im **Brennpunkt** $F'$. Die Brennweite $f$ ist positiv.
+- **Zerstreuungslinse** (konkav, in der Mitte dünner): Parallel einfallendes Licht läuft so auseinander, als käme es von einem Brennpunkt vor der Linse. Die Brennweite ist negativ.
+
+Die **Brechkraft** $D = \frac{1}{f}$ wird in **Dioptrien** angegeben ($1\,\mathrm{dpt} = 1\,\mathrm{m^{-1}}$). Eine Lesebrille mit $+2\,\mathrm{dpt}$ hat $f = 50\,\mathrm{cm}$. Bei dünnen Linsen, die eng hintereinander stehen, addieren sich die Brechkräfte.
+
+### Bildkonstruktion
+
+Für dünne Linsen genügen drei ausgezeichnete Strahlen, zwei davon reichen zur Konstruktion:
+
+1. **Parallelstrahl** wird zum **Brennstrahl** (geht durch $F'$).
+2. **Mittelpunktstrahl** geht ungebrochen durch die Linsenmitte.
+3. **Brennstrahl** (durch $F$) wird zum **Parallelstrahl**.
+
+![Bildkonstruktion an einer Sammellinse: Gegenstand G außerhalb der doppelten Brennweite, Parallelstrahl, Mittelpunktstrahl und Brennstrahl schneiden sich im verkleinerten, umgekehrten Bild B zwischen F' und 2F'](/images/natural-sciences/lens-image_de.svg)
+
+### Abbildungsgleichung
+
+Mit Gegenstandsweite $g$, Bildweite $b$, Gegenstandsgröße $G$ und Bildgröße $B$ gelten die **Linsengleichung** und der **Abbildungsmaßstab**:
+
+$$
+\frac{1}{f} = \frac{1}{g} + \frac{1}{b}, \qquad \beta = \frac{B}{G} = \frac{b}{g}
+$$
+
+Ein negatives $b$ bedeutet ein virtuelles Bild auf der Gegenstandsseite.
+
+| Gegenstandsweite | Bild | Anwendung |
+| --- | --- | --- |
+| $g > 2f$ | reell, umgekehrt, verkleinert, $f < b < 2f$ | Kamera, Auge |
+| $g = 2f$ | reell, umgekehrt, gleich groß, $b = 2f$ | Kopierer |
+| $f < g < 2f$ | reell, umgekehrt, vergrößert, $b > 2f$ | Projektor (Beamer), Objektiv des Mikroskops |
+| $g = f$ | kein Bild (paralleles Licht) | Scheinwerfer, Kollimator |
+| $g < f$ | virtuell, aufrecht, vergrößert | Lupe |
+
+:::tip[Beispiel: Sammellinse]
+$f = 5\,\mathrm{cm}$, Gegenstand $G = 3\,\mathrm{cm}$ in $g = 15\,\mathrm{cm}$ Entfernung (wie in der Abbildung):
+
+$$
+\frac{1}{b} = \frac{1}{5} - \frac{1}{15} = \frac{2}{15} \quad\Rightarrow\quad b = 7{,}5\,\mathrm{cm}, \qquad B = G \cdot \frac{b}{g} = 3 \cdot 0{,}5 = 1{,}5\,\mathrm{cm}
+$$
+
+Das Bild ist reell, umgekehrt und halb so groß. Steht der Gegenstand dagegen bei $g = 3\,\mathrm{cm}$ (innerhalb der Brennweite), ist $\frac{1}{b} = \frac{1}{5} - \frac{1}{3} = -\frac{2}{15}$, also $b = -7{,}5\,\mathrm{cm}$: ein virtuelles, aufrechtes Bild, $2{,}5$-fach vergrößert (Lupe).
+:::
+
+## Hohlspiegel
+
+Ein **Hohlspiegel** (Konkavspiegel) wirkt wie eine Sammellinse; für achsennahe Strahlen ist seine Brennweite der halbe Krümmungsradius, $f = \frac{r}{2}$. Es gilt dieselbe Abbildungsgleichung. Anwendungen: Spiegelteleskop, Scheinwerfer (Lampe im Brennpunkt), Rasier- und Kosmetikspiegel (Gesicht innerhalb der Brennweite, vergrößertes virtuelles Bild), Solarkraftwerk. Ein **Wölbspiegel** (konvex) wirkt zerstreuend und liefert verkleinerte, aufrechte Bilder mit großem Blickfeld (Rückspiegel, Verkehrsspiegel).
+
+## Optische Geräte
+
+### Das Auge
+
+Hornhaut und Linse bilden zusammen ein Sammellinsensystem (rund $60\,\mathrm{dpt}$, davon den Großteil die Hornhaut), das ein reelles, umgekehrtes, verkleinertes Bild auf die **Netzhaut** wirft. Das Gehirn dreht es wieder um. Durch Ändern der Linsenkrümmung passt sich das Auge an verschiedene Entfernungen an (**Akkommodation**). Die **deutliche Sehweite** beträgt $s_0 = 25\,\mathrm{cm}$.
+
+| Fehlsichtigkeit | Ursache | Korrektur |
+| --- | --- | --- |
+| **Kurzsichtigkeit** (Myopie) | Augapfel zu lang, Bild entsteht vor der Netzhaut | Zerstreuungslinse (minus Dioptrien) |
+| **Weitsichtigkeit** (Hyperopie) | Augapfel zu kurz, Bild hinter der Netzhaut | Sammellinse (plus Dioptrien) |
+| **Alterssichtigkeit** (Presbyopie) | Linse wird starr, Nahsicht leidet | Lesebrille, Gleitsichtbrille |
+| **Hornhautverkrümmung** (Astigmatismus) | Hornhaut unterschiedlich gekrümmt | Zylinderlinse |
+
+### Kamera
+
+Ein Objektiv bildet die Szene auf einen Bildsensor (CMOS) ab. Für ferne Gegenstände liegt das Bild fast in der Brennebene. Scharfstellen heißt, den Abstand Objektiv-Sensor an die Gegenstandsweite anzupassen. Die **Blendenzahl** $k = f/D$ (Brennweite durch Öffnungsdurchmesser) steuert die Lichtmenge: Blende $2{,}8$ lässt doppelt so viel Licht durch wie Blende $4$, weil die Fläche mit $D^2$ wächst. Eine kleinere Öffnung vergrößert die **Schärfentiefe**.
+
+### Lupe und Mikroskop
+
+Die **Vergrößerung** eines optischen Instruments ist das Verhältnis der Sehwinkel mit und ohne Instrument. Eine **Lupe** mit Brennweite $f$ (Gegenstand im Brennpunkt) vergrößert
+
+$$
+V_\mathrm{L} = \frac{s_0}{f} = \frac{25\,\mathrm{cm}}{f}
+$$
+
+Das **Mikroskop** besteht aus zwei Sammellinsen: Das **Objektiv** mit kurzer Brennweite erzeugt ein reelles, vergrößertes Zwischenbild, das man mit dem **Okular** wie mit einer Lupe betrachtet. Mit der optischen Tubuslänge $t$ (Abstand der inneren Brennpunkte):
+
+$$
+V_\mathrm{M} = V_\mathrm{Obj} \cdot V_\mathrm{Ok} = \frac{t}{f_\mathrm{Obj}} \cdot \frac{s_0}{f_\mathrm{Ok}}
+$$
+
+Beispiel: $t = 160\,\mathrm{mm}$, $f_\mathrm{Obj} = 4\,\mathrm{mm}$, $f_\mathrm{Ok} = 25\,\mathrm{mm}$ ergibt $40 \cdot 10 = 400$-fach. Die Auflösung ist durch Beugung auf etwa die halbe Wellenlänge begrenzt (rund $0{,}2\,\mathrm{\mu m}$ bei sichtbarem Licht); für feinere Strukturen braucht man Elektronenmikroskope.
+
+Ein **Fernrohr** (Kepler-Fernrohr) kombiniert ein Objektiv mit langer und ein Okular mit kurzer Brennweite; seine Vergrößerung ist $V = f_\mathrm{Obj}/f_\mathrm{Ok}$.
+
+## Wellenoptik
+
+### Beugung und Interferenz am Doppelspalt
+
+Thomas Young zeigte 1802 mit dem **Doppelspalt**, dass Licht eine Welle ist: Hinter zwei engen Spalten im Abstand $d$ entstehen auf einem Schirm helle und dunkle Streifen. Die Elementarwellen aus beiden Spalten haben zu einem Punkt unter dem Winkel $\alpha$ den Gangunterschied $\Delta s = d \sin\alpha$.
+
+$$
+\text{Maxima: } d \sin\alpha_k = k \lambda, \qquad \text{Minima: } d \sin\alpha = (2k + 1)\frac{\lambda}{2}
+$$
+
+Für kleine Winkel und den Schirmabstand $a$ ist der Streifenabstand $\Delta y = \frac{\lambda a}{d}$. Ein roter Laser ($\lambda = 633\,\mathrm{nm}$), $d = 0{,}2\,\mathrm{mm}$, $a = 2\,\mathrm{m}$ ergibt Streifen im Abstand von $6{,}3\,\mathrm{mm}$. Umgekehrt misst man so Wellenlängen.
+
+Am **Einzelspalt** der Breite $s$ liegen die dunklen Minima bei $s \sin\alpha = k\lambda$ ($k = 1, 2, \dots$). Je enger der Spalt, desto breiter das Beugungsbild.
+
+### Optisches Gitter
+
+Ein **Gitter** hat sehr viele Spalte im Abstand $d$ (Gitterkonstante). Die Maxima liegen an denselben Stellen wie beim Doppelspalt, sind aber viel schärfer und heller. Gitter zerlegen Licht nach Wellenlängen und sind das Herz von **Spektrometern**.
+
+:::tip[Beispiel: Gitter]
+Gitter mit $600$ Strichen pro Millimeter: $d = 1/600\,\mathrm{mm} = 1{,}667\,\mathrm{\mu m}$. Grünes Laserlicht ($532\,\mathrm{nm}$):
+
+- 1. Ordnung: $\sin\alpha_1 = 0{,}532/1{,}667 = 0{,}319$, $\alpha_1 = 18{,}6^\circ$
+- 2. Ordnung: $\sin\alpha_2 = 0{,}638$, $\alpha_2 = 39{,}7^\circ$
+- 3. Ordnung: $\sin\alpha_3 = 0{,}958$, $\alpha_3 = 73{,}3^\circ$
+- 4. Ordnung: $\sin\alpha_4 > 1$, existiert nicht.
+
+Die Rillen einer CD (Abstand $1{,}6\,\mathrm{\mu m}$) wirken genauso, deshalb schillert sie in Regenbogenfarben.
+:::
+
+### Interferenz an dünnen Schichten
+
+An dünnen Schichten (Seifenblase, Ölfilm, Entspiegelung) interferieren die an Vorder- und Rückseite reflektierten Wellen. Je nach Schichtdicke und Wellenlänge verstärken oder löschen sie sich aus; daher die Farben. Eine **Entspiegelungsschicht** der Dicke $\lambda/(4n)$ löscht die Reflexion für eine Wellenlänge aus.
+
+## Polarisation
+
+Licht ist eine Transversalwelle: Das elektrische Feld schwingt senkrecht zur Ausbreitungsrichtung. Natürliches Licht (Sonne, Glühlampe) ist **unpolarisiert**, die Schwingungsrichtung wechselt ständig. Ein **Polarisationsfilter** lässt nur eine Schwingungsrichtung durch. Fällt linear polarisiertes Licht auf einen zweiten Filter (Analysator), der um $\theta$ gedreht ist, gilt das **Gesetz von Malus**:
+
+$$
+I = I_0 \cos^2\theta
+$$
+
+Gekreuzte Filter ($\theta = 90^\circ$) sperren das Licht vollständig.
+
+Polarisiertes Licht entsteht auch bei Reflexion. Unter dem **Brewster-Winkel** $\tan\theta_\mathrm{B} = n_2/n_1$ (für Glas $56{,}3^\circ$) ist das reflektierte Licht vollständig polarisiert. Polarisierende Sonnenbrillen nutzen das und filtern Spiegelungen auf Wasser oder Straße. Weitere Anwendungen: LCD-Bildschirme (Flüssigkristalle drehen die Polarisationsrichtung), 3D-Kino, Spannungsoptik.
+
+## Das elektromagnetische Spektrum
+
+Licht ist nur ein kleiner Ausschnitt aus dem Spektrum elektromagnetischer Wellen. Alle breiten sich im Vakuum mit $c$ aus, für alle gilt $c = \lambda f$, und die Energie eines Photons ist $E = h f$.
+
+| Bereich | Wellenlänge | Frequenz | Quelle und Anwendung |
+| --- | --- | --- | --- |
+| Radiowellen | über $1\,\mathrm{m}$ | unter $300\,\mathrm{MHz}$ | Rundfunk, RFID |
+| Mikrowellen | $1\,\mathrm{mm}$ bis $1\,\mathrm{m}$ | $300\,\mathrm{MHz}$ bis $300\,\mathrm{GHz}$ | WLAN ($2{,}4$ und $5\,\mathrm{GHz}$), Mobilfunk, Radar, Mikrowellenherd |
+| Infrarot | $780\,\mathrm{nm}$ bis $1\,\mathrm{mm}$ | | Wärmestrahlung, Fernbedienung, Glasfaser |
+| sichtbares Licht | $380$ bis $780\,\mathrm{nm}$ | etwa $400$ bis $790\,\mathrm{THz}$ | Sehen |
+| Ultraviolett | $10$ bis $380\,\mathrm{nm}$ | | Sonnenbrand, Desinfektion, Fluoreszenz |
+| Röntgenstrahlung | etwa $10\,\mathrm{pm}$ bis $10\,\mathrm{nm}$ | | Medizin, Materialprüfung |
+| Gammastrahlung | unter etwa $10\,\mathrm{pm}$ | | radioaktiver Zerfall, Strahlentherapie |
+
+Ab dem UV-Bereich reicht die Photonenenergie, um Atome zu ionisieren (**ionisierende Strahlung**); diese Strahlung kann Erbgut schädigen. Radio-, Mikrowellen- und Infrarotstrahlung wirken dagegen nur durch Erwärmung.
+
+## Weiterführende Quellen
+
+- Eugene Hecht: _Optik_, De Gruyter Oldenbourg
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Optik, leifiphysik.de

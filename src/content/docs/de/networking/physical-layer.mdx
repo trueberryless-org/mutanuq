@@ -1,0 +1,190 @@
+---
+title: Bitübertragungsschicht
+description: Twisted-Pair-Kategorien, Schirmung, T568A/B, Glasfasertypen und Stecker, Funk, Leitungscodes, strukturierte Verkabelung nach EN 50173 und Power over Ethernet.
+sidebar:
+  order: 3
+---
+
+Die **Bitübertragungsschicht** (Schicht 1) überträgt einzelne Bits als physikalische Signale: als Spannungen auf Kupferleitungen, als Lichtimpulse in Glasfasern oder als elektromagnetische Wellen durch die Luft. Sie legt Kabel, Stecker, Pinbelegungen, Signalpegel und Leitungscodes fest. Ein Großteil aller Netzwerkprobleme hat hier seine Ursache: lose Stecker, falsch aufgelegte Adern, zu lange oder beschädigte Kabel.
+
+## Grundbegriffe der Signalübertragung
+
+- **Dämpfung** (_attenuation_): Das Signal wird mit zunehmender Leitungslänge schwächer. Deshalb haben alle Medien eine maximale Länge.
+- **Übersprechen** (_crosstalk_): Ein Adernpaar induziert Störungen im benachbarten Paar. Man unterscheidet **NEXT** (_Near End Crosstalk_, am selben Ende gemessen) und **FEXT** (_Far End Crosstalk_, am anderen Ende).
+- **EMI/RFI**: elektromagnetische Störungen von außen, etwa durch Motoren, Leuchtstofflampen oder Starkstromkabel.
+- **Frequenz** und **Datenrate**: Die Frequenzangabe eines Kabels (etwa 500 MHz bei Cat 6A) ist die höchste Frequenz, bis zu der seine Übertragungseigenschaften spezifiziert sind. Sie ist nicht die Datenrate: Mit mehrstufigen Leitungscodes und vier Paaren lassen sich über 500 MHz 10 Gbit/s übertragen.
+
+## Kupferkabel: Twisted Pair
+
+Ethernet-Kabel bestehen aus vier **verdrillten Adernpaaren** (_twisted pair_). Die Verdrillung sorgt dafür, dass äußere Störungen beide Adern eines Paares gleich treffen. Da das Signal als **Differenz** zwischen den beiden Adern ausgewertet wird, heben sich die Störungen auf. Unterschiedliche Schlaglängen der Paare verringern das Übersprechen zwischen ihnen.
+
+### Kategorien
+
+Die Norm ISO/IEC 11801 (in Europa EN 50173) unterscheidet **Kategorien** für Komponenten (Kabel, Dose, Stecker) und **Klassen** für die ganze installierte Übertragungsstrecke. Eine Klasse E wird nur erreicht, wenn alle Komponenten mindestens Kategorie 6 haben.
+
+| Kategorie | Klasse | Frequenz | typische Anwendung | max. Länge (Channel) |
+| --- | --- | --- | --- | --- |
+| Cat 5 | D (alt) | 100 MHz | 100BASE-TX (Fast Ethernet), veraltet | 100 m |
+| **Cat 5e** | D | 100 MHz | 1000BASE-T, 2.5GBASE-T | 100 m |
+| **Cat 6** | E | 250 MHz | 1000BASE-T, 5GBASE-T, 10GBASE-T bis 55 m | 100 m |
+| **Cat 6A** | E<sub>A</sub> | 500 MHz | 10GBASE-T | 100 m |
+| **Cat 7** | F | 600 MHz | 10GBASE-T, immer S/FTP | 100 m |
+| **Cat 7A** | F<sub>A</sub> | 1000 MHz | 10GBASE-T, Kabel für Cat-6A-Installationen mit Reserve | 100 m |
+| **Cat 8.1 / 8.2** | I / II | 2000 MHz | 25GBASE-T, 40GBASE-T im Rechenzentrum | 30 m |
+
+Für neue Installationen ist heute **Cat 6A** (Klasse E<sub>A</sub>) der übliche Standard, weil er 10 Gbit/s und aktuelle WLAN-Access-Points mit mehr als 1 Gbit/s versorgt. Cat-7-Kabel werden oft mit Cat-6A-Dosen kombiniert, die Strecke erreicht dann nur Klasse E<sub>A</sub>.
+
+### Ethernet über Kupfer
+
+| Standard | Name | Datenrate | Kabel mindestens | genutzte Paare |
+| --- | --- | --- | --- | --- |
+| 10BASE-T | Ethernet | 10 Mbit/s | Cat 3 | 2 |
+| 100BASE-TX | Fast Ethernet | 100 Mbit/s | Cat 5 | 2 |
+| 1000BASE-T | Gigabit Ethernet | 1 Gbit/s | Cat 5e | 4 |
+| 2.5GBASE-T / 5GBASE-T | NBASE-T (IEEE 802.3bz) | 2,5 / 5 Gbit/s | Cat 5e / Cat 6 | 4 |
+| 10GBASE-T | 10-Gigabit Ethernet | 10 Gbit/s | Cat 6A | 4 |
+| 25GBASE-T / 40GBASE-T | | 25 / 40 Gbit/s | Cat 8, 30 m | 4 |
+
+Im Namen steht die Datenrate in Mbit/s oder Gbit/s, **BASE** für Basisbandübertragung und der Rest für das Medium (T = Twisted Pair, F/S/L für Glasfaser).
+
+### Schirmung
+
+Die Bezeichnung nach ISO/IEC 11801 hat die Form **Gesamtschirm/Paarschirm** + TP:
+
+| Zeichen | Bedeutung |
+| --- | --- |
+| U | ungeschirmt (_unshielded_) |
+| F | Folienschirm (_foiled_) |
+| S | Geflechtschirm (_screened_, Drahtgeflecht) |
+| SF | Geflecht und Folie |
+
+| Bezeichnung | Gesamtschirm | Paarschirm | Hinweis |
+| --- | --- | --- | --- |
+| **U/UTP** | keiner | keiner | üblich in den USA, billig, dünn |
+| **F/UTP** | Folie | keiner | |
+| **U/FTP** | keiner | Folie je Paar | |
+| **S/FTP** | Geflecht | Folie je Paar | üblich in Europa, Cat 7 und Cat 8.2 |
+| **SF/UTP** | Geflecht und Folie | keiner | |
+
+Umgangssprachlich heißt jedes geschirmte Kabel „STP“ (_Shielded Twisted Pair_). Eine Schirmung wirkt nur, wenn sie durchgehend und an beiden Enden geerdet ist. Ein falsch angeschlossener Schirm kann sogar als Antenne wirken.
+
+### Pinbelegung T568A und T568B
+
+Die RJ45-Stecker (genauer 8P8C) werden nach einer von zwei Normen belegt (TIA-568). Beide unterscheiden sich nur darin, dass das grüne und das orange Paar vertauscht sind.
+
+| Pin | T568A | T568B |
+| --- | --- | --- |
+| 1 | weiß-grün | weiß-orange |
+| 2 | grün | orange |
+| 3 | weiß-orange | weiß-grün |
+| 4 | blau | blau |
+| 5 | weiß-blau | weiß-blau |
+| 6 | orange | grün |
+| 7 | weiß-braun | weiß-braun |
+| 8 | braun | braun |
+
+Bei 10BASE-T und 100BASE-TX werden nur die Pins 1, 2 (Senden beim Endgerät) und 3, 6 (Empfangen) benutzt, ab 1000BASE-T alle vier Paare in beide Richtungen gleichzeitig.
+
+- Ein **Straight-Through-Kabel** (Patchkabel, 1:1) hat an beiden Enden dieselbe Belegung. Es verbindet unterschiedliche Gerätearten: PC mit Switch, Router mit Switch.
+- Ein **Crossover-Kabel** hat an einem Ende T568A, am anderen T568B, sodass Sende- und Empfangspaar gekreuzt sind. Es verbindet gleichartige Geräte: Switch mit Switch, PC mit PC, PC direkt mit Router.
+
+Der Grund: Endgeräte und Router senden auf den Pins 1 und 2 (**MDI**, _Medium Dependent Interface_), Switches empfangen dort (**MDI-X**, gekreuzt). Moderne Geräte beherrschen **Auto-MDIX**: Sie erkennen die Belegung und tauschen Senden und Empfangen intern, sodass jedes Kabel funktioniert. Bei Gigabit Ethernet ist Auto-MDIX Teil des Standards. Für die Prüfung muss man trotzdem wissen, welches Kabel man ohne Auto-MDIX braucht.
+
+Ein **Rollover-Kabel** (Konsolenkabel) ist an einem Ende spiegelverkehrt belegt und verbindet einen PC mit dem Konsolenport eines Cisco-Geräts. Heute werden meist USB-Konsolenkabel verwendet.
+
+## Glasfaser
+
+Ein **Lichtwellenleiter** (LWL) überträgt Lichtimpulse in einem Glaskern, der von einem Mantel mit niedrigerem Brechungsindex umgeben ist. Durch **Totalreflexion** an der Grenzfläche bleibt das Licht im Kern. Glasfaser ist unempfindlich gegen elektromagnetische Störungen, überträgt keine Spannung (keine Potenzialprobleme zwischen Gebäuden), ist abhörsicherer und überbrückt große Entfernungen. Sie ist aber empfindlicher bei der Verlegung (Biegeradius) und die Konfektionierung (Spleißen) braucht Spezialwerkzeug.
+
+| Merkmal | **Multimode** (MMF) | **Singlemode** (SMF, Monomode) |
+| --- | --- | --- |
+| Kerndurchmesser | 50 µm oder 62,5 µm | etwa 9 µm |
+| Lichtquelle | LED, VCSEL-Laser | Laser |
+| Wellenlängen | 850 nm, 1300 nm | 1310 nm, 1550 nm |
+| Effekt | viele Lichtwege (Moden), Modendispersion begrenzt die Reichweite | nur ein Modus, kaum Dispersion |
+| Reichweite | einige hundert Meter bei 10 Gbit/s | 10 km bis über 80 km |
+| Kosten | Transceiver billiger | Transceiver teurer, Faser selbst billig |
+| Einsatz | innerhalb von Gebäuden, Rechenzentrum | zwischen Gebäuden, Campus, WAN, FTTH |
+| Kategorien | OM1 bis OM5 | OS1, OS2 |
+| Mantelfarbe | orange (OM1, OM2), aqua (OM3, OM4), violett (OM4 in Europa), limettengrün (OM5) | gelb |
+
+Beispiele für Standards: 1000BASE-SX (Multimode, bis 550 m), 1000BASE-LX (Singlemode, bis 5 km), 10GBASE-SR (Multimode, 300 m mit OM3, 400 m mit OM4), 10GBASE-LR (Singlemode, 10 km), 10GBASE-ER (Singlemode, 40 km).
+
+### Stecker und Transceiver
+
+| Stecker | Merkmal |
+| --- | --- |
+| **LC** (_Lucent Connector_) | kleiner Push-Pull-Stecker, heute am häufigsten, passt in SFP-Module |
+| **SC** (_Subscriber Connector_) | quadratischer Push-Pull-Stecker, häufig bei FTTH |
+| **ST** (_Straight Tip_) | Bajonettverschluss, veraltet |
+| **MPO/MTP** | Mehrfaserstecker mit 12 oder 24 Fasern, für 40/100 Gbit/s im Rechenzentrum |
+
+Die Stirnfläche ist entweder gerade poliert (**UPC**, blauer Stecker) oder um 8° angeschrägt (**APC**, grüner Stecker), damit reflektiertes Licht nicht zurück zum Sender läuft. APC und UPC dürfen nicht zusammengesteckt werden.
+
+Switches haben für Glasfaser meist Steckplätze für **Transceiver-Module**: **SFP** (bis 1 Gbit/s), **SFP+** (10 Gbit/s), **SFP28** (25 Gbit/s), **QSFP+** (40 Gbit/s) und **QSFP28** (100 Gbit/s). So kann man je nach Strecke ein Multimode- oder Singlemode-Modul einsetzen.
+
+## Drahtlose Medien
+
+Funk überträgt Daten durch elektromagnetische Wellen. Es ist kein Kabel nötig, dafür teilen sich alle Teilnehmer das Medium, die Reichweite hängt von Wänden und Störquellen ab, und jeder in Reichweite kann mithören, weshalb Verschlüsselung Pflicht ist.
+
+| Technik | Norm | Einsatz |
+| --- | --- | --- |
+| WLAN | IEEE 802.11 | lokale Netze, siehe [WLAN](/de/networking/wlan/) |
+| Bluetooth | IEEE 802.15.1 (heute Bluetooth SIG) | PAN, Peripherie |
+| Zigbee, Thread | IEEE 802.15.4 | Hausautomation, IoT |
+| Mobilfunk | 3GPP (LTE, 5G) | WAN-Zugang, siehe [WAN](/de/networking/wan-and-internet-access/) |
+| Richtfunk, Satellit | | Verbindungen ohne Kabel über große Distanzen |
+
+## Leitungscodes
+
+Ein **Leitungscode** legt fest, wie Bits in Signale umgesetzt werden. Er soll den Takt mitübertragen (genug Pegelwechsel, damit der Empfänger synchron bleibt), keinen Gleichanteil erzeugen und möglichst wenig Bandbreite brauchen.
+
+| Code | Prinzip | Einsatz |
+| --- | --- | --- |
+| **NRZ** (_Non-Return-to-Zero_) | 1 = hoher Pegel, 0 = niedriger Pegel | einfach, aber bei langen Folgen gleicher Bits geht der Takt verloren |
+| **Manchester** | jedes Bit hat in der Mitte einen Pegelwechsel (bei IEEE 802.3: 0 = fallend, 1 = steigend) | 10BASE-T, selbsttaktend, braucht doppelte Frequenz |
+| **4B/5B** + **MLT-3** | 4 Datenbits werden als 5-Bit-Codewort mit genug Wechseln übertragen, MLT-3 wechselt zyklisch zwischen drei Pegeln | 100BASE-TX |
+| **PAM-5** | 5 Spannungsstufen, ein Symbol trägt etwa 2 Bit | 1000BASE-T |
+| **8B/10B**, **64B/66B** | Blockcodes für Glasfaser | 1000BASE-X, 10GBASE-R |
+
+Die **Baudrate** (Symbolrate) zählt Symbole pro Sekunde. Trägt ein Symbol mehrere Bits, ist die Bitrate größer als die Baudrate: Bei $M$ Signalstufen gilt $R = f_\mathrm{Symbol} \cdot \log_2 M$. Bei 1000BASE-T werden pro Paar 125 MBaud übertragen, mit 2 Bit pro Symbol auf 4 Paaren ergibt das $4 \cdot 125 \cdot 10^6 \cdot 2 = 10^9$ bit/s.
+
+## Strukturierte Verkabelung
+
+Eine **strukturierte Verkabelung** ist eine anwendungsneutrale, hierarchisch aufgebaute Gebäudeverkabelung, die unabhängig von den später angeschlossenen Geräten geplant wird. Sie ist in Europa in der Normenreihe **EN 50173** (international ISO/IEC 11801, in den USA TIA-568) geregelt. Die Verkabelung ist eine langfristige Investition, die mehrere Gerätegenerationen überdauern soll.
+
+| Bereich | verbindet | Medium | max. Länge |
+| --- | --- | --- | --- |
+| **Primärverkabelung** (Campus, Geländeverkabelung) | Standortverteiler (SV) mit den Gebäudeverteilern (GV) | Singlemode-Glasfaser | 1500 m |
+| **Sekundärverkabelung** (Steigbereich, Gebäude-Backbone) | Gebäudeverteiler mit den Etagenverteilern (EV) | Glasfaser, selten Kupfer | 500 m |
+| **Tertiärverkabelung** (Etagen-, Horizontalverkabelung) | Etagenverteiler mit den Anschlussdosen (TO, _Telecommunications Outlet_) | Twisted Pair Cat 6A | 90 m fest verlegt |
+
+Die Längen sind die klassischen Richtwerte aus EN 50173-1 und ISO/IEC 11801. Primär- und Sekundärbereich zusammen sollen 2000 m nicht überschreiten.
+
+In der Tertiärverkabelung unterscheidet man:
+
+- **Permanent Link**: die fest verlegte Strecke vom Patchpanel bis zur Dose, höchstens **90 m**.
+- **Channel**: die gesamte Übertragungsstrecke inklusive Patchkabel an beiden Enden, höchstens **100 m**. Für Patch- und Geräteanschlusskabel bleiben also 10 m.
+
+Ein Etagenverteiler soll höchstens 1000 m² Bürofläche versorgen, bei größeren Etagen werden mehrere Verteiler eingesetzt. Die Verteiler sitzen in **19-Zoll-Schränken** (Racks). Ihre Höhe wird in **Höheneinheiten** (HE, englisch _rack unit_, U) angegeben, eine HE sind 44,45 mm. Im Schrank werden die Leitungen auf **Patchpanels** aufgelegt und mit kurzen Patchkabeln mit den Switches verbunden. So lässt sich jede Dose ohne Werkzeug einem anderen Switchport zuweisen.
+
+Nach der Installation wird jede Strecke mit einem **Zertifizierungsmessgerät** gemessen (Länge, Dämpfung, NEXT, Rückflussdämpfung, Verdrahtung). Erst das Messprotokoll belegt, dass die Klasse erreicht ist.
+
+## Power over Ethernet
+
+**Power over Ethernet** (PoE) versorgt Geräte wie IP-Telefone, Access Points und Kameras über das Netzwerkkabel mit Strom. Das spart eine Steckdose am Montageort und erlaubt eine zentrale USV im Verteiler. Das speisende Gerät heißt **PSE** (_Power Sourcing Equipment_), meist ein PoE-Switch (**Endspan**) oder ein zwischengeschalteter Injektor (**Midspan**). Das versorgte Gerät heißt **PD** (_Powered Device_). Die Spannung liegt bei rund 48 V Gleichspannung. Bevor das PSE Spannung anlegt, prüft es über einen Signaturwiderstand, ob überhaupt ein PoE-fähiges Gerät angeschlossen ist, damit normale Netzwerkkarten nicht beschädigt werden.
+
+| Norm | Bezeichnung | Typ | Leistung am PSE | Leistung am PD | genutzte Paare |
+| --- | --- | --- | --- | --- | --- |
+| IEEE 802.3af (2003) | PoE | 1 | 15,4 W | 12,95 W | 2 |
+| IEEE 802.3at (2009) | PoE+ | 2 | 30 W | 25,5 W | 2 |
+| IEEE 802.3bt (2018) | PoE++, 4PPoE | 3 | 60 W | 51 W | 4 |
+| IEEE 802.3bt (2018) | PoE++, 4PPoE | 4 | 90 W | 71,3 W | 4 |
+
+Die Differenz zwischen PSE und PD ist die Verlustleistung im Kabel. Bei der Planung muss das **PoE-Budget** des Switches (Summe der Leistung aller Ports) zum Bedarf passen: Ein Switch mit 48 Ports und 370 W Budget kann nicht alle Ports mit 30 W versorgen.
+
+## Weiterführende Quellen
+
+- [IEEE 802.3 Ethernet Working Group](https://www.ieee802.org/3/)
+- ÖVE/ÖNORM EN 50173-1, _Informationstechnik: Anwendungsneutrale Kommunikationskabelanlagen, Teil 1: Allgemeine Anforderungen_
+- [Wikipedia: Strukturierte Verkabelung](https://de.wikipedia.org/wiki/Strukturierte_Verkabelung)

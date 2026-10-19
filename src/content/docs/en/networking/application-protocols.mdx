@@ -1,0 +1,153 @@
+---
+title: Application Protocols
+description: DNS with hierarchy, record types and resolution, DHCP with DORA and relay, HTTP, FTP and SFTP, SMTP, POP3, IMAP, SSH, Telnet, SNMP, NTP and Syslog.
+sidebar:
+  order: 9
+---
+
+The application layer protocols are what users and administrators actually work with. They define which messages a client and a server exchange and how these are structured. Many classic internet protocols (HTTP, SMTP, POP3, FTP) are **text-based**: the commands can be read and, for troubleshooting, even typed in by hand.
+
+## DNS
+
+The **Domain Name System** (DNS, RFC 1034 and 1035) translates names such as `www.example.at` into IP addresses. Without DNS you would have to remember addresses, and every server move would break all links.
+
+### Hierarchy
+
+DNS is a worldwide distributed, hierarchical database. The namespace is a tree, read from right to left:
+
+| Level | Example | Responsible |
+| --- | --- | --- |
+| **Root** | `.` (the invisible dot at the end) | 13 logical root server addresses (a to m.root-servers.net), distributed worldwide via anycast over more than 1000 instances |
+| **Top-level domain** (TLD) | `at`, `com`, `org` | registries, for `at` nic.at GmbH |
+| **Second-level domain** | `example.at` | the domain owner |
+| **Subdomain** | `www.example.at`, `mail.example.at` | the owner |
+
+An **FQDN** (_Fully Qualified Domain Name_) is the complete name up to the root: `www.example.at.`. A **zone** is the part of the tree for which a name server is **authoritative**. Responsibility is **delegated** to subordinate servers via NS records.
+
+### Record types
+
+| Type | Meaning | Example |
+| --- | --- | --- |
+| **A** | name to IPv4 address | `www  A  203.0.113.10` |
+| **AAAA** | name to IPv6 address | `www  AAAA  2001:db8::10` |
+| **CNAME** | alias to another name | `shop  CNAME  www.example.at.` |
+| **MX** | mail server of the domain with priority (lower is preferred) | `@  MX  10 mail.example.at.` |
+| **NS** | authoritative name servers of the zone | `@  NS  ns1.example.at.` |
+| **PTR** | reverse lookup, IP address to name | `10.113.0.203.in-addr.arpa.  PTR  www.example.at.` |
+| **TXT** | arbitrary text, e.g. SPF, DKIM, DMARC, domain verification | `@  TXT  "v=spf1 mx -all"` |
+| **SOA** | start of authority: primary server, responsible person, serial number and timers of the zone | |
+| **SRV** | service with port, e.g. for Active Directory | `_ldap._tcp  SRV  0 100 389 dc1.example.at.` |
+
+For **reverse lookup**, the IP address is entered reversed under `in-addr.arpa` (IPv4) or digit by digit under `ip6.arpa` (IPv6). A CNAME may not coexist with other records of the same name, which is why the zone apex (`example.at` itself) cannot be a CNAME.
+
+Every record has a **TTL** (_Time to Live_) in seconds stating how long it may be cached. Before moving a server, you lower the TTL so that the change propagates quickly.
+
+### Name resolution
+
+1. The client checks its cache and the `hosts` file.
+2. It asks its configured DNS server, the **resolver**. This query is **recursive**: the client expects a complete answer.
+3. The resolver queries **iteratively**: first a root server, which refers to the servers for `at`, then an `at` server, which refers to the servers for `example.at`, and finally the authoritative server of `example.at`, which returns the address.
+4. The resolver caches all answers according to their TTL and returns the result to the client.
+
+DNS uses **UDP port 53**; for large responses and **zone transfers** between primary and secondary servers it uses **TCP port 53**. Classic DNS is unencrypted; with **DNS over TLS** (DoT, port 853) and **DNS over HTTPS** (DoH, port 443) the query is encrypted. **DNSSEC** signs records so that forged answers can be detected.
+
+Setting up a DNS server on Windows Server is described on the [DNS](/en/deployment/windows_server/dns/) page.
+
+## DHCP
+
+The **Dynamic Host Configuration Protocol** (DHCP, RFC 2131) automatically distributes IP configurations to clients: IP address, subnet mask, default gateway, DNS servers, domain name and the **lease duration**. This saves work and avoids duplicate addresses. Servers, printers and network devices usually get fixed addresses or **reservations** (always the same address for a particular MAC address).
+
+### DORA
+
+DHCP uses UDP; the server listens on port **67**, the client on port **68**.
+
+| Step | Message | From, to | Content |
+| --- | --- | --- | --- |
+| 1 | **DHCPDISCOVER** | client (0.0.0.0) to broadcast 255.255.255.255 | "Is there a DHCP server here?" |
+| 2 | **DHCPOFFER** | server to client | offer of an address with options |
+| 3 | **DHCPREQUEST** | client to broadcast | "I accept the offer from server X." As a broadcast so that other servers withdraw their offers |
+| 4 | **DHCPACK** | server to client | confirmation; the lease is valid from now on |
+
+The client renews its lease after **50 %** of the duration (T1) by unicast with the same server, and after **87.5 %** (T2) by broadcast with any server. Further messages are **DHCPNAK** (rejection, for example if the client has moved to another network), **DHCPRELEASE** (client returns the address, `ipconfig /release`), **DHCPDECLINE** (address is already in use) and **DHCPINFORM** (request options only).
+
+### DHCP relay
+
+DISCOVER is a broadcast and is not forwarded by routers. So that a separate DHCP server is not needed in every subnet, the router acts as a **DHCP relay agent** (on Cisco `ip helper-address`): it receives the broadcast and sends it as a unicast to the central DHCP server. In doing so, it enters its own interface address in the **giaddr** field, from which the server can tell from which subnet (scope) it has to assign an address.
+
+Setting this up on Windows Server is described under [DHCP](/en/deployment/windows_server/dhcp/), and on a Cisco router under [Cisco IOS](/en/networking/cisco-ios/#dhcp-server-on-the-router). For IPv6 see [DHCPv6](/en/networking/ipv6/#dhcpv6).
+
+## HTTP
+
+The **Hypertext Transfer Protocol** (HTTP, semantics in RFC 9110) is the protocol of the web. A client sends a **request** with a method (GET, POST, PUT, DELETE), a path and headers; the server answers with a **status code** (200 OK, 301 Moved Permanently, 404 Not Found, 500 Internal Server Error) and the content. HTTP is stateless; every request stands on its own. The default port is **80**, for **HTTPS** (HTTP over TLS) **443**. HTTP/1.1 and HTTP/2 run over TCP, HTTP/3 over QUIC on UDP. How to make HTTP requests from programs is shown in [Network Programming](/en/software-development/network-programming/#http-requests).
+
+## File transfer
+
+| Protocol | Port | Security | Feature |
+| --- | --- | --- | --- |
+| **FTP** (RFC 959) | TCP 21 (control), 20 or dynamic (data) | unencrypted, including passwords | separate connections for commands and data |
+| **FTPS** | TCP 21 (explicit) or 990 (implicit) | TLS | FTP with encryption |
+| **SFTP** | TCP 22 | SSH | its own protocol over SSH, has only its purpose in common with FTP |
+| **SCP** | TCP 22 | SSH | simple copying over SSH |
+| **TFTP** | UDP 69 | none, no login | very simple, for firmware images and network boot (PXE) |
+
+With **active FTP** the server opens the data connection from port 20 to the client. This fails at firewalls and NAT, which block incoming connections to the client. With **passive FTP** the client also opens the data connection, to a port that the server tells it. Today passive mode is usual, and SFTP is used for new systems.
+
+## Email
+
+| Protocol | Port | Task |
+| --- | --- | --- |
+| **SMTP** (_Simple Mail Transfer Protocol_, RFC 5321) | 25 between servers, 587 (STARTTLS) or 465 (TLS) for submission from the client | **sending** mail and **relaying** it between mail servers |
+| **POP3** (_Post Office Protocol_, RFC 1939) | 110, 995 (TLS) | **retrieving** mail, usually deleting it from the server. For a single device |
+| **IMAP** (_Internet Message Access Protocol_, RFC 9051) | 143, 993 (TLS) | **managing mail on the server**: folders, read status, search. All devices see the same state |
+
+The path of an email: the mail client hands it to its own provider's server via SMTP. That server looks up the **MX record** of the recipient's domain via DNS and delivers the mail via SMTP to the destination server. The recipient retrieves it via IMAP or POP3. To counter forged senders, servers check **SPF** (which servers may send for the domain), **DKIM** (signature) and **DMARC** (policy), all published as TXT records in DNS.
+
+## Remote access
+
+**Telnet** (TCP 23, RFC 854) provides a command line on a remote device but transmits everything **in plain text**, including the password. Anyone capturing the traffic can read it. Telnet is therefore only useful as a diagnostic tool today (`telnet host 25` checks whether a port is open).
+
+**SSH** (_Secure Shell_, TCP 22, RFC 4251 to 4254) replaces Telnet. It encrypts the connection, verifies the identity of the server by its **host key** (on the first connection you have to confirm the fingerprint) and allows login with a password or, more securely, with **key pairs** (public key on the server, private key with the user). SSH can also forward ports (tunnels) and transfer files (SFTP, SCP). On network devices only SSH version 2 should be allowed.
+
+## Network management
+
+### SNMP
+
+The **Simple Network Management Protocol** is used to monitor and configure network devices. An **SNMP manager** (the monitoring software) queries **agents** on the devices. The values are organised as a tree in the **MIB** (_Management Information Base_) and addressed by **OIDs** (_Object Identifiers_), for example `1.3.6.1.2.1.1.5.0` for the device name.
+
+| Operation | Direction | Port |
+| --- | --- | --- |
+| **GET**, GETNEXT, GETBULK | manager queries a value | UDP 161 on the agent |
+| **SET** | manager changes a value | UDP 161 |
+| **TRAP**, INFORM | agent reports an event of its own accord (INFORM with acknowledgement) | UDP 162 on the manager |
+
+| Version | Security |
+| --- | --- |
+| SNMPv1, SNMPv2c | only a **community string** as a plain-text password, with `public` (read) and `private` (write) as dangerous defaults |
+| **SNMPv3** | users with authentication (integrity) and encryption, security levels noAuthNoPriv, authNoPriv, authPriv |
+
+### NTP
+
+The **Network Time Protocol** (NTPv4, RFC 5905, UDP 123) synchronises clocks. Accurate time is needed so that log entries from different devices can be compared and so that certificates and Kerberos tickets work (Active Directory tolerates a 5-minute deviation by default). NTP is organised hierarchically in **stratum** levels: stratum 0 are reference clocks (atomic clock, GPS), stratum 1 servers are attached directly to them, and each further level adds one. Stratum 16 means "not synchronised". In Austria, for example, the BEV (Federal Office of Metrology and Surveying), as keeper of the legal time, operates public NTP servers.
+
+### Syslog
+
+**Syslog** (RFC 5424, classically UDP 514) sends log messages from devices to a central server. This way logs are preserved when a device restarts and can be analysed together. Each message has a **facility** (source) and a **severity**:
+
+| Level | Name | Meaning |
+| --- | --- | --- |
+| 0 | Emergency | system unusable |
+| 1 | Alert | immediate action needed |
+| 2 | Critical | critical condition |
+| 3 | Error | error |
+| 4 | Warning | warning |
+| 5 | Notice | normal but significant (e.g. interface up/down on Cisco) |
+| 6 | Informational | information |
+| 7 | Debugging | troubleshooting |
+
+If you select a level, that level and all **lower** (more important) levels are sent. Mnemonic: "**E**very **A**wesome **C**isco **E**ngineer **W**ill **N**eed **I**ce cream **D**aily".
+
+## Further reading
+
+- [RFC 1034: Domain Names, Concepts and Facilities](https://www.rfc-editor.org/rfc/rfc1034)
+- [RFC 2131: Dynamic Host Configuration Protocol](https://www.rfc-editor.org/rfc/rfc2131)
+- [Root Server Technical Operations Association](https://root-servers.org/)

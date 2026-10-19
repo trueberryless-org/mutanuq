@@ -1,0 +1,48 @@
+---
+title: Elektrotechnik und Elektronik
+description: Grundlagen der Elektrotechnik, Elektronik und Digitaltechnik für die HTL-Informationstechnologie, von Gleichstromkreisen über Halbleiter bis zu Schaltwerken und Messtechnik.
+sidebar:
+  label: Überblick
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+Jeder Computer, jeder Router und jeder Mikrocontroller ist am Ende eine elektronische Schaltung. Wer versteht, wie Spannung, Strom und Bauelemente zusammenwirken, kann Hardware sicher anschließen, Fehler eingrenzen, Stromversorgungen dimensionieren und nachvollziehen, wie aus Transistoren Logikgatter und aus Logikgattern Prozessoren werden.
+
+An der HTL für Informationstechnologie werden diese Inhalte im Gegenstand **Systemtechnik** (Teilbereich Elektrotechnik und Elektronik) vor allem im ersten bis dritten Jahrgang unterrichtet: zuerst Gleichstromtechnik, Messtechnik und passive Bauelemente, dann Wechselstromtechnik, Halbleiter, elektronische Grundschaltungen und Digitaltechnik. In den Laborübungen baust du Schaltungen auf und misst sie mit Multimeter und Oszilloskop. Die Programmierung von Mikrocontrollern behandelt der Bereich [Hardwarenahe Programmierung](/de/embedded-programming/).
+
+## Grundlagen der Elektrotechnik
+
+<CardGrid>
+  <LinkCard title="Elektrische Grundgrößen" href="/de/electrical-engineering/basic-quantities/" description="Ladung, Strom, Spannung, Widerstand, Leistung, Quellen, E-Reihen und Farbcode." />
+  <LinkCard title="Gleichstromkreise" href="/de/electrical-engineering/dc-circuits/" description="Ohm, Kirchhoff, Teiler, Brücke, Netzwerkanalyse und Ersatzquellen." />
+  <LinkCard title="Elektrisches Feld und Kondensator" href="/de/electrical-engineering/electric-field-and-capacitors/" description="Feldstärke, Kapazität, Energie, Laden und Entladen mit τ = RC." />
+  <LinkCard title="Magnetismus und Spule" href="/de/electrical-engineering/magnetism-and-inductors/" description="Magnetfeld, Induktion, Induktivität, Transformator, Motor und Generator." />
+  <LinkCard title="Wechselstromtechnik" href="/de/electrical-engineering/alternating-current/" description="Effektivwert, Zeiger, Impedanz, Resonanz, Leistung und Drehstrom." />
+  <LinkCard title="Filter" href="/de/electrical-engineering/filters/" description="Tiefpass, Hochpass, Grenzfrequenz, Dezibel und Bode-Diagramm." />
+</CardGrid>
+
+## Elektronik
+
+<CardGrid>
+  <LinkCard title="Halbleiter und Dioden" href="/de/electrical-engineering/semiconductors-and-diodes/" description="pn-Übergang, Z-Diode, LED-Vorwiderstand, Gleichrichter und Solarzelle." />
+  <LinkCard title="Transistoren" href="/de/electrical-engineering/transistors/" description="Bipolartransistor und MOSFET als Schalter, CMOS und Verstärker." />
+  <LinkCard title="Operationsverstärker" href="/de/electrical-engineering/operational-amplifiers/" description="Verstärkerschaltungen, Komparator, Integrator und Schmitt-Trigger." />
+  <LinkCard title="Stromversorgung" href="/de/electrical-engineering/power-supplies/" description="Linear- und Schaltregler, Akkus, PoE und USV." />
+</CardGrid>
+
+## Digitaltechnik
+
+<CardGrid>
+  <LinkCard title="Logikgatter" href="/de/electrical-engineering/digital-logic-gates/" description="Logikpegel, Grundgatter, NAND-Technik und KV-Diagramme." />
+  <LinkCard title="Schaltnetze" href="/de/electrical-engineering/combinational-circuits/" description="Addierer, Multiplexer, Decoder, 7-Segment-Decoder und ALU." />
+  <LinkCard title="Schaltwerke" href="/de/electrical-engineering/sequential-circuits/" description="Flip-Flops, Register, Zähler, Automaten, Speicher und FPGA." />
+  <LinkCard title="AD- und DA-Umsetzung" href="/de/electrical-engineering/ad-da-conversion/" description="Abtasttheorem, Quantisierung, SAR-Wandler und R-2R-Netzwerk." />
+</CardGrid>
+
+## Praxis
+
+<CardGrid>
+  <LinkCard title="Messtechnik" href="/de/electrical-engineering/measurement/" description="Multimeter, Messfehler, Messunsicherheit, Oszilloskop und Funktionsgenerator." />
+  <LinkCard title="Elektrische Sicherheit" href="/de/electrical-engineering/electrical-safety/" description="Gefahren, Schutzmaßnahmen, FI-Schutzschalter, fünf Sicherheitsregeln und ESD." />
+</CardGrid>

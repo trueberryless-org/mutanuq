@@ -1,0 +1,276 @@
+---
+title: Audio
+description: Schall und Dezibel, Abtastrate, Bittiefe und Datenrate, Audioformate, Psychoakustik, Mikrofone, Audiobearbeitung und Lautheit in LUFS.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ton wird in Medienproduktionen oft unterschätzt, obwohl Zuschauer ein unscharfes Bild eher verzeihen als schlecht verständlichen Ton. Wer Podcasts, Videos oder Spiele produziert, muss verstehen, wie Schall entsteht, wie er digital gespeichert und komprimiert wird und wie man ihn aufnimmt und bearbeitet.
+
+## Schall
+
+**Schall** ist eine mechanische Welle: Druckschwankungen, die sich in einem Medium wie Luft ausbreiten. In Luft bei 20 °C beträgt die **Schallgeschwindigkeit** etwa $c = 343\ \mathrm{m/s}$.
+
+| Größe | Bedeutung | Wahrnehmung |
+| --- | --- | --- |
+| **Frequenz** $f$ in Hz | Schwingungen pro Sekunde | Tonhöhe |
+| **Amplitude** | Stärke der Druckschwankung (Schalldruck $p$ in Pa) | Lautstärke |
+| **Wellenform**, Obertöne | Zusammensetzung aus Grundton und Vielfachen | Klangfarbe (Geige und Klavier klingen beim selben Ton verschieden) |
+
+Wellenlänge und Frequenz hängen über $\lambda = c / f$ zusammen. Ein Ton von 20 Hz hat eine Wellenlänge von rund 17 m, einer von 20 kHz nur 1,7 cm. Deshalb lassen sich tiefe Töne kaum durch Wände abschirmen, und kleine Lautsprecher können keine tiefen Bässe erzeugen.
+
+Eine **Oktave** entspricht einer Verdopplung der Frequenz. Der Kammerton a¹ hat 440 Hz, eine Oktave höher liegen 880 Hz.
+
+### Hörbereich
+
+Der Mensch hört Frequenzen von etwa **20 Hz bis 20 kHz**. Die obere Grenze sinkt mit dem Alter, bei Erwachsenen oft auf 15 kHz und weniger. Am empfindlichsten ist das Ohr zwischen etwa 2 und 5 kHz, dort liegen auch die für die Sprachverständlichkeit wichtigen Konsonanten. Schall unter 20 Hz heißt **Infraschall**, über 20 kHz **Ultraschall**.
+
+### Schalldruckpegel
+
+Das Ohr verarbeitet Schalldrücke von $20\ \mu\mathrm{Pa}$ (Hörschwelle) bis über $20\ \mathrm{Pa}$ (Schmerzgrenze), also einen Bereich von über einer Million. Außerdem empfindet es Lautstärke etwa logarithmisch. Deshalb gibt man den **Schalldruckpegel** in **Dezibel** (dB SPL, _Sound Pressure Level_) an:
+
+$$
+L_p = 20 \cdot \log_{10}\left(\frac{p}{p_0}\right)\ \mathrm{dB}, \qquad p_0 = 20\ \mu\mathrm{Pa}
+$$
+
+| Pegel | Beispiel |
+| --- | --- |
+| 0 dB | Hörschwelle |
+| 30 dB | Flüstern, ruhiges Schlafzimmer |
+| 60 dB | normales Gespräch |
+| 85 dB | starker Straßenverkehr; ab hier schädigt Dauerbelastung das Gehör |
+| 100 dB | Disco, Presslufthammer |
+| 120 bis 130 dB | Schmerzgrenze, Düsenflugzeug in der Nähe |
+
+Wichtige Zusammenhänge:
+
+- **+6 dB** bedeuten doppelten Schalldruck, weil $20 \cdot \log_{10} 2 \approx 6$.
+- **+3 dB** bedeuten doppelte Schallleistung, etwa zwei gleich laute Quellen statt einer.
+- **+10 dB** werden ungefähr als **doppelt so laut** empfunden.
+
+Messgeräte gewichten den Pegel meist mit der **A-Bewertung** (dB(A)), die tiefe und sehr hohe Frequenzen wie das Ohr schwächer berücksichtigt.
+
+In der digitalen Technik misst man Pegel in **dBFS** (_Full Scale_): 0 dBFS ist der höchste darstellbare Wert, alle anderen Werte sind negativ. Wird 0 dBFS überschritten, werden die Spitzen abgeschnitten (**Clipping**), was hart und verzerrt klingt und sich nicht rückgängig machen lässt.
+
+## Digitalisierung
+
+Ein Mikrofon wandelt Schall in eine kontinuierliche elektrische Spannung um (analoges Signal). Ein **Analog-Digital-Wandler** (ADC) macht daraus Zahlen. Das Verfahren heißt **Pulscodemodulation** (PCM) und hat zwei Schritte:
+
+1. **Abtastung** (_Sampling_): In festen Zeitabständen wird der momentane Wert gemessen. Die Zahl der Messungen pro Sekunde ist die **Abtastrate** $f_s$ (_Sample Rate_).
+2. **Quantisierung**: Jeder Messwert wird auf eine von $2^n$ Stufen gerundet. $n$ ist die **Bittiefe** (Auflösung).
+
+### Abtasttheorem
+
+Nach dem **Abtasttheorem** von Nyquist und Shannon lässt sich ein Signal nur dann fehlerfrei rekonstruieren, wenn die Abtastrate **mehr als doppelt so hoch** ist wie die höchste enthaltene Frequenz:
+
+$$
+f_s > 2 \cdot f_{\max}
+$$
+
+Die halbe Abtastrate heißt **Nyquist-Frequenz**. Frequenzen darüber werden nicht einfach weggelassen, sondern als falsche, tiefere Frequenzen gespiegelt (**Aliasing**). Deshalb filtert ein Tiefpass (_Anti-Aliasing-Filter_) vor dem Abtasten alles über der Nyquist-Frequenz heraus.
+
+Für den Hörbereich bis 20 kHz braucht man also mehr als 40 kHz. Die **CD** verwendet 44,1 kHz, der Abstand zu 40 kHz lässt Platz für die Flanke des Filters. Video, Rundfunk und Film verwenden **48 kHz**, Studios nehmen oft mit 96 kHz auf.
+
+### Bittiefe und Dynamik
+
+Durch das Runden entsteht ein kleiner Fehler, das **Quantisierungsrauschen**. Jedes zusätzliche Bit halbiert ihn und verbessert den Abstand zwischen lautestem Signal und Rauschen um etwa 6 dB. Für ein Sinussignal gilt:
+
+$$
+\text{Dynamikumfang} \approx 6{,}02 \cdot n + 1{,}76\ \mathrm{dB}
+$$
+
+| Bittiefe | Stufen | Dynamikumfang | Einsatz |
+| --- | --- | --- | --- |
+| 8 Bit | 256 | etwa 50 dB | Telefonie (mit Kompandierung), alte Spiele |
+| 16 Bit | 65 536 | etwa 98 dB | CD, Wiedergabe |
+| 24 Bit | 16 777 216 | etwa 146 dB (theoretisch) | Aufnahme und Bearbeitung |
+| 32 Bit Gleitkomma | | praktisch unbegrenzt | interne Berechnung in Audioprogrammen |
+
+Man nimmt mit 24 Bit auf, weil man dann mit ausreichend Reserve (_Headroom_) pegeln kann, ohne dass leise Passagen im Rauschen verschwinden. Beim Reduzieren auf 16 Bit fügt man ein sehr leises Rauschen hinzu (**Dithering**), das hörbare Verzerrungen leiser Signale verhindert.
+
+### Datenrate
+
+Die Datenrate unkomprimierter PCM-Daten ist
+
+$$
+\text{Datenrate} = f_s \cdot n \cdot \text{Kanäle}
+$$
+
+:::tip[Beispiel: Audio-CD]
+$44\,100\ \mathrm{Hz} \cdot 16\ \mathrm{bit} \cdot 2 = 1\,411\,200\ \mathrm{bit/s} = 1411{,}2\ \mathrm{kbit/s}$.
+Eine Minute Stereo-Audio braucht $1\,411\,200 \cdot 60 / 8 = 10\,584\,000$ Byte, also rund 10,6 MB. Eine MP3-Datei mit 128 kbit/s ist rund elfmal kleiner.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // Dezimalpunkt
+
+// Datenrate in bit/s für unkomprimiertes PCM-Audio
+static long DataRate(int sampleRate, int bitDepth, int channels) =>
+    (long)sampleRate * bitDepth * channels;
+
+// Schalldruckpegel in dB SPL aus dem Schalldruck in Pa
+static double SoundPressureLevel(double pascal) => 20 * Math.Log10(pascal / 20e-6);
+
+long cd = DataRate(44_100, 16, 2);
+long studio = DataRate(48_000, 24, 2);
+Console.WriteLine($"CD: {cd / 1000.0} kbit/s");                     // CD: 1411.2 kbit/s
+Console.WriteLine($"48 kHz/24 Bit: {studio / 1000.0} kbit/s");      // 48 kHz/24 Bit: 2304 kbit/s
+
+double bytesPerMinute = cd * 60 / 8.0;
+Console.WriteLine($"1 min CD: {bytesPerMinute / 1e6:F1} MB");      // 1 min CD: 10.6 MB
+Console.WriteLine($"Verhältnis zu MP3 mit 128 kbit/s: {cd / 128_000.0:F1} : 1"); // 11.0 : 1
+
+Console.WriteLine($"{SoundPressureLevel(2.0):F0} dB SPL");         // 100 dB SPL
+Console.WriteLine($"16 Bit: {6.02 * 16 + 1.76:F0} dB Dynamik");   // 16 Bit: 98 dB Dynamik
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Datenrate in bit/s für unkomprimiertes PCM-Audio
+fn data_rate(sample_rate: u32, bit_depth: u32, channels: u32) -> u64 {
+    sample_rate as u64 * bit_depth as u64 * channels as u64
+}
+
+/// Schalldruckpegel in dB SPL aus dem Schalldruck in Pa
+fn sound_pressure_level(pascal: f64) -> f64 {
+    20.0 * (pascal / 20e-6).log10()
+}
+
+fn main() {
+    let cd = data_rate(44_100, 16, 2);
+    let studio = data_rate(48_000, 24, 2);
+    println!("CD: {} kbit/s", cd as f64 / 1000.0); // CD: 1411.2 kbit/s
+    println!("48 kHz/24 Bit: {} kbit/s", studio as f64 / 1000.0); // 48 kHz/24 Bit: 2304 kbit/s
+
+    let bytes_per_minute = cd as f64 * 60.0 / 8.0;
+    println!("1 min CD: {:.1} MB", bytes_per_minute / 1e6); // 1 min CD: 10.6 MB
+    println!("Verhältnis zu MP3 mit 128 kbit/s: {:.1} : 1", cd as f64 / 128_000.0); // 11.0 : 1
+
+    println!("{:.0} dB SPL", sound_pressure_level(2.0)); // 100 dB SPL
+    println!("16 Bit: {:.0} dB Dynamik", 6.02 * 16.0 + 1.76); // 16 Bit: 98 dB Dynamik
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Audioformate
+
+| Format | Kompression | Eigenschaften | Einsatz |
+| --- | --- | --- | --- |
+| **WAV** | keine (PCM) | Container von Microsoft und IBM (1991), verlustfrei, groß | Aufnahme, Bearbeitung, Austausch |
+| **AIFF** | keine (PCM) | Gegenstück von Apple | Studio auf macOS |
+| **FLAC** | verlustfrei | offen, etwa 50 bis 70 % der Originalgröße | Archiv, hochwertige Musik |
+| **ALAC** | verlustfrei | Apple Lossless | Apple Music verlustfrei |
+| **MP3** | verlustbehaftet | MPEG-1 Audio Layer III, Fraunhofer IIS, bis 320 kbit/s; Patente seit 2017 abgelaufen | universell kompatibel |
+| **AAC** | verlustbehaftet | MPEG-2/MPEG-4, bei gleicher Bitrate besser als MP3 | Streaming, YouTube, Apple, Tonspur in MP4 |
+| **Opus** | verlustbehaftet | IETF RFC 6716 (2012), offen, 6 bis 510 kbit/s, sehr geringe Verzögerung | WebRTC, Videokonferenzen, Sprache und Musik im Web |
+| **Ogg Vorbis** | verlustbehaftet | offen, Vorgänger von Opus | Spiele, früher Spotify |
+
+Bei der **Bitrate** unterscheidet man **CBR** (_Constant Bitrate_, gleichbleibende Datenrate, gut für Streaming) und **VBR** (_Variable Bitrate_, mehr Bits für komplexe Stellen, bessere Qualität bei gleicher Dateigröße).
+
+## Psychoakustik und verlustbehaftete Kompression
+
+Verlustbehaftete Audioformate entfernen, was das Ohr ohnehin nicht wahrnimmt. Die **Psychoakustik** beschreibt, was das ist:
+
+- **Ruhehörschwelle**: Leise Töne unter der frequenzabhängigen Hörschwelle sind unhörbar, besonders bei sehr tiefen und sehr hohen Frequenzen.
+- **Frequenzmaskierung** (Verdeckung): Ein lauter Ton überdeckt leisere Töne mit ähnlicher Frequenz. Neben einer lauten Trompete hört man eine leise Flöte im gleichen Tonbereich nicht.
+- **Zeitliche Maskierung**: Ein lautes Ereignis überdeckt leise Töne kurz danach (bis etwa 200 ms) und sogar kurz davor (wenige ms).
+- **Frequenzgruppen** (kritische Bänder): Das Gehör analysiert Schall in rund 24 Frequenzbändern, innerhalb derer sich Töne gegenseitig maskieren.
+
+Ein Encoder wie MP3 oder AAC arbeitet so:
+
+1. Eine **Filterbank** bzw. Transformation (MDCT) zerlegt das Signal in viele Frequenzbänder.
+2. Ein **psychoakustisches Modell** berechnet für jeden Zeitabschnitt die **Mithörschwelle**: Unterhalb dieser Grenze ist in jedem Band nichts hörbar.
+3. Jedes Band wird nur so genau **quantisiert**, dass das entstehende Rauschen unter der Mithörschwelle bleibt. Komplett maskierte Anteile entfallen.
+4. Die Daten werden verlustfrei (Huffman) codiert.
+5. Bei Stereo wird oft **Joint Stereo** (Mitte-Seite-Codierung) verwendet: Statt links und rechts speichert man Summe und Differenz, die bei ähnlichen Kanälen sehr klein ist.
+
+Bei zu niedriger Bitrate werden **Artefakte** hörbar: blubbernde, metallische Höhen, ein dumpfer Klang oder **Vorechos** vor harten Anschlägen wie Kastagnetten.
+
+## Mikrofone
+
+| Bauart | Prinzip | Eigenschaften | Einsatz |
+| --- | --- | --- | --- |
+| **dynamisches Mikrofon** | Tauchspule bewegt sich im Magnetfeld (Induktion) | widerstandsfähig, verträgt hohe Pegel, braucht keine Stromversorgung | Gesang live, Bühne, laute Instrumente, Podcasts in lauter Umgebung |
+| **Kondensatormikrofon** | Membran als Kondensatorplatte, Kapazität ändert sich | sehr empfindlich, detailreich, braucht **Phantomspeisung** (48 V) | Studio, Sprache, Akustikinstrumente |
+| **Bändchenmikrofon** | dünnes Metallband im Magnetfeld | warmer Klang, empfindlich | Studio, Bläser |
+
+Die **Richtcharakteristik** gibt an, aus welchen Richtungen ein Mikrofon Schall aufnimmt:
+
+| Richtcharakteristik | Aufnahme | Einsatz |
+| --- | --- | --- |
+| **Kugel** (_Omni_) | gleichmäßig aus allen Richtungen | Raumaufnahmen, Ansteckmikrofone |
+| **Niere** (_Cardioid_) | vor allem von vorne, hinten unempfindlich | Gesang, Sprache, Standard |
+| **Superniere, Hyperniere** | noch enger von vorne, kleine Empfindlichkeit hinten | Bühne, laute Umgebung |
+| **Acht** | vorne und hinten, seitlich nicht | Interviews mit zwei Personen, Stereoverfahren |
+| **Keule** (Richtrohr, _Shotgun_) | stark gerichtet | Film: Angel über dem Bild |
+
+Richtmikrofone zeigen den **Nahbesprechungseffekt**: Je näher die Schallquelle, desto stärker die Bässe. Für Film und Video verwendet man zusätzlich **Lavaliermikrofone** (Ansteckmikrofone), oft drahtlos.
+
+Professionelle Mikrofone werden über **XLR**-Kabel (symmetrisch, unempfindlich gegen Störungen) an ein **Audio-Interface** angeschlossen. Es enthält Vorverstärker, Phantomspeisung und den A/D-Wandler.
+
+Tipps für gute Aufnahmen:
+
+- Pegel so einstellen, dass Spitzen bei etwa −12 bis −6 dBFS liegen (genug Reserve, kein Clipping).
+- Ruhigen Raum mit wenig Hall wählen: Teppiche, Vorhänge und Möbel dämpfen Reflexionen. Hall lässt sich später kaum entfernen.
+- **Poppschutz** gegen Plosivlaute (p, b) und Abstand von etwa 10 bis 20 cm bei Sprache.
+- Immer mit Kopfhörern mithören.
+
+## Audiobearbeitung
+
+Bearbeitet wird in einer **DAW** (_Digital Audio Workstation_) wie Audacity, Reaper, Adobe Audition, Logic Pro oder Pro Tools.
+
+- **Schnitt**: Schnitte an **Nulldurchgängen** setzen oder mit kurzen **Blenden** (_Fades_) versehen, sonst entstehen Knackser. Zwischen zwei Clips verwendet man eine **Kreuzblende**.
+- **Normalisieren**: Das ganze Signal wird gleichmäßig so verstärkt, dass der höchste Spitzenwert einen Zielwert erreicht (**Spitzenwert-Normalisierung**, zum Beispiel −1 dBFS) oder die Lautheit einen Zielwert erreicht (**Lautheitsnormalisierung** auf einen LUFS-Wert). Die Dynamik bleibt dabei unverändert.
+- **Equalizer** (EQ): verstärkt oder senkt Frequenzbereiche. Ein **Hochpassfilter** (_Low Cut_) bei etwa 80 Hz entfernt Trittschall und Brummen aus Sprachaufnahmen, eine leichte Anhebung bei 2 bis 5 kHz verbessert die Verständlichkeit.
+- **Kompressor**: verringert den **Dynamikumfang**, also den Unterschied zwischen leisen und lauten Stellen. Sprache wird gleichmäßiger und lässt sich insgesamt lauter machen.
+- **Limiter**: ein Kompressor mit sehr hoher Ratio, der verhindert, dass Spitzen einen Grenzwert überschreiten.
+- **Noise Gate**: schaltet das Signal unterhalb einer Schwelle stumm, etwa in Sprechpausen.
+- **De-Esser**: dämpft scharfe Zischlaute (s, sch).
+- **Rauschunterdrückung**: lernt ein Rauschprofil und zieht es ab.
+- **Hall** (_Reverb_) und **Panorama** (Verteilung zwischen links und rechts) für die räumliche Wirkung.
+
+### Kompressor
+
+| Parameter | Bedeutung |
+| --- | --- |
+| **Threshold** (Schwelle) | ab diesem Pegel wird komprimiert |
+| **Ratio** (Verhältnis) | wie stark: bei 4:1 wird aus 4 dB über der Schwelle nur 1 dB |
+| **Attack** | wie schnell der Kompressor einsetzt (wenige ms) |
+| **Release** | wie schnell er wieder loslässt |
+| **Make-up Gain** | Verstärkung danach, um den Pegelverlust auszugleichen |
+
+:::tip[Beispiel]
+Threshold −20 dB, Ratio 4:1. Ein Signal mit −8 dB liegt 12 dB über der Schwelle. Nach der Kompression sind es nur $12 / 4 = 3$ dB, der Ausgang liegt bei −17 dB. Ein Signal mit −25 dB bleibt unverändert.
+:::
+
+## Lautheit
+
+Der Spitzenpegel sagt wenig darüber, wie laut ein Stück wirkt: Ein stark komprimierter Song klingt bei gleichem Spitzenwert viel lauter als ein dynamisches Orchesterstück. Früher führte das zum **Loudness War**: Musik und Werbung wurden immer stärker komprimiert, um lauter zu wirken als die Konkurrenz.
+
+Heute misst man die wahrgenommene **Lautheit** in **LUFS** (_Loudness Units relative to Full Scale_, 1 LU entspricht 1 dB) nach **ITU-R BS.1770**. Das Verfahren gewichtet die Frequenzen ähnlich dem Gehör (K-Bewertung) und ignoriert Stille. Man unterscheidet Momentan- (400 ms), Kurzzeit- (3 s) und **integrierte Lautheit** (über das ganze Stück). Der **True Peak** (dBTP) berücksichtigt auch Spitzen zwischen den Abtastwerten.
+
+| Bereich | Zielwert |
+| --- | --- |
+| Fernsehen und Radio in Europa (**EBU R 128**, auch ORF) | −23 LUFS, True Peak höchstens −1 dBTP |
+| Spotify, YouTube | etwa −14 LUFS |
+| Apple Music | etwa −16 LUFS |
+| Podcasts | üblich −16 LUFS (Stereo) |
+
+Streamingdienste normalisieren alle Titel auf ihren Zielwert. Ein übertrieben komprimierter Song wird also leiser gestellt und hat dann nur noch Nachteile: weniger Dynamik bei gleicher Lautheit.
+
+## Weiterführende Quellen
+
+- [EBU R 128: Loudness normalisation and permitted maximum level of audio signals](https://tech.ebu.ch/publications/r128)
+- [IETF RFC 6716: Definition of the Opus Audio Codec](https://www.rfc-editor.org/rfc/rfc6716)
+- Michael Dickreiter u. a. (Hrsg.): _Handbuch der Tonstudiotechnik_. Berlin: De Gruyter

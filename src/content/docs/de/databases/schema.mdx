@@ -3,7 +3,7 @@ title: Schema
 description: Wie ein Datenbankschema Struktur, Datentypen und Integritätsbedingungen (Constraints) einer Datenbank festlegt.
 sidebar:
   label: Datenbankschema
-  order: 3
+  order: 5
 ---
 
 Ein **Datenbankschema** beschreibt die Struktur einer Datenbank: welche Tabellen (Entitäten) es gibt, welche Spalten und Datentypen diese besitzen, wie die Tabellen über Schlüssel miteinander verbunden sind und welche Regeln für die gespeicherten Daten gelten. Das Schema ist sozusagen der Bauplan, die eigentlichen Daten sind der Inhalt.
@@ -12,8 +12,8 @@ Ein **Datenbankschema** beschreibt die Struktur einer Datenbank: welche Tabellen
 
 - Beim Arbeiten mit den Daten dürfen keine Dateninkonsistenzen entstehen.
 - Wo ein Wert zwingend erforderlich ist, dürfen keine `NULL`-Werte eingetragen werden.
-- Datenredundanzen sollen durch [Normalisierung](/de/databases/relational-databases/#normalisierung) vermieden werden.
-- Spaltenwerte müssen atomar sein (siehe [1. Normalform](/de/databases/relational-databases/#1-normalform-1nf)).
+- Datenredundanzen sollen durch [Normalisierung](/de/databases/normalisation/) vermieden werden.
+- Spaltenwerte müssen atomar sein (siehe [1. Normalform](/de/databases/normalisation/#1-normalform-1nf)).
 - Jede Entität wird in einer eigenen Tabelle abgebildet.
 
 ## Schemaebenen
@@ -53,6 +53,8 @@ Relationale Constraints (Schlüssel-Constraints) sichern die Beziehungen zwische
 Mit `CHECK` werden beliebige Bedingungen formuliert, die jeder Datensatz erfüllen muss.
 
 ```sql
+CREATE TABLE Schueler (Id INT PRIMARY KEY);
+
 CREATE TABLE Note (
     SchuelerId INT NOT NULL REFERENCES Schueler(Id) ON DELETE CASCADE,
     Fach       VARCHAR(20) NOT NULL,

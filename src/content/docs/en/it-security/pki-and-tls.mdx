@@ -1,0 +1,212 @@
+---
+title: PKI and TLS
+description: X.509 certificates, certificate authorities, chain of trust, CSR, revocation with CRL and OCSP, Let's Encrypt and ACME, TLS 1.2 and 1.3, HTTPS, HSTS, pinning, S/MIME and PGP.
+sidebar:
+  order: 4
+---
+
+Asymmetric cryptography solves the problem of key exchange but raises a new one: how do you know that the public key `bank.at` sends you really belongs to the bank and not to an attacker who has slipped in between? A **public key infrastructure** (PKI) answers this question with **certificates** issued by trusted bodies. The basics of the methods are on the page [Cryptography](/en/it-security/cryptography/).
+
+## Certificates
+
+A **digital certificate** binds a public key to an identity (domain, person, organisation). A **certificate authority** (CA) checks the identity and confirms the binding with its **digital signature**. Whoever trusts the CA can therefore also trust the certificate. A certificate is comparable to an official ID card: the photo (the key) is assigned to the person by the authority's stamp (the CA's signature).
+
+### Structure according to X.509
+
+Certificates almost always follow the **X.509 version 3** standard (RFC 5280). The most important fields:
+
+| Field                             | Content                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------- |
+| **Version**                       | 3 (because of the extensions)                                                   |
+| **Serial number**                 | unique number within the CA, stated when revoking                               |
+| **Signature algorithm**           | for example `sha256WithRSAEncryption` or `ecdsa-with-SHA256`                    |
+| **Issuer**                        | name of the CA that signed the certificate                                      |
+| **Validity**                      | period from _not before_ to _not after_                                         |
+| **Subject**                       | name of the holder as a distinguished name, for example `CN=www.example.at, O=..., C=AT` |
+| **Subject public key info**       | algorithm and public key of the holder                                          |
+| **Extensions**                    | see below                                                                       |
+| **Signature**                     | the CA's signature over all preceding fields                                    |
+
+Important extensions:
+
+- **Subject Alternative Name** (SAN): all domain names for which the certificate is valid, for example `example.at` and `www.example.at` or a wildcard such as `*.example.at`. Browsers only check this field now, no longer the _common name_.
+- **Basic Constraints**: whether the certificate itself is a CA (`CA:TRUE`) and may therefore sign further certificates.
+- **Key Usage** and **Extended Key Usage**: what the key may be used for, such as signatures, server authentication (`serverAuth`), client authentication or email protection.
+- **CRL Distribution Points** and **Authority Information Access**: where revocation lists and the certificate of the issuing CA can be found.
+
+Certificates are usually stored in **PEM** format (Base64 text between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`) or in binary as **DER**. **PKCS #12** (file extension `.pfx` or `.p12`) bundles certificate and private key in one password-protected file, as used for example by Windows when exporting.
+
+### Validation levels
+
+| Level                         | What is checked                                           | Use                              |
+| ----------------------------- | --------------------------------------------------------- | -------------------------------- |
+| **Domain validation** (DV)    | only control over the domain, automated                   | most websites                    |
+| **Organisation validation** (OV) | additionally the existence of the organisation         | company websites                 |
+| **Extended validation** (EV)  | thorough check of the organisation according to strict rules | formerly banks, shops         |
+
+Browsers now display all three levels the same way. The padlock in the browser only says that the connection is encrypted and belongs to the stated domain, **not** that the website is trustworthy. Phishing sites also have valid DV certificates.
+
+## Chain of trust
+
+In practice a root CA does not sign server certificates directly. A **chain of trust** emerges:
+
+1. The **root CA** has a **self-signed** certificate. Its private key is well protected and usually kept offline in a hardware security module (HSM).
+2. The root CA signs one or more **intermediate CAs**, which do the day-to-day work. If an intermediate CA is compromised, it can be revoked without replacing the root.
+3. The intermediate CA signs the server's **leaf certificate** (end-entity certificate).
+
+When establishing a connection the server sends its certificate **and** the intermediate certificates. The client checks every signature up to a root certificate that is in its **root store** (_trust store_). Root stores are supplied by the operating system or browser (Microsoft, Apple, Mozilla, Google Chrome) and contain roughly 100 to 150 roots. For every level the client checks:
+
+- the signature is valid (with the public key of the next level up),
+- the certificate is within its validity period,
+- the certificate is not revoked,
+- the domain name matches the SAN, the purpose matches Key Usage, Basic Constraints are respected.
+
+If a check fails, the browser shows a warning. Ignoring this warning opens exactly the door for a man-in-the-middle attack.
+
+Companies often run their **own internal PKI** (for example with Active Directory Certificate Services) for internal servers, Wi-Fi with 802.1X or user certificates. Its root certificate is distributed to all company computers by group policy. Publicly reachable services need a certificate from a public CA. A **self-signed certificate** without a CA is only suitable for tests, because no client trusts it by default.
+
+**Certificate Transparency** (RFC 6962) makes issuance traceable: public CAs must enter every certificate into public, append-only logs. Domain owners can thus see, for example via [crt.sh](https://crt.sh/), when someone has obtained a certificate for their domain without authorisation.
+
+## Applying for a certificate
+
+1. The applicant generates a **key pair** themselves. The private key never leaves their server.
+2. They create a **certificate signing request** (CSR, format PKCS #10) with the public key and the desired names. The CSR is signed with the private key, which proves that the applicant possesses it.
+3. The CA checks the identity or the control over the domain.
+4. The CA issues the signed certificate.
+
+With OpenSSL this looks as follows:
+
+```bash
+# generate key pair (ECDSA with curve P-256) and CSR
+openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:P-256 -nodes \
+  -keyout server.key -out server.csr \
+  -subj "/CN=www.example.at" -addext "subjectAltName=DNS:www.example.at,DNS:example.at"
+
+# show the content of the CSR
+openssl req -in server.csr -noout -text
+
+# fetch a server's certificate chain and show the server certificate
+openssl s_client -connect www.example.at:443 -servername www.example.at -showcerts </dev/null
+openssl x509 -in cert.pem -noout -subject -issuer -dates -ext subjectAltName
+```
+
+### Let's Encrypt and ACME
+
+**Let's Encrypt** is a non-profit CA of the Internet Security Research Group (ISRG) that has issued free DV certificates since 2015 and has contributed substantially to almost all websites using HTTPS today. The process is fully automated via the **ACME** protocol (_Automatic Certificate Management Environment_, RFC 8555). An ACME client such as **Certbot**, **acme.sh** or the built-in client of web servers such as Caddy proves control over the domain with a **challenge**:
+
+| Challenge       | Proof                                                                          |
+| --------------- | ------------------------------------------------------------------------------ |
+| **HTTP-01**     | provide a file under `http://<domain>/.well-known/acme-challenge/`             |
+| **DNS-01**      | set a TXT record `_acme-challenge.<domain>`, required for wildcard certificates |
+| **TLS-ALPN-01** | present a special certificate on port 443                                      |
+
+Let's Encrypt certificates are valid for 90 days and are renewed automatically. Short lifetimes limit the damage of a stolen key. The CA/Browser Forum, the body of CAs and browser vendors, has therefore decided to lower the maximum lifetime of public TLS certificates step by step: from 398 days to 200 days since 15 March 2026, to 100 days from March 2027 and to 47 days from March 2029. Without automation this is hardly manageable any more.
+
+## Revocation
+
+If a private key is stolen or a certificate was issued by mistake, it must be **revoked** before it expires. Clients have to learn about this:
+
+| Method                       | How it works                                                                    | Drawbacks                                        |
+| ---------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **CRL** (_certificate revocation list_) | the CA regularly publishes a signed list of revoked serial numbers   | lists can become large, freshness depends on the interval |
+| **OCSP** (_Online Certificate Status Protocol_) | the client asks the CA for the status of a single certificate | extra request, the CA learns which sites you visit |
+| **OCSP stapling**            | the server fetches the signed OCSP response itself and delivers it in the handshake | must be enabled on the server                |
+
+Revocation checking only works to a limited extent in practice: if the OCSP server cannot be reached, most browsers accept the certificate anyway (_soft fail_), otherwise every outage at the CA would paralyse the web. Because of the privacy problems, Let's Encrypt shut down its OCSP service in August 2025 and now relies only on CRLs, which browsers collect, compress and distribute to their users. Short lifetimes additionally make revocation less important.
+
+## TLS
+
+**TLS** (_Transport Layer Security_, the successor of SSL) secures connections over TCP: HTTPS, but also email (SMTPS, IMAPS), LDAPS, VPNs and many APIs. TLS provides:
+
+- **confidentiality** through symmetric encryption with negotiated session keys,
+- **integrity** through AEAD schemes or MACs,
+- **authenticity** of the server through its certificate, optionally also of the client (**mTLS**, _mutual TLS_).
+
+| Version      | Year | Status                                                       |
+| ------------ | ---- | ------------------------------------------------------------ |
+| SSL 2.0, 3.0 | 1995, 1996 | insecure, prohibited (POODLE attack on SSL 3.0)         |
+| TLS 1.0, 1.1 | 1999, 2006 | obsolete, officially deprecated since 2021 (RFC 8996)   |
+| **TLS 1.2**  | 2008 | still permitted, only with secure cipher suites              |
+| **TLS 1.3**  | 2018 | current standard (RFC 8446)                                  |
+
+### Handshake in TLS 1.2
+
+In the **handshake** client and server agree on version and methods, the server identifies itself, and both derive shared session keys. TLS 1.2 needs **two round trips** for this before application data flows:
+
+1. **ClientHello**: supported versions, cipher suites, a random number, extensions such as **SNI** (_Server Name Indication_, the desired host name, so that a server with several domains selects the right certificate).
+2. **ServerHello**: chosen version and cipher suite, the server's random number. Then **Certificate** (certificate chain), **ServerKeyExchange** (ECDHE value, signed with the server's private key) and **ServerHelloDone**.
+3. **ClientKeyExchange**: the client's ECDHE value. From this both compute the shared secret and derive the session keys. **ChangeCipherSpec** and **Finished** (a MAC over all previous handshake messages that reveals manipulation of the handshake).
+4. The server replies with **ChangeCipherSpec** and **Finished**. From now on everything is encrypted.
+
+In older configurations the client could also encrypt the secret with the server's RSA key (_RSA key exchange_). Then forward secrecy is missing: whoever later obtains the server's private key can decrypt all recorded connections.
+
+### Cipher suites
+
+A **cipher suite** defines the combination of methods. In TLS 1.2 a name reads, for example:
+
+```text
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    │     │        │           └─ hash function for key derivation (PRF)
+    │     │        └─ symmetric encryption: AES-128 in GCM mode
+    │     └─ server authentication: RSA certificate
+    └─ key exchange: ECDHE (forward secrecy)
+```
+
+Secure configurations allow only ECDHE or DHE for key exchange and AEAD schemes (AES-GCM, ChaCha20-Poly1305). Methods such as RC4, 3DES, CBC with SHA-1, `NULL` or `EXPORT` must be disabled. Helpful resources are the configuration templates of the Mozilla SSL Configuration Generator and tests such as the **SSL Server Test** by Qualys SSL Labs.
+
+### Handshake in TLS 1.3
+
+TLS 1.3 removed a lot of legacy and sped up the handshake:
+
+1. **ClientHello** with the supported methods and immediately a **key share** (ECDHE value) for the method most likely to be chosen.
+2. **ServerHello** with the server's key share. From here on everything is encrypted: **EncryptedExtensions**, **Certificate**, **CertificateVerify** (signature over the handshake) and **Finished**.
+3. The client sends **Finished** and application data straight away.
+
+| Feature                  | TLS 1.2                                     | TLS 1.3                                         |
+| ------------------------ | ------------------------------------------- | ----------------------------------------------- |
+| Round trips until data   | 2                                           | 1 (0-RTT possible on resumption)                |
+| Key exchange             | RSA, DHE, ECDHE                             | only (EC)DHE, therefore always forward secrecy  |
+| Encryption               | CBC, RC4, 3DES also possible                | only AEAD (AES-GCM, ChaCha20-Poly1305, AES-CCM) |
+| Certificate visible      | in plaintext                                | encrypted                                       |
+| Cipher suites            | dozens of combinations                      | five, for example `TLS_AES_128_GCM_SHA256`      |
+
+**0-RTT** (_early data_) allows data to be sent with the very first packet when resuming a session. However, an attacker can replay this data (_replay_), so only requests without side effects, such as a simple `GET`, are suitable for it.
+
+## HTTPS and HSTS
+
+**HTTPS** is HTTP over TLS, by default on port 443. If a server redirects requests on port 80 to HTTPS, the first request remains unencrypted. An attacker on the same Wi-Fi can intercept it and permanently serve the victim an unencrypted version of the page (**SSL stripping**).
+
+**HSTS** (_HTTP Strict Transport Security_, RFC 6797) closes this gap. The server sends the header
+
+```http
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+```
+
+once, and afterwards the browser uses only HTTPS for this domain for one year (31,536,000 seconds). Certificate errors can then no longer be clicked away either. So that even the very first visit is protected, the domain can be entered into the **HSTS preload list**, which is built into all major browsers.
+
+## Certificate pinning
+
+With **certificate pinning** an application accepts only a specific certificate or a specific public key for a server, instead of trusting every CA accepted by the root store. This protects against compromised or fraudulent CAs and against traffic interception via installed company certificates. It is used mainly in mobile apps (banking).
+
+Pinning is risky: if the certificate is renewed or the key is lost, the application locks itself out until an update has been rolled out. The browser mechanism **HPKP** (_HTTP Public Key Pinning_) was therefore removed from Chrome again in 2019. Today Certificate Transparency largely takes over this protective function.
+
+## Email: S/MIME and PGP
+
+TLS protects emails only in transit between the servers. On the servers they are stored in plaintext. **End-to-end encryption** protects the message from sender to receiver, with hybrid encryption and digital signatures. There are two competing standards for this:
+
+| Feature              | S/MIME                                            | OpenPGP (PGP, GnuPG)                                 |
+| -------------------- | ------------------------------------------------- | ---------------------------------------------------- |
+| Trust model          | **hierarchical**: X.509 certificates from a CA    | **web of trust**: users sign each other's keys       |
+| Obtaining keys       | certificate from a CA (often for a fee)           | generate yourself, distribute via key servers or directly |
+| Support              | built into Outlook, Apple Mail, Thunderbird       | built into Thunderbird, otherwise via extensions     |
+| Use                  | companies, public authorities                     | private individuals, open-source projects, journalism |
+
+In the **web of trust** there is no central authority. Whoever has personally verified the fingerprint of another person's key signs that key. If you trust Anna and Anna has signed Bernd's key, you can also trust Bernd's key. This works well in small communities but scales poorly.
+
+Both methods encrypt the content, but not metadata such as sender, recipient and time, and with most programs not the subject line either.
+
+## Further reading
+
+- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3](https://www.rfc-editor.org/rfc/rfc8446)
+- [BSI TR-02102-2: Use of Transport Layer Security](https://www.bsi.bund.de/dok/TR-02102-en) (German Federal Office for Information Security)
+- [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/)

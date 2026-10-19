@@ -1,14 +1,49 @@
 ---
 title: Databases
-description: Relational and document-oriented databases, database schemas and the CAP theorem.
+description: Data modelling, the relational model, normalisation, SQL, transactions, database security, access from C# and Rust, NoSQL, distributed databases, data warehouses and data formats.
 sidebar:
   label: Overview
 ---
 
-import GroupPageCards from "starlight-group-pages/components/GroupPageCards.astro";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-Almost every application has to store data permanently, from the school's grade management to web shops and smartphone apps. A **database management system** (DBMS) takes care of this task: it stores data in a structured way, ensures its consistency, controls simultaneous access by many users and protects the data in the event of system failures.
+Almost every application has to store data permanently, from the school's grade management to the web shop and the smartphone app. A **database management system** (DBMS) takes over this task: it stores data in a structured way, ensures its consistency, controls concurrent access by many users and protects the data in the event of system failures.
 
-## What to expect
+At the HTL, this material is taught in the subject **Information Systems**, complemented by projects in software development and IT projects. All SQL examples were run in PostgreSQL, all C# and Rust examples with .NET 10 and Rust (edition 2024).
 
-<GroupPageCards directory="databases" />
+## Design
+
+<CardGrid>
+  <LinkCard title="Data Modelling" href="/en/databases/data-modelling/" description="Design phases, the ER model in Chen and crow's foot notation, cardinalities and mapping to tables." />
+  <LinkCard title="Relational Databases" href="/en/databases/relational-databases/" description="Relations, keys, integrity constraints, the structure of a DBMS and products." />
+  <LinkCard title="Relational Algebra" href="/en/databases/relational-algebra/" description="Selection, projection, joins, division and query optimisation." />
+  <LinkCard title="Normalisation" href="/en/databases/normalisation/" description="Anomalies, functional dependencies and all normal forms from 1NF to 5NF." />
+  <LinkCard title="Database Schema" href="/en/databases/schema/" description="Schema levels and constraints." />
+</CardGrid>
+
+## SQL
+
+<CardGrid>
+  <LinkCard title="SQL: DDL and DML" href="/en/databases/sql-ddl-dml/" description="Data types, creating and altering tables, inserting, updating and deleting data." />
+  <LinkCard title="SQL Queries" href="/en/databases/sql-queries/" description="SELECT, joins, grouping, subqueries, CTEs and window functions." />
+  <LinkCard title="Views, Indexes, Functions and Triggers" href="/en/databases/sql-advanced/" description="Views, B-tree indexes, EXPLAIN, PL/pgSQL and triggers." />
+</CardGrid>
+
+## Operation and application
+
+<CardGrid>
+  <LinkCard title="Transactions" href="/en/databases/transactions/" description="ACID, isolation levels, locks, deadlocks, MVCC, recovery and backups." />
+  <LinkCard title="Database Security" href="/en/databases/database-security/" description="Roles and permissions, row-level security, SQL injection and data protection." />
+  <LinkCard title="Database Access from Programs" href="/en/databases/database-access/" description="ADO.NET, rusqlite, the repository pattern and Entity Framework Core." />
+</CardGrid>
+
+## Beyond the relational model
+
+<CardGrid>
+  <LinkCard title="NoSQL Overview" href="/en/databases/nosql/" description="Key-value, wide-column, graph, time-series and search databases." />
+  <LinkCard title="Document-Oriented Databases" href="/en/databases/document-oriented-databases/" description="JSON documents, BASE, MongoDB and CouchDB." />
+  <LinkCard title="Distributed Databases" href="/en/databases/distributed-databases/" description="Replication, sharding, consistent hashing, two-phase commit and consensus." />
+  <LinkCard title="CAP Theorem" href="/en/databases/cap-theorem/" description="Consistency and availability during network partitions, PACELC." />
+  <LinkCard title="Data Warehouse" href="/en/databases/data-warehouse/" description="OLAP, ETL, star schema, ROLLUP and CUBE, data lakes." />
+  <LinkCard title="Data Formats" href="/en/databases/data-formats/" description="XML, XML Schema, XPath, JSON, JSON Schema, YAML and CSV." />
+</CardGrid>

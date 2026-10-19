@@ -1,0 +1,177 @@
+---
+title: Transportschicht
+description: Portnummern, TCP-Header, Drei-Wege-Handshake, Verbindungsabbau, Sequenz- und Bestätigungsnummern, Sliding Window, Fluss- und Staukontrolle, UDP und Sockets.
+sidebar:
+  order: 8
+---
+
+IP bringt Pakete von Rechner zu Rechner. Auf einem Rechner laufen aber viele Programme gleichzeitig: Browser, Mailprogramm, Updatedienst. Die **Transportschicht** stellt die Verbindung zwischen **Prozessen** her (_Ende-zu-Ende-Kommunikation_) und unterscheidet sie anhand von **Portnummern**. Je nach Protokoll sorgt sie außerdem dafür, dass Daten vollständig, fehlerfrei und in der richtigen Reihenfolge ankommen. Die beiden wichtigsten Protokolle sind **TCP** und **UDP**.
+
+## Portnummern
+
+Eine Portnummer ist 16 Bit lang (0 bis 65 535). Die Kombination aus IP-Adresse und Port heißt **Socket** (z. B. `192.168.1.10:51834`). Eine Verbindung ist durch das **5-Tupel** eindeutig bestimmt: Protokoll, Quell-IP, Quellport, Ziel-IP, Zielport. So kann ein Webserver auf Port 443 tausende Verbindungen gleichzeitig bedienen, weil sich jede in Quell-IP oder Quellport unterscheidet.
+
+| Bereich | Name | Verwendung |
+| --- | --- | --- |
+| 0 bis 1023 | **Well-Known Ports** (Systemports) | Standarddienste, von der IANA vergeben. Unter Linux braucht ein Prozess Root-Rechte, um sie zu belegen |
+| 1024 bis 49 151 | **Registered Ports** | bei der IANA registrierte Anwendungen, z. B. 3306 MySQL, 3389 RDP, 5432 PostgreSQL |
+| 49 152 bis 65 535 | **Dynamic / Private Ports** (ephemer) | vom Betriebssystem zufällig als **Quellport** für Client-Verbindungen vergeben |
+
+Linux verwendet als ephemeren Bereich standardmäßig 32 768 bis 60 999, Windows hält sich an den IANA-Bereich.
+
+### Wichtige Ports
+
+| Port | Protokoll | Transport | Dienst |
+| --- | --- | --- | --- |
+| 20, 21 | FTP | TCP | Daten (aktiver Modus), Steuerung |
+| 22 | SSH, SFTP, SCP | TCP | verschlüsselter Fernzugriff und Dateitransfer |
+| 23 | Telnet | TCP | unverschlüsselter Fernzugriff |
+| 25 | SMTP | TCP | Mailtransport zwischen Servern |
+| 53 | DNS | UDP, TCP | Namensauflösung (TCP für große Antworten und Zonentransfers) |
+| 67, 68 | DHCP | UDP | Server, Client |
+| 69 | TFTP | UDP | einfacher Dateitransfer (z. B. IOS-Images) |
+| 80 | HTTP | TCP | Web |
+| 110 | POP3 | TCP | Mail abholen |
+| 123 | NTP | UDP | Zeitsynchronisation |
+| 143 | IMAP | TCP | Mailzugriff |
+| 161, 162 | SNMP | UDP | Abfragen, Traps |
+| 389 | LDAP | TCP | Verzeichnisdienst |
+| 443 | HTTPS | TCP (HTTP/3: UDP) | Web über TLS |
+| 445 | SMB | TCP | Windows-Dateifreigaben |
+| 514 | Syslog | UDP | Protokollmeldungen |
+| 587 | SMTP Submission | TCP | Mailversand vom Client |
+| 636 | LDAPS | TCP | LDAP über TLS |
+| 993, 995 | IMAPS, POP3S | TCP | IMAP und POP3 über TLS |
+| 3389 | RDP | TCP, UDP | Windows-Remotedesktop |
+
+## TCP
+
+Das **Transmission Control Protocol** (TCP, RFC 9293) ist **verbindungsorientiert** und **zuverlässig**. Es garantiert, dass ein Bytestrom vollständig, fehlerfrei, ohne Duplikate und in der richtigen Reihenfolge beim Empfänger ankommt, obwohl das darunterliegende IP keine dieser Garantien gibt. Dafür sorgen Verbindungsaufbau, Sequenznummern, Bestätigungen, Neuübertragung, Fluss- und Staukontrolle. Verwendet wird TCP überall, wo jedes Byte zählt: Web, Mail, Dateiübertragung, SSH, Datenbanken.
+
+### Der TCP-Header
+
+| Feld | Bits | Bedeutung |
+| --- | --- | --- |
+| Quellport | 16 | Port des Absenders |
+| Zielport | 16 | Port des Empfängers |
+| **Sequenznummer** | 32 | Nummer des ersten Datenbytes in diesem Segment |
+| **Bestätigungsnummer** (_Acknowledgement Number_) | 32 | Nummer des nächsten erwarteten Bytes |
+| Data Offset | 4 | Headerlänge in 32-Bit-Wörtern (mindestens 5 = 20 Byte) |
+| Reserviert | 4 | |
+| **Flags** | 8 | CWR, ECE, URG, **ACK**, PSH, **RST**, **SYN**, **FIN** |
+| **Window** | 16 | wie viele Bytes der Absender noch empfangen kann (Empfangsfenster) |
+| Prüfsumme | 16 | über Header, Daten und einen Pseudo-Header mit den IP-Adressen |
+| Urgent Pointer | 16 | selten genutzt |
+| Optionen | variabel | z. B. MSS, Window Scaling, SACK, Zeitstempel |
+
+Der TCP-Header ist mindestens **20 Byte** lang, mit Optionen bis zu 60 Byte.
+
+| Flag | Bedeutung |
+| --- | --- |
+| SYN | Verbindungsaufbau, Sequenznummern synchronisieren |
+| ACK | die Bestätigungsnummer ist gültig (in allen Segmenten nach dem ersten gesetzt) |
+| FIN | Absender hat keine Daten mehr, Verbindungsabbau |
+| RST | Verbindung sofort abbrechen, z. B. wenn auf dem Zielport kein Dienst läuft |
+| PSH | Daten sofort an die Anwendung weitergeben |
+| URG | Urgent Pointer ist gültig |
+
+### Drei-Wege-Handshake
+
+Bevor Daten fließen, bauen Client und Server eine Verbindung auf. Dabei wählt jede Seite eine zufällige **Anfangssequenznummer** (ISN, _Initial Sequence Number_), damit Segmente alter Verbindungen nicht verwechselt werden und Angreifer Sequenznummern nicht erraten können.
+
+```text
+Client                                        Server (LISTEN)
+  |  SYN, Seq=1000                               |
+  |--------------------------------------------->|
+  |                    SYN, ACK, Seq=5000, Ack=1001
+  |<---------------------------------------------|
+  |  ACK, Seq=1001, Ack=5001                      |
+  |--------------------------------------------->|
+  |            Verbindung aufgebaut (ESTABLISHED) |
+```
+
+1. Der Client sendet **SYN** mit seiner ISN (hier 1000).
+2. Der Server antwortet mit **SYN-ACK**: seiner eigenen ISN (5000) und der Bestätigung 1001 (das SYN zählt wie ein Byte).
+3. Der Client bestätigt mit **ACK** 5001.
+
+Ein **SYN-Flood**-Angriff nutzt den Handshake aus: Der Angreifer sendet massenhaft SYNs mit gefälschten Absendern, der Server reserviert für jede halb offene Verbindung Speicher und beantwortet keine echten Anfragen mehr. Gegenmittel sind **SYN-Cookies**.
+
+### Verbindungsabbau
+
+Da TCP-Verbindungen vollduplex sind, schließt jede Richtung einzeln, meist in vier Schritten:
+
+1. A sendet **FIN**: „Ich habe nichts mehr zu senden.“
+2. B bestätigt mit **ACK**. B kann noch Daten senden (_half-close_).
+3. B sendet **FIN**, wenn es fertig ist.
+4. A bestätigt mit **ACK** und wartet im Zustand **TIME_WAIT** die doppelte maximale Segmentlebensdauer (2 MSL), damit verspätete Segmente nicht in eine neue Verbindung mit demselben 5-Tupel geraten.
+
+Schritt 2 und 3 werden oft zu einem FIN-ACK zusammengefasst. Ein **RST** beendet eine Verbindung sofort ohne geordneten Abbau.
+
+### Sequenz- und Bestätigungsnummern
+
+TCP nummeriert **Bytes**, nicht Segmente. Die Sequenznummer eines Segments ist die Nummer seines ersten Bytes. Die Bestätigungsnummer gibt an, welches Byte der Empfänger als nächstes erwartet, und bestätigt damit alle Bytes davor (**kumulative Bestätigung**).
+
+:::tip[Beispiel]
+Nach dem Handshake oben sendet der Client 3 Segmente mit je 500 Byte: Seq 1001, Seq 1501, Seq 2001. Kommen alle an, antwortet der Server mit Ack 2501. Geht das zweite Segment verloren, kann der Server nur bis 1500 bestätigen und sendet für jedes weitere eintreffende Segment erneut Ack 1501. Der Empfänger setzt die Daten anhand der Sequenznummern in der richtigen Reihenfolge zusammen, auch wenn sie in anderer Reihenfolge eintreffen.
+:::
+
+Bleibt eine Bestätigung aus, sendet der Absender nach Ablauf des **Retransmission Timeouts** (RTO, aus der gemessenen RTT berechnet) erneut. Erhält er **drei doppelte ACKs** für dieselbe Nummer, sendet er das fehlende Segment sofort, ohne auf den Timer zu warten (**Fast Retransmit**). Mit der Option **SACK** (_Selective Acknowledgement_) kann der Empfänger auch einzelne Blöcke nach einer Lücke bestätigen, sodass nur das Fehlende wiederholt wird.
+
+### Sliding Window und Flusskontrolle
+
+Würde der Sender nach jedem Segment auf die Bestätigung warten (_Stop-and-Wait_), wäre die Leitung die meiste Zeit leer. Beim **Sliding-Window-Verfahren** darf der Sender so viele unbestätigte Bytes unterwegs haben, wie das **Fenster** erlaubt. Jede Bestätigung schiebt das Fenster weiter.
+
+Die **Flusskontrolle** verhindert, dass ein schneller Sender einen langsamen Empfänger überfordert: Im Feld **Window** teilt der Empfänger mit, wie viel Platz in seinem Empfangspuffer frei ist (**Receive Window**, rwnd). Bei 0 muss der Sender pausieren. Weil 16 Bit nur 65 535 Byte erlauben, gibt es die Option **Window Scaling** (RFC 7323), die das Fenster mit einem Faktor bis $2^{14}$ multipliziert.
+
+Wie groß das Fenster sein muss, damit eine Leitung voll ausgelastet ist, gibt das **Bandbreite-Verzögerungs-Produkt** an:
+
+$$
+W = R \cdot \mathrm{RTT}
+$$
+
+Bei 100 Mbit/s und 40 ms RTT sind das $10^8\,\mathrm{bit/s} \cdot 0{,}04\,\mathrm{s} = 4 \cdot 10^6\,\mathrm{bit} = 500\,\mathrm{kB}$. Mit einem Fenster von nur 64 KiB erreicht man höchstens $65\,536 \cdot 8\,\mathrm{bit} / 0{,}04\,\mathrm{s} \approx 13\,\mathrm{Mbit/s}$, egal wie schnell die Leitung ist.
+
+### Staukontrolle
+
+Die **Staukontrolle** (_Congestion Control_, RFC 5681) schützt nicht den Empfänger, sondern das **Netz**: Sendet jeder so schnell er kann, laufen die Puffer der Router über, Pakete gehen verloren, werden wiederholt und verstopfen das Netz weiter. Der Sender führt deshalb ein zweites Fenster, das **Congestion Window** (cwnd). Er darf höchstens $\min(\mathrm{cwnd}, \mathrm{rwnd})$ unbestätigte Bytes senden. Paketverlust wird als Zeichen für einen Stau gewertet.
+
+| Phase | Verhalten |
+| --- | --- |
+| **Slow Start** | cwnd beginnt klein (einige Segmente) und verdoppelt sich mit jeder RTT (exponentielles Wachstum), bis der Schwellwert **ssthresh** erreicht ist |
+| **Congestion Avoidance** | cwnd wächst nur noch um etwa ein Segment pro RTT (lineares Wachstum) |
+| **Fast Recovery** | bei drei doppelten ACKs: ssthresh und cwnd werden halbiert, dann weiter mit Congestion Avoidance |
+| **Timeout** | schwerer Stau: ssthresh wird halbiert, cwnd auf ein Segment, wieder Slow Start |
+
+Dieses Muster aus linearem Steigen und Halbieren heißt **AIMD** (_Additive Increase, Multiplicative Decrease_) und ergibt die typische Sägezahnkurve. Linux und Windows verwenden heute standardmäßig den Algorithmus **CUBIC**, der auf Leitungen mit großer Bandbreite schneller wächst. Google hat mit **BBR** einen Algorithmus entwickelt, der Bandbreite und RTT misst, statt auf Verluste zu reagieren.
+
+## UDP
+
+Das **User Datagram Protocol** (UDP, RFC 768) ist **verbindungslos** und **unzuverlässig**: kein Handshake, keine Bestätigungen, keine Reihenfolge, keine Fluss- oder Staukontrolle. Ein Datagramm wird einfach losgeschickt. Der Header hat nur **8 Byte**: Quellport, Zielport, Länge und Prüfsumme (bei IPv4 optional, bei IPv6 Pflicht).
+
+Das ist kein Mangel, sondern gewollt: UDP ist schnell und hat wenig Overhead. Es eignet sich, wenn
+
+- Daten in Echtzeit ankommen müssen und eine verspätete Wiederholung nutzlos wäre (VoIP, Videokonferenz, Onlinespiele),
+- Anfragen klein sind und einfach wiederholt werden können (DNS, DHCP, NTP, SNMP),
+- Daten an viele Empfänger gehen (Multicast, Broadcast, mit TCP nicht möglich),
+- die Anwendung die Zuverlässigkeit selbst regelt. **QUIC** (RFC 9000), die Grundlage von HTTP/3, baut Verbindungen, Verschlüsselung und Neuübertragung auf UDP auf, um Verbindungen schneller aufzubauen als TCP mit TLS.
+
+| Merkmal | TCP | UDP |
+| --- | --- | --- |
+| Verbindung | verbindungsorientiert (Handshake) | verbindungslos |
+| Zuverlässigkeit | Bestätigung, Wiederholung | keine |
+| Reihenfolge | garantiert | nicht garantiert |
+| Fluss- und Staukontrolle | ja | nein |
+| Datenmodell | Bytestrom ohne Nachrichtengrenzen | einzelne Datagramme mit Grenzen |
+| Header | 20 bis 60 Byte | 8 Byte |
+| Multicast/Broadcast | nein | ja |
+| Beispiele | HTTP/1.1 und HTTP/2, SMTP, SSH, FTP | DNS, DHCP, VoIP (RTP), NTP, TFTP, QUIC |
+
+## Sockets
+
+Programme greifen über die **Socket-API** auf TCP und UDP zu. Ein Server bindet einen Socket an einen Port und wartet (`bind`, `listen`, `accept`), ein Client verbindet sich (`connect`). Wie das in C# und Rust aussieht, mit Nachrichtenrahmen über den TCP-Bytestrom und mehreren Clients, zeigt die Seite [Netzwerkprogrammierung](/de/software-development/network-programming/). Unter [Fehlersuche](/de/networking/network-troubleshooting/#netstat-und-ss) steht, wie man offene Ports und Verbindungen mit `netstat` und `ss` anzeigt.
+
+## Weiterführende Quellen
+
+- [RFC 9293: Transmission Control Protocol (TCP)](https://www.rfc-editor.org/rfc/rfc9293)
+- [RFC 5681: TCP Congestion Control](https://www.rfc-editor.org/rfc/rfc5681)
+- [IANA Service Name and Transport Protocol Port Number Registry](https://www.iana.org/assignments/service-names-port-numbers/)

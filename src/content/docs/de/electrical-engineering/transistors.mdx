@@ -1,0 +1,148 @@
+---
+title: Transistoren
+description: Bipolartransistor mit Stromverstärkung und Arbeitsbereichen, Transistor als Schalter mit Basiswiderstand, MOSFET, MOSFET als Schalter, CMOS-Technik und Verstärkergrundlagen.
+sidebar:
+  order: 8
+---
+
+Der **Transistor** ist ein Halbleiterbauelement, mit dem ein kleiner Strom oder eine kleine Spannung einen großen Strom steuert. Er arbeitet als **Schalter** (digital: ein oder aus) oder als **Verstärker** (analog: stufenlos). Ein moderner Prozessor enthält Milliarden Transistoren, die als Schalter Logikgatter bilden. In der Praxis der HTL steuerst du mit Transistoren Relais, Motoren und LED-Streifen von einem Mikrocontroller aus.
+
+## Bipolartransistor
+
+Ein **Bipolartransistor** (BJT, _bipolar junction transistor_) besteht aus drei abwechselnd dotierten Schichten: **Emitter** (E), **Basis** (B) und **Kollektor** (C). Je nach Schichtfolge gibt es **NPN**- und **PNP**-Transistoren. Im Schaltzeichen zeigt der Pfeil am Emitter in die technische Stromrichtung: beim NPN aus dem Transistor heraus („**N**icht **P**feil **N**ach innen“), beim PNP hinein.
+
+Die Basis ist sehr dünn und schwach dotiert. Fließt ein kleiner Basisstrom (beim NPN von B nach E), gelangen die meisten Elektronen aus dem Emitter durch die dünne Basis in den Kollektor. So steuert der kleine **Basisstrom** $I_\mathrm{B}$ den großen **Kollektorstrom** $I_\mathrm{C}$.
+
+### Ströme und Stromverstärkung
+
+$$
+I_\mathrm{C} = B \cdot I_\mathrm{B} \qquad I_\mathrm{E} = I_\mathrm{C} + I_\mathrm{B} \qquad U_\mathrm{BE} \approx 0{,}7\,\mathrm{V}
+$$
+
+Die **Gleichstromverstärkung** $B$ (im Datenblatt $h_\mathrm{FE}$) liegt bei Kleinsignaltransistoren zwischen etwa $100$ und $800$ und streut stark zwischen Exemplaren gleichen Typs und mit der Temperatur. Schaltungen müssen deshalb mit dem **Mindestwert** aus dem Datenblatt funktionieren. Die Basis-Emitter-Strecke verhält sich wie eine Diode.
+
+| Grenzwert              | Bedeutung                                   | Beispiel BC547B   |
+| ---------------------- | ------------------------------------------- | ----------------- |
+| $I_\mathrm{C,max}$     | maximaler Kollektorstrom                    | $100\,\mathrm{mA}$ |
+| $U_\mathrm{CEO}$       | maximale Kollektor-Emitter-Spannung         | $45\,\mathrm{V}$  |
+| $P_\mathrm{tot}$       | maximale Verlustleistung                    | $500\,\mathrm{mW}$ |
+| $h_\mathrm{FE}$        | Stromverstärkung                            | $200$ bis $450$   |
+
+### Kennlinien
+
+- Die **Eingangskennlinie** $I_\mathrm{B}(U_\mathrm{BE})$ ist eine Diodenkennlinie.
+- Das **Ausgangskennlinienfeld** $I_\mathrm{C}(U_\mathrm{CE})$ zeigt für verschiedene Basisströme fast waagrechte Linien: Der Kollektorstrom hängt im aktiven Bereich kaum von $U_\mathrm{CE}$ ab, nur von $I_\mathrm{B}$.
+- Die **Arbeitsgerade** zeichnet man für einen Kollektorwiderstand $R_\mathrm{C}$ zwischen den Punkten $U_\mathrm{CE} = U_\mathrm{B}$ (Transistor sperrt) und $I_\mathrm{C} = U_\mathrm{B}/R_\mathrm{C}$ (Transistor voll leitend). Der **Arbeitspunkt** liegt auf dieser Geraden.
+
+### Arbeitsbereiche
+
+| Bereich        | Bedingung (NPN)                                        | Verhalten                                    | Anwendung      |
+| -------------- | ------------------------------------------------------ | -------------------------------------------- | -------------- |
+| Sperrbereich   | $U_\mathrm{BE} < 0{,}5\,\mathrm{V}$, $I_\mathrm{B} \approx 0$ | $I_\mathrm{C} \approx 0$, Schalter offen | Schalter aus |
+| aktiver Bereich | BE-Diode leitet, $U_\mathrm{CE} > U_\mathrm{CE,sat}$  | $I_\mathrm{C} = B \cdot I_\mathrm{B}$       | Verstärker     |
+| Sättigung      | $I_\mathrm{B} > I_\mathrm{C}/B$                        | $U_\mathrm{CE} \approx 0{,}1$ bis $0{,}3\,\mathrm{V}$, Schalter geschlossen | Schalter ein |
+
+## Transistor als Schalter
+
+Als Schalter soll der Transistor entweder ganz sperren oder ganz durchschalten. Im Zwischenbereich würde an ihm Spannung abfallen, während Strom fließt, und er würde heiß. Im gesperrten Zustand fließt kein Strom, im gesättigten fällt kaum Spannung ab, in beiden Fällen ist die Verlustleistung klein.
+
+Die Last liegt beim NPN zwischen Pluspol und Kollektor, der Emitter an Masse (**Low-Side-Schalter**). Damit der Transistor sicher sättigt, gibt man mehr Basisstrom, als rechnerisch nötig wäre. Das Verhältnis heißt **Übersteuerungsfaktor** $\ddot{u}$, typisch $2$ bis $5$:
+
+$$
+I_\mathrm{B} = \ddot{u} \cdot \frac{I_\mathrm{C}}{B_\mathrm{min}} \qquad R_\mathrm{B} = \frac{U_\mathrm{St} - U_\mathrm{BE}}{I_\mathrm{B}}
+$$
+
+:::tip[Beispiel: Basiswiderstand berechnen]
+Ein Mikrocontroller mit $5\,\mathrm{V}$ Ausgangspegel soll über einen NPN-Transistor ein Relais mit $12\,\mathrm{V}$ und $100\,\mathrm{mA}$ Spulenstrom schalten. Der Transistor hat $B_\mathrm{min} = 100$, gewählt wird $\ddot{u} = 3$.
+
+$$
+I_\mathrm{B} = 3 \cdot \frac{100\,\mathrm{mA}}{100} = 3\,\mathrm{mA} \qquad R_\mathrm{B} = \frac{5\,\mathrm{V} - 0{,}7\,\mathrm{V}}{3\,\mathrm{mA}} \approx 1{,}43\,\mathrm{k\Omega}
+$$
+
+Gewählt wird der nächstkleinere E12-Wert $1{,}2\,\mathrm{k\Omega}$, damit der Basisstrom nicht zu klein wird. Dann fließen $I_\mathrm{B} = 4{,}3\,\mathrm{V}/1{,}2\,\mathrm{k\Omega} \approx 3{,}6\,\mathrm{mA}$, das kann ein Mikrocontroller-Pin liefern. Die Verlustleistung im Transistor ist mit $U_\mathrm{CE,sat} = 0{,}2\,\mathrm{V}$ nur $0{,}2\,\mathrm{V} \cdot 100\,\mathrm{mA} = 20\,\mathrm{mW}$.
+
+Parallel zur Relaisspule gehört eine [Freilaufdiode](/de/electrical-engineering/magnetism-and-inductors/#abschaltspannung-und-freilaufdiode), sonst zerstört die Abschaltspannung den Transistor.
+:::
+
+Für Lasten, die mit dem Pluspol geschaltet werden müssen (**High-Side-Schalter**), verwendet man PNP-Transistoren oder p-Kanal-MOSFETs. Reicht die Stromverstärkung eines Transistors nicht, schaltet man zwei hintereinander (**Darlington-Schaltung**, $B_\mathrm{ges} \approx B_1 \cdot B_2$, aber $U_\mathrm{BE} \approx 1{,}4\,\mathrm{V}$). Bausteine wie der ULN2803 enthalten acht Darlington-Stufen mit Freilaufdioden.
+
+## MOSFET
+
+Der **MOSFET** (_metal-oxide-semiconductor field-effect transistor_) ist ein Feldeffekttransistor. Seine Anschlüsse heißen **Gate** (G), **Drain** (D) und **Source** (S). Das Gate ist durch eine sehr dünne Oxidschicht vom Kanal isoliert. Eine Spannung zwischen Gate und Source erzeugt ein elektrisches Feld, das im Halbleiter darunter einen leitenden **Kanal** zwischen Drain und Source entstehen lässt.
+
+Der wichtigste Unterschied zum Bipolartransistor: Der MOSFET wird **mit Spannung gesteuert**. Im statischen Zustand fließt kein Gatestrom. Nur beim Umschalten muss die Gatekapazität umgeladen werden.
+
+| Typ                                | leitet bei                                    | Schaltung        |
+| ---------------------------------- | --------------------------------------------- | ---------------- |
+| n-Kanal, Anreicherungstyp          | $U_\mathrm{GS} > U_\mathrm{GS(th)}$ (positiv) | Low-Side-Schalter, häufigster Typ |
+| p-Kanal, Anreicherungstyp          | $U_\mathrm{GS} < U_\mathrm{GS(th)}$ (negativ) | High-Side-Schalter |
+| Verarmungstyp (n oder p)           | leitet bereits bei $U_\mathrm{GS} = 0$, wird durch Gegenspannung gesperrt | selten, Konstantstromquellen |
+
+**Anreicherungstypen** (selbstsperrend, _enhancement_) sperren ohne Gatespannung und sind der Normalfall. Die **Schwellenspannung** $U_\mathrm{GS(th)}$ liegt typisch zwischen $1$ und $4\,\mathrm{V}$. Erst deutlich darüber ist der Kanal voll leitend.
+
+Im eingeschalteten Zustand verhält sich der Kanal wie ein kleiner Widerstand $R_\mathrm{DS(on)}$, von wenigen Milliohm bei Leistungs-MOSFETs bis zu einigen Ohm bei Kleinsignaltypen. Die Verlustleistung ist $P = I_\mathrm{D}^2 \cdot R_\mathrm{DS(on)}$. Leistungs-MOSFETs enthalten aufbaubedingt eine **Bodydiode** zwischen Source und Drain in Sperrrichtung.
+
+## MOSFET als Schalter
+
+Für einen Low-Side-Schalter mit n-Kanal-MOSFET liegt die Last zwischen Pluspol und Drain, Source an Masse, das Gate wird vom Mikrocontroller angesteuert.
+
+- Ein **Gatevorwiderstand** (etwa $100\,\Omega$) begrenzt den Umladestrom der Gatekapazität und dämpft Schwingungen.
+- Ein **Pull-down-Widerstand** (etwa $10\,\mathrm{k\Omega}$) zwischen Gate und Source hält den MOSFET sicher gesperrt, solange der Mikrocontroller-Pin nach dem Einschalten noch hochohmig ist. Ein offenes Gate würde sich zufällig aufladen.
+- Bei $3{,}3$- oder $5$-V-Ansteuerung braucht man einen **Logic-Level-MOSFET**, dessen $R_\mathrm{DS(on)}$ schon bei $U_\mathrm{GS} = 4{,}5\,\mathrm{V}$ (oder $2{,}5\,\mathrm{V}$) spezifiziert ist.
+
+:::tip[Beispiel]
+Ein LED-Streifen mit $12\,\mathrm{V}$ und $2\,\mathrm{A}$ wird über einen MOSFET mit $R_\mathrm{DS(on)} = 50\,\mathrm{m\Omega}$ geschaltet. Die Verlustleistung beträgt $P = (2\,\mathrm{A})^2 \cdot 0{,}05\,\Omega = 0{,}2\,\mathrm{W}$, am MOSFET fallen nur $0{,}1\,\mathrm{V}$ ab. Ein Bipolartransistor bräuchte dafür einen Basisstrom von mehreren zehn Milliampere.
+:::
+
+Mit **PWM** (Pulsweitenmodulation) schaltet man den MOSFET schnell ein und aus, um Helligkeit oder Drehzahl zu steuern. Bei hohen Frequenzen steigen die Umschaltverluste, dann braucht man einen **Gatetreiber**, der die Gatekapazität mit großem Strom umlädt.
+
+### Vergleich
+
+| Eigenschaft              | Bipolartransistor                   | MOSFET                                    |
+| ------------------------ | ----------------------------------- | ----------------------------------------- |
+| Steuerung                | Strom ($I_\mathrm{B}$)              | Spannung ($U_\mathrm{GS}$)                |
+| statische Steuerleistung | dauernd $U_\mathrm{BE} \cdot I_\mathrm{B}$ | praktisch null                     |
+| Durchlassverhalten       | $U_\mathrm{CE,sat} \approx 0{,}2\,\mathrm{V}$ | Widerstand $R_\mathrm{DS(on)}$   |
+| Eignung                  | kleine Ströme, analoge Verstärker   | große Ströme, schnelle Schalter, digitale ICs |
+| Empfindlichkeit          | unempfindlich                       | Gateoxid empfindlich gegen [ESD](/de/electrical-engineering/electrical-safety/#esd) |
+
+Für sehr hohe Spannungen und Ströme (Umrichter, E-Autos, Bahn) kombiniert der **IGBT** einen MOSFET-Eingang mit einem bipolaren Ausgang.
+
+## CMOS-Technik
+
+**CMOS** (_complementary metal-oxide-semiconductor_) verbindet jeweils einen p-Kanal- und einen n-Kanal-MOSFET. Der einfachste Baustein ist der **Inverter**: Der p-Kanal-MOSFET liegt zwischen $U_\mathrm{DD}$ und Ausgang, der n-Kanal-MOSFET zwischen Ausgang und Masse, beide Gates am Eingang.
+
+| Eingang | p-MOSFET | n-MOSFET | Ausgang |
+| ------- | -------- | -------- | ------- |
+| 0 (Low) | leitet   | sperrt   | 1 (High, mit $U_\mathrm{DD}$ verbunden) |
+| 1 (High) | sperrt  | leitet   | 0 (Low, mit Masse verbunden) |
+
+In jedem stabilen Zustand sperrt einer der beiden Transistoren, es fließt also praktisch kein Querstrom. Strom fließt nur beim Umschalten, um Kapazitäten umzuladen. Die **dynamische Verlustleistung** eines CMOS-Chips ist deshalb proportional zur Taktfrequenz und zum Quadrat der Versorgungsspannung:
+
+$$
+P_\mathrm{dyn} = \alpha \cdot C \cdot U_\mathrm{DD}^2 \cdot f
+$$
+
+$\alpha$ ist der Anteil der Gatter, die pro Takt schalten. Daher senkt man in Prozessoren die Spannung, um Strom zu sparen, und Takt und Spannung werden bei geringer Last gemeinsam reduziert. Ein NAND-Gatter in CMOS besteht aus zwei parallelen p-MOSFETs und zwei in Reihe geschalteten n-MOSFETs. Logikgatter beschreibt die Seite [Digitale Grundschaltungen](/de/electrical-engineering/digital-logic-gates/).
+
+:::caution
+Unbenutzte CMOS-Eingänge dürfen nicht offen bleiben. Sie nehmen undefinierte Pegel an, beide Transistoren leiten teilweise, und der Baustein zieht unnötig Strom oder schwingt. Man legt sie fest auf Masse oder $U_\mathrm{DD}$.
+:::
+
+## Verstärkergrundlagen
+
+Im aktiven Bereich verstärkt ein Bipolartransistor kleine Wechselsignale. Dazu stellt man mit einem Basisspannungsteiler einen **Arbeitspunkt** etwa in der Mitte der Arbeitsgeraden ein, sodass das Signal in beide Richtungen ausschwingen kann. **Koppelkondensatoren** trennen die Gleichspannung des Arbeitspunkts von Signalquelle und Last. Ein Emitterwiderstand $R_\mathrm{E}$ stabilisiert den Arbeitspunkt gegen Temperatur und Exemplarstreuungen (**Gegenkopplung**).
+
+| Grundschaltung    | gemeinsamer Anschluss | Spannungsverstärkung   | Besonderheit                                    |
+| ----------------- | --------------------- | ---------------------- | ----------------------------------------------- |
+| Emitterschaltung  | Emitter               | groß, $V_u \approx -R_\mathrm{C}/R_\mathrm{E}$ | invertiert, häufigste Verstärkerstufe |
+| Kollektorschaltung (Emitterfolger) | Kollektor | $\approx 1$          | hoher Eingangs-, kleiner Ausgangswiderstand, Impedanzwandler |
+| Basisschaltung    | Basis                 | groß                   | kleiner Eingangswiderstand, für hohe Frequenzen |
+
+Die Formel $V_u \approx -R_\mathrm{C}/R_\mathrm{E}$ gilt, wenn $R_\mathrm{E}$ nicht durch einen Kondensator überbrückt ist. Mit $R_\mathrm{C} = 4{,}7\,\mathrm{k\Omega}$ und $R_\mathrm{E} = 470\,\Omega$ verstärkt die Stufe etwa zehnfach. Heute baut man Verstärker meist mit [Operationsverstärkern](/de/electrical-engineering/operational-amplifiers/), die intern aus vielen solchen Stufen bestehen.
+
+## Weiterführende Quellen
+
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg.
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.
+- [onsemi: BC546/BC547/BC548 Datenblatt](https://www.onsemi.com/pdf/datasheet/bc546-d.pdf)

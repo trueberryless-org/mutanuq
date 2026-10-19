@@ -1,0 +1,172 @@
+---
+title: Semiconductors and Diodes
+description: Band model, intrinsic conduction, doping, pn junction, diode characteristic, Zener diode and stabilisation, LED series resistor, rectifiers with smoothing, photodiode and solar cell.
+sidebar:
+  order: 7
+---
+
+**Semiconductors** such as silicon conduct worse than metals but better than insulators. Their conductivity can be controlled by deliberate impurities, light, temperature and applied voltages. All electronic components, from the diode and transistor to the processor, are based on this.
+
+## Band model
+
+In a solid the permitted energy states of the electrons form **bands**. The **valence band** contains the electrons that bind the atoms together. In the **conduction band** above it, electrons can move freely and conduct current. Between them lies a **band gap** (forbidden zone) with energy $W_\mathrm{g}$, given in electronvolts ($1\,\mathrm{eV} \approx 1.602 \cdot 10^{-19}\,\mathrm{J}$).
+
+| Material type | Band gap                  | Example                                 |
+| ------------- | ------------------------- | --------------------------------------- |
+| Conductor     | none, bands overlap       | copper, aluminium                       |
+| Semiconductor | about $0.1$ to $3\,\mathrm{eV}$ | germanium $0.67\,\mathrm{eV}$, silicon $1.12\,\mathrm{eV}$, gallium arsenide $1.42\,\mathrm{eV}$, gallium nitride $3.4\,\mathrm{eV}$ |
+| Insulator     | large, above about $4\,\mathrm{eV}$ | glass, diamond ($5.5\,\mathrm{eV}$)  |
+
+### Intrinsic conduction
+
+In pure silicon at $0\,\mathrm{K}$ all electrons are in bonds. Heat makes individual electrons jump into the conduction band, leaving a **hole** in the valence band. Neighbouring electrons can move into the hole, so the hole moves like a positive charge. This **intrinsic conduction** is small and rises sharply with temperature. Semiconductors are therefore NTC materials.
+
+## Doping
+
+Incorporating a few foreign atoms (**doping**, about 1 foreign atom per $10^6$ to $10^8$ silicon atoms) increases the conductivity by many orders of magnitude.
+
+| Type   | Foreign atoms                                   | Valence | Effect                                   | Majority carriers |
+| ------ | ----------------------------------------------- | ------- | ---------------------------------------- | ----------------- |
+| n-type | **donors**: phosphorus, arsenic, antimony        | 5       | one surplus, easily released electron    | electrons         |
+| p-type | **acceptors**: boron, aluminium, gallium, indium | 3       | one missing bond electron, i.e. a hole   | holes             |
+
+The charge carriers created by doping are called **majority carriers**. The few carriers of the opposite kind created by intrinsic conduction are called **minority carriers**. A doped crystal is electrically neutral overall because the foreign atoms, as fixed ions, carry the opposite charge.
+
+## pn junction
+
+Where a p-doped and an n-doped region meet, electrons **diffuse** from the n-region into the p-region and recombine with holes there, and vice versa. At the boundary a zone without free charge carriers remains, the **depletion region** (space charge region). The fixed ions left behind create an electric field that stops further diffusion. The associated **built-in voltage** is about $0.7\,\mathrm{V}$ for silicon.
+
+- **Forward bias**: plus to p (anode), minus to n (cathode). The external voltage reduces the depletion region. From about $0.6$ to $0.7\,\mathrm{V}$ the current rises steeply.
+- **Reverse bias**: plus to n. The depletion region widens, and only a tiny **reverse current** of minority carriers flows (nA to µA).
+
+## Diode
+
+A **diode** is a pn junction with two terminals: **anode** (p) and **cathode** (n, marked on the package by a band). It acts like a valve that lets current through in one direction only. In the circuit symbol the triangle points in the conventional forward direction.
+
+### Characteristic
+
+The relationship between current and voltage is highly non-linear. It is described by the **Shockley equation**:
+
+$$
+I = I_\mathrm{S} \cdot \left(e^{\frac{U}{n \cdot U_\mathrm{T}}} - 1\right) \qquad U_\mathrm{T} = \frac{k \cdot T}{e} \approx 26\,\mathrm{mV}\ \text{at}\ 300\,\mathrm{K}
+$$
+
+$I_\mathrm{S}$ is the saturation current, $n$ the ideality factor (1 to 2), $U_\mathrm{T}$ the thermal voltage. In practice this means: every $60\,\mathrm{mV}$ (at $n = 1$) more voltage multiplies the current by ten. That is why the voltage across a conducting silicon diode stays almost fixed at $0.6$ to $0.8\,\mathrm{V}$ over a large current range. For calculations a simplified **threshold voltage** of $U_\mathrm{F} = 0.7\,\mathrm{V}$ is assumed.
+
+The forward voltage falls by about $-2\,\mathrm{mV/K}$ when the temperature rises. If the maximum **reverse voltage** is exceeded, the diode breaks down and the reverse current rises sharply (Zener or avalanche breakdown).
+
+| Diode type        | $U_\mathrm{F}$ (typical)       | Use                                              |
+| ----------------- | ------------------------------ | ------------------------------------------------ |
+| Silicon (1N4148, 1N4007) | $0.6$ to $0.8\,\mathrm{V}$ | signal and rectifier diodes                   |
+| Germanium         | $0.2$ to $0.3\,\mathrm{V}$     | historical, demodulators                         |
+| Schottky          | $0.2$ to $0.5\,\mathrm{V}$     | metal-semiconductor junction, fast, for switching regulators and reverse polarity protection |
+| LED               | $1.6$ to $3.6\,\mathrm{V}$     | light generation                                 |
+
+Important limits in the datasheet are the maximum forward current $I_\mathrm{F}$, the maximum reverse voltage $U_\mathrm{R}$ (or $U_\mathrm{RRM}$), the power dissipation and the reverse recovery time (how quickly the diode changes from conducting to blocking).
+
+## Zener diode
+
+A **Zener diode** is doped so that it breaks down in reverse direction at a precisely defined **Zener voltage** $U_\mathrm{Z}$ (about $2.4$ to $200\,\mathrm{V}$, E24 series) without being damaged. In the breakdown region the voltage stays almost constant even if the current changes greatly. Zener diodes are operated in reverse, i.e. with the cathode to plus.
+
+### Voltage stabilisation
+
+The simplest stabiliser consists of a **series resistor** $R_\mathrm{V}$ and a Zener diode in parallel with the load. The series resistor takes up the difference between input and Zener voltage. The current through it divides between Zener diode and load. If the input voltage or the load current changes, only the Zener current changes.
+
+Design conditions:
+
+- Even at the **lowest input voltage and largest load current**, the minimum current $I_\mathrm{Z,min}$ must still flow through the Zener diode:
+
+$$
+R_\mathrm{V} \le \frac{U_\mathrm{in,min} - U_\mathrm{Z}}{I_\mathrm{Z,min} + I_\mathrm{L,max}}
+$$
+
+- At the **highest input voltage and smallest load current**, the power dissipation of the Zener diode $P_\mathrm{Z} = U_\mathrm{Z} \cdot I_\mathrm{Z}$ must not be exceeded.
+
+:::tip[Example]
+An input voltage of $10$ to $14\,\mathrm{V}$ is to be stabilised to $5.1\,\mathrm{V}$. The load current is between $0$ and $20\,\mathrm{mA}$; the Zener diode needs at least $5\,\mathrm{mA}$ and can handle $500\,\mathrm{mW}$.
+
+$$
+R_\mathrm{V} \le \frac{10\,\mathrm{V} - 5.1\,\mathrm{V}}{5\,\mathrm{mA} + 20\,\mathrm{mA}} = 196\,\Omega \quad \Rightarrow \quad R_\mathrm{V} = 180\,\Omega\ \text{(E12)}
+$$
+
+Worst case for the Zener diode ($14\,\mathrm{V}$, no load): $I_\mathrm{Z} = (14 - 5.1)\,\mathrm{V}/180\,\Omega \approx 49.4\,\mathrm{mA}$, $P_\mathrm{Z} = 5.1\,\mathrm{V} \cdot 49.4\,\mathrm{mA} \approx 252\,\mathrm{mW}$. This is below $500\,\mathrm{mW}$. The series resistor dissipates $(8.9\,\mathrm{V})^2/180\,\Omega \approx 0.44\,\mathrm{W}$ and should be rated for $1\,\mathrm{W}$. At $10\,\mathrm{V}$ and $20\,\mathrm{mA}$ load, $7.2\,\mathrm{mA}$ remain for the Zener diode, which is enough.
+:::
+
+This circuit is simple but inefficient because current flows through the Zener diode all the time. It is suitable for reference voltages and small currents. For larger loads [voltage regulators](/en/electrical-engineering/power-supplies/) are used. Zener diodes also protect inputs against overvoltage.
+
+## Light-emitting diode
+
+An **LED** (light-emitting diode) emits light when electrons and holes recombine at the pn junction. The colour depends on the band gap of the semiconductor material. White LEDs are blue LEDs with a phosphor layer. The forward voltage rises with the energy of the light:
+
+| Colour                 | $U_\mathrm{F}$ (typical)        |
+| ---------------------- | ------------------------------- |
+| Infrared               | $1.2$ to $1.5\,\mathrm{V}$      |
+| Red                    | $1.8$ to $2.1\,\mathrm{V}$      |
+| Yellow, orange         | $2.0$ to $2.2\,\mathrm{V}$      |
+| Green (classic)        | $2.1$ to $2.4\,\mathrm{V}$      |
+| Blue, white, true green | $2.8$ to $3.6\,\mathrm{V}$     |
+
+Because the current of a diode depends exponentially on the voltage, an LED must **never** be connected directly to a voltage source. A **series resistor** limits the current:
+
+$$
+R_\mathrm{V} = \frac{U_\mathrm{B} - U_\mathrm{F}}{I_\mathrm{F}}
+$$
+
+:::tip[Example]
+A red LED ($U_\mathrm{F} = 2.0\,\mathrm{V}$, $I_\mathrm{F} = 20\,\mathrm{mA}$) on $5\,\mathrm{V}$:
+
+$$
+R_\mathrm{V} = \frac{5\,\mathrm{V} - 2.0\,\mathrm{V}}{0.02\,\mathrm{A}} = 150\,\Omega \qquad P_R = 3\,\mathrm{V} \cdot 20\,\mathrm{mA} = 60\,\mathrm{mW}
+$$
+
+$150\,\Omega$ is an E12 value. A blue LED ($3.0\,\mathrm{V}$, $10\,\mathrm{mA}$) needs $200\,\Omega$. Choose the next larger standard value $220\,\Omega$; then $9.1\,\mathrm{mA}$ flow.
+:::
+
+Several LEDs are connected in series with a common series resistor (the $U_\mathrm{F}$ add up) or in parallel with **one resistor each**. Without individual resistors the LED with the lowest forward voltage would draw most of the current. Driving an LED from a microcontroller is shown in [Embedded Programming: LED](/en/embedded-programming/light-emitting-diode/).
+
+## Rectifiers
+
+A **rectifier** turns AC voltage into a pulsating DC voltage. It is part of every power supply. In the formulas $\hat{u}$ is the peak value of the AC voltage and $U_\mathrm{F}$ the forward voltage of one diode.
+
+| Circuit                         | Diodes | Output                                   | Ripple frequency at $50\,\mathrm{Hz}$ | Reverse voltage per diode (with smoothing) |
+| ------------------------------- | ------ | ---------------------------------------- | ------------------ | ------------------- |
+| Half-wave                       | 1      | positive half-waves only, $\hat{u} - U_\mathrm{F}$ | $50\,\mathrm{Hz}$ | $2\hat{u}$    |
+| Centre-tap (full-wave)          | 2      | both half-waves, transformer with centre tap | $100\,\mathrm{Hz}$ | $2\hat{u}$      |
+| Bridge (Graetz)                 | 4      | both half-waves, $\hat{u} - 2U_\mathrm{F}$ | $100\,\mathrm{Hz}$ | $\hat{u}$          |
+
+In the **bridge rectifier** two diodes in series conduct in each half-wave, so one half-wave is "flipped over". It is the most common circuit because it does not need a centre-tapped transformer. Without smoothing the arithmetic mean is $\hat{u}/\pi$ for the half-wave rectifier and $2\hat{u}/\pi$ for the full-wave rectifier.
+
+### Smoothing
+
+A **reservoir capacitor** in parallel with the output is charged at the voltage peaks and supplies the load in between. A **ripple voltage** remains. Approximately, with the ripple frequency $f_\mathrm{r}$:
+
+$$
+U_\mathrm{r,pp} \approx \frac{I_\mathrm{L}}{f_\mathrm{r} \cdot C}
+$$
+
+:::tip[Example]
+A transformer supplies $12\,\mathrm{V}$ (RMS) to a bridge rectifier, the load draws $0.5\,\mathrm{A}$, the reservoir capacitor has $2200\,\mathrm{\mu F}$.
+
+- Peak value: $\hat{u} = 12\,\mathrm{V} \cdot \sqrt{2} \approx 16.97\,\mathrm{V}$
+- No-load voltage across the capacitor: $16.97\,\mathrm{V} - 2 \cdot 0.7\,\mathrm{V} \approx 15.6\,\mathrm{V}$
+- Ripple voltage: $U_\mathrm{r,pp} \approx 0.5\,\mathrm{A} / (100\,\mathrm{Hz} \cdot 2200 \cdot 10^{-6}\,\mathrm{F}) \approx 2.3\,\mathrm{V}$
+
+The voltage therefore varies roughly between $13.3$ and $15.6\,\mathrm{V}$. A voltage regulator downstream turns this into a smooth DC voltage.
+:::
+
+A larger capacitor reduces the ripple but increases the current peaks during recharging, because the diodes conduct only briefly.
+
+## Photodiode and solar cell
+
+Light can create electron-hole pairs in a semiconductor if the photon energy is greater than the band gap (**internal photoelectric effect**). The field of the depletion region separates the pairs and a **photocurrent** flows.
+
+- The **photodiode** is operated in reverse bias. Its reverse current is almost proportional to the illuminance. It is very fast and is used in light barriers, remote control receivers, fibre-optic receivers and optocouplers. **Phototransistors** additionally amplify the photocurrent.
+- The **solar cell** is a large-area photodiode without an external voltage. It works as a source (generator mode). A silicon cell supplies an **open-circuit voltage** of about $0.6$ to $0.7\,\mathrm{V}$ and a **short-circuit current** proportional to the irradiance. It delivers the most power at the **maximum power point** (MPP), which inverters continuously track with an MPP tracker.
+
+Solar modules connect many cells in series to reach higher voltages, for example 60 cells or 120 half-cells. Crystalline silicon modules reach efficiencies of around $20$ to $23\,\%$. Because all cells in a string carry the same current, one shaded cell slows down the whole string. **Bypass diodes** bridge shaded groups of cells.
+
+## Further reading
+
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press.
+- [Wikipedia: Diode](https://en.wikipedia.org/wiki/Diode)
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Electronic Circuits: Handbook for Design and Application_. Springer.

@@ -1,0 +1,223 @@
+---
+title: Modellbewertung
+description: "Modelle richtig bewerten: Train-, Validierungs- und Testdaten, Kreuzvalidierung, Hyperparameter-Suche, Konfusionsmatrix, Precision, Recall, F1, ROC und AUC, Regressionsmaße sowie Over- und Underfitting."
+sidebar:
+  order: 12
+---
+
+Ein Modell ist nur so gut, wie es auf **neuen, unbekannten Daten** funktioniert. Auf den Trainingsdaten gut abzuschneiden ist leicht, ein Modell kann sie im Extremfall auswendig lernen. Die Modellbewertung beantwortet deshalb zwei Fragen: Wie gut wird das Modell im Einsatz sein, und welches von mehreren Modellen (bzw. welche Einstellung) ist das beste? Einen ersten Überblick über die Kennzahlen gibt [Machine Learning](/de/artificial-intelligence/machine-learning/#qualität-eines-modells-bewerten).
+
+## Daten aufteilen
+
+| Datensatz | Zweck | Typischer Anteil |
+| --------- | ----- | ---------------- |
+| **Trainingsdaten** | Das Modell lernt seine Parameter (Gewichte). | 60 bis 80 % |
+| **Validierungsdaten** | Auswahl des Modells und der **Hyperparameter** (Einstellungen, die nicht gelernt werden, etwa die Tiefe eines Entscheidungsbaums oder die Lernrate) | 10 bis 20 % |
+| **Testdaten** | einmalige, abschließende Schätzung der Leistung im Einsatz | 10 bis 20 % |
+
+Die Testdaten dürfen erst ganz am Ende verwendet werden. Wählt man Modelle oder Hyperparameter nach dem Testergebnis aus, wird das Modell indirekt an die Testdaten angepasst, und die Schätzung ist zu optimistisch.
+
+Wichtige Regeln beim Aufteilen:
+
+- **Data Leakage vermeiden:** Keine Information aus Validierungs- oder Testdaten darf ins Training gelangen. Auch Vorverarbeitungsschritte wie Skalierung, Auffüllen fehlender Werte oder das Vokabular eines Vektorisierers werden nur auf den Trainingsdaten gelernt. Eine scikit-learn-`Pipeline` erledigt das automatisch.
+- **Stratifizieren:** Bei Klassifikation sollte jede Teilmenge die Klassen im selben Verhältnis enthalten (`stratify=y`), besonders bei seltenen Klassen.
+- **Zeitreihen:** Bei zeitlich geordneten Daten (Aktienkurse, Sensordaten) wird nicht zufällig gemischt, sondern mit der Vergangenheit trainiert und mit der Zukunft getestet.
+- **Gruppen:** Stammen mehrere Datensätze von derselben Person oder Maschine, müssen sie alle im selben Teil landen, sonst erkennt das Modell nur die Person wieder.
+
+## Kreuzvalidierung
+
+Bei kleinen Datensätzen hängt das Ergebnis eines einzigen Splits stark davon ab, welche Daten zufällig im Testteil gelandet sind. Die **k-fache Kreuzvalidierung** (_k-Fold Cross-Validation_) nutzt die Daten besser:
+
+1. Die Trainingsdaten werden in $k$ gleich große Teile (_Folds_) zerlegt, üblich ist $k = 5$ oder $k = 10$.
+2. Das Modell wird $k$-mal trainiert, jedes Mal mit einem anderen Teil als Validierungsdaten und den übrigen $k - 1$ Teilen als Trainingsdaten.
+3. Das Ergebnis ist der **Mittelwert** der $k$ Bewertungen, die **Standardabweichung** zeigt, wie stabil das Modell ist.
+
+Varianten sind die **stratifizierte** Kreuzvalidierung (Klassenverhältnis in jedem Fold gleich), **Leave-One-Out** ($k$ = Anzahl der Datenpunkte, sehr aufwendig) und **TimeSeriesSplit** für Zeitreihen.
+
+### Hyperparameter suchen
+
+Bei der **Grid Search** werden alle Kombinationen vorgegebener Hyperparameter ausprobiert und jeweils per Kreuzvalidierung bewertet. Bei vielen Hyperparametern ist die **Random Search** (zufällige Kombinationen) oft effizienter.
+
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, GridSearchCV
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# 569 Gewebeproben, 30 Merkmale, Klassen: 0 = bösartig, 1 = gutartig
+X, y = load_breast_cancer(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42)
+
+# Skalierung in der Pipeline: wird in jedem Fold nur auf den Trainingsdaten gelernt
+model = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+scores = cross_val_score(model, X_train, y_train, cv=cv, scoring="f1")
+print(scores.round(3), f"{scores.mean():.3f} ± {scores.std():.3f}")
+# [0.974 0.991 0.982 0.991 0.973] 0.983 ± 0.008
+
+grid = GridSearchCV(model, {"logisticregression__C": [0.01, 0.1, 1, 10, 100]}, cv=cv, scoring="f1")
+grid.fit(X_train, y_train)
+print(grid.best_params_, f"{grid.best_score_:.3f}")
+# {'logisticregression__C': 0.1} 0.986
+```
+
+`C` ist bei der logistischen Regression die Stärke der Regularisierung (kleineres `C` = stärkere Regularisierung). `GridSearchCV` trainiert das beste Modell anschließend automatisch noch einmal mit allen Trainingsdaten (`grid.best_estimator_`).
+
+## Klassifikation bewerten
+
+### Konfusionsmatrix
+
+Bei einer binären Klassifikation gibt es vier mögliche Ergebnisse. Als „positiv“ bezeichnet man die Klasse, die man finden möchte (Spam, Krankheit, Betrug):
+
+| | vorhergesagt positiv | vorhergesagt negativ |
+| --- | --- | --- |
+| **tatsächlich positiv** | richtig positiv (TP) | falsch negativ (FN), Fehler 2. Art |
+| **tatsächlich negativ** | falsch positiv (FP), Fehler 1. Art | richtig negativ (TN) |
+
+**Beispiel:** Ein Spamfilter prüft 1000 E-Mails, davon sind 100 Spam. Er erkennt 80 Spam-Mails richtig (TP = 80) und übersieht 20 (FN = 20). Von den 900 normalen E-Mails landen 30 fälschlich im Spamordner (FP = 30), 870 werden richtig durchgelassen (TN = 870).
+
+| Kennzahl | Formel | Beispiel | Frage |
+| -------- | ------ | -------- | ----- |
+| **Accuracy** | $\frac{TP + TN}{TP + TN + FP + FN}$ | $\frac{950}{1000} = 95{,}0\,\%$ | Wie viele Vorhersagen sind richtig? |
+| **Precision** | $\frac{TP}{TP + FP}$ | $\frac{80}{110} \approx 72{,}7\,\%$ | Wie viele der als Spam markierten Mails sind wirklich Spam? |
+| **Recall** (Sensitivität, TPR) | $\frac{TP}{TP + FN}$ | $\frac{80}{100} = 80{,}0\,\%$ | Wie viel Spam wird gefunden? |
+| **Spezifität** (TNR) | $\frac{TN}{TN + FP}$ | $\frac{870}{900} \approx 96{,}7\,\%$ | Wie viele normale Mails werden richtig durchgelassen? |
+| **F1-Score** | $2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}$ | $2 \cdot \frac{0{,}727 \cdot 0{,}8}{0{,}727 + 0{,}8} \approx 76{,}2\,\%$ | Ausgewogenes Maß aus beiden |
+
+Welche Kennzahl wichtiger ist, hängt von den **Kosten der Fehler** ab:
+
+- **Recall** ist wichtig, wenn ein übersehener Fall teuer ist: Krebsvorsorge, Betrugserkennung, Erkennung von Fußgängern.
+- **Precision** ist wichtig, wenn ein falscher Alarm teuer ist: Spamfilter (eine wichtige Mail landet im Spam), Empfehlungen, automatische Sperren.
+
+Bei **unausgeglichenen Klassen** ist die Accuracy irreführend. Als Vergleich dient immer eine **Baseline**, etwa ein Modell, das stets die häufigste Klasse vorhersagt (`DummyClassifier`).
+
+### Mehrere Klassen
+
+Bei mehr als zwei Klassen berechnet man Precision, Recall und F1 für jede Klasse („diese Klasse gegen den Rest“) und mittelt sie: Der **Macro-Durchschnitt** gewichtet jede Klasse gleich (seltene Klassen zählen voll), der **gewichtete Durchschnitt** gewichtet nach der Anzahl der Beispiele pro Klasse.
+
+```python
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.dummy import DummyClassifier
+
+best = grid.best_estimator_
+y_pred = best.predict(X_test)
+
+print(confusion_matrix(y_test, y_pred))
+# [[40  2]
+#  [ 1 71]]
+print(classification_report(y_test, y_pred, target_names=["bösartig", "gutartig"], digits=3))
+#               precision    recall  f1-score   support
+#     bösartig      0.976     0.952     0.964        42
+#     gutartig      0.973     0.986     0.979        72
+#     accuracy                          0.974       114
+#    macro avg      0.974     0.969     0.972       114
+# weighted avg      0.974     0.974     0.974       114
+
+baseline = DummyClassifier(strategy="most_frequent").fit(X_train, y_train)
+print(f"Baseline-Accuracy: {baseline.score(X_test, y_test):.3f}")  # 0.632
+```
+
+In scikit-learn sind die Zeilen der Konfusionsmatrix die tatsächlichen, die Spalten die vorhergesagten Klassen, sortiert nach dem Klassenwert (hier zuerst 0 = bösartig). Zwei bösartige Proben wurden als gutartig eingestuft. In der Medizin ist genau dieser Fehler der gefährlichste.
+
+### Schwellenwert, ROC-Kurve und AUC
+
+Die meisten Klassifikatoren liefern eine **Wahrscheinlichkeit** (`predict_proba`). Erst ein **Schwellenwert** (standardmäßig 0,5) macht daraus eine Entscheidung. Senkt man ihn, findet das Modell mehr positive Fälle (höherer Recall), erzeugt aber auch mehr Fehlalarme (geringere Precision). Den Schwellenwert wählt man passend zu den Fehlerkosten.
+
+Die **ROC-Kurve** (_Receiver Operating Characteristic_) zeigt dieses Abwägen für alle Schwellenwerte: Auf der x-Achse steht die **Falsch-positiv-Rate** $FPR = \frac{FP}{FP + TN} = 1 - \text{Spezifität}$, auf der y-Achse die **Richtig-positiv-Rate** (Recall). Ein perfektes Modell geht durch die linke obere Ecke $(0|1)$, ein zufälliges Raten entspricht der Diagonale.
+
+Die **AUC** (_Area Under the Curve_) ist die Fläche unter der ROC-Kurve: 1 ist perfekt, 0,5 entspricht Zufall. Anschaulich ist sie die Wahrscheinlichkeit, dass das Modell einem zufällig gewählten positiven Beispiel eine höhere Wahrscheinlichkeit gibt als einem zufällig gewählten negativen. Die AUC bewertet ein Modell unabhängig vom gewählten Schwellenwert.
+
+```python
+from sklearn.metrics import roc_auc_score, RocCurveDisplay
+import matplotlib.pyplot as plt
+
+proba = best.predict_proba(X_test)[:, 1]   # Wahrscheinlichkeit für Klasse 1
+print(f"AUC: {roc_auc_score(y_test, proba):.3f}")  # 0.996
+
+RocCurveDisplay.from_predictions(y_test, proba)
+plt.plot([0, 1], [0, 1], "k--")              # Diagonale = Zufall
+plt.show()
+```
+
+Bei stark unausgeglichenen Klassen (z. B. 1 Betrugsfall auf 1000) wirkt die ROC-Kurve oft zu gut, weil die vielen richtig negativen Fälle die FPR klein halten. Aussagekräftiger ist dann die **Precision-Recall-Kurve** mit der **Average Precision** als Kennzahl.
+
+## Regression bewerten
+
+Bei der Regression wird ein Zahlenwert vorhergesagt, etwa ein Wohnungspreis. Mit den tatsächlichen Werten $y_i$ und den Vorhersagen $\hat{y}_i$ gilt:
+
+| Kennzahl | Formel | Eigenschaft |
+| -------- | ------ | ----------- |
+| **MAE** (mittlerer absoluter Fehler) | $\frac{1}{n} \sum \lvert y_i - \hat{y}_i \rvert$ | in der Einheit der Zielgröße, robust gegen Ausreißer |
+| **MSE** (mittlerer quadratischer Fehler) | $\frac{1}{n} \sum (y_i - \hat{y}_i)^2$ | bestraft große Fehler stark, Einheit zum Quadrat |
+| **RMSE** | $\sqrt{MSE}$ | wieder in der Einheit der Zielgröße |
+| **Bestimmtheitsmaß** $R^2$ | $1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}$ | Anteil der erklärten Streuung: 1 = perfekt, 0 = nicht besser als der Mittelwert, negativ = schlechter |
+
+**Beispiel:** Tatsächliche Werte $3, 5, 2, 7$, Vorhersagen $2{,}5;\ 5;\ 3;\ 8$. Die Fehler sind $0{,}5;\ 0;\ -1;\ -1$.
+
+- $MAE = \frac{0{,}5 + 0 + 1 + 1}{4} = 0{,}625$
+- $MSE = \frac{0{,}25 + 0 + 1 + 1}{4} = 0{,}5625$, $RMSE = 0{,}75$
+- Mittelwert $\bar{y} = 4{,}25$, Gesamtstreuung $\sum (y_i - \bar{y})^2 = 14{,}75$, also $R^2 = 1 - \frac{2{,}25}{14{,}75} \approx 0{,}847$
+
+## Over- und Underfitting
+
+| | Underfitting | Guter Fit | Overfitting |
+| --- | --- | --- | --- |
+| Beschreibung | Modell zu einfach, erkennt das Muster nicht | Modell erfasst das Muster | Modell lernt auch das Rauschen, also zufällige Besonderheiten der Trainingsdaten |
+| Trainingsfehler | hoch | niedrig | sehr niedrig |
+| Validierungsfehler | hoch | niedrig | deutlich höher als der Trainingsfehler |
+| Gegenmaßnahmen | komplexeres Modell, bessere Merkmale, weniger Regularisierung, länger trainieren | | mehr Daten, einfacheres Modell, Regularisierung, Dropout, Early Stopping, Merkmale reduzieren |
+
+Das folgende Beispiel passt Polynome verschiedenen Grades an 20 verrauschte Punkte einer Kosinuskurve an:
+
+```python
+import numpy as np
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+rng = np.random.default_rng(0)
+X = np.sort(rng.uniform(0, 1, 40)).reshape(-1, 1)
+y = np.cos(1.5 * np.pi * X.ravel()) + rng.normal(0, 0.1, 40)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
+
+for degree in [1, 4, 15]:
+    model = make_pipeline(PolynomialFeatures(degree), LinearRegression()).fit(X_train, y_train)
+    train_mse = mean_squared_error(y_train, model.predict(X_train))
+    test_mse = mean_squared_error(y_test, model.predict(X_test))
+    print(f"Grad {degree:2}: Trainingsfehler {train_mse:.3f}, Testfehler {test_mse:.3f}")
+
+# Grad  1: Trainingsfehler 0.198, Testfehler 0.324   -> Underfitting
+# Grad  4: Trainingsfehler 0.008, Testfehler 0.013   -> guter Fit
+# Grad 15: Trainingsfehler 0.006, Testfehler 0.149   -> Overfitting
+```
+
+Die Gerade (Grad 1) ist zu einfach. Das Polynom 15. Grades hat den kleinsten Trainingsfehler, schwingt aber zwischen den Punkten wild hin und her, und sein Testfehler ist mehr als zehnmal so groß wie beim Polynom 4. Grades.
+
+### Bias-Varianz-Zerlegung
+
+Der erwartete Fehler eines Modells auf neuen Daten lässt sich (für den quadratischen Fehler) in drei Teile zerlegen:
+
+$$
+\text{Erwarteter Fehler} = \text{Bias}^2 + \text{Varianz} + \text{nicht reduzierbares Rauschen}
+$$
+
+- Der **Bias** (Verzerrung) ist der systematische Fehler durch zu einfache Annahmen. Ein lineares Modell für einen gekrümmten Zusammenhang liegt immer daneben, egal wie viele Daten es sieht. Hoher Bias bedeutet Underfitting.
+- Die **Varianz** beschreibt, wie stark sich das Modell ändert, wenn man es mit anderen Trainingsdaten trainiert. Ein sehr flexibles Modell passt sich jedem Zufall an. Hohe Varianz bedeutet Overfitting.
+- Das **Rauschen** in den Daten (Messfehler) kann kein Modell beseitigen.
+
+Mit steigender Modellkomplexität sinkt der Bias und steigt die Varianz. Das Ziel ist der Punkt, an dem die Summe am kleinsten ist (**Bias-Varianz-Tradeoff**). Ensembles nutzen das gezielt: Random Forests mitteln viele Bäume mit hoher Varianz und senken so die Varianz, Boosting kombiniert viele einfache Modelle mit hohem Bias und senkt so den Bias (siehe [Ensemble-Methoden](/de/artificial-intelligence/supervised-learning/#ensemble-methoden)).
+
+### Lernkurven
+
+Eine **Lernkurve** zeigt Trainings- und Validierungsfehler in Abhängigkeit von der Anzahl der Trainingsdaten (`sklearn.model_selection.learning_curve`). Liegen beide Kurven nah beieinander auf hohem Niveau, hat das Modell zu hohen Bias, und mehr Daten helfen nicht. Klafft eine große Lücke zwischen ihnen, hat es zu hohe Varianz, und mehr Daten helfen meistens.
+
+## Weiterführende Quellen
+
+- scikit-learn User Guide: [Cross-validation](https://scikit-learn.org/stable/modules/cross_validation.html) und [Model evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html)
+- Gareth James u. a.: [_An Introduction to Statistical Learning_](https://www.statlearning.com/), Kapitel 2 und 5
+- Google: [Machine Learning Crash Course: Classification](https://developers.google.com/machine-learning/crash-course/classification)

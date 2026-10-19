@@ -1,0 +1,194 @@
+---
+title: Wie das Web funktioniert
+description: Client und Server, Aufbau einer URL mit Prozentkodierung, DNS-Auflösung, die Darstellung einer Seite im Browser, Webstandards sowie statische und dynamische Websites.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Das **World Wide Web** (WWW) ist ein Dienst, der auf dem Internet aufsetzt. Tim Berners-Lee entwickelte es 1989 bis 1991 am CERN in Genf mit drei Bausteinen, die bis heute die Grundlage bilden: **URLs** zum Adressieren von Ressourcen, das Protokoll **HTTP** zum Übertragen und die Auszeichnungssprache **HTML** zum Beschreiben von Dokumenten, die über **Hyperlinks** miteinander verknüpft sind. Internet und Web sind also nicht dasselbe: Das Internet ist das weltweite Netz aus Rechnern, das Web ist eine von vielen Anwendungen darauf, neben E-Mail, Videotelefonie oder Online-Spielen.
+
+## Client und Server
+
+Das Web folgt dem **Client-Server-Modell**:
+
+- Der **Client** ist meist ein **Browser** (Firefox, Chrome, Edge, Safari). Er sendet eine **Anfrage** (_Request_) und stellt die Antwort dar. Auch Apps, Kommandozeilenwerkzeuge wie `curl` oder andere Server können Clients sein.
+- Der **Webserver** (nginx, Apache, IIS, Kestrel) wartet auf Anfragen und liefert eine **Antwort** (_Response_): eine HTML-Seite, ein Bild, JSON-Daten oder eine Fehlermeldung.
+
+Die Kommunikation geht immer vom Client aus. Der Server kann bei klassischem HTTP nicht von sich aus Daten an den Browser schicken, dafür gibt es eigene Techniken wie WebSockets (siehe [Serverseitige Webanwendungen](/de/web-technologies/server-side-web-applications/#echtzeitkommunikation)). HTTP ist außerdem **zustandslos**: Jede Anfrage steht für sich, der Server erinnert sich ohne Hilfsmittel wie Cookies nicht an frühere Anfragen.
+
+Ein Seitenaufruf läuft in diesen Schritten ab:
+
+1. Du gibst `https://www.example.at/index.html` ein oder klickst auf einen Link.
+2. Der Browser zerlegt die URL und ermittelt über **DNS** die IP-Adresse von `www.example.at`.
+3. Er baut eine Verbindung zum Server auf (TCP an Port 443 oder QUIC über UDP) und handelt die **TLS**-Verschlüsselung aus.
+4. Er sendet eine HTTP-Anfrage `GET /index.html`.
+5. Der Server antwortet mit Statuscode `200 OK` und dem HTML-Dokument.
+6. Der Browser liest das HTML, lädt weitere Ressourcen nach (CSS, JavaScript, Bilder, Schriften), jede mit einer eigenen Anfrage, und stellt die Seite dar.
+
+## Aufbau einer URL
+
+Eine **URL** (_Uniform Resource Locator_) gibt an, wo eine Ressource liegt und wie man sie erreicht. Sie ist ein Sonderfall der **URI** (_Uniform Resource Identifier_, RFC 3986), die eine Ressource nur eindeutig bezeichnen muss. Browser halten sich an den **URL Standard** der WHATWG.
+
+```text
+https://anna:geheim@www.example.at:8443/schule/klassen/3AHIT?jahr=2026&sort=name#stundenplan
+```
+
+| Teil         | Bedeutung                                                                                       |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| **Schema**   | Protokoll, etwa `https`, `http`, `ftp`, `mailto`, `file`                                         |
+| **Benutzerinformation** | Name und Passwort vor dem `@`. Veraltet und unsicher, Browser warnen davor oder entfernen sie |
+| **Host**     | Domainname (`www.example.at`) oder IP-Adresse (`192.0.2.10`, IPv6 in eckigen Klammern `[2001:db8::1]`) |
+| **Port**     | optional. Fehlt er, gilt der Standardport des Schemas: 80 für `http`, 443 für `https`           |
+| **Pfad**     | Ort der Ressource auf dem Server, durch `/` gegliedert. Muss keiner echten Datei entsprechen     |
+| **Query**    | nach `?` Parameter als `name=wert`-Paare, getrennt durch `&`                                      |
+| **Fragment** | nach `#` eine Stelle innerhalb des Dokuments. Wird **nicht** an den Server gesendet, sondern nur im Browser ausgewertet |
+
+Groß- und Kleinschreibung spielt beim Schema und beim Host keine Rolle, beim Pfad entscheidet der Server (Linux-Server unterscheiden meist, Windows-Server nicht).
+
+**Absolute URLs** enthalten alle Teile. **Relative URLs** werden gegen die URL des aktuellen Dokuments aufgelöst: Auf der Seite `https://example.at/schule/index.html` verweist `bilder/logo.png` auf `https://example.at/schule/bilder/logo.png`, `/impressum` auf `https://example.at/impressum` und `../kontakt.html` auf `https://example.at/kontakt.html`.
+
+### Prozentkodierung
+
+In einer URL sind nur bestimmte ASCII-Zeichen erlaubt. Ungeschützt (_unreserved_) sind Buchstaben `A` bis `Z` und `a` bis `z`, Ziffern sowie `-`, `.`, `_` und `~`. Zeichen mit Sonderbedeutung (`/`, `?`, `#`, `&`, `=`, `:`, `@` und weitere, _reserved_) dürfen nur in dieser Bedeutung vorkommen. Alle anderen Zeichen werden **prozentkodiert** (_Percent-Encoding_): Das Zeichen wird in UTF-8 kodiert, und jedes Byte wird als `%` mit zwei Hexadezimalziffern geschrieben.
+
+| Zeichen   | UTF-8-Bytes | kodiert         |
+| --------- | ----------- | --------------- |
+| Leerzeichen | `20`      | `%20` (in Formulardaten auch `+`) |
+| `&`       | `26`        | `%26`           |
+| `ü`       | `C3 BC`     | `%C3%BC`        |
+| `ß`       | `C3 9F`     | `%C3%9F`        |
+| `€`       | `E2 82 AC`  | `%E2%82%AC`     |
+
+Deshalb muss man Werte, die in eine URL eingesetzt werden, immer kodieren. Ein Suchbegriff `Tom & Jerry` würde sonst die Query in zwei Parameter zerreißen. Domainnamen mit Umlauten (_IDN_, etwa `müller.at`) werden dagegen nicht prozentkodiert, sondern in **Punycode** umgewandelt (`xn--mller-kva.at`).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var url = new Uri("https://www.example.at:8443/schule/klassen/3AHIT?jahr=2026&sort=name#stundenplan");
+Console.WriteLine(url.Scheme);       // https
+Console.WriteLine(url.Host);         // www.example.at
+Console.WriteLine(url.Port);         // 8443
+Console.WriteLine(url.AbsolutePath); // /schule/klassen/3AHIT
+Console.WriteLine(url.Query);        // ?jahr=2026&sort=name
+Console.WriteLine(url.Fragment);     // #stundenplan
+
+// ohne Port gilt der Standardport des Schemas
+Console.WriteLine(new Uri("https://example.at/").Port); // 443
+
+// relative URL gegen eine Basis auflösen
+var baseUrl = new Uri("https://example.at/schule/index.html");
+Console.WriteLine(new Uri(baseUrl, "../kontakt.html")); // https://example.at/kontakt.html
+
+// einen Wert für die URL prozentkodieren und wieder dekodieren
+string encoded = Uri.EscapeDataString("Grüße & mehr");
+Console.WriteLine(encoded);                          // Gr%C3%BC%C3%9Fe%20%26%20mehr
+Console.WriteLine(Uri.UnescapeDataString(encoded));  // Grüße & mehr
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// reqwest stellt den Typ Url aus dem Crate url bereit
+use reqwest::Url;
+
+// kodiert alle Bytes außer den ungeschützten Zeichen
+fn percent_encode(text: &str) -> String {
+    let mut out = String::new();
+    for byte in text.bytes() {
+        match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'.' | b'_' | b'~' => out.push(byte as char),
+            _ => out.push_str(&format!("%{byte:02X}")),
+        }
+    }
+    out
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let url = Url::parse("https://www.example.at:8443/schule/klassen/3AHIT?jahr=2026&sort=name#stundenplan")?;
+    println!("{}", url.scheme());               // https
+    println!("{:?}", url.host_str());           // Some("www.example.at")
+    println!("{:?}", url.port());               // Some(8443)
+    println!("{}", url.path());                 // /schule/klassen/3AHIT
+    println!("{:?}", url.query());              // Some("jahr=2026&sort=name")
+    println!("{:?}", url.fragment());           // Some("stundenplan")
+
+    // port() ist None, wenn der Standardport gilt
+    let without_port = Url::parse("https://example.at/")?;
+    println!("{:?}", without_port.port_or_known_default()); // Some(443)
+
+    // relative URL gegen eine Basis auflösen
+    let base = Url::parse("https://example.at/schule/index.html")?;
+    println!("{}", base.join("../kontakt.html")?); // https://example.at/kontakt.html
+
+    println!("{}", percent_encode("Grüße & mehr")); // Gr%C3%BC%C3%9Fe%20%26%20mehr
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## DNS-Auflösung
+
+Rechner im Internet adressieren sich über IP-Adressen. Das **Domain Name System** (DNS) übersetzt Namen wie `www.example.at` in Adressen. Es ist eine weltweit verteilte, hierarchische Datenbank:
+
+1. Der Browser prüft seinen eigenen Cache, dann fragt er das Betriebssystem, das seinen Cache und die Datei `hosts` prüft.
+2. Ist die Antwort nicht bekannt, geht die Anfrage an den konfigurierten **rekursiven Resolver** (vom Provider, vom Schulnetz oder öffentlich wie `1.1.1.1`).
+3. Der Resolver fragt **iterativ**: zuerst einen **Root-Server**, der auf die Server der **Top-Level-Domain** `.at` verweist, diese verweisen auf den **autoritativen Nameserver** von `example.at`, und dieser liefert die Antwort.
+4. Die Antwort wird für die Dauer ihrer **TTL** (_Time to Live_) in allen Caches gespeichert.
+
+Für das Web wichtige Einträge (_Resource Records_) sind `A` (IPv4-Adresse), `AAAA` (IPv6-Adresse) und `CNAME` (Alias auf einen anderen Namen). Die Domains unter `.at` verwaltet die nic.at.
+
+## Darstellung im Browser
+
+Die **Rendering-Engine** des Browsers (Blink in Chrome und Edge, Gecko in Firefox, WebKit in Safari) wandelt Text in Pixel um. Diese Abfolge heißt **Critical Rendering Path**:
+
+| Schritt             | Was passiert                                                                                       |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| **HTML parsen**     | Der Parser liest das HTML von oben nach unten und baut daraus das **DOM** (_Document Object Model_), einen Baum aus Element-, Text- und Attributknoten |
+| **CSS parsen**      | Aus allen Stylesheets entsteht das **CSSOM** (_CSS Object Model_)                                   |
+| **Render-Tree**     | DOM und CSSOM werden kombiniert. Er enthält nur sichtbare Elemente, `display: none` fehlt          |
+| **Layout** (_Reflow_) | Für jedes Element werden Position und Größe in Pixeln berechnet                                  |
+| **Paint**           | Die Elemente werden in Ebenen gezeichnet: Hintergründe, Rahmen, Text, Bilder                       |
+| **Composite**       | Die Ebenen werden, oft von der Grafikkarte, zum fertigen Bild zusammengesetzt                       |
+
+Daraus folgen praktische Regeln:
+
+- CSS **blockiert das Rendern**: Ohne CSSOM zeichnet der Browser nichts, damit die Seite nicht ungestaltet aufblitzt. Stylesheets gehören in den `<head>`.
+- Ein normales `<script>` **blockiert den Parser**: Der Browser hält an, lädt und führt das Skript aus, weil es das DOM verändern könnte. Mit `defer` wird das Skript parallel geladen und erst nach dem Parsen ausgeführt, mit `async` sofort nach dem Laden. Module (`type="module"`) verhalten sich wie `defer`.
+- Ändert JavaScript Größen oder Positionen, muss das Layout neu berechnet werden. Häufiges abwechselndes Lesen und Schreiben von Layoutwerten macht Seiten langsam.
+
+## Webstandards
+
+Damit eine Seite in jedem Browser gleich funktioniert, beschreiben offene Standards die Technologien. Kein Unternehmen besitzt das Web.
+
+| Organisation      | Standards                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
+| **W3C** (_World Wide Web Consortium_, 1994 von Tim Berners-Lee gegründet) | CSS, Barrierefreiheit (WCAG, WAI-ARIA), SVG, viele Web-APIs |
+| **WHATWG** (_Web Hypertext Application Technology Working Group_, 2004 von Apple, Mozilla und Opera gegründet) | **HTML Living Standard**, DOM, URL, Fetch. Seit einer Vereinbarung mit dem W3C 2019 gibt es nur noch diese eine HTML-Fassung |
+| **Ecma International**, Komitee TC39 | **ECMAScript** (ECMA-262), der Sprachkern von JavaScript, jährlich eine neue Ausgabe; außerdem JSON (ECMA-404) |
+| **IETF** (_Internet Engineering Task Force_) | Protokolle als **RFCs**: HTTP, TLS, URI, Cookies, JSON (RFC 8259) |
+
+Ein **Living Standard** wird laufend weiterentwickelt, statt in nummerierten Versionen zu erscheinen. „HTML5“ bezeichnet deshalb heute umgangssprachlich das moderne HTML. Welcher Browser welches Feature unterstützt, zeigen [Can I use](https://caniuse.com/) und die Kompatibilitätstabellen auf MDN.
+
+## Statische und dynamische Websites
+
+| Eigenschaft           | statisch                                                    | dynamisch                                                        |
+| --------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------- |
+| Erzeugung             | fertige Dateien (HTML, CSS, JS, Bilder) liegen am Server     | der Server erzeugt die Antwort bei jeder Anfrage durch ein Programm |
+| Inhalt                | für alle Besucher gleich                                      | abhängig von Benutzer, Datenbank, Uhrzeit                         |
+| Server                | einfacher Webserver oder CDN genügt                           | braucht Laufzeitumgebung (ASP.NET Core, PHP, Node.js) und meist eine Datenbank |
+| Geschwindigkeit, Sicherheit | sehr schnell, kaum Angriffsfläche                       | langsamer, mehr Angriffsfläche (Injection, Authentifizierung)    |
+| Beispiele             | Dokumentation, Portfolio, diese Website                       | Webshop, Webmail, soziales Netzwerk, Schulverwaltung              |
+
+Statisch heißt nicht unbeweglich: Eine statische Seite kann mit JavaScript im Browser interaktiv sein und Daten von einer API nachladen. **Statische Site-Generatoren** (Astro, Hugo, Jekyll) erzeugen die HTML-Dateien einmal beim Bauen aus Vorlagen und Markdown. Diese Website ist so gebaut. Wie dynamische Seiten am Server entstehen, zeigt die Seite [Serverseitige Webanwendungen](/de/web-technologies/server-side-web-applications/), die Varianten SPA, SSR und SSG vergleicht [Frontend-Frameworks](/de/web-technologies/frontend-frameworks/#rendering-strategien).
+
+## Weiterführende Quellen
+
+- [How the web works](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works) (MDN Web Docs)
+- [Populating the page: how browsers work](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work) (MDN Web Docs)
+- [URL Standard](https://url.spec.whatwg.org/) (WHATWG) und [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986)

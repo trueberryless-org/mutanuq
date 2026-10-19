@@ -1,0 +1,256 @@
+---
+title: Redoxreaktionen und Elektrochemie
+description: Oxidationszahlen, Redoxgleichungen, elektrochemische Spannungsreihe, galvanische Zellen, Elektrolyse, Batterien und Akkus mit Zellchemie, Brennstoffzelle sowie Korrosion und Korrosionsschutz.
+sidebar:
+  order: 37
+---
+
+Bei **Redoxreaktionen** werden Elektronen von einem Teilchen auf ein anderes übertragen. Fließen diese Elektronen durch einen äußeren Leiter, kann man ihre Energie als elektrischen Strom nutzen: Darauf beruhen alle Batterien, Akkus und Brennstoffzellen. Umgekehrt treibt elektrischer Strom bei der Elektrolyse Redoxreaktionen an. Die **Elektrochemie** verbindet damit Chemie und Elektrotechnik.
+
+## Oxidation und Reduktion
+
+Historisch bedeutete Oxidation „Reaktion mit Sauerstoff“. Heute gilt der allgemeinere Elektronenbegriff:
+
+- **Oxidation** ist die **Abgabe** von Elektronen. Die Oxidationszahl steigt.
+- **Reduktion** ist die **Aufnahme** von Elektronen. Die Oxidationszahl sinkt.
+- Beide laufen immer gekoppelt ab: Ein **Reduktionsmittel** gibt Elektronen ab und wird dabei oxidiert, ein **Oxidationsmittel** nimmt Elektronen auf und wird dabei reduziert.
+
+$$
+\begin{aligned}
+\text{Oxidation:} &\quad \mathrm{Zn \rightarrow Zn^{2+} + 2\,e^-} \\
+\text{Reduktion:} &\quad \mathrm{Cu^{2+} + 2\,e^- \rightarrow Cu} \\
+\text{Redox:} &\quad \mathrm{Zn + Cu^{2+} \rightarrow Zn^{2+} + Cu}
+\end{aligned}
+$$
+
+Ein Zinkblech in Kupfersulfatlösung überzieht sich deshalb mit Kupfer, während Zink in Lösung geht.
+
+## Oxidationszahlen
+
+Die **Oxidationszahl** (Oxidationsstufe) ist die gedachte Ladung eines Atoms, wenn man alle Bindungselektronen dem elektronegativeren Partner zuordnet. Sie wird als römische Zahl über das Symbol geschrieben oder in Klammern angegeben: Eisen(III)-oxid.
+
+Regeln, in dieser Reihenfolge angewendet:
+
+1. Elemente haben die Oxidationszahl 0 ($\mathrm{Fe}$, $\mathrm{O_2}$, $\mathrm{Cl_2}$).
+2. Bei einatomigen Ionen ist sie gleich der Ladung ($\mathrm{Na^+}$: +I, $\mathrm{Cl^-}$: −I).
+3. Fluor hat immer −I, Alkalimetalle +I, Erdalkalimetalle +II.
+4. Wasserstoff hat meist +I (in Metallhydriden −I).
+5. Sauerstoff hat meist −II (in Peroxiden wie $\mathrm{H_2O_2}$ −I).
+6. Die Summe aller Oxidationszahlen ist gleich der Gesamtladung des Teilchens.
+
+:::tip[Beispiele]
+- $\mathrm{H_2SO_4}$: $2 \cdot (+1) + x + 4 \cdot (-2) = 0 \Rightarrow x = +6$ für Schwefel.
+- $\mathrm{MnO_4^-}$: $x + 4 \cdot (-2) = -1 \Rightarrow x = +7$ für Mangan.
+- $\mathrm{Cr_2O_7^{2-}}$: $2x + 7 \cdot (-2) = -2 \Rightarrow x = +6$ für Chrom.
+- $\mathrm{CH_4}$: C hat −IV, in $\mathrm{CO_2}$ +IV. Bei der Verbrennung wird Kohlenstoff also oxidiert.
+:::
+
+## Redoxgleichungen aufstellen
+
+Komplexere Redoxgleichungen stellt man in Teilgleichungen auf:
+
+1. Oxidationszahlen bestimmen, oxidierte und reduzierte Teilchen finden.
+2. Teilgleichungen für Oxidation und Reduktion aufschreiben, Elektronen aus der Änderung der Oxidationszahl ergänzen.
+3. Ladungen ausgleichen: in saurer Lösung mit $\mathrm{H^+}$ (bzw. $\mathrm{H_3O^+}$), in basischer mit $\mathrm{OH^-}$.
+4. Sauerstoff und Wasserstoff mit $\mathrm{H_2O}$ ausgleichen.
+5. Teilgleichungen so multiplizieren, dass die Elektronenzahlen gleich sind, und addieren.
+
+:::tip[Beispiel: Permanganat oxidiert Eisen(II) in saurer Lösung]
+Mangan geht von +VII auf +II (Aufnahme von 5 Elektronen), Eisen von +II auf +III (Abgabe von 1 Elektron).
+
+$$
+\begin{aligned}
+\text{Red.:} &\quad \mathrm{MnO_4^- + 8\,H^+ + 5\,e^- \rightarrow Mn^{2+} + 4\,H_2O} \\
+\text{Ox.:} &\quad \mathrm{Fe^{2+} \rightarrow Fe^{3+} + e^-} \quad | \cdot 5 \\
+\text{Redox:} &\quad \mathrm{MnO_4^- + 8\,H^+ + 5\,Fe^{2+} \rightarrow Mn^{2+} + 5\,Fe^{3+} + 4\,H_2O}
+\end{aligned}
+$$
+
+Ladungskontrolle: links $-1 + 8 + 10 = +17$, rechts $+2 + 15 = +17$. Das violette Permanganat wird zum fast farblosen $\mathrm{Mn^{2+}}$, deshalb eignet sich die Reaktion zur Titration ohne Indikator (Manganometrie).
+:::
+
+## Elektrochemische Spannungsreihe
+
+Taucht ein Metall in eine Lösung seiner Ionen, bildet sich ein **Redoxpaar** (Halbzelle), etwa $\mathrm{Zn/Zn^{2+}}$. Wie leicht ein Metall Elektronen abgibt, beschreibt sein **Standardpotential** $E^\circ$, gemessen gegen die **Standard-Wasserstoffelektrode** ($E^\circ = 0\,\mathrm{V}$) bei $25\,\mathrm{°C}$, $c = 1\,\mathrm{mol/L}$ und $1\,\mathrm{bar}$.
+
+| Redoxpaar (oxidierte Form + $z\,\mathrm{e^-}$ ⇌ reduzierte Form) | $E^\circ$ in V |
+| ------------------------------------------------------------------ | -------------- |
+| $\mathrm{Li^+ + e^- \rightleftharpoons Li}$                        | $-3{,}04$      |
+| $\mathrm{K^+ + e^- \rightleftharpoons K}$                          | $-2{,}93$      |
+| $\mathrm{Na^+ + e^- \rightleftharpoons Na}$                        | $-2{,}71$      |
+| $\mathrm{Mg^{2+} + 2\,e^- \rightleftharpoons Mg}$                  | $-2{,}37$      |
+| $\mathrm{Al^{3+} + 3\,e^- \rightleftharpoons Al}$                  | $-1{,}66$      |
+| $\mathrm{Zn^{2+} + 2\,e^- \rightleftharpoons Zn}$                  | $-0{,}76$      |
+| $\mathrm{Fe^{2+} + 2\,e^- \rightleftharpoons Fe}$                  | $-0{,}44$      |
+| $\mathrm{Ni^{2+} + 2\,e^- \rightleftharpoons Ni}$                  | $-0{,}26$      |
+| $\mathrm{Pb^{2+} + 2\,e^- \rightleftharpoons Pb}$                  | $-0{,}13$      |
+| $\mathrm{2\,H^+ + 2\,e^- \rightleftharpoons H_2}$                  | $0{,}00$       |
+| $\mathrm{Cu^{2+} + 2\,e^- \rightleftharpoons Cu}$                  | $+0{,}34$      |
+| $\mathrm{Ag^+ + e^- \rightleftharpoons Ag}$                        | $+0{,}80$      |
+| $\mathrm{O_2 + 4\,H^+ + 4\,e^- \rightleftharpoons 2\,H_2O}$        | $+1{,}23$      |
+| $\mathrm{Cl_2 + 2\,e^- \rightleftharpoons 2\,Cl^-}$                | $+1{,}36$      |
+| $\mathrm{Au^{3+} + 3\,e^- \rightleftharpoons Au}$                  | $+1{,}50$      |
+| $\mathrm{F_2 + 2\,e^- \rightleftharpoons 2\,F^-}$                  | $+2{,}87$      |
+
+- Metalle mit negativem Potential heißen **unedel**: Sie geben leicht Elektronen ab und lösen sich in Säuren unter Wasserstoffentwicklung. Metalle mit positivem Potential sind **edel**.
+- Die reduzierte Form eines Paars mit niedrigerem Potential reduziert die oxidierte Form eines Paars mit höherem Potential: Zink scheidet Kupfer ab, Kupfer aber kein Zink.
+
+### Nernst-Gleichung
+
+Das Potential hängt von der Konzentration ab. Bei $25\,\mathrm{°C}$ gilt die **Nernst-Gleichung**
+
+$$
+E = E^\circ + \frac{0{,}059\,\mathrm{V}}{z} \cdot \lg \frac{c(\text{Ox})}{c(\text{Red})}
+$$
+
+Für Metallelektroden ist $c(\text{Red}) = 1$ (reiner Feststoff). Eine Kupferhalbzelle mit $c(\mathrm{Cu^{2+}}) = 0{,}01\,\mathrm{mol/L}$ hat $E = 0{,}34\,\mathrm{V} + \frac{0{,}059\,\mathrm{V}}{2} \cdot (-2) = 0{,}28\,\mathrm{V}$. Mit zwei gleichen Halbzellen unterschiedlicher Konzentration lässt sich deshalb eine **Konzentrationszelle** bauen.
+
+## Galvanische Zellen
+
+Trennt man die beiden Teilreaktionen räumlich und verbindet sie durch einen Draht, fließen die Elektronen durch den äußeren Stromkreis. Eine solche **galvanische Zelle** wandelt chemische in elektrische Energie um. Das klassische Beispiel ist das **Daniell-Element**:
+
+![Daniell-Element mit Zink- und Kupferhalbzelle, Salzbrücke und Elektronenfluss](/images/natural-sciences/daniell-cell_de.svg)
+
+- **Anode** ist die Elektrode, an der **Oxidation** stattfindet (hier Zink). In der galvanischen Zelle ist sie der **Minuspol**.
+- **Kathode** ist die Elektrode, an der **Reduktion** stattfindet (hier Kupfer), der **Pluspol**.
+- Die **Salzbrücke** (oder ein Diaphragma) schließt den Stromkreis durch Ionenwanderung und verhindert, dass sich die Lösungen vermischen.
+
+Die **Zellspannung** (Leerlaufspannung) unter Standardbedingungen ist die Differenz der Potentiale:
+
+$$
+U^\circ = E^\circ(\text{Kathode}) - E^\circ(\text{Anode}) = 0{,}34\,\mathrm{V} - (-0{,}76\,\mathrm{V}) = 1{,}10\,\mathrm{V}
+$$
+
+## Elektrolyse
+
+Bei der **Elektrolyse** erzwingt eine äußere Gleichspannungsquelle eine Redoxreaktion, die freiwillig nicht ablaufen würde. Elektrische Energie wird in chemische umgewandelt. Auch hier findet an der Anode die Oxidation statt, die Anode ist bei der Elektrolyse aber der **Pluspol**.
+
+$$
+\mathrm{2\,H_2O \rightarrow 2\,H_2 + O_2}
+$$
+
+Die theoretische **Zersetzungsspannung** für Wasser ist $1{,}23\,\mathrm{V}$. In der Praxis braucht man wegen der **Überspannung** an den Elektroden und des Innenwiderstands etwa $1{,}8$ bis $2\,\mathrm{V}$.
+
+Die abgeschiedene Stoffmenge ist proportional zur geflossenen Ladung (**Faraday-Gesetz**):
+
+$$
+n = \frac{Q}{z \cdot F} = \frac{I \cdot t}{z \cdot F}, \qquad m = \frac{M \cdot I \cdot t}{z \cdot F}
+$$
+
+mit der **Faraday-Konstante** $F = N_A \cdot e = 96\,485\,\mathrm{C/mol}$ und der Zahl $z$ der übertragenen Elektronen pro Teilchen.
+
+:::tip[Beispiel: Verkupfern]
+Ein Werkstück wird $1\,\mathrm{h}$ lang mit $I = 2{,}0\,\mathrm{A}$ in einer Kupfersulfatlösung verkupfert ($\mathrm{Cu^{2+} + 2\,e^- \rightarrow Cu}$):
+
+$$
+m = \frac{63{,}55\,\mathrm{g/mol} \cdot 2{,}0\,\mathrm{A} \cdot 3600\,\mathrm{s}}{2 \cdot 96\,485\,\mathrm{C/mol}} = 2{,}37\,\mathrm{g}
+$$
+:::
+
+**Technische Anwendungen**: Aluminiumherstellung (Schmelzflusselektrolyse von $\mathrm{Al_2O_3}$ in Kryolith bei rund $950\,\mathrm{°C}$, sehr energieintensiv), Raffination von Kupfer auf über $99{,}9\,\%$ Reinheit für elektrische Leiter, Chlor-Alkali-Elektrolyse (Chlor, Natronlauge, Wasserstoff), Galvanisieren (Vergolden von Steckkontakten, Verzinken, Verchromen), Wasserstoffherstellung, Eloxieren von Aluminium.
+
+## Batterien und Akkumulatoren
+
+**Primärzellen** (Batterien) sind nicht wieder aufladbar. **Sekundärzellen** (Akkumulatoren) können durch Elektrolyse wieder geladen werden: Beim Entladen arbeiten sie als galvanische Zelle, beim Laden als Elektrolysezelle.
+
+| Typ                     | Nennspannung pro Zelle | Energiedichte (Richtwert) | Einsatz                                    |
+| ----------------------- | ---------------------- | ------------------------- | ------------------------------------------ |
+| Alkali-Mangan (primär)  | $1{,}5\,\mathrm{V}$    | etwa $100$ bis $150\,\mathrm{Wh/kg}$ | Fernbedienungen, Geräte mit geringer Last |
+| Bleiakku                | $2{,}0\,\mathrm{V}$    | etwa $30$ bis $40\,\mathrm{Wh/kg}$   | Starterbatterie, USV-Anlagen      |
+| Nickel-Metallhydrid (NiMH) | $1{,}2\,\mathrm{V}$ | etwa $60$ bis $120\,\mathrm{Wh/kg}$  | AA-Akkus, ältere Hybridautos      |
+| Lithium-Ionen           | $3{,}6$ bis $3{,}7\,\mathrm{V}$ (LFP $3{,}2\,\mathrm{V}$) | etwa $150$ bis $270\,\mathrm{Wh/kg}$ | Smartphones, Notebooks, E-Autos |
+
+### Bleiakku
+
+Sechs Zellen in Serie ergeben die $12\,\mathrm{V}$ der Autobatterie. Die Elektroden bestehen aus Blei und Blei(IV)-oxid, der Elektrolyt ist verdünnte Schwefelsäure. Beim Entladen entsteht an beiden Elektroden Blei(II)-sulfat:
+
+$$
+\begin{aligned}
+\text{Minuspol:} &\quad \mathrm{Pb + SO_4^{2-} \rightarrow PbSO_4 + 2\,e^-} \\
+\text{Pluspol:} &\quad \mathrm{PbO_2 + SO_4^{2-} + 4\,H^+ + 2\,e^- \rightarrow PbSO_4 + 2\,H_2O} \\
+\text{gesamt:} &\quad \mathrm{Pb + PbO_2 + 2\,H_2SO_4 \underset{\text{Laden}}{\overset{\text{Entladen}}{\rightleftharpoons}} 2\,PbSO_4 + 2\,H_2O}
+\end{aligned}
+$$
+
+Beim Entladen wird Schwefelsäure verbraucht, die Dichte des Elektrolyten sinkt. Daran lässt sich der Ladezustand messen. Beim Überladen entsteht Knallgas, deshalb Laderäume lüften.
+
+### Nickel-Metallhydrid-Akku
+
+Der Minuspol ist eine Legierung, die Wasserstoff einlagert (Metallhydrid MH), der Pluspol Nickeloxidhydroxid, der Elektrolyt Kalilauge. Beim Entladen:
+
+$$
+\mathrm{MH + NiOOH \rightarrow M + Ni(OH)_2}
+$$
+
+### Lithium-Ionen-Akku
+
+Im **Lithium-Ionen-Akku** pendeln Lithium-Ionen zwischen zwei Wirtsstrukturen, in die sie eingelagert werden (**Interkalation**): beim Entladen von der Graphit-Elektrode (Minuspol) durch den Elektrolyten zur Metalloxid-Elektrode (Pluspol), beim Laden zurück. Die Elektronen fließen dabei durch den äußeren Stromkreis. Für eine Zelle mit Lithiumcobaltoxid (LCO) gilt beim Entladen:
+
+$$
+\begin{aligned}
+\text{Minuspol:} &\quad \mathrm{Li_xC_6 \rightarrow C_6 + x\,Li^+ + x\,e^-} \\
+\text{Pluspol:} &\quad \mathrm{Li_{1-x}CoO_2 + x\,Li^+ + x\,e^- \rightarrow LiCoO_2}
+\end{aligned}
+$$
+
+| Bauteil         | Material                                                                 |
+| --------------- | ------------------------------------------------------------------------ |
+| Minuspol        | Graphit auf Kupferfolie (zunehmend mit Siliciumanteil)                   |
+| Pluspol         | Lithiummetalloxid auf Aluminiumfolie: LCO ($\mathrm{LiCoO_2}$), NMC (Nickel-Mangan-Cobalt), NCA, LFP ($\mathrm{LiFePO_4}$) |
+| Elektrolyt      | Leitsalz $\mathrm{LiPF_6}$ in organischen Carbonaten (brennbar, wasserfrei) |
+| Separator       | poröse Polyethylen- oder Polypropylenfolie, trennt die Elektroden elektrisch |
+
+Beim ersten Laden bildet sich auf dem Graphit eine Schutzschicht (**SEI**, _Solid Electrolyte Interphase_), die weitere Zersetzung des Elektrolyten bremst. Ihr langsames Wachstum ist eine Hauptursache der **Alterung**. Hohe Temperaturen, Tiefentladung, Überladung und Laden bei Kälte schaden dem Akku. Eine Lagerung bei etwa $40$ bis $60\,\%$ Ladung und Raumtemperatur ist günstig.
+
+:::danger[Thermisches Durchgehen]
+Bei mechanischer Beschädigung, Überladung oder internem Kurzschluss kann sich eine Lithium-Ionen-Zelle selbst aufheizen, bis der Elektrolyt sich zersetzt und brennt (_Thermal Runaway_). Die Reaktion liefert Sauerstoff aus dem Kathodenmaterial und lässt sich kaum löschen. Deshalb schützt in jedem Akkupack eine Elektronik (Battery Management System) vor Über- und Tiefentladung, Überstrom und Übertemperatur. Aufgeblähte Akkus nicht mehr laden und fachgerecht entsorgen.
+:::
+
+LFP-Zellen haben eine geringere Energiedichte, sind aber thermisch stabiler, langlebiger und kommen ohne Cobalt und Nickel aus. Sie werden deshalb zunehmend in E-Autos und Heimspeichern eingesetzt.
+
+### Brennstoffzelle
+
+In einer **Brennstoffzelle** wird der Brennstoff laufend zugeführt, statt in der Zelle gespeichert zu sein. In der **PEM-Brennstoffzelle** (_Proton Exchange Membrane_) wird Wasserstoff an der Anode oxidiert, die Protonen wandern durch eine Polymermembran zur Kathode, wo Sauerstoff reduziert wird:
+
+$$
+\begin{aligned}
+\text{Anode (−):} &\quad \mathrm{H_2 \rightarrow 2\,H^+ + 2\,e^-} \\
+\text{Kathode (+):} &\quad \mathrm{O_2 + 4\,H^+ + 4\,e^- \rightarrow 2\,H_2O} \\
+\text{gesamt:} &\quad \mathrm{2\,H_2 + O_2 \rightarrow 2\,H_2O}
+\end{aligned}
+$$
+
+Die theoretische Zellspannung ist $1{,}23\,\mathrm{V}$, unter Last liefert eine Zelle etwa $0{,}6$ bis $0{,}9\,\mathrm{V}$. Platin dient als Katalysator. Klimafreundlich ist die Brennstoffzelle nur, wenn der Wasserstoff mit Strom aus erneuerbaren Quellen erzeugt wurde („grüner Wasserstoff“).
+
+## Korrosion
+
+**Korrosion** ist die von der Oberfläche ausgehende Zerstörung eines Werkstoffs durch chemische oder elektrochemische Reaktion mit seiner Umgebung. Beim **Rosten** von Eisen sind Wasser und Sauerstoff nötig:
+
+$$
+\begin{aligned}
+\text{Oxidation:} &\quad \mathrm{2\,Fe \rightarrow 2\,Fe^{2+} + 4\,e^-} \\
+\text{Reduktion:} &\quad \mathrm{O_2 + 2\,H_2O + 4\,e^- \rightarrow 4\,OH^-}
+\end{aligned}
+$$
+
+Das entstehende $\mathrm{Fe(OH)_2}$ wird weiter zu Rost ($\mathrm{FeO(OH)}$ bzw. $\mathrm{Fe_2O_3 \cdot x\,H_2O}$) oxidiert. Rost ist porös und blättert ab, deshalb schreitet die Korrosion weiter fort. Salz (Streusalz, Meerwasser) beschleunigt sie, weil es die Leitfähigkeit des Wassers erhöht.
+
+Berühren sich zwei verschiedene Metalle in Gegenwart eines Elektrolyten, entsteht ein **Lokalelement**: Das unedlere Metall wird zur Anode und löst sich bevorzugt auf (**Kontaktkorrosion**). Eine Aluminiumschraube in einem Kupferblech korrodiert deshalb schnell. In der Elektronik betrifft das Steckverbinder, Lötstellen und Leiterbahnen bei Feuchtigkeit.
+
+### Korrosionsschutz
+
+| Verfahren                         | Prinzip                                                         | Beispiel                              |
+| --------------------------------- | --------------------------------------------------------------- | ------------------------------------- |
+| **Beschichten**                   | Wasser und Sauerstoff fernhalten                                | Lack, Pulverbeschichtung, Kunststoff, Öl |
+| **Verzinken** (Feuerverzinken)    | Zink schützt als Schicht und als unedleres Metall: Bei einem Kratzer korrodiert das Zink statt des Eisens | Leitplanken, Karosserien |
+| **Verzinnen**                     | Schutzschicht aus edlerem Zinn; bei Beschädigung rostet das Eisen umso schneller | Konservendosen (Weißblech) |
+| **Opferanode**                    | ein unedleres Metall (Mg, Zn) wird leitend verbunden und löst sich statt des Bauteils auf | Schiffsrümpfe, Warmwasserspeicher, Pipelines |
+| **Kathodischer Schutz mit Fremdstrom** | Gleichspannung macht das Bauteil zur Kathode              | Brücken, Rohrleitungen                |
+| **Passivierung**                  | dichte Oxidschicht schützt das Metall                           | Aluminium ($\mathrm{Al_2O_3}$), Eloxal, Edelstahl mit mindestens $10{,}5\,\%$ Chrom |
+| **Edelmetallüberzug**             | Gold korrodiert praktisch nicht                                 | vergoldete Steckkontakte              |
+
+## Weiterführende Quellen
+
+- [Standard Electrode Potentials](https://chem.libretexts.org/Ancillary_Materials/Reference/Reference_Tables/Electrochemistry_Tables) (LibreTexts, Tabellen)
+- [Batteries & Lithium-ion batteries](https://batteryuniversity.com/) (Battery University, Cadex)
+- Carl H. Hamann, Wolf Vielstich: _Elektrochemie_, Wiley-VCH

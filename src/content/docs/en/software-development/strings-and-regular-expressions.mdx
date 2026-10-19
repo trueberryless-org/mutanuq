@@ -1,0 +1,255 @@
+---
+title: Strings and Regular Expressions
+description: Strings, Unicode and encodings, important string operations as well as searching and replacing with regular expressions in C# and Rust.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Almost every program processes text: user input, files, logs, web pages. This chapter shows how strings are stored in C# and Rust, which operations exist and how to search for patterns with **regular expressions**.
+
+## Storage and encoding
+
+A computer only stores numbers. A **character encoding** defines which number stands for which character. **Unicode** assigns a unique **code point** to every character of every writing system, for example `U+0041` for `A` or `U+00E4` for `ä`. How these code points are converted into bytes is defined by encodings such as UTF-8 and UTF-16 (details under [Data Representation](/en/computer-science/data-representation/#character-encoding)).
+
+| Property                 | C# `string`                                       | Rust `String` / `&str`                                     |
+| ------------------------ | ------------------------------------------------- | ---------------------------------------------------------- |
+| Encoding                 | UTF-16                                            | UTF-8                                                      |
+| Mutable                  | no, every change creates a new string             | `String` yes (owns its memory), `&str` no (borrowed view)  |
+| Length                   | `Length`: number of UTF-16 code units             | `len()`: number of **bytes**; `chars().count()`: number of characters |
+| Index access             | `s[i]` returns a `char` (UTF-16 code unit)        | not allowed because a character can be several bytes long  |
+| Efficient concatenation  | `StringBuilder`                                   | `String::push_str`, `format!`                              |
+
+Rust has two string types. `String` is a mutable string on the heap that a variable owns. `&str` (_string slice_) is a borrowed, immutable view of text, for example of part of a `String` or of a string literal in the program. Functions usually accept `&str` because it works with both kinds.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string word = "Grüße";
+Console.WriteLine(word.Length);        // 5
+
+string emoji = "👍";
+Console.WriteLine(emoji.Length);       // 2, the emoji needs two UTF-16 units
+
+Console.WriteLine(System.Text.Encoding.UTF8.GetByteCount(word)); // 7 bytes in UTF-8
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let word = "Grüße";
+    println!("{}", word.len());            // 7 bytes, ü and ß need 2 bytes each
+    println!("{}", word.chars().count());  // 5 characters
+
+    let emoji = "👍";
+    println!("{}", emoji.len());           // 4 bytes
+    println!("{}", emoji.chars().count()); // 1 character
+
+    let owned: String = String::from("Krems"); // owns the memory
+    let slice: &str = &owned[0..3];            // view of the first 3 bytes
+    println!("{slice}");                       // Kre
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::caution[Not every character is one character]
+What a person perceives as one character (a _grapheme_) can consist of several code points, for example an emoji with a skin tone or an `e` with a combining accent. Neither `Length` in C# nor `chars().count()` in Rust counts graphemes. For that, C# has `StringInfo.LengthInTextElements` and Rust the crate `unicode-segmentation`. In Rust, cutting text at arbitrary byte positions can also land in the middle of a character, which causes a `panic`.
+:::
+
+## Important operations
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string s = "  Hello, HTL Krems!  ";
+
+Console.WriteLine(s.Trim());                     // "Hello, HTL Krems!"
+Console.WriteLine(s.ToUpper());                  // "  HELLO, HTL KREMS!  "
+Console.WriteLine(s.Contains("HTL"));            // True
+Console.WriteLine(s.Trim().StartsWith("Hello")); // True
+Console.WriteLine(s.IndexOf("Krems"));           // 13, -1 if not found
+Console.WriteLine(s.Replace("Krems", "Wien"));   // "  Hello, HTL Wien!  "
+Console.WriteLine(s.Trim().Substring(7, 3));     // "HTL" (start, length)
+
+string[] parts = "red;green;blue".Split(';');
+Console.WriteLine(string.Join(" | ", parts));    // red | green | blue
+
+// case-insensitive comparison
+Console.WriteLine(string.Equals("HTL", "htl", StringComparison.OrdinalIgnoreCase)); // True
+
+// examining characters
+Console.WriteLine("a1B".Count(char.IsDigit));    // 1
+
+// assembling many parts efficiently
+var sb = new System.Text.StringBuilder();
+for (int i = 1; i <= 3; i++) sb.Append(i).Append(',');
+Console.WriteLine(sb.ToString().TrimEnd(','));   // 1,2,3
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let s = "  Hello, HTL Krems!  ";
+
+    println!("{:?}", s.trim());                      // "Hello, HTL Krems!"
+    println!("{:?}", s.to_uppercase());              // "  HELLO, HTL KREMS!  "
+    println!("{}", s.contains("HTL"));               // true
+    println!("{}", s.trim().starts_with("Hello"));   // true
+    println!("{:?}", s.find("Krems"));               // Some(13), None if not found
+    println!("{:?}", s.replace("Krems", "Wien"));    // "  Hello, HTL Wien!  "
+    println!("{:?}", &s.trim()[7..10]);              // "HTL" (byte range)
+
+    let parts: Vec<&str> = "red;green;blue".split(';').collect();
+    println!("{}", parts.join(" | "));               // red | green | blue
+
+    // case-insensitive comparison (ASCII only)
+    println!("{}", "HTL".eq_ignore_ascii_case("htl")); // true
+
+    // examining characters
+    println!("{}", "a1B".chars().filter(|c| c.is_ascii_digit()).count()); // 1
+
+    // assembling many parts efficiently
+    let mut out = String::new();
+    for i in 1..=3 {
+        out.push_str(&i.to_string());
+        out.push(',');
+    }
+    println!("{}", out.trim_end_matches(','));       // 1,2,3
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::tip[Culture-dependent comparisons]
+In C#, some operations such as `ToUpper()`, `CompareTo` or `double.Parse` depend on the **culture setting** of the system. On a German system, `3,5` is recognised as a number; on an English one, `3.5`. For file formats, keys and protocols, you therefore use `CultureInfo.InvariantCulture` and `StringComparison.Ordinal`. Rust is never culture-dependent.
+:::
+
+### Formatting
+
+| Goal                            | C#                       | Rust                     | Result        |
+| ------------------------------- | ------------------------ | ------------------------ | ------------- |
+| Two decimal places              | `$"{x:F2}"`              | `format!("{x:.2}")`      | `3.14`        |
+| Width 8, right-aligned          | `$"{s,8}"`               | `format!("{s:>8}")`      | `   Krems`    |
+| Width 8, left-aligned           | `$"{s,-8}"`              | `format!("{s:<8}")`      | `Krems   `    |
+| Leading zeros                   | `$"{n:D4}"`              | `format!("{n:04}")`      | `0042`        |
+| Hexadecimal                     | `$"{n:X}"`               | `format!("{n:X}")`       | `2A`          |
+| Binary                          | `Convert.ToString(n, 2)` | `format!("{n:b}")`       | `101010`      |
+| Debug output                    | (records: `ToString()`)  | `format!("{x:?}")`       | `Point { .. }` |
+
+## Regular expressions
+
+A **regular expression** (regex for short) describes a text pattern. It lets you check whether a text matches a format (postcode, date, email address), extract parts of a text or replace them. The theoretical foundation is [regular languages and finite automata](/en/computer-science/automata-and-formal-languages/).
+
+### Syntax
+
+| Pattern           | Meaning                                                       | Example                        |
+| ----------------- | ------------------------------------------------------------- | ------------------------------ |
+| `abc`             | exactly this sequence of characters                           | finds `abc` in `xabcx`         |
+| `.`               | any character (except a line break)                           | `h.t` matches `hat`, `hut`     |
+| `[abc]`           | one of the characters in the brackets                         | `[aeiou]` finds vowels         |
+| `[a-z]`           | one character from the range                                  | `[0-9A-F]` a hex digit         |
+| `[^abc]`          | any character **except** the ones listed                      | `[^0-9]` not a digit           |
+| `\d`, `\w`, `\s`  | digit, word character (letter, digit, `_`), whitespace        | `\d\d` two digits              |
+| `\D`, `\W`, `\S`  | the respective opposite                                       |                                |
+| `*`               | 0 or more repetitions                                         | `ab*` matches `a`, `abbb`      |
+| `+`               | 1 or more repetitions                                         | `\d+` an integer               |
+| `?`               | 0 or 1 time (optional)                                        | `colou?r` matches `color` and `colour` |
+| `{n}`, `{n,m}`    | exactly `n` times or `n` to `m` times                         | `\d{4}` four digits            |
+| `^`, `$`          | start or end of the text (or the line)                        | `^\d+$` only digits            |
+| `\b`              | word boundary                                                 | `\bHTL\b`                      |
+| `(...)`           | group; the matched part can be retrieved later                | `(\d+)-(\d+)`                  |
+| `(?<name>...)`    | named group (in Rust `(?P<name>...)` or `(?<name>...)`)       | `(?<year>\d{4})`               |
+| `a\|b`            | alternative: `a` or `b`                                       | `cat\|dog`                     |
+| `*?`, `+?`        | non-greedy: as little as possible                             | `<.+?>` a single HTML tag      |
+| `\.`, `\\`        | special characters literally                                  | `\d+\.\d+` a decimal number    |
+
+Quantifiers are **greedy** by default: `<.+>` would capture the whole text up to the last `>` in `<b>bold</b>`. With a `?` after them, they become **lazy** and only capture `<b>`.
+
+### Regex in C# and Rust
+
+In C#, the class `Regex` is part of the standard library (`System.Text.RegularExpressions`). In Rust, you use the crate `regex`, which is added with `cargo add regex`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text.RegularExpressions;
+
+// 1. checking a format: Austrian postcode (4 digits)
+var postcode = new Regex(@"^\d{4}$");
+Console.WriteLine(postcode.IsMatch("3500"));   // True
+Console.WriteLine(postcode.IsMatch("35000"));  // False
+
+// 2. extracting parts: all dates in the format DD.MM.YYYY
+string text = "Exam on 12.05.2026, resit on 03.06.2026.";
+var date = new Regex(@"(?<day>\d{2})\.(?<month>\d{2})\.(?<year>\d{4})");
+foreach (Match m in date.Matches(text))
+{
+    Console.WriteLine($"{m.Groups["year"]}-{m.Groups["month"]}-{m.Groups["day"]}");
+}
+// 2026-05-12
+// 2026-06-03
+
+// 3. replacing with references to groups: convert DD.MM.YYYY to YYYY-MM-DD
+Console.WriteLine(date.Replace(text, "${year}-${month}-${day}"));
+
+// 4. splitting text at several separators
+string[] words = Regex.Split("one, two;three  four", @"[,;\s]+");
+Console.WriteLine(words.Length);          // 4
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use regex::Regex;
+
+fn main() {
+    // 1. checking a format: Austrian postcode (4 digits)
+    let postcode = Regex::new(r"^\d{4}$").unwrap();
+    println!("{}", postcode.is_match("3500"));   // true
+    println!("{}", postcode.is_match("35000"));  // false
+
+    // 2. extracting parts: all dates in the format DD.MM.YYYY
+    let text = "Exam on 12.05.2026, resit on 03.06.2026.";
+    let date = Regex::new(r"(?<day>\d{2})\.(?<month>\d{2})\.(?<year>\d{4})").unwrap();
+    for caps in date.captures_iter(text) {
+        println!("{}-{}-{}", &caps["year"], &caps["month"], &caps["day"]);
+    }
+
+    // 3. replacing with references to groups
+    println!("{}", date.replace_all(text, "${year}-${month}-${day}"));
+
+    // 4. splitting text at several separators
+    let sep = Regex::new(r"[,;\s]+").unwrap();
+    let words: Vec<&str> = sep.split("one, two;three  four").collect();
+    println!("{}", words.len());            // 4
+}
+```
+
+</TabItem>
+</Tabs>
+
+The prefix `@` in C# and `r` in Rust marks a **raw string** in which `\` is not treated as an escape character. Without it, you would have to double every backslash (`"\\d"`).
+
+:::caution[Danger from backtracking]
+The .NET regex engine works with **backtracking**: if part of the pattern does not match, it tries other possibilities. With unfavourable patterns such as `(a+)+$`, the runtime can grow exponentially, and an attacker can bring a server to a halt with a crafted input (**ReDoS**, _regular expression denial of service_). In C#, you should therefore set a time limit (`matchTimeout`) for user input or use the option `RegexOptions.NonBacktracking`. The Rust crate `regex`, by contrast, guarantees a runtime linear in the input length, but in return it supports neither backreferences (`\1`) nor lookarounds (`(?=...)`).
+:::
+
+For complex formats such as email addresses, URLs or HTML, regular expressions are often the wrong choice. There are dedicated parsers for them in the standard libraries, for example `System.Net.Mail.MailAddress` or `Uri` in C#.
+
+## Further reading
+
+- [Regular Expression Language: Quick Reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference) (Microsoft Learn)
+- [Documentation of the regex crate](https://docs.rs/regex/)
+- [regex101.com](https://regex101.com/) for testing patterns interactively

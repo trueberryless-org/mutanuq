@@ -1,0 +1,120 @@
+---
+title: WLAN
+description: IEEE-802.11-Standards von 802.11b bis Wi-Fi 7, Frequenzbänder und Kanäle, SSID, BSS und ESS, CSMA/CA, Roaming, WEP bis WPA3, PSK und 802.1X sowie Controller-basierte WLANs.
+sidebar:
+  order: 11
+---
+
+Ein **WLAN** (_Wireless Local Area Network_) überträgt Ethernet-ähnliche Frames per Funk. Die Technik ist in der Normenreihe **IEEE 802.11** festgelegt. „**Wi-Fi**“ ist der Markenname der **Wi-Fi Alliance**, eines Herstellerverbands, der Geräte auf Kompatibilität prüft und zertifiziert. Seit 2018 vergibt die Wi-Fi Alliance einfache Generationsnamen wie Wi-Fi 6. Gegenüber Kabel hat Funk eigene Schwierigkeiten: Alle Geräte teilen sich das Medium, Kollisionen lassen sich nicht erkennen, die Reichweite hängt von Wänden und Störungen ab, und jeder in Reichweite kann mithören.
+
+## Standards
+
+| Norm | Wi-Fi-Name | Jahr | Frequenzband | max. Datenrate (brutto) | Neuerungen |
+| --- | --- | --- | --- | --- | --- |
+| 802.11 | | 1997 | 2,4 GHz | 2 Mbit/s | erster Standard |
+| 802.11b | | 1999 | 2,4 GHz | 11 Mbit/s | DSSS, erster Massenstandard |
+| 802.11a | | 1999 | 5 GHz | 54 Mbit/s | OFDM |
+| 802.11g | | 2003 | 2,4 GHz | 54 Mbit/s | OFDM im 2,4-GHz-Band, kompatibel zu b |
+| 802.11n | **Wi-Fi 4** | 2009 | 2,4 und 5 GHz | 600 Mbit/s | **MIMO** (bis 4 räumliche Datenströme), 40-MHz-Kanäle |
+| 802.11ac | **Wi-Fi 5** | 2013 | 5 GHz | 6,9 Gbit/s | 80- und 160-MHz-Kanäle, 256-QAM, Downlink-MU-MIMO |
+| 802.11ax | **Wi-Fi 6** / **6E** | 2021 (Zertifizierung ab 2019) | 2,4 und 5 GHz, 6E zusätzlich 6 GHz | 9,6 Gbit/s | **OFDMA**, 1024-QAM, Uplink-MU-MIMO, Target Wake Time |
+| 802.11be | **Wi-Fi 7** | 2024 | 2,4, 5 und 6 GHz | rund 46 Gbit/s | 320-MHz-Kanäle, 4096-QAM, **Multi-Link Operation** |
+
+Die Höchstwerte sind theoretische Bruttoraten mit der maximalen Anzahl an Antennen und der größten Kanalbreite (bei Wi-Fi 7 etwa 16 Datenströme mit 320 MHz). Ein typisches Notebook mit 2 Antennen erreicht nur einen Bruchteil davon, und der Nettodurchsatz liegt wegen Protokoll-Overhead und geteiltem Medium meist bei der Hälfte der angezeigten Verbindungsrate oder darunter.
+
+Wichtige Techniken:
+
+- **MIMO** (_Multiple Input, Multiple Output_): mehrere Antennen senden gleichzeitig verschiedene Datenströme auf derselben Frequenz. Mehrwegeausbreitung, früher ein Störfaktor, wird so zum Vorteil.
+- **MU-MIMO** (_Multi-User MIMO_): Der AP bedient mehrere Clients gleichzeitig mit verschiedenen Strömen.
+- **OFDMA**: Ein Kanal wird in Teilträger zerlegt, die verschiedenen Clients zugeteilt werden. Viele kleine Übertragungen (IoT, Chat) müssen nicht mehr nacheinander den ganzen Kanal belegen.
+- **QAM** (Quadraturamplitudenmodulation): 1024-QAM überträgt 10 Bit pro Symbol, 4096-QAM 12 Bit. Höhere Stufen brauchen ein sehr gutes Signal und funktionieren nur nahe am AP.
+- **MLO** (_Multi-Link Operation_): Ein Wi-Fi-7-Gerät nutzt gleichzeitig mehrere Bänder.
+
+## Frequenzbänder und Kanäle
+
+| Band | Kanäle in Europa | Eigenschaften |
+| --- | --- | --- |
+| **2,4 GHz** (2400 bis 2483,5 MHz) | 1 bis 13, Abstand 5 MHz, Kanalbreite 20 MHz | große Reichweite, durchdringt Wände besser, aber nur **3 überlappungsfreie Kanäle** und stark belegt (Nachbar-WLANs, Bluetooth, Mikrowellenherde) |
+| **5 GHz** (5150 bis 5350 und 5470 bis 5725 MHz) | 36 bis 64 und 100 bis 140, 19 Kanäle zu 20 MHz | viele überlappungsfreie Kanäle, weniger Reichweite. Ab Kanal 52 sind **DFS** (Radar erkennen und ausweichen) und **TPC** (Sendeleistung anpassen) Pflicht |
+| **6 GHz** (5945 bis 6425 MHz in der EU) | 24 Kanäle zu 20 MHz | sehr frei, nur Wi-Fi 6E und 7, geringste Reichweite. **WPA3** ist Pflicht |
+
+Im 2,4-GHz-Band überlappt ein 20-MHz-Kanal mit seinen Nachbarkanälen bis zu 4 Kanäle weit. Überlappungsfrei sind nur Kanäle mit mindestens 5 Kanälen Abstand. Die übliche Planung verwendet die Kanäle **1, 6 und 11**. In Europa wäre wegen der Kanäle 12 und 13 auch 1, 5, 9, 13 möglich, das ist aber knapp und wird mit Geräten aus anderen Regionen problematisch. Benachbarte APs bekommen verschiedene Kanäle, damit sie sich nicht gegenseitig stören.
+
+Zwei Arten von Störung sind zu unterscheiden:
+
+- **Gleichkanalstörung** (_co-channel interference_): Mehrere Netze auf demselben Kanal müssen sich die Sendezeit teilen, wie bei einem Hub.
+- **Nachbarkanalstörung** (_adjacent-channel interference_): Überlappende Kanäle stören sich als Rauschen, das ist schlimmer, weil die Geräte das andere Netz nicht als Sender erkennen und darauf Rücksicht nehmen können.
+
+Breite Kanäle (80, 160 MHz) erhöhen die Datenrate, verringern aber die Anzahl unabhängiger Kanäle. In dichten Umgebungen wie Schulen und Hörsälen plant man deshalb eher mit 20 oder 40 MHz.
+
+## Aufbau eines WLANs
+
+| Begriff | Bedeutung |
+| --- | --- |
+| **SSID** (_Service Set Identifier_) | der Netzwerkname, bis 32 Byte. Ein AP kann mehrere SSIDs anbieten, oft jeweils einem VLAN zugeordnet (Mitarbeiter, Gäste) |
+| **BSS** (_Basic Service Set_) | ein AP mit seinen Clients. Der Funkbereich heißt **BSA** (_Basic Service Area_) oder Zelle |
+| **BSSID** | MAC-Adresse der Funkschnittstelle des AP, kennzeichnet das BSS eindeutig |
+| **ESS** (_Extended Service Set_) | mehrere APs mit derselben SSID, die über ein **Distributionssystem** (meist das kabelgebundene LAN) verbunden sind. Clients können zwischen ihnen wechseln |
+| **IBSS** (_Independent BSS_, Ad-hoc-Modus) | Clients direkt miteinander, ohne AP |
+
+Ein Client findet Netze durch **passives Scannen** (er hört die **Beacons**, die APs etwa zehnmal pro Sekunde aussenden) oder **aktives Scannen** (er sendet Probe Requests). Danach folgen **Authentifizierung** und **Assoziierung** mit dem AP. Das Verstecken der SSID (Beacons ohne Namen) bringt keine Sicherheit, weil der Name in den Probe Requests der Clients sichtbar bleibt.
+
+Die Zellen benachbarter APs sollen sich etwa **10 bis 15 %** überlappen, damit Clients ohne Abbruch wechseln können. Wo APs hinkommen, ermittelt man mit einer **Ausleuchtungsmessung** (_Site Survey_).
+
+## CSMA/CA
+
+Funkgeräte können nicht gleichzeitig senden und empfangen und deshalb Kollisionen nicht erkennen. Außerdem hören sich zwei Clients, die an entgegengesetzten Seiten eines AP stehen, oft gegenseitig nicht (**Hidden-Node-Problem**). WLAN verwendet deshalb **CSMA/CA** (_Collision Avoidance_), also Vermeidung statt Erkennung:
+
+1. Der Sender horcht, ob das Medium frei ist.
+2. Ist es frei, wartet er eine feste Zeit (**DIFS**) und zusätzlich eine **zufällige Backoff-Zeit**. Ist es währenddessen noch frei, sendet er.
+3. Der Empfänger bestätigt jeden korrekt empfangenen Unicast-Frame nach einer kurzen Pause (SIFS) mit einem **ACK**. Bleibt das ACK aus, geht der Sender von einer Kollision aus und wiederholt den Frame.
+4. Optional reserviert der Sender das Medium vorab mit **RTS/CTS** (_Request to Send_, _Clear to Send_). Das CTS des AP hören alle Clients, auch die versteckten, und schweigen für die angekündigte Dauer.
+
+Jeder Frame enthält außerdem eine Dauerangabe, mit der andere Stationen ihren **NAV** (_Network Allocation Vector_) setzen, eine Art virtuelles Besetztzeichen. Weil sich alle Geräte einer Zelle die Sendezeit teilen, bremst ein einziger langsamer, weit entfernter Client die ganze Zelle aus.
+
+Ein 802.11-Datenframe hat bis zu **vier MAC-Adressen** (Empfänger, Sender, Ziel, Quelle), weil der AP als Zwischenstation zwischen Funk und Kabel arbeitet.
+
+## Roaming
+
+**Roaming** ist der Wechsel eines Clients von einem AP zu einem anderen desselben ESS. Den Wechsel entscheidet der **Client**, meist wenn das Signal unter eine Schwelle fällt. Dabei muss er sich neu assoziieren und, bei 802.1X, neu authentifizieren. Das kann hunderte Millisekunden dauern, für Telefonate zu lang. Ergänzungen beschleunigen das Roaming:
+
+- **802.11k**: Der AP liefert eine Liste benachbarter APs, der Client muss nicht alle Kanäle scannen.
+- **802.11v**: Der AP kann dem Client empfehlen, zu einem anderen AP zu wechseln (_BSS Transition Management_).
+- **802.11r** (_Fast BSS Transition_): Die Schlüssel werden vorab ausgehandelt, die Neuanmeldung dauert nur noch wenige Millisekunden.
+
+Damit eine laufende Verbindung beim Roaming erhalten bleibt, müssen alle APs dieselbe SSID und dasselbe VLAN (also dasselbe IP-Subnetz) anbieten, sonst bekommt der Client eine neue IP-Adresse.
+
+## Sicherheit
+
+| Verfahren | Jahr | Verschlüsselung | Status |
+| --- | --- | --- | --- |
+| **WEP** (_Wired Equivalent Privacy_) | 1997 | RC4, 40 oder 104 Bit Schlüssel, 24-Bit-IV | in Minuten zu knacken, **nicht verwenden** |
+| **WPA** | 2003 | TKIP (weiterhin RC4) | Übergangslösung für alte Hardware, veraltet |
+| **WPA2** | 2004 | **CCMP** mit **AES** (IEEE 802.11i) | lange Standard, anfällig für Wörterbuchangriffe auf schwache Passwörter und für KRACK (2017, durch Updates behoben) |
+| **WPA3** | 2018 | AES-CCMP bzw. GCMP, **SAE** statt PSK-Handshake, Management Frame Protection Pflicht | aktueller Standard |
+
+Jedes WPA-Verfahren gibt es in zwei Betriebsarten:
+
+- **Personal** (PSK, _Pre-Shared Key_): Alle Geräte verwenden dasselbe Passwort. Einfach, aber ein Passwortwechsel betrifft alle Geräte, und wer das Passwort kennt, kann bei WPA2 den Verkehr anderer entschlüsseln, wenn er deren Anmeldung mitschneidet. Bei **WPA2-PSK** kann ein Angreifer den Vier-Wege-Handshake aufzeichnen und offline beliebig viele Passwörter durchprobieren. **WPA3-SAE** (_Simultaneous Authentication of Equals_) verhindert solche Offline-Angriffe und bietet **Forward Secrecy**.
+- **Enterprise** (**IEEE 802.1X**): Jeder Benutzer meldet sich mit eigenen Zugangsdaten oder einem Zertifikat an. Beteiligt sind drei Rollen: der **Supplicant** (Client), der **Authenticator** (AP oder Controller) und der **Authentication Server** (meist **RADIUS**, etwa Windows NPS oder FreeRADIUS, verbunden mit Active Directory). Die Anmeldung läuft über **EAP**, üblich sind **EAP-TLS** (Zertifikate auf beiden Seiten, am sichersten) und **PEAP** (Benutzername und Passwort in einem TLS-Tunnel). Jeder Client erhält einen eigenen Schlüssel, einzelne Benutzer lassen sich sperren, und der RADIUS-Server kann jedem Benutzer ein VLAN zuweisen. Ein bekanntes Beispiel ist **eduroam** an Hochschulen.
+
+Für offene Netze (Hotel, Café) gibt es **Enhanced Open** (OWE, _Opportunistic Wireless Encryption_), das ohne Passwort verschlüsselt. Ein **Captive Portal** (Anmeldeseite) allein verschlüsselt nichts.
+
+Weitere Maßnahmen: **WPS** (Verbinden per PIN oder Knopfdruck) abschalten, da die PIN-Methode angreifbar ist, ein eigenes Gäste-VLAN ohne Zugriff auf das interne Netz, und fremde APs (_Rogue APs_), die Mitarbeiter ans Netz hängen, mit dem Controller erkennen. MAC-Filter bieten kaum Schutz, weil MAC-Adressen sichtbar und fälschbar sind.
+
+## Controller-basierte WLANs
+
+Kleine Netze verwenden **autonome APs**, die jeweils einzeln konfiguriert werden. Ab einigen APs wird das unübersichtlich, und Funktionen wie schnelles Roaming oder automatische Kanalwahl brauchen eine Gesamtsicht. Deshalb werden größere WLANs **zentral** verwaltet:
+
+| Architektur | Prinzip |
+| --- | --- |
+| **Controller-basiert** | **Lightweight APs** (LAPs) erledigen nur zeitkritische Funkaufgaben (Beacons, ACKs, Verschlüsselung). Ein **Wireless LAN Controller** (WLC) übernimmt Konfiguration, Authentifizierung, Roaming und Funkplanung. Man spricht von **Split-MAC**-Architektur. Bei Cisco kommunizieren AP und WLC über **CAPWAP** (UDP 5246 für Steuerung, 5247 für Daten) |
+| **Cloud-verwaltet** | APs werden über ein Webportal des Herstellers verwaltet, kein eigener Controller nötig |
+
+Der Controller wählt automatisch Kanäle und Sendeleistungen (**RRM**, _Radio Resource Management_), erkennt Störquellen und Rogue APs und sorgt dafür, dass eine Konfigurationsänderung sofort auf allen APs gilt. Zwischen AP und Switch liegt bei Cisco-LAPs meist ein Access-Port, bei autonomen APs mit mehreren SSIDs ein Trunk. Die APs werden über [PoE](/de/networking/physical-layer/#power-over-ethernet) versorgt.
+
+## Weiterführende Quellen
+
+- [IEEE 802.11 Working Group](https://www.ieee802.org/11/)
+- [Wi-Fi Alliance: Discover Wi-Fi](https://www.wi-fi.org/discover-wi-fi)
+- Matthew S. Gast: _802.11 Wireless Networks: The Definitive Guide_, 2. Auflage, O'Reilly 2005

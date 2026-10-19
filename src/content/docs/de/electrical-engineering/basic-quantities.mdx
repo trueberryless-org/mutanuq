@@ -1,0 +1,253 @@
+---
+title: Elektrische Grundgrößen
+description: Ladung, Strom, Spannung, Widerstand, Leitwert, spezifischer Widerstand, Temperaturkoeffizient, Energie, Leistung, Wirkungsgrad, Quellen, E-Reihen und Farbcode.
+sidebar:
+  order: 1
+---
+
+Jede Berechnung in der Elektrotechnik beruht auf wenigen Grundgrößen. Wer weiß, was Ladung, Strom, Spannung und Widerstand physikalisch bedeuten und wie sie zusammenhängen, kann auch komplizierte Schaltungen auf einfache Gesetze zurückführen.
+
+## SI-Einheiten und Vorsätze
+
+Elektrische Größen werden im **Internationalen Einheitensystem** (SI) angegeben. Die Basiseinheit der Elektrotechnik ist das **Ampere** (A), alle anderen elektrischen Einheiten sind daraus und aus Meter, Kilogramm und Sekunde abgeleitet.
+
+| Größe            | Formelzeichen | Einheit            | Zusammenhang                                   |
+| ---------------- | ------------- | ------------------ | ---------------------------------------------- |
+| Ladung           | $Q$           | Coulomb (C)        | $1\,\mathrm{C} = 1\,\mathrm{A \cdot s}$        |
+| Stromstärke      | $I$           | Ampere (A)         | SI-Basiseinheit                                |
+| Spannung         | $U$           | Volt (V)           | $1\,\mathrm{V} = 1\,\mathrm{W/A}$              |
+| Widerstand       | $R$           | Ohm ($\Omega$)     | $1\,\Omega = 1\,\mathrm{V/A}$                  |
+| Leitwert         | $G$           | Siemens (S)        | $1\,\mathrm{S} = 1/\Omega$                     |
+| Energie, Arbeit  | $W$           | Joule (J)          | $1\,\mathrm{J} = 1\,\mathrm{W \cdot s}$        |
+| Leistung         | $P$           | Watt (W)           | $1\,\mathrm{W} = 1\,\mathrm{V \cdot A}$        |
+| Kapazität        | $C$           | Farad (F)          | $1\,\mathrm{F} = 1\,\mathrm{C/V}$              |
+| Induktivität     | $L$           | Henry (H)          | $1\,\mathrm{H} = 1\,\mathrm{V \cdot s/A}$      |
+| Frequenz         | $f$           | Hertz (Hz)         | $1\,\mathrm{Hz} = 1/\mathrm{s}$                |
+
+Werte, die viel größer oder kleiner als die Einheit sind, schreibt man mit **Vorsätzen** (Präfixen). Sie entsprechen Zehnerpotenzen mit Hochzahlen, die durch 3 teilbar sind (technische Schreibweise).
+
+| Vorsatz | Zeichen | Faktor     | Beispiel                          |
+| ------- | ------- | ---------- | --------------------------------- |
+| Tera    | T       | $10^{12}$  | Datenrate $1\,\mathrm{Tbit/s}$    |
+| Giga    | G       | $10^{9}$   | Taktfrequenz $3\,\mathrm{GHz}$    |
+| Mega    | M       | $10^{6}$   | Eingangswiderstand $10\,\mathrm{M\Omega}$ |
+| Kilo    | k       | $10^{3}$   | Widerstand $4{,}7\,\mathrm{k\Omega}$ |
+| Milli   | m       | $10^{-3}$  | LED-Strom $20\,\mathrm{mA}$       |
+| Mikro   | µ       | $10^{-6}$  | Elko $100\,\mathrm{\mu F}$        |
+| Nano    | n       | $10^{-9}$  | Gatterlaufzeit $10\,\mathrm{ns}$  |
+| Piko    | p       | $10^{-12}$ | Kondensator $22\,\mathrm{pF}$     |
+
+:::tip[Merke]
+Rechne immer in Grundeinheiten mit Zehnerpotenzen. $4{,}7\,\mathrm{k\Omega} \cdot 2\,\mathrm{mA} = 4{,}7 \cdot 10^3\,\Omega \cdot 2 \cdot 10^{-3}\,\mathrm{A} = 9{,}4\,\mathrm{V}$. Kilo mal Milli hebt sich auf.
+:::
+
+## Ladung
+
+Die **elektrische Ladung** $Q$ ist eine Eigenschaft von Teilchen. Elektronen tragen negative, Protonen positive Ladung. Jede Ladung ist ein ganzzahliges Vielfaches der **Elementarladung**:
+
+$$
+e = 1{,}602\,176\,634 \cdot 10^{-19}\,\mathrm{C}
+$$
+
+Seit der SI-Reform 2019 ist dieser Wert exakt festgelegt. Ein Coulomb entspricht damit rund $6{,}24 \cdot 10^{18}$ Elektronen. Gleichnamige Ladungen stoßen einander ab, ungleichnamige ziehen einander an. In einem abgeschlossenen System bleibt die Gesamtladung erhalten.
+
+In Metallen sind die äußeren Elektronen der Atome nicht fest gebunden. Diese **freien Elektronen** bewegen sich durch das Atomgitter und machen Metalle zu guten **Leitern**. In **Isolatoren** (Kunststoff, Glas, Keramik) gibt es praktisch keine freien Ladungsträger, **Halbleiter** liegen dazwischen (siehe [Halbleiter und Dioden](/de/electrical-engineering/semiconductors-and-diodes/)).
+
+## Stromstärke
+
+Der **elektrische Strom** ist die gerichtete Bewegung von Ladungsträgern. Die **Stromstärke** gibt an, wie viel Ladung pro Zeit durch einen Leiterquerschnitt fließt:
+
+$$
+I = \frac{Q}{t} \qquad \text{allgemein} \qquad i(t) = \frac{\mathrm{d}q}{\mathrm{d}t}
+$$
+
+:::tip[Beispiel]
+Ein Akku liefert $10\,\mathrm{s}$ lang einen Strom von $2\,\mathrm{A}$. Die transportierte Ladung ist $Q = I \cdot t = 2\,\mathrm{A} \cdot 10\,\mathrm{s} = 20\,\mathrm{C}$, das sind etwa $1{,}25 \cdot 10^{20}$ Elektronen.
+:::
+
+Die **Stromdichte** $J = I/A$ (in $\mathrm{A/mm^2}$) bestimmt, wie stark sich ein Leiter erwärmt. Deshalb brauchen größere Ströme dickere Leitungen.
+
+### Technische und physikalische Stromrichtung
+
+Historisch wurde festgelegt, dass der Strom außerhalb der Quelle vom Pluspol zum Minuspol fließt. Das ist die **technische Stromrichtung**, die in allen Schaltplänen und Formeln verwendet wird. Tatsächlich bewegen sich in Metallen die negativ geladenen Elektronen vom Minuspol zum Pluspol, das ist die **physikalische Stromrichtung** (Elektronenflussrichtung). Für Berechnungen spielt der Unterschied keine Rolle, solange du eine Richtung konsequent verwendest.
+
+### Gleichstrom und Wechselstrom
+
+**Gleichstrom** (DC, _direct current_) fließt immer in dieselbe Richtung mit gleicher Stärke, etwa aus einer Batterie. **Wechselstrom** (AC, _alternating current_) ändert periodisch Richtung und Stärke, im europäischen Stromnetz sinusförmig mit $50\,\mathrm{Hz}$ (siehe [Wechselstromtechnik](/de/electrical-engineering/alternating-current/)). **Mischstrom** besteht aus einem Gleich- und einem Wechselanteil.
+
+## Spannung
+
+Um Ladungen zu trennen, muss Arbeit verrichtet werden. Die **Spannung** $U$ zwischen zwei Punkten ist die Arbeit pro Ladung, die beim Verschieben der Ladung zwischen diesen Punkten frei wird oder aufgewendet werden muss:
+
+$$
+U = \frac{W}{Q}
+$$
+
+Spannung ist also immer eine Größe **zwischen zwei Punkten**. Das **Potenzial** $\varphi$ eines Punktes ist die Spannung gegenüber einem Bezugspunkt, meist der **Masse** (GND, $0\,\mathrm{V}$). Die Spannung zwischen zwei Punkten ist die Potenzialdifferenz $U_{12} = \varphi_1 - \varphi_2$.
+
+Im Schaltplan zeigt der **Spannungspfeil** vom höheren zum niedrigeren Potenzial (von Plus nach Minus). Bei einem **Verbraucher** zeigen Strom- und Spannungspfeil in dieselbe Richtung (Verbraucherzählpfeilsystem), bei einer **Quelle** in entgegengesetzte Richtungen.
+
+## Widerstand und Leitwert
+
+Der **elektrische Widerstand** $R$ beschreibt, wie stark ein Bauteil den Stromfluss hemmt. Er ist das Verhältnis von Spannung zu Strom (ohmsches Gesetz, siehe [Gleichstromkreise](/de/electrical-engineering/dc-circuits/)):
+
+$$
+R = \frac{U}{I} \qquad G = \frac{1}{R} = \frac{I}{U}
+$$
+
+Der **Leitwert** $G$ ist der Kehrwert des Widerstands, Einheit Siemens (S). Ein Widerstand von $50\,\Omega$ hat den Leitwert $20\,\mathrm{mS}$. Bei Parallelschaltungen rechnet man mit Leitwerten bequemer, weil sie sich einfach addieren.
+
+### Spezifischer Widerstand
+
+Der Widerstand eines Drahtes hängt vom Material, der Länge $l$ und dem Querschnitt $A$ ab:
+
+$$
+R = \frac{\rho \cdot l}{A} = \frac{l}{\kappa \cdot A}
+$$
+
+Der **spezifische Widerstand** $\rho$ (Rho) ist eine Materialkonstante. In der Praxis gibt man ihn in $\Omega \cdot \mathrm{mm^2/m}$ an, weil Leitungsquerschnitte in $\mathrm{mm^2}$ angegeben werden. Der Kehrwert ist die **elektrische Leitfähigkeit** $\kappa$ (Kappa) in $\mathrm{m/(\Omega \cdot mm^2)}$, auch $\sigma$ genannt.
+
+| Material   | $\rho$ in $\Omega \cdot \mathrm{mm^2/m}$ bei $20\,°\mathrm{C}$ | $\kappa$ in $\mathrm{m/(\Omega \cdot mm^2)}$ | $\alpha_{20}$ in $1/\mathrm{K}$ |
+| ---------- | ----------------------- | ------------- | ----------------- |
+| Silber     | $0{,}016$               | $62$          | $0{,}0038$        |
+| Kupfer     | $0{,}0178$              | $56$          | $0{,}0039$        |
+| Gold       | $0{,}022$               | $45$          | $0{,}0037$        |
+| Aluminium  | $0{,}028$               | $36$          | $0{,}0040$        |
+| Konstantan | $0{,}49$                | $2{,}0$       | etwa $0$          |
+
+:::tip[Beispiel: Leitungswiderstand]
+Ein Gerät ist über eine $50\,\mathrm{m}$ lange Kupferleitung mit $1{,}5\,\mathrm{mm^2}$ angeschlossen. Der Strom fließt hin und zurück, die Leiterlänge ist also $100\,\mathrm{m}$:
+
+$$
+R = \frac{0{,}0178\,\Omega \cdot \mathrm{mm^2/m} \cdot 100\,\mathrm{m}}{1{,}5\,\mathrm{mm^2}} \approx 1{,}19\,\Omega
+$$
+
+Bei $10\,\mathrm{A}$ fallen auf der Leitung $11{,}9\,\mathrm{V}$ ab, die dem Gerät fehlen (Spannungsfall).
+:::
+
+### Temperaturkoeffizient
+
+Der Widerstand ändert sich mit der Temperatur. Für nicht zu große Temperaturänderungen gilt näherungsweise linear:
+
+$$
+R_\vartheta = R_{20} \cdot (1 + \alpha_{20} \cdot \Delta\vartheta) \qquad \Delta\vartheta = \vartheta - 20\,°\mathrm{C}
+$$
+
+Der **Temperaturkoeffizient** $\alpha$ gibt die relative Widerstandsänderung pro Kelvin an. Metalle haben ein positives $\alpha$: Die Gitteratome schwingen bei höherer Temperatur stärker und behindern die Elektronen. Solche Materialien heißen **Kaltleiter** (PTC). Halbleiter und Kohle haben ein negatives $\alpha$, weil bei Wärme mehr Ladungsträger frei werden. Sie heißen **Heißleiter** (NTC). Legierungen wie Konstantan haben fast kein $\alpha$ und eignen sich für Präzisions- und Messwiderstände.
+
+:::tip[Beispiel]
+Eine Kupferwicklung hat bei $20\,°\mathrm{C}$ den Widerstand $10\,\Omega$. Im Betrieb erwärmt sie sich auf $80\,°\mathrm{C}$:
+
+$$
+R_{80} = 10\,\Omega \cdot (1 + 0{,}0039\,\mathrm{K^{-1}} \cdot 60\,\mathrm{K}) = 12{,}34\,\Omega
+$$
+
+Der Widerstand steigt um über $23\,\%$. Umgekehrt kann man aus der Widerstandsänderung die Temperatur bestimmen, so funktionieren Platin-Temperatursensoren wie der Pt100 ($100\,\Omega$ bei $0\,°\mathrm{C}$).
+:::
+
+## Energie und Leistung
+
+Die **elektrische Leistung** gibt an, wie viel Energie pro Zeit umgesetzt wird. Mit $R = U/I$ ergeben sich drei Formen:
+
+$$
+P = U \cdot I = I^2 \cdot R = \frac{U^2}{R}
+$$
+
+Die **elektrische Energie** (Arbeit) ist Leistung mal Zeit:
+
+$$
+W = P \cdot t
+$$
+
+Im Haushalt rechnet man in Kilowattstunden: $1\,\mathrm{kWh} = 1000\,\mathrm{W} \cdot 3600\,\mathrm{s} = 3{,}6 \cdot 10^6\,\mathrm{J}$.
+
+:::tip[Beispiel: Energiekosten]
+Ein Heizlüfter mit $2\,\mathrm{kW}$ läuft $3$ Stunden. Er braucht $W = 2\,\mathrm{kW} \cdot 3\,\mathrm{h} = 6\,\mathrm{kWh}$. Bei einem Preis von $0{,}30\,€/\mathrm{kWh}$ kostet das $1{,}80\,€$. Am $230$-V-Netz nimmt er $I = P/U = 2000\,\mathrm{W} / 230\,\mathrm{V} \approx 8{,}7\,\mathrm{A}$ auf.
+:::
+
+Bauteile haben eine **maximale Verlustleistung**. Ein Widerstand der Bauform 0207 verträgt typisch $0{,}25\,\mathrm{W}$. Fließen $50\,\mathrm{mA}$ durch $220\,\Omega$, sind das $P = (0{,}05\,\mathrm{A})^2 \cdot 220\,\Omega = 0{,}55\,\mathrm{W}$, also zu viel für diesen Widerstand.
+
+## Wirkungsgrad
+
+Kein Gerät wandelt die zugeführte Energie verlustfrei um. Ein Teil geht meist als Wärme verloren. Der **Wirkungsgrad** $\eta$ (Eta) ist das Verhältnis von abgegebener zu zugeführter Leistung:
+
+$$
+\eta = \frac{P_\mathrm{ab}}{P_\mathrm{zu}} = \frac{P_\mathrm{ab}}{P_\mathrm{ab} + P_\mathrm{V}} \qquad 0 \le \eta < 1
+$$
+
+Bei hintereinandergeschalteten Stufen multiplizieren sich die Wirkungsgrade: $\eta_\mathrm{ges} = \eta_1 \cdot \eta_2 \cdot \ldots$
+
+:::tip[Beispiel]
+Ein Motor nimmt $1{,}2\,\mathrm{kW}$ auf und gibt $1{,}0\,\mathrm{kW}$ mechanische Leistung ab. $\eta = 1{,}0/1{,}2 \approx 83{,}3\,\%$, die Verlustleistung beträgt $200\,\mathrm{W}$. Wird er über ein Netzteil mit $\eta = 90\,\%$ versorgt, ist $\eta_\mathrm{ges} = 0{,}833 \cdot 0{,}9 = 75\,\%$.
+:::
+
+## Spannungsquellen
+
+Eine **ideale Spannungsquelle** liefert unabhängig vom Strom immer dieselbe Spannung. Reale Quellen (Batterie, Netzteil, Generator) haben einen **Innenwiderstand** $R_\mathrm{i}$. Man stellt sie als ideale Quelle mit der **Leerlaufspannung** (Quellenspannung) $U_0$ und einem Innenwiderstand in Serie dar. Die **Klemmenspannung** sinkt mit steigendem Strom:
+
+$$
+U_\mathrm{K} = U_0 - I \cdot R_\mathrm{i}
+$$
+
+| Betriebsfall   | Bedingung               | Ergebnis                                      |
+| -------------- | ----------------------- | --------------------------------------------- |
+| Leerlauf       | $R_\mathrm{L} \to \infty$, $I = 0$ | $U_\mathrm{K} = U_0$               |
+| Kurzschluss    | $R_\mathrm{L} = 0$      | $I_\mathrm{K} = U_0 / R_\mathrm{i}$, $U_\mathrm{K} = 0$ |
+| Anpassung      | $R_\mathrm{L} = R_\mathrm{i}$ | maximale Leistung am Verbraucher, $U_\mathrm{K} = U_0/2$ |
+
+:::tip[Beispiel]
+Ein Akku hat $U_0 = 12\,\mathrm{V}$ und $R_\mathrm{i} = 0{,}5\,\Omega$. An einem Verbraucher mit $5{,}5\,\Omega$ fließt $I = 12\,\mathrm{V} / (0{,}5\,\Omega + 5{,}5\,\Omega) = 2\,\mathrm{A}$, die Klemmenspannung beträgt $12\,\mathrm{V} - 2\,\mathrm{A} \cdot 0{,}5\,\Omega = 11\,\mathrm{V}$. Im Kurzschluss würden $24\,\mathrm{A}$ fließen.
+:::
+
+Man bestimmt $R_\mathrm{i}$ aus zwei Messungen: $R_\mathrm{i} = \Delta U / \Delta I$. Eine **ideale Stromquelle** liefert dagegen unabhängig von der Last immer denselben Strom. Reale Stromquellen haben einen sehr großen Innenwiderstand parallel zur Quelle. Jede reale Spannungsquelle lässt sich in eine gleichwertige Stromquelle umrechnen (siehe [Ersatzspannungs- und Ersatzstromquelle](/de/electrical-engineering/dc-circuits/#ersatzspannungsquelle-und-ersatzstromquelle)).
+
+## Widerstände in der Praxis
+
+### E-Reihen
+
+Widerstände, Kondensatoren und Z-Dioden werden nicht in beliebigen Werten hergestellt, sondern nach den **E-Reihen** (IEC 60063). Die Zahl gibt an, wie viele Werte pro Dekade es gibt. Die Werte folgen einer geometrischen Reihe mit dem Faktor $\sqrt[n]{10}$, sodass sich benachbarte Werte mit ihren Toleranzen etwa berühren.
+
+| Reihe | Werte pro Dekade | Toleranz       |
+| ----- | ---------------- | -------------- |
+| E6    | 6                | $\pm 20\,\%$   |
+| E12   | 12               | $\pm 10\,\%$   |
+| E24   | 24               | $\pm 5\,\%$    |
+| E48   | 48               | $\pm 2\,\%$    |
+| E96   | 96               | $\pm 1\,\%$    |
+| E192  | 192              | $\pm 0{,}5\,\%$ und besser |
+
+Die **E12-Reihe** sollte man auswendig kennen: 1,0 1,2 1,5 1,8 2,2 2,7 3,3 3,9 4,7 5,6 6,8 8,2. Die **E24-Reihe** ergänzt dazwischen 1,1 1,3 1,6 2,0 2,4 3,0 3,6 4,3 5,1 6,2 7,5 9,1. Jeder Wert existiert in allen Dekaden, etwa $4{,}7\,\Omega$, $47\,\Omega$, $470\,\Omega$, $4{,}7\,\mathrm{k\Omega}$.
+
+Ergibt eine Rechnung einen Wert, der nicht in der Reihe liegt, wählt man den nächstgelegenen Normwert und prüft, ob die Schaltung damit noch funktioniert. Bei Vorwiderständen nimmt man im Zweifel den nächstgrößeren Wert, damit der Strom nicht zu groß wird.
+
+### Farbcode
+
+Bedrahtete Widerstände tragen farbige Ringe. Bei **4 Ringen** sind die ersten zwei Ringe Ziffern, der dritte der Multiplikator und der vierte die Toleranz. Bei **5 Ringen** (Präzisionswiderstände) sind es drei Ziffern, Multiplikator und Toleranz. Der Toleranzring hat meist etwas Abstand zu den anderen.
+
+| Farbe   | Ziffer | Multiplikator | Toleranz        |
+| ------- | ------ | ------------- | --------------- |
+| schwarz | 0      | $10^0$        |                 |
+| braun   | 1      | $10^1$        | $\pm 1\,\%$     |
+| rot     | 2      | $10^2$        | $\pm 2\,\%$     |
+| orange  | 3      | $10^3$        |                 |
+| gelb    | 4      | $10^4$        |                 |
+| grün    | 5      | $10^5$        | $\pm 0{,}5\,\%$ |
+| blau    | 6      | $10^6$        | $\pm 0{,}25\,\%$ |
+| violett | 7      | $10^7$        | $\pm 0{,}1\,\%$ |
+| grau    | 8      | $10^8$        | $\pm 0{,}05\,\%$ |
+| weiß    | 9      | $10^9$        |                 |
+| gold    |        | $10^{-1}$     | $\pm 5\,\%$     |
+| silber  |        | $10^{-2}$     | $\pm 10\,\%$    |
+
+:::tip[Beispiele]
+- gelb, violett, rot, gold: $47 \cdot 10^2\,\Omega = 4{,}7\,\mathrm{k\Omega}$, $\pm 5\,\%$, also zwischen $4{,}465\,\mathrm{k\Omega}$ und $4{,}935\,\mathrm{k\Omega}$.
+- braun, schwarz, schwarz, rot, braun: $100 \cdot 10^2\,\Omega = 10\,\mathrm{k\Omega}$, $\pm 1\,\%$.
+:::
+
+SMD-Widerstände tragen einen Zahlencode: Bei **103** sind die ersten beiden Ziffern der Wert und die letzte die Anzahl der Nullen, also $10\,000\,\Omega = 10\,\mathrm{k\Omega}$. **4R7** bedeutet $4{,}7\,\Omega$, das R steht für das Komma.
+
+## Weiterführende Quellen
+
+- [BIPM: Das Internationale Einheitensystem (SI-Broschüre)](https://www.bipm.org/en/publications/si-brochure)
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- IEC 60062: _Kennzeichnungscodes für Widerstände und Kondensatoren_ und IEC 60063: _Vorzugsreihen für Widerstände und Kondensatoren_.

@@ -1,0 +1,253 @@
+---
+title: Schwingungen
+description: Harmonische Schwingung, Federpendel und Fadenpendel, Energie im Schwinger, Dämpfung, erzwungene Schwingung und Resonanz, mit numerischer Simulation eines Pendels.
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **Schwingung** ist eine zeitlich periodische Bewegung um eine Ruhelage. Schwingungen gibt es überall: Uhrenpendel, Gitarrensaiten, Stoßdämpfer, Schwingquarze in Computern, Wechselstrom und elektromagnetische Schwingkreise. Sie sind auch die Grundlage der [Wellen](/de/natural-sciences/waves/).
+
+## Grundbegriffe
+
+Ein schwingungsfähiges System (**Oszillator**) braucht eine Ruhelage und eine **Rückstellkraft**, die bei Auslenkung zur Ruhelage zurücktreibt. Wegen der Trägheit schießt der Körper über die Ruhelage hinaus, und die Bewegung wiederholt sich.
+
+| Größe | Zeichen | Einheit | Bedeutung |
+| --- | --- | --- | --- |
+| Auslenkung (Elongation) | $y(t)$ | $\mathrm{m}$ | momentaner Abstand von der Ruhelage |
+| Amplitude | $\hat y$, $A$ | $\mathrm{m}$ | größte Auslenkung |
+| Periodendauer | $T$ | $\mathrm{s}$ | Dauer einer vollen Schwingung |
+| Frequenz | $f = \frac{1}{T}$ | $\mathrm{Hz}$ | Schwingungen pro Sekunde |
+| Kreisfrequenz | $\omega = 2\pi f$ | $\mathrm{s^{-1}}$ | |
+| Phase | $\omega t + \varphi_0$ | $\mathrm{rad}$ | Schwingungszustand |
+
+## Harmonische Schwingung
+
+Ist die Rückstellkraft proportional zur Auslenkung, $F = -D y$ (**lineares Kraftgesetz**), dann ergibt das zweite newtonsche Axiom die **Schwingungsgleichung**
+
+$$
+m \ddot y = -D y \quad\Longleftrightarrow\quad \ddot y + \omega_0^2 y = 0, \qquad \omega_0 = \sqrt{\frac{D}{m}}
+$$
+
+Ihre Lösung ist eine Sinusfunktion, die **harmonische Schwingung**:
+
+$$
+y(t) = \hat y \sin(\omega_0 t + \varphi_0)
+$$
+
+Durch Ableiten erhält man Geschwindigkeit und Beschleunigung:
+
+$$
+v(t) = \hat y \omega_0 \cos(\omega_0 t + \varphi_0), \qquad a(t) = -\hat y \omega_0^2 \sin(\omega_0 t + \varphi_0) = -\omega_0^2 y(t)
+$$
+
+In der Ruhelage ist die Geschwindigkeit maximal ($\hat v = \hat y\omega_0$) und die Beschleunigung null; in den Umkehrpunkten ist es umgekehrt ($\hat a = \hat y \omega_0^2$). Eine harmonische Schwingung ist die Projektion einer gleichförmigen Kreisbewegung auf eine Achse.
+
+Wichtig: Die Periodendauer eines harmonischen Oszillators hängt **nicht von der Amplitude** ab (Isochronie).
+
+## Federpendel
+
+Für eine Masse $m$ an einer Feder mit Federkonstante $D$ gilt:
+
+$$
+T = 2\pi \sqrt{\frac{m}{D}}
+$$
+
+Die Periodendauer hängt nicht von $g$ ab; ein senkrecht hängendes Federpendel schwingt nur um eine verschobene Ruhelage.
+
+:::tip[Beispiel]
+$m = 0{,}5\,\mathrm{kg}$, $D = 200\,\mathrm{N/m}$: $T = 2\pi\sqrt{0{,}5/200} = 0{,}314\,\mathrm{s}$, $f = 3{,}18\,\mathrm{Hz}$, $\omega_0 = 20\,\mathrm{s^{-1}}$. Bei einer Amplitude von $5\,\mathrm{cm}$ ist $\hat v = 0{,}05 \cdot 20 = 1{,}0\,\mathrm{m/s}$ und $\hat a = 0{,}05 \cdot 400 = 20\,\mathrm{m/s^2}$. Die vierfache Masse verdoppelt die Periodendauer.
+:::
+
+## Fadenpendel
+
+Ein **mathematisches Pendel** ist eine punktförmige Masse an einem masselosen Faden der Länge $l$. Die Rückstellkraft ist $-m g \sin\varphi$. Für kleine Winkel (bis etwa $10^\circ$) gilt $\sin\varphi \approx \varphi$ (im Bogenmaß), die Schwingung ist dann harmonisch:
+
+$$
+T = 2\pi \sqrt{\frac{l}{g}}
+$$
+
+Die Masse fällt heraus. Ein $1\,\mathrm{m}$ langes Pendel hat $T = 2{,}006\,\mathrm{s}$, schwingt also pro Halbschwingung etwa eine Sekunde („Sekundenpendel“). Mit einem Pendel kann man $g$ bestimmen: $g = 4\pi^2 l/T^2$.
+
+Bei großen Ausschlägen gilt die Näherung nicht mehr, und die Periodendauer wächst mit der Amplitude. Die nichtlineare Gleichung $\ddot\varphi = -\frac{g}{l}\sin\varphi$ hat keine elementare Lösung, lässt sich aber leicht numerisch integrieren. Das Programm verwendet das klassische Runge-Kutta-Verfahren 4. Ordnung (siehe [Numerische Methoden](/de/mathematics/analysis/numerical-methods/)): Es startet in Ruhe beim Winkel $\varphi_0$ und misst die Zeit bis zum ersten Nulldurchgang, das ist ein Viertel der Periode.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double G = 9.81;
+const double Length = 1.0;
+
+static double Acceleration(double phi) => -G / Length * Math.Sin(phi);
+
+static double Period(double amplitudeDegrees)
+{
+    const double dt = 1e-4;
+    double phi = amplitudeDegrees * Math.PI / 180.0;
+    double omega = 0.0;
+    double t = 0.0;
+
+    while (true)
+    {
+        // Runge-Kutta 4. Ordnung für (phi, omega)
+        double k1p = omega, k1o = Acceleration(phi);
+        double k2p = omega + 0.5 * dt * k1o, k2o = Acceleration(phi + 0.5 * dt * k1p);
+        double k3p = omega + 0.5 * dt * k2o, k3o = Acceleration(phi + 0.5 * dt * k2p);
+        double k4p = omega + dt * k3o, k4o = Acceleration(phi + dt * k3p);
+        double nextPhi = phi + dt / 6 * (k1p + 2 * k2p + 2 * k3p + k4p);
+        double nextOmega = omega + dt / 6 * (k1o + 2 * k2o + 2 * k3o + k4o);
+
+        if (nextPhi <= 0)
+        {
+            // linear auf den Nulldurchgang interpolieren
+            double crossing = t + dt * phi / (phi - nextPhi);
+            return 4 * crossing;
+        }
+        (phi, omega, t) = (nextPhi, nextOmega, t + dt);
+    }
+}
+
+double t0 = 2 * Math.PI * Math.Sqrt(Length / G);
+Console.WriteLine($"Kleinwinkelnäherung: T0 = {t0:F4} s");
+foreach (double amplitude in new[] { 5.0, 30.0, 60.0, 90.0 })
+{
+    double period = Period(amplitude);
+    Console.WriteLine($"{amplitude,3}°: T = {period:F4} s, T/T0 = {period / t0:F4}");
+}
+// Kleinwinkelnäherung: T0 = 2.0061 s
+//   5°: T = 2.0070 s, T/T0 = 1.0005
+//  30°: T = 2.0410 s, T/T0 = 1.0174
+//  60°: T = 2.1529 s, T/T0 = 1.0732
+//  90°: T = 2.3678 s, T/T0 = 1.1803
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const G: f64 = 9.81;
+const LENGTH: f64 = 1.0;
+
+fn acceleration(phi: f64) -> f64 {
+    -G / LENGTH * phi.sin()
+}
+
+fn period(amplitude_degrees: f64) -> f64 {
+    let dt = 1e-4;
+    let mut phi = amplitude_degrees.to_radians();
+    let mut omega = 0.0;
+    let mut t = 0.0;
+
+    loop {
+        // Runge-Kutta 4. Ordnung für (phi, omega)
+        let (k1p, k1o) = (omega, acceleration(phi));
+        let (k2p, k2o) = (omega + 0.5 * dt * k1o, acceleration(phi + 0.5 * dt * k1p));
+        let (k3p, k3o) = (omega + 0.5 * dt * k2o, acceleration(phi + 0.5 * dt * k2p));
+        let (k4p, k4o) = (omega + dt * k3o, acceleration(phi + dt * k3p));
+        let next_phi = phi + dt / 6.0 * (k1p + 2.0 * k2p + 2.0 * k3p + k4p);
+        let next_omega = omega + dt / 6.0 * (k1o + 2.0 * k2o + 2.0 * k3o + k4o);
+
+        if next_phi <= 0.0 {
+            // linear auf den Nulldurchgang interpolieren
+            let crossing = t + dt * phi / (phi - next_phi);
+            return 4.0 * crossing;
+        }
+        phi = next_phi;
+        omega = next_omega;
+        t += dt;
+    }
+}
+
+fn main() {
+    let t0 = 2.0 * std::f64::consts::PI * (LENGTH / G).sqrt();
+    println!("Kleinwinkelnäherung: T0 = {t0:.4} s");
+    for amplitude in [5.0, 30.0, 60.0, 90.0] {
+        let period = period(amplitude);
+        println!("{amplitude:3}°: T = {period:.4} s, T/T0 = {:.4}", period / t0);
+    }
+}
+// Kleinwinkelnäherung: T0 = 2.0061 s
+//   5°: T = 2.0070 s, T/T0 = 1.0005
+//  30°: T = 2.0410 s, T/T0 = 1.0174
+//  60°: T = 2.1529 s, T/T0 = 1.0732
+//  90°: T = 2.3678 s, T/T0 = 1.1803
+```
+
+</TabItem>
+</Tabs>
+
+Bis $5^\circ$ liegt der Fehler der Näherung unter $0{,}05\,\%$, bei $90^\circ$ ist die Periode schon um $18\,\%$ länger. Pendeluhren schwingen deshalb mit kleinen Ausschlägen.
+
+Beim **physikalischen Pendel** (ausgedehnter Körper, Drehachse im Abstand $d$ vom Schwerpunkt) gilt $T = 2\pi\sqrt{\frac{J}{m g d}}$ mit dem [Trägheitsmoment](/de/natural-sciences/rotation/#trägheitsmoment) $J$ um die Drehachse.
+
+## Energie des harmonischen Oszillators
+
+Ohne Reibung pendelt die Energie zwischen potentieller (Spann-)Energie und kinetischer Energie hin und her, die Summe bleibt konstant:
+
+$$
+E = \frac{1}{2} D y^2 + \frac{1}{2} m v^2 = \frac{1}{2} D \hat y^2 = \frac{1}{2} m \hat v^2
+$$
+
+Die Gesamtenergie ist proportional zum **Quadrat der Amplitude**. Im Beispiel oben ($D = 200\,\mathrm{N/m}$, $\hat y = 5\,\mathrm{cm}$) ist $E = \frac{1}{2} \cdot 200 \cdot 0{,}05^2 = 0{,}25\,\mathrm{J}$, und tatsächlich $\frac{1}{2} \cdot 0{,}5 \cdot 1{,}0^2 = 0{,}25\,\mathrm{J}$.
+
+## Gedämpfte Schwingung
+
+Reale Schwingungen verlieren durch Reibung Energie, die Amplitude nimmt ab. Bei geschwindigkeitsproportionaler Reibung $F_\mathrm{R} = -b v$ (Flüssigkeitsreibung) lautet die Gleichung
+
+$$
+\ddot y + 2\delta \dot y + \omega_0^2 y = 0, \qquad \delta = \frac{b}{2m}
+$$
+
+mit der **Abklingkonstante** $\delta$ in $\mathrm{s^{-1}}$. Je nach Stärke der Dämpfung unterscheidet man drei Fälle:
+
+| Fall | Bedingung | Verhalten |
+| --- | --- | --- |
+| **schwach gedämpft** (Schwingfall) | $\delta < \omega_0$ | Schwingung mit exponentiell abnehmender Amplitude |
+| **aperiodischer Grenzfall** | $\delta = \omega_0$ | schnellste Rückkehr in die Ruhelage ohne Überschwingen |
+| **Kriechfall** (überdämpft) | $\delta > \omega_0$ | langsames Kriechen in die Ruhelage |
+
+Im Schwingfall gilt
+
+$$
+y(t) = \hat y\, e^{-\delta t} \sin(\omega_\mathrm{d} t + \varphi_0), \qquad \omega_\mathrm{d} = \sqrt{\omega_0^2 - \delta^2}
+$$
+
+Die gedämpfte Schwingung ist also etwas langsamer als die ungedämpfte. Stoßdämpfer im Auto und Zeigermessgeräte werden nahe am aperiodischen Grenzfall ausgelegt: Das Auto soll nach einer Bodenwelle nicht nachschaukeln, der Zeiger schnell und ohne Zittern stehen bleiben.
+
+Die **Güte** $Q = \frac{\omega_0}{2\delta}$ gibt an, wie schwach ein Oszillator gedämpft ist; grob entspricht sie der Zahl der Schwingungen, bis die Energie merklich abgeklungen ist. Ein Schwingquarz erreicht $Q \approx 10^4$ bis $10^6$, deshalb sind Quarzuhren so genau.
+
+## Erzwungene Schwingung und Resonanz
+
+Wird ein Oszillator von außen periodisch mit der **Erregerfrequenz** $\Omega$ angetrieben, schwingt er nach einer Einschwingzeit mit genau dieser Frequenz. Seine Amplitude hängt davon ab, wie nahe $\Omega$ an der Eigenfrequenz $\omega_0$ liegt:
+
+$$
+\hat y(\Omega) = \frac{F_0/m}{\sqrt{(\omega_0^2 - \Omega^2)^2 + (2\delta\Omega)^2}}
+$$
+
+| Erregerfrequenz | Amplitude | Phase des Oszillators gegenüber dem Erreger |
+| --- | --- | --- |
+| $\Omega \ll \omega_0$ | etwa statische Auslenkung $F_0/D$ | gleichphasig |
+| $\Omega \approx \omega_0$ | **maximal** (Resonanz), umso größer, je schwächer die Dämpfung | $90^\circ$ nachlaufend |
+| $\Omega \gg \omega_0$ | gegen null | gegenphasig ($180^\circ$) |
+
+Bei **Resonanz** nimmt der Oszillator in jeder Periode Energie auf. Ohne Dämpfung würde die Amplitude unbegrenzt wachsen (**Resonanzkatastrophe**).
+
+- **Erwünscht**: Schaukeln im Takt, Musikinstrumente und Resonanzkörper, Radioempfang (ein Schwingkreis wird auf die Senderfrequenz abgestimmt), Schwingquarz als Taktgeber, Magnetresonanztomographie.
+- **Unerwünscht**: Brücken, die durch Gleichschritt von Fußgängern ins Schwingen geraten (Millennium Bridge in London, 2000), unwuchtige Waschmaschinen beim Schleudern, Maschinenteile bei kritischen Drehzahlen. Abhilfe bringen Dämpfer, Tilger (gegenschwingende Zusatzmassen, etwa in Hochhäusern) und das Vermeiden der kritischen Frequenz.
+
+:::note
+Der Einsturz der Tacoma-Narrows-Brücke 1940 wird oft als Resonanzbeispiel genannt. Genau genommen war es eine selbsterregte Schwingung (aeroelastisches Flattern) durch den Wind, keine Resonanz mit einer periodischen äußeren Kraft.
+:::
+
+## Überlagerung von Schwingungen
+
+Schwingungen gleicher Richtung addieren sich (Superposition). Haben zwei Schwingungen fast dieselbe Frequenz $f_1$ und $f_2$, entsteht eine **Schwebung**: Die Amplitude schwillt mit der Schwebungsfrequenz $f_\mathrm{S} = |f_1 - f_2|$ an und ab. Musiker nutzen das beim Stimmen: Verschwindet die Schwebung, stimmen die Töne überein.
+
+Der elektrische **Schwingkreis** aus Spule und Kondensator folgt derselben Gleichung wie das Federpendel, mit Ladung statt Auslenkung. Seine Eigenfrequenz ist $f_0 = \frac{1}{2\pi\sqrt{LC}}$ (Thomson-Gleichung).
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Mechanische Schwingungen, leifiphysik.de
+- Walter Greiner: _Klassische Mechanik I_, Harri Deutsch / Europa-Lehrmittel

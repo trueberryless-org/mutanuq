@@ -1,0 +1,151 @@
+---
+title: Softwaremetriken
+description: Qualitätsmerkmale von Softwaresystemen wie Skalierbarkeit, Offenheit, Transparenz, Kopplung und Kohäsion sowie messbare Kennzahlen wie die zyklomatische Komplexität.
+sidebar:
+  order: 20
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Software soll nicht nur funktionieren, sondern auch stabil, erweiterbar und wartbar sein, und das über Jahre hinweg und mit wechselnden Teams. Diese Seite beschreibt die wichtigsten Qualitätsmerkmale von Softwaresystemen und Kennzahlen (**Metriken**), mit denen man sie messen kann. Die Qualitätsmerkmale nach der Norm ISO/IEC 25010 behandelt die Seite [Softwarequalität](/de/project_management/quality_management/software_quality/).
+
+## Skalierbarkeit
+
+Ein System ist **skalierbar**, wenn es bei steigender Last (mehr Benutzer, mehr Daten, mehr Anfragen) durch zusätzliche Ressourcen mitwachsen kann, ohne dass man es neu entwerfen muss.
+
+### Horizontale Skalierung
+
+Bei der **horizontalen Skalierung** (_Scale-out_) fügt man weitere Rechner oder Instanzen hinzu, auf die ein [Load Balancer](/de/deployment/operations/high_availability/#lastverteilung) die Last verteilt. Sie ist theoretisch fast unbegrenzt möglich und erhöht gleichzeitig die Ausfallsicherheit. Voraussetzung ist, dass die Anwendung **zustandslos** ist: Sitzungsdaten dürfen nicht im Arbeitsspeicher einer einzelnen Instanz liegen, sondern zum Beispiel in einer Datenbank oder einem Cache.
+
+### Vertikale Skalierung
+
+Bei der **vertikalen Skalierung** (_Scale-up_) bekommt ein einzelner Rechner mehr Ressourcen: mehr Arbeitsspeicher, mehr oder schnellere Prozessorkerne, schnellere Datenträger. Das erfordert keine Änderung an der Software, stößt aber an die Grenzen der verfügbaren Hardware, wird überproportional teuer und bleibt ein einzelner Ausfallpunkt.
+
+## Offenheit
+
+Ein offenes System lässt sich um neue Funktionen erweitern und mit anderen Systemen verbinden. Dazu braucht es klar definierte, dokumentierte Schnittstellen.
+
+### Interoperabilität
+
+**Interoperabilität** ist die Fähigkeit, mit anderen Systemen zusammenzuarbeiten. Grundlage sind standardisierte Protokolle und Formate wie HTTP, [REST](/de/web-technologies/rest-apis/), JSON oder XML. In der Praxis ändern sich Schnittstellen während eines Projekts häufig, daher versieht man sie mit Versionsnummern.
+
+### Portabilität
+
+**Portabilität** bedeutet, dass ein System auf unterschiedlichen Plattformen läuft, etwa unter Windows, Linux und macOS oder auf verschiedenen Geräten. Plattformübergreifende Laufzeitumgebungen wie .NET, Programmiersprachen wie Rust mit Compilern für viele Zielsysteme und [Container](/de/deployment/virtualisation/) erleichtern das. Für Endbenutzer kann eine Webanwendung oder **Progressive Web App** (PWA) auf allen Endgeräten erreichbar sein.
+
+## Transparenz
+
+In einem verteilten System soll der Benutzer nicht merken, dass es aus vielen Teilen besteht. Es soll sich wie ein einziges System anfühlen.
+
+### Zugriffstransparenz
+
+Auf lokale und entfernte Ressourcen wird auf dieselbe Weise zugegriffen. Unterschiede im Zugriffsweg (welcher Rechner, welches Netzwerk) und in der Darstellung (etwa Datumsformate verschiedener Länder) werden verborgen.
+
+### Ortstransparenz
+
+Der Benutzer erkennt nicht, wo sich eine Ressource physisch befindet. Ressourcen werden über logische Namen wie eine URL angesprochen, die keine Information über den Standort enthalten. So können Ressourcen aus einer Datenbank, einem Dateisystem oder einem anderen Microservice stammen und verschoben werden, ohne dass sich für den Benutzer etwas ändert.
+
+### Replikationstransparenz
+
+Der Benutzer merkt nicht, dass es mehrere Kopien einer Ressource gibt. Kopien (**Replikate**) erhöhen Ausfallsicherheit und Leistung. Replikationstransparenz setzt Ortstransparenz voraus.
+
+### Nebenläufigkeitstransparenz
+
+Viele Benutzer können gleichzeitig auf dieselben Ressourcen zugreifen, ohne sich gegenseitig zu stören. Die Herausforderungen sind Synchronisation und Konsistenz der Daten (siehe [Transaktionen](/de/databases/transactions/)).
+
+### Fehlertransparenz
+
+Ausfälle einzelner Komponenten werden vor dem Benutzer verborgen, etwa indem ein anderes Replikat einspringt oder eine Anfrage automatisch wiederholt wird.
+
+## Koppelung
+
+Die **Kopplung** (_Coupling_) ist das Maß der Abhängigkeit zwischen Softwareelementen wie Klassen, Modulen oder Services. Je stärker zwei Elemente gekoppelt sind, desto eher erzwingt eine Änderung am einen auch eine Änderung am anderen. Ein flexibles, wartbares System hat eine **geringe Kopplung**: Elemente kommunizieren über wenige, schmale Schnittstellen und greifen nicht auf die Implementierung anderer zu.
+
+Von stark nach schwach geordnet unterscheidet man unter anderem:
+
+| Kopplungsart            | Beschreibung                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **Inhaltskopplung**     | ein Modul greift direkt auf interne Daten eines anderen zu                          |
+| **Globale Kopplung**    | Module teilen sich globale Variablen, etwa über ein [Singleton](/de/software-development/design-patterns/#singleton) |
+| **Kontrollkopplung**    | ein Modul steuert den Ablauf eines anderen über Flag-Parameter                      |
+| **Datenstrukturkopplung** | Module tauschen ganze Datenstrukturen aus, von denen nur Teile gebraucht werden   |
+| **Datenkopplung**       | Module tauschen nur die einfachen Daten aus, die sie wirklich brauchen              |
+| **Nachrichtenkopplung** | Module kommunizieren nur über Nachrichten, etwa über eine [Queue](/de/decentralised-systems/storage-account/#queue-storage) |
+
+## Kohäsion
+
+Die **Kohäsion** (_Cohesion_) beschreibt den inneren Zusammenhalt eines Softwareelements: Wie eng gehören seine Teile zusammen? Bei **hoher Kohäsion** erfüllt eine Klasse genau eine Aufgabe, und alle ihre Methoden und Felder dienen dieser Aufgabe. Das [Single Responsibility Principle](/de/software-development/clean-code/#single-responsibility-principle) beschreibt genau diese Eigenschaft.
+
+Ziel eines guten Entwurfs ist daher immer: **geringe Kopplung, hohe Kohäsion**.
+
+## Messbare Kennzahlen
+
+Die bisher beschriebenen Qualitätsmerkmale lassen sich teilweise in Zahlen ausdrücken. Werkzeuge wie Visual Studio („Codemetriken berechnen“), JetBrains Rider, SonarQube oder für Rust Clippy ermitteln sie automatisch.
+
+| Kennzahl                                        | Bedeutung                                                                                                   |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Lines of Code (LOC)**                         | Anzahl der Codezeilen. Einfach zu messen, sagt aber wenig über die Qualität aus.                             |
+| **Zyklomatische Komplexität** (nach McCabe)     | Anzahl der linear unabhängigen Pfade durch eine Methode. Werte über 10 gelten als schwer testbar.           |
+| **Kopplung zwischen Klassen** (_Class Coupling_) | Anzahl der anderen Klassen, von denen eine Klasse abhängt.                                                  |
+| **Afferente und efferente Kopplung** ($C_a$, $C_e$) | wie viele Module von einem Modul abhängen bzw. wovon es selbst abhängt. Daraus ergibt sich die **Instabilität** $I = \frac{C_e}{C_a + C_e}$. |
+| **Vererbungstiefe** (_Depth of Inheritance_)    | Anzahl der Basisklassen bis zur Wurzel der Vererbungshierarchie. Tiefe Hierarchien sind schwer verständlich. |
+| **LCOM** (_Lack of Cohesion of Methods_)        | misst, wie wenig die Methoden einer Klasse gemeinsame Felder verwenden. Hohe Werte deuten auf geringe Kohäsion hin. |
+| **Halstead-Metriken**                           | berechnen aus der Anzahl der Operatoren und Operanden Umfang, Schwierigkeit und Aufwand eines Programms.   |
+| **Wartbarkeitsindex** (_Maintainability Index_) | aus LOC, zyklomatischer Komplexität und Halstead-Volumen berechneter Wert. Visual Studio skaliert ihn auf 0 bis 100; höher ist besser. |
+| **Testabdeckung** (_Code Coverage_)             | Anteil des Codes, der von automatisierten [Tests](/de/software-development/testing/#white-box-verfahren) ausgeführt wird. |
+
+### Zyklomatische Komplexität
+
+Thomas McCabe definierte 1976 die zyklomatische Komplexität über den **Kontrollflussgraphen** einer Methode: $M = E - N + 2P$ mit $E$ Kanten, $N$ Knoten und $P$ zusammenhängenden Komponenten (für eine Methode ist $P = 1$). In der Praxis zählt man einfacher: **Anzahl der Entscheidungspunkte + 1**. Entscheidungspunkte sind `if`, `else if`, jede Schleife, jeder `case`-Zweig, `catch` sowie die Operatoren `&&`, `||` und `?:`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Classify(-5));  // negativ
+Console.WriteLine(Classify(42));  // groß und gerade
+
+// Entscheidungspunkte: if, else if, &&, else if  → 4 + 1 = 5
+static string Classify(int n)
+{
+    if (n < 0)
+        return "negativ";
+    else if (n > 10 && n % 2 == 0)
+        return "groß und gerade";
+    else if (n > 10)
+        return "groß";
+    return "klein";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Entscheidungspunkte: if, else if, &&, else if  → 4 + 1 = 5
+fn classify(n: i32) -> &'static str {
+    if n < 0 {
+        "negativ"
+    } else if n > 10 && n % 2 == 0 {
+        "groß und gerade"
+    } else if n > 10 {
+        "groß"
+    } else {
+        "klein"
+    }
+}
+
+fn main() {
+    println!("{}", classify(-5)); // negativ
+    println!("{}", classify(42)); // groß und gerade
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die Methode hat die Komplexität 5. Die Zahl entspricht der Anzahl der linear unabhängigen Pfade (Basispfade) und ist damit eine obere Schranke für die Zahl der Testfälle, die für eine vollständige Zweigüberdeckung nötig sind. Je höher die Komplexität, desto mehr Tests braucht eine Methode und desto schwerer ist sie zu verstehen.
+
+:::caution[Metriken richtig verwenden]
+Eine Kennzahl ist ein Hinweis, kein Urteil. Wer Entwickler nach Codezeilen oder Testabdeckung bewertet, bekommt aufgeblähten Code und Tests ohne Aussagekraft (_Goodhart's Law_: Wird eine Kennzahl zum Ziel, verliert sie ihren Wert als Kennzahl). Metriken eignen sich am besten, um Auffälligkeiten zu finden und Trends über die Zeit zu beobachten.
+:::

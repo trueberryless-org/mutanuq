@@ -1,0 +1,277 @@
+---
+title: Sequential Circuits
+description: Latches and flip-flops (SR, D, JK, T), timing diagrams, registers and shift registers, asynchronous and synchronous counters, Moore and Mealy machines, 555 timer, memory types and programmable logic.
+sidebar:
+  order: 13
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **sequential circuit** has a memory: its outputs depend not only on the current inputs but also on the previous history, stored as a **state**. The basic element is the flip-flop, which stores one bit. Flip-flops and [combinational circuits](/en/electrical-engineering/combinational-circuits/) form registers, counters, control units and ultimately entire processors.
+
+## Latches
+
+### SR latch
+
+The simplest storage element is the **SR latch** (set-reset) made of two cross-coupled NOR gates. The output of each gate leads to an input of the other. As a result the circuit holds its state even when the inputs are back at 0.
+
+| $S$ | $R$ | $Q^{+}$          | Meaning                      |
+| --- | --- | ---------------- | ---------------------------- |
+| 0   | 0   | $Q$              | hold                         |
+| 1   | 0   | 1                | set                          |
+| 0   | 1   | 0                | reset                        |
+| 1   | 1   | (forbidden)      | $Q = \overline{Q} = 0$, then undefined |
+
+$Q^{+}$ is the next state. With $S = R = 1$ both outputs are 0, which contradicts the meaning of $Q$ and $\overline{Q}$. If both inputs then return to 0 simultaneously, the final state depends on the random gate delays. NAND gates give the $\overline{S}\,\overline{R}$ latch with active-low inputs. The **characteristic equation** is $Q^{+} = S + \overline{R}Q$ (with the condition $SR = 0$).
+
+### D latch
+
+The **D latch** (data) has a data input $D$ and an enable input $E$ (also $C$). As long as $E = 1$, $Q$ follows the input $D$; the latch is **transparent**. With $E = 0$ it holds the last value. The forbidden state cannot occur because internally $S = D$ and $R = \overline{D}$ are formed.
+
+## Flip-flops
+
+With a latch, changes at the input can pass through to the output during the whole enable phase. In clocked circuits, however, all storage elements should take over **simultaneously** at a defined moment. **Edge-triggered flip-flops** take over the input only at the moment of the **rising clock edge** (some at the falling edge). In the circuit symbol a small triangle at the clock input $C$ marks edge triggering; an additional circle in front of it marks the falling edge.
+
+Internally an edge-triggered flip-flop usually consists of two latches in series (**master-slave principle**): the master is transparent when the clock is 0, the slave when it is 1. At the rising edge the master closes and the slave outputs its stored value.
+
+| Flip-flop | Inputs   | Characteristic equation            | Behaviour                                                      |
+| --------- | -------- | ---------------------------------- | -------------------------------------------------------------- |
+| D         | $D$      | $Q^{+} = D$                        | takes over $D$ at the clock edge                               |
+| JK        | $J$, $K$ | $Q^{+} = J\overline{Q} + \overline{K}Q$ | like SR ($J$ sets, $K$ resets), but $J = K = 1$ **toggles** the state |
+| T         | $T$      | $Q^{+} = T \oplus Q$               | $T = 1$: toggle, $T = 0$: hold                                 |
+| SR (clocked) | $S$, $R$ | $Q^{+} = S + \overline{R}Q$      | $S = R = 1$ forbidden                                          |
+
+Truth table of the JK flip-flop, valid at each active clock edge:
+
+| $J$ | $K$ | $Q^{+}$         |
+| --- | --- | --------------- |
+| 0   | 0   | $Q$ (hold)      |
+| 0   | 1   | 0 (reset)       |
+| 1   | 0   | 1 (set)         |
+| 1   | 1   | $\overline{Q}$ (toggle) |
+
+In practice the D flip-flop is the most important; FPGAs and processors consist almost entirely of D flip-flops. A T flip-flop is made from a JK flip-flop with $J = K = T$ or from a D flip-flop with $D = T \oplus Q$. Many flip-flops also have **asynchronous** inputs (preset and clear) that set or reset immediately regardless of the clock, for example at power-up.
+
+### Timing constraints
+
+For a flip-flop to take over reliably, $D$ must be stable for a **setup time** $t_\mathrm{su}$ before the clock edge and remain stable for a **hold time** $t_\mathrm{h}$ after it. The output changes after the propagation delay $t_\mathrm{pd}$. If these times are violated, for example because an asynchronous signal (a key press) changes exactly at the clock edge, the flip-flop may remain in an undefined intermediate state for a while (**metastability**). That is why asynchronous signals are passed through two flip-flops in series (**synchroniser**).
+
+The maximum clock frequency of a circuit results from the longest path between two flip-flops: $f_\mathrm{max} = 1/(t_\mathrm{pd} + t_\mathrm{logic} + t_\mathrm{su})$.
+
+### Timing diagram
+
+A **timing diagram** shows the signals over time. For the D flip-flop you can see that $Q$ takes over the value of $D$ only at rising clock edges. Short changes of $D$ between the edges have no effect.
+
+![Timing diagram of a D flip-flop](/images/electrical-engineering/d-flipflop-timing_en.svg)
+
+## Registers and shift registers
+
+A **register** consists of $n$ D flip-flops with a common clock and stores an $n$-bit word. Processors have registers for operands, addresses and status.
+
+A **shift register** connects the output of each flip-flop to the input of the next. With each clock pulse the content moves one position further.
+
+| Type                                     | Input    | Output    | Application                                  |
+| ---------------------------------------- | -------- | --------- | -------------------------------------------- |
+| SISO (serial in, serial out)             | serial   | serial    | delay by $n$ clock cycles                    |
+| SIPO (serial in, parallel out)           | serial   | parallel  | serial-to-parallel conversion, output expansion (74HC595) |
+| PISO (parallel in, serial out)           | parallel | serial    | parallel-to-serial conversion, input expansion (74HC165) |
+| PIPO (parallel in, parallel out)         | parallel | parallel  | buffer                                       |
+
+Serial interfaces such as [SPI](/en/embedded-programming/spi/) and UART essentially consist of shift registers. With a 74HC595 a microcontroller can drive any number of outputs via three lines. Shifting one position to the left corresponds to multiplying a binary number by 2, to the right to dividing by 2.
+
+## Counters
+
+A **counter** steps to the next state of a fixed sequence with every clock pulse. An $n$-bit binary counter counts from $0$ to $2^n - 1$ and then starts again. The number of states is called the **modulus** of the counter.
+
+### Asynchronous counters
+
+In an **asynchronous counter** (ripple counter) only the first flip-flop is driven by the clock. Every further flip-flop is connected as a T flip-flop ($T = 1$) and is clocked by the output of the previous one. Each stage halves the frequency, so such counters also serve as **frequency dividers**: after three stages a $1\,\mathrm{MHz}$ clock becomes $125\,\mathrm{kHz}$.
+
+The design is simple, but the delays add up from stage to stage. During switching, wrong intermediate values briefly occur (when changing from 0111 to 1000, for example 0110, 0100, 0000), which causes problems for downstream decoders.
+
+### Synchronous counters
+
+In a **synchronous counter** all flip-flops share the same clock. A combinational circuit calculates the next value for each flip-flop from the current state. All bits change at the same time. For a 3-bit binary counter with D flip-flops:
+
+$$
+D_0 = \overline{Q_0} \qquad D_1 = Q_1 \oplus Q_0 \qquad D_2 = Q_2 \oplus (Q_1 Q_0)
+$$
+
+A bit toggles exactly when all lower bits are 1.
+
+### Modulo-n counters
+
+A counter that should not count up to $2^n - 1$ is designed using the general design procedure for sequential circuits. Example: a synchronous **modulo-6 counter** (0 to 5) with three D flip-flops.
+
+| State   | $Q_2 Q_1 Q_0$ | Next state   | $D_2 D_1 D_0$ |
+| ------- | ------------- | ------------ | ------------- |
+| 0       | 000           | 1            | 001           |
+| 1       | 001           | 2            | 010           |
+| 2       | 010           | 3            | 011           |
+| 3       | 011           | 4            | 100           |
+| 4       | 100           | 5            | 101           |
+| 5       | 101           | 0            | 000           |
+| 6       | 110           | X            | XXX           |
+| 7       | 111           | X            | XXX           |
+
+States 6 and 7 do not occur and are used as don't cares. Karnaugh minimisation for each $D$ gives:
+
+$$
+D_0 = \overline{Q_0} \qquad D_1 = \overline{Q_2}\,\overline{Q_1} Q_0 + Q_1 \overline{Q_0} \qquad D_2 = Q_1 Q_0 + Q_2 \overline{Q_0}
+$$
+
+It is also important to check whether the counter returns to the counting sequence from an unused state (for example after a disturbance) (**self-starting**). The following program applies the equations and prints the next state for every state:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Next state of the modulo-6 counter from the minimised equations
+static int Next(int state)
+{
+    bool q2 = (state & 4) != 0, q1 = (state & 2) != 0, q0 = (state & 1) != 0;
+    bool d2 = (q1 && q0) || (q2 && !q0);
+    bool d1 = (!q2 && !q1 && q0) || (q1 && !q0);
+    bool d0 = !q0;
+    return (d2 ? 4 : 0) | (d1 ? 2 : 0) | (d0 ? 1 : 0);
+}
+
+for (int s = 0; s < 8; s++)
+{
+    string bits = Convert.ToString(s, 2).PadLeft(3, '0');
+    Console.WriteLine($"State {s} ({bits}) -> {Next(s)}");
+}
+// State 0 (000) -> 1
+// State 1 (001) -> 2
+// State 2 (010) -> 3
+// State 3 (011) -> 4
+// State 4 (100) -> 5
+// State 5 (101) -> 0
+// State 6 (110) -> 7
+// State 7 (111) -> 4
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Next state of the modulo-6 counter from the minimised equations
+fn next(state: u8) -> u8 {
+    let (q2, q1, q0) = ((state & 4) != 0, (state & 2) != 0, (state & 1) != 0);
+    let d2 = (q1 && q0) || (q2 && !q0);
+    let d1 = (!q2 && !q1 && q0) || (q1 && !q0);
+    let d0 = !q0;
+    (u8::from(d2) << 2) | (u8::from(d1) << 1) | u8::from(d0)
+}
+
+fn main() {
+    for s in 0..8u8 {
+        println!("State {s} ({s:03b}) -> {}", next(s));
+    }
+}
+// State 0 (000) -> 1
+// State 1 (001) -> 2
+// State 2 (010) -> 3
+// State 3 (011) -> 4
+// State 4 (100) -> 5
+// State 5 (101) -> 0
+// State 6 (110) -> 7
+// State 7 (111) -> 4
+```
+
+</TabItem>
+</Tabs>
+
+The counting sequence 0 to 5 is correct. From 6 the counter reaches 4 via 7 and thus returns to the sequence, so it is self-starting.
+
+The simpler alternative, resetting a 3-bit counter via the asynchronous reset input when it reaches 6, works, but briefly produces state 6 as a glitch at the output. Ready-made counter ICs are, for example, the 74HC161 (synchronous 4-bit counter) and the 74HC4040 (12-stage asynchronous divider).
+
+## Finite state machines
+
+Every sequential circuit is a **finite state machine** (FSM): it has finitely many states, moves to a next state at each clock pulse depending on the state and the inputs, and produces outputs. There are two types:
+
+| Type              | Outputs depend on             | Properties                                                             |
+| ----------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| **Moore machine** | the state only                | outputs stable and synchronous to the clock, often more states needed |
+| **Mealy machine** | the state and the inputs      | fewer states, reacts immediately, input glitches reach the output      |
+
+In the **state diagram** states are circles and transitions are arrows labelled with the input condition. In a Moore machine the output is written in the circle, in a Mealy machine on the arrow (input/output). You know the same notation from the [UML state diagram](/en/software-development/uml/).
+
+### Design steps
+
+1. Describe the **task**, define inputs and outputs.
+2. Draw the **state diagram**.
+3. Draw up the **state table**: current state, input, next state, output.
+4. **Encode the states**: for $z$ states you need $\lceil \log_2 z \rceil$ flip-flops (binary encoding) or $z$ flip-flops (one-hot, common in FPGAs).
+5. Minimise the **next-state equations** of the flip-flops and the **output equations** with Karnaugh maps.
+6. Draw the circuit and check that it is self-starting.
+
+### Example: sequence detector
+
+A machine with input $x$ is to output $Y = 1$ as soon as $x$ has been 1 for at least two consecutive clock cycles.
+
+As a **Moore machine** it needs three states: $S_0$ (no 1 seen), $S_1$ (one 1 seen), $S_2$ (at least two ones, $Y = 1$). With $x = 0$ it always goes to $S_0$; with $x = 1$ from $S_0$ to $S_1$ and from $S_1$ or $S_2$ to $S_2$. With the encoding $S_0 = 00$, $S_1 = 01$, $S_2 = 10$ and the unused code 11 as a don't care:
+
+| $Q_1 Q_0$  | $x = 0$: next state   | $x = 1$: next state   | $Y$ |
+| ---------- | --------------------- | --------------------- | --- |
+| 00 ($S_0$) | 00                    | 01                    | 0   |
+| 01 ($S_1$) | 00                    | 10                    | 0   |
+| 10 ($S_2$) | 00                    | 10                    | 1   |
+
+$$
+D_1 = x \cdot (Q_1 + Q_0) \qquad D_0 = x \cdot \overline{Q_1}\,\overline{Q_0} \qquad Y = Q_1
+$$
+
+As a **Mealy machine** two states are enough (last input was 0 or 1), stored in one D flip-flop with $D = x$. The output is $Y = x \cdot Q$. It reacts in the same clock cycle in which the second 1 is present, the Moore machine one clock cycle later.
+
+## Timers and oscillators
+
+Every sequential circuit needs a **clock**. In computers and microcontrollers it is supplied by a **crystal oscillator**: a quartz crystal vibrates mechanically at a very precise frequency (typical deviation $\pm 20$ to $50\,\mathrm{ppm}$). PLL circuits multiply this frequency up to the processor clock. For simple tasks RC oscillators are sufficient.
+
+The **555 timer** produces square waves or single pulses with a few external components. It contains two comparators with thresholds $\tfrac{1}{3}U_\mathrm{B}$ and $\tfrac{2}{3}U_\mathrm{B}$, an SR flip-flop and a discharge transistor.
+
+- **Astable mode** (square-wave generator): the capacitor charges via $R_1 + R_2$ up to $\tfrac{2}{3}U_\mathrm{B}$ and discharges via $R_2$ down to $\tfrac{1}{3}U_\mathrm{B}$.
+
+$$
+t_\mathrm{H} = \ln 2 \cdot (R_1 + R_2) C \approx 0.693\,(R_1 + R_2) C \qquad t_\mathrm{L} \approx 0.693\,R_2 C \qquad f = \frac{1}{t_\mathrm{H} + t_\mathrm{L}} \approx \frac{1.44}{(R_1 + 2R_2) C}
+$$
+
+- **Monostable mode** (timer): a trigger pulse produces an output pulse of duration $t \approx 1.1\,RC$.
+
+:::tip[Example]
+$R_1 = 1\,\mathrm{k\Omega}$, $R_2 = 10\,\mathrm{k\Omega}$, $C = 10\,\mathrm{\mu F}$: $t_\mathrm{H} \approx 0.693 \cdot 11\,\mathrm{k\Omega} \cdot 10\,\mathrm{\mu F} \approx 76\,\mathrm{ms}$, $t_\mathrm{L} \approx 69\,\mathrm{ms}$, $f \approx 6.9\,\mathrm{Hz}$. An LED at the output therefore flashes almost seven times per second.
+:::
+
+## Memory types
+
+Semiconductor memories are organised in arrays of memory cells. With $n$ address lines, $2^n$ locations can be addressed. A memory with 16 address lines and 8 data lines holds $2^{16} \cdot 8\,\mathrm{bit} = 64\,\mathrm{KiB}$.
+
+| Memory     | volatile | Memory cell                                    | Properties and use                                            |
+| ---------- | -------- | ---------------------------------------------- | ------------------------------------------------------------- |
+| **SRAM**   | yes      | flip-flop of 6 transistors                     | very fast, expensive, low density: cache, registers, microcontroller RAM |
+| **DRAM**   | yes      | 1 transistor and 1 capacitor                   | high density, cheap; the capacitor discharges and must be refreshed about every $64\,\mathrm{ms}$: main memory |
+| **ROM**    | no       | fixed during manufacture (mask)                | unchangeable, large series                                    |
+| **PROM**   | no       | one-time programmable (fuses)                  | historical                                                    |
+| **EPROM**  | no       | floating-gate transistor                       | erasable with UV light (quartz window)                        |
+| **EEPROM** | no       | floating-gate transistor                       | electrically erasable byte by byte, limited write cycles (about $10^5$ to $10^6$): configuration data ([EEPROM in the microcontroller](/en/embedded-programming/eeprom/)) |
+| **Flash**  | no       | floating-gate or charge-trap transistor        | erasable in blocks, very high density: program memory (NOR), SSDs and USB sticks (NAND) |
+
+In a floating-gate cell electrons are trapped on a completely insulated gate. They shift the threshold voltage of the transistor and are retained for years. When writing, they are forced through the insulating layer with high voltage, which wears it out over time. SSDs therefore distribute write accesses evenly over all blocks (wear levelling). Modern NAND flash cells store several bits per cell using different amounts of charge (MLC, TLC, QLC).
+
+## Programmable logic
+
+Instead of soldering circuits from individual gate chips, today they are described in a **hardware description language** (VHDL, Verilog) and loaded into programmable devices.
+
+| Device       | Structure                                                                 | Use                                         |
+| ------------ | ------------------------------------------------------------------------- | ------------------------------------------- |
+| PAL, GAL     | programmable AND array with fixed OR gates, i.e. directly a DNF           | small glue logic, historical                |
+| CPLD         | several PAL-like blocks with an interconnect, non-volatile                | glue logic, active immediately after power-up |
+| FPGA         | thousands to millions of **lookup tables** (LUTs, small memories that implement any function of 4 to 6 inputs) with D flip-flops, freely configurable interconnect, memory blocks and arithmetic units | signal processing, chip prototypes, networking |
+
+The configuration of an FPGA (bitstream) is usually held in SRAM cells and is loaded from a flash memory at power-up. Unlike a processor, an FPGA does not execute instructions one after the other but reproduces the circuit truly in parallel. A synthesis tool translates the description into gates, minimises them and places them in the device.
+
+## Further reading
+
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- [Texas Instruments: LM555 Timer datasheet](https://www.ti.com/lit/ds/symlink/lm555.pdf)

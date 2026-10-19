@@ -1,0 +1,178 @@
+---
+title: Accessibility and SEO
+description: WCAG 2.2 with the POUR principles and conformance levels, the Austrian Web Accessibility Act and Accessibility Act, testing tools, and the basics of search engine optimisation and Core Web Vitals.
+sidebar:
+  order: 9
+---
+
+**Accessibility** (a11y for short) means that everyone can use a website, including people with visual, hearing, motor or cognitive impairments. This does not concern only a few: blind people use a **screen reader**, which reads the page aloud or outputs it on a braille display; people with low vision zoom in strongly; people with a tremor operate the page only with the keyboard or by voice; deaf people need captions. Then there are temporary and situational impairments: a broken arm, glaring sunlight on a phone, a video on a noisy tram. Accessibility improves usability for everyone and is required by law for many websites.
+
+## WCAG 2.2
+
+The W3C's **Web Content Accessibility Guidelines** (WCAG) are the authoritative international standard. Version 2.0 was published in 2008, 2.1 in 2018 and **2.2 in October 2023**. Since 2025, WCAG 2.2 has also been published as the international standard ISO/IEC 40500:2025. Newer versions are backwards compatible: whoever meets WCAG 2.2 also meets 2.1 and 2.0. A fundamentally revised version, WCAG 3.0, is in development.
+
+WCAG is organised into four **principles**, below them 13 **guidelines**, and below those testable **success criteria**. The principles are remembered with **POUR**:
+
+### Perceivable
+
+Information must be presented in a way that everyone can perceive.
+
+- **Text alternatives** for everything that is not text: `alt` texts for images, labels for icon buttons (1.1.1, A).
+- **Captions** for recorded videos (1.2.2, A) and audio description.
+- Structure must be in the code, not only in the appearance: real headings, lists, tables and labels (1.3.1, A).
+- Information must not be conveyed **by colour alone**: a required field is marked not only in red but also with text or a symbol (1.4.1, A).
+- **Contrast**: normal text needs at least **4.5 : 1**, large text (from 24 px, or from 18.66 px bold) at least **3 : 1** (1.4.3, AA). At level AAA, 7 : 1 applies. Controls and graphics need 3 : 1 against their surroundings (1.4.11, AA).
+- Text must be resizable to **200 %** without loss of content (1.4.4, AA) and be readable at a width of 320 CSS pixels without horizontal scrolling (**reflow**, 1.4.10, AA).
+
+The contrast ratio is calculated from the **relative luminance** $L$ of the lighter colour $L_1$ and the darker one $L_2$, each between 0 (black) and 1 (white):
+
+$$
+C = \frac{L_1 + 0.05}{L_2 + 0.05}
+$$
+
+Black on white gives $\frac{1 + 0.05}{0 + 0.05} = 21$, the maximum of 21 : 1. The lightest grey that still achieves 4.5 : 1 on a white background is approximately `#767676` (4.54 : 1). Tools such as the contrast checker in the developer tools calculate this automatically.
+
+### Operable
+
+All controls must be operable by everyone.
+
+- Everything must be operable **with the keyboard** (2.1.1, A) without the focus getting trapped anywhere (2.1.2, A). Tab moves through links and controls; Enter and the space bar activate them.
+- **Keyboard focus must be visible** (2.4.7, AA). `outline: none` without a replacement is therefore an error. Since WCAG 2.2, the focused content must also not be completely hidden by other elements such as fixed headers or cookie banners (2.4.11, AA).
+- Enough **time**: time limits must be extendable, and moving content must be pausable (2.2.1, 2.2.2, A).
+- Nothing may **flash** more than three times per second, because this can trigger epileptic seizures (2.3.1, A).
+- **Orientation**: a meaningful page title (2.4.2, A), a link to skip the navigation (2.4.1, A), understandable link texts (2.4.4, A), a logical focus order (2.4.3, A).
+- New in 2.2: click targets at least **24 × 24 CSS pixels** or with sufficient spacing (2.5.8, AA), and functions that require dragging need an alternative without dragging (2.5.7, AA).
+
+### Understandable
+
+Content and operation must be understandable.
+
+- The **language** of the page is specified (`<html lang="en">`, 3.1.1, A), as are passages in another language (3.1.2, AA). Otherwise an English screen reader reads German text with English pronunciation.
+- The page behaves **predictably**: focus or input does not trigger an unexpected change of page (3.2.1, 3.2.2, A), and navigation is arranged consistently on all pages (3.2.3, AA).
+- **Input assistance**: errors are detected and described in text (3.3.1, A), fields have labels or instructions (3.3.2, A), and suggestions for correction are given for errors (3.3.3, AA).
+- New in 2.2: data already entered need not be entered again in the same process (3.3.7, A), and login must not require a cognitive test such as retyping a puzzle without an alternative such as pasting from a password manager (3.3.8, AA).
+
+### Robust
+
+The content must work with different browsers and assistive technologies, including future ones.
+
+- Every control has an accessible **name**, a **role** and a **state** that assistive technologies can read (4.1.2, A). Native HTML elements fulfil this by themselves; custom widgets need [ARIA](/en/web-technologies/html/#accessibility).
+- Status messages such as "Saved" or "3 results" are announced to screen readers without moving the focus, for example via `role="status"` (4.1.3, AA).
+
+Criterion 4.1.1 (parsing, valid HTML) was removed in WCAG 2.2 because modern browsers handle faulty HTML uniformly.
+
+### Conformance levels
+
+| Level   | Meaning                                                                                        |
+| ------- | ---------------------------------------------------------------------------------------------- |
+| **A**   | minimum requirements. Without them the page is not usable at all for some people                 |
+| **AA**  | A plus additional criteria that remove the biggest barriers. **Required by law** in the EU and in Austria |
+| **AAA** | highest level. Not always achievable for entire websites and not required across the board      |
+
+A page conforms to a level only if it meets **all** criteria of that level and the lower levels.
+
+## Legal situation in Austria and the EU
+
+| Regulation | For whom | Content |
+| ---------- | -------- | ------- |
+| **Web Accessibility Act** (WZG, BGBl. I Nr. 59/2019, in force since 23 July 2019) | websites and mobile applications of the **federal government** and bodies attributable to it. The federal provinces have their own provincial laws | transposes EU Directive 2016/2102. The directive applied to new websites from 23 September 2019, to all websites from 23 September 2020 and to mobile apps from 23 June 2021. It requires the harmonised standard **EN 301 549**, which refers to **WCAG 2.1 AA** for web content. Every website needs an **accessibility statement** with a way to report barriers. Complaints are examined by the **complaints office of the FFG** (Austrian Research Promotion Agency), which also carries out the monitoring |
+| **Accessibility Act** (BaFG, BGBl. I Nr. 76/2023, applicable since **28 June 2025**) | **private companies** that offer certain products and services | transposes the **European Accessibility Act** (Directive (EU) 2019/882). It covers, among others, online shops (_e-commerce services_), banking services, e-books, ticketing and booking services in passenger transport, telephony, computers, smartphones, ATMs and ticket machines. Micro-enterprises (fewer than 10 employees and an annual turnover or balance sheet total of at most 2 million euros) are exempt for services. There are transitional periods for existing contracts and machines. Market surveillance lies with the federal social services office (Sozialministeriumservice), and breaches are subject to administrative penalties |
+| **Federal Disability Equality Act** (BGStG, since 2006) | everyone who offers goods and services to the public | general prohibition of discrimination. Damages can be claimed for barriers; a conciliation procedure at the Sozialministeriumservice is mandatory beforehand |
+
+## Testing accessibility
+
+Automated tools find only some of the problems, for example missing `alt` attributes, insufficient contrast or fields without labels. Whether an alternative text makes sense or whether operation is logical can only be judged by a human. A test therefore combines:
+
+| Method                     | Tools                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| automated testing          | **Lighthouse** (built into Chrome), **axe DevTools**, **WAVE** (WebAIM), Accessibility Insights; in CI pipelines `axe-core` or `pa11y` |
+| contrast                   | colour picker in the developer tools, WebAIM Contrast Checker, Colour Contrast Analyser          |
+| keyboard                   | put the mouse aside and operate the page with Tab, Shift+Tab, Enter, space bar and arrow keys only |
+| screen reader              | **NVDA** (free, Windows), JAWS, Narrator (Windows), **VoiceOver** (macOS, iOS), **TalkBack** (Android) |
+| zoom and display           | zoom to 200 % and 400 %, screen width 320 px, high contrast, reduced motion                        |
+| accessibility tree         | the "Accessibility" tab in the developer tools shows the name, role and state of every element    |
+
+A test with affected people is the most reliable. Accessibility is cheapest when planned from the start: semantic HTML costs nothing, whereas repairing a page built from `<div>` elements afterwards costs a great deal.
+
+## Search engine optimisation
+
+**SEO** (_search engine optimisation_) covers all measures that help a page to be found in the unpaid results of search engines. A search engine works in three steps: a **crawler** (Googlebot, Bingbot) follows links and downloads pages, the pages are analysed and added to the **index**, and for a search the matching pages are ranked by relevance and quality (**ranking**). Much of what helps a page for search engines also helps accessibility, because a crawler "sees" a page much like a screen reader does.
+
+### Content and HTML
+
+- **Content** is the most important factor: useful, original texts that answer the searchers' questions.
+- A unique, descriptive **`<title>`** per page (about 50 to 60 characters are displayed) and a **meta description** (about 150 to 160 characters), which can appear as the preview text in the search results.
+- **Semantic HTML** with one `<h1>` and a logical heading hierarchy, `alt` texts for images, meaningful link texts and readable URLs (`/departments/information-technology/` instead of `/page.php?id=4711`).
+- **Internal linking**, so that the crawler finds all pages and recognises which ones are important.
+- `<link rel="canonical">` specifies the preferred URL when several URLs have the same content, so that no duplicates arise. On multilingual sites, `hreflang` links the language versions: `<link rel="alternate" hreflang="de" href="https://example.at/de/">`.
+- An SPA whose content is only created by JavaScript is indexed worse or with a delay. [SSR or SSG](/en/web-technologies/frontend-frameworks/#rendering-strategies) solve this.
+
+### Technical basics
+
+The file **`robots.txt`** in the root directory tells crawlers which areas they should not fetch and refers to the sitemap. It is not an access barrier: if you want to protect content, you need a login. To keep a page out of the index, use `<meta name="robots" content="noindex">`.
+
+```text
+User-agent: *
+Disallow: /admin/
+Sitemap: https://www.example.at/sitemap.xml
+```
+
+The **sitemap** (`sitemap.xml`, protocol from sitemaps.org) lists all pages that should be indexed, with the date of the last change. One file may contain at most 50,000 URLs and be at most 50 MB uncompressed; larger websites use a sitemap index.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.example.at/departments/information-technology/</loc>
+    <lastmod>2026-09-01</lastmod>
+  </url>
+</urlset>
+```
+
+**Structured data** describes the content in a machine-readable way using the **schema.org** vocabulary, usually in the **JSON-LD** format. Search engines can use it to create enhanced search results (_rich results_), for example with an event date, rating stars or opening hours.
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Open day",
+  "startDate": "2026-11-27T09:00:00+01:00",
+  "location": {
+    "@type": "Place",
+    "name": "HTL Sampletown",
+    "address": "Schulstraße 1, 1234 Sampletown"
+  }
+}
+</script>
+```
+
+Further technical factors are **HTTPS**, a display suitable for mobile devices (with **mobile-first indexing**, Google assesses pages on the basis of their mobile version) and a short loading time. Progress and problems with indexing are shown by the free **Google Search Console**.
+
+### Core Web Vitals
+
+The **Core Web Vitals** are three metrics from Google for the user experience, which also feed into ranking. They are measured on real visits, and a page counts as good if **75 %** of page views reach the threshold.
+
+| Metric | measures | good | poor |
+| ------ | -------- | ---- | ---- |
+| **LCP** (_Largest Contentful Paint_) | loading: when the largest visible element (hero image, text block) is rendered | ≤ 2.5 s | > 4 s |
+| **INP** (_Interaction to Next Paint_) | responsiveness: time from an interaction (click, key press) to the next paint, over the whole visit. Replaced the FID metric in March 2024 | ≤ 200 ms | > 500 ms |
+| **CLS** (_Cumulative Layout Shift_) | visual stability: how much content unexpectedly shifts during loading | ≤ 0.1 | > 0.25 |
+
+Typical measures:
+
+- **LCP**: compress images and deliver them in modern formats (WebP, AVIF) and a suitable size, do not delay the hero image with `loading="lazy"`, use caching and a CDN, fast-responding servers.
+- **INP**: split long JavaScript tasks or move them to web workers, ship less JavaScript.
+- **CLS**: specify `width` and `height` for images and videos, reserve space for adverts and embedded content, load fonts so that the text does not jump when they switch.
+
+You can measure with **PageSpeed Insights** (real field data and a lab test), Lighthouse and the **Performance** tab of the developer tools.
+
+:::caution[No tricks]
+Hidden text, keyword stuffing (repeating search terms unnaturally often), bought links or **cloaking** (showing the crawler different content from humans) violate the search engines' guidelines and can lead to exclusion from the index.
+:::
+
+## Further reading
+
+- [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) and [WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/) (W3C WAI)
+- [Digital accessibility](https://www.digitalbarrierefrei.at/) (FFG, information on the WZG) and [Accessibility Act](https://www.sozialministerium.gv.at/Themen/Soziales/Menschen-mit-Behinderungen/Barrierefreiheitsgesetz.html) (Austrian Ministry of Social Affairs)
+- [Google Search Central: SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) and [web.dev: Web Vitals](https://web.dev/articles/vitals)

@@ -1,0 +1,313 @@
+---
+title: Differentialgleichungen
+description: "Gewöhnliche Differentialgleichungen: Trennen der Variablen, lineare DGL 1. Ordnung, Wachstumsmodelle, RC- und RL-Kreis, lineare DGL 2. Ordnung, gedämpfte Schwingungen, Richtungsfeld und Euler-Verfahren."
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Eine **Differentialgleichung** (DGL) ist eine Gleichung, in der eine gesuchte Funktion zusammen mit ihren Ableitungen vorkommt. Sie beschreibt nicht den Zustand eines Systems direkt, sondern wie er sich ändert: Die Abkühlgeschwindigkeit hängt vom Temperaturunterschied ab, der Ladestrom eines Kondensators von seiner Spannung, die Beschleunigung einer Feder von ihrer Auslenkung. Aus diesem Änderungsgesetz und dem Anfangszustand berechnet man den zeitlichen Verlauf.
+
+## Grundbegriffe
+
+| Begriff | Bedeutung | Beispiel |
+| ------- | --------- | -------- |
+| gewöhnliche DGL | gesuchte Funktion hängt von einer Variablen ab | $y'(t) = -2\,y(t)$ |
+| Ordnung | höchste vorkommende Ableitung | $y'' + 4y = 0$ ist 2. Ordnung |
+| linear | $y$ und seine Ableitungen kommen nur in der ersten Potenz und nicht miteinander multipliziert vor | $y' + 3y = 5$ (linear), $y' = y^2$ (nicht linear) |
+| homogen | linear und ohne Term, der nur von $x$ abhängt (Störglied $= 0$) | $y' + 3y = 0$ |
+| allgemeine Lösung | Lösung mit so vielen freien Konstanten wie die Ordnung | $y = C \cdot e^{-2t}$ |
+| partikuläre (spezielle) Lösung | Lösung mit bestimmten Werten der Konstanten | $y = 5 \cdot e^{-2t}$ |
+| Anfangswertproblem | DGL plus Anfangsbedingungen, die die Konstanten festlegen | $y' = -2y$, $y(0) = 5$ |
+
+Eine Lösung ist eine **Funktion**, keine Zahl. Ob eine Funktion eine DGL löst, prüft man durch Einsetzen.
+
+:::tip[Beispiel: Probe]
+Löst $y = C \cdot e^{-2t}$ die DGL $y' = -2y$? Es ist $y' = -2C e^{-2t} = -2 \cdot y$. Die Gleichung ist für jedes $C$ erfüllt. Mit $y(0) = 5$ folgt $C = 5$.
+:::
+
+## Richtungsfeld
+
+Eine DGL 1. Ordnung $y' = f(x, y)$ gibt in jedem Punkt der Ebene die Steigung der Lösungskurve an, die durch diesen Punkt geht. Zeichnet man in vielen Punkten kurze Strecken mit dieser Steigung, erhält man das **Richtungsfeld**. Lösungskurven verlaufen überall tangential zu diesen Strecken; durch jeden Punkt geht genau eine Lösung. Das Richtungsfeld zeigt das qualitative Verhalten (Wachstum, Annäherung an eine Grenze, Gleichgewichte), ohne dass man die DGL lösen muss. GeoGebra zeichnet es mit dem Befehl `Richtungsfeld`.
+
+## Trennen der Variablen
+
+Lässt sich die DGL in der Form $y' = g(x) \cdot h(y)$ schreiben, bringt man alle $y$ auf eine Seite und alle $x$ auf die andere und integriert beide Seiten:
+
+$$
+\frac{\mathrm{d}y}{\mathrm{d}x} = g(x) \cdot h(y) \quad\Rightarrow\quad \int \frac{1}{h(y)}\,\mathrm{d}y = \int g(x)\,\mathrm{d}x
+$$
+
+:::tip[Beispiel]
+$y' = x \cdot y$ mit $y(0) = 3$:
+
+$$
+\frac{\mathrm{d}y}{y} = x\,\mathrm{d}x \quad\Rightarrow\quad \ln\lvert y \rvert = \frac{x^2}{2} + C_1 \quad\Rightarrow\quad y = C \cdot e^{\frac{x^2}{2}}
+$$
+
+Dabei ist $C = \pm e^{C_1}$. Aus $y(0) = C = 3$ folgt die Lösung $y = 3\,e^{\frac{x^2}{2}}$.
+:::
+
+Die Integrationskonstante braucht man nur auf einer Seite. Beim Dividieren durch $h(y)$ geht eventuell die konstante Lösung $y = 0$ verloren; sie ist hier in $C = 0$ enthalten.
+
+## Lineare DGL 1. Ordnung
+
+Die in der Technik häufigste Form hat konstante Koeffizienten:
+
+$$
+y' + a \cdot y = b
+$$
+
+### Homogene Gleichung
+
+Für $b = 0$ liefert Trennen der Variablen
+
+$$
+y' + a y = 0 \quad\Rightarrow\quad y_h = C \cdot e^{-a x}
+$$
+
+### Konstantes Störglied
+
+Ist $b \neq 0$ konstant, setzt sich die allgemeine Lösung aus der homogenen Lösung und einer partikulären Lösung $y_p$ zusammen. Eine konstante Funktion $y_p = \frac{b}{a}$ erfüllt die Gleichung (wegen $y_p' = 0$). Also:
+
+$$
+y = y_h + y_p = C \cdot e^{-a x} + \frac{b}{a}
+$$
+
+Für $a > 0$ klingt der Exponentialterm ab und $y$ nähert sich dem **stationären Wert** $\frac{b}{a}$. Dieses Prinzip „allgemeine Lösung = homogene Lösung + eine partikuläre Lösung“ gilt für alle linearen DGL. Bei nicht konstantem Störglied findet man $y_p$ mit einem passenden Ansatz oder durch **Variation der Konstanten** (man ersetzt $C$ durch eine Funktion $C(x)$).
+
+## Wachstums- und Zerfallsmodelle
+
+| Modell | DGL | Lösung | Verhalten |
+| ------ | --- | ------ | --------- |
+| exponentiell | $N' = k \cdot N$ | $N(t) = N_0 \cdot e^{k t}$ | Änderung proportional zum Bestand; $k > 0$ Wachstum, $k < 0$ Zerfall |
+| beschränkt | $N' = k \cdot (S - N)$ | $N(t) = S - (S - N_0) \cdot e^{-k t}$ | Änderung proportional zum Abstand von der Grenze $S$ |
+| logistisch | $N' = r \cdot N \cdot \left(1 - \frac{N}{S}\right)$ | $N(t) = \dfrac{S}{1 + \left(\frac{S}{N_0} - 1\right) e^{-r t}}$ | anfangs exponentiell, dann Sättigung bei $S$ |
+
+Diese Funktionen sind auf der Seite über [Exponentialfunktionen](/de/mathematics/functions/exponential-and-logarithmic-functions/) beschrieben; hier sieht man, woher sie kommen.
+
+:::tip[Beispiel: Logistisches Wachstum einer App]
+Eine App hat 100 Nutzerinnen und Nutzer, der mögliche Markt umfasst $S = 10\,000$, die Wachstumsrate ist $r = 0{,}5$ pro Woche:
+
+$$
+N(t) = \frac{10\,000}{1 + 99 \cdot e^{-0{,}5 t}} \qquad N(10) \approx 5999
+$$
+
+Am schnellsten wächst die Nutzerzahl beim Wendepunkt $N = \frac{S}{2}$, also bei $99 \cdot e^{-0{,}5 t} = 1$, d. h. $t = \frac{\ln 99}{0{,}5} \approx 9{,}2$ Wochen.
+:::
+
+### Newtonsches Abkühlungsgesetz
+
+Ein Körper mit Temperatur $T$ in einer Umgebung mit Temperatur $T_U$ kühlt umso schneller ab, je größer der Temperaturunterschied ist:
+
+$$
+T' = -k \cdot (T - T_U) \quad\Rightarrow\quad T(t) = T_U + (T_0 - T_U) \cdot e^{-k t}
+$$
+
+Das ist beschränktes Wachstum (bzw. Abnahme) mit der Grenze $T_U$.
+
+:::tip[Beispiel: Kaffee]
+Ein Kaffee hat $90\ \text{°C}$, der Raum $20\ \text{°C}$. Nach 10 Minuten hat er $60\ \text{°C}$.
+
+$$
+60 = 20 + 70 \cdot e^{-10k} \quad\Rightarrow\quad k = \frac{\ln\frac{70}{40}}{10} \approx 0{,}0560\ \text{min}^{-1}
+$$
+
+Wann hat er nur mehr $40\ \text{°C}$? $\;40 = 20 + 70 e^{-k t} \Rightarrow t = \frac{\ln 3{,}5}{k} \approx 22{,}4\ \text{min}$.
+:::
+
+### RC- und RL-Kreis
+
+Beim **Laden eines Kondensators** über einen Widerstand gilt nach der Maschenregel $U_0 = R \cdot i + u_C$ mit $i = C \cdot u_C'$:
+
+$$
+R C \cdot u_C' + u_C = U_0 \quad\Rightarrow\quad u_C(t) = U_0 \left(1 - e^{-\frac{t}{\tau}}\right) \qquad \tau = R C
+$$
+
+Beim **Einschalten einer Spule** gilt $U_0 = R \cdot i + L \cdot i'$:
+
+$$
+L \cdot i' + R \cdot i = U_0 \quad\Rightarrow\quad i(t) = \frac{U_0}{R} \left(1 - e^{-\frac{t}{\tau}}\right) \qquad \tau = \frac{L}{R}
+$$
+
+Beide sind lineare DGL 1. Ordnung mit konstantem Störglied. Nach einer Zeitkonstante $\tau$ ist der Endwert zu $1 - e^{-1} \approx 63\,\%$ erreicht, nach $5\tau$ zu über $99\,\%$.
+
+:::tip[Beispiel: RL-Kreis]
+$U_0 = 10\ \text{V}$, $R = 100\ \Omega$, $L = 0{,}5\ \text{H}$: $\;\tau = \frac{0{,}5}{100} = 5\ \text{ms}$, Endstrom $\frac{U_0}{R} = 0{,}1\ \text{A}$. Nach $10\ \text{ms}$:
+
+$$
+i(10\ \text{ms}) = 0{,}1 \cdot \left(1 - e^{-2}\right) \approx 0{,}0865\ \text{A}
+$$
+:::
+
+## Lineare DGL 2. Ordnung
+
+Schwingungen in Mechanik und Elektrotechnik führen auf lineare DGL 2. Ordnung mit konstanten Koeffizienten:
+
+$$
+y'' + a \cdot y' + b \cdot y = 0
+$$
+
+### Charakteristische Gleichung
+
+Der Ansatz $y = e^{\lambda x}$ liefert $e^{\lambda x}(\lambda^2 + a\lambda + b) = 0$. Weil $e^{\lambda x}$ nie null ist, muss $\lambda$ die **charakteristische Gleichung** erfüllen:
+
+$$
+\lambda^2 + a \lambda + b = 0 \qquad \lambda_{1,2} = -\frac{a}{2} \pm \sqrt{\frac{a^2}{4} - b}
+$$
+
+Je nach Diskriminante gibt es drei Fälle:
+
+| Lösungen der charakteristischen Gleichung | allgemeine Lösung |
+| ----------------------------------------- | ----------------- |
+| zwei verschiedene reelle $\lambda_1 \neq \lambda_2$ | $y = C_1 e^{\lambda_1 x} + C_2 e^{\lambda_2 x}$ |
+| eine doppelte reelle $\lambda$ | $y = (C_1 + C_2 x) \cdot e^{\lambda x}$ |
+| [konjugiert komplexe](/de/mathematics/algebra/complex-numbers/) $\lambda = \alpha \pm j\omega$ | $y = e^{\alpha x} \cdot \big(C_1 \cos(\omega x) + C_2 \sin(\omega x)\big)$ |
+
+Die zwei Konstanten werden durch zwei Anfangsbedingungen bestimmt, meist $y(0)$ und $y'(0)$.
+
+:::tip[Beispiele]
+**Zwei reelle Lösungen:** $y'' + 5y' + 6y = 0$, $y(0) = 1$, $y'(0) = 0$. Aus $\lambda^2 + 5\lambda + 6 = 0$ folgt $\lambda_1 = -2$, $\lambda_2 = -3$:
+
+$$
+y = C_1 e^{-2x} + C_2 e^{-3x} \qquad
+\begin{aligned}
+y(0) &= C_1 + C_2 = 1 \\
+y'(0) &= -2C_1 - 3C_2 = 0
+\end{aligned}
+\quad\Rightarrow\quad C_1 = 3,\ C_2 = -2
+$$
+
+Lösung: $y = 3e^{-2x} - 2e^{-3x}$.
+
+**Doppelte Lösung:** $y'' + 4y' + 4y = 0$: $\;(\lambda + 2)^2 = 0$, $\lambda = -2$, $\;y = (C_1 + C_2 x)\,e^{-2x}$.
+
+**Komplexe Lösungen:** $y'' + 2y' + 5y = 0$: $\;\lambda = -1 \pm \sqrt{1 - 5} = -1 \pm 2j$, $\;y = e^{-x}\big(C_1 \cos 2x + C_2 \sin 2x\big)$.
+:::
+
+Ist die Gleichung inhomogen, $y'' + a y' + b y = s(x)$, addiert man zur homogenen Lösung wieder eine partikuläre Lösung. Bei konstantem Störglied $s(x) = c$ ist $y_p = \frac{c}{b}$, bei $s(x) = \sin(\omega x)$ setzt man $y_p = A \sin(\omega x) + B \cos(\omega x)$ an. Stimmt die Anregungsfrequenz mit der Eigenfrequenz eines schwach gedämpften Systems überein, wird die Amplitude sehr groß (**Resonanz**).
+
+## Gedämpfte Schwingungen
+
+Ein Feder-Masse-System mit Masse $m$, Federkonstante $c$ und Dämpfung $d$ (Reibung proportional zur Geschwindigkeit) gehorcht
+
+$$
+m \ddot{x} + d \dot{x} + c x = 0 \quad\Leftrightarrow\quad \ddot{x} + 2\delta \dot{x} + \omega_0^2 x = 0 \qquad \delta = \frac{d}{2m},\ \omega_0 = \sqrt{\frac{c}{m}}
+$$
+
+Dabei ist $\omega_0$ die **Kreisfrequenz** der ungedämpften Schwingung und $\delta$ die **Abklingkonstante**. Die drei Fälle der charakteristischen Gleichung $\lambda = -\delta \pm \sqrt{\delta^2 - \omega_0^2}$ haben eine anschauliche Bedeutung:
+
+| Fall | Bedingung | Verhalten |
+| ---- | --------- | --------- |
+| schwache Dämpfung (Schwingfall) | $\delta < \omega_0$ | gedämpfte Schwingung $x(t) = A\,e^{-\delta t} \cos(\omega_d t + \varphi)$ mit $\omega_d = \sqrt{\omega_0^2 - \delta^2}$ |
+| aperiodischer Grenzfall | $\delta = \omega_0$ | schnellste Rückkehr in die Ruhelage ohne Überschwingen |
+| starke Dämpfung (Kriechfall) | $\delta > \omega_0$ | langsames Kriechen in die Ruhelage, keine Schwingung |
+| ungedämpft | $\delta = 0$ | harmonische Schwingung $x(t) = A \cos(\omega_0 t + \varphi)$ |
+
+Stoßdämpfer und Zeigermessinstrumente werden nahe am aperiodischen Grenzfall ausgelegt.
+
+### Elektrischer Schwingkreis
+
+Im **RLC-Reihenschwingkreis** gilt für die Ladung $q$ des Kondensators nach der Maschenregel $L \ddot{q} + R \dot{q} + \frac{1}{C} q = 0$. Das ist dieselbe Gleichung mit
+
+$$
+\delta = \frac{R}{2L} \qquad \omega_0 = \frac{1}{\sqrt{LC}}
+$$
+
+Die Induktivität entspricht der Masse, der Widerstand der Dämpfung und $\frac{1}{C}$ der Federkonstante.
+
+:::tip[Beispiel]
+$L = 10\ \text{mH}$, $C = 1\ \mu\text{F}$, $R = 20\ \Omega$:
+
+$$
+\omega_0 = \frac{1}{\sqrt{0{,}01 \cdot 10^{-6}}} = 10\,000\ \text{s}^{-1} \qquad \delta = \frac{20}{2 \cdot 0{,}01} = 1000\ \text{s}^{-1}
+$$
+
+Wegen $\delta < \omega_0$ schwingt der Kreis gedämpft mit $\omega_d = \sqrt{10^8 - 10^6} \approx 9950\ \text{s}^{-1}$, also etwa $f = \frac{\omega_d}{2\pi} \approx 1{,}58\ \text{kHz}$. Die Amplitude sinkt mit $e^{-1000 t}$; nach $1\ \text{ms}$ ist sie auf $e^{-1} \approx 37\,\%$ abgefallen.
+:::
+
+## Euler-Verfahren
+
+Viele DGL lassen sich nicht geschlossen lösen. Dann berechnet man die Lösung [numerisch](/de/mathematics/analysis/numerical-methods/). Das einfachste Verfahren ist das **Euler-Verfahren** (Polygonzugverfahren): Man geht von einem bekannten Punkt mit der Steigung aus dem Richtungsfeld einen kleinen Schritt $h$ weiter:
+
+$$
+x_{n+1} = x_n + h \qquad y_{n+1} = y_n + h \cdot f(x_n, y_n)
+$$
+
+:::tip[Beispiel]
+$y' = y$, $y(0) = 1$, exakte Lösung $y = e^x$. Mit $h = 0{,}1$ ist jeder Schritt $y_{n+1} = y_n + 0{,}1\,y_n = 1{,}1\,y_n$:
+
+| $x$ | $0$ | $0{,}1$ | $0{,}2$ | $0{,}3$ | … | $1$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| $y$ (Euler) | $1$ | $1{,}1$ | $1{,}21$ | $1{,}331$ | … | $1{,}1^{10} \approx 2{,}5937$ |
+| $e^x$ | $1$ | $1{,}1052$ | $1{,}2214$ | $1{,}3499$ | … | $2{,}7183$ |
+
+Der Fehler bei $x = 1$ beträgt etwa $4{,}6\,\%$. Mit $h = 0{,}01$ erhält man $1{,}01^{100} \approx 2{,}7048$ (Fehler $0{,}5\,\%$).
+:::
+
+Der Fehler ist ungefähr proportional zur Schrittweite $h$ (Verfahren 1. Ordnung). Genauere Verfahren wie das **Runge-Kutta-Verfahren** 4. Ordnung werten die Steigung mehrmals pro Schritt aus; sie stecken in Simulationsprogrammen und physikalischen Spiel-Engines. DGL 2. Ordnung schreibt man dafür als System zweier DGL 1. Ordnung (Ort und Geschwindigkeit).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// Euler-Verfahren für y' = f(x, y) von x0 bis xEnd
+static double Euler(Func<double, double, double> f, double x0, double y0, double xEnd, double h)
+{
+    int steps = (int)Math.Round((xEnd - x0) / h);
+    double x = x0, y = y0;
+    for (int i = 0; i < steps; i++)
+    {
+        y += h * f(x, y);
+        x += h;
+    }
+    return y;
+}
+
+var inv = CultureInfo.InvariantCulture;
+foreach (double h in new[] { 0.1, 0.01, 0.001 })
+{
+    double y = Euler((_, v) => v, 0, 1, 1, h);
+    Console.WriteLine(string.Create(inv, $"h = {h}: y(1) ≈ {y:F6}, Fehler {Math.E - y:F6}"));
+}
+// h = 0.1: y(1) ≈ 2.593742, Fehler 0.124539
+// h = 0.01: y(1) ≈ 2.704814, Fehler 0.013468
+// h = 0.001: y(1) ≈ 2.716924, Fehler 0.001358
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Euler-Verfahren für y' = f(x, y) von x0 bis x_end
+fn euler(f: impl Fn(f64, f64) -> f64, x0: f64, y0: f64, x_end: f64, h: f64) -> f64 {
+    let steps = ((x_end - x0) / h).round() as usize;
+    let (mut x, mut y) = (x0, y0);
+    for _ in 0..steps {
+        y += h * f(x, y);
+        x += h;
+    }
+    y
+}
+
+fn main() {
+    for h in [0.1, 0.01, 0.001] {
+        let y = euler(|_x, v| v, 0.0, 1.0, 1.0, h);
+        println!("h = {h}: y(1) ≈ {y:.6}, Fehler {:.6}", std::f64::consts::E - y);
+    }
+    // h = 0.1: y(1) ≈ 2.593742, Fehler 0.124539
+    // h = 0.01: y(1) ≈ 2.704814, Fehler 0.013468
+    // h = 0.001: y(1) ≈ 2.716924, Fehler 0.001358
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Weiterführende Quellen
+
+- [Lothar Papula: Mathematik für Ingenieure und Naturwissenschaftler, Band 2 (Springer Vieweg)](https://link.springer.com/book/10.1007/978-3-658-07790-7)
+- [MIT OpenCourseWare 18.03: Differential Equations](https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/)

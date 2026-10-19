@@ -143,7 +143,7 @@ $$
 :::
 
 :::note
-In Austria, **capital gains tax** (Kapitalertragsteuer, KESt) of currently 25 % is withheld from interest income. The effective interest rate is therefore lower than the agreed rate.
+In Austria, **capital gains tax** of currently 25 % is withheld from interest income. The effective interest rate is therefore lower than the agreed rate.
 :::
 
 ### Interest compounded several times a year

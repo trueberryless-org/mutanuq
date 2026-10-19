@@ -1,0 +1,191 @@
+---
+title: Mechanik der Flüssigkeiten und Gase
+description: Druck, hydrostatischer Druck und Luftdruck, Prinzip von Pascal und Hydraulik, Auftrieb nach Archimedes, Kontinuitätsgleichung, Bernoulli-Gleichung, Viskosität und Strömungswiderstand.
+sidebar:
+  order: 8
+---
+
+Flüssigkeiten und Gase heißen gemeinsam **Fluide**: Sie haben keine feste Form und nehmen die Form ihres Gefäßes an. Flüssigkeiten sind nahezu inkompressibel, Gase lassen sich leicht zusammendrücken. Die **Hydrostatik** behandelt ruhende Fluide, die **Hydrodynamik** (bzw. Aerodynamik) strömende.
+
+## Druck
+
+Der **Druck** ist die Kraft, die senkrecht auf eine Fläche wirkt, bezogen auf die Fläche:
+
+$$
+p = \frac{F}{A}, \qquad [p] = \mathrm{N/m^2} = \mathrm{Pa} \;(\text{Pascal})
+$$
+
+| Einheit | Umrechnung |
+| --- | --- |
+| Bar | $1\,\mathrm{bar} = 10^5\,\mathrm{Pa} = 1000\,\mathrm{hPa}$ |
+| Hektopascal (Wetterbericht) | $1\,\mathrm{hPa} = 100\,\mathrm{Pa} = 1\,\mathrm{mbar}$ |
+| physikalische Atmosphäre (Normdruck) | $1\,\mathrm{atm} = 101\,325\,\mathrm{Pa}$ |
+| Millimeter Quecksilbersäule (Blutdruck) | $1\,\mathrm{mmHg} = 133{,}3\,\mathrm{Pa}$ |
+
+In einem ruhenden Fluid wirkt der Druck in alle Richtungen gleich und immer senkrecht auf Begrenzungsflächen. Man unterscheidet den **absoluten Druck** (gegenüber Vakuum) und den **Überdruck** (gegenüber der Umgebung). Reifendruckmesser zeigen den Überdruck an.
+
+Warum ein Messer schneidet und ein Schneeschuh trägt: Bei gleicher Kraft erzeugt eine kleine Fläche einen großen Druck und eine große Fläche einen kleinen.
+
+## Hydrostatischer Druck
+
+Das Gewicht der darüberliegenden Flüssigkeitssäule erzeugt in der Tiefe $h$ den **hydrostatischen Druck** (Schweredruck):
+
+$$
+p = \rho \cdot g \cdot h
+$$
+
+Er hängt nur von Dichte und Tiefe ab, nicht von der Form oder Größe des Gefäßes (**hydrostatisches Paradoxon**). Deshalb steht Wasser in **verbundenen Gefäßen** überall gleich hoch, was Schlauchwaagen, Wassertürme und Kanalschleusen nutzen.
+
+:::tip[Beispiel: Tauchen]
+In $10\,\mathrm{m}$ Wassertiefe: $p = 1000 \cdot 9{,}81 \cdot 10 = 98\,100\,\mathrm{Pa} \approx 1\,\mathrm{bar}$. Zusammen mit dem Luftdruck herrscht dort ein absoluter Druck von etwa $2\,\mathrm{bar}$. Pro $10\,\mathrm{m}$ Tiefe kommt rund ein Bar dazu. Eine Staumauer muss deshalb unten viel dicker sein als oben.
+:::
+
+### Luftdruck
+
+Auch die Luft hat ein Gewicht. Der mittlere Luftdruck auf Meereshöhe beträgt $1013{,}25\,\mathrm{hPa}$. Weil Luft kompressibel ist, nimmt ihre Dichte mit der Höhe ab, und der Druck sinkt nicht linear, sondern näherungsweise exponentiell (**barometrische Höhenformel** für konstante Temperatur):
+
+$$
+p(h) = p_0 \cdot e^{-h/H}, \qquad H = \frac{R T}{M g} \approx 8{,}4\,\mathrm{km} \;(\text{bei } 15\,^\circ\mathrm{C})
+$$
+
+Am Gipfel des Großglockners ($3798\,\mathrm{m}$) ergibt das etwa $650\,\mathrm{hPa}$. Nahe dem Boden sinkt der Druck um etwa $1\,\mathrm{hPa}$ pro $8\,\mathrm{m}$ Höhe. Torricelli zeigte 1643, dass der Luftdruck eine Quecksilbersäule von $760\,\mathrm{mm}$ trägt; eine Wassersäule wäre rund $10\,\mathrm{m}$ hoch. Darum kann eine Saugpumpe Wasser höchstens etwa $10\,\mathrm{m}$ hoch saugen.
+
+## Prinzip von Pascal und Hydraulik
+
+> Ein Druck, der auf eine eingeschlossene Flüssigkeit ausgeübt wird, breitet sich unverändert in alle Richtungen aus.
+
+In einer **hydraulischen Presse** sind zwei Kolben verschiedener Fläche durch Öl verbunden. Der Druck ist überall gleich, also
+
+$$
+\frac{F_1}{A_1} = \frac{F_2}{A_2} \quad\Rightarrow\quad F_2 = F_1 \cdot \frac{A_2}{A_1}
+$$
+
+:::tip[Beispiel: Wagenheber]
+Kolbenflächen $A_1 = 2\,\mathrm{cm^2}$ und $A_2 = 200\,\mathrm{cm^2}$, Handkraft $F_1 = 100\,\mathrm{N}$. Der Druck ist $p = 100/(2 \cdot 10^{-4}) = 5 \cdot 10^5\,\mathrm{Pa} = 5\,\mathrm{bar}$, die Kraft am großen Kolben $F_2 = 100 \cdot 100 = 10\,\mathrm{kN}$, genug für eine Tonne. Dafür muss der kleine Kolben einen 100-mal so langen Weg zurücklegen; die Arbeit $F_1 s_1 = F_2 s_2$ bleibt gleich.
+:::
+
+Anwendungen: Bremsanlagen, Bagger, Hebebühnen, Pressen.
+
+## Auftrieb
+
+Ein Körper in einem Fluid erfährt eine nach oben gerichtete **Auftriebskraft**, weil der Druck an seiner Unterseite größer ist als an seiner Oberseite. Das **Prinzip des Archimedes** lautet:
+
+> Die Auftriebskraft ist gleich der Gewichtskraft des verdrängten Fluids.
+
+$$
+F_\mathrm{A} = \rho_\mathrm{Fl} \cdot g \cdot V_\mathrm{verdrängt}
+$$
+
+| Vergleich | Verhalten |
+| --- | --- |
+| $\rho_\mathrm{Körper} > \rho_\mathrm{Fl}$ | sinkt |
+| $\rho_\mathrm{Körper} = \rho_\mathrm{Fl}$ | schwebt (U-Boot, Fisch mit Schwimmblase) |
+| $\rho_\mathrm{Körper} < \rho_\mathrm{Fl}$ | steigt und schwimmt, bis $F_\mathrm{A} = F_\mathrm{G}$ |
+
+Ein schwimmender Körper taucht so weit ein, dass der eingetauchte Volumenanteil $\rho_\mathrm{Körper}/\rho_\mathrm{Fl}$ beträgt.
+
+:::tip[Beispiele]
+- **Eisberg**: Eis ($917\,\mathrm{kg/m^3}$) in Meerwasser ($1025\,\mathrm{kg/m^3}$) taucht zu $917/1025 = 89{,}5\,\%$ ein, nur gut ein Zehntel ragt heraus.
+- **Aluminiumblock** ($1\,\mathrm{dm^3}$, $\rho = 2700\,\mathrm{kg/m^3}$) in Wasser: Gewichtskraft $26{,}5\,\mathrm{N}$, Auftrieb $1000 \cdot 9{,}81 \cdot 0{,}001 = 9{,}81\,\mathrm{N}$, ein Kraftmesser zeigt $16{,}7\,\mathrm{N}$.
+- Ein Stahlschiff schwimmt, weil sein Rumpf mit Luft viel Wasser verdrängt; seine mittlere Dichte ist kleiner als die von Wasser.
+:::
+
+Auch in Luft gibt es Auftrieb: Heißluftballone steigen, weil warme Luft eine geringere Dichte hat als die Umgebung.
+
+## Strömungen
+
+### Kontinuitätsgleichung
+
+In einer stationären Strömung durch ein Rohr kann sich keine Flüssigkeit ansammeln. Der **Volumenstrom** $Q = \dot V$ ist überall gleich:
+
+$$
+Q = A_1 v_1 = A_2 v_2, \qquad [Q] = \mathrm{m^3/s}
+$$
+
+Wo das Rohr enger ist, fließt das Fluid schneller. Das kennt man vom Gartenschlauch, den man mit dem Daumen verengt.
+
+:::tip[Beispiel]
+Wasser fließt mit $v_1 = 2\,\mathrm{m/s}$ durch ein Rohr mit $d_1 = 4\,\mathrm{cm}$, das sich auf $d_2 = 2\,\mathrm{cm}$ verengt. Die Fläche wird ein Viertel, also $v_2 = 4 \cdot 2 = 8\,\mathrm{m/s}$. Der Volumenstrom ist $Q = \pi \cdot 0{,}02^2 \cdot 2 = 2{,}51 \cdot 10^{-3}\,\mathrm{m^3/s} = 2{,}51\,\mathrm{L/s}$.
+:::
+
+### Bernoulli-Gleichung
+
+Für eine reibungsfreie, inkompressible, stationäre Strömung entlang einer Stromlinie gilt die **Bernoulli-Gleichung**. Sie ist der Energieerhaltungssatz pro Volumen:
+
+$$
+p + \frac{1}{2} \rho v^2 + \rho g h = \text{konstant}
+$$
+
+$p$ ist der statische Druck, $\frac{1}{2}\rho v^2$ der **Staudruck** (dynamischer Druck), $\rho g h$ der Schweredruck. Wichtigste Folgerung: **Wo die Strömung schneller ist, ist der statische Druck kleiner.**
+
+:::tip[Beispiel: Venturi-Rohr]
+Im Rohr von oben (waagrecht) sinkt der Druck in der Engstelle um
+
+$$
+\Delta p = \frac{1}{2} \rho (v_2^2 - v_1^2) = \frac{1}{2} \cdot 1000 \cdot (64 - 4) = 30\,\mathrm{kPa}
+$$
+
+Aus dem gemessenen Druckunterschied lässt sich umgekehrt die Strömungsgeschwindigkeit bestimmen (Venturi-Durchflussmesser). Auch Zerstäuber, Wasserstrahlpumpe und Vergaser nutzen den Unterdruck in schneller Strömung.
+:::
+
+**Ausflussgesetz von Torricelli**: Aus einer Öffnung in der Tiefe $h$ unter dem Wasserspiegel fließt Wasser mit $v = \sqrt{2 g h}$ aus, so schnell wie ein aus der Höhe $h$ frei fallender Körper. Bei $h = 5\,\mathrm{m}$ sind das $9{,}9\,\mathrm{m/s}$.
+
+Der **Auftrieb an Tragflächen** entsteht, weil das Profil die Luft nach unten umlenkt (Impulsänderung, drittes newtonsches Axiom) und dabei oben eine schnellere Strömung mit Unterdruck entsteht. Beide Beschreibungen gehören zusammen. Die verbreitete Erklärung, die Luft oben müsse wegen des längeren Wegs gleichzeitig hinten ankommen, ist falsch.
+
+## Viskosität und Strömungswiderstand
+
+Reale Fluide haben innere Reibung, die **Viskosität** (Zähigkeit). Die dynamische Viskosität $\eta$ in $\mathrm{Pa\,s}$ beträgt für Wasser bei $20\,^\circ\mathrm{C}$ etwa $1{,}0 \cdot 10^{-3}\,\mathrm{Pa\,s}$, für Luft $1{,}8 \cdot 10^{-5}\,\mathrm{Pa\,s}$, für Honig rund $10\,\mathrm{Pa\,s}$. Flüssigkeiten werden beim Erwärmen dünnflüssiger, Gase dagegen zäher.
+
+### Laminare und turbulente Strömung
+
+| | laminar | turbulent |
+| --- | --- | --- |
+| Bild | Schichten gleiten geordnet aneinander vorbei | Wirbel, Durchmischung |
+| tritt auf bei | kleiner Geschwindigkeit, hoher Viskosität | großer Geschwindigkeit, großem Rohr |
+| Widerstand | proportional zu $v$ | etwa proportional zu $v^2$ |
+
+Welche Strömungsform auftritt, entscheidet die dimensionslose **Reynolds-Zahl**:
+
+$$
+Re = \frac{\rho v d}{\eta}
+$$
+
+In Rohren ist die Strömung unterhalb von $Re \approx 2300$ laminar. Wasser mit $1\,\mathrm{m/s}$ in einem $2\,\mathrm{cm}$-Rohr hat $Re = \frac{1000 \cdot 1 \cdot 0{,}02}{0{,}001} = 20\,000$ und strömt turbulent.
+
+Für laminare Rohrströmung gilt das **Gesetz von Hagen-Poiseuille**:
+
+$$
+Q = \frac{\pi r^4 \Delta p}{8 \eta l}
+$$
+
+Wegen $r^4$ sinkt der Durchfluss bei halbem Radius nicht auf die Hälfte, sondern auf ein Sechzehntel. Das erklärt, warum schon leichte Gefäßverengungen den Blutfluss stark verringern.
+
+Eine kleine Kugel, die langsam durch ein zähes Fluid sinkt, erfährt die **Stokes-Reibung** $F = 6\pi\eta r v$.
+
+### Luftwiderstand
+
+Bei turbulenter Umströmung (Autos, Radfahrer, Fallschirm) gilt
+
+$$
+F_\mathrm{W} = \frac{1}{2} c_\mathrm{w} \rho A v^2
+$$
+
+mit dem **Widerstandsbeiwert** $c_\mathrm{w}$ (Form), der Stirnfläche $A$ und der Luftdichte $\rho \approx 1{,}2\,\mathrm{kg/m^3}$.
+
+:::tip[Beispiel: Auto auf der Autobahn]
+$c_\mathrm{w} = 0{,}30$, $A = 2{,}2\,\mathrm{m^2}$, $v = 130\,\mathrm{km/h} = 36{,}1\,\mathrm{m/s}$, $\rho = 1{,}225\,\mathrm{kg/m^3}$:
+
+$$
+F_\mathrm{W} = \frac{1}{2} \cdot 0{,}30 \cdot 1{,}225 \cdot 2{,}2 \cdot 36{,}1^2 = 527\,\mathrm{N}, \qquad P = F_\mathrm{W} v = 19\,\mathrm{kW}
+$$
+
+Bei $160\,\mathrm{km/h}$ wären es wegen $P \sim v^3$ bereits rund $35\,\mathrm{kW}$.
+:::
+
+Beim freien Fall mit Luftwiderstand stellt sich eine **Endgeschwindigkeit** ein, wenn $F_\mathrm{W} = m g$ ist; für einen Fallschirmspringer ohne Schirm sind das rund $200\,\mathrm{km/h}$.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Mechanik der Flüssigkeiten und Gase, leifiphysik.de
+- NASA Glenn Research Center: _Beginner's Guide to Aeronautics_ (Auftrieb und Bernoulli), grc.nasa.gov

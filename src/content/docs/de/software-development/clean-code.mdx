@@ -1,0 +1,400 @@
+---
+title: Clean Code und SOLID
+description: Lesbarer Code durch gute Namen und kleine Funktionen, die Prinzipien DRY, KISS und YAGNI, die SOLID-Prinzipien mit Beispielen in C# und Rust, Code Smells und Refactoring.
+sidebar:
+  order: 19
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Code wird viel öfter gelesen als geschrieben. Die meiste Zeit verbringen Entwicklerinnen und Entwickler damit, bestehenden Code zu verstehen, bevor sie ihn ändern. **Clean Code**, ein Begriff aus dem gleichnamigen Buch von Robert C. Martin (2008), bezeichnet Code, der leicht zu lesen, zu verstehen und zu ändern ist. Martin Fowler formulierte es so: _„Any fool can write code that a computer can understand. Good programmers write code that humans can understand.“_
+
+## Namen
+
+Gute Namen sind die wirksamste Dokumentation.
+
+- **Aussagekräftig**: `elapsedDays` statt `d`, `IsEligibleForDiscount()` statt `Check()`.
+- **Aussprechbar und suchbar**: `customerCount` statt `cstCnt`. Einbuchstabige Namen nur für sehr kurze Schleifenvariablen.
+- **Keine Kodierungen**: keine Typpräfixe wie `strName` oder `iCount`.
+- **Klassen** und Variablen sind Substantive (`Invoice`, `OrderRepository`), **Methoden** sind Verben (`SendInvoice`, `calculate_total`).
+- **Einheitlich**: Wer einmal `Fetch` verwendet, sagt nicht an anderer Stelle `Get` und `Retrieve` für dasselbe.
+- Die [Namenskonventionen](/de/software-development/programming-basics/#namenskonventionen) der Sprache einhalten.
+
+## Funktionen
+
+- **Klein** und auf **eine Aufgabe** beschränkt. Lässt sich eine Funktion sinnvoll in mehrere aufteilen, tut sie zu viel.
+- **Eine Abstraktionsebene**: Eine Funktion, die den Ablauf einer Bestellung beschreibt, sollte nicht gleichzeitig Bytes in einen Puffer schreiben.
+- **Wenige Parameter**: Ab drei bis vier Parametern fasst man sie besser in einem Objekt zusammen.
+- **Keine Flag-Parameter**: `Render(true)` sagt nichts. Zwei Funktionen `RenderForPrint()` und `RenderForScreen()` sind klarer.
+- **Keine versteckten Seiteneffekte**: Eine Funktion `CheckPassword` darf nicht nebenbei die Sitzung starten.
+- **Command-Query-Separation**: Eine Funktion ändert entweder etwas (Befehl) oder liefert etwas (Abfrage), aber nicht beides.
+- **Früh zurückkehren** (_Guard Clauses_) statt tief verschachtelter `if`-Blöcke.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// vorher: verschachtelt und schwer zu lesen
+static decimal Discount1(Customer? c, decimal total)
+{
+    if (c != null)
+    {
+        if (c.IsActive)
+        {
+            if (total > 100)
+            {
+                return total * 0.1m;
+            }
+        }
+    }
+    return 0;
+}
+
+// nachher: Guard Clauses und ein sprechender Name für die Konstante
+const decimal MinimumOrderForDiscount = 100;
+const decimal DiscountRate = 0.1m;
+
+static decimal Discount2(Customer? customer, decimal total)
+{
+    if (customer is null || !customer.IsActive) return 0;
+    if (total <= MinimumOrderForDiscount) return 0;
+    return total * DiscountRate;
+}
+
+Console.WriteLine(Discount1(new Customer(true), 150) == Discount2(new Customer(true), 150)); // True
+
+record Customer(bool IsActive);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Customer {
+    is_active: bool,
+}
+
+const MINIMUM_ORDER_FOR_DISCOUNT: f64 = 100.0;
+const DISCOUNT_RATE: f64 = 0.1;
+
+// Guard Clauses statt verschachtelter if-Blöcke
+fn discount(customer: Option<&Customer>, total: f64) -> f64 {
+    let Some(customer) = customer else { return 0.0 };
+    if !customer.is_active || total <= MINIMUM_ORDER_FOR_DISCOUNT {
+        return 0.0;
+    }
+    total * DISCOUNT_RATE
+}
+
+fn main() {
+    println!("{}", discount(Some(&Customer { is_active: true }), 150.0)); // 15
+    println!("{}", discount(None, 150.0));                               // 0
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Kommentare
+
+Ein Kommentar ist oft ein Zeichen dafür, dass der Code sich nicht selbst erklärt. Bevor man kommentiert, sollte man versuchen, den Code durch bessere Namen oder eine ausgelagerte Funktion verständlicher zu machen.
+
+- **Gut**: erklären, **warum** etwas so gelöst wurde, auf rechtliche Vorgaben oder Fehler in Bibliotheken hinweisen, öffentliche Schnittstellen dokumentieren (`///`), `TODO` mit Begründung.
+- **Schlecht**: wiederholen, was der Code ohnehin sagt (`i++; // i erhöhen`), veraltete Kommentare, auskommentierter Code (dafür gibt es die [Versionsverwaltung](/de/software-development/version-control/)).
+
+## Grundprinzipien
+
+| Prinzip  | Bedeutung                                                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **DRY**  | _Don't Repeat Yourself_: Jedes Wissen hat genau eine Stelle im System. Kopierter Code muss bei jeder Änderung an allen Stellen angepasst werden. |
+| **KISS** | _Keep It Simple, Stupid_: Die einfachste Lösung, die funktioniert, ist meist die beste.                                         |
+| **YAGNI** | _You Aren't Gonna Need It_: Nichts auf Vorrat bauen, was heute nicht gebraucht wird.                                            |
+| **SoC**  | _Separation of Concerns_: Unterschiedliche Belange (Oberfläche, Logik, Datenzugriff) werden getrennt.                             |
+| **Law of Demeter** | „Sprich nur mit deinen direkten Freunden“: `order.Customer.Address.City` koppelt an drei Klassen; besser `order.ShippingCity`. |
+| **Boy Scout Rule** | Den Code etwas sauberer hinterlassen, als man ihn vorgefunden hat.                                                     |
+| **Komposition statt Vererbung** | siehe [Objektorientierte Programmierung](/de/software-development/object-oriented-programming/#komposition-statt-vererbung) |
+
+## SOLID-Prinzipien
+
+Die fünf **SOLID**-Prinzipien wurden von Robert C. Martin zusammengestellt (das Akronym prägte Michael Feathers). Sie helfen, objektorientierten Code mit **geringer Kopplung und hoher Kohäsion** zu entwerfen (siehe [Softwaremetriken](/de/software-development/software-metrics/#koppelung)).
+
+### Single Responsibility Principle
+
+> „A class should have only one reason to change.“ (Robert C. Martin)
+
+Jedes Modul (Klasse, Methode, Service) hat genau **eine Verantwortung**. Liest eine Klasse eine Datei ein, berechnet Statistiken und schreibt sie in die Datenbank, gibt es drei Gründe für Änderungen. Man teilt sie in drei Klassen auf. Das SRP beschreibt die **Kohäsion**.
+
+### Open/Closed Principle
+
+Eine Klasse soll **offen für Erweiterungen**, aber **geschlossen für Änderungen** sein (Bertrand Meyer, 1988). Neue Funktionalität entsteht durch neue Klassen, nicht durch das Ändern bestehender, bereits getesteter Klassen. Ein Zeichen für eine Verletzung ist ein `switch` über einen Typ, der bei jeder neuen Variante erweitert werden muss.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Neue Formen erfordern keine Änderung an TotalArea.
+IShape[] shapes = [new Circle(1), new Rectangle(2, 3)];
+Console.WriteLine($"{TotalArea(shapes):F2}"); // 9.14
+
+static double TotalArea(IEnumerable<IShape> shapes) => shapes.Sum(s => s.Area());
+
+public interface IShape
+{
+    double Area();
+}
+
+public record Circle(double Radius) : IShape
+{
+    public double Area() => Math.PI * Radius * Radius;
+}
+
+public record Rectangle(double Width, double Height) : IShape
+{
+    public double Area() => Width * Height;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Neue Formen erfordern keine Änderung an total_area.
+trait Shape {
+    fn area(&self) -> f64;
+}
+
+struct Circle { radius: f64 }
+struct Rectangle { width: f64, height: f64 }
+
+impl Shape for Circle {
+    fn area(&self) -> f64 { std::f64::consts::PI * self.radius * self.radius }
+}
+
+impl Shape for Rectangle {
+    fn area(&self) -> f64 { self.width * self.height }
+}
+
+fn total_area(shapes: &[Box<dyn Shape>]) -> f64 {
+    shapes.iter().map(|s| s.area()).sum()
+}
+
+fn main() {
+    let shapes: Vec<Box<dyn Shape>> = vec![
+        Box::new(Circle { radius: 1.0 }),
+        Box::new(Rectangle { width: 2.0, height: 3.0 }),
+    ];
+    println!("{:.2}", total_area(&shapes)); // 9.14
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Liskov Substitution Principle
+
+Objekte einer Unterklasse müssen sich überall dort verwenden lassen, wo die Basisklasse erwartet wird, **ohne dass sich das Programm falsch verhält** (Barbara Liskov, 1987). Daraus folgen Regeln für Unterklassen:
+
+- **Parameter** dürfen gleich oder allgemeiner sein (Kontravarianz), **Rückgabewerte** gleich oder spezieller (Kovarianz). Statisch typisierte Sprachen prüfen das größtenteils selbst.
+- Eine Unterklasse darf keine **Exceptions** werfen, mit denen der Aufrufer der Basisklasse nicht rechnet.
+- **Vorbedingungen** dürfen nicht verschärft, **Nachbedingungen** nicht abgeschwächt werden.
+
+Das klassische Gegenbeispiel ist ein `Square`, das von `Rectangle` erbt: Setzt man die Breite eines Quadrats, ändert sich auch die Höhe. Ein Aufrufer, der mit einem `Rectangle` rechnet und Breite 2 und Höhe 3 setzt, erwartet die Fläche 6 und bekommt 9. Mathematisch ist ein Quadrat ein Rechteck, als veränderbares Objekt verhält es sich aber anders.
+
+### Interface Segregation Principle
+
+Keine Klasse soll von Methoden abhängen, die sie nicht verwendet. Statt eines großen Interfaces mit vielen Methoden definiert man mehrere kleine, zusammenhängende Interfaces. Ein Zeichen für eine Verletzung sind Implementierungen, die einen Teil der Methoden nur mit `throw new NotImplementedException()` „erfüllen“.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// statt IMachine { Print(); Scan(); Fax(); }
+IPrinter printer = new SimplePrinter();
+printer.Print("Bericht");
+
+var office = new OfficeMachine();
+office.Print("Vertrag");
+office.Scan();
+
+public interface IPrinter { void Print(string document); }
+public interface IScanner { void Scan(); }
+
+public class SimplePrinter : IPrinter
+{
+    public void Print(string document) => Console.WriteLine($"Drucke {document}");
+}
+
+public class OfficeMachine : IPrinter, IScanner
+{
+    public void Print(string document) => Console.WriteLine($"Drucke {document}");
+    public void Scan() => Console.WriteLine("Scanne");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// statt eines Traits Machine mit print, scan und fax
+trait Printer {
+    fn print(&self, document: &str);
+}
+
+trait Scanner {
+    fn scan(&self);
+}
+
+struct SimplePrinter;
+struct OfficeMachine;
+
+impl Printer for SimplePrinter {
+    fn print(&self, document: &str) { println!("Drucke {document}"); }
+}
+
+impl Printer for OfficeMachine {
+    fn print(&self, document: &str) { println!("Drucke {document}"); }
+}
+
+impl Scanner for OfficeMachine {
+    fn scan(&self) { println!("Scanne"); }
+}
+
+fn main() {
+    SimplePrinter.print("Bericht");
+    OfficeMachine.print("Vertrag");
+    OfficeMachine.scan();
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Dependency Inversion Principle
+
+1. Module höherer Ebenen (Geschäftslogik) sollen nicht von Modulen niedrigerer Ebenen (Datenbankzugriff, Dateisystem) abhängen. Beide sollen von **Abstraktionen** abhängen.
+2. Abstraktionen sollen nicht von Details abhängen, sondern Details von Abstraktionen.
+
+Ein `OrderService` verwendet also nicht direkt ein `SqlOrderRepository`, sondern kennt nur das Interface `IOrderRepository`. Die konkrete Implementierung wird von außen übergeben (**Dependency Injection**) und kann ausgetauscht werden, etwa gegen eine Variante im Arbeitsspeicher für [Tests](/de/software-development/testing/#test-doubles).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var service = new OrderService(new InMemoryOrderRepository());
+service.PlaceOrder("Tastatur");
+service.PlaceOrder("Maus");
+Console.WriteLine(service.Count()); // 2
+
+public interface IOrderRepository
+{
+    void Save(string item);
+    int Count();
+}
+
+// Detail: hängt von der Abstraktion ab
+public class InMemoryOrderRepository : IOrderRepository
+{
+    private readonly List<string> _items = [];
+    public void Save(string item) => _items.Add(item);
+    public int Count() => _items.Count;
+}
+
+// Geschäftslogik: kennt nur das Interface (Constructor Injection)
+public class OrderService(IOrderRepository repository)
+{
+    public void PlaceOrder(string item)
+    {
+        if (string.IsNullOrWhiteSpace(item)) throw new ArgumentException("Artikel fehlt");
+        repository.Save(item);
+    }
+
+    public int Count() => repository.Count();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait OrderRepository {
+    fn save(&mut self, item: &str);
+    fn count(&self) -> usize;
+}
+
+// Detail: hängt von der Abstraktion ab
+#[derive(Default)]
+struct InMemoryOrderRepository {
+    items: Vec<String>,
+}
+
+impl OrderRepository for InMemoryOrderRepository {
+    fn save(&mut self, item: &str) { self.items.push(item.to_string()); }
+    fn count(&self) -> usize { self.items.len() }
+}
+
+// Geschäftslogik: generisch über die Abstraktion
+struct OrderService<R: OrderRepository> {
+    repository: R,
+}
+
+impl<R: OrderRepository> OrderService<R> {
+    fn place_order(&mut self, item: &str) -> Result<(), String> {
+        if item.trim().is_empty() {
+            return Err("Artikel fehlt".into());
+        }
+        self.repository.save(item);
+        Ok(())
+    }
+}
+
+fn main() {
+    let mut service = OrderService { repository: InMemoryOrderRepository::default() };
+    service.place_order("Tastatur").unwrap();
+    service.place_order("Maus").unwrap();
+    println!("{}", service.repository.count()); // 2
+}
+```
+
+</TabItem>
+</Tabs>
+
+Wie ein **DI-Container** die Abhängigkeiten automatisch erzeugt und verwaltet, beschreibt die Seite [Softwarearchitektur](/de/software-development/software-architecture/#dependency-injection).
+
+## Code Smells
+
+Ein **Code Smell** („übler Geruch“) ist ein Hinweis auf ein tieferliegendes Problem im Entwurf. Der Begriff stammt von Kent Beck und Martin Fowler.
+
+| Code Smell                 | Beschreibung                                                              | Abhilfe                                     |
+| -------------------------- | ------------------------------------------------------------------------- | ------------------------------------------- |
+| **Duplizierter Code**      | gleiche oder ähnliche Logik an mehreren Stellen                           | in eine Methode oder Klasse auslagern       |
+| **Lange Methode**          | eine Methode mit dutzenden Zeilen und vielen Aufgaben                     | in kleinere Methoden aufteilen              |
+| **Große Klasse** (_God Class_) | eine Klasse, die fast alles weiß und tut                              | nach Verantwortungen aufteilen (SRP)        |
+| **Lange Parameterliste**   | vier oder mehr Parameter                                                  | Parameterobjekt einführen                   |
+| **Magische Zahlen**        | unerklärte Werte wie `0.2` oder `86400` im Code                          | benannte Konstanten                         |
+| **Feature Envy**           | eine Methode verwendet mehr Daten einer anderen Klasse als der eigenen    | Methode in die andere Klasse verschieben    |
+| **Switch über Typen**      | `switch` nach Typ, der bei jeder neuen Variante erweitert werden muss    | Polymorphie (OCP)                           |
+| **Toter Code**             | nie aufgerufene Methoden, unerreichbare Zweige                            | löschen                                     |
+| **Primitive Obsession**    | fachliche Werte als `string` oder `int` statt eigener Typen (`Iban`, `Email`) | eigene Typen mit Validierung            |
+| **Shotgun Surgery**        | eine kleine Änderung erfordert Anpassungen in vielen Klassen              | zusammengehörige Logik bündeln              |
+
+## Refactoring
+
+**Refactoring** ist das Verbessern der inneren Struktur von Code, **ohne sein äußeres Verhalten zu ändern**. Voraussetzung ist eine gute Testabdeckung, damit man merkt, wenn man doch etwas kaputt macht. Man refaktoriert in kleinen Schritten und führt nach jedem Schritt die Tests aus.
+
+Häufige Refactorings, die moderne Entwicklungsumgebungen automatisch und sicher durchführen:
+
+- **Umbenennen** (_Rename_) von Variablen, Methoden und Klassen
+- **Methode extrahieren** (_Extract Method_): einen Codeabschnitt in eine eigene Methode auslagern
+- **Variable extrahieren** und **Inline**: Zwischenergebnisse benennen oder überflüssige Variablen entfernen
+- **Methode verschieben** (_Move Method_) in die Klasse, zu der sie gehört
+- **Interface extrahieren** aus einer bestehenden Klasse
+- **Bedingung durch Polymorphie ersetzen** (_Replace Conditional with Polymorphism_)
+- **Magische Zahl durch Konstante ersetzen**
+
+Werkzeuge zur automatischen Prüfung des Codestils sind **Linter** und **Formatter**: in .NET die Roslyn-Analyzer und `dotnet format` (konfiguriert über `.editorconfig`), in Rust **Clippy** (`cargo clippy`) und **rustfmt** (`cargo fmt`).
+
+## Weiterführende Quellen
+
+- Robert C. Martin: _Clean Code_, Prentice Hall 2008
+- Martin Fowler: _Refactoring_, 2. Auflage, Addison-Wesley 2018, und der [Katalog der Refactorings](https://refactoring.com/catalog/)
+- [Clean Code Developer](https://clean-code-developer.de/), eine deutschsprachige Initiative mit Grundsätzen und Übungen

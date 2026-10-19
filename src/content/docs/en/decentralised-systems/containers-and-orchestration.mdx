@@ -1,0 +1,401 @@
+---
+title: Containers and Orchestration
+description: "Docker in depth with images, layers, Dockerfiles for C# and Rust, volumes, networks and Compose, plus Kubernetes with pods, deployments, services, ingress, scaling, config maps and secrets."
+sidebar:
+  order: 7
+---
+
+What containers are, how they differ from virtual machines and which basic Docker commands exist is covered under [virtualisation](/en/deployment/virtualisation/#container-virtualisation). This page builds on that: it shows how to build sensible images for your own applications, how several containers work together and how to run many containers on many servers with **Kubernetes**.
+
+## Images in detail
+
+### Layers and cache
+
+An image consists of stacked, **immutable layers**. Every instruction in the Dockerfile that changes files (`RUN`, `COPY`, `ADD`) creates a new layer that contains only the differences from the previous one. A **union file system** (on Linux usually OverlayFS) stacks the layers and presents them to the container as a single file system. A writable layer is added at start-up.
+
+Each layer is identified by a **hash** (digest) of its content. This has two advantages:
+
+- **Reuse:** ten images built on the same base image store it only once.
+- **Build cache:** when rebuilding, Docker uses a layer from the cache as long as the instruction and its input files have not changed. If one layer changes, **all following** layers have to be rebuilt.
+
+That is why instructions are ordered from "rarely changes" to "often changes": first the base image and the system packages, then the application's dependencies and only at the end your own source code. A **`.dockerignore`** file (similar to `.gitignore`) prevents build folders such as `bin/`, `obj/` or `target/` and secrets such as `.env` from being copied into the image.
+
+### Tags, digests and registries
+
+An image is named **registry/repository:tag**, for example `mcr.microsoft.com/dotnet/aspnet:10.0` or `myregistry.azurecr.io/order-service:1.4.0`. If the tag is missing, `latest` is used. A tag is only a mutable name: `1.4.0` can later point to a different image. Only the **digest** (`@sha256:...`) is unique. In production you should therefore never use `latest` but fixed versions.
+
+Images are stored and distributed in a **registry**: Docker Hub, GitHub Container Registry (`ghcr.io`), Azure Container Registry, Amazon ECR. The format of images and containers is standardised by the **Open Container Initiative** (OCI), which is why Docker images also run with Podman, containerd or in Kubernetes.
+
+### Dockerfile for a C# application
+
+```dockerfile
+# Build stage with the full .NET SDK
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# First only the project file: packages are only restored again when it changes
+COPY OrderService.csproj .
+RUN dotnet restore
+
+# Then the source code, which changes frequently
+COPY . .
+RUN dotnet publish -c Release -o /app --no-restore
+
+# Runtime stage: only the ASP.NET Core runtime, no SDK
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+
+# Do not run as root; APP_UID is predefined in the .NET images
+USER $APP_UID
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "OrderService.dll"]
+```
+
+### Dockerfile for a Rust application
+
+Rust compiles to a single executable that needs no runtime environment. The final image can therefore be very small. Because `cargo build` recompiles all dependencies as soon as any source code changes, the dependencies are first built in a separate layer using a placeholder `main.rs`:
+
+```dockerfile
+FROM rust:1.90-slim-bookworm AS build
+WORKDIR /src
+
+# Precompile the dependencies with an empty program (gets cached)
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs \
+    && cargo build --release \
+    && rm -rf src
+
+# Copy your own code and compile only that
+COPY src ./src
+RUN touch src/main.rs && cargo build --release
+
+# Runtime stage: minimal Debian without a compiler
+FROM debian:bookworm-slim
+RUN useradd --system --uid 10001 app
+COPY --from=build /src/target/release/inventory /usr/local/bin/inventory
+USER app
+EXPOSE 3000
+ENTRYPOINT ["/usr/local/bin/inventory"]
+```
+
+If the application needs TLS (for example for HTTPS requests with `reqwest`), the `ca-certificates` package must also be installed in the runtime image. Images become even smaller with **distroless** base images (only the essential libraries, no shell) or with statically linked programs (`musl`) on `scratch`.
+
+### Important instructions
+
+| Instruction | Meaning |
+| ----------- | ------- |
+| `FROM image AS name` | base image; several `FROM`s result in a multi-stage build |
+| `ARG` | variable only during the build (`docker build --build-arg VERSION=1.2`) |
+| `ENV` | environment variable in the image and in the running container |
+| `COPY --from=build` | take over files from an earlier stage |
+| `USER` | user under which the following commands and the container run. Containers should not run as `root`, so that an attacker has fewer rights if there is a vulnerability. |
+| `HEALTHCHECK` | command Docker uses to check whether the application still works |
+| `ENTRYPOINT` | fixed start command of the container |
+| `CMD` | default arguments or default command, which can be overridden in `docker run` |
+
+`ENTRYPOINT` and `CMD` should be given in **exec form** (JSON array). Then the program runs directly as process 1 and receives signals such as `SIGTERM` when stopping. In shell form (`ENTRYPOINT dotnet app.dll`), a shell is started instead that does not forward signals, and the container is killed after a timeout.
+
+## Storing data: volumes
+
+A container's writable layer disappears with the container. Data that should be kept lives outside it:
+
+| Type | Example | Properties |
+| ---- | ------- | ---------- |
+| **Named volume** | `-v db-data:/var/lib/postgresql/data` | managed by Docker, independent of the container, for databases and persistent data |
+| **Bind mount** | `-v ./config:/app/config` | a host folder is mounted in, useful in development (source code, configuration), but depends on the host's file system |
+| **tmpfs** | `--tmpfs /tmp` | only in memory, for temporary or sensitive data |
+
+```bash
+docker volume create db-data
+docker volume ls
+docker volume inspect db-data
+```
+
+## Networks
+
+| Driver | Meaning |
+| ------ | ------- |
+| **bridge** | default: a virtual network on the host; containers get private IP addresses. Reachable from outside only via published ports (`-p 8080:8080`). |
+| **user-defined bridge** | as above, and containers can additionally find each other by **name** (built-in DNS). Containers in different networks are isolated from each other. |
+| **host** | The container uses the host's network stack directly, without port forwarding. |
+| **none** | no network |
+| **overlay** | network across several hosts (Docker Swarm) |
+
+```bash
+docker network create shop-net
+docker run -d --name db --network shop-net --env-file db.env postgres:17   # db.env contains POSTGRES_PASSWORD=... and does not belong in the Git repository
+docker run -d --name api --network shop-net -p 8080:8080 order-service:1.4.0
+# Inside the "api" container, the database is reachable under the host name "db"
+```
+
+## Docker Compose
+
+With **Docker Compose**, an application made of several containers is described declaratively in a `compose.yaml`. Compose automatically creates a shared network in which the services reach each other by name.
+
+```yaml
+services:
+  api:
+    build: ./OrderService            # build the image from the Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Orders: "Host=db;Database=orders;Username=app;Password=${DB_PASSWORD}"
+    depends_on:
+      db:
+        condition: service_healthy   # only start once the database is ready
+    restart: unless-stopped
+
+  inventory:
+    build: ./inventory               # the Rust service
+    environment:
+      DATABASE_URL: "postgres://app:${DB_PASSWORD}@db/orders"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${DB_PASSWORD}  # from the .env file or the environment
+      POSTGRES_DB: orders
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d orders"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db-data:
+```
+
+| Command | Meaning |
+| ------- | ------- |
+| `docker compose up -d --build` | build images and start all services in the background |
+| `docker compose ps` | status of the services |
+| `docker compose logs -f api` | follow the output of a service |
+| `docker compose up -d --scale inventory=3` | start a service several times |
+| `docker compose down` | remove containers and network (`-v` also deletes the volumes) |
+
+Compose is well suited to development and to small installations on a single server. For many servers, automatic failover and scaling you need an **orchestrator**.
+
+## Kubernetes
+
+**Kubernetes** (**K8s** for short) is an open-source system for **orchestrating** containers. It was developed by Google based on its internal system Borg, released in 2014 and is now maintained by the Cloud Native Computing Foundation (CNCF). Kubernetes takes care of:
+
+- distributing the containers across the servers of a **cluster** (_scheduling_),
+- restarting or replacing failed containers (_self-healing_),
+- scaling and load balancing,
+- rolling updates and rollbacks without downtime,
+- service discovery, configuration and secrets.
+
+### Declarative approach
+
+You do not tell Kubernetes **what to do** ("start three containers") but describe the **desired state** in YAML ("three instances should always be running"). **Controllers** compare the desired with the actual state in an endless loop (_reconciliation loop_) and correct any differences. If a container crashes or a server fails, Kubernetes automatically starts a replacement.
+
+### Architecture
+
+| Component | Task |
+| --------- | ---- |
+| **Control plane** | the "control centre" of the cluster |
+| `kube-apiserver` | central REST interface through which all components and `kubectl` communicate |
+| `etcd` | distributed key-value store holding the entire cluster state, replicated with [Raft](/en/decentralised-systems/distributed-systems/#raft) |
+| `kube-scheduler` | chooses a suitable node for new pods (free CPU, memory, rules) |
+| `kube-controller-manager` | runs the controllers (e.g. for deployments and nodes) |
+| **Worker nodes** | the servers on which the applications run |
+| `kubelet` | agent on every node that starts and monitors the pods |
+| Container runtime | runs the containers, usually **containerd** or CRI-O |
+| `kube-proxy` | implements the network rules for services |
+
+In the cloud you usually use a **managed service** in which the provider runs the control plane: Azure Kubernetes Service (**AKS**), Amazon EKS or Google GKE. Local clusters such as **minikube**, **kind** or **k3s** are suitable for learning.
+
+### Important objects
+
+| Object | Purpose |
+| ------ | ------- |
+| **Pod** | smallest unit: one or more containers that share a network (one IP address) and volumes. Pods are short-lived and are replaced rather than repaired. |
+| **ReplicaSet** | ensures that a certain number of identical pods is running |
+| **Deployment** | manages ReplicaSets for stateless applications, enables rolling updates and rollbacks |
+| **StatefulSet** | for stateful applications (databases) with stable names and their own storage per pod |
+| **DaemonSet** | exactly one pod per node, e.g. for logging and monitoring agents |
+| **Job / CronJob** | one-off or scheduled tasks |
+| **Service** | stable address and load balancing for a group of pods |
+| **Ingress** | HTTP routing from outside into the cluster (host names, paths, TLS) |
+| **ConfigMap** | configuration as key-value pairs |
+| **Secret** | confidential data such as passwords and keys |
+| **PersistentVolumeClaim** | request for persistent storage |
+| **Namespace** | logical division of a cluster, for example by team or environment |
+
+Objects are marked with **labels** (key-value pairs such as `app: order-service`) and found via **selectors**. This is how a service knows which pods to forward requests to.
+
+### Deployment and service
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: order-service
+  template:                          # template for the pods
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: api
+          image: myregistry.azurecr.io/order-service:1.4.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: order-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: order-secrets
+                  key: db-password
+          resources:
+            requests:                # guaranteed, used for scheduling
+              cpu: "250m"            # 0.25 CPU cores
+              memory: "256Mi"
+            limits:                  # upper limit
+              memory: "512Mi"
+          readinessProbe:            # only send requests once ready
+            httpGet:
+              path: /health/ready
+              port: 8080
+          livenessProbe:             # restart the container if it hangs
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service               # forwards to all pods with this label
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
+```
+
+Other pods in the cluster now reach the service via the DNS name `order-service` (or `order-service.<namespace>.svc.cluster.local`), regardless of which nodes the three pods are currently running on. The three **probes** have different jobs: the **readiness probe** decides whether a pod receives requests, the **liveness probe** whether it is restarted, and a **startup probe** protects slow-starting applications from a premature restart.
+
+| Service type | Reachability |
+| ------------ | ------------ |
+| **ClusterIP** | only within the cluster (default) |
+| **NodePort** | additionally on a fixed port (30000 to 32767) of every node |
+| **LoadBalancer** | additionally via a cloud provider load balancer with a public IP |
+
+### Ingress
+
+An **ingress** forwards HTTP and HTTPS requests from outside to services based on host name and path and terminates TLS. For it to work, an **ingress controller** must be running in the cluster.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shop
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [shop.example.at]
+      secretName: shop-tls
+  rules:
+    - host: shop.example.at
+      http:
+        paths:
+          - path: /api/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
+```
+
+The widely used **ingress-nginx** controller has no longer been maintained since March 2026. As the successor to the Ingress API, the Kubernetes project recommends the more expressive **Gateway API** (objects `Gateway` and `HTTPRoute`), which is implemented by many controllers.
+
+### ConfigMaps and secrets
+
+Configuration does not belong in the image, so that the same image can run in test and production (see [Twelve-Factor App](/en/decentralised-systems/cloud-native/#twelve-factor-app)).
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Orders__MaxItems: "50"
+```
+
+The secret itself is not written as a YAML file with the plain-text value, but created directly from a file that is not in the repository:
+
+```bash
+kubectl create secret generic order-secrets --from-file=db-password=./db-password.txt
+```
+
+:::caution
+By default, secrets are only **Base64-encoded**, not encrypted. Anyone allowed to read the objects can read the passwords. They are therefore protected with access rights (RBAC), encryption in etcd is enabled, and in the cloud an external vault such as **Azure Key Vault** is often integrated. Secret YAML files with real values never belong in a Git repository.
+:::
+
+### Scaling and updating
+
+```bash
+kubectl apply -f deployment.yaml                 # apply the desired state
+kubectl get pods -o wide                         # show pods and their nodes
+kubectl scale deployment order-service --replicas=5
+kubectl set image deployment/order-service api=myregistry.azurecr.io/order-service:1.5.0
+kubectl rollout status deployment/order-service  # progress of the rolling update
+kubectl rollout undo deployment/order-service    # back to the previous version
+kubectl logs -f deployment/order-service
+kubectl describe pod <pod-name>                  # events, e.g. why a pod does not start
+```
+
+In a **rolling update**, Kubernetes replaces the pods step by step: a new pod is started, and as soon as it is ready (readiness probe), an old one is terminated. The application thus remains reachable during the update.
+
+The **Horizontal Pod Autoscaler** (HPA) automatically scales the number of pods according to load:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: order-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: order-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70     # target: 70 % of the requested CPU
+```
+
+If the nodes are no longer sufficient, the cloud provider's **cluster autoscaler** adds more servers. With **KEDA**, you can additionally scale based on events, for example the length of a [Service Bus queue](/en/decentralised-systems/communication-and-messaging/#azure-services).
+
+For reusable packaging of many YAML files there is the package manager **Helm**. If you do not want to manage your own cluster, you can also run containers in Azure with **Azure Container Apps** (managed Kubernetes without direct cluster access, scales down to zero) or **Azure Container Instances** (individual containers).
+
+## Further reading
+
+- [Docker Docs](https://docs.docker.com/), especially "Building best practices"
+- [Kubernetes documentation](https://kubernetes.io/docs/home/) with interactive tutorials
+- Microsoft Learn: [Containerize a .NET app](https://learn.microsoft.com/en-us/dotnet/core/docker/build-container)

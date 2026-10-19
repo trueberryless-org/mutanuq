@@ -1,0 +1,204 @@
+---
+title: Betriebssysteme
+description: Aufgaben eines Betriebssystems, Kernelarten, Benutzer- und Kernelmodus, Systemaufrufe, Bootvorgang mit UEFI und systemd, Treiber, Shells sowie Windows, Linux und macOS im Vergleich.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **Betriebssystem** (_Operating System_, OS) ist die Software, die die Hardware eines Computers verwaltet und Anwendungsprogrammen eine einheitliche, sichere Umgebung bereitstellt. Ohne Betriebssystem müsste jedes Programm selbst wissen, wie man genau diese eine SSD anspricht, wie man Speicher aufteilt und wie man sich den Prozessor mit anderen Programmen teilt. Diese Seite behandelt den Aufbau von Betriebssystemen. Die Verwaltung von [Prozessen](/de/computer-science/processes-and-threads/), [Speicher](/de/computer-science/memory-management-os/) und [Dateisystemen](/de/computer-science/file-systems/) hat jeweils eine eigene Seite, die praktische Arbeit mit Linux steht unter [Linux-Grundlagen](/de/deployment/linux_server/linux_basics/).
+
+## Aufgaben eines Betriebssystems
+
+Man kann ein Betriebssystem aus zwei Blickwinkeln beschreiben:
+
+- Als **erweiterte Maschine** (Abstraktion): Es versteckt die komplizierte Hardware hinter einfachen Konzepten. Ein Programm schreibt in eine **Datei**, statt Sektoren auf einer Platte zu adressieren. Es läuft in einem **Prozess**, als hätte es den Prozessor für sich allein, und sieht einen eigenen **Adressraum**, als gehörte ihm der gesamte Speicher.
+- Als **Ressourcenverwalter**: Es teilt Prozessorzeit, Speicher, Geräte und Netzwerk gerecht und sicher zwischen Programmen und Benutzern auf und verhindert, dass ein Programm andere stört.
+
+| Aufgabe                    | Beispiele                                                                 |
+| -------------------------- | ------------------------------------------------------------------------- |
+| **Prozessverwaltung**      | Prozesse erzeugen und beenden, Scheduling, Synchronisation, Kommunikation |
+| **Speicherverwaltung**     | Speicher zuteilen und schützen, virtueller Speicher, Auslagerung          |
+| **Dateiverwaltung**        | Dateisysteme, Verzeichnisse, Zugriffsrechte                               |
+| **Geräteverwaltung**       | Treiber, Ein-/Ausgabe, Interrupts, Puffer                                 |
+| **Benutzerverwaltung und Sicherheit** | Anmeldung, Rechte, Isolation von Prozessen, Protokollierung    |
+| **Netzwerk**               | Protokollstack (TCP/IP), Sockets                                          |
+| **Benutzerschnittstelle**  | Shell, grafische Oberfläche                                               |
+
+### Arten von Betriebssystemen
+
+| Art                              | Merkmal                                                                     | Beispiele                           |
+| -------------------------------- | --------------------------------------------------------------------------- | ----------------------------------- |
+| **Desktop**                      | interaktiv, grafische Oberfläche                                            | Windows, macOS, Linux-Distributionen |
+| **Server**                       | Dienste für viele Benutzer, Stabilität, Fernverwaltung                      | Windows Server, Linux (Debian, RHEL, Ubuntu Server) |
+| **Mobil**                        | Touch, Energiesparen, App-Sandboxen                                         | Android (Linux-Kernel), iOS         |
+| **Echtzeitbetriebssystem** (RTOS) | garantierte maximale Reaktionszeiten (**harte** Echtzeit) statt nur hohem Durchsatz | FreeRTOS, Zephyr, QNX, VxWorks |
+| **Eingebettet**                  | auf ein Gerät zugeschnitten, wenig Ressourcen                               | Router-Firmware, Embedded Linux     |
+| **Stapelverarbeitung** (_Batch_) | Aufträge ohne Interaktion nacheinander, historisch auf Großrechnern          | z/OS (heute auch interaktiv)        |
+
+Die Entwicklung verlief von der Stapelverarbeitung über **Mehrprogrammbetrieb** (_Multiprogramming_: mehrere Programme im Speicher, während eines auf Ein-/Ausgabe wartet, rechnet ein anderes) zum **Timesharing** (viele Benutzer gleichzeitig, jeder bekommt kurze Zeitscheiben). Heute sind alle verbreiteten Systeme **Mehrbenutzer**- und **Multitasking**-Systeme.
+
+## Benutzer- und Kernelmodus
+
+Würde jedes Programm direkt auf die Hardware zugreifen, könnte ein fehlerhaftes Programm den gesamten Rechner zum Absturz bringen oder fremde Daten lesen. Prozessoren kennen deshalb mindestens zwei **Privilegstufen**:
+
+- Im **Kernelmodus** (_Kernel Mode_, privilegierter Modus) sind alle Befehle erlaubt: Zugriff auf Geräte, Interrupts sperren, Seitentabellen ändern. Hier läuft der Kern des Betriebssystems.
+- Im **Benutzermodus** (_User Mode_) sind privilegierte Befehle gesperrt, und ein Prozess sieht nur seinen eigenen Speicher. Hier laufen alle Anwendungen.
+
+x86 kennt vier **Ringe** (Ring 0 = Kernel bis Ring 3 = Benutzer), genutzt werden praktisch nur Ring 0 und Ring 3. ARM nennt die Stufen _Exception Levels_ (EL0 für Anwendungen, EL1 für den Kernel, EL2 für den Hypervisor). Versucht ein Programm im Benutzermodus einen privilegierten Befehl oder einen Zugriff auf fremden Speicher, löst der Prozessor eine Ausnahme aus, und das Betriebssystem beendet den Prozess (unter Linux mit dem Signal `SIGSEGV`, „Segmentation fault“).
+
+### Systemaufrufe
+
+Ein Programm im Benutzermodus kann eine Datei nicht selbst von der SSD lesen. Es bittet den Kernel darum, mit einem **Systemaufruf** (_System Call_, _Syscall_):
+
+1. Das Programm ruft eine Bibliotheksfunktion auf, etwa `File.ReadAllText` in .NET oder `std::fs::read_to_string` in Rust. Diese ruft letztlich eine Funktion der C-Bibliothek oder der Windows-API auf.
+2. Die Bibliothek legt die **Nummer des Systemaufrufs** und die Parameter in Register und führt einen speziellen Befehl aus (`syscall` bei x86-64, `svc` bei ARM, `ecall` bei RISC-V).
+3. Der Prozessor wechselt in den Kernelmodus und springt an einen festen Einsprungpunkt im Kernel.
+4. Der Kernel prüft die Parameter und Rechte, führt die Operation aus und legt das Ergebnis in ein Register.
+5. Der Prozessor kehrt in den Benutzermodus zurück, das Programm läuft weiter.
+
+| Bereich        | Linux (POSIX)                         | Windows (Win32-API)                     |
+| -------------- | ------------------------------------- | --------------------------------------- |
+| Prozesse       | `fork`, `execve`, `exit`, `waitpid`   | `CreateProcess`, `ExitProcess`, `WaitForSingleObject` |
+| Dateien        | `open`, `read`, `write`, `close`      | `CreateFile`, `ReadFile`, `WriteFile`, `CloseHandle` |
+| Speicher       | `mmap`, `brk`                         | `VirtualAlloc`                          |
+| Kommunikation  | `pipe`, `socket`, `kill`              | `CreatePipe`, `socket`                  |
+
+Ein Systemaufruf ist deutlich teurer als ein normaler Funktionsaufruf, weil der Moduswechsel Zeit kostet. Deshalb puffern Bibliotheken Ein- und Ausgaben und rufen den Kernel erst auf, wenn ein Puffer voll ist. Unter Linux zeigt `strace` alle Systemaufrufe eines Programms, unter Windows der _Process Monitor_.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Jede dieser Zeilen führt intern zu Systemaufrufen (open, write, read, close, unlink)
+string path = Path.Combine(Path.GetTempPath(), "syscall-demo.txt");
+File.WriteAllText(path, "Hallo Kernel");
+string content = File.ReadAllText(path);
+File.Delete(path);
+Console.WriteLine(content);                           // Hallo Kernel
+
+// Informationen, die das Betriebssystem bereitstellt
+Console.WriteLine(Environment.ProcessId > 0);        // True
+Console.WriteLine(Environment.ProcessorCount >= 1);  // True
+Console.WriteLine(OperatingSystem.IsLinux() || OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()); // True
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fs;
+
+fn main() -> std::io::Result<()> {
+    // Jede dieser Zeilen führt intern zu Systemaufrufen (open, write, read, close, unlink)
+    let path = std::env::temp_dir().join("syscall-demo.txt");
+    fs::write(&path, "Hallo Kernel")?;
+    let content = fs::read_to_string(&path)?;
+    fs::remove_file(&path)?;
+    println!("{content}");                                   // Hallo Kernel
+
+    // Informationen, die das Betriebssystem bereitstellt
+    println!("{}", std::process::id() > 0);                  // true
+    println!("{}", ["linux", "windows", "macos"].contains(&std::env::consts::OS)); // true
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Ein Ausschnitt aus `strace` für ein Programm, das eine Datei liest, zeigt die tatsächlichen Aufrufe:
+
+```text
+openat(AT_FDCWD, "/tmp/syscall-demo.txt", O_RDONLY|O_CLOEXEC) = 3
+read(3, "Hallo Kernel", 8192)           = 12
+close(3)                                = 0
+write(1, "Hallo Kernel\n", 13)          = 13
+```
+
+Die Zahl `3` ist ein **Dateideskriptor**, eine Nummer, unter der der Kernel die geöffnete Datei für diesen Prozess verwaltet. Die Deskriptoren 0, 1 und 2 sind Standardeingabe, Standardausgabe und Standardfehlerausgabe.
+
+## Kernelarten
+
+Der **Kernel** (Kern) ist der Teil des Betriebssystems, der im Kernelmodus läuft. Wie viel Funktionalität in den Kernel gehört, ist eine grundlegende Designentscheidung.
+
+| Kernelart       | Aufbau                                                                 | Vorteile                                  | Nachteile                                     | Beispiele                    |
+| --------------- | ---------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------------- | ---------------------------- |
+| **monolithisch** | alle Dienste (Scheduler, Speicher, Dateisysteme, Treiber, Netzwerk) in einem großen Programm im Kernelmodus | schnell, weil Komponenten sich direkt aufrufen | ein fehlerhafter Treiber kann das ganze System abstürzen lassen | Linux, FreeBSD |
+| **Mikrokernel** | nur das Nötigste im Kernel: Adressräume, Threads, Interprozesskommunikation. Treiber und Dateisysteme laufen als Prozesse im Benutzermodus | stabil, sicher, Komponenten einzeln neu startbar, formal verifizierbar | langsamer wegen vieler Nachrichten und Moduswechsel | QNX, MINIX 3, seL4 |
+| **hybrid**      | Mikrokernel-Struktur, aus Geschwindigkeitsgründen aber viele Dienste doch im Kernelmodus | Kompromiss                       | Vorteile des Mikrokernels nur teilweise       | Windows NT (Windows 10/11), macOS (XNU) |
+
+Linux ist zwar monolithisch, aber **modular**: Treiber und Dateisysteme können als **Kernelmodule** zur Laufzeit geladen und entladen werden (`lsmod`, `modprobe`). Der Streit „Monolith gegen Mikrokernel“ wurde 1992 berühmt, als der Informatiker Andrew Tanenbaum Linux als „obsolet“ bezeichnete und Linus Torvalds widersprach.
+
+## Bootvorgang
+
+Der **Bootvorgang** führt vom Einschalten bis zur Anmeldung. Am Beispiel eines Linux-PCs mit UEFI:
+
+1. **Einschalten**: Das Netzteil meldet stabile Spannungen (_Power Good_), der Prozessor beginnt an einer festen Adresse in der Firmware.
+2. **UEFI-Firmware**: Initialisierung der Hardware und [POST](/de/computer-science/hardware/#post). Die Firmware liest die Bootreihenfolge aus dem NVRAM.
+3. **EFI-Systempartition** (ESP): Eine kleine FAT32-Partition, auf der die Bootloader als `.efi`-Dateien liegen. Bei aktivem **Secure Boot** prüft die Firmware deren Signatur.
+4. **Bootloader** (GRUB 2 oder systemd-boot): zeigt gegebenenfalls ein Menü, lädt den **Kernel** und die **initramfs** (ein kleines Dateisystem im RAM mit Treibern, die zum Einbinden der echten Root-Partition nötig sind, etwa für NVMe, RAID oder Verschlüsselung) und übergibt Kernelparameter.
+5. **Kernel**: entpackt sich, initialisiert Speicherverwaltung, Scheduler und Treiber, bindet die Root-Partition ein und startet den ersten Prozess.
+6. **init** (PID 1): Unter heutigen Distributionen ist das **systemd**. Es startet Dienste parallel entsprechend ihrer Abhängigkeiten, bis das gewünschte **Target** erreicht ist (`multi-user.target` für Server, `graphical.target` für Desktops). Ältere Systeme verwendeten SysVinit mit **Runlevels**.
+7. **Anmeldung**: Ein Login-Prompt auf der Konsole oder ein Display-Manager (GDM, SDDM) mit grafischer Anmeldung.
+
+Bei **Windows** läuft es ähnlich: Die Firmware startet den **Windows Boot Manager** (`bootmgfw.efi`) auf der ESP, dieser liest die Bootkonfiguration (BCD) und startet `winload.efi`. Dieses lädt den Kernel `ntoskrnl.exe` mit der Hardwareabstraktionsschicht und den Starttreibern. Danach folgen der Session-Manager `smss.exe`, `wininit.exe` mit den Diensten und `winlogon.exe` mit dem Anmeldebildschirm.
+
+Beim alten **BIOS-Bootvorgang** lud die Firmware stattdessen den ersten Sektor der Platte (den **Master Boot Record**, 512 Byte) und führte den darin enthaltenen kleinen Bootcode aus. Die Partitionierung mit MBR und GPT beschreibt die Seite [Dateisysteme](/de/computer-science/file-systems/#partitionierung).
+
+## Treiber
+
+Ein **Gerätetreiber** (_Device Driver_) ist der Teil des Betriebssystems, der ein bestimmtes Gerät ansteuert. Er übersetzt die allgemeinen Anfragen des Kernels („lies Block 4711“) in die spezifischen Befehle der Hardware (Register beschreiben, DMA einrichten, Interrupt behandeln). So muss der Rest des Systems die Details jedes Geräts nicht kennen.
+
+- Unter Linux sind Treiber meist Teil des Kernel-Quellcodes und als Module verfügbar. Geräte erscheinen als Dateien unter `/dev` (z. B. `/dev/nvme0n1`), der Dienst `udev` erkennt neue Geräte und lädt passende Module.
+- Unter Windows sind Treiber `.sys`-Dateien, die mit einer `.inf`-Datei installiert werden. 64-Bit-Windows lädt nur **signierte** Kernelmodustreiber. Der Geräte-Manager zeigt den Status.
+- Viele Geräte folgen **Standardklassen** (USB-HID für Tastaturen, USB Mass Storage, NVMe, AHCI) und funktionieren deshalb mit einem generischen Treiber des Betriebssystems.
+
+Weil Treiber im Kernelmodus laufen, sind sie eine häufige Absturzursache. Ein fehlerhafter Treiber kann einen Bluescreen (Windows) oder eine **Kernel Panic** (Linux) auslösen. Moderne Systeme verlagern deshalb manche Treiber in den Benutzermodus (Windows UMDF, Drucker- und viele USB-Treiber).
+
+## Shells und Benutzeroberflächen
+
+Die **Shell** ist die Schnittstelle zwischen Benutzer und Betriebssystem. Der Name kommt vom Bild der Schale um den Kern.
+
+- Eine **Kommandozeilen-Shell** (CLI) liest Befehle, startet Programme, verbindet sie über Pipes und kann Skripte ausführen. Unter Linux und macOS sind **Bash** und **Zsh** verbreitet, unter Windows die **PowerShell** (objektorientiert, siehe [PowerShell](/de/deployment/windows_server/powershell/)) und die alte Eingabeaufforderung `cmd.exe`.
+- Eine **grafische Oberfläche** (GUI) mit Fenstern, Maus und Touch: Windows Explorer, macOS Finder, unter Linux Desktopumgebungen wie GNOME und KDE Plasma auf einem Anzeigeserver (X11 oder Wayland).
+
+Für Server und Automatisierung ist die Kommandozeile wichtiger: Sie ist skriptbar, braucht wenig Ressourcen und funktioniert über SSH.
+
+## Windows, Linux und macOS
+
+| Merkmal             | Windows                               | Linux                                        | macOS                                   |
+| ------------------- | ------------------------------------- | -------------------------------------------- | --------------------------------------- |
+| Hersteller          | Microsoft                             | Community (Kernel von Linus Torvalds, 1991), Distributionen von Firmen und Projekten | Apple |
+| Kernel              | Windows NT (hybrid)                   | Linux (monolithisch, modular)                | XNU (hybrid aus Mach-Mikrokernel und BSD) |
+| Lizenz              | proprietär, kostenpflichtig           | **GPLv2** (Kernel), Distributionen meist frei | proprietär, Teile (Darwin) quelloffen  |
+| Standard-Dateisystem | NTFS                                 | ext4, Btrfs, XFS                             | APFS                                    |
+| Pfade               | `C:\Users\anna`, Laufwerksbuchstaben  | `/home/anna`, ein Verzeichnisbaum            | `/Users/anna`, ein Verzeichnisbaum      |
+| Groß-/Kleinschreibung in Dateinamen | nicht unterschieden   | unterschieden                                | standardmäßig nicht unterschieden       |
+| Software-Installation | Installer, Microsoft Store, `winget` | Paketmanager (`apt`, `dnf`, `pacman`)        | App Store, `.dmg`, Homebrew             |
+| Konfiguration       | Registry, Gruppenrichtlinien          | Textdateien unter `/etc`                     | Property-Listen (`.plist`)              |
+| Standard            | eigene API (Win32)                    | weitgehend **POSIX**-konform                 | POSIX-zertifiziert (UNIX 03)            |
+| Haupteinsatz        | Desktop, Unternehmen, Spiele          | Server, Cloud, Container, Embedded, Supercomputer, Android | Kreativbereich, Entwicklung |
+
+**POSIX** (_Portable Operating System Interface_, IEEE 1003) ist ein Standard für die Schnittstelle Unix-artiger Systeme: Systemaufrufe, Shell und Werkzeuge. Programme, die nur POSIX verwenden, lassen sich auf Linux, macOS und BSD übersetzen. Unter Windows bietet das **WSL** (_Windows Subsystem for Linux_) eine Linux-Umgebung mit echtem Linux-Kernel in einer leichtgewichtigen virtuellen Maschine.
+
+### Lizenzen und Distributionen
+
+Der Linux-Kernel allein ist noch kein vollständiges Betriebssystem. Eine **Distribution** bündelt ihn mit Systemprogrammen (meist aus dem GNU-Projekt), Paketmanager, Installer und Desktop. Bekannte Distributionen und ihre Familien beschreibt [Linux-Grundlagen](/de/deployment/linux_server/linux_basics/#distributionen).
+
+| Lizenzmodell                  | Bedeutung                                                                 | Beispiele                         |
+| ----------------------------- | ------------------------------------------------------------------------- | --------------------------------- |
+| **proprietär**                | Quellcode geheim, Nutzung nur nach Lizenzvertrag                           | Windows, macOS                    |
+| **Copyleft** (z. B. GPL)      | frei nutzbar, veränderbar und weitergebbar, aber abgeleitete Werke müssen unter derselben Lizenz stehen | Linux-Kernel, GNU-Werkzeuge |
+| **permissiv** (BSD, MIT, Apache) | frei nutzbar, auch in proprietärer Software, nur Urhebervermerk nötig  | FreeBSD, große Teile von macOS und Android |
+
+**Open Source** bedeutet, dass der Quellcode offen liegt und unter einer von der Open Source Initiative anerkannten Lizenz steht. Kostenlos und quelloffen sind nicht dasselbe: Red Hat Enterprise Linux ist quelloffen, Support und Updates gibt es aber nur im kostenpflichtigen Abonnement.
+
+Mehrere Betriebssysteme gleichzeitig auf einem Rechner ermöglicht die [Virtualisierung](/de/deployment/virtualisation/).
+
+## Weiterführende Quellen
+
+- Andrew S. Tanenbaum, Herbert Bos: _Moderne Betriebssysteme_, Pearson
+- Abraham Silberschatz, Peter B. Galvin, Greg Gagne: _Operating System Concepts_, Wiley
+- [The Linux Kernel documentation](https://docs.kernel.org/)

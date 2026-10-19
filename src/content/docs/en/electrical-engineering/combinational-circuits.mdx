@@ -1,0 +1,177 @@
+---
+title: Combinational Circuits
+description: Half adder and full adder, ripple-carry adder, subtraction, comparator, multiplexer and demultiplexer, encoder and decoder, 7-segment decoder and the structure of an ALU.
+sidebar:
+  order: 12
+---
+
+A **combinational circuit** has no memory: the outputs depend only on the current inputs. If an input changes, the outputs follow after the propagation delay. The building blocks on this page are the basic elements of every processor: arithmetic units, comparators, data paths and address decoding. Designing them from [logic gates](/en/electrical-engineering/digital-logic-gates/) always follows the path via truth table and minimisation.
+
+## Adders
+
+### Half adder
+
+A **half adder** adds two single-digit binary numbers $A$ and $B$. It supplies the sum bit $S$ and the carry $C$:
+
+| $A$ | $B$ | $C$ | $S$ |
+| --- | --- | --- | --- |
+| 0   | 0   | 0   | 0   |
+| 0   | 1   | 0   | 1   |
+| 1   | 0   | 0   | 1   |
+| 1   | 1   | 1   | 0   |
+
+$$
+S = A \oplus B \qquad C = A \cdot B
+$$
+
+It therefore consists of one XOR and one AND. It is called "half" because it cannot take a carry from a lower position into account.
+
+### Full adder
+
+A **full adder** adds three bits: $A$, $B$ and the incoming carry $C_\mathrm{in}$. The result is between 0 and 3 and fits into two bits $C_\mathrm{out}$ and $S$:
+
+| $A$ | $B$ | $C_\mathrm{in}$ | $C_\mathrm{out}$ | $S$ |
+| --- | --- | --------------- | ---------------- | --- |
+| 0   | 0   | 0               | 0                | 0   |
+| 0   | 0   | 1               | 0                | 1   |
+| 0   | 1   | 0               | 0                | 1   |
+| 0   | 1   | 1               | 1                | 0   |
+| 1   | 0   | 0               | 0                | 1   |
+| 1   | 0   | 1               | 1                | 0   |
+| 1   | 1   | 0               | 1                | 0   |
+| 1   | 1   | 1               | 1                | 1   |
+
+$$
+S = A \oplus B \oplus C_\mathrm{in} \qquad C_\mathrm{out} = A B + C_\mathrm{in} (A \oplus B)
+$$
+
+A full adder can be built from two half adders and an OR gate: the first adds $A$ and $B$, the second adds $C_\mathrm{in}$ to that, and the OR combines the two carries. The sum $S$ is 1 if an odd number of inputs are 1; $C_\mathrm{out}$ is 1 if at least two inputs are 1 (majority function).
+
+### Ripple-carry adder
+
+For $n$-bit numbers, $n$ full adders are connected in a chain. The carry of each position goes into the next higher one. For the least significant bit $C_\mathrm{in} = 0$. The carry out of the most significant bit indicates that the result no longer fits into $n$ bits (**carry flag**).
+
+:::tip[Example]
+$0110_2 + 0111_2$ (6 + 7):
+
+| Position        | 3 | 2 | 1 | 0 |
+| --------------- | - | - | - | - |
+| $A$             | 0 | 1 | 1 | 0 |
+| $B$             | 0 | 1 | 1 | 1 |
+| $C_\mathrm{in}$ | 1 | 1 | 0 | 0 |
+| $S$             | 1 | 1 | 0 | 1 |
+
+Result $1101_2 = 13$, no carry out of position 3.
+:::
+
+The disadvantage: the carry has to "ripple" through all stages. The delay grows linearly with the bit width, which is too slow at 64 bits. **Carry-lookahead adders** calculate the carries in parallel. Each position determines whether it generates a carry ($G_i = A_i B_i$) or propagates an incoming one ($P_i = A_i \oplus B_i$). This gives $C_{i+1} = G_i + P_i C_i$, and this equation can be expanded for all positions and calculated in two gate levels.
+
+### Subtraction
+
+Subtraction uses the same adder via the **two's complement**: $A - B = A + \overline{B} + 1$. $B$ is inverted with XOR gates (a control signal $\mathit{SUB} = 1$ at every second XOR input) and the carry input is set to $C_\mathrm{in} = \mathit{SUB} = 1$. This turns an adder with one control signal into an **adder-subtractor**.
+
+## Comparator
+
+A **comparator** compares two binary numbers. For one bit:
+
+$$
+(A > B) = A\overline{B} \qquad (A = B) = \overline{A \oplus B} \qquad (A < B) = \overline{A}B
+$$
+
+For several bits the comparison starts at the most significant bit: $A > B$ if the highest bit is greater, or the highest bits are equal and the rest is greater. $A = B$ holds if all bits are equal in pairs, i.e. with an AND of all XNOR outputs. The 74HC85 compares four bits and can be cascaded for larger widths.
+
+## Multiplexer and demultiplexer
+
+A **multiplexer** (MUX, data selector) switches one of $2^n$ data inputs through to one output. Which one is determined by $n$ select inputs (address inputs). For a 2:1 MUX with select input $S$:
+
+$$
+Y = \overline{S} \cdot I_0 + S \cdot I_1
+$$
+
+A 4:1 MUX with the select inputs $S_1 S_0$:
+
+$$
+Y = \overline{S_1}\,\overline{S_0} I_0 + \overline{S_1} S_0 I_1 + S_1 \overline{S_0} I_2 + S_1 S_0 I_3
+$$
+
+Multiplexers select data sources in processors, transmit several signals one after the other over one line (**time-division multiplexing**) and can implement any switching function: with an 8:1 MUX the three variables are connected to the select inputs and the column of the truth table is applied to the data inputs as fixed 0s and 1s. This is exactly how the lookup tables in [FPGAs](/en/electrical-engineering/sequential-circuits/#programmable-logic) work.
+
+A **demultiplexer** (DEMUX) does the opposite: it distributes one input to one of $2^n$ outputs.
+
+## Encoder and decoder
+
+A **decoder** converts an $n$-bit code into a one-of-$2^n$ representation: exactly one output is active. A 2:4 decoder has the outputs
+
+$$
+Y_0 = \overline{A_1}\,\overline{A_0} \quad Y_1 = \overline{A_1} A_0 \quad Y_2 = A_1 \overline{A_0} \quad Y_3 = A_1 A_0
+$$
+
+In computers, decoders use the higher-order address bits to select the right memory chip (**address decoding**, chip select). The 74HC138 is a 3:8 decoder with active-low outputs. A decoder with an enable input is also a demultiplexer.
+
+An **encoder** does the reverse: it outputs the number of the active input as a binary number. A **priority encoder** supplies the number of the highest-order input when several inputs are active. This is how an interrupt controller determines which request has priority, or a keyboard which key is pressed.
+
+## 7-segment decoder
+
+A **7-segment display** shows digits with seven light segments a to g: a at the top, then clockwise b (top right), c (bottom right), d (bottom), e (bottom left), f (top left) and g in the middle. With a **common cathode** the segments are driven high, with a **common anode** low. Each segment needs its own [series resistor](/en/electrical-engineering/semiconductors-and-diodes/#light-emitting-diode).
+
+A **7-segment decoder** converts a BCD digit $x_3 x_2 x_1 x_0$ into the seven segment signals (1 = segment lit). Here is the version with segment a for 6 and segment d for 9:
+
+| Digit  | $x_3 x_2 x_1 x_0$ | a | b | c | d | e | f | g |
+| ------ | ----------------- | - | - | - | - | - | - | - |
+| 0      | 0000              | 1 | 1 | 1 | 1 | 1 | 1 | 0 |
+| 1      | 0001              | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+| 2      | 0010              | 1 | 1 | 0 | 1 | 1 | 0 | 1 |
+| 3      | 0011              | 1 | 1 | 1 | 1 | 0 | 0 | 1 |
+| 4      | 0100              | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+| 5      | 0101              | 1 | 0 | 1 | 1 | 0 | 1 | 1 |
+| 6      | 0110              | 1 | 0 | 1 | 1 | 1 | 1 | 1 |
+| 7      | 0111              | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
+| 8      | 1000              | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| 9      | 1001              | 1 | 1 | 1 | 1 | 0 | 1 | 1 |
+
+A separate Karnaugh map is drawn for each segment; the codes 10 to 15 are don't cares. For segment a:
+
+| $x_3 x_2$ \ $x_1 x_0$ | 00 | 01 | 11 | 10 |
+| --------------------- | -- | -- | -- | -- |
+| **00**                | 1  | 0  | 1  | 1  |
+| **01**                | 0  | 1  | 1  | 1  |
+| **11**                | X  | X  | X  | X  |
+| **10**                | 1  | 1  | X  | X  |
+
+$$
+a = x_3 + x_1 + x_2 x_0 + \overline{x_2}\,\overline{x_0}
+$$
+
+The group $x_3$ covers the two lower rows, $x_1$ the two right-hand columns, $x_2 x_0$ the middle group of four and $\overline{x_2}\,\overline{x_0}$ the four corners. Ready-made devices are the 74LS47 (common anode) and the CD4511 (common cathode). With microcontrollers decoding is usually done in software using a table.
+
+## Arithmetic logic unit
+
+The **ALU** (arithmetic logic unit) is the arithmetic unit of a processor. It calculates a result from two operands $A$ and $B$, selected by an **opcode**. In principle it consists of several combinational circuits that calculate all results in parallel, and a multiplexer that selects the desired one:
+
+| Opcode | Operation          | Combinational circuit              |
+| ------ | ------------------ | ---------------------------------- |
+| 00     | $A \land B$        | AND gate per bit                   |
+| 01     | $A \lor B$         | OR gate per bit                    |
+| 10     | $A + B$            | adder                              |
+| 11     | $A - B$            | adder with inverted $B$ and $C_\mathrm{in} = 1$ |
+
+In addition the ALU sets **flags** in the status register, which conditional jumps evaluate:
+
+| Flag          | Meaning                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| Z (zero)      | result is 0 (NOR over all result bits)                           |
+| C (carry)     | carry out of the most significant bit, an overflow for unsigned numbers |
+| N (negative)  | most significant result bit is 1, i.e. negative in two's complement |
+| V (overflow)  | overflow for signed numbers: carry into and out of the most significant bit differ |
+
+A comparison `a < b` in a program is executed in the processor as a subtraction whose result is discarded; only the flags remain. The historical 74181 was a 4-bit ALU with 32 functions.
+
+## Hazards
+
+Because signals take different times to pass through gates, an output can briefly take a wrong value even though, according to the truth table, it should stay constant (**hazard**, glitch). Example: $Y = A\overline{C} + BC$ with $A = B = 1$. When $C$ changes, one term switches off and the other on, and for the duration of one gate delay both may be 0. An additional consensus term $AB$ (in the Karnaugh map a group across the boundary between the two others) prevents this. In clocked circuits hazards usually do not matter because the flip-flops only take over when all signals are stable (see [Sequential Circuits](/en/electrical-engineering/sequential-circuits/)).
+
+## Further reading
+
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- [Nand2Tetris: projects 1 to 3 (gates, adders, ALU)](https://www.nand2tetris.org/)

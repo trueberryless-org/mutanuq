@@ -1,0 +1,404 @@
+---
+title: Graphen
+description: Begriffe und Darstellung von Graphen, Breiten- und Tiefensuche, kürzeste Wege mit Dijkstra, topologische Sortierung und minimale Spannbäume in C# und Rust.
+sidebar:
+  order: 12
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **Graph** $G = (V, E)$ besteht aus einer Menge von **Knoten** (_vertices_) $V$ und einer Menge von **Kanten** (_edges_) $E$, die jeweils zwei Knoten verbinden. Graphen beschreiben Beziehungen: Straßen zwischen Orten, Kabel zwischen Routern, Freundschaften in einem sozialen Netzwerk oder Abhängigkeiten zwischen Softwarepaketen.
+
+## Begriffe
+
+| Begriff                         | Bedeutung                                                                                     |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Ungerichteter Graph**         | Kanten haben keine Richtung: Ist A mit B verbunden, ist auch B mit A verbunden.               |
+| **Gerichteter Graph** (Digraph) | Kanten haben eine Richtung, dargestellt als Pfeil, zum Beispiel Einbahnstraßen oder Links.    |
+| **Gewichteter Graph**           | Jede Kante trägt ein Gewicht, etwa eine Entfernung, Fahrzeit oder Kosten.                     |
+| **Grad**                        | Anzahl der Kanten an einem Knoten; bei gerichteten Graphen Eingangs- und Ausgangsgrad.        |
+| **Weg** (Pfad)                  | Folge von Knoten, die jeweils durch eine Kante verbunden sind.                                |
+| **Zyklus** (Kreis)              | Weg, der zu seinem Startknoten zurückführt.                                                   |
+| **Zusammenhängend**             | Zwischen je zwei Knoten gibt es einen Weg.                                                    |
+| **DAG**                         | gerichteter Graph ohne Zyklen (_directed acyclic graph_), zum Beispiel Abhängigkeiten.        |
+| **Baum**                        | zusammenhängender ungerichteter Graph ohne Zyklen; mit $n$ Knoten hat er genau $n-1$ Kanten. |
+
+## Darstellung
+
+Ein Graph lässt sich auf zwei Arten speichern:
+
+- **Adjazenzmatrix**: Eine $n \times n$-Matrix, in der der Eintrag in Zeile $i$ und Spalte $j$ angibt, ob (bzw. mit welchem Gewicht) eine Kante von $i$ nach $j$ existiert. Prüfen, ob eine Kante existiert, kostet $O(1)$, der Speicherbedarf ist aber immer $O(n^2)$.
+- **Adjazenzliste**: Für jeden Knoten eine Liste seiner Nachbarn. Der Speicherbedarf ist $O(|V| + |E|)$. Für die meisten realen Graphen, die **dünn besetzt** sind (wenige Kanten pro Knoten), ist das die bessere Wahl.
+
+Für den folgenden ungerichteten Graphen mit den Kanten A–B, A–C, B–D, B–E, C–F und E–F:
+
+|       | A | B | C | D | E | F |
+| ----- | - | - | - | - | - | - |
+| **A** | 0 | 1 | 1 | 0 | 0 | 0 |
+| **B** | 1 | 0 | 0 | 1 | 1 | 0 |
+| **C** | 1 | 0 | 0 | 0 | 0 | 1 |
+| **D** | 0 | 1 | 0 | 0 | 0 | 0 |
+| **E** | 0 | 1 | 0 | 0 | 0 | 1 |
+| **F** | 0 | 0 | 1 | 0 | 1 | 0 |
+
+Die Matrix eines ungerichteten Graphen ist symmetrisch. Die Adjazenzliste lautet: A: B, C; B: A, D, E; C: A, F; D: B; E: B, F; F: C, E.
+
+## Breitensuche und Tiefensuche
+
+Um alle Knoten zu besuchen, die von einem Startknoten aus erreichbar sind, gibt es zwei grundlegende Verfahren. Beide markieren besuchte Knoten, damit Zyklen nicht zu Endlosschleifen führen, und laufen in $O(|V| + |E|)$.
+
+- **Breitensuche** (BFS, _breadth-first search_): Besucht zuerst alle direkten Nachbarn, dann deren Nachbarn usw., also Ebene für Ebene. Sie verwendet eine **Queue**. In einem ungewichteten Graphen findet sie den Weg mit den wenigsten Kanten.
+- **Tiefensuche** (DFS, _depth-first search_): Geht so weit wie möglich in die Tiefe und kehrt erst um, wenn es nicht mehr weitergeht. Sie verwendet einen **Stack** oder Rekursion. Sie eignet sich zum Finden von Zyklen, Zusammenhangskomponenten und für die topologische Sortierung.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var graph = new Dictionary<char, List<char>>
+{
+    ['A'] = ['B', 'C'],
+    ['B'] = ['A', 'D', 'E'],
+    ['C'] = ['A', 'F'],
+    ['D'] = ['B'],
+    ['E'] = ['B', 'F'],
+    ['F'] = ['C', 'E'],
+};
+
+Console.WriteLine(string.Join(" ", Bfs(graph, 'A'))); // A B C D E F
+
+var visited = new List<char>();
+Dfs(graph, 'A', visited);
+Console.WriteLine(string.Join(" ", visited));         // A B D E F C
+
+static List<char> Bfs(Dictionary<char, List<char>> graph, char start)
+{
+    var order = new List<char>();
+    var seen = new HashSet<char> { start };
+    var queue = new Queue<char>();
+    queue.Enqueue(start);
+    while (queue.Count > 0)
+    {
+        char node = queue.Dequeue();
+        order.Add(node);
+        foreach (char next in graph[node])
+        {
+            if (seen.Add(next)) queue.Enqueue(next); // Add liefert false, wenn schon gesehen
+        }
+    }
+    return order;
+}
+
+static void Dfs(Dictionary<char, List<char>> graph, char node, List<char> visited)
+{
+    visited.Add(node);
+    foreach (char next in graph[node])
+    {
+        if (!visited.Contains(next)) Dfs(graph, next, visited);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{BTreeMap, HashSet, VecDeque};
+
+type Graph = BTreeMap<char, Vec<char>>;
+
+fn bfs(graph: &Graph, start: char) -> Vec<char> {
+    let mut order = Vec::new();
+    let mut seen = HashSet::from([start]);
+    let mut queue = VecDeque::from([start]);
+    while let Some(node) = queue.pop_front() {
+        order.push(node);
+        for &next in &graph[&node] {
+            if seen.insert(next) {   // insert liefert false, wenn schon gesehen
+                queue.push_back(next);
+            }
+        }
+    }
+    order
+}
+
+fn dfs(graph: &Graph, node: char, visited: &mut Vec<char>) {
+    visited.push(node);
+    for &next in &graph[&node] {
+        if !visited.contains(&next) {
+            dfs(graph, next, visited);
+        }
+    }
+}
+
+fn main() {
+    let graph: Graph = BTreeMap::from([
+        ('A', vec!['B', 'C']),
+        ('B', vec!['A', 'D', 'E']),
+        ('C', vec!['A', 'F']),
+        ('D', vec!['B']),
+        ('E', vec!['B', 'F']),
+        ('F', vec!['C', 'E']),
+    ]);
+
+    println!("{:?}", bfs(&graph, 'A')); // ['A', 'B', 'C', 'D', 'E', 'F']
+
+    let mut visited = Vec::new();
+    dfs(&graph, 'A', &mut visited);
+    println!("{visited:?}");            // ['A', 'B', 'D', 'E', 'F', 'C']
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Kürzeste Wege
+
+### Dijkstra-Algorithmus
+
+Der **Dijkstra-Algorithmus** (Edsger W. Dijkstra, 1959) berechnet in einem gewichteten Graphen die kürzesten Wege von einem Startknoten zu allen anderen Knoten. Er funktioniert nur mit **nicht negativen** Kantengewichten.
+
+1. Setze die Entfernung zum Start auf 0 und zu allen anderen Knoten auf $\infty$.
+2. Wähle den noch nicht abgeschlossenen Knoten mit der kleinsten bekannten Entfernung. Er ist ab jetzt abgeschlossen, seine Entfernung ist endgültig.
+3. Prüfe für jeden Nachbarn, ob der Weg über den gewählten Knoten kürzer ist als die bisher bekannte Entfernung. Wenn ja, aktualisiere die Entfernung und merke den Vorgänger (**Relaxation**).
+4. Wiederhole ab Schritt 2, bis alle Knoten abgeschlossen sind.
+
+Mit einer [Prioritätswarteschlange](/de/software-development/generics-and-collections/#prioritätswarteschlange) für Schritt 2 beträgt die Laufzeit $O((|V| + |E|) \log |V|)$. Router verwenden Dijkstra im Routingprotokoll [OSPF](/de/networking/routing/#ospf), Navigationsgeräte eine Erweiterung namens **A\***, die mit einer Schätzung der Restentfernung gezielter sucht.
+
+Beispielgraph (ungerichtet): A–B 4, A–C 2, B–C 1, B–D 5, C–D 8, C–E 10, D–E 2, D–F 6, E–F 2.
+
+| Schritt | Abgeschlossen | A | B     | C     | D     | E      | F      |
+| ------- | ------------- | - | ----- | ----- | ----- | ------ | ------ |
+| Start   | -             | 0 | ∞     | ∞     | ∞     | ∞      | ∞      |
+| 1       | A             | 0 | 4 (A) | 2 (A) | ∞     | ∞      | ∞      |
+| 2       | C             | 0 | 3 (C) | 2     | 10 (C) | 12 (C) | ∞     |
+| 3       | B             | 0 | 3     | 2     | 8 (B) | 12 (C) | ∞      |
+| 4       | D             | 0 | 3     | 2     | 8     | 10 (D) | 14 (D) |
+| 5       | E             | 0 | 3     | 2     | 8     | 10     | 12 (E) |
+| 6       | F             | 0 | 3     | 2     | 8     | 10     | 12     |
+
+Der kürzeste Weg von A nach F hat die Länge 12 und führt über A → C → B → D → E → F. Man liest ihn rückwärts über die gemerkten Vorgänger ab.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var edges = new (char, char, int)[]
+{
+    ('A', 'B', 4), ('A', 'C', 2), ('B', 'C', 1), ('B', 'D', 5), ('C', 'D', 8),
+    ('C', 'E', 10), ('D', 'E', 2), ('D', 'F', 6), ('E', 'F', 2),
+};
+
+// ungerichteten Graphen als Adjazenzliste aufbauen
+var graph = new Dictionary<char, List<(char To, int Weight)>>();
+foreach (var (a, b, w) in edges)
+{
+    if (!graph.ContainsKey(a)) graph[a] = [];
+    if (!graph.ContainsKey(b)) graph[b] = [];
+    graph[a].Add((b, w));
+    graph[b].Add((a, w));
+}
+
+var (dist, prev) = Dijkstra(graph, 'A');
+Console.WriteLine(dist['F']);                        // 12
+
+var path = new List<char>();
+for (char? n = 'F'; n is not null; n = prev.GetValueOrDefault(n.Value)) path.Insert(0, n.Value);
+Console.WriteLine(string.Join(" -> ", path));        // A -> C -> B -> D -> E -> F
+
+static (Dictionary<char, int>, Dictionary<char, char?>) Dijkstra(
+    Dictionary<char, List<(char To, int Weight)>> graph, char start)
+{
+    var dist = graph.Keys.ToDictionary(k => k, _ => int.MaxValue);
+    var prev = new Dictionary<char, char?>();
+    var queue = new PriorityQueue<char, int>();
+    dist[start] = 0;
+    queue.Enqueue(start, 0);
+
+    while (queue.TryDequeue(out char node, out int d))
+    {
+        if (d > dist[node]) continue;                 // veralteter Eintrag
+        foreach (var (to, weight) in graph[node])
+        {
+            int candidate = d + weight;
+            if (candidate < dist[to])                 // Relaxation
+            {
+                dist[to] = candidate;
+                prev[to] = node;
+                queue.Enqueue(to, candidate);
+            }
+        }
+    }
+    return (dist, prev);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cmp::Reverse;
+use std::collections::{BinaryHeap, HashMap};
+
+fn dijkstra(
+    graph: &HashMap<char, Vec<(char, u32)>>,
+    start: char,
+) -> (HashMap<char, u32>, HashMap<char, char>) {
+    let mut dist: HashMap<char, u32> = graph.keys().map(|&k| (k, u32::MAX)).collect();
+    let mut prev = HashMap::new();
+    let mut queue = BinaryHeap::new();
+    dist.insert(start, 0);
+    queue.push(Reverse((0, start)));
+
+    while let Some(Reverse((d, node))) = queue.pop() {
+        if d > dist[&node] {
+            continue; // veralteter Eintrag
+        }
+        for &(to, weight) in &graph[&node] {
+            let candidate = d + weight;
+            if candidate < dist[&to] {               // Relaxation
+                dist.insert(to, candidate);
+                prev.insert(to, node);
+                queue.push(Reverse((candidate, to)));
+            }
+        }
+    }
+    (dist, prev)
+}
+
+fn main() {
+    let edges = [
+        ('A', 'B', 4), ('A', 'C', 2), ('B', 'C', 1), ('B', 'D', 5), ('C', 'D', 8),
+        ('C', 'E', 10), ('D', 'E', 2), ('D', 'F', 6), ('E', 'F', 2),
+    ];
+    // ungerichteten Graphen als Adjazenzliste aufbauen
+    let mut graph: HashMap<char, Vec<(char, u32)>> = HashMap::new();
+    for (a, b, w) in edges {
+        graph.entry(a).or_default().push((b, w));
+        graph.entry(b).or_default().push((a, w));
+    }
+
+    let (dist, prev) = dijkstra(&graph, 'A');
+    println!("{}", dist[&'F']); // 12
+
+    let mut path = vec!['F'];
+    while let Some(&p) = prev.get(path.last().unwrap()) {
+        path.push(p);
+    }
+    path.reverse();
+    let path: Vec<String> = path.iter().map(|c| c.to_string()).collect();
+    println!("{}", path.join(" -> ")); // A -> C -> B -> D -> E -> F
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Weitere Verfahren
+
+| Verfahren               | Einsatz                                                                                   | Laufzeit                    |
+| ----------------------- | ----------------------------------------------------------------------------------------- | --------------------------- |
+| **Breitensuche**        | kürzeste Wege in ungewichteten Graphen                                                    | $O(\|V\| + \|E\|)$          |
+| **Dijkstra**            | kürzeste Wege ab einem Startknoten, Gewichte $\ge 0$                                      | $O((\|V\| + \|E\|) \log \|V\|)$ |
+| **Bellman-Ford**        | kürzeste Wege mit negativen Gewichten, erkennt negative Zyklen; Grundlage des Routingprotokolls RIP | $O(\|V\| \cdot \|E\|)$ |
+| **Floyd-Warshall**      | kürzeste Wege zwischen allen Knotenpaaren                                                 | $O(\|V\|^3)$                |
+| **A\***                 | kürzester Weg zu einem Ziel mit Schätzfunktion (Heuristik)                                | abhängig von der Heuristik  |
+
+## Topologische Sortierung
+
+Eine **topologische Sortierung** ordnet die Knoten eines DAG so an, dass jede Kante von einem früheren zu einem späteren Knoten zeigt. Damit bestimmt man eine gültige Reihenfolge für Aufgaben mit Abhängigkeiten: Kompilierreihenfolge von Modulen, Installationsreihenfolge von Paketen oder die Abfolge von Vorgängen im [Netzplan](/de/project_management/planning/schedule_planning/#netzplan).
+
+Der **Algorithmus von Kahn** zählt für jeden Knoten die eingehenden Kanten. Knoten ohne eingehende Kanten kommen in eine Queue. Jeder entnommene Knoten wird ausgegeben, und die Zähler seiner Nachfolger werden verringert. Erreicht ein Zähler 0, kommt der Nachfolger in die Queue. Bleiben am Ende Knoten übrig, enthält der Graph einen Zyklus.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string[] courses = ["Mathematik", "Programmieren 1", "Programmieren 2", "Algorithmen", "Datenbanken"];
+// Kante (a, b): a ist Voraussetzung für b
+(int, int)[] prerequisites = [(1, 2), (2, 3), (0, 3), (2, 4)];
+
+var order = TopologicalSort(courses.Length, prerequisites);
+Console.WriteLine(string.Join(", ", order.Select(i => courses[i])));
+// Mathematik, Programmieren 1, Programmieren 2, Algorithmen, Datenbanken
+
+static List<int> TopologicalSort(int n, (int From, int To)[] edges)
+{
+    var next = Enumerable.Range(0, n).Select(_ => new List<int>()).ToArray();
+    var inDegree = new int[n];
+    foreach (var (from, to) in edges)
+    {
+        next[from].Add(to);
+        inDegree[to]++;
+    }
+
+    var queue = new Queue<int>(Enumerable.Range(0, n).Where(i => inDegree[i] == 0));
+    var order = new List<int>();
+    while (queue.Count > 0)
+    {
+        int node = queue.Dequeue();
+        order.Add(node);
+        foreach (int to in next[node])
+        {
+            if (--inDegree[to] == 0) queue.Enqueue(to);
+        }
+    }
+    if (order.Count != n) throw new InvalidOperationException("Der Graph enthält einen Zyklus");
+    return order;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+fn topological_sort(n: usize, edges: &[(usize, usize)]) -> Option<Vec<usize>> {
+    let mut next = vec![Vec::new(); n];
+    let mut in_degree = vec![0; n];
+    for &(from, to) in edges {
+        next[from].push(to);
+        in_degree[to] += 1;
+    }
+
+    let mut queue: VecDeque<usize> = (0..n).filter(|&i| in_degree[i] == 0).collect();
+    let mut order = Vec::new();
+    while let Some(node) = queue.pop_front() {
+        order.push(node);
+        for &to in &next[node] {
+            in_degree[to] -= 1;
+            if in_degree[to] == 0 {
+                queue.push_back(to);
+            }
+        }
+    }
+    (order.len() == n).then_some(order) // None bei einem Zyklus
+}
+
+fn main() {
+    let courses = ["Mathematik", "Programmieren 1", "Programmieren 2", "Algorithmen", "Datenbanken"];
+    // Kante (a, b): a ist Voraussetzung für b
+    let prerequisites = [(1, 2), (2, 3), (0, 3), (2, 4)];
+
+    let order = topological_sort(courses.len(), &prerequisites).unwrap();
+    let names: Vec<&str> = order.iter().map(|&i| courses[i]).collect();
+    println!("{}", names.join(", "));
+    // Mathematik, Programmieren 1, Programmieren 2, Algorithmen, Datenbanken
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Minimaler Spannbaum
+
+Ein **Spannbaum** eines zusammenhängenden, ungerichteten Graphen ist ein Baum, der alle Knoten enthält. Ein **minimaler Spannbaum** (MST, _minimum spanning tree_) ist der Spannbaum mit der kleinsten Summe der Kantengewichte. Er beantwortet Fragen wie: Wie verbindet man alle Gebäude eines Campus mit möglichst wenig Kabel?
+
+- **Kruskal**: Sortiere alle Kanten nach Gewicht. Füge nacheinander jede Kante hinzu, die keinen Zyklus erzeugt. Ob zwei Knoten schon verbunden sind, prüft man effizient mit einer **Union-Find**-Struktur. Laufzeit $O(|E| \log |E|)$.
+- **Prim**: Beginne bei einem Knoten und füge immer die günstigste Kante hinzu, die einen neuen Knoten an den bisherigen Baum anschließt (ähnlich wie Dijkstra mit einer Prioritätswarteschlange).
+
+Beide Algorithmen sind Greedy-Verfahren, die nachweislich das Optimum finden. Im Beispielgraph oben besteht der MST aus den Kanten B–C (1), A–C (2), D–E (2), E–F (2) und B–D (5) mit dem Gesamtgewicht 12. Das [Spanning Tree Protocol](/de/networking/ethernet-and-switching/#spanning-tree-protocol) in Netzwerken baut ebenfalls einen Spannbaum, um Schleifen zwischen Switches zu verhindern.
+
+## Weiterführende Quellen
+
+- [VisuAlgo: Graph Traversal](https://visualgo.net/en/dfsbfs) und [Single-Source Shortest Paths](https://visualgo.net/en/sssp) zum Nachverfolgen der Algorithmen

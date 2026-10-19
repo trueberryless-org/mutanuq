@@ -5,7 +5,7 @@ sidebar:
   order: 7
 ---
 
-The **Unternehmensgesetzbuch (UGB, Business Code)** contains special rules for businesses. It supplements the ABGB: where the UGB does not regulate something, general civil law applies.
+The **Business Code (UGB)** contains special rules for businesses. It supplements the ABGB: where the UGB does not regulate something, general civil law applies.
 
 ## Business status
 

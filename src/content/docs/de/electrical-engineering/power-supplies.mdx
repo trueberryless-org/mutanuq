@@ -1,0 +1,165 @@
+---
+title: Stromversorgung
+description: Aufbau von Netzteilen, Linearregler wie 78xx und LM317, Schaltregler (Abwärts- und Aufwärtswandler), Batterien und Akkus mit Kapazität und C-Rate, Power over Ethernet und USV.
+sidebar:
+  order: 10
+---
+
+Elektronische Schaltungen brauchen eine stabile Gleichspannung, meist $3{,}3\,\mathrm{V}$, $5\,\mathrm{V}$ oder $12\,\mathrm{V}$. Geliefert wird aber $230\,\mathrm{V}$ Wechselspannung aus dem Netz oder eine schwankende Spannung aus einem Akku. Die **Stromversorgung** wandelt die Energie um, regelt die Spannung und schützt die Schaltung. Ihr Wirkungsgrad entscheidet, wie viel Wärme entsteht und wie lange ein Akku hält.
+
+## Aufbau eines klassischen Netzteils
+
+Ein **lineares Netzteil** besteht aus vier Stufen:
+
+1. **Transformator**: setzt die Netzspannung herab und trennt galvanisch vom Netz (siehe [Transformator](/de/electrical-engineering/magnetism-and-inductors/#transformator)).
+2. **Gleichrichter**: macht aus der Wechselspannung eine pulsierende Gleichspannung (Brückengleichrichter).
+3. **Glättung**: ein Ladekondensator verringert die Welligkeit (siehe [Gleichrichter](/de/electrical-engineering/semiconductors-and-diodes/#gleichrichter)).
+4. **Regelung**: ein Spannungsregler hält die Ausgangsspannung unabhängig von Last und Eingangsspannung konstant.
+
+Lineare Netzteile sind einfach und störarm, aber schwer (der $50$-Hz-Transformator braucht viel Eisen) und haben einen schlechten Wirkungsgrad. Heute verwendet man fast überall **Schaltnetzteile**.
+
+## Linearregler
+
+Ein **Linearregler** arbeitet wie ein automatisch nachgestellter Vorwiderstand: Ein Längstransistor zwischen Ein- und Ausgang nimmt genau die Spannungsdifferenz auf, die zu viel ist. Eine interne Referenzspannung und ein Regelverstärker vergleichen dazu ständig die Ausgangsspannung mit dem Sollwert.
+
+Der Strom fließt vom Eingang durch den Regler zum Ausgang, deshalb gilt $I_\mathrm{ein} \approx I_\mathrm{aus}$, und die Differenz wird zu Wärme:
+
+$$
+P_\mathrm{V} = (U_\mathrm{ein} - U_\mathrm{aus}) \cdot I \qquad \eta \approx \frac{U_\mathrm{aus}}{U_\mathrm{ein}}
+$$
+
+### Festspannungsregler 78xx
+
+Die Reihe **78xx** liefert positive Festspannungen, die beiden Ziffern geben die Spannung an: 7805 für $5\,\mathrm{V}$, 7812 für $12\,\mathrm{V}$. Die Reihe **79xx** liefert negative Spannungen. Die Regler haben drei Anschlüsse (Eingang, Masse, Ausgang), liefern im Gehäuse TO-220 bis etwa $1{,}5\,\mathrm{A}$ und enthalten Kurzschluss- und Übertemperaturschutz.
+
+- Die Eingangsspannung muss um die **Dropout-Spannung** (beim 7805 etwa $2\,\mathrm{V}$) über der Ausgangsspannung liegen, auch im Tal der Brummspannung.
+- Kondensatoren nahe am Regler (laut Datenblatt typisch $0{,}22$ bis $0{,}33\,\mathrm{\mu F}$ am Eingang und $0{,}1\,\mathrm{\mu F}$ am Ausgang) verhindern Schwingungen.
+
+:::tip[Beispiel]
+Ein 7805 versorgt eine Schaltung mit $0{,}5\,\mathrm{A}$ aus $12\,\mathrm{V}$. Die Verlustleistung beträgt $P_\mathrm{V} = (12 - 5)\,\mathrm{V} \cdot 0{,}5\,\mathrm{A} = 3{,}5\,\mathrm{W}$, der Wirkungsgrad nur $5/12 \approx 42\,\%$. Ohne Kühlkörper hat ein TO-220-Gehäuse einen Wärmewiderstand von etwa $50$ bis $65\,\mathrm{K/W}$, der Chip würde sich um mehr als $170\,\mathrm{K}$ erwärmen. Ein Kühlkörper ist also nötig, oder besser ein Schaltregler.
+:::
+
+### LDO und einstellbare Regler
+
+**LDO-Regler** (_low dropout_) kommen mit einer Spannungsdifferenz von einigen hundert Millivolt aus. Sie erzeugen etwa $3{,}3\,\mathrm{V}$ aus einem Li-Ionen-Akku oder aus $5\,\mathrm{V}$ über USB.
+
+Der einstellbare Regler **LM317** hält zwischen seinem Ausgang und dem Einstellanschluss (ADJ) konstant $1{,}25\,\mathrm{V}$. Mit einem Spannungsteiler aus $R_1$ (zwischen Ausgang und ADJ) und $R_2$ (zwischen ADJ und Masse) gilt, wenn man den kleinen ADJ-Strom vernachlässigt:
+
+$$
+U_\mathrm{aus} = 1{,}25\,\mathrm{V} \cdot \left(1 + \frac{R_2}{R_1}\right)
+$$
+
+Mit $R_1 = 240\,\Omega$ und $R_2 = 720\,\Omega$ ergeben sich $1{,}25\,\mathrm{V} \cdot 4 = 5\,\mathrm{V}$.
+
+## Schaltregler
+
+Ein **Schaltregler** (DC-DC-Wandler) vermeidet die Verluste eines Längstransistors. Ein Transistor schaltet mit hoher Frequenz (einige $10\,\mathrm{kHz}$ bis einige $\mathrm{MHz}$) ganz ein oder ganz aus. Eine Spule speichert die Energie zwischen, ein Kondensator glättet den Ausgang. Weil ein idealer Schalter keine Verluste hat und Spule und Kondensator Energie nur zwischenspeichern, erreichen Schaltregler Wirkungsgrade von $85$ bis über $95\,\%$.
+
+Die Ausgangsspannung wird über das **Tastverhältnis** $D = t_\mathrm{ein}/T$ eingestellt, also den Anteil der Periode, in der der Schalter geschlossen ist (Pulsweitenmodulation).
+
+| Wandler                   | Ausgangsspannung (ideal)                | Funktion                                                       |
+| ------------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| Abwärtswandler (Buck)     | $U_\mathrm{aus} = D \cdot U_\mathrm{ein}$ | kleiner als Eingang                                          |
+| Aufwärtswandler (Boost)   | $U_\mathrm{aus} = \dfrac{U_\mathrm{ein}}{1 - D}$ | größer als Eingang                                   |
+| Inverswandler (Buck-Boost) | $U_\mathrm{aus} = -\dfrac{D}{1 - D} \cdot U_\mathrm{ein}$ | größer oder kleiner, umgekehrte Polarität |
+
+Die Formeln gelten für den nicht lückenden Betrieb, in dem der Spulenstrom nie auf null fällt.
+
+**Abwärtswandler**: Ist der Schalter geschlossen, fließt Strom vom Eingang durch die Spule zum Ausgang, die Spule nimmt Energie auf. Ist er offen, treibt die Spule den Strom über eine Diode (oder einen zweiten Transistor, _synchroner Wandler_) weiter. Der Ausgang sieht den Mittelwert der geschalteten Spannung. Für $12\,\mathrm{V} \to 5\,\mathrm{V}$ ist $D = 5/12 \approx 42\,\%$. Anders als beim Linearregler ist der Eingangsstrom kleiner als der Ausgangsstrom: Bei $5\,\mathrm{V}$, $2\,\mathrm{A}$ und $\eta = 90\,\%$ nimmt der Wandler nur $10\,\mathrm{W}/0{,}9/12\,\mathrm{V} \approx 0{,}93\,\mathrm{A}$ auf.
+
+**Aufwärtswandler**: Ist der Schalter geschlossen, liegt die Spule direkt an der Eingangsspannung und lädt sich magnetisch auf. Öffnet er, addiert sich die Induktionsspannung der Spule zur Eingangsspannung und lädt über eine Diode den Ausgangskondensator. Eine Powerbank erzeugt so aus einer Li-Ionen-Zelle ($3{,}7\,\mathrm{V}$) die $5\,\mathrm{V}$ für USB, mit $D = 1 - 3{,}7/5 = 0{,}26$.
+
+Nachteile von Schaltreglern sind die Restwelligkeit mit der Schaltfrequenz und elektromagnetische Störungen. Für empfindliche analoge Schaltungen kombiniert man deshalb oft einen Schaltregler mit einem nachgeschalteten LDO.
+
+### Schaltnetzteil
+
+Ein **primär getaktetes Schaltnetzteil** richtet die Netzspannung direkt gleich (etwa $325\,\mathrm{V}$ Gleichspannung), zerhackt sie mit hoher Frequenz und überträgt sie über einen kleinen Hochfrequenztransformator. Dieser sorgt weiterhin für die galvanische Trennung, ist aber wegen der hohen Frequenz viel kleiner als ein $50$-Hz-Transformator. Handyladegeräte verwenden meist einen **Sperrwandler** (Flyback). Die Regelung erfolgt über das Tastverhältnis, die Rückmeldung der Ausgangsspannung über einen **Optokoppler**, damit die Trennung erhalten bleibt.
+
+## Batterien und Akkumulatoren
+
+**Primärzellen** (Batterien) sind nicht wiederaufladbar, **Sekundärzellen** (Akkumulatoren) schon. Beide wandeln chemische Energie in elektrische um.
+
+| Zellentyp          | Nennspannung       | Eigenschaften                                                 |
+| ------------------ | ------------------ | ------------------------------------------------------------- |
+| Alkali-Mangan      | $1{,}5\,\mathrm{V}$ | Primärzelle, Standardbatterie AA/AAA                         |
+| Lithium (CR2032)   | $3\,\mathrm{V}$    | Primärzelle, Knopfzelle für Uhren und BIOS                     |
+| Blei               | $2{,}0\,\mathrm{V}$ | Autobatterie (6 Zellen = $12\,\mathrm{V}$), USV; schwer, billig |
+| NiMH               | $1{,}2\,\mathrm{V}$ | Ersatz für AA-Batterien, kaum Memory-Effekt, höhere Selbstentladung (außer LSD-Typen) |
+| Li-Ionen (NMC)     | $3{,}6$ bis $3{,}7\,\mathrm{V}$ | Ladeschluss $4{,}2\,\mathrm{V}$, Entladeschluss etwa $2{,}5$ bis $3{,}0\,\mathrm{V}$; hohe Energiedichte |
+| LiFePO₄            | $3{,}2\,\mathrm{V}$ | sicherer, langlebiger, geringere Energiedichte               |
+
+### Kapazität und Energie
+
+Die **Kapazität** eines Akkus ist die Ladung, die er abgeben kann, angegeben in Amperestunden (Ah) oder Milliamperestunden (mAh). Der Energieinhalt ergibt sich mit der Nennspannung:
+
+$$
+W = Q \cdot U_\mathrm{N} \qquad \text{z. B.} \quad 3\,\mathrm{Ah} \cdot 3{,}6\,\mathrm{V} = 10{,}8\,\mathrm{Wh}
+$$
+
+Kapazitäten verschiedener Akkutypen vergleicht man deshalb sinnvoll in Wh, nicht in mAh. Powerbanks geben oft die mAh der internen $3{,}7$-V-Zellen an, bei $5\,\mathrm{V}$ Ausgang und Wandlerverlusten steht davon weniger zur Verfügung.
+
+### C-Rate
+
+Die **C-Rate** gibt den Lade- oder Entladestrom bezogen auf die Kapazität an. $1\,\mathrm{C}$ ist der Strom, der den Akku in einer Stunde entleert:
+
+$$
+I = C\text{-Rate} \cdot Q \qquad t \approx \frac{1}{C\text{-Rate}}
+$$
+
+Ein Akku mit $3000\,\mathrm{mAh}$ liefert bei $1\,\mathrm{C}$ einen Strom von $3\,\mathrm{A}$, bei $0{,}5\,\mathrm{C}$ $1{,}5\,\mathrm{A}$ für etwa zwei Stunden. Hohe Ströme verringern die nutzbare Kapazität, weil der Innenwiderstand mehr Spannung abfallen lässt und Wärme erzeugt.
+
+### Laden von Li-Ionen-Akkus
+
+Li-Ionen-Akkus werden nach dem **CC/CV-Verfahren** geladen: zuerst mit konstantem Strom (_constant current_, meist $0{,}5$ bis $1\,\mathrm{C}$), bis $4{,}2\,\mathrm{V}$ erreicht sind, dann mit konstanter Spannung (_constant voltage_), bis der Strom auf einen kleinen Wert gefallen ist. Ein **Batteriemanagementsystem** (BMS) überwacht Spannung, Strom und Temperatur jeder Zelle und gleicht in Reihe geschaltete Zellen aus (Balancing).
+
+:::danger
+Überladen, Tiefentladen, Kurzschluss, mechanische Beschädigung oder Hitze können bei Li-Ionen-Zellen einen **thermischen Durchgang** (_thermal runaway_) auslösen: Die Zelle erhitzt sich selbst, gast aus und kann brennen. Solche Brände lassen sich schwer löschen. Beschädigte oder aufgeblähte Akkus nicht mehr laden und fachgerecht entsorgen.
+:::
+
+Zellen werden zu Packs kombiniert. Die Bezeichnung $n$S$m$P bedeutet $n$ Zellen in Reihe (Spannung mal $n$) und $m$ parallel (Kapazität mal $m$). Ein Laptop-Akku in 3S2P mit Zellen zu $3{,}6\,\mathrm{V}$ und $3\,\mathrm{Ah}$ hat $10{,}8\,\mathrm{V}$, $6\,\mathrm{Ah}$ und $64{,}8\,\mathrm{Wh}$.
+
+## Versorgung über Datenleitungen
+
+In der IT werden Geräte oft über die Datenleitung versorgt:
+
+| Standard                       | Leistung an der Quelle | Leistung am Gerät        |
+| ------------------------------ | ---------------------- | ------------------------ |
+| PoE, IEEE 802.3af (Typ 1)      | $15{,}4\,\mathrm{W}$   | $12{,}95\,\mathrm{W}$    |
+| PoE+, IEEE 802.3at (Typ 2)     | $30\,\mathrm{W}$       | $25{,}5\,\mathrm{W}$     |
+| PoE++, IEEE 802.3bt (Typ 3)    | $60\,\mathrm{W}$       | $51\,\mathrm{W}$         |
+| PoE++, IEEE 802.3bt (Typ 4)    | $90\,\mathrm{W}$       | $71{,}3\,\mathrm{W}$     |
+| USB Power Delivery             | bis $100\,\mathrm{W}$ ($20\,\mathrm{V}$, $5\,\mathrm{A}$), mit EPR bis $240\,\mathrm{W}$ | |
+
+**Power over Ethernet** speist etwa $48\,\mathrm{V}$ (nominal $44$ bis $57\,\mathrm{V}$) über die Netzwerkleitung ein, die Differenz zwischen Quelle und Gerät geht in der Leitung verloren. Damit werden Access Points, IP-Telefone und Kameras ohne eigene Steckdose betrieben. Der Switch prüft vor dem Einschalten über eine Signatur, ob ein PoE-fähiges Gerät angeschlossen ist. Bei der Planung muss das **PoE-Budget** des Switches reichen, also die Summe der Leistungen aller Ports.
+
+## Unterbrechungsfreie Stromversorgung
+
+Eine **USV** (unterbrechungsfreie Stromversorgung, _UPS_) versorgt Server und Netzwerkgeräte bei Netzausfall aus Akkus weiter, meist so lange, bis Systeme sauber heruntergefahren sind oder ein Notstromaggregat läuft. Die Norm IEC 62040-3 unterscheidet drei Klassen:
+
+| Klasse | Bauart                          | Funktion                                                                 | Umschaltzeit |
+| ------ | ------------------------------- | ------------------------------------------------------------------------ | ------------ |
+| VFD    | Offline (Standby)               | Verbraucher hängt direkt am Netz, bei Ausfall schaltet ein Wechselrichter zu | einige ms |
+| VI     | Line-Interactive                | wie VFD, zusätzlich gleicht ein Spartransformator Unter- und Überspannung aus | einige ms |
+| VFI    | Online (Doppelwandler)          | Netz → Gleichrichter → Akku/Zwischenkreis → Wechselrichter → Verbraucher, dauernd | keine |
+
+Nur die **Online-USV** trennt die Verbraucher vollständig von Netzstörungen und ist im Rechenzentrum Standard. Sie hat dafür ständig Wandlungsverluste.
+
+**Dimensionierung**: USVs werden mit Scheinleistung (VA) und Wirkleistung (W) angegeben, beide Grenzen müssen eingehalten werden. Die Überbrückungszeit hängt von der Akkuenergie und der Last ab.
+
+:::tip[Beispiel]
+Eine USV hat zwei Bleiakkus mit $12\,\mathrm{V}$ und $9\,\mathrm{Ah}$, also $216\,\mathrm{Wh}$. Der Wechselrichter hat $\eta = 90\,\%$, die Last beträgt $600\,\mathrm{W}$:
+
+$$
+t \approx \frac{216\,\mathrm{Wh} \cdot 0{,}9}{600\,\mathrm{W}} \approx 0{,}32\,\mathrm{h} \approx 19\,\mathrm{min}
+$$
+
+In der Praxis ist die Zeit kürzer, weil Bleiakkus bei hohem Strom weniger Kapazität abgeben und nicht ganz entladen werden. Hersteller geben deshalb Laufzeittabellen an.
+:::
+
+USVs melden den Netzausfall über USB oder das Netzwerk (SNMP), damit Server automatisch herunterfahren. Die Akkus altern und müssen regelmäßig getestet und nach einigen Jahren getauscht werden.
+
+## Weiterführende Quellen
+
+- [Texas Instruments: LM7800 Series Datenblatt](https://www.ti.com/lit/ds/symlink/lm7800.pdf)
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg (Kapitel Stromversorgung).
+- [Battery University](https://batteryuniversity.com/)

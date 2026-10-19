@@ -1,0 +1,308 @@
+---
+title: Sichten, Indizes, Funktionen und Trigger
+description: Views und materialisierte Sichten, Indizes mit B-Baum, zusammengesetzten Schlüsseln und EXPLAIN, gespeicherte Funktionen und Prozeduren sowie Trigger.
+sidebar:
+  label: "SQL: Sichten, Indizes, Trigger"
+  order: 8
+---
+
+Neben Tabellen kennt ein Datenbanksystem weitere Objekte: **Sichten** vereinfachen Abfragen und schränken den Zugriff ein, **Indizes** machen Abfragen schnell, **gespeicherte Funktionen und Prozeduren** führen Logik direkt in der Datenbank aus, und **Trigger** reagieren automatisch auf Änderungen. Die Beispiele verwenden PostgreSQL und diese Tabellen:
+
+```sql
+CREATE TABLE Klasse (Id INT PRIMARY KEY, Name VARCHAR(10) NOT NULL UNIQUE);
+
+CREATE TABLE Schueler (
+    Id       INT PRIMARY KEY,
+    Vorname  VARCHAR(50) NOT NULL,
+    Nachname VARCHAR(50) NOT NULL,
+    KlasseId INT REFERENCES Klasse(Id)
+);
+
+CREATE TABLE Note (
+    Id         INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    SchuelerId INT NOT NULL REFERENCES Schueler(Id),
+    Fach       VARCHAR(10) NOT NULL,
+    Wert       INT NOT NULL CHECK (Wert BETWEEN 1 AND 5)
+);
+
+INSERT INTO Klasse VALUES (1, '3AHIT'), (2, '4AHIT');
+INSERT INTO Schueler VALUES (1, 'Anna', 'Huber', 1), (2, 'Ben', 'Wolf', 1), (3, 'Clara', 'Berger', 2);
+INSERT INTO Note (SchuelerId, Fach, Wert) VALUES
+    (1, 'AM', 2), (1, 'SEW', 1), (2, 'AM', 4), (2, 'SEW', 3), (3, 'SEW', 2);
+```
+
+## Sichten
+
+Eine **Sicht** (_View_) ist eine gespeicherte Abfrage, die wie eine Tabelle verwendet werden kann. Sie speichert keine Daten. Bei jedem Zugriff führt die Datenbank die zugrunde liegende Abfrage aus.
+
+```sql
+CREATE VIEW Zeugnis AS
+SELECT s.Id AS SchuelerId, s.Vorname, s.Nachname, k.Name AS Klasse,
+       n.Fach, ROUND(AVG(n.Wert), 1) AS Schnitt
+FROM Schueler s
+JOIN Klasse k ON k.Id = s.KlasseId
+JOIN Note n   ON n.SchuelerId = s.Id
+GROUP BY s.Id, s.Vorname, s.Nachname, k.Name, n.Fach;
+
+SELECT Vorname, Fach, Schnitt FROM Zeugnis WHERE Klasse = '3AHIT' ORDER BY Vorname, Fach;
+```
+
+Sichten werden verwendet, um
+
+- **komplexe Abfragen zu vereinfachen**: Joins und Berechnungen stehen an einer Stelle, Anwendungen fragen nur die Sicht ab,
+- **den Zugriff einzuschränken**: Ein Benutzer erhält nur Rechte auf eine Sicht, die bestimmte Spalten oder Zeilen zeigt (siehe [Datenbanksicherheit](/de/databases/database-security/)),
+- **Anwendungen von Strukturänderungen zu entkoppeln**: Ändert sich das Tabellenschema, wird nur die Sicht angepasst. Das ist die externe Ebene der [ANSI/SPARC-Architektur](/de/databases/schema/#schemaebenen).
+
+Eine Sicht ist **änderbar**, wenn jede ihrer Zeilen genau einer Zeile einer Basistabelle entspricht: nur eine Tabelle in `FROM`, kein `GROUP BY`, kein `DISTINCT`, keine Aggregatfunktionen. Dann wirken `INSERT`, `UPDATE` und `DELETE` auf die Sicht direkt auf die Tabelle. Mit `WITH CHECK OPTION` verhindert die Datenbank, dass über die Sicht Zeilen geändert werden, die danach nicht mehr in der Sicht sichtbar wären.
+
+```sql
+CREATE VIEW Klasse3AHIT AS
+SELECT Id, Vorname, Nachname, KlasseId FROM Schueler WHERE KlasseId = 1
+WITH CHECK OPTION;
+
+UPDATE Klasse3AHIT SET Nachname = 'Wolff' WHERE Id = 2;    -- erlaubt
+```
+
+Ein `UPDATE Klasse3AHIT SET KlasseId = 2` würde dagegen abgewiesen, weil die Zeile danach aus der Sicht verschwinden würde.
+
+### Materialisierte Sichten
+
+Eine **materialisierte Sicht** speichert das Ergebnis der Abfrage tatsächlich ab. Lesen ist dadurch so schnell wie bei einer Tabelle, dafür sind die Daten nur so aktuell wie die letzte Aktualisierung. Sie eignet sich für aufwendige Auswertungen, die nicht sekundengenau sein müssen.
+
+```sql
+CREATE MATERIALIZED VIEW Fachschnitt AS
+SELECT Fach, ROUND(AVG(Wert), 2) AS Schnitt, COUNT(*) AS Anzahl
+FROM Note
+GROUP BY Fach;
+
+INSERT INTO Note (SchuelerId, Fach, Wert) VALUES (3, 'AM', 1);
+REFRESH MATERIALIZED VIEW Fachschnitt;     -- erst jetzt ist die neue Note enthalten
+
+SELECT * FROM Fachschnitt ORDER BY Fach;
+```
+
+SQL Server erreicht dasselbe mit **indizierten Sichten**, Oracle kennt materialisierte Sichten, MySQL nicht.
+
+## Indizes
+
+Ohne Index muss die Datenbank für `WHERE SensorId = 42` jede Zeile der Tabelle lesen und prüfen (**Full Table Scan**, in PostgreSQL _Seq Scan_). Bei Millionen von Zeilen dauert das Sekunden. Ein **Index** ist eine zusätzliche, sortierte Datenstruktur, die zu jedem Schlüsselwert die Speicherorte der passenden Zeilen enthält, ähnlich dem Stichwortverzeichnis eines Buches.
+
+### B-Baum
+
+Fast alle relationalen Datenbanken verwenden standardmäßig einen **B-Baum** (genauer einen B+-Baum). Er ist ein balancierter Suchbaum, dessen Knoten jeweils eine ganze Speicherseite füllen und deshalb hunderte Schlüssel enthalten:
+
+- Alle Blätter liegen auf derselben Tiefe. Eine Suche braucht daher immer gleich viele Schritte, nämlich $O(\log n)$. Bei 300 Schlüsseln pro Knoten reichen vier Ebenen für über acht Milliarden Einträge.
+- Die Blätter sind miteinander verkettet. Bereichsabfragen (`BETWEEN`, `<`, `>`) und Sortierungen (`ORDER BY`) lesen deshalb einfach die Blätter der Reihe nach.
+- Beim Einfügen und Löschen bleibt der Baum durch Teilen und Verschmelzen von Knoten balanciert.
+
+Wie Suchbäume grundsätzlich funktionieren, beschreibt die Seite [Datenstrukturen](/de/software-development/data-structures/). Daneben gibt es **Hash-Indizes** (nur für Gleichheit, $O(1)$), **Bitmap-Indizes** für Spalten mit wenigen verschiedenen Werten (Data Warehouses), **Volltextindizes** für die Suche nach Wörtern und **räumliche Indizes** (R-Baum, GiST) für Geodaten.
+
+### Indizes anlegen
+
+```sql
+CREATE TABLE Messwert (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    SensorId  INT NOT NULL,
+    Zeitpunkt TIMESTAMP NOT NULL,
+    Wert      NUMERIC(6, 2)
+);
+
+-- 200 000 Testzeilen: 100 Sensoren, ein Messwert pro Minute
+INSERT INTO Messwert (SensorId, Zeitpunkt, Wert)
+SELECT g % 100, TIMESTAMP '2025-01-01' + g * INTERVAL '1 minute', (g % 400) / 10.0
+FROM generate_series(1, 200000) AS g;
+
+CREATE INDEX ix_messwert_sensor_zeit ON Messwert (SensorId, Zeitpunkt);
+CREATE INDEX ix_note_schueler ON Note (SchuelerId);   -- Fremdschlüssel indizieren
+```
+
+Für Primärschlüssel und `UNIQUE`-Constraints legt die Datenbank automatisch einen Index an. Für **Fremdschlüssel** tun das die meisten Systeme nicht (MySQL mit InnoDB ist eine Ausnahme). Da Fremdschlüssel in fast jedem Join vorkommen, solltest du sie selbst indizieren.
+
+### Zusammengesetzte Indizes
+
+Ein Index über mehrere Spalten ist zuerst nach der ersten Spalte sortiert, bei gleichen Werten nach der zweiten und so weiter, wie ein Telefonbuch nach Nachname und dann Vorname. Daraus folgt die **Präfixregel**: Der Index `(SensorId, Zeitpunkt)` hilft bei Abfragen nach `SensorId` allein und nach `SensorId` und `Zeitpunkt` gemeinsam, aber nicht bei Abfragen nur nach `Zeitpunkt`. Ein Telefonbuch hilft auch nicht bei der Suche nach allen Personen mit dem Vornamen Anna.
+
+Stehen alle Spalten, die eine Abfrage braucht, im Index, muss die Tabelle selbst gar nicht gelesen werden (**abdeckender Index**, _Index-only Scan_).
+
+### Ausführungspläne lesen
+
+Mit `EXPLAIN` zeigt die Datenbank, wie sie eine Abfrage ausführen will, mit `EXPLAIN ANALYZE` führt sie sie zusätzlich aus und misst die tatsächliche Zeit.
+
+```sql
+ANALYZE Messwert;   -- Statistiken für den Optimierer aktualisieren
+
+EXPLAIN SELECT * FROM Messwert
+WHERE SensorId = 42 AND Zeitpunkt >= TIMESTAMP '2025-03-01';
+
+EXPLAIN SELECT * FROM Messwert
+WHERE Zeitpunkt >= TIMESTAMP '2025-03-01' AND Zeitpunkt < TIMESTAMP '2025-03-02';
+```
+
+Gekürzt sieht das Ergebnis so aus:
+
+```text
+Bitmap Heap Scan on messwert
+  ->  Bitmap Index Scan on ix_messwert_sensor_zeit
+        Index Cond: ((sensorid = 42) AND (zeitpunkt >= '2025-03-01 00:00:00'))
+
+Parallel Seq Scan on messwert
+  Filter: ((zeitpunkt >= '2025-03-01 00:00:00') AND (zeitpunkt < '2025-03-02 00:00:00'))
+```
+
+Die erste Abfrage verwendet den Index, die zweite liest wegen der Präfixregel die ganze Tabelle. Ein zusätzlicher Index auf `Zeitpunkt` würde das ändern.
+
+### Wann ein Index sinnvoll ist
+
+Indizes beschleunigen das Lesen, kosten aber bei jedem `INSERT`, `UPDATE` und `DELETE` Zeit, weil auch der Index aktualisiert werden muss, und sie belegen Speicher. Lege deshalb gezielt Indizes an:
+
+- auf Spalten, die häufig in `WHERE`, `JOIN ... ON` und `ORDER BY` vorkommen, insbesondere Fremdschlüssel,
+- auf Spalten mit hoher **Selektivität**, also vielen verschiedenen Werten. Ein Index auf eine Spalte `Geschlecht` hilft kaum, weil die Datenbank ohnehin einen großen Teil der Tabelle lesen müsste,
+- nicht auf kleine Tabellen, die ohnehin in wenige Speicherseiten passen.
+
+Ein Index wird nicht verwendet, wenn die Spalte in der Bedingung durch eine Funktion verändert wird: `WHERE UPPER(Nachname) = 'HUBER'` kann einen Index auf `Nachname` nicht nutzen. Dafür gibt es **Funktionsindizes**: `CREATE INDEX ON Schueler (UPPER(Nachname))`. Ebenso kann `LIKE '%huber'` mit einem führenden Platzhalter keinen B-Baum nutzen, `LIKE 'Hub%'` dagegen schon.
+
+### Gruppierte Indizes
+
+In SQL Server und MySQL (InnoDB) ist die Tabelle selbst nach dem Primärschlüssel sortiert gespeichert. Dieser **gruppierte Index** (_Clustered Index_) enthält die vollständigen Zeilen in seinen Blättern, jede Tabelle hat höchstens einen. Alle weiteren Indizes heißen **nicht gruppiert** und verweisen auf den Primärschlüssel. PostgreSQL speichert Tabellen dagegen unsortiert als _Heap_, und alle Indizes verweisen direkt auf die Zeilenposition.
+
+## Gespeicherte Funktionen und Prozeduren
+
+Datenbanksysteme haben eigene prozedurale Sprachen mit Variablen, Verzweigungen und Schleifen: **PL/pgSQL** in PostgreSQL, **T-SQL** in SQL Server und **PL/SQL** in Oracle. Darin geschriebene Programme werden in der Datenbank gespeichert und dort ausgeführt.
+
+- Eine **Funktion** liefert einen Wert oder eine Tabelle und kann in Abfragen verwendet werden.
+- Eine **Prozedur** wird mit `CALL` aufgerufen, liefert keinen Rückgabewert und darf in PostgreSQL Transaktionen selbst steuern (`COMMIT`, `ROLLBACK`).
+
+```sql
+CREATE FUNCTION Notenschnitt(p_schueler_id INT)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_schnitt NUMERIC;
+BEGIN
+    SELECT AVG(Wert) INTO v_schnitt FROM Note WHERE SchuelerId = p_schueler_id;
+    IF v_schnitt IS NULL THEN
+        RAISE EXCEPTION 'Schüler % hat keine Noten', p_schueler_id;
+    END IF;
+    RETURN ROUND(v_schnitt, 2);
+END;
+$$;
+
+SELECT Vorname, Notenschnitt(Id) AS Schnitt FROM Schueler ORDER BY Schnitt;
+```
+
+```sql
+CREATE PROCEDURE KlasseWechseln(p_schueler_id INT, p_klasse VARCHAR)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_klasse_id INT;
+BEGIN
+    SELECT Id INTO v_klasse_id FROM Klasse WHERE Name = p_klasse;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Klasse % existiert nicht', p_klasse;
+    END IF;
+    UPDATE Schueler SET KlasseId = v_klasse_id WHERE Id = p_schueler_id;
+END;
+$$;
+
+CALL KlasseWechseln(2, '4AHIT');
+```
+
+Der Text zwischen `$$` und `$$` ist der Funktionsrumpf. In SQL Server sieht dieselbe Prozedur so aus:
+
+{/* check: skip */}
+```sql
+CREATE PROCEDURE KlasseWechseln @SchuelerId INT, @Klasse VARCHAR(10)
+AS
+BEGIN
+    DECLARE @KlasseId INT = (SELECT Id FROM Klasse WHERE Name = @Klasse);
+    IF @KlasseId IS NULL
+        THROW 50000, 'Klasse existiert nicht', 1;
+    UPDATE Schueler SET KlasseId = @KlasseId WHERE Id = @SchuelerId;
+END;
+
+EXEC KlasseWechseln @SchuelerId = 2, @Klasse = '4AHIT';
+```
+
+| Vorteile                                                                        | Nachteile                                                                        |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| weniger Datenverkehr: viele Anweisungen mit einem Aufruf                        | Logik ist auf Anwendung und Datenbank verteilt                                   |
+| Regeln gelten für alle Anwendungen, die auf die Datenbank zugreifen             | herstellerspezifische Sprache, schwer auf ein anderes System zu übertragen       |
+| Benutzer können Rechte auf eine Prozedur erhalten statt auf die Tabellen        | schwieriger zu testen, zu debuggen und zu versionieren als Anwendungscode         |
+
+## Trigger
+
+Ein **Trigger** ist eine Funktion, die die Datenbank automatisch bei `INSERT`, `UPDATE` oder `DELETE` auf einer Tabelle ausführt.
+
+| Eigenschaft          | Möglichkeiten                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| **Zeitpunkt**        | `BEFORE` (vor der Änderung, kann sie verändern oder verhindern), `AFTER` (danach), `INSTEAD OF` (statt der Änderung, nur für Sichten) |
+| **Ereignis**         | `INSERT`, `UPDATE` (optional nur bestimmte Spalten: `UPDATE OF Wert`), `DELETE`             |
+| **Granularität**     | `FOR EACH ROW` (einmal pro geänderter Zeile) oder `FOR EACH STATEMENT` (einmal pro Anweisung) |
+| **Zugriff auf Daten** | `NEW` enthält die neue Zeile (bei `INSERT` und `UPDATE`), `OLD` die alte (bei `UPDATE` und `DELETE`) |
+
+Ein typischer Einsatz ist ein **Änderungsprotokoll**: Jede Notenänderung soll mit altem und neuem Wert, Benutzer und Zeitpunkt festgehalten werden.
+
+```sql
+CREATE TABLE NotenProtokoll (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    NoteId    INT NOT NULL,
+    AlterWert INT,
+    NeuerWert INT,
+    Benutzer  TEXT NOT NULL DEFAULT CURRENT_USER,
+    Zeitpunkt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE FUNCTION NoteProtokollieren()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO NotenProtokoll (NoteId, AlterWert, NeuerWert)
+    VALUES (NEW.Id, OLD.Wert, NEW.Wert);
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_note_protokoll
+AFTER UPDATE OF Wert ON Note
+FOR EACH ROW
+WHEN (OLD.Wert IS DISTINCT FROM NEW.Wert)
+EXECUTE FUNCTION NoteProtokollieren();
+
+UPDATE Note SET Wert = 3 WHERE SchuelerId = 2 AND Fach = 'AM';
+SELECT NoteId, AlterWert, NeuerWert FROM NotenProtokoll;
+```
+
+Ein `BEFORE`-Trigger kann Werte prüfen oder ergänzen. Liefert er `NULL` statt `NEW`, wird die Änderung für diese Zeile verworfen, mit `RAISE EXCEPTION` bricht er die ganze Anweisung ab:
+
+```sql
+CREATE FUNCTION NamenNormalisieren()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.Vorname  := INITCAP(TRIM(NEW.Vorname));
+    NEW.Nachname := INITCAP(TRIM(NEW.Nachname));
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_schueler_namen
+BEFORE INSERT OR UPDATE ON Schueler
+FOR EACH ROW
+EXECUTE FUNCTION NamenNormalisieren();
+
+INSERT INTO Schueler VALUES (4, '  david ', 'NOVAK', 2);
+SELECT Vorname, Nachname FROM Schueler WHERE Id = 4;   -- David, Novak
+```
+
+:::caution[Trigger sparsam einsetzen]
+Trigger sind beim Lesen des Anwendungscodes unsichtbar. Eine einfache Änderung kann dadurch eine Kette weiterer Änderungen auslösen, die schwer nachzuvollziehen ist. Verwende Trigger für Aufgaben, die wirklich bei **jeder** Änderung gelten müssen, etwa Protokollierung oder das Konsistenthalten redundanter Daten. Regeln, die sich als Constraint ausdrücken lassen, gehören in einen Constraint.
+:::
+
+## Weiterführende Quellen
+
+- [PostgreSQL-Dokumentation: Indexes](https://www.postgresql.org/docs/current/indexes.html), [PL/pgSQL](https://www.postgresql.org/docs/current/plpgsql.html) und [Triggers](https://www.postgresql.org/docs/current/triggers.html)
+- Markus Winand: [Use The Index, Luke](https://use-the-index-luke.com/de), eine Einführung in Indizes für Entwickler

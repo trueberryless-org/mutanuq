@@ -1,0 +1,564 @@
+---
+title: Data Representation
+description: Bits and bytes, units, integers in two's complement, fixed-point and IEEE 754 floating-point numbers, byte order and character encoding with ASCII and Unicode.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A computer stores and processes nothing but sequences of zeros and ones. Whether a bit pattern represents a number, a letter, a colour or a machine instruction is not stored in the pattern itself; it follows from how the program **interprets** it. The same 32 bits `0x41200000` are the number 1,092,616,192 as an `int` and the number 10.0 as a `float`. If you understand how data is encoded, you can explain and avoid overflows, rounding errors and garbled umlauts.
+
+How to convert between the binary, octal, decimal and hexadecimal systems is covered under [Number systems](/en/mathematics/algebra/number-systems/). This page builds on that and shows how numbers and characters are actually stored in memory.
+
+## Bits and bytes
+
+A **bit** (_binary digit_) is the smallest unit of information and has exactly two states: 0 or 1. Electrically this corresponds, for example, to two voltage levels, magnetically to two directions of magnetisation. With $n$ bits you can represent $2^n$ different values.
+
+| Term        | Size    | Values      | Remark                                                |
+| ----------- | ------- | ----------- | ----------------------------------------------------- |
+| **Bit**     | 1 bit   | 2           | symbol `bit` or `b`                                   |
+| **Nibble**  | 4 bits  | 16          | exactly one hexadecimal digit                         |
+| **Byte**    | 8 bits  | 256         | symbol `B`, smallest addressable unit in memory       |
+| **Word**    | 16, 32 or 64 bits | | depends on the architecture; historically 16 bits on x86 |
+
+Within a byte, the bit with the highest place value is called the **MSB** (_most significant bit_, bit 7), the one with the lowest the **LSB** (_least significant bit_, bit 0).
+
+### Units: SI and binary prefixes
+
+There are two prefix systems for large amounts of data, and they are often confused. The **SI prefixes** (kilo, mega, giga) mean powers of ten, as everywhere in physics. Because memory addresses are powers of two, however, the IEC introduced separate **binary prefixes** (kibi, mebi, gibi) in 1998 (today IEC 80000-13).
+
+| SI prefix     | Value           | Binary prefix (IEC) | Value                 | Difference |
+| ------------- | --------------- | ------------------- | --------------------- | ---------- |
+| kilobyte (kB) | $10^3$ bytes    | kibibyte (KiB)      | $2^{10} = 1024$ bytes | 2.4 %      |
+| megabyte (MB) | $10^6$ bytes    | mebibyte (MiB)      | $2^{20}$ bytes        | 4.9 %      |
+| gigabyte (GB) | $10^9$ bytes    | gibibyte (GiB)      | $2^{30}$ bytes        | 7.4 %      |
+| terabyte (TB) | $10^{12}$ bytes | tebibyte (TiB)      | $2^{40}$ bytes        | 10.0 %     |
+| petabyte (PB) | $10^{15}$ bytes | pebibyte (PiB)      | $2^{50}$ bytes        | 12.6 %     |
+
+Drive manufacturers state capacities in SI units, while Windows calculates in binary units but displays "GB". That is why a 1 TB drive shows up in Windows with only "931 GB":
+
+$$
+\frac{10^{12}\,\mathrm{B}}{2^{30}\,\mathrm{B/GiB}} \approx 931.3\,\mathrm{GiB}
+$$
+
+Transfer rates are almost always given in **bits per second** with SI prefixes: 1 Gbit/s is $10^9\,\mathrm{bit/s}$, so at most $125\,\mathrm{MB/s}$.
+
+:::tip[Remember]
+Lower-case "b" stands for bit, upper-case "B" for byte. An internet connection with 100 Mbit/s therefore downloads at most 12.5 MB per second.
+:::
+
+## Integers
+
+### Unsigned numbers
+
+An **unsigned** integer with $n$ bits is simply a binary number. Its range is $0$ to $2^n - 1$. If the largest value is exceeded, the number overflows and starts again at 0 because there is no room for the carry bit. Arithmetic is therefore performed **modulo** $2^n$:
+
+$$
+255 + 1 = 1111\,1111_2 + 1_2 = \underbrace{1}_{\text{discarded}}\,0000\,0000_2 = 0 \quad (8\text{ bits})
+$$
+
+### Two's complement
+
+For **signed** integers, practically all processors use **two's complement**. The most significant bit has the negative place value $-2^{n-1}$, all other bits are ordinary positive place values:
+
+$$
+z = -b_{n-1} \cdot 2^{n-1} + \sum_{i=0}^{n-2} b_i \cdot 2^i
+$$
+
+This gives the range $-2^{n-1}$ to $2^{n-1} - 1$, so $-128$ to $127$ for 8 bits. Zero exists exactly once, which is why the range is asymmetric: $-128$ has no positive counterpart.
+
+You negate a number by **inverting all bits and adding 1** (example under [Number systems](/en/mathematics/algebra/number-systems/#negative-numbers-in-twos-complement)). The big advantage over other representations is that addition and subtraction work with the same adder as for unsigned numbers; the arithmetic unit does not need to treat the sign separately.
+
+| Representation         | +5 (8 bits) | −5 (8 bits) | Drawback                                    |
+| ---------------------- | ----------- | ----------- | ------------------------------------------- |
+| sign and magnitude     | `0000 0101` | `1000 0101` | two zeros (+0, −0), separate arithmetic unit needed |
+| ones' complement       | `0000 0101` | `1111 1010` | two zeros, carry must be added back         |
+| **two's complement**   | `0000 0101` | `1111 1011` | asymmetric range                            |
+| excess-$k$ (bias)      | `1000 0100` | `0111 1010` | with $k = 127$; used for the exponent in IEEE 754 |
+
+### Overflow
+
+An **overflow** occurs when the result does not fit into the range. The processor signals this with two flags in the status register (see [Computer architecture](/en/computer-science/computer-architecture/#registers)):
+
+- **Carry flag (C)**: carry out of the most significant bit. Means overflow for **unsigned** numbers.
+- **Overflow flag (V/O)**: the sign of the result is wrong. For **signed** numbers this happens exactly when two numbers with the same sign are added and the result has the other sign.
+
+$$
+\begin{array}{rr}
+  0111\,1111 & (127) \\
++ 0000\,0001 & (1) \\
+\hline
+  1000\,0000 & (-128)
+\end{array}
+$$
+
+Two positive numbers give a negative result: the overflow flag is set, the carry flag is not. Interpreted as an unsigned calculation ($127 + 1 = 128$), the result is correct.
+
+By default C# calculates without overflow checking (`unchecked`) and truncates; inside a `checked` block an `OverflowException` is thrown. Rust panics in a debug build and truncates in a release build. If you want a particular behaviour, use `wrapping_add`, `checked_add` or `saturating_add` explicitly.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+sbyte a = 127;
+sbyte b = unchecked((sbyte)(a + 1));
+Console.WriteLine(b);                     // -128
+
+byte c = 200;
+Console.WriteLine((byte)(c + 100));       // 44, because 300 mod 256 = 44
+
+try
+{
+    int big = int.MaxValue;
+    int result = checked(big + 1);
+    Console.WriteLine(result);
+}
+catch (OverflowException)
+{
+    Console.WriteLine("Overflow detected");
+}
+
+// bit pattern of -5 in two's complement
+Console.WriteLine(Convert.ToString((sbyte)-5 & 0xFF, 2)); // 11111011
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let a: i8 = 127;
+    println!("{}", a.wrapping_add(1));       // -128
+    println!("{:?}", a.checked_add(1));      // None
+    println!("{}", a.saturating_add(1));     // 127
+
+    let c: u8 = 200;
+    println!("{}", c.wrapping_add(100));     // 44, because 300 mod 256 = 44
+
+    let (value, overflow) = a.overflowing_add(1);
+    println!("{value} {overflow}");          // -128 true
+
+    // bit pattern of -5 in two's complement
+    println!("{:08b}", -5i8);                // 11111011
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Bitwise operations
+
+**Bitwise operations** read and modify individual bits. They are needed for flags, network masks, hardware registers and compact data formats.
+
+| Operation       | C# / Rust   | Use                                                       |
+| --------------- | ----------- | --------------------------------------------------------- |
+| AND             | `a & b`     | **mask** bits (clear or read specific bits)               |
+| OR              | `a \| b`    | **set** bits                                              |
+| exclusive OR    | `a ^ b`     | **toggle** bits, parity, simple checksums                 |
+| NOT             | `~a` / `!a` | invert all bits                                           |
+| shift left      | `a << n`    | multiplies by $2^n$                                       |
+| shift right     | `a >> n`    | divides by $2^n$ (arithmetic for signed types, the sign is shifted in) |
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const int Bit3 = 1 << 3;          // 0000 1000
+
+int flags = 0b0000_0101;
+flags |= Bit3;                    // set bit 3
+Console.WriteLine(Convert.ToString(flags, 2).PadLeft(8, '0')); // 00001101
+
+bool isSet = (flags & Bit3) != 0; // test bit 3
+Console.WriteLine(isSet);         // True
+
+flags &= ~Bit3;                   // clear bit 3
+flags ^= 0b1;                     // toggle bit 0
+Console.WriteLine(Convert.ToString(flags, 2).PadLeft(8, '0')); // 00000100
+
+// upper and lower nibble of a byte
+byte value = 0xB5;
+Console.WriteLine($"{value >> 4:X} {value & 0x0F:X}");         // B 5
+
+Console.WriteLine(-16 >> 2);      // -4 (arithmetic)
+Console.WriteLine(int.PopCount(0b1011_0110)); // 5 bits set
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    const BIT3: u8 = 1 << 3;          // 0000 1000
+
+    let mut flags: u8 = 0b0000_0101;
+    flags |= BIT3;                    // set bit 3
+    println!("{flags:08b}");          // 00001101
+
+    let is_set = flags & BIT3 != 0;   // test bit 3
+    println!("{is_set}");             // true
+
+    flags &= !BIT3;                   // clear bit 3
+    flags ^= 0b1;                     // toggle bit 0
+    println!("{flags:08b}");          // 00000100
+
+    // upper and lower nibble of a byte
+    let value: u8 = 0xB5;
+    println!("{:X} {:X}", value >> 4, value & 0x0F); // B 5
+
+    println!("{}", -16i32 >> 2);      // -4 (arithmetic)
+    println!("{}", 0b1011_0110u32.count_ones()); // 5 bits set
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Fixed-point numbers
+
+In a **fixed-point** number the position of the binary point is agreed in advance. You store an integer and imply a fixed scaling factor. In **Q format**, Q$m$.$n$ denotes a number with $m$ integer bits and $n$ fractional bits. A Q4.4 number in one byte has a resolution of $2^{-4} = 0.0625$:
+
+$$
+0101\,1100_2 \;\hat{=}\; 0101.1100_2 = 4 + 1 + 0.5 + 0.25 = 5.75
+$$
+
+The stored integer value is $92$, and $92 / 16 = 5.75$. Addition and subtraction work as for integers; after a multiplication the result must be shifted right by $n$ bits again.
+
+Fixed-point numbers are fast, exact within their resolution and need no floating-point unit. They are used on microcontrollers, in signal processing and for **amounts of money**: if you store euros as whole cents (`long`), there are no rounding errors. C# also has the type `decimal` for money, a base-10 floating-point number with 28 to 29 significant digits that can represent 0.1 exactly.
+
+## Floating-point numbers according to IEEE 754
+
+For very large and very small values a fixed point would be impractical. **Floating-point numbers** therefore store a mantissa and an exponent, just like scientific notation. The **IEEE 754** standard (currently IEEE 754-2019) defines formats, rounding and special values and is implemented by practically every CPU.
+
+$$
+x = (-1)^S \cdot 1.M_2 \cdot 2^{E - \text{bias}}
+$$
+
+| Format                         | Bits | Sign $S$ | Exponent $E$ | Mantissa $M$ | Bias   | Significant decimal digits | Type in C# / Rust |
+| ------------------------------ | ---- | -------- | ------------ | ------------ | ------ | -------------------------- | ----------------- |
+| **single precision** (binary32) | 32  | 1        | 8            | 23           | 127    | about 7                    | `float` / `f32`   |
+| **double precision** (binary64) | 64  | 1        | 11           | 52           | 1023   | about 15 to 16             | `double` / `f64`  |
+
+- The mantissa is **normalised**: there is always a 1 before the point. This **implicit** (_hidden_) 1 is not stored, which gains one bit of precision.
+- The exponent is stored with a **bias** (excess representation) so that negative exponents can also be stored as an unsigned number. As a side effect, positive floating-point numbers can be compared like integers.
+
+### Converting decimal to IEEE 754
+
+:::tip[Example: −6.625 as a float]
+1. **Sign**: negative, so $S = 1$.
+2. **Magnitude in binary**: $6 = 110_2$, $0.625 = 0.101_2$ (because $0.625 \cdot 2 = 1.25 \to 1$, $0.25 \cdot 2 = 0.5 \to 0$, $0.5 \cdot 2 = 1.0 \to 1$), together $110.101_2$.
+3. **Normalise**: $110.101_2 = 1.10101_2 \cdot 2^2$.
+4. **Exponent with bias**: $2 + 127 = 129 = 1000\,0001_2$.
+5. **Mantissa** without the leading 1, padded on the right with zeros to 23 bits: $1010\,1000\,0000\,0000\,0000\,000$.
+
+$$
+\underbrace{1}_{S}\;\underbrace{1000\,0001}_{E}\;\underbrace{1010\,1000\,0000\,0000\,0000\,000}_{M}
+$$
+
+In groups of four: `1100 0000 1101 0100 0000 0000 0000 0000` = `0xC0D40000`.
+:::
+
+The other way round: `0x41200000` = `0 10000010 01000000000000000000000`. Exponent $130 - 127 = 3$, mantissa $1.01_2 = 1.25$, value $1.25 \cdot 2^3 = 10$.
+
+### Special values
+
+The smallest and largest exponent patterns are reserved for special cases:
+
+| Exponent $E$            | Mantissa $M$ | Meaning                                                            |
+| ----------------------- | ------------ | ------------------------------------------------------------------ |
+| all bits 0              | 0            | **±0** (there are +0 and −0, which compare as equal)               |
+| all bits 0              | ≠ 0          | **subnormal** (denormalised) number: $0.M \cdot 2^{1-\text{bias}}$, fills the gap around 0 |
+| 1 to 254 (or 2046)      | any          | normal number                                                      |
+| all bits 1              | 0            | **±∞** (_infinity_), for example for $1/0$ or on overflow           |
+| all bits 1              | ≠ 0          | **NaN** (_not a number_), for example for $0/0$ or $\sqrt{-1}$       |
+
+NaN is not equal to anything, not even to itself: `x == x` is `false` for NaN. To test for it, use `double.IsNaN(x)` or `x.is_nan()`.
+
+The largest normal `float` is $(2 - 2^{-23}) \cdot 2^{127} \approx 3.4 \cdot 10^{38}$, the smallest positive normal one $2^{-126} \approx 1.18 \cdot 10^{-38}$. For `double` the range extends to about $1.8 \cdot 10^{308}$.
+
+### Rounding errors
+
+Only fractions whose denominator is a power of two can be written as a finite binary number. $0.1$ is recurring in binary:
+
+$$
+0.1_{10} = 0.0\overline{0011}_2
+$$
+
+The mantissa is cut off after 23 or 52 bits and rounded. That is why `0.1 + 0.2` in `double` is not exactly `0.3` but `0.30000000000000004`. Further consequences:
+
+- **Comparisons** with `==` are unreliable. It is better to check whether the difference is smaller than a tolerance: $|a - b| < \varepsilon$.
+- **Cancellation**: when subtracting numbers of almost equal size, only a few valid digits remain.
+- **Absorption**: if you add a very small number to a very large one, the small one is lost ($10^{16} + 1 = 10^{16}$ in `double`).
+- **Integers** can be represented exactly without gaps only up to $2^{24}$ (`float`) or $2^{53}$ (`double`).
+
+The **machine epsilon** $\varepsilon$ is the distance from 1 to the next larger representable number: $2^{-23} \approx 1.19 \cdot 10^{-7}$ for `float` and $2^{-52} \approx 2.22 \cdot 10^{-16}$ for `double`. The relative rounding error of a single operation is at most $\varepsilon / 2$.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+double sum = 0.1 + 0.2;
+Console.WriteLine(sum.ToString("R", System.Globalization.CultureInfo.InvariantCulture)); // 0.30000000000000004
+Console.WriteLine(sum == 0.3);                      // False
+Console.WriteLine(Math.Abs(sum - 0.3) < 1e-9);      // True
+
+// show the bit pattern of a float
+float f = -6.625f;
+uint bits = BitConverter.SingleToUInt32Bits(f);
+Console.WriteLine($"0x{bits:X8}");                  // 0xC0D40000
+uint sign = bits >> 31;
+uint exponent = (bits >> 23) & 0xFF;
+uint mantissa = bits & 0x7FFFFF;
+Console.WriteLine($"S={sign} E={exponent} ({exponent - 127}) M=0x{mantissa:X6}"); // S=1 E=129 (2) M=0x540000
+
+Console.WriteLine(BitConverter.UInt32BitsToSingle(0x41200000));  // 10
+
+double nan = 0.0 / 0.0;
+Console.WriteLine(nan == nan);                      // False
+Console.WriteLine(double.IsNaN(nan));               // True
+Console.WriteLine(double.IsPositiveInfinity(1.0 / 0.0)); // True
+Console.WriteLine(1e16 + 1 == 1e16);                // True
+
+decimal money = 0.1m + 0.2m;
+Console.WriteLine(money == 0.3m);                   // True
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let sum = 0.1_f64 + 0.2;
+    println!("{sum}");                              // 0.30000000000000004
+    println!("{}", sum == 0.3);                     // false
+    println!("{}", (sum - 0.3).abs() < 1e-9);       // true
+
+    // show the bit pattern of an f32
+    let f = -6.625_f32;
+    let bits = f.to_bits();
+    println!("0x{bits:08X}");                       // 0xC0D40000
+    let sign = bits >> 31;
+    let exponent = (bits >> 23) & 0xFF;
+    let mantissa = bits & 0x7F_FFFF;
+    println!("S={sign} E={exponent} ({}) M=0x{mantissa:06X}", exponent as i32 - 127); // S=1 E=129 (2) M=0x540000
+
+    println!("{}", f32::from_bits(0x4120_0000));    // 10
+
+    let nan = f64::NAN;
+    println!("{}", nan == nan);                     // false
+    println!("{}", nan.is_nan());                   // true
+    println!("{}", (1.0_f64 / 0.0).is_infinite());  // true
+    println!("{}", 1e16_f64 + 1.0 == 1e16);         // true
+    println!("{}", f64::EPSILON);                   // 0.0000000000000002220446049250313
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Byte order (endianness)
+
+If a value occupies several bytes, the order in which they are placed in memory must be defined. The name comes from "Gulliver's Travels", in which people argue about whether to crack an egg at the big end or the little end.
+
+| Order             | Principle                                            | `0x12345678` from address 100    | Used by                            |
+| ----------------- | ---------------------------------------------------- | -------------------------------- | ---------------------------------- |
+| **big-endian**    | most significant byte at the lowest address          | `12 34 56 78`                    | network protocols (**network byte order**), Motorola 68k, many file formats (PNG, JPEG) |
+| **little-endian** | least significant byte at the lowest address         | `78 56 34 12`                    | x86, x86-64, ARM and RISC-V (by default) |
+
+Big-endian matches the way we read numbers. Little-endian has the advantage that a value at the same address can be read as an 8-, 16- or 32-bit number without changing the address. Byte order matters whenever binary data is exchanged between systems: network packets, binary files, communication with microcontrollers. Individual characters in UTF-8 are not affected because they are encoded byte by byte.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Buffers.Binary;
+
+int number = 0x12345678;
+
+byte[] native = BitConverter.GetBytes(number);      // order of the CPU
+Console.WriteLine(BitConverter.IsLittleEndian);     // True (x86-64, ARM)
+Console.WriteLine(Convert.ToHexString(native));     // 78563412
+
+var big = new byte[4];
+BinaryPrimitives.WriteInt32BigEndian(big, number);
+Console.WriteLine(Convert.ToHexString(big));        // 12345678
+
+Console.WriteLine($"0x{BinaryPrimitives.ReadInt32LittleEndian(native):X8}"); // 0x12345678
+Console.WriteLine($"0x{BinaryPrimitives.ReverseEndianness(number):X8}");     // 0x78563412
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let number: i32 = 0x1234_5678;
+
+    println!("{:02X?}", number.to_le_bytes());       // [78, 56, 34, 12]
+    println!("{:02X?}", number.to_be_bytes());       // [12, 34, 56, 78]
+    println!("{}", cfg!(target_endian = "little"));  // true (x86-64, ARM)
+
+    let bytes = [0x78, 0x56, 0x34, 0x12];
+    println!("0x{:08X}", i32::from_le_bytes(bytes)); // 0x12345678
+    println!("0x{:08X}", number.swap_bytes());       // 0x78563412
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Character encoding
+
+A **character encoding** assigns a number (the **code point**) to each character and defines how this number is stored as a byte sequence. If data is read with a different encoding from the one it was written with, the result is **mojibake**: "Käse" becomes "KÃ¤se" when UTF-8 bytes are interpreted as ISO 8859-1.
+
+### ASCII
+
+The **American Standard Code for Information Interchange** (1963) is a **7-bit code** with 128 characters:
+
+| Range (decimal)   | Hex           | Content                                                        |
+| ----------------- | ------------- | -------------------------------------------------------------- |
+| 0 to 31, 127      | `00` to `1F`, `7F` | **control characters**, e.g. `LF` (10, line feed), `CR` (13, carriage return), `TAB` (9), `NUL` (0), `ESC` (27), `DEL` (127) |
+| 32                | `20`          | space                                                          |
+| 48 to 57          | `30` to `39`  | digits `0` to `9`                                              |
+| 65 to 90          | `41` to `5A`  | upper-case letters `A` to `Z`                                  |
+| 97 to 122         | `61` to `7A`  | lower-case letters `a` to `z`                                  |
+
+The layout is well thought out: the value of a digit is its code minus 48 (`'7' - '0' = 7`), and upper- and lower-case letters differ only in bit 5 (value 32), so `c ^ 0x20` switches the case. Line endings are encoded differently: Windows uses `CR LF`, Linux and macOS only `LF`.
+
+### ISO 8859 and code pages
+
+ASCII contains no umlauts. Because a byte has 8 bits, the values 128 to 255 were used for regional extensions. **ISO 8859-1** (_Latin-1_) contains the characters of Western European languages, including `ä` (`E4`), `ö` (`F6`), `ü` (`FC`), `ß` (`DF`). **ISO 8859-15** adds the euro sign `€`. Microsoft uses the similar code page **Windows-1252**, DOS used **CP437** and **CP850**.
+
+The problem: a byte `E4` is only an "ä" in Latin-1; in ISO 8859-5 it is a Cyrillic character. A text can only use one code page, and the encoding has to be communicated separately (for example in the HTTP header `Content-Type: text/html; charset=...`).
+
+### Unicode
+
+**Unicode** solves the problem by giving **every** character of every script a unique number. Unicode 17.0 (2025) contains almost 160,000 characters including emojis. Code points are written as `U+` followed by at least four hex digits: `U+0041` is "A", `U+00E4` is "ä", `U+20AC` is "€", `U+1F600` is "😀".
+
+The code space runs from `U+0000` to `U+10FFFF` (1,114,112 code points) and is divided into 17 **planes** of 65,536 code points each. The first plane, the **Basic Multilingual Plane** (BMP, `U+0000` to `U+FFFF`), contains almost all commonly used characters. The first 256 code points match ISO 8859-1, the first 128 match ASCII.
+
+Unicode separates the character (code point) from how it is stored. How a code point is turned into bytes is defined by the **encoding form** (_Unicode Transformation Format_, UTF).
+
+### UTF-8
+
+**UTF-8** stores a code point in **1 to 4 bytes** of variable length and is today the standard encoding on the web (over 98 % of all websites), on Linux and in Rust. The layout:
+
+| Code point range         | Bits | Byte 1     | Byte 2     | Byte 3     | Byte 4     |
+| ------------------------ | ---- | ---------- | ---------- | ---------- | ---------- |
+| `U+0000` to `U+007F`     | 7    | `0xxxxxxx` |            |            |            |
+| `U+0080` to `U+07FF`     | 11   | `110xxxxx` | `10xxxxxx` |            |            |
+| `U+0800` to `U+FFFF`     | 16   | `1110xxxx` | `10xxxxxx` | `10xxxxxx` |            |
+| `U+10000` to `U+10FFFF`  | 21   | `11110xxx` | `10xxxxxx` | `10xxxxxx` | `10xxxxxx` |
+
+The number of leading ones in the first byte gives the length; continuation bytes always start with `10`. This gives UTF-8 important properties:
+
+- **ASCII-compatible**: every ASCII file is already valid UTF-8.
+- **self-synchronising**: from any position you can find the start of the next character.
+- **no byte order**: UTF-8 is byte-oriented, so a **BOM** (_byte order mark_, `EF BB BF`) is unnecessary and often omitted.
+
+:::tip[Example: "€" (U+20AC) in UTF-8]
+1. `U+20AC` lies in the range `U+0800` to `U+FFFF`, so it needs 3 bytes and 16 bits.
+2. Binary: $20\text{AC}_{16} = 0010\;000010\;101100_2$ (split into 4 + 6 + 6 bits).
+3. Insert into the template: `1110 0010`, `10 000010`, `10 101100`.
+4. Result: `E2 82 AC`.
+
+For comparison: "ä" (`U+00E4` = `00011 100100`) becomes `110 00011`, `10 100100` = `C3 A4`. If these two bytes are read as Latin-1, "Ã¤" appears.
+:::
+
+### UTF-16 and UTF-32
+
+**UTF-16** uses 16-bit units. Characters in the BMP need one unit (2 bytes), characters above it a **surrogate pair** of two units (4 bytes): `0x10000` is subtracted from the code point, and the remaining 20 bits are split between a **high surrogate** (`D800` to `DBFF`, upper 10 bits) and a **low surrogate** (`DC00` to `DFFF`, lower 10 bits). The range `D800` to `DFFF` is reserved for this and contains no characters.
+
+Example 😀 `U+1F600`: $1\text{F600}_{16} - 10000_{16} = \text{F600}_{16} = 0000111101\;1000000000_2$, so `D800 + 03D = D83D` and `DC00 + 200 = DE00`.
+
+UTF-16 is used internally by Windows, Java, JavaScript and **.NET** (`char` is one UTF-16 unit). Because it consists of 2-byte units, there are UTF-16LE and UTF-16BE, distinguished by a BOM (`FF FE` or `FE FF`).
+
+**UTF-32** stores every code point in exactly 4 bytes. This allows direct access to the $n$-th character but uses a lot of memory and is rarely used for files. Rust uses it for the type `char`.
+
+| Character | Code point | UTF-8           | UTF-16 (BE)     | UTF-32 (BE)     |
+| --------- | ---------- | --------------- | --------------- | --------------- |
+| A         | `U+0041`   | `41`            | `00 41`         | `00 00 00 41`   |
+| ä         | `U+00E4`   | `C3 A4`         | `00 E4`         | `00 00 00 E4`   |
+| €         | `U+20AC`   | `E2 82 AC`      | `20 AC`         | `00 00 20 AC`   |
+| 😀        | `U+1F600`  | `F0 9F 98 80`   | `D8 3D DE 00`   | `00 01 F6 00`   |
+
+:::caution[Length of a string]
+"How long is a string?" has several answers: the number of bytes, of UTF-16 units, of code points or of characters as perceived by a human (_graphemes_). In C#, `"😀".Length` returns 2 (UTF-16 units); in Rust, `"😀".len()` returns 4 (bytes). An emoji with a skin tone even consists of several code points. More on this under [Strings](/en/software-development/strings-and-regular-expressions/).
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text;
+
+string text = "Aä€😀";
+
+byte[] utf8 = Encoding.UTF8.GetBytes(text);
+Console.WriteLine(Convert.ToHexString(utf8));          // 41C3A4E282ACF09F9880
+Console.WriteLine(utf8.Length);                        // 10 bytes
+
+byte[] utf16 = Encoding.BigEndianUnicode.GetBytes(text);
+Console.WriteLine(Convert.ToHexString(utf16));         // 004100E420ACD83DDE00
+Console.WriteLine(text.Length);                        // 5 UTF-16 units
+
+foreach (Rune r in text.EnumerateRunes())
+{
+    Console.Write($"U+{r.Value:X4} ");                 // U+0041 U+00E4 U+20AC U+1F600
+}
+Console.WriteLine();
+
+// mojibake: UTF-8 bytes wrongly read as Latin-1
+string wrong = Encoding.Latin1.GetString(Encoding.UTF8.GetBytes("Käse"));
+Console.WriteLine(wrong);                              // KÃ¤se
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let text = "Aä€😀";
+
+    let utf8 = text.as_bytes();
+    let hex: String = utf8.iter().map(|b| format!("{b:02X}")).collect();
+    println!("{hex}");                                  // 41C3A4E282ACF09F9880
+    println!("{}", text.len());                         // 10 bytes
+
+    let utf16: Vec<u16> = text.encode_utf16().collect();
+    println!("{:04X?}", utf16);                         // [0041, 00E4, 20AC, D83D, DE00]
+    println!("{}", text.chars().count());               // 4 code points
+
+    for c in text.chars() {
+        print!("U+{:04X} ", c as u32);                  // U+0041 U+00E4 U+20AC U+1F600
+    }
+    println!();
+
+    // invalid UTF-8 is detected
+    let broken = [0x47, 0x72, 0xF6, 0x65]; // "Gröe" in Latin-1
+    println!("{}", std::str::from_utf8(&broken).is_err()); // true
+    println!("{}", String::from_utf8_lossy(&broken));   // Gr�e
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Other data types at a glance
+
+| Data           | Typical representation                                                               |
+| -------------- | ------------------------------------------------------------------------------------ |
+| Boolean        | 1 byte (0 = false, otherwise true), although 1 bit would suffice, because a byte is the smallest addressable unit |
+| Colour         | RGB with 8 bits per channel (24 bits, "true colour"), with alpha channel 32 bits, e.g. `#2563EB` |
+| Image (raster graphic) | matrix of pixels: memory = width · height · colour depth. A full HD image with 24 bits needs $1920 \cdot 1080 \cdot 3\,\mathrm{B} \approx 6.2\,\mathrm{MB}$ uncompressed |
+| Audio          | samples (PCM): data rate = sampling rate · resolution · channels. CD quality: $44\,100\,\mathrm{Hz} \cdot 16\,\mathrm{bit} \cdot 2 = 1411.2\,\mathrm{kbit/s}$ |
+| Date and time  | often an integer counted from a reference point, e.g. **Unix time**: seconds since 1 January 1970 00:00 UTC. As a signed 32-bit value it overflows on 19 January 2038 (**year 2038 problem**) |
+
+How such data can be made smaller, losslessly or lossily, is shown on the page [Codes and compression](/en/computer-science/codes-and-compression/).
+
+## Further reading
+
+- [The Unicode Standard](https://www.unicode.org/standard/standard.html) (Unicode Consortium)
+- [What Every Computer Scientist Should Know About Floating-Point Arithmetic](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) (David Goldberg)
+- [IEEE 754-2019: Standard for Floating-Point Arithmetic](https://standards.ieee.org/ieee/754/6210/)

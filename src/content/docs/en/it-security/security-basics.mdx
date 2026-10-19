@@ -1,0 +1,245 @@
+---
+title: Security Basics
+description: Protection goals, threat, vulnerability and risk, attack surface, security principles such as defence in depth, least privilege and zero trust, and risk assessment.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+IT security protects information and the systems that process it against loss, manipulation, unauthorised access and failure. Complete security does not exist: every measure costs money, time and convenience, and a determined attacker often finds a way. The goal is therefore to know the **risks** and to reduce them to an acceptable level with reasonable effort.
+
+## Distinguishing the terms
+
+| Term                       | Meaning                                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Information security**   | protection of all information, whether digital, on paper or in the heads of employees                      |
+| **IT security**            | the part of information security that concerns electronically stored information and IT systems           |
+| **Cyber security**         | IT security with a focus on networked systems and attacks over the internet                                 |
+| **Data protection**        | protection of **people** against misuse of their personal data (a fundamental right, GDPR)                  |
+| **Data security**          | technical and organisational measures that protect data, such as backups and encryption                     |
+
+Two concepts must be distinguished: **security** (protecting the system against deliberate attacks from outside) and **safety** (protecting the environment against malfunctions of the system, functional safety). A traffic light controller must achieve both: it must not be open to manipulation, and a defect must never show green to all directions at the same time.
+
+## Protection goals
+
+The three classic protection goals are called the **CIA triad** after their initial letters:
+
+| Protection goal       | Meaning                                                                      | Typical measures                              | Attack on it                       |
+| --------------------- | ---------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------- |
+| **Confidentiality**   | Only authorised parties can read information.                                | encryption, access control                    | eavesdropping, data theft          |
+| **Integrity**         | Data is complete and unaltered, changes are detectable.                      | hash values, MACs, signatures, versioning     | manipulation of bank transfers     |
+| **Availability**      | Systems and data are available when they are needed.                         | redundancy, backups, UPS, DDoS protection     | DoS attack, ransomware             |
+
+Further protection goals are often regarded as part of integrity:
+
+- **Authenticity**: the genuineness of a person, a system or a message can be verified. You know that the email really comes from your bank.
+- **Non-repudiation** (also called binding force): whoever performed an action cannot plausibly deny it later, for example a digitally signed order.
+- **Accountability**: every action can be attributed unambiguously to one user. This requires personal accounts (no shared accounts) and logging.
+
+Data protection adds **anonymity** and **pseudonymity**. Protection goals can conflict with each other: the more strongly you encrypt data and restrict access, the more likely it is that the data is unavailable in an emergency, for example when the key is lost.
+
+## Threat, vulnerability and risk
+
+| Term                            | Meaning                                                                                   | Example                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **Asset**                       | anything that has value for the organisation                                              | customer database, web server, company reputation |
+| **Threat**                      | possible circumstance or actor that can harm an asset                                     | ransomware group, flood, operating error          |
+| **Vulnerability**               | weakness through which a threat can take effect                                          | unpatched server, weak password                   |
+| **Hazard**                      | a threat that meets an asset through a specific vulnerability (term used by the BSI)       | ransomware meets an unpatched server              |
+| **Exploit**                     | program or technique that takes advantage of a vulnerability                              | script that exploits a flaw in the web server     |
+| **Zero-day**                    | vulnerability that the vendor does not yet know about or for which no patch exists yet     | flaw that is attacked before the patch            |
+| **Attack**                      | deliberate action that exploits a vulnerability                                           | break-in into the web server                      |
+| **Risk**                        | combination of likelihood and impact                                                      | see below                                         |
+
+A threat alone is not yet a risk: a flood hardly threatens a server room on the fifth floor, because the vulnerability (location in the basement) is missing. Risk is often given in simplified form as a product:
+
+$$
+\text{risk} = \text{likelihood} \cdot \text{impact}
+$$
+
+The impact can be expressed in euros (quantitative assessment) or on a scale such as "low, medium, high, very high" (qualitative assessment). In practice the qualitative assessment is more common, because probabilities of cyber attacks can hardly be stated precisely.
+
+## Attack surface
+
+The **attack surface** is the sum of all points where an attacker can start: open ports, web forms, APIs, installed programs, user accounts, USB ports and, not least, the people who can be deceived. Every additional service and every additional account enlarges it. Hence the rule: whatever is not needed is disabled or uninstalled (see [System Hardening](/en/it-security/system-hardening/)).
+
+One distinguishes the **digital** attack surface (network, software), the **physical** one (access to rooms, devices) and the **social** one (employees who may fall for phishing).
+
+## Security principles
+
+Many of these principles go back to the work of Jerome Saltzer and Michael Schroeder (1975) and still apply today.
+
+### Defence in depth
+
+**Defence in depth** never relies on a single measure but stacks several independent layers of protection, like the walls, moats and gates of a castle. If one layer falls, the next one stops the attacker or at least makes them visible.
+
+| Layer                 | Examples                                                          |
+| --------------------- | ----------------------------------------------------------------- |
+| Policies, people      | security policy, anti-phishing training                           |
+| Physical              | access control to the server room, locked racks                   |
+| Perimeter             | firewall, email filter                                            |
+| Network               | segmentation into VLANs, IDS                                      |
+| Host                  | patches, hardening, antivirus or EDR                              |
+| Application           | input validation, secure authentication                           |
+| Data                  | encryption, backups, access rights                                |
+
+### Least privilege and need to know
+
+According to the principle of **least privilege**, every user and every process receives only the rights it strictly needs for its task, and only for as long as it needs them. A web server does not run as `root`, and administrators use a normal account for everyday work. If an account is taken over, the damage stays limited.
+
+**Need to know** applies the same principle to information: even someone who would formally be authorised sees only the data they need to know for their work.
+
+### Further principles
+
+- **Separation of duties**: critical operations require several people, for example the four-eyes principle for bank transfers or separate roles for developing and approving.
+- **Fail-safe defaults**: without explicit permission everything is forbidden (_default deny_). If a security system fails, it should go into a safe state (_fail closed_), that is, block rather than open.
+- **Economy of mechanism** (KISS): simple mechanisms are easier to verify and contain fewer errors.
+- **Complete mediation**: every access is checked, not only the first one.
+- **Open design**: security must not depend on the mechanism being kept secret. Only the key is secret (see [Kerckhoffs' principle](/en/it-security/cryptography/#kerckhoffs-principle)). The opposite is pejoratively called **security by obscurity**.
+- **Psychological acceptability**: security measures that are too cumbersome are bypassed. A password nobody can remember ends up on a sticky note on the monitor.
+
+### Security by design and by default
+
+**Security by design** means planning security into requirements, architecture and code from the start instead of "bolting it on" at the end. Later corrections are more expensive and often incomplete. Tools for this are threat modelling (for example with **STRIDE**: _Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege_), secure coding guidelines and security testing.
+
+**Security by default** means that a product is securely configured as delivered: no default passwords, unnecessary services disabled, encryption switched on. The GDPR requires something similar for data protection in Art. 25 (_privacy by design and by default_), and the European **Cyber Resilience Act** prescribes it for products with digital elements.
+
+### Zero trust
+
+Classic networks follow the castle model: outside is hostile, inside is trustworthy. Once an attacker has overcome the perimeter, for example through an infected laptop, they can move freely in the internal network (_lateral movement_).
+
+**Zero trust** (NIST SP 800-207) gives up this implicit trust: "never trust, always verify". Every access is checked individually, regardless of whether it comes from the corporate network or the internet. Its core elements are:
+
+- strong authentication of every user and every device, usually with MFA,
+- checking the device state (patched, encrypted, managed),
+- access only to individual applications instead of whole networks, according to least privilege,
+- fine-grained segmentation (micro-segmentation) and encryption throughout,
+- continuous monitoring and re-evaluation during the session.
+
+Zero trust is not a product but an architectural principle that is introduced step by step.
+
+## Risk assessment
+
+A **risk analysis** systematically answers the questions: what is worth protecting, what can happen, how likely is it and how large would the damage be?
+
+1. **Record the assets**: data, applications, systems, rooms, people.
+2. **Determine the protection requirements**: for each protection goal, assess how serious damage would be. The BSI uses the categories **normal**, **high** and **very high**. A system inherits the highest protection requirement of the applications running on it (**maximum principle**).
+3. **Identify threats and vulnerabilities**: for example with catalogues such as the BSI's elementary threats.
+4. **Assess risks**: estimate likelihood and impact and enter them into a **risk matrix**.
+5. **Treat risks** and have the remaining **residual risk** consciously accepted by management.
+
+A typical risk matrix with four levels each:
+
+| Likelihood \\ impact | low (1) | medium (2) | high (3)  | very high (4) |
+| -------------------- | ------- | ---------- | --------- | ------------- |
+| **very frequent (4)** | medium | high       | very high | very high     |
+| **frequent (3)**     | low     | medium     | high      | very high     |
+| **rare (2)**         | low     | medium     | medium    | high          |
+| **very rare (1)**    | low     | low        | low       | medium        |
+
+There are four strategies for **risk treatment**:
+
+| Strategy                   | Approach                                                 | Example                                           |
+| -------------------------- | -------------------------------------------------------- | ------------------------------------------------- |
+| **Avoid**                  | do not carry out the risky activity                      | do not run a web shop, switch a service off       |
+| **Reduce** (mitigate)      | lower likelihood or impact through measures              | patches, MFA, backups                             |
+| **Transfer**               | shift the financial damage to others                     | cyber insurance, outsourcing to a service provider |
+| **Accept**                 | consciously bear the risk because measures would cost too much | rare, small damage                          |
+
+Only the financial damage can be transferred, not the responsibility: whoever outsources customer data to a cloud provider remains responsible for its protection under the GDPR.
+
+The following program assesses a few risks on a simplified points scale (product of likelihood and impact, each 1 to 4) and sorts them by urgency:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+List<Risk> risks =
+[
+    new("Ransomware via phishing email", Likelihood: 3, Impact: 4),
+    new("Hard disk failure in the NAS", Likelihood: 2, Impact: 2),
+    new("Water damage in the server room", Likelihood: 1, Impact: 4),
+    new("Password spraying against VPN", Likelihood: 3, Impact: 3),
+];
+
+foreach (var risk in risks.OrderByDescending(r => r.Score))
+    Console.WriteLine($"{risk.Score,2} {risk.Level,-9} {risk.Name}");
+
+public record Risk(string Name, int Likelihood, int Impact)
+{
+    public int Score => Likelihood * Impact;
+
+    public string Level => Score switch
+    {
+        >= 12 => "very high",
+        >= 8 => "high",
+        >= 4 => "medium",
+        _ => "low",
+    };
+}
+
+// Output:
+// 12 very high Ransomware via phishing email
+//  9 high      Password spraying against VPN
+//  4 medium    Hard disk failure in the NAS
+//  4 medium    Water damage in the server room
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Risk {
+    name: &'static str,
+    likelihood: u8,
+    impact: u8,
+}
+
+impl Risk {
+    fn score(&self) -> u8 {
+        self.likelihood * self.impact
+    }
+
+    fn level(&self) -> &'static str {
+        match self.score() {
+            12.. => "very high",
+            8.. => "high",
+            4.. => "medium",
+            _ => "low",
+        }
+    }
+}
+
+fn main() {
+    let mut risks = vec![
+        Risk { name: "Ransomware via phishing email", likelihood: 3, impact: 4 },
+        Risk { name: "Hard disk failure in the NAS", likelihood: 2, impact: 2 },
+        Risk { name: "Water damage in the server room", likelihood: 1, impact: 4 },
+        Risk { name: "Password spraying against VPN", likelihood: 3, impact: 3 },
+    ];
+    // stable sort: equal values keep their order
+    risks.sort_by_key(|r| std::cmp::Reverse(r.score()));
+
+    for risk in &risks {
+        println!("{:2} {:<9} {}", risk.score(), risk.level(), risk.name);
+    }
+}
+
+// Output:
+// 12 very high Ransomware via phishing email
+//  9 high      Password spraying against VPN
+//  4 medium    Hard disk failure in the NAS
+//  4 medium    Water damage in the server room
+```
+
+</TabItem>
+</Tabs>
+
+The points scale is a simplification: a risk with likelihood 1 and impact 4 (threatening the existence of the company) often weighs more heavily in practice than one with 4 and 1. That is why many organisations use a matrix like the one above instead of the product, in which such cases are deliberately rated higher. The organisational framework for risk management is described on the page [Information Security Management](/en/it-security/information-security-management/).
+
+## Further reading
+
+- [BSI Standard 200-3: Risk Analysis based on IT-Grundschutz](https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/BSI-Standards/bsi-standards_node.html) (German Federal Office for Information Security)
+- [NIST SP 800-207: Zero Trust Architecture](https://csrc.nist.gov/pubs/sp/800/207/final) (National Institute of Standards and Technology)
+- Ross Anderson: _Security Engineering_. 3rd edition, Wiley 2020 (freely available online from the author)

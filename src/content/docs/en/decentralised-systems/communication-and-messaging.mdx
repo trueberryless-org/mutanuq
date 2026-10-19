@@ -1,0 +1,372 @@
+---
+title: Communication and Messaging
+description: "Synchronous and asynchronous communication between distributed services: RPC, REST, gRPC, message queues, publish-subscribe, MQTT, AMQP, Kafka, Azure Service Bus and delivery guarantees."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+The nodes of a [distributed system](/en/decentralised-systems/distributed-systems/) have no shared memory and only cooperate through messages. How these messages are exchanged determines how tightly the services are bound to each other, how they react to failures and how well they scale. The basics of sockets, TCP and UDP are covered under [network programming](/en/software-development/network-programming/).
+
+## Synchronous and asynchronous
+
+| | Synchronous communication | Asynchronous communication |
+| --- | --- | --- |
+| Flow | The caller sends a request and waits for the response (_request-response_). | The sender drops off a message and continues working immediately. |
+| Examples | REST, gRPC, classic RPC | message queues, publish-subscribe, event streaming |
+| Temporal coupling | both must be running at the same time | the receiver can process later |
+| Failure behaviour | If the receiver fails, the call fails too, and failures propagate. | Messages stay in the broker until the receiver is back. |
+| Response | available immediately | only via a separate reply or status query |
+| Suitable for | queries where the user waits for the result | background processing, load peaks, notifying many receivers |
+
+A further distinction is made between **spatial coupling** (the sender must know the receiver's address) and **temporal coupling** (both must be active at the same time). A message broker removes both.
+
+## Remote procedure call
+
+With a **remote procedure call** (RPC), a program calls a function on another computer as if it were local. A **client stub** packs the parameters into a message (**marshalling**, serialisation) and sends it to the server, whose **server stub** unpacks it, calls the actual function and sends the result back. The stubs are usually generated from an interface description (_interface definition language_, IDL).
+
+A remote call is not a local call, however: it is thousands of times slower, and it can fail **partially**. If no response arrives, the client does not know whether the request was lost, the server processed it and then crashed, or only the response was lost. This leads to different **call semantics**:
+
+| Semantics | Behaviour | Consequence |
+| --------- | --------- | ----------- |
+| **Maybe** | send once, do not retry | call may be lost |
+| **At-least-once** | retry on timeout | executed at least once, possibly several times; only safe for idempotent operations |
+| **At-most-once** | retry, but the server detects duplicates by a request ID | executed at most once |
+| **Exactly-once** | exactly once | cannot be guaranteed in the presence of failures without additional measures |
+
+## REST
+
+**REST** (_Representational State Transfer_, Roy Fielding, 2000) is an architectural style for web services over HTTP:
+
+- Everything is a **resource** with a unique URL, for example `/api/orders/17`.
+- The **HTTP methods** describe the operation, and the response contains a **representation** of the resource, usually JSON.
+- Communication is **stateless**: each request contains all the necessary information (e.g. a token). The server does not keep a session, so any request can be handled by any server instance. This makes horizontal scaling easier.
+- Responses can be cached, and **status codes** report the result (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`, `503 Service Unavailable`).
+
+| Method   | Purpose | safe | idempotent |
+| -------- | ------- | ---- | ---------- |
+| `GET`    | read a resource | yes | yes |
+| `POST`   | create a new resource, trigger an action | no | no |
+| `PUT`    | replace a resource completely (or create it) | no | yes |
+| `PATCH`  | change a resource partially | no | not guaranteed |
+| `DELETE` | delete a resource | no | yes |
+
+**Safe** means that the method changes nothing. **Idempotent** means that executing it several times has the same result as executing it once: `DELETE /orders/17` twice leaves the same state as once. A duplicate `POST /orders`, on the other hand, creates two orders. Many APIs (such as payment services) therefore accept an `Idempotency-Key` header that lets the server recognise repeated requests. How to send HTTP requests in C# and Rust is shown in [network programming](/en/software-development/network-programming/#http-requests).
+
+## gRPC
+
+**gRPC** is an open-source RPC framework developed by Google. The interface is described in a `.proto` file using **Protocol Buffers**, from which a generator produces client and server code for many languages (C#, Rust with `tonic`, Java, Go, Python ...):
+
+```protobuf
+syntax = "proto3";
+
+service OrderService {
+  rpc GetOrder (OrderRequest) returns (OrderReply);
+  rpc WatchOrders (WatchRequest) returns (stream OrderReply); // server streaming
+}
+
+message OrderRequest { int32 id = 1; }
+message WatchRequest { string customer = 1; }
+message OrderReply  { int32 id = 1; string status = 2; double total = 3; }
+```
+
+The messages are serialised in **binary** and transported over **HTTP/2**. This makes gRPC more compact and faster than JSON over HTTP/1.1. HTTP/2 also allows **streaming** in four variants: unary (one request, one response), server streaming, client streaming and bidirectional streaming. The numbers in the `.proto` file identify the fields in the binary format, so new fields can be added without breaking old clients.
+
+| | REST | gRPC |
+| --- | --- | --- |
+| Format | usually JSON (text) | Protocol Buffers (binary) |
+| Transport | HTTP/1.1 or HTTP/2 | HTTP/2 |
+| Interface contract | optional (OpenAPI) | mandatory (`.proto`), code is generated |
+| Streaming | limited | built in |
+| Browser | usable directly | only via gRPC-Web or a proxy |
+| Typical use | public APIs, web front ends | internal communication between microservices |
+
+## Messaging
+
+With **messaging**, services send each other messages via a **message broker**. A **message** consists of a **body** (the actual data, often JSON) and **metadata** (ID, timestamp, type, correlation ID, expiry time).
+
+### Message queue (point to point)
+
+A **queue** stores messages in the order in which they arrive. Each message is processed by **exactly one** receiver. Several receivers on the same queue share the work (**competing consumers**), which makes horizontal scaling easy.
+
+Advantages:
+
+- **Decoupling:** sender and receiver do not know each other and do not have to run at the same time.
+- **Load levelling:** if more jobs arrive in a peak than can be processed, the queue buffers them. The receiver keeps working at its own pace.
+- **Resilience:** if a receiver crashes during processing, the message is not acknowledged and is delivered again.
+
+The receiver acknowledges a message only **after** successful processing (_acknowledge_, ACK). Until then it is merely invisible to other receivers (_peek-lock_), not deleted. Messages that fail repeatedly (_poison messages_) end up in a **dead-letter queue** after a set number of attempts, where they can be examined.
+
+### Publish-subscribe
+
+With **publish-subscribe**, a **publisher** publishes a message under a **topic**. **Every** subscriber of the topic receives its own copy. The publisher does not know who or how many are listening. New receivers can be added without changing the sender. This is the basis of [event-driven architecture](/en/software-development/software-architecture/#event-driven-architecture): the order service publishes "order placed", and billing, shipping and statistics react to it.
+
+### Example: an in-process broker
+
+The following example recreates a small publish-subscribe broker using channels. Each subscriber gets its own channel. The message `m1` is deliberately delivered twice, as can happen with at-least-once delivery. The receivers are **idempotent**: they remember the IDs of processed messages and ignore duplicates. The simple variant with a single channel between producer and consumer can be found under [concurrency](/en/software-development/concurrency/#messages-instead-of-shared-data).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Threading.Channels;
+
+var broker = new Broker();
+ChannelReader<Message> billing = broker.Subscribe("orders");
+ChannelReader<Message> shipping = broker.Subscribe("orders");
+ChannelReader<Message> audit = broker.Subscribe("payments");
+
+// receivers run concurrently with the publisher
+Task<string[]>[] consumers =
+[
+    ConsumeAsync("Billing", billing),
+    ConsumeAsync("Shipping", shipping),
+    ConsumeAsync("Audit", audit),
+];
+
+await broker.PublishAsync("orders", new Message("m1", "Order 17"));
+await broker.PublishAsync("orders", new Message("m1", "Order 17")); // redelivery
+await broker.PublishAsync("orders", new Message("m2", "Order 18"));
+await broker.PublishAsync("payments", new Message("m3", "Payment 17"));
+broker.Complete(); // no more messages
+
+foreach (string[] log in await Task.WhenAll(consumers))
+{
+    foreach (string line in log)
+    {
+        Console.WriteLine(line);
+    }
+}
+// Billing: Order 17
+// Billing: m1 ignored (duplicate)
+// Billing: Order 18
+// Shipping: Order 17
+// Shipping: m1 ignored (duplicate)
+// Shipping: Order 18
+// Audit: Payment 17
+
+static async Task<string[]> ConsumeAsync(string name, ChannelReader<Message> reader)
+{
+    var processed = new HashSet<string>(); // IDs of messages already processed
+    var log = new List<string>();
+    await foreach (Message message in reader.ReadAllAsync())
+    {
+        if (!processed.Add(message.Id))
+        {
+            log.Add($"{name}: {message.Id} ignored (duplicate)");
+            continue;
+        }
+        log.Add($"{name}: {message.Body}");
+    }
+    return [.. log];
+}
+
+public record Message(string Id, string Body);
+
+public sealed class Broker
+{
+    private readonly Dictionary<string, List<Channel<Message>>> _topics = [];
+
+    public ChannelReader<Message> Subscribe(string topic)
+    {
+        var channel = Channel.CreateUnbounded<Message>();
+        if (!_topics.TryGetValue(topic, out var subscribers))
+        {
+            subscribers = [];
+            _topics[topic] = subscribers;
+        }
+        subscribers.Add(channel);
+        return channel.Reader;
+    }
+
+    public async Task PublishAsync(string topic, Message message)
+    {
+        if (!_topics.TryGetValue(topic, out var subscribers))
+        {
+            return; // nobody has subscribed to the topic
+        }
+        foreach (var channel in subscribers)
+        {
+            await channel.Writer.WriteAsync(message); // every subscriber gets a copy
+        }
+    }
+
+    public void Complete()
+    {
+        foreach (var channel in _topics.Values.SelectMany(list => list))
+        {
+            channel.Writer.Complete();
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{HashMap, HashSet};
+use std::sync::mpsc::{self, Receiver, Sender};
+use std::thread;
+
+#[derive(Clone, Debug)]
+struct Message {
+    id: String,
+    body: String,
+}
+
+impl Message {
+    fn new(id: &str, body: &str) -> Self {
+        Self { id: id.to_string(), body: body.to_string() }
+    }
+}
+
+#[derive(Default)]
+struct Broker {
+    topics: HashMap<String, Vec<Sender<Message>>>,
+}
+
+impl Broker {
+    fn subscribe(&mut self, topic: &str) -> Receiver<Message> {
+        let (sender, receiver) = mpsc::channel();
+        self.topics.entry(topic.to_string()).or_default().push(sender);
+        receiver
+    }
+
+    fn publish(&self, topic: &str, message: Message) {
+        // nobody subscribed: the message is discarded
+        let Some(subscribers) = self.topics.get(topic) else { return };
+        for sender in subscribers {
+            // every subscriber gets a copy; a finished receiver is ignored
+            let _ = sender.send(message.clone());
+        }
+    }
+}
+
+fn consume(name: &str, receiver: Receiver<Message>) -> Vec<String> {
+    let mut processed = HashSet::new(); // IDs of messages already processed
+    let mut log = Vec::new();
+    for message in receiver {
+        if !processed.insert(message.id.clone()) {
+            log.push(format!("{name}: {} ignored (duplicate)", message.id));
+            continue;
+        }
+        log.push(format!("{name}: {}", message.body));
+    }
+    log
+}
+
+fn main() {
+    let mut broker = Broker::default();
+    let subscriptions = [
+        ("Billing", broker.subscribe("orders")),
+        ("Shipping", broker.subscribe("orders")),
+        ("Audit", broker.subscribe("payments")),
+    ];
+
+    // receivers run concurrently with the publisher
+    let consumers: Vec<_> = subscriptions
+        .into_iter()
+        .map(|(name, receiver)| thread::spawn(move || consume(name, receiver)))
+        .collect();
+
+    broker.publish("orders", Message::new("m1", "Order 17"));
+    broker.publish("orders", Message::new("m1", "Order 17")); // redelivery
+    broker.publish("orders", Message::new("m2", "Order 18"));
+    broker.publish("payments", Message::new("m3", "Payment 17"));
+    drop(broker); // release all senders: no more messages
+
+    for consumer in consumers {
+        for line in consumer.join().expect("receiver thread crashed") {
+            println!("{line}");
+        }
+    }
+    // Billing: Order 17
+    // Billing: m1 ignored (duplicate)
+    // Billing: Order 18
+    // Shipping: Order 17
+    // Shipping: m1 ignored (duplicate)
+    // Shipping: Order 18
+    // Audit: Payment 17
+}
+```
+
+</TabItem>
+</Tabs>
+
+In a real system, the broker is a separate service on the network that stores messages durably on disk and replicates them to several nodes. The list of processed IDs is kept in a database, ideally in the same transaction as the actual change.
+
+## Delivery guarantees and idempotency
+
+| Guarantee | Meaning | Implementation |
+| --------- | ------- | -------------- |
+| **At-most-once** | A message is delivered at most once but can be lost. | send without acknowledgement ("fire and forget"), e.g. MQTT QoS 0 |
+| **At-least-once** | A message is never lost but may arrive several times. | acknowledge after processing, otherwise redeliver. The default for most brokers. |
+| **Exactly-once** | A message is processed exactly once. | across system boundaries only as "effectively once": at-least-once delivery plus idempotent processing or duplicate detection |
+
+Because at-least-once is the norm, receivers must be **idempotent**. Options:
+
+- Phrase operations so that repetitions change nothing: "set the status to paid" instead of "increase the balance by €100".
+- Every message carries a unique **message ID** (or an idempotency key). The receiver stores processed IDs and skips duplicates, as in the example above.
+- Use version numbers or timestamps and discard outdated changes.
+
+A related problem occurs on the sender side: it has to save a database change **and** send a message. If it crashes in between, only one of the two has happened. The **outbox pattern** solves this: the message is written to an `outbox` table in the same database transaction, and a separate process reads this table and sends the messages to the broker (with at-least-once delivery).
+
+Further issues in messaging are **ordering** (most brokers only guarantee it within a queue, a partition or a session) and **backpressure** (what happens when the receiver is permanently slower than the sender: the queue grows, the sender is throttled or messages are dropped).
+
+## Protocols and products
+
+### MQTT
+
+**MQTT** is a lightweight publish-subscribe protocol for the Internet of Things with hierarchical topics, three QoS levels, retained messages and a last will. Details can be found under [bus systems](/en/embedded-programming/bus-systems/#mqtt).
+
+### AMQP and RabbitMQ
+
+**AMQP** (_Advanced Message Queuing Protocol_) is an open protocol for message brokers. Version 0-9-1 is used mainly by **RabbitMQ**; the very different version 1.0 is an OASIS and ISO standard (ISO/IEC 19464) and is spoken, for example, by Azure Service Bus.
+
+RabbitMQ separates sending from storing: producers send to an **exchange**, which distributes the message to one or more **queues** based on **bindings** and a **routing key**. Consumers read from the queues.
+
+| Exchange type | Distribution |
+| ------------- | ------------ |
+| **Direct** | to queues whose binding key exactly matches the routing key |
+| **Fanout** | to all bound queues (broadcast) |
+| **Topic** | by pattern: `*` stands for exactly one word, `#` for any number, e.g. `order.*.created` |
+| **Headers** | by header attributes instead of the routing key |
+
+### Apache Kafka
+
+**Apache Kafka** (originally from LinkedIn) is a platform for **event streaming**. Unlike a classic queue, Kafka does not delete messages after reading but stores them as an immutable, append-only **log**:
+
+- A **topic** is split into **partitions**, which are distributed across several brokers and replicated. Messages with the same key (e.g. customer ID) end up in the same partition. Order is only guaranteed within a partition.
+- Each message has a sequential number in its partition, the **offset**. Consumers remember up to which offset they have read and can also rewind and reprocess old events.
+- Consumers form **consumer groups**: within a group, each partition is read by exactly one consumer (load distribution), while different groups independently read all messages (publish-subscribe).
+- Messages are kept for a configurable **retention** period (e.g. 7 days) or indefinitely.
+
+Kafka processes millions of messages per second and is used for log data, click streams, data pipelines and **event sourcing**.
+
+### Azure services
+
+| Service | Model | Typical use |
+| ------- | ----- | ----------- |
+| [Azure Queue Storage](/en/decentralised-systems/storage-account/#queue-storage) | simple queue in a storage account | simple, very cheap background jobs |
+| **Azure Service Bus** | queues and **topics with subscriptions** (publish-subscribe), AMQP 1.0 | business messages with transactions, sessions (ordering), duplicate detection, dead-letter queue, scheduled delivery |
+| **Azure Event Hubs** | event streaming with partitions, Kafka-compatible interface | telemetry, log data, large data streams |
+| **Azure Event Grid** | event distribution (push to subscribers), also MQTT | reacting to events in Azure, e.g. a new file in Blob Storage |
+
+[Azure Functions](/en/decentralised-systems/azure-functions/) can react directly to messages from these services using triggers.
+
+### Comparison
+
+| | Queue (Service Bus, RabbitMQ) | Event streaming (Kafka, Event Hubs) | MQTT |
+| --- | --- | --- | --- |
+| Main purpose | hand jobs reliably to one processor | store large numbers of events and read them several times | telemetry from many small devices |
+| After reading | message is deleted | message stays until retention expires | delivered, only the retained message stays |
+| Ordering | per queue or session | per partition | per topic and connection |
+| Re-reading | no | yes, via offsets | no |
+
+## Further reading
+
+- Gregor Hohpe, Bobby Woolf: _Enterprise Integration Patterns_, Addison-Wesley, and [enterpriseintegrationpatterns.com](https://www.enterpriseintegrationpatterns.com/)
+- [gRPC documentation](https://grpc.io/docs/) and [RabbitMQ tutorials](https://www.rabbitmq.com/tutorials)
+- Microsoft Learn: [Asynchronous messaging options](https://learn.microsoft.com/en-us/azure/architecture/guide/technology-choices/messaging)

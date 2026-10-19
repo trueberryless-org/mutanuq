@@ -1,0 +1,388 @@
+---
+title: Network Programming
+description: The client-server model, sockets, TCP and UDP communication, message framing, multiple clients and HTTP requests in C# and Rust.
+sidebar:
+  order: 14
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+As soon as programs exchange data over a network, for example a chat, a multiplayer game or an app that queries a web API, you need network programming. The basics of the protocols themselves (IP, TCP, UDP, ports) are explained in the chapter [Networking](/en/networking/). This page is about using them in code.
+
+## Client-server model
+
+- A **server** waits at a well-known **address** (IP address and **port**) for connections and offers a service.
+- A **client** establishes a connection to the server, sends requests and receives responses.
+
+A **socket** is the endpoint of a connection from the program's point of view. The operating system provides it, and programs read and write data through it, similar to a file. A socket is uniquely identified by IP address, port and protocol.
+
+| Property              | TCP                                                     | UDP                                                  |
+| --------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| Connection            | connection-oriented (connection setup before sending)   | connectionless                                       |
+| Reliability           | data arrives completely and in the correct order        | packets can be lost, duplicated or arrive out of order |
+| Data model            | byte stream without message boundaries                  | individual datagrams with fixed boundaries           |
+| Speed                 | somewhat slower because of acknowledgements             | fast, little overhead                                |
+| Use                   | web (HTTP), email, file transfer, databases             | DNS, video calls, online games, streaming            |
+
+## TCP server and client
+
+A TCP server always goes through the same steps: **bind** the socket to an address and port, **listen** for connections, **accept** a connection and then read and write through the resulting stream. The client **connects** and also receives a stream.
+
+The following program starts an **echo server** in a background thread that sends every received line back in upper case, and then connects to it as a client. Port 0 means that the operating system chooses a free port.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+
+// server: bind to localhost and let the operating system choose the port
+var listener = new TcpListener(IPAddress.Loopback, 0);
+listener.Start();
+int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+var server = Task.Run(async () =>
+{
+    using TcpClient connection = await listener.AcceptTcpClientAsync();
+    using var reader = new StreamReader(connection.GetStream());
+    using var writer = new StreamWriter(connection.GetStream()) { AutoFlush = true };
+    string? line;
+    while ((line = await reader.ReadLineAsync()) is not null)
+    {
+        await writer.WriteLineAsync(line.ToUpper()); // echo in upper case
+    }
+});
+
+// client
+using (var client = new TcpClient())
+{
+    await client.ConnectAsync(IPAddress.Loopback, port);
+    using var reader = new StreamReader(client.GetStream());
+    using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+
+    foreach (string message in new[] { "hello", "htl krems" })
+    {
+        await writer.WriteLineAsync(message);
+        Console.WriteLine(await reader.ReadLineAsync()); // HELLO, HTL KREMS
+    }
+} // close the connection: the server reads null and ends
+
+await server;
+listener.Stop();
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::io::{BufRead, BufReader, Write};
+use std::net::{TcpListener, TcpStream};
+use std::thread;
+
+fn main() -> std::io::Result<()> {
+    // server: bind to localhost and let the operating system choose the port
+    let listener = TcpListener::bind("127.0.0.1:0")?;
+    let port = listener.local_addr()?.port();
+
+    let server = thread::spawn(move || -> std::io::Result<()> {
+        let (stream, _addr) = listener.accept()?;
+        let mut writer = stream.try_clone()?;
+        for line in BufReader::new(stream).lines() {
+            writeln!(writer, "{}", line?.to_uppercase())?; // echo in upper case
+        }
+        Ok(())
+    });
+
+    // client
+    {
+        let stream = TcpStream::connect(("127.0.0.1", port))?;
+        let mut writer = stream.try_clone()?;
+        let mut reader = BufReader::new(stream);
+        for message in ["hello", "htl krems"] {
+            writeln!(writer, "{message}")?;
+            let mut answer = String::new();
+            reader.read_line(&mut answer)?;
+            print!("{answer}"); // HELLO, HTL KREMS
+        }
+    } // close the connection: the server reads the end of the stream and ends
+
+    server.join().unwrap()
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Message framing
+
+TCP transmits a **byte stream** without message boundaries. If the client sends 10 bytes twice, the server may receive 20 bytes once or a few bytes three times. The application protocol therefore has to define where a message ends (**framing**):
+
+- **Delimiter**: every message ends with a line break (as in the example above, in SMTP and in the header lines of HTTP). The delimiter must then not occur in the content.
+- **Length prefix**: every message is preceded by, for example, 4 bytes containing its length. The receiver first reads the length and then exactly that many bytes. This also works for binary data.
+- **Fixed length**: all messages have the same length.
+
+For numbers in binary protocols, the byte order must be defined. Network protocols traditionally use **big endian** (_network byte order_).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Buffers.Binary;
+using System.Text;
+
+// encode a message with a 4-byte length prefix (big endian)
+static byte[] Encode(string message)
+{
+    byte[] payload = Encoding.UTF8.GetBytes(message);
+    byte[] frame = new byte[4 + payload.Length];
+    BinaryPrimitives.WriteInt32BigEndian(frame, payload.Length);
+    payload.CopyTo(frame, 4);
+    return frame;
+}
+
+static string Decode(Stream stream)
+{
+    byte[] header = new byte[4];
+    stream.ReadExactly(header);                         // read exactly 4 bytes
+    int length = BinaryPrimitives.ReadInt32BigEndian(header);
+    byte[] payload = new byte[length];
+    stream.ReadExactly(payload);
+    return Encoding.UTF8.GetString(payload);
+}
+
+var buffer = new MemoryStream();
+buffer.Write(Encode("Greetings"));
+buffer.Write(Encode("from Krems"));
+buffer.Position = 0;
+Console.WriteLine(Decode(buffer)); // Greetings
+Console.WriteLine(Decode(buffer)); // from Krems
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::io::{Cursor, Read};
+
+// encode a message with a 4-byte length prefix (big endian)
+fn encode(message: &str) -> Vec<u8> {
+    let payload = message.as_bytes();
+    let mut frame = (payload.len() as u32).to_be_bytes().to_vec();
+    frame.extend_from_slice(payload);
+    frame
+}
+
+fn decode(stream: &mut impl Read) -> std::io::Result<String> {
+    let mut header = [0u8; 4];
+    stream.read_exact(&mut header)?;                    // read exactly 4 bytes
+    let length = u32::from_be_bytes(header) as usize;
+    let mut payload = vec![0u8; length];
+    stream.read_exact(&mut payload)?;
+    Ok(String::from_utf8_lossy(&payload).into_owned())
+}
+
+fn main() -> std::io::Result<()> {
+    let mut data = encode("Greetings");
+    data.extend(encode("from Krems"));
+    let mut stream = Cursor::new(data);
+    println!("{}", decode(&mut stream)?); // Greetings
+    println!("{}", decode(&mut stream)?); // from Krems
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Multiple clients
+
+The echo server above serves only a single client. A real server has to handle many connections at the same time. There are two approaches (see [Concurrency](/en/software-development/concurrency/)):
+
+- **One thread per client**: after every `accept`, a new thread is started. Simple, but too expensive with thousands of clients.
+- **Asynchronous**: every connection is an asynchronous task. A few threads serve a very large number of connections because most of them are waiting. Modern web servers such as ASP.NET Core (Kestrel) and Rust servers based on Tokio work this way.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+
+var listener = new TcpListener(IPAddress.Any, 5000);
+listener.Start();
+Console.WriteLine("Server running on port 5000");
+
+while (true)
+{
+    TcpClient client = await listener.AcceptTcpClientAsync();
+    _ = HandleAsync(client); // do not wait: the next client can connect immediately
+}
+
+static async Task HandleAsync(TcpClient client)
+{
+    using (client)
+    using (var reader = new StreamReader(client.GetStream()))
+    using (var writer = new StreamWriter(client.GetStream()) { AutoFlush = true })
+    {
+        string? line;
+        while ((line = await reader.ReadLineAsync()) is not null)
+        {
+            await writer.WriteLineAsync(line.ToUpper());
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::net::TcpListener;
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind("0.0.0.0:5000").await?;
+    println!("Server running on port 5000");
+
+    loop {
+        let (stream, _addr) = listener.accept().await?;
+        // every connection as a separate asynchronous task
+        tokio::spawn(async move {
+            let (read_half, mut write_half) = stream.into_split();
+            let mut lines = BufReader::new(read_half).lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                let answer = format!("{}\n", line.to_uppercase());
+                if write_half.write_all(answer.as_bytes()).await.is_err() {
+                    break;
+                }
+            }
+        });
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## UDP
+
+With UDP, there is no connection. You send individual **datagrams** to an address and receive datagrams from any sender. Each datagram arrives either completely or not at all.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+using var receiver = new UdpClient(new IPEndPoint(IPAddress.Loopback, 0));
+var receiverEndpoint = (IPEndPoint)receiver.Client.LocalEndPoint!;
+
+using var sender = new UdpClient();
+byte[] data = Encoding.UTF8.GetBytes("Temperature: 21.5 °C");
+await sender.SendAsync(data, receiverEndpoint);
+
+UdpReceiveResult result = await receiver.ReceiveAsync();
+Console.WriteLine(Encoding.UTF8.GetString(result.Buffer)); // Temperature: 21.5 °C
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::net::UdpSocket;
+
+fn main() -> std::io::Result<()> {
+    let receiver = UdpSocket::bind("127.0.0.1:0")?;
+    let receiver_addr = receiver.local_addr()?;
+
+    let sender = UdpSocket::bind("127.0.0.1:0")?;
+    sender.send_to("Temperature: 21.5 °C".as_bytes(), receiver_addr)?;
+
+    let mut buffer = [0u8; 1500];
+    let (length, from) = receiver.recv_from(&mut buffer)?;
+    println!("{}", String::from_utf8_lossy(&buffer[..length])); // Temperature: 21.5 °C
+    let _ = from; // address of the sender
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## HTTP requests
+
+Most programs do not speak TCP directly but use higher-level protocols, above all [HTTP](/en/web-technologies/http/). An HTTP library takes care of establishing the connection, encryption with TLS, redirects and the message format. In C#, this is `HttpClient`; in Rust, the crate `reqwest`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Net.Http.Json;
+
+// HttpClient is reused, not created anew for every request
+using var http = new HttpClient { BaseAddress = new Uri("https://api.github.com/") };
+http.DefaultRequestHeaders.UserAgent.ParseAdd("mutanuq-example");
+
+HttpResponseMessage response = await http.GetAsync("repos/dotnet/runtime");
+response.EnsureSuccessStatusCode();             // exception for 4xx or 5xx
+
+var repo = await response.Content.ReadFromJsonAsync<Repository>();
+Console.WriteLine($"{repo!.FullName}: {repo.StargazersCount} stars");
+
+public record Repository(
+    [property: System.Text.Json.Serialization.JsonPropertyName("full_name")] string FullName,
+    [property: System.Text.Json.Serialization.JsonPropertyName("stargazers_count")] int StargazersCount);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Repository {
+    full_name: String,
+    stargazers_count: u32,
+}
+
+fn main() -> Result<(), reqwest::Error> {
+    let client = reqwest::blocking::Client::new();
+    let repo: Repository = client
+        .get("https://api.github.com/repos/rust-lang/rust")
+        .header("User-Agent", "mutanuq-example")
+        .send()?
+        .error_for_status()?                    // error for 4xx or 5xx
+        .json()?;
+    println!("{}: {} stars", repo.full_name, repo.stargazers_count);
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+How to offer an HTTP interface (REST API) yourself is shown on the page [REST APIs](/en/web-technologies/rest-apis/).
+
+## Security
+
+- Data from the network is **untrusted**. Length fields, formats and values must be checked before they are used. A length prefix of 4 GB must not cause the server to allocate 4 GB of memory.
+- Unencrypted connections can be read and modified. For sensitive data, always use **TLS** (see [PKI and TLS](/en/it-security/pki-and-tls/)).
+- Servers should set timeouts for connections so that slow or hanging clients do not tie up resources.
+
+## Further reading
+
+- [Network programming in .NET](https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/overview) (Microsoft Learn)
+- [Building a Single-Threaded Web Server](https://doc.rust-lang.org/book/ch21-01-single-threaded.html) (The Rust Programming Language)

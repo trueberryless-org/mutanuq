@@ -1,0 +1,157 @@
+---
+title: Electrical Safety
+description: Effects of current on the human body, protective measures (protective earth, residual current device, double insulation, SELV/PELV), five safety rules, OVE E 8101, ESD and first aid.
+sidebar:
+  order: 16
+---
+
+Electric current is invisible, odourless and life-threatening even at the mains voltage of $230\,\mathrm{V}$. In the workshop and the lab you work with mains-powered devices, measuring instruments and open circuits. The rules on this page protect you and others. In Austria, work on electrical installations may only be carried out by authorised **qualified electricians**; as a layperson and pupil you may only use devices as intended and work on safety extra-low voltage, unless your teacher instructs otherwise.
+
+## Effects of current on the human body
+
+What determines the danger is not the voltage but the **current through the body**, its **duration**, the **current path** (particularly dangerous through the heart, for example hand to hand or hand to foot) and the frequency. $50\,\mathrm{Hz}$ AC is more dangerous than DC of the same magnitude, because it makes the muscles cramp in time with the frequency and disturbs the heart rhythm.
+
+The current is determined by Ohm's law: the **body resistance** is between about $1\,\mathrm{k\Omega}$ (moist skin, high voltage) and a few $\mathrm{k\Omega}$, depending on skin condition, contact area and voltage. At $230\,\mathrm{V}$ and $1\,\mathrm{k\Omega}$, $230\,\mathrm{mA}$ flow.
+
+| Current (50 Hz, guide values)   | Effect                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| from about $0.5\,\mathrm{mA}$   | **threshold of perception**: slight tingling                                |
+| about $5$ to $10\,\mathrm{mA}$  | **let-go threshold**: muscle cramps; above this you can no longer release a gripped conductor |
+| about $10$ to $30\,\mathrm{mA}$ | severe cramps, breathing difficulties, rise in blood pressure, usually without permanent damage if brief |
+| from about $30$ to $50\,\mathrm{mA}$ for longer exposure | **ventricular fibrillation** possible: the heart stops pumping, danger to life |
+| several amperes                 | cardiac arrest, severe internal and external burns                          |
+
+The limits depend on the duration and are defined in IEC 60479-1 as time/current zones (AC-1 to AC-4). The shorter the current flows, the more the body can tolerate. The fast disconnection of residual current devices relies on this.
+
+Further dangers are **burns** from arcs and current heating, **secondary accidents** (falling off a ladder after a shock), eye damage from arcs and late effects such as cardiac arrhythmias hours after the accident.
+
+The generally permissible continuous **touch voltage** is $50\,\mathrm{V}$ AC and $120\,\mathrm{V}$ (ripple-free) DC, and less in special locations such as damp rooms or livestock buildings.
+
+## Standards and earthing systems
+
+In Austria the **Electrotechnical Act 1992** (ETG) regulates electrical safety. The **Electrotechnical Ordinance** declares standards binding. The central standard for the erection of low-voltage installations is **OVE E 8101** (formerly ÖVE/ÖNORM E 8101, before that ÖVE/ÖNORM E 8001), which corresponds in content to the European series HD 60364. The current 2025 edition has replaced the 2019 edition. For operation of and work on installations, **ÖVE/ÖNORM EN 50110-1** applies.
+
+The public grid in Austria is mostly a **TN system**: the star point of the transformer is earthed, and the exposed conductive parts of the equipment are connected to this point via the protective conductor. In some areas there is the **TT system**, in which the equipment is earthed via its own installation earth electrode.
+
+| Conductor          | Designation   | Colour                |
+| ------------------ | ------------- | --------------------- |
+| Line conductor     | L1, L2, L3    | brown, black, grey    |
+| Neutral conductor  | N             | blue                  |
+| Protective earth   | PE            | green-yellow          |
+
+## Protective measures
+
+The standards require protection in several layers so that a single fault does not become a hazard:
+
+| Layer           | Purpose                                                   | Measures                                                         |
+| --------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Basic protection** (protection against direct contact) | make live parts inaccessible during normal operation | insulation, covers, enclosures, distance, obstacles |
+| **Fault protection** (protection against indirect contact) | protection if an enclosure becomes live in the event of a fault | automatic disconnection with protective earth, double insulation, electrical separation |
+| **Additional protection** | protection if the other measures fail or in case of carelessness | residual current device with $I_{\Delta\mathrm{n}} \le 30\,\mathrm{mA}$, protective equipotential bonding |
+
+### Protective earth and automatic disconnection
+
+Equipment with a metal enclosure is earthed via the **protective conductor** (PE). If a line conductor touches the enclosure because of an insulation fault (**short to frame**), a large fault current flows via the protective conductor. The **overcurrent protective device** (circuit breaker or fuse) disconnects within the required time, for final circuits up to $32\,\mathrm{A}$ in a TN system within $0.4\,\mathrm{s}$. Until then the low-resistance protective conductor keeps the touch voltage small.
+
+Miniature circuit breakers (such as B16 or C16) primarily protect the **cable** against overload and short circuit. They protect people only in combination with the protective conductor. Their rated current depends on the cross-section and installation method of the cable.
+
+### Residual current device
+
+The **residual current device** (RCD) uses a **summation current transformer** to compare the current flowing out with the current flowing back. In fault-free operation both are equal and the magnetic fields cancel. If part of the current flows to earth by another route, for example through a person, a difference arises. If it exceeds the **rated residual operating current** $I_{\Delta\mathrm{n}}$, the RCD disconnects all live conductors.
+
+- RCDs with $I_{\Delta\mathrm{n}} = 30\,\mathrm{mA}$ are used for **personal protection** (additional protection), for example for socket circuits. They trip within $300\,\mathrm{ms}$ at $I_{\Delta\mathrm{n}}$, much faster at higher fault currents.
+- The RCD does not protect against contact between line and neutral conductor, because no residual current arises. It therefore does not replace basic protection.
+- The **test button** should be pressed regularly (about every six months) so that the mechanism does not seize.
+
+| Type | detects                                                                 |
+| ---- | ----------------------------------------------------------------------- |
+| AC   | sinusoidal AC residual currents only                                     |
+| A    | additionally pulsating DC residual currents (for example behind rectifiers) |
+| F    | additionally mixed frequencies, for equipment with frequency converters  |
+| B    | additionally smooth DC residual currents, for example for charging stations, photovoltaics and inverters |
+
+According to OVE E 8101:2025, type AC is no longer permitted for new installations or for modifications and extensions, because many modern devices can produce DC residual currents.
+
+### Protection classes
+
+| Protection class | Symbol (described)            | Protection principle                                                 | Example                     |
+| ---------------- | ----------------------------- | -------------------------------------------------------------------- | --------------------------- |
+| I                | earth symbol                  | metal enclosure with protective conductor, earthed plug              | PC power supply, washing machine |
+| II               | two nested squares            | **double insulation**: double or reinforced insulation, no protective conductor | charger, hair dryer, drill |
+| III              | Roman numeral III in a diamond | operation with **safety extra-low voltage**                         | cordless tools, toys        |
+
+### Extra-low voltage
+
+With **extra-low voltage** up to $50\,\mathrm{V}$ AC or $120\,\mathrm{V}$ DC there is normally no danger to life on contact. It must come from a safe source (safety transformer, battery) and be reliably separated from higher voltages.
+
+| System | Earthing                        | Use                                                       |
+| ------ | ------------------------------- | --------------------------------------------------------- |
+| **SELV** (safety extra-low voltage) | not earthed, neither live parts nor enclosure | toys, lab exercises, plug-in power supplies |
+| **PELV** (protective extra-low voltage) | live parts or enclosure may be earthed | controllers, computers with an earthed enclosure |
+
+Lab exercises at the HTL are therefore carried out with bench power supplies in the extra-low voltage range.
+
+### Electrical separation
+
+With **electrical separation** an isolating transformer supplies exactly one device. The secondary circuit has no connection to earth. If you touch a conductor, the current finds no closed path back to the source via earth. Applications: shaver sockets in bathrooms, work in confined conductive locations, repair of equipment.
+
+### Degrees of protection (IP code)
+
+The **degree of protection** according to EN 60529 uses two digits to indicate how well an enclosure is protected against foreign bodies and contact (first digit, 0 to 6) and against water (second digit, 0 to 9). **IP20** means finger-safe but without water protection (indoor equipment), **IP44** splash-proof (outdoor socket), **IP67** dust-tight and protected against temporary immersion (smartphone).
+
+## The five safety rules
+
+Before work is carried out on an electrical installation, it must be brought into a safe state. The **five safety rules** according to ÖVE/ÖNORM EN 50110-1 are applied in this order:
+
+1. **Disconnect completely**: isolate all conductors from the supply (circuit breaker off, fuse out, unplug).
+2. **Secure against reconnection**: lock the switch, take the fuses with you, attach a warning sign "Do not switch, work in progress".
+3. **Verify absence of voltage on all poles**: with a suitable two-pole voltage tester at the place of work; test the tester on a known voltage before and after.
+4. **Earth and short-circuit**: first earth, then connect to the live conductors. In low-voltage installations this can be omitted if there is no risk of back-feeding or external voltage.
+5. **Cover or fence off adjacent live parts.**
+
+After the work is finished, the measures are removed in reverse order, only once all persons have been warned and the place of work has been cleared.
+
+:::caution
+Even after switching off, capacitors in power supplies, monitors and UPS units can store dangerous voltages. Do not touch opened power supplies; opening mains devices is reserved for qualified personnel.
+:::
+
+## Working safely in the lab
+
+- Before switching on, check the circuit (or have it checked); use mains voltage only via the designated bench power supplies and sockets with RCD protection.
+- Always switch off the supply when changing the circuit.
+- Visually inspect test leads and instruments: damaged insulation, open enclosures or missing covers are a reason not to use the device.
+- Know the lab's **emergency stop** switch.
+- Use measuring instruments only within their [measurement category](/en/electrical-engineering/measurement/#measurement-categories).
+- Portable equipment is tested regularly (visual inspection, protective conductor resistance, insulation resistance, leakage current).
+
+## ESD
+
+**Electrostatic discharge** (ESD) occurs when a body becomes charged by friction (walking on carpet, peeling off film) and the charge flows off suddenly when another object is touched. Voltages of a few to over ten kilovolts occur. A discharge can only be felt from about $3\,\mathrm{kV}$.
+
+For people such discharges are harmless because the amount of charge is tiny. For electronic components, especially MOSFETs with their thin gate oxide layer, much lower voltages are enough. The damage is not always immediately visible: a pre-damaged component can fail weeks later.
+
+Protective measures in an **ESD protected area** (EPA, according to IEC 61340-5-1):
+
+- **wrist strap** with a built-in protective resistor (about $1\,\mathrm{M\Omega}$), so that charges drain slowly and you are not directly earthed in the event of a fault,
+- conductive or dissipative work mat, floor coverings and shoes,
+- store and transport components and assemblies in **ESD shielding bags** (metallised),
+- equalise potential before touching an assembly, for example by touching an earthed enclosure,
+- sufficient humidity, because dry air favours charging.
+
+The same rules apply when installing memory, processors and expansion cards in a PC.
+
+## First aid for electrical accidents
+
+1. **Protect yourself first**: do not touch the casualty while they are still in contact with the current.
+2. **Interrupt the circuit**: press the emergency stop, pull the plug, switch off the circuit breaker. If this is not possible in low-voltage installations, separate the person from the conductor with an insulating, dry object (wooden batten) while standing on an insulating surface. With **high voltage** keep a distance of at least $5\,\mathrm{m}$ (more depending on the voltage) and wait for the grid operator to disconnect.
+3. **Call for help**: ambulance **144** (Austria) or the European emergency number **112**.
+4. **Check consciousness and breathing**: if the person is breathing, place them in the recovery position. Without normal breathing start **chest compressions** immediately (30 compressions, 2 rescue breaths) and have a **defibrillator** (AED) fetched and used.
+5. Cover **burns** at the entry and exit points with sterile dressings.
+
+Every electrical accident involving mains voltage must be **examined by a doctor**, even if the person feels well. Cardiac arrhythmias can still occur hours later.
+
+## Further reading
+
+- [OVE: Standards for the erection of electrical installations (OVE E 8101)](https://www.ove.at/)
+- [AUVA: Information sheets on electrical safety](https://www.auva.at/)
+- [Austrian Red Cross: First aid](https://www.roteskreuz.at/)

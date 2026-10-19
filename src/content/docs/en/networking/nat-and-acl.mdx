@@ -1,0 +1,157 @@
+---
+title: NAT and ACLs
+description: Static and dynamic NAT, PAT, inside/outside local/global, port forwarding, standard and extended ACLs, wildcard masks and placement rules.
+sidebar:
+  order: 10
+---
+
+This chapter covers two functions that routers perform in addition to forwarding: **NAT** translates addresses so that private networks can use the internet, and **ACLs** filter traffic according to rules. Both work with addresses and ports in the packet headers and are configured on the same interfaces.
+
+## NAT
+
+**Network Address Translation** (NAT, RFC 3022) replaces IP addresses in packets (and with PAT also ports). Its main purpose is to bring devices with [private addresses according to RFC 1918](/en/networking/ipv4/#private-and-special-addresses) onto the internet, where only public addresses are routed. Without NAT, IPv4 addresses would have run out back in the 1990s.
+
+### Terminology
+
+NAT addresses are named from two perspectives: **inside/outside** says which device the address belongs to (internal network or internet), **local/global** says where the address is visible (in the internal network or outside).
+
+| Term | Meaning | Example |
+| --- | --- | --- |
+| **Inside local** | address of the inside host as used inside | 192.168.1.10 |
+| **Inside global** | address under which the inside host appears outside | 203.0.113.5 |
+| **Outside global** | actual address of the outside host | 198.51.100.20 |
+| **Outside local** | address of the outside host as it appears inside (usually the same as outside global) | 198.51.100.20 |
+
+On the router, the interfaces are marked as `ip nat inside` (towards the LAN) and `ip nat outside` (towards the provider). A packet going from inside to outside gets the inside global address as its source when leaving the outside interface; the reply is translated back using the **NAT table**.
+
+### Types of NAT
+
+| Type | Mapping | Use |
+| --- | --- | --- |
+| **Static NAT** | one inside address permanently to one public address (1:1) | servers that must be reachable from outside |
+| **Dynamic NAT** | inside addresses get a free address from a **pool** of public addresses when needed (n:m) | rare, needs many public addresses. When the pool is exhausted, no further host gets out |
+| **PAT** (_Port Address Translation_, NAT overload, NAPT) | many inside addresses share **one** public address, distinguished by **source ports** (n:1) | standard in every home and company network |
+
+With **PAT** the router remembers the inside address and inside port for each connection and assigns a unique outside port:
+
+| Protocol | Inside local | Inside global | Outside global |
+| --- | --- | --- | --- |
+| TCP | 192.168.1.10:51000 | 203.0.113.5:51000 | 198.51.100.20:443 |
+| TCP | 192.168.1.11:51000 | 203.0.113.5:51001 | 198.51.100.20:443 |
+| UDP | 192.168.1.12:53000 | 203.0.113.5:53000 | 8.8.8.8:53 |
+
+The second host happens to use the same source port as the first. The router therefore changes it to 51001 so that it can map the reply unambiguously. With 16-bit ports, roughly 64,000 simultaneous connections per public address and protocol are theoretically possible.
+
+### Port forwarding
+
+With PAT, a packet from outside can only get in if it belongs to an existing connection. If an internal server is to be reachable from outside, **port forwarding** (static PAT) is set up: connections to a particular port of the public address are permanently forwarded to an inside address and port, for example 203.0.113.5:443 to 192.168.1.20:443. The commands are under [Cisco IOS](/en/networking/cisco-ios/#nat).
+
+### Advantages and disadvantages
+
+| Advantages | Disadvantages |
+| --- | --- |
+| saves public IPv4 addresses | breaks the end-to-end principle: inside hosts cannot be reached directly from outside |
+| internal addressing stays the same when changing provider | protocols that carry addresses in the payload (active FTP, SIP) need helper functions (ALG) |
+| internal structure is not visible from outside | IPsec with AH does not work, ESP needs NAT traversal (UDP 4500) |
+| | connections are hard to trace back to the internal host, logging needed |
+| | additional load and delay on the router |
+
+NAT is **not a firewall**, even though PAT discards unsolicited connections from outside as a side effect. Many providers additionally use **carrier-grade NAT** (CGNAT, address range 100.64.0.0/10), in which case traffic is translated twice and port forwarding is no longer possible for the customer. With IPv6, NAT is no longer necessary.
+
+## Access Control Lists
+
+An **Access Control List** (ACL) is an ordered list of rules (**ACEs**, _Access Control Entries_) that permit (`permit`) or drop (`deny`) packets. ACLs are applied to router interfaces to filter traffic between networks, and also to select traffic for other functions: which addresses are translated by NAT, who may access the device via SSH, which traffic is prioritised by QoS.
+
+### Processing
+
+- Rules are checked **from top to bottom**. The **first matching** rule decides; all further rules are ignored. The order is therefore important: specific rules come before general ones.
+- At the end of every ACL there is an invisible **implicit `deny any`**. An ACL containing only `deny` rules therefore blocks everything. Every ACL needs at least one `permit` rule.
+- An ACL acts **inbound** (_in_, before the packet is routed) or **outbound** (_out_, after it has been routed) on an interface.
+- The rule of the **three Ps**: one ACL per **protocol** (IPv4, IPv6), per **interface** and per **direction**.
+- Traffic generated by the router itself is not filtered by outbound ACLs.
+
+Classic ACLs are **stateless**: they check every packet individually and know nothing about connections. To allow replies to your own TCP connections there is the keyword `established` (matches segments with ACK or RST set). A **stateful firewall**, by contrast, remembers connections and automatically lets in only the matching replies (see [Firewalls](/en/deployment/operations/firewalls/)).
+
+### Standard and extended ACLs
+
+| Feature | **Standard ACL** | **Extended ACL** |
+| --- | --- | --- |
+| checks | only the **source IP address** | protocol, source and destination IP, source and destination port, flags |
+| numbers | 1 to 99, 1300 to 1999 | 100 to 199, 2000 to 2699 |
+| placement | **as close to the destination as possible** | **as close to the source as possible** |
+
+Both also exist as **named ACLs** (`ip access-list standard NAME`), which are more readable and allow individual lines to be inserted and deleted using sequence numbers.
+
+The placement rules have a reason:
+
+- A **standard ACL** only knows the source. If placed close to the source, it blocks that source's traffic to **all** destinations, not just to the one you wanted to protect.
+- An **extended ACL** can name the destination precisely. Traffic dropped close to the source uses no bandwidth in the rest of the network.
+
+### Wildcard masks
+
+ACLs specify address ranges with a **wildcard mask**. It works the opposite way to a subnet mask:
+
+- Bit **0**: this bit must **match** the address.
+- Bit **1**: this bit is **ignored**.
+
+For whole subnets, the wildcard mask is the complement of the subnet mask: $255.255.255.255 - \text{subnet mask}$.
+
+| Target | Subnet mask | Wildcard mask | ACL notation |
+| --- | --- | --- | --- |
+| one host 192.168.10.5 | 255.255.255.255 | 0.0.0.0 | `192.168.10.5 0.0.0.0` or `host 192.168.10.5` |
+| network 192.168.10.0/24 | 255.255.255.0 | 0.0.0.255 | `192.168.10.0 0.0.0.255` |
+| network 192.168.10.64/26 | 255.255.255.192 | 0.0.0.63 | `192.168.10.64 0.0.0.63` |
+| network 172.16.0.0/12 | 255.240.0.0 | 0.15.255.255 | `172.16.0.0 0.15.255.255` |
+| all addresses | 0.0.0.0 | 255.255.255.255 | `0.0.0.0 255.255.255.255` or `any` |
+
+:::tip[Example: a range of subnets]
+The networks 192.168.16.0/24 to 192.168.31.0/24 are to be matched by one rule. In the third octet, 16 = `00010000` and 31 = `00011111`. The first 4 bits are the same, the last 4 may be anything, so the wildcard is `00001111` = 15 in the third octet:
+
+```text
+192.168.16.0 0.0.15.255
+```
+
+This corresponds to 192.168.16.0/20. Wildcard masks do not have to be contiguous: `192.168.1.0 0.0.0.254` matches all **even** host addresses in 192.168.1.0/24, because the last bit must be 0. This cannot be expressed with a subnet mask.
+:::
+
+### Examples
+
+Standard ACL: only the network 192.168.10.0/24 may access the server network behind G0/0/1. The ACL is placed close to the destination, outbound on the interface towards the server network:
+
+```text
+access-list 10 remark Only administration into the server network
+access-list 10 permit 192.168.10.0 0.0.0.255
+interface GigabitEthernet0/0/1
+ ip access-group 10 out
+```
+
+Extended ACL: the network 192.168.20.0/24 (students) may only use the web (HTTP, HTTPS) and DNS and must not reach the server 192.168.30.10. The ACL is placed close to the source, inbound on the interface towards the student network:
+
+```text
+ip access-list extended STUDENTS-IN
+ deny   ip 192.168.20.0 0.0.0.255 host 192.168.30.10
+ permit tcp 192.168.20.0 0.0.0.255 any eq 80
+ permit tcp 192.168.20.0 0.0.0.255 any eq 443
+ permit udp 192.168.20.0 0.0.0.255 any eq 53
+ deny   ip any any log
+interface GigabitEthernet0/0/0
+ ip access-group STUDENTS-IN in
+```
+
+The explicit last line `deny ip any any log` does not change the behaviour (implicit deny), but it logs the blocked packets and shows hit counters in `show access-lists`.
+
+An ACL also protects remote access to the device itself. With `access-class` on the VTY lines, only addresses from the management network may connect via SSH:
+
+```text
+access-list 5 permit 192.168.99.0 0.0.0.255
+line vty 0 15
+ access-class 5 in
+```
+
+For IPv6 there are only named, extended ACLs (`ipv6 access-list`), applied with `ipv6 traffic-filter`. Before the final deny they implicitly contain rules permitting Neighbor Discovery, so that IPv6 keeps working.
+
+## Further reading
+
+- [RFC 3022: Traditional IP Network Address Translator](https://www.rfc-editor.org/rfc/rfc3022)
+- [Cisco: Configure Commonly Used IP ACLs](https://www.cisco.com/c/en/us/support/docs/ip/access-lists/26448-ACLsamples.html)
+- Wendell Odom: _CCNA 200-301 Official Cert Guide_, Volume 2, Cisco Press

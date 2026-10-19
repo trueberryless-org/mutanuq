@@ -1,0 +1,155 @@
+---
+title: Energy, Rate and Equilibrium
+description: Exothermic and endothermic reactions, enthalpy and Hess's law, activation energy and catalysts, reaction rate, chemical equilibrium, Le Chatelier's principle and the law of mass action.
+sidebar:
+  order: 35
+---
+
+Every chemical reaction involves a transfer of energy. Three questions determine whether and how a reaction proceeds: is energy released or consumed (**thermodynamics**)? How fast does it proceed (**kinetics**)? How far does it go before an **equilibrium** is reached?
+
+## Exothermic and endothermic reactions
+
+Breaking bonds requires energy, forming bonds releases energy. The balance decides:
+
+- **Exothermic**: energy (usually as heat or light) is released to the surroundings. The products are lower in energy than the reactants. Examples: combustion, neutralisation, rusting, cellular respiration.
+- **Endothermic**: energy is absorbed from the surroundings. Examples: photosynthesis, lime burning, electrolysis of water, dissolving ammonium nitrate in water (cold packs).
+
+### Enthalpy
+
+The heat exchanged at constant pressure is called the **enthalpy of reaction** $\Delta_r H$ (unit $\mathrm{kJ/mol}$, per formula turnover of the equation). The sign is chosen from the point of view of the reacting system:
+
+$$
+\Delta_r H < 0 \;\Rightarrow\; \text{exothermic}, \qquad \Delta_r H > 0 \;\Rightarrow\; \text{endothermic}
+$$
+
+$$
+\mathrm{CH_4(g) + 2\,O_2(g) \rightarrow CO_2(g) + 2\,H_2O(l)} \qquad \Delta_r H^\circ = -890\,\mathrm{kJ/mol}
+$$
+
+$$
+\mathrm{CaCO_3(s) \rightarrow CaO(s) + CO_2(g)} \qquad \Delta_r H^\circ = +178\,\mathrm{kJ/mol}
+$$
+
+The symbol $^\circ$ stands for standard conditions ($25\,\mathrm{°C}$, $1\,\mathrm{bar}$).
+
+### Hess's law
+
+The enthalpy of reaction depends only on the initial and final states, not on the route (**Hess's law**, conservation of energy). It can therefore be calculated from tabulated **standard enthalpies of formation** $\Delta_f H^\circ$; for elements in their most stable form $\Delta_f H^\circ = 0$.
+
+$$
+\Delta_r H^\circ = \sum \nu \cdot \Delta_f H^\circ(\text{products}) - \sum \nu \cdot \Delta_f H^\circ(\text{reactants})
+$$
+
+:::tip[Example: combustion of methane]
+Table values in $\mathrm{kJ/mol}$: $\mathrm{CH_4}$ $-74.8$; $\mathrm{CO_2}$ $-393.5$; $\mathrm{H_2O(l)}$ $-285.8$; $\mathrm{O_2}$ $0$.
+
+$$
+\Delta_r H^\circ = \big[-393.5 + 2 \cdot (-285.8)\big] - \big[-74.8 + 2 \cdot 0\big] = -890.3\,\mathrm{kJ/mol}
+$$
+
+Per kilogram of methane ($62.3\,\mathrm{mol}$) that is about $55.5\,\mathrm{MJ}$.
+:::
+
+### Entropy and spontaneity
+
+Some endothermic processes also happen by themselves, for example ice melting at room temperature. Besides enthalpy, **entropy** $S$ matters, a measure of the number of possible arrangements (simplified: "disorder"). Whether a reaction is spontaneous is decided by the **Gibbs free energy**:
+
+$$
+\Delta G = \Delta H - T \cdot \Delta S
+$$
+
+If $\Delta G < 0$ the reaction is spontaneous (**exergonic**), if $\Delta G > 0$ it is not (**endergonic**). Spontaneous does not mean fast: wood and oxygen practically do not react at room temperature even though $\Delta G$ is strongly negative.
+
+## Activation energy and catalysts
+
+To start a reaction, the particles must first overcome an energy barrier, the **activation energy** $E_A$. Only then are the old bonds loosened enough to form a high-energy **transition state**. A match supplies this energy for wood; after that, the heat released by the reaction keeps the combustion going.
+
+![Energy diagram of an exothermic reaction with and without a catalyst](/images/natural-sciences/activation-energy_en.svg)
+
+A **catalyst** is a substance that provides a different reaction pathway with a lower activation energy and is itself unchanged at the end. It
+
+- speeds up the forward and reverse reactions equally,
+- does **not** change the enthalpy of reaction $\Delta_r H$,
+- does **not** change the position of the equilibrium; equilibrium is only reached faster.
+
+| Catalyst                              | Application                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| platinum, palladium, rhodium          | **catalytic converter** in cars: $\mathrm{2\,CO + O_2 \rightarrow 2\,CO_2}$, $\mathrm{2\,NO + 2\,CO \rightarrow N_2 + 2\,CO_2}$ |
+| iron (with promoters)                 | Haber-Bosch process for ammonia synthesis                                   |
+| vanadium(V) oxide                     | sulfuric acid production (contact process)                                 |
+| platinum, iridium                     | fuel cells, electrolysers                                                   |
+| **enzymes**                           | biocatalysts in living things, see [Biomolecules](/en/natural-sciences/biology-biomolecules-and-metabolism/#enzymes) |
+
+## Reaction rate
+
+The **reaction rate** is the change in concentration per unit time:
+
+$$
+v = \frac{\Delta c}{\Delta t} \quad \text{in } \mathrm{mol/(L \cdot s)}
+$$
+
+According to **collision theory**, particles only react when they collide, with sufficient energy and favourable orientation. This gives the influencing factors:
+
+| Factor                    | Effect                                                                  |
+| ------------------------- | ----------------------------------------------------------------------- |
+| **Concentration**, pressure | more particles per volume, more collisions                            |
+| **Temperature**           | faster particles, many more collisions with $E \geq E_A$                |
+| **Particle size**         | larger surface area of solids (flour dust explosion, steel wool burns)  |
+| **Catalyst**              | lower activation energy                                                 |
+
+The **van 't Hoff rule** states as a rule of thumb: a temperature increase of $10\,\mathrm{K}$ doubles to quadruples the reaction rate. The **Arrhenius equation** describes this more precisely for the rate constant $k$:
+
+$$
+k = A \cdot e^{-\frac{E_A}{R \cdot T}}
+$$
+
+That is why food keeps longer in the fridge, and why batteries and electrolytic capacitors age faster at high temperatures.
+
+## Chemical equilibrium
+
+Many reactions do not go to completion, because the reverse reaction also takes place:
+
+$$
+\mathrm{N_2 + 3\,H_2 \rightleftharpoons 2\,NH_3} \qquad \Delta_r H^\circ = -92\,\mathrm{kJ/mol}
+$$
+
+At the start the forward reaction dominates. As the product concentration rises, the reverse reaction becomes faster, until both are equally fast. In **chemical equilibrium** the concentrations no longer change, although both reactions continue (**dynamic equilibrium**). This requires a closed system.
+
+### Law of mass action
+
+For the general reaction $a\,\mathrm{A} + b\,\mathrm{B} \rightleftharpoons c\,\mathrm{C} + d\,\mathrm{D}$, at equilibrium (Guldberg and Waage, 1864):
+
+$$
+K_c = \frac{c(\mathrm{C})^c \cdot c(\mathrm{D})^d}{c(\mathrm{A})^a \cdot c(\mathrm{B})^b}
+$$
+
+The **equilibrium constant** $K_c$ depends only on temperature. If $K_c \gg 1$, the equilibrium lies on the side of the products; if $K_c \ll 1$, on the side of the reactants. Pure solids and the solvent water are not included in the expression.
+
+:::tip[Example: esterification]
+Acetic acid reacts with ethanol to form ethyl acetate and water, $K_c \approx 4$. You start with $1\,\mathrm{mol}$ each of acid and alcohol. At equilibrium $x$ mol of ester and $x$ mol of water have formed, and $(1 - x)$ mol of acid and alcohol remain (the volume cancels):
+
+$$
+\frac{x \cdot x}{(1 - x)(1 - x)} = 4 \;\Rightarrow\; \frac{x}{1 - x} = 2 \;\Rightarrow\; x = \frac{2}{3}
+$$
+
+At most two thirds of the reactants are converted into ester.
+:::
+
+### Le Chatelier's principle
+
+**Le Chatelier's principle** (1884): if a constraint is applied to a system in equilibrium, the equilibrium shifts so as to reduce the constraint.
+
+| Constraint                   | Shift                                                      | Ammonia synthesis                    |
+| ---------------------------- | ---------------------------------------------------------- | ------------------------------------ |
+| increase concentration of a reactant / remove product | towards the products          | continuously condense out $\mathrm{NH_3}$ |
+| increase pressure            | towards the side with fewer gas particles                  | 4 particles left, 2 right: more $\mathrm{NH_3}$ |
+| increase temperature         | in the direction of the endothermic reaction               | reverse reaction favoured: less $\mathrm{NH_3}$ |
+| catalyst                     | no shift, equilibrium is only reached faster               | iron catalyst                        |
+
+In the **Haber-Bosch process** this is a conflict of goals: a low temperature gives a lot of ammonia, but the reaction would be too slow. The process therefore runs at about $400$ to $500\,\mathrm{°C}$, high pressure (around $150$ to $300\,\mathrm{bar}$) and with a catalyst. Ammonia is the raw material for nitrogen fertilisers, without which today's world population could not be fed.
+
+## Further reading
+
+- Peter W. Atkins, Julio de Paula: _Physical Chemistry_, Oxford University Press
+- [Chemical Kinetics and Chemical Equilibria](https://chem.libretexts.org/Bookshelves/General_Chemistry) (LibreTexts)
+- [NIST Chemistry WebBook](https://webbook.nist.gov/chemistry/) (enthalpies of formation)

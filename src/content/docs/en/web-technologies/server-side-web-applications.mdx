@@ -1,0 +1,577 @@
+---
+title: Server-Side Web Applications
+description: Server-side rendering, templates, MVC with ASP.NET Core and Razor, middleware, sessions and authentication, WebSockets, SignalR and server-sent events, web servers, reverse proxies and deployment.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **server-side web application** generates the response to a request with a program on the server: it reads data from a database, checks permissions and builds an HTML page or a JSON response from it. The browser receives finished HTML. This is the classic model of the Web (an [MPA](/en/web-technologies/frontend-frameworks/#rendering-strategies)) and is still widespread for web shops, administrative applications and content sites. An SPA also needs a server, namely for its [REST API](/en/web-technologies/rest-apis/).
+
+## Server-side rendering
+
+With **server-side rendering** (SSR), a request typically goes through these steps:
+
+1. The web server accepts the request `GET /students?class=3AHIT`.
+2. **Routing** selects the responsible code (handler, controller action) based on method and path.
+3. This code reads the parameters, queries the database and passes the data to a **template**.
+4. The template produces HTML, which is returned as the response with `Content-Type: text/html`.
+
+| Advantages                                              | Disadvantages                                         |
+| ------------------------------------------------------- | ----------------------------------------------------- |
+| fast first page load, even on weak devices              | every click loads a whole page                        |
+| search engines see the complete content                 | the server carries the computing load for rendering   |
+| works without JavaScript                                 | less fluid interaction than an SPA                    |
+| secrets and business logic stay on the server           |                                                       |
+
+Libraries such as **htmx** or Hotwire's Turbo technique combine both worlds: the server delivers HTML fragments that are inserted into the page without reloading.
+
+## Templates and escaping
+
+A **template engine** combines HTML with placeholders, loops and conditions. Examples are **Razor** in ASP.NET Core, **Askama**, **Tera** and **Maud** in Rust, Thymeleaf in Java, Jinja2 in Python, and Twig and Blade in PHP.
+
+The most important task of a template engine is **escaping**: every inserted value must be encoded so that it appears as text and is not interpreted as HTML. If a user enters `<script>...</script>` as their name and it is written into the page unchanged, the script runs for every visitor to that page (**stored cross-site scripting**, XSS). Razor, Askama and Tera escape by default. If you assemble HTML by hand, you must encode it yourself:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Text;
+
+public record Student(int Id, string Name, string SchoolClass);
+
+public static class StudentView
+{
+    public static string RenderList(IEnumerable<Student> students)
+    {
+        var html = new StringBuilder("<ul>\n");
+        foreach (var s in students)
+        {
+            // HtmlEncode converts < > & " ' into entities
+            html.Append($"  <li>{WebUtility.HtmlEncode(s.Name)} ({WebUtility.HtmlEncode(s.SchoolClass)})</li>\n");
+        }
+        return html.Append("</ul>").ToString();
+    }
+}
+```
+
+```csharp
+List<Student> students =
+[
+    new(1, "Anna Huber", "3AHIT"),
+    new(2, "<script>alert('XSS')</script>", "3AHIT"),
+];
+Console.WriteLine(StudentView.RenderList(students));
+// <ul>
+//   <li>Anna Huber (3AHIT)</li>
+//   <li>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt; (3AHIT)</li>
+// </ul>
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Clone)]
+struct Student {
+    id: u32,
+    name: String,
+    school_class: String,
+}
+
+// converts the characters with a special meaning into entities
+fn escape_html(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for c in text.chars() {
+        match c {
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '&' => out.push_str("&amp;"),
+            '"' => out.push_str("&quot;"),
+            '\'' => out.push_str("&#39;"),
+            _ => out.push(c),
+        }
+    }
+    out
+}
+
+fn render_list(students: &[Student]) -> String {
+    let mut html = String::from("<ul>\n");
+    for s in students {
+        html += &format!("  <li>{} ({})</li>\n", escape_html(&s.name), escape_html(&s.school_class));
+    }
+    html + "</ul>"
+}
+```
+
+```rust
+let students = vec![
+    Student { id: 1, name: "Anna Huber".into(), school_class: "3AHIT".into() },
+    Student { id: 2, name: "<script>alert('XSS')</script>".into(), school_class: "3AHIT".into() },
+];
+println!("{}", render_list(&students));
+// <ul>
+//   <li>Anna Huber (3AHIT)</li>
+//   <li>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt; (3AHIT)</li>
+// </ul>
+```
+
+</TabItem>
+</Tabs>
+
+## MVC with ASP.NET Core
+
+The **Model-View-Controller** pattern (see [Software Architecture](/en/software-development/software-architecture/#mvc-mvp-and-mvvm)) divides a web application into three parts:
+
+- The **model** contains the data and the business logic (classes, database access).
+- The **view** displays the data; in ASP.NET Core this is a **Razor view** (`.cshtml`): HTML with embedded C# after the `@` character.
+- The **controller** receives the request, calls the model and selects the view.
+
+ASP.NET Core maps URLs using **conventional routing**: the pattern `{controller=Home}/{action=Index}/{id?}` forwards `/Students/Details/17` to the method `Details(17)` of the class `StudentsController`. The corresponding view is located at `Views/Students/Details.cshtml`. Besides MVC, ASP.NET Core offers **Razor Pages** (one file per page with its own handler, simpler for page-oriented applications) and [Blazor](/en/web-technologies/frontend-frameworks/#blazor-and-rust-in-the-browser).
+
+In Rust there is no MVC framework of this scope. You combine a web framework such as **axum** or **Actix Web** with a template engine. Askama compiles templates into Rust code at compile time, so the compiler already finds typos in variable names.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<StudentRepository>();   // dependency injection
+
+var app = builder.Build();
+app.UseStaticFiles();
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+app.Run();
+
+// model for the form; the attributes control validation
+public class StudentForm
+{
+    [Required(ErrorMessage = "Please enter a name."), StringLength(80)]
+    public string Name { get; set; } = "";
+
+    [Required, RegularExpression("[1-5][A-Z]{3,4}", ErrorMessage = "Invalid class.")]
+    public string SchoolClass { get; set; } = "";
+}
+
+public class StudentRepository
+{
+    private readonly List<Student> students = [new(1, "Anna Huber", "3AHIT")];
+
+    public IReadOnlyList<Student> GetAll() => students;
+    public Student? Find(int id) => students.Find(s => s.Id == id);
+    public void Add(StudentForm form) =>
+        students.Add(new Student(students.Max(s => s.Id) + 1, form.Name, form.SchoolClass));
+}
+
+public class StudentsController(StudentRepository repository) : Controller
+{
+    // GET /Students
+    public IActionResult Index() => View(repository.GetAll());
+
+    // GET /Students/Details/17
+    public IActionResult Details(int id) =>
+        repository.Find(id) is Student student ? View(student) : NotFound();
+
+    // GET /Students/Create shows the empty form
+    [HttpGet]
+    public IActionResult Create() => View(new StudentForm());
+
+    // POST /Students/Create processes the submitted form
+    [HttpPost, ValidateAntiForgeryToken]
+    public IActionResult Create(StudentForm form)
+    {
+        if (!ModelState.IsValid)
+            return View(form);                       // show the form again with error messages
+        repository.Add(form);
+        return RedirectToAction(nameof(Index));      // Post/Redirect/Get
+    }
+}
+```
+
+The view `Views/Students/Index.cshtml`:
+
+```razor
+@model IReadOnlyList<Student>
+
+<h1>Students</h1>
+<ul>
+    @foreach (var s in Model)
+    {
+        <li><a asp-action="Details" asp-route-id="@s.Id">@s.Name</a> (@s.SchoolClass)</li>
+    }
+</ul>
+<a asp-action="Create">Create new</a>
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use axum::{Router, extract::{Path, State}, http::StatusCode, response::Html, routing::get};
+use std::sync::Arc;
+
+struct AppState {
+    students: Vec<Student>,
+}
+
+// controller task: fetch the data and pass it to the "view" render_list
+async fn index(State(state): State<Arc<AppState>>) -> Html<String> {
+    Html(format!("<h1>Students</h1>\n{}", render_list(&state.students)))
+}
+
+async fn details(State(state): State<Arc<AppState>>, Path(id): Path<u32>) -> Result<Html<String>, StatusCode> {
+    let student = state.students.iter().find(|s| s.id == id).ok_or(StatusCode::NOT_FOUND)?;
+    Ok(Html(format!(
+        "<h1>{}</h1>\n<p>Class {}</p>",
+        escape_html(&student.name),
+        escape_html(&student.school_class)
+    )))
+}
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let state = Arc::new(AppState {
+        students: vec![Student { id: 1, name: "Anna Huber".into(), school_class: "3AHIT".into() }],
+    });
+    let app = Router::new()
+        .route("/students", get(index))
+        .route("/students/{id}", get(details))
+        .with_state(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await?;
+    axum::serve(listener, app).await
+}
+```
+
+</TabItem>
+</Tabs>
+
+After a successful POST, the controller redirects with `302` or `303` to a GET page instead of returning HTML directly. This pattern is called **Post/Redirect/Get**: if the user then reloads the page, only the GET request is repeated and the form is not submitted a second time.
+
+## Middleware
+
+Many tasks concern every request: catching errors, redirecting to HTTPS, serving static files, authenticating, logging, compressing. These are handled by **middleware**: components chained one after the other into a **pipeline**. Each middleware sees the request, can process it or answer it itself, and otherwise calls the next one. On the way back it sees the response in reverse order.
+
+The **order** is decisive. In ASP.NET Core it is typically: error handling, HSTS and HTTPS redirection, static files, routing, CORS, **authentication** (who are you?), **authorisation** (are you allowed to do this?), and finally the endpoints. If authorisation came before authentication, nobody would be logged in yet. In axum, middleware layers are called **layers** and come from the **tower** library.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Diagnostics;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
+var app = WebApplication.CreateBuilder(args).Build();
+
+// custom middleware: measures the processing time of every request
+app.Use(async (context, next) =>
+{
+    var watch = Stopwatch.StartNew();
+    await next(context);                       // call the rest of the pipeline
+    Console.WriteLine($"{context.Request.Method} {context.Request.Path} -> " +
+                      $"{context.Response.StatusCode} in {watch.ElapsedMilliseconds} ms");
+});
+
+app.MapGet("/", () => "Hello");
+app.Run("http://localhost:5000");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use axum::{Router, extract::Request, middleware::{self, Next}, response::Response, routing::get};
+use std::time::Instant;
+
+// custom middleware: measures the processing time of every request
+async fn timing(request: Request, next: Next) -> Response {
+    let method = request.method().clone();
+    let path = request.uri().path().to_owned();
+    let start = Instant::now();
+    let response = next.run(request).await;    // call the rest of the pipeline
+    println!("{method} {path} -> {} in {} ms", response.status().as_u16(), start.elapsed().as_millis());
+    response
+}
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let app = Router::new()
+        .route("/", get(|| async { "Hello" }))
+        .layer(middleware::from_fn(timing));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:5000").await?;
+    axum::serve(listener, app).await
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Sessions and authentication
+
+**Authentication** establishes who the user is; **authorisation** decides what they are allowed to do. Because HTTP is stateless, after login the browser has to send proof with every request. There are two approaches:
+
+| Feature          | session-based (cookie)                                         | token-based (e.g. JWT)                                      |
+| ---------------- | -------------------------------------------------------------- | ----------------------------------------------------------- |
+| Proof            | random session ID in a cookie, or an authentication cookie encrypted by the server | signed token with user data              |
+| Transmission     | the browser sends the cookie automatically                      | the client sets the `Authorization: Bearer ...` header itself |
+| State on the server | session store (with a session ID)                            | none, only the signing key                                  |
+| Logging out, blocking | immediate: delete the session                              | difficult: the token is valid until it expires, hence short lifetimes and refresh tokens |
+| Risks            | **CSRF** (a foreign page triggers a request with your cookie), countered by `SameSite` and anti-forgery tokens | theft of the token via XSS if it is stored in `localStorage` |
+| suitable for     | server-rendered applications, SPAs on the same domain           | APIs for mobile apps, services among themselves             |
+
+The session cookie always gets `HttpOnly`, `Secure` and `SameSite` (see [Cookies](/en/web-technologies/http/#cookies-and-sessions)). After login, a new session ID is issued so that an attacker cannot reuse an ID planted beforehand (**session fixation**).
+
+Passwords are never stored in plain text but with a slow, salted password **hash function** such as Argon2id, bcrypt or PBKDF2. ASP.NET Core Identity takes care of this, as well as user management, lockout after failed attempts and two-factor authentication. Often login is delegated entirely to an **identity provider** such as Microsoft Entra ID via OpenID Connect.
+
+The C# example uses the built-in cookie authentication of ASP.NET Core; the Rust example shows the mechanism of a session by hand (in real projects you use crates such as `tower-sessions` and `axum-login`).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+{/* check: norun */}
+
+```csharp
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.LoginPath = "/login";
+    });
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapPost("/login", async (HttpContext context, [FromForm] LoginForm form) =>
+{
+    // for demonstration only: real applications check a password hash from the database
+    if (form.Username != "anna" || form.Password != "secret")
+        return Results.Unauthorized();
+
+    Claim[] claims = [new(ClaimTypes.Name, form.Username), new(ClaimTypes.Role, "Student")];
+    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    await context.SignInAsync(new ClaimsPrincipal(identity));   // sets the encrypted cookie
+    return Results.Redirect("/profile");
+}).DisableAntiforgery();   // only in this short example without an anti-forgery token
+
+app.MapGet("/profile", (ClaimsPrincipal user) => $"Logged in as {user.Identity!.Name}")
+   .RequireAuthorization();                                     // otherwise redirect to /login
+
+app.MapPost("/logout", async (HttpContext context) =>
+{
+    await context.SignOutAsync();
+    return Results.Redirect("/");
+});
+
+app.Run("http://localhost:5000");
+
+public record LoginForm(string Username, string Password);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+{/* check: norun */}
+
+```rust
+use axum::{
+    Form, Router,
+    extract::State,
+    http::{HeaderMap, StatusCode, header},
+    response::{IntoResponse, Redirect},
+    routing::{get, post},
+};
+use rand::Rng;
+use serde::Deserialize;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+
+// session ID -> user name
+type Sessions = Arc<Mutex<HashMap<String, String>>>;
+
+#[derive(Deserialize)]
+struct LoginForm {
+    username: String,
+    password: String,
+}
+
+async fn login(State(sessions): State<Sessions>, Form(form): Form<LoginForm>) -> impl IntoResponse {
+    // for demonstration only: real applications check a password hash from the database
+    if form.username != "anna" || form.password != "secret" {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    // 128 random bits cannot be guessed
+    let session_id = format!("{:032x}", rand::rng().random::<u128>());
+    sessions.lock().unwrap().insert(session_id.clone(), form.username);
+    let cookie = format!("session={session_id}; Path=/; Max-Age=3600; HttpOnly; Secure; SameSite=Lax");
+    Ok(([(header::SET_COOKIE, cookie)], Redirect::to("/profile")))
+}
+
+// reads the session ID from the header "Cookie: a=1; session=..."
+fn session_id(headers: &HeaderMap) -> Option<String> {
+    let cookies = headers.get(header::COOKIE)?.to_str().ok()?;
+    cookies
+        .split(';')
+        .filter_map(|pair| pair.trim().split_once('='))
+        .find(|(name, _)| *name == "session")
+        .map(|(_, value)| value.to_owned())
+}
+
+async fn profile(State(sessions): State<Sessions>, headers: HeaderMap) -> impl IntoResponse {
+    let id = session_id(&headers).ok_or(StatusCode::UNAUTHORIZED)?;
+    let user = sessions.lock().unwrap().get(&id).cloned().ok_or(StatusCode::UNAUTHORIZED)?;
+    Ok::<_, StatusCode>(format!("Logged in as {user}"))
+}
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let sessions: Sessions = Arc::default();
+    let app = Router::new()
+        .route("/login", post(login))
+        .route("/profile", get(profile))
+        .with_state(sessions);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:5000").await?;
+    axum::serve(listener, app).await
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Real-time communication
+
+With HTTP, it is always the client that asks. For chats, live results, notifications or collaborative editing, however, the server must be able to send data on its own initiative.
+
+| Technique                 | How it works                                                                           | Direction                     |
+| ------------------------- | -------------------------------------------------------------------------------------- | ----------------------------- |
+| **Polling**               | the client asks at fixed intervals (`setInterval` with `fetch`)                        | client asks                   |
+| **Long polling**          | the server keeps the request open until there is something new, then the client asks again immediately | client asks   |
+| **Server-sent events** (SSE) | a long-running HTTP response with `Content-Type: text/event-stream` into which the server writes messages. The browser reconnects automatically | server to client only |
+| **WebSocket** (RFC 6455)  | starts as an HTTP request with `Upgrade: websocket` and the response `101 Switching Protocols`, then a permanent TCP connection for messages in both directions (`ws://`, `wss://`) | both directions |
+
+**SSE** is simpler and is sufficient when only the server sends (prices, progress indicators, notifications, streaming the answers of an AI chat). You need **WebSockets** when the client also sends frequently (chat, multiplayer games). **SignalR** is an ASP.NET Core library that adds an abstraction on top: server and client call each other's methods (**hubs**), and SignalR automatically chooses WebSockets, SSE or long polling. In Rust, axum offers WebSockets via the `ws` feature and SSE via `axum::response::sse`.
+
+In the browser, the other side takes only a few lines:
+
+```js
+// server-sent events
+const events = new EventSource("/api/notifications");
+events.onmessage = (event) => console.log("New:", event.data);
+
+// WebSocket
+const socket = new WebSocket("wss://schule.example.at/chat");
+socket.addEventListener("open", () => socket.send(JSON.stringify({ text: "Hello!" })));
+socket.addEventListener("message", (event) => console.log(JSON.parse(event.data)));
+```
+
+## Web servers and reverse proxies
+
+| Server      | Characteristics                                                                          |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| **Apache HTTP Server** | since 1995, modular, configuration also per directory via `.htaccess`, traditionally used with PHP |
+| **nginx**   | since 2004, event-driven and very efficient with many simultaneous connections, often used as a reverse proxy and for static files |
+| **IIS**     | _Internet Information Services_ from Microsoft, integrated into Windows Server, the classic host for ASP.NET |
+| **Kestrel** | cross-platform web server built into every ASP.NET Core application                      |
+| **Caddy**   | obtains TLS certificates from Let's Encrypt automatically                                |
+
+A **reverse proxy** sits in front of one or more application servers and accepts all requests from the Internet. It handles **TLS termination** (certificates in one place), serves static files and cached responses itself, distributes the load across several instances (**load balancing**, see [High Availability](/en/deployment/operations/high_availability/)), compresses and limits request rates. The application itself (Kestrel, an axum process, a Node.js server) only listens locally.
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name schule.example.at;
+
+    ssl_certificate     /etc/letsencrypt/live/schule.example.at/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/schule.example.at/privkey.pem;
+
+    location /static/ {
+        root /var/www/schule;              # nginx serves static files itself
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;  # everything else goes to the application
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+The headers `X-Forwarded-For` and `X-Forwarded-Proto` tell the application the client's original IP address and the protocol, which it would otherwise not know. In ASP.NET Core they are evaluated by the `UseForwardedHeaders` middleware.
+
+## Deployment
+
+There are several ways of running a web application, from a lot to little responsibility of your own:
+
+- **Own server or virtual machine** (a vServer at a hosting provider or at school): full control, but the operating system, updates, firewall and backups are your responsibility (see [Linux Server](/en/deployment/linux_server/)).
+- **Containers**: the application is packaged with all its dependencies into an **image** that runs the same everywhere (see [Container virtualisation](/en/deployment/virtualisation/#container-virtualisation)). Several containers (application, database, reverse proxy) are described with Docker Compose; large installations are orchestrated by Kubernetes.
+- **Platform as a service** (Azure App Service, Render, Fly.io): you only upload the code or the image; the provider takes care of the operating system and scaling (see [Cloud Computing](/en/decentralised-systems/cloud-computing/)).
+- **Static hosting and CDN** (GitHub Pages, Netlify, Cloudflare Pages) for SPAs and static sites.
+
+A Dockerfile for an ASP.NET Core application with a **multi-stage build**: the large SDK image is only used for building, and the delivered image contains only the runtime.
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "SchoolApp.dll"]
+```
+
+Configuration such as connection strings and keys comes from **environment variables** or a secret store, never from the source code in the Git repository. Automated building, testing and delivery on every push is called **CI/CD** (see [Version Control](/en/software-development/version-control/#continuous-integration)).
+
+## PHP
+
+**PHP** (Rasmus Lerdorf, 1995) is the oldest language for server-side web applications that is still widely used. PHP code is embedded directly in HTML files and executed by the web server on every request. A large proportion of all websites run on PHP, above all through content management systems such as **WordPress**, Drupal and TYPO3. Modern PHP applications use frameworks such as **Laravel** or **Symfony** with MVC, routing and template engines.
+
+```php
+<ul>
+<?php foreach ($students as $s): ?>
+    <li><?= htmlspecialchars($s['name']) ?> (<?= htmlspecialchars($s['school_class']) ?>)</li>
+<?php endforeach; ?>
+</ul>
+```
+
+Here too, `htmlspecialchars` is mandatory against XSS. Other widespread platforms are **Node.js** with Express or Fastify, **Python** with Django or Flask, **Java** with Spring Boot, and **Ruby on Rails**.
+
+## Further reading
+
+- [ASP.NET Core fundamentals](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/) (Microsoft Learn)
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/) (Session Management, Authentication, XSS Prevention)
+- [nginx documentation](https://nginx.org/en/docs/)

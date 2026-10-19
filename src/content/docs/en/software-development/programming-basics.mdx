@@ -1,0 +1,705 @@
+---
+title: Programming Basics
+description: Variables, data types, operators, control structures, methods and arrays in C# and Rust.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A **program** is a sequence of instructions that a computer executes. So that people can read and write programs, we use **programming languages** whose source code is then translated into machine code. This page covers the building blocks found in every imperative language and shows them side by side in **C#** and **Rust**.
+
+## From source code to a running program
+
+| Term                    | Meaning                                                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Compiler**            | Translates the whole source code into another language before execution, for example machine code or intermediate code.       |
+| **Interpreter**         | Reads the source code and executes it statement by statement without producing an executable file first.                      |
+| **Just-in-time (JIT)**  | A hybrid: intermediate code is translated into machine code only at runtime, shortly before it is executed.                    |
+| **Syntax error**        | A violation of the grammar of the language. The compiler reports it and does not produce a program.                           |
+| **Runtime error**       | An error that only occurs during execution, such as a division by zero.                                                        |
+| **Logic error**         | The program runs but produces a wrong result. Only testing reveals errors like this.                                           |
+
+**C#** is translated by the Roslyn compiler into the intermediate language **CIL** (Common Intermediate Language). The .NET runtime, the **CLR** (Common Language Runtime), compiles this code into machine code via JIT while the program runs and takes care of memory management (garbage collector).
+
+**Rust** is compiled directly into machine code for the target platform. There is no runtime environment and no garbage collector. Instead, memory errors are prevented at compile time by the [ownership system](/en/software-development/memory-management/).
+
+You create and run a new project from the command line:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```sh
+dotnet new console -o HelloWorld
+cd HelloWorld
+dotnet run
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```sh
+cargo new hello_world
+cd hello_world
+cargo run
+```
+
+</TabItem>
+</Tabs>
+
+The smallest meaningful program prints a text:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Program.cs: top-level statements
+Console.WriteLine("Hello World!");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// src/main.rs: every program starts in the main function
+fn main() {
+    println!("Hello World!");
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Variables and constants
+
+A **variable** is a named storage location that holds a value of a particular **data type**. Both languages are **statically typed**: the type of every variable is fixed at compile time and cannot change. If you do not state the type, the compiler derives it from the assigned value (**type inference**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int age = 17;          // explicit type
+var name = "Lena";     // type inference: string
+age = 18;              // variables are mutable by default
+
+const double Pi = 3.14159;    // constant, value known at compile time
+Console.WriteLine($"{name} is {age} years old, Pi = {Pi}");
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let mut age: i32 = 17; // mut allows later changes
+    let name = "Lena";     // type inference: &str, immutable
+    age = 18;
+
+    const PI: f64 = 3.14159; // constant, the type must be stated
+    println!("{name} is {age} years old, Pi = {PI}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+An important difference: in C#, variables are **mutable** by default, in Rust they are **immutable** by default. If you want to change a value in Rust, you have to allow it explicitly with `mut`. This prevents accidental changes and makes code easier to understand.
+
+Rust also allows **shadowing**: a new variable declared with `let` may have the same name as an earlier one and hides it. This way you can read an input as text and continue to use it as a number under the same name (`let input: i32 = input.trim().parse().unwrap();`).
+
+### Naming conventions
+
+| Element                    | C#                     | Rust                    |
+| -------------------------- | ---------------------- | ----------------------- |
+| Local variable, parameter  | `camelCase`            | `snake_case`            |
+| Method / function          | `PascalCase`           | `snake_case`            |
+| Class, struct, enum        | `PascalCase`           | `PascalCase`            |
+| Constant                   | `PascalCase`           | `SCREAMING_SNAKE_CASE`  |
+| Interface / trait          | `IPascalCase`          | `PascalCase`            |
+| Private field              | `_camelCase`           | `snake_case`            |
+
+## Data types
+
+Simple (primitive) data types store exactly one value. Their size is fixed in both languages and does not depend on the operating system.
+
+| Meaning                    | C#        | Rust    | Size     | Range                                           |
+| -------------------------- | --------- | ------- | -------- | ----------------------------------------------- |
+| Unsigned integer           | `byte`    | `u8`    | 8 bits   | 0 to 255                                        |
+| Integer                    | `short`   | `i16`   | 16 bits  | −32,768 to 32,767                               |
+| Integer (default)          | `int`     | `i32`   | 32 bits  | about ±2.1 billion ($-2^{31}$ to $2^{31}-1$)    |
+| Large integer              | `long`    | `i64`   | 64 bits  | $-2^{63}$ to $2^{63}-1$                         |
+| Platform dependent         | `nint`, `nuint` | `isize`, `usize` | 32/64 bits | depends on the platform; `usize` is the index type in Rust |
+| Single-precision float     | `float`   | `f32`   | 32 bits  | about 7 significant digits                      |
+| Double-precision float     | `double`  | `f64`   | 64 bits  | about 15 to 16 significant digits               |
+| Decimal number             | `decimal` | (crate) | 128 bits | 28 to 29 digits, no rounding errors in the decimal system |
+| Boolean                    | `bool`    | `bool`  | 8 bits   | `true`, `false`                                 |
+| Character                  | `char`    | `char`  | 16 / 32 bits | C#: UTF-16 code unit, Rust: Unicode character |
+| String                     | `string`  | `String`, `&str` | variable | C#: UTF-16, Rust: UTF-8                  |
+
+Both languages also have an unsigned variant for every integer type (`uint`/`u32`, `ulong`/`u64` and so on). How numbers are stored internally in two's complement and according to IEEE 754 is described on the page [Data Representation](/en/computer-science/data-representation/).
+
+:::caution[Floating-point numbers are inexact]
+`double` and `f64` store numbers in binary. Many decimal fractions such as 0.1 cannot be represented exactly, which is why `0.1 + 0.2` results in `0.30000000000000004`. Therefore, never compare floating-point numbers with `==`; instead, check whether the difference is smaller than a tolerance. For amounts of money, use `decimal` in C# or calculate in cents using integers.
+:::
+
+### Overflow
+
+If the result of an integer calculation exceeds the range of the type, this is called an **overflow**.
+
+- **C#** calculates unchecked by default: `int.MaxValue + 1` silently results in `int.MinValue`. With the `checked` keyword, an `OverflowException` is thrown instead.
+- **Rust** aborts with a `panic` in a debug build and wraps around in two's complement in a release build. If you need a specific behaviour, use the methods `checked_add` (returns `None`), `wrapping_add` (calculates modulo $2^n$) or `saturating_add` (stays at the maximum).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int max = int.MaxValue;
+Console.WriteLine(max + 1);              // -2147483648
+try
+{
+    int result = checked(max + 1);
+}
+catch (OverflowException)
+{
+    Console.WriteLine("Overflow detected");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let max = i32::MAX;
+    println!("{:?}", max.checked_add(1));    // None
+    println!("{}", max.wrapping_add(1));     // -2147483648
+    println!("{}", max.saturating_add(1));   // 2147483647
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Type conversion
+
+An **implicit** conversion happens automatically and is only allowed if no information can be lost. C#, for example, converts `int` to `long` or `double` automatically. Rust has no implicit conversions between numeric types: every conversion must be written out.
+
+An **explicit** conversion (_cast_) has to be written down. Decimal places can be cut off or values can overflow in the process.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int i = 42;
+long l = i;                 // implicit, lossless
+double d = 9.99;
+int truncated = (int)d;     // explicit: 9, decimal places are dropped
+
+// converting text to a number
+int parsed = int.Parse("123");               // throws FormatException for invalid text
+if (int.TryParse("abc", out int value))       // returns false instead of an exception
+{
+    Console.WriteLine(value);
+}
+string text = 3.5.ToString();                 // number to text
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let i: i32 = 42;
+    let l: i64 = i64::from(i);   // lossless, otherwise it does not compile
+    let d = 9.99_f64;
+    let truncated = d as i32;    // explicit: 9
+
+    // converting text to a number: parse returns a Result
+    let parsed: i32 = "123".parse().unwrap();
+    match "abc".parse::<i32>() {
+        Ok(value) => println!("{value}"),
+        Err(e) => println!("Error: {e}"),
+    }
+    let text = 3.5.to_string();  // number to text
+    println!("{l} {truncated} {parsed} {text}");
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Operators
+
+| Kind            | Operators                                     | Note                                                                                           |
+| --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Arithmetic      | `+` `-` `*` `/` `%`                           | With two integers, `/` is an **integer division**: `7 / 2` results in `3`.                     |
+| Assignment      | `=` `+=` `-=` `*=` `/=` `%=`                  | `x += 2` is short for `x = x + 2`.                                                             |
+| Increment       | `++` `--`                                     | Only in C#. In Rust, you write `x += 1`.                                                       |
+| Comparison      | `==` `!=` `<` `<=` `>` `>=`                   | The result is always a `bool`.                                                                 |
+| Logical         | `&&` `\|\|` `!`                               | Short-circuit evaluation: the right operand is only evaluated if it can change the result.      |
+| Bitwise         | `&` `\|` `^` `<<` `>>`, negation `~` (C#) or `!` (Rust) | Work on the individual bits, see [Boolean algebra](/en/mathematics/algebra/logic-and-boolean-algebra/). |
+| Conditional     | `a ? b : c` (C#)                              | In Rust, `if` itself is an expression: `if a { b } else { c }`.                                |
+| Null            | `??` `?.` (C#)                                | `x ?? y` returns `y` if `x` is null. Rust uses `Option` instead.                              |
+
+The remainder of an integer division `%` takes the sign of the dividend in both languages: `-7 % 3` results in `-1`, not `2`. If you always need a positive remainder, for example for indices in a ring buffer, use `rem_euclid` in Rust or `((a % n) + n) % n` in C#.
+
+**Precedence** follows the rules of mathematics: multiplication and division before addition and subtraction, then comparisons, then `&&`, then `||`, and the assignment last. When in doubt, add parentheses; this also makes the code easier to read.
+
+## Input and output
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.Write("What is your name? ");
+string name = Console.ReadLine() ?? "";      // ReadLine returns null at the end of input
+
+Console.Write("How old are you? ");
+int age = int.Parse(Console.ReadLine() ?? "0");
+
+// string interpolation with format specifiers
+Console.WriteLine($"Hello {name}, in 10 years you will be {age + 10}.");
+Console.WriteLine($"{Math.PI:F2}");          // 3.14 (two decimal places)
+Console.WriteLine($"|{name,10}|");           // right-aligned in 10 characters
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::io::{self, Write};
+
+fn main() {
+    print!("What is your name? ");
+    io::stdout().flush().unwrap();       // print! only outputs at the end of a line
+    let mut name = String::new();
+    io::stdin().read_line(&mut name).unwrap();
+    let name = name.trim();              // remove the line break
+
+    print!("How old are you? ");
+    io::stdout().flush().unwrap();
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let age: i32 = input.trim().parse().unwrap_or(0);
+
+    println!("Hello {name}, in 10 years you will be {}.", age + 10);
+    println!("{:.2}", std::f64::consts::PI); // 3.14
+    println!("|{name:>10}|");               // right-aligned in 10 characters
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Control structures
+
+Control structures determine the order in which statements are executed. Every algorithm can be built from three basic building blocks: **sequence** (one after another), **selection** (choice) and **iteration** (repetition). Graphically, they are shown in [activity diagrams](/en/software-development/uml/#activity-diagram) or structograms.
+
+### Selection
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+double temperature = 23.5;
+
+if (temperature >= 30)
+{
+    Console.WriteLine("hot");
+}
+else if (temperature >= 20)
+{
+    Console.WriteLine("warm");
+}
+else
+{
+    Console.WriteLine("cool");
+}
+
+// switch expression with patterns (since C# 8)
+int month = 7;
+string season = month switch
+{
+    12 or 1 or 2 => "winter",
+    >= 3 and <= 5 => "spring",
+    >= 6 and <= 8 => "summer",
+    >= 9 and <= 11 => "autumn",
+    _ => "invalid month",
+};
+Console.WriteLine(season); // summer
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let temperature = 23.5;
+
+    if temperature >= 30.0 {
+        println!("hot");
+    } else if temperature >= 20.0 {
+        println!("warm");
+    } else {
+        println!("cool");
+    }
+
+    // match must cover every possible value
+    let month = 7;
+    let season = match month {
+        12 | 1 | 2 => "winter",
+        3..=5 => "spring",
+        6..=8 => "summer",
+        9..=11 => "autumn",
+        _ => "invalid month",
+    };
+    println!("{season}"); // summer
+}
+```
+
+</TabItem>
+</Tabs>
+
+In Rust, `if` and `match` are **expressions** that produce a value. A `match` must be **exhaustive**: if a possible case is missing, the program does not compile. The wildcard `_` covers all remaining cases. The classic `switch` statement with `case` and `break` still exists in C#, but the switch expression is shorter and less error-prone.
+
+### Loops
+
+| Loop                     | C#                              | Rust                          | Use case                                                        |
+| ------------------------ | ------------------------------- | ----------------------------- | --------------------------------------------------------------- |
+| Pre-test                 | `while (condition)`             | `while condition`             | Number of iterations unknown in advance                          |
+| Post-test                | `do { } while (condition);`     | `loop { ... if !c { break; } }` | Body runs at least once                                       |
+| Counting                 | `for (int i = 0; i < n; i++)`   | `for i in 0..n`               | Number of iterations known                                       |
+| Over a collection        | `foreach (var x in list)`       | `for x in &list`              | Every element exactly once                                       |
+| Endless                  | `while (true)`                  | `loop`                        | Servers, games, event loops                                      |
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// sum of the numbers from 1 to 100
+int sum = 0;
+for (int i = 1; i <= 100; i++)
+{
+    sum += i;
+}
+Console.WriteLine(sum); // 5050
+
+// do-while: at least one iteration
+int n = 37;
+int digits = 0;
+do
+{
+    digits++;
+    n /= 10;
+} while (n > 0);
+Console.WriteLine(digits); // 2
+
+// break and continue
+foreach (int x in new[] { 3, -1, 4, 0, 5 })
+{
+    if (x < 0) continue; // start the next iteration
+    if (x == 0) break;   // leave the loop
+    Console.Write(x + " ");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // sum of the numbers from 1 to 100; 1..=100 includes 100
+    let mut sum = 0;
+    for i in 1..=100 {
+        sum += i;
+    }
+    println!("{sum}"); // 5050
+
+    // post-test loop with loop and break
+    let mut n = 37;
+    let mut digits = 0;
+    loop {
+        digits += 1;
+        n /= 10;
+        if n == 0 {
+            break;
+        }
+    }
+    println!("{digits}"); // 2
+
+    // break and continue
+    for x in [3, -1, 4, 0, 5] {
+        if x < 0 {
+            continue;
+        }
+        if x == 0 {
+            break;
+        }
+        print!("{x} ");
+    }
+    println!();
+}
+```
+
+</TabItem>
+</Tabs>
+
+In Rust, `loop` can also return a value with `break value`, and nested loops can be left selectively with **labels** (`'outer: for ...` and `break 'outer;`). C# has no labels for loops. There, you move the loops into a method and leave it with `return`.
+
+## Methods and functions
+
+A **method** (a **function** in Rust) groups statements under a name. This avoids duplicate code and makes programs easier to read because each method does exactly one job. The **signature** consists of the name, the parameters and the return type.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(MathUtils.Area(3, 4));       // 12
+Console.WriteLine(MathUtils.Area(5));          // 25, default value for height
+Console.WriteLine(MathUtils.Max(2.5, 7.1));    // 7.1, overload for double
+
+static class MathUtils
+{
+    public static int Area(int width, int height = -1)
+    {
+        if (height < 0)
+        {
+            height = width; // square
+        }
+        return width * height;
+    }
+
+    // overloading: same name, different parameter types
+    public static int Max(int a, int b) => a > b ? a : b;
+    public static double Max(double a, double b) => a > b ? a : b;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Rust has neither default values nor overloading.
+// Use separate names or Option parameters instead.
+fn area(width: u32, height: Option<u32>) -> u32 {
+    let height = height.unwrap_or(width); // square if None
+    width * height // the last expression without a semicolon is the return value
+}
+
+fn max_f64(a: f64, b: f64) -> f64 {
+    if a > b { a } else { b }
+}
+
+fn main() {
+    println!("{}", area(3, Some(4))); // 12
+    println!("{}", area(5, None));    // 25
+    println!("{}", max_f64(2.5, 7.1));
+}
+```
+
+</TabItem>
+</Tabs>
+
+| Feature                        | C#                                               | Rust                                                  |
+| ------------------------------ | ------------------------------------------------ | ----------------------------------------------------- |
+| Return                         | `return value;` or expression body `=> value`    | last expression without `;` or `return value;`        |
+| No return value                | `void`                                           | unit type `()` (omitted)                              |
+| Overloading                    | yes                                              | no                                                    |
+| Default values, named arguments | yes (`height: 4`)                               | no                                                    |
+| Variable number of parameters  | `params int[] values`                            | slice parameter `&[i32]` or macros                    |
+
+### Passing parameters
+
+By default, parameters are passed **by value**: the method receives a copy and cannot change the caller's variable. If the method should change a variable of the caller, you pass a **reference** (_call by reference_).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int counter = 5;
+Increment(ref counter);
+Console.WriteLine(counter); // 6
+
+if (TryDivide(10, 4, out double quotient))
+{
+    Console.WriteLine(quotient); // 2.5
+}
+
+static void Increment(ref int value) => value++;
+
+// out: the method must assign the parameter
+static bool TryDivide(double a, double b, out double result)
+{
+    result = b == 0 ? 0 : a / b;
+    return b != 0;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// &mut: mutable reference (borrowing)
+fn increment(value: &mut i32) {
+    *value += 1; // * dereferences the reference
+}
+
+// instead of out parameters, you return an Option or a Result
+fn try_divide(a: f64, b: f64) -> Option<f64> {
+    if b == 0.0 { None } else { Some(a / b) }
+}
+
+fn main() {
+    let mut counter = 5;
+    increment(&mut counter);
+    println!("{counter}"); // 6
+
+    if let Some(quotient) = try_divide(10.0, 4.0) {
+        println!("{quotient}"); // 2.5
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+C# also has `in` for read-only references to large structs. What happens when objects (reference types) are passed and why Rust **moves** values by default is explained on the page [Memory Management](/en/software-development/memory-management/).
+
+### Scope
+
+A variable is only valid within the block `{ ... }` in which it was declared (**scope**). Its lifetime ends at the end of the block. Local variables with the same name in different methods have nothing to do with each other.
+
+## Arrays
+
+An **array** stores a fixed number of elements of the same type directly one after another in memory. Access by **index** is therefore very fast. The first index is always `0`, the last one is `length - 1`. Accessing an invalid index throws an `IndexOutOfRangeException` in C# and causes a `panic` in Rust.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] numbers = { 4, 8, 15, 16, 23, 42 };
+int[] zeros = new int[5];          // 5 elements with default value 0
+
+Console.WriteLine(numbers.Length); // 6
+Console.WriteLine(numbers[0]);     // 4
+Console.WriteLine(numbers[^1]);    // 42, index from the end
+int[] middle = numbers[1..4];      // range: 8, 15, 16
+
+// rectangular two-dimensional array
+int[,] grid = new int[3, 4];
+grid[1, 2] = 7;
+Console.WriteLine(grid.GetLength(0)); // 3 rows
+
+// jagged array: array of arrays with different lengths
+int[][] triangle = [[1], [1, 1], [1, 2, 1]];
+Console.WriteLine(triangle[2][1]); // 2
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let numbers = [4, 8, 15, 16, 23, 42]; // type [i32; 6]
+    let zeros = [0; 5];                   // 5 elements with value 0
+
+    println!("{}", numbers.len());        // 6
+    println!("{}", numbers[0]);           // 4
+    println!("{}", numbers[numbers.len() - 1]); // 42
+    let middle = &numbers[1..4];          // slice: [8, 15, 16]
+    println!("{middle:?}");
+
+    // two-dimensional array: array of arrays
+    let mut grid = [[0; 4]; 3];
+    grid[1][2] = 7;
+    println!("{}", grid.len());           // 3 rows
+
+    // rows of different lengths: Vec of Vecs
+    let triangle = vec![vec![1], vec![1, 1], vec![1, 2, 1]];
+    println!("{}", triangle[2][1]);       // 2
+    println!("{zeros:?}");          // [0, 0, 0, 0, 0]
+}
+```
+
+</TabItem>
+</Tabs>
+
+Arrays have a fixed length. If you need a collection that can grow and shrink, use `List<T>` in C# or `Vec<T>` in Rust (see [Generics and Collections](/en/software-development/generics-and-collections/)). A **slice** in Rust (`&[T]`) is a view onto a contiguous part of an array or vector without copying the data.
+
+## Enumerations
+
+An **enumeration** (_enum_) defines a type with a fixed set of named values. This is safer than magic numbers or strings because the compiler detects invalid values.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var today = Weekday.Saturday;
+bool weekend = today is Weekday.Saturday or Weekday.Sunday;
+Console.WriteLine($"{today}: {(weekend ? "day off" : "school")}");
+Console.WriteLine((int)today); // 5, an integer internally
+
+enum Weekday { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum Weekday { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
+
+fn main() {
+    let today = Weekday::Saturday;
+    let weekend = matches!(today, Weekday::Saturday | Weekday::Sunday);
+    println!("{today:?}: {}", if weekend { "day off" } else { "school" });
+    println!("{}", today as i32); // 5
+}
+```
+
+</TabItem>
+</Tabs>
+
+In addition, Rust enums can carry **data** in each variant (`enum Shape { Circle(f64), Rect { w: f64, h: f64 } }`). This lets you model states precisely, and `match` forces you to handle every case. The most important examples from the standard library are `Option<T>` and `Result<T, E>`, see [Error Handling](/en/software-development/error-handling/).
+
+## Comments and documentation
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// single-line comment
+/* multi-line
+   comment */
+
+/// <summary>Calculates the gross price.</summary>
+/// <param name="net">Net price in euros</param>
+/// <returns>Price including 20 % VAT</returns>
+static decimal Gross(decimal net) => net * 1.20m;
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// single-line comment
+/* multi-line
+   comment */
+
+/// Calculates the gross price including 20 % VAT.
+///
+/// `net` is the net price in cents.
+fn gross(net: u64) -> u64 {
+    net * 120 / 100
+}
+```
+
+</TabItem>
+</Tabs>
+
+Documentation comments with `///` are processed by tools: Visual Studio shows them as a tooltip, and `cargo doc` generates HTML documentation from them. Good comments explain **why** something was solved in a certain way. **What** the code does should be expressed by the code itself through good names (see [Clean Code](/en/software-development/clean-code/)).
+
+## Further reading
+
+- [C# documentation by Microsoft](https://learn.microsoft.com/en-us/dotnet/csharp/)
+- [The Rust Programming Language](https://doc.rust-lang.org/book/) (the official Rust book, free online)

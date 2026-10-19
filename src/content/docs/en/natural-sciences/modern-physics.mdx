@@ -1,0 +1,222 @@
+---
+title: Modern Physics
+description: Photoelectric effect, photons, wave-particle duality, atomic models from Bohr to quantum mechanics, energy levels and spectra, lasers, semiconductors and special relativity with E = mc².
+sidebar:
+  order: 14
+---
+
+Around 1900, classical physics reached its limits: it could explain neither the radiation of hot bodies, nor the stability of atoms, nor the photoelectric effect. Two new theories solved these problems: **quantum physics** for very small things and **relativity** for very high speeds. Both are today the basis of semiconductor technology, lasers, GPS and medical imaging.
+
+## Photoelectric effect
+
+When a metal surface is irradiated with light, electrons can be emitted (**external photoelectric effect**, Hallwachs effect). The observations contradict the wave model:
+
+- Whether electrons are emitted depends only on the **frequency** of the light, not on its intensity. Below a threshold frequency $f_\mathrm{G}$, no electron is emitted even with very bright light.
+- The kinetic energy of the electrons increases linearly with frequency; intensity only determines their **number**.
+- The electrons are emitted without measurable delay.
+
+Albert Einstein explained this in 1905 (Nobel Prize 1921): light consists of energy packets, **photons**. A photon transfers its entire energy to a single electron. Part of it is used up by the **work function** $W_\mathrm{A}$ of the metal; the rest is kinetic energy:
+
+$$
+E_\mathrm{kin,max} = h f - W_\mathrm{A}, \qquad f_\mathrm{G} = \frac{W_\mathrm{A}}{h}
+$$
+
+:::tip[Example: sodium]
+Sodium has $W_\mathrm{A} \approx 2.28\,\mathrm{eV}$. Violet light with $\lambda = 400\,\mathrm{nm}$ has the photon energy
+
+$$
+E = \frac{h c}{\lambda} = \frac{1240\,\mathrm{eV\,nm}}{400\,\mathrm{nm}} = 3.10\,\mathrm{eV}
+$$
+
+The fastest electrons have $3.10 - 2.28 = 0.82\,\mathrm{eV}$. Red light ($700\,\mathrm{nm}$, $1.77\,\mathrm{eV}$) does not release electrons from sodium, however bright it is.
+:::
+
+The handy formula $hc = 1240\,\mathrm{eV\,nm}$ saves a lot of calculation. Applications: photocells, photomultipliers, image sensors (there as the internal photoelectric effect in a semiconductor), solar cells.
+
+## Photons
+
+A **photon** is the quantum of the electromagnetic field. It has no rest mass, always moves at $c$ and carries energy and momentum:
+
+$$
+E = h f = \frac{h c}{\lambda}, \qquad p = \frac{h}{\lambda} = \frac{E}{c}
+$$
+
+The **Planck constant** $h = 6.626\,070\,15 \times 10^{-34}\,\mathrm{J\,s}$ has been fixed exactly since 2019 and defines the kilogram. Max Planck had introduced it in 1900 to explain the spectrum of black-body radiation.
+
+A green laser pointer ($532\,\mathrm{nm}$, $1\,\mathrm{mW}$) emits photons of $3.73 \times 10^{-19}\,\mathrm{J} = 2.33\,\mathrm{eV}$ each, so $2.7 \times 10^{15}$ photons per second. Because $h$ is so small, the graininess of light goes unnoticed in everyday life. The photon energy also explains why UV light causes sunburn and infrared does not: only sufficiently energetic individual photons can break molecules apart.
+
+## Wave-particle duality
+
+Depending on the experiment, light shows wave properties (interference, diffraction) or particle properties (photoelectric effect). In 1924, Louis de Broglie proposed that particles of matter also have wave properties, with the **de Broglie wavelength**
+
+$$
+\lambda = \frac{h}{p} = \frac{h}{m v}
+$$
+
+:::tip[Example: electrons and a tennis ball]
+An electron accelerated through $100\,\mathrm{V}$ has $p = \sqrt{2 m_\mathrm{e} e U}$ and $\lambda = \frac{h}{\sqrt{2 m_\mathrm{e} e U}} = 0.123\,\mathrm{nm}$, comparable to the spacing of atoms in crystals. Electrons are therefore diffracted by crystals (Davisson-Germer experiment, 1927), and electron microscopes resolve much finer structures than light microscopes. A tennis ball ($0.145\,\mathrm{kg}$, $40\,\mathrm{m/s}$), by contrast, has $\lambda = 1.1 \times 10^{-34}\,\mathrm{m}$, immeasurably small.
+:::
+
+Quantum objects are neither classical particles nor classical waves. The wave describes the **probability** of finding the object at a place; when detected, it appears point-like. At a double slit, the interference pattern builds up even when the electrons pass through one at a time.
+
+**Heisenberg's uncertainty principle** sets a fundamental limit on knowing position and momentum at the same time:
+
+$$
+\Delta x \cdot \Delta p \ge \frac{\hbar}{2}, \qquad \hbar = \frac{h}{2\pi}
+$$
+
+This is not an inaccuracy of measuring instruments but a property of nature.
+
+## Atomic models
+
+| Model | Year | Key statement | Limitation |
+| --- | --- | --- | --- |
+| Dalton | 1803 | atoms are indivisible spheres, each element has its own atoms | does not explain charges |
+| Thomson ("plum pudding") | 1904 | positive mass with embedded electrons | disproved by Rutherford |
+| Rutherford | 1911 | tiny, heavy, positive **nucleus**, electrons orbit it, the atom is almost empty | orbiting electrons would radiate and spiral into the nucleus |
+| Bohr | 1913 | electrons only on allowed orbits with fixed energies | quantitatively correct only for hydrogen |
+| quantum mechanical (Schrödinger) | 1926 | electrons as wave functions in **orbitals** (probability of presence) | today's standard model |
+
+Rutherford's **scattering experiment** (alpha particles on gold foil) showed that almost all particles pass straight through, but some are strongly deflected: almost all the mass sits in a nucleus about $10^{-15}$ to $10^{-14}\,\mathrm{m}$ in size, while the atom itself is about $10^{-10}\,\mathrm{m}$.
+
+### Bohr model
+
+Niels Bohr postulated for the hydrogen atom:
+
+1. Electrons move only on certain **stationary orbits** and do not radiate there.
+2. In a transition between two orbits, a photon with exactly the energy difference is emitted or absorbed: $h f = E_m - E_n$.
+
+This gives the **energy levels** of the hydrogen atom:
+
+$$
+E_n = -\frac{13.6\,\mathrm{eV}}{n^2}, \qquad n = 1, 2, 3, \dots
+$$
+
+$n$ is the **principal quantum number**. The ground state ($n = 1$) is at $-13.6\,\mathrm{eV}$; removing the electron completely (ionisation) requires $13.6\,\mathrm{eV}$. The radius of the innermost orbit, the **Bohr radius**, is $a_0 = 52.9\,\mathrm{pm}$.
+
+### Energy levels and spectra
+
+Because the energy levels are discrete, excited atoms only emit light of certain wavelengths: a **line spectrum**. Each element has its own spectrum, like a fingerprint. When white light passes through a cool gas, exactly these lines are missing (**absorption spectrum**, Fraunhofer lines in the solar spectrum). This is how the composition of stars is determined.
+
+| Series | Final level | Spectral range |
+| --- | --- | --- |
+| Lyman | $n = 1$ | ultraviolet |
+| Balmer | $n = 2$ | visible (and near UV) |
+| Paschen | $n = 3$ | infrared |
+
+:::tip[Example: red Balmer line]
+Transition from $n = 3$ to $n = 2$:
+
+$$
+\Delta E = 13.6\,\mathrm{eV} \cdot \left(\frac{1}{2^2} - \frac{1}{3^2}\right) = 1.89\,\mathrm{eV}, \qquad \lambda = \frac{1240\,\mathrm{eV\,nm}}{1.89\,\mathrm{eV}} = 656\,\mathrm{nm}
+$$
+
+This is the red H-alpha line that astronomers observe in gas nebulae. The transition $2 \to 1$ gives $10.2\,\mathrm{eV}$ at $122\,\mathrm{nm}$ (Lyman-alpha, UV).
+:::
+
+Solids and dense gases, by contrast, glow with a **continuous spectrum** (incandescent lamp, Sun) determined by temperature ([Wien's law](/en/natural-sciences/thermodynamics/#thermal-radiation)).
+
+### Quantum mechanical model of the atom
+
+In 1926, Erwin Schrödinger described the electron by a wave function $\psi$; $|\psi|^2$ is the probability density. Instead of orbits there are **orbitals**, regions of space in which the electron is found with high probability. Each state is described by four **quantum numbers**:
+
+| Quantum number | Values | Meaning |
+| --- | --- | --- |
+| principal quantum number $n$ | $1, 2, 3, \dots$ | shell, energy (K, L, M, …) |
+| azimuthal quantum number $l$ | $0$ to $n - 1$ | shape of the orbital (s, p, d, f) |
+| magnetic quantum number $m$ | $-l$ to $+l$ | orientation |
+| spin quantum number $s$ | $\pm\frac{1}{2}$ | intrinsic angular momentum |
+
+According to the **Pauli exclusion principle**, no two electrons in an atom may agree in all four quantum numbers. This gives the shell structure and the periodic table of the elements, which governs chemistry.
+
+## Lasers
+
+**LASER** stands for _Light Amplification by Stimulated Emission of Radiation_. It is based on **stimulated emission**: when a photon of suitable energy hits an excited atom, the atom emits a second, completely identical photon (same frequency, phase, direction, polarisation). Alongside it there are absorption and spontaneous emission.
+
+For amplification to dominate, more atoms must be in the excited state than in the ground state (**population inversion**). This is achieved by **pumping** (flash lamp, electric current, another laser), usually via a third, long-lived (metastable) level. Two mirrors at the ends (one partially transmitting) form a **resonator** that sends the light through the active medium many times.
+
+Properties of laser light: monochromatic (very narrow spectrum), coherent (fixed phase relationship, able to interfere), highly collimated and very intense. Applications: optical fibre communication, barcode scanners, laser cutting and welding, eye surgery, LiDAR, distance measurement, lithography in chip manufacturing.
+
+:::caution
+Laser radiation can damage the retina even at a few milliwatts, because the eye's lens focuses the parallel beam onto a tiny spot. Lasers are therefore divided into classes according to EN 60825-1; from class 3R upwards, special care is required. Never look into the beam.
+:::
+
+## Semiconductors
+
+In a solid, the energy levels of many atoms merge into **energy bands**. What matters are the fully occupied **valence band** and the **conduction band** above it; between them lies a forbidden zone, the **band gap** $E_\mathrm{g}$.
+
+| Class of material | Band gap | Conductivity |
+| --- | --- | --- |
+| conductor (metal) | none, bands overlap or conduction band partly filled | high, decreases with temperature |
+| semiconductor | about $0.1$ to $3\,\mathrm{eV}$ (silicon $1.12\,\mathrm{eV}$) | low, increases with temperature |
+| insulator | above about $4\,\mathrm{eV}$ (diamond $5.5\,\mathrm{eV}$) | practically zero |
+
+In a pure semiconductor, thermal energy or light lifts individual electrons into the conduction band; a **hole** is left behind in the valence band, which moves like a positive charge (**intrinsic conduction**). **Doping** with foreign atoms controls the conductivity in a targeted way:
+
+- **n-type doping**: pentavalent atoms (phosphorus) in silicon supply free electrons.
+- **p-type doping**: trivalent atoms (boron) create holes.
+
+At the junction between the n and p regions (**pn junction**), a depletion layer with few charge carriers forms. It lets current through in one direction only: the principle of the **diode**. Transistors, the building blocks of every processor, consist of several such junctions. In a **light-emitting diode** (LED), recombining electrons and holes release their energy as a photon whose energy roughly equals the band gap; in a **solar cell** the process runs in reverse (see [Photovoltaics](/en/natural-sciences/energy-and-climate-physics/#photovoltaics)). Silicon with $1.12\,\mathrm{eV}$ uses light up to about $1100\,\mathrm{nm}$.
+
+## Special relativity
+
+Albert Einstein published the **special theory of relativity** in 1905. It is based on two postulates:
+
+1. **Principle of relativity**: the laws of nature are the same in all inertial frames. No experiment can detect absolute rest.
+2. **Constancy of the speed of light**: in a vacuum, light has the speed $c$ in every inertial frame, independent of the motion of the source or the observer.
+
+The second postulate contradicts everyday experience but has been confirmed many times (Michelson-Morley experiment, 1887). It follows that time and length depend on the frame of reference. The effects are determined by the **Lorentz factor**:
+
+$$
+\gamma = \frac{1}{\sqrt{1 - v^2/c^2}} \ge 1
+$$
+
+At everyday speeds, $\gamma$ is practically $1$ (an aircraft at $900\,\mathrm{km/h}$: $\gamma - 1 \approx 3.5 \times 10^{-13}$). It only becomes large near $c$; at $v = 0.995\,c$, $\gamma = 10$.
+
+### Time dilation
+
+A moving clock runs slow. If the **proper time** $\Delta t_0$ passes in the clock's rest frame, an observer relative to whom it moves measures:
+
+$$
+\Delta t = \gamma \cdot \Delta t_0
+$$
+
+:::tip[Example: muons from cosmic rays]
+Muons are produced at an altitude of about $10$ to $15\,\mathrm{km}$ and have a mean lifetime of $\tau = 2.2\,\mathrm{\mu s}$. Even at $v = 0.995\,c$, classically they would only get $0.995 \cdot 3 \times 10^8 \cdot 2.2 \times 10^{-6} = 656\,\mathrm{m}$ far. For us, however, such a muon lives $\gamma\tau = 10 \cdot 2.2\,\mathrm{\mu s} = 22\,\mathrm{\mu s}$ and travels $6.6\,\mathrm{km}$ on average. Indeed, many muons reach the ground.
+:::
+
+GPS also has to correct relativistically: because of their speed, the satellite clocks lose about $7\,\mathrm{\mu s}$ per day; because of the weaker gravitational field (general relativity) they gain about $45\,\mathrm{\mu s}$, a net gain of around $38\,\mathrm{\mu s}$. Without correction, the position error would grow by about $10\,\mathrm{km}$ per day.
+
+### Length contraction
+
+A moving body is shortened in its direction of motion. If $l_0$ is its length in its own rest frame (proper length):
+
+$$
+l = \frac{l_0}{\gamma}
+$$
+
+From the muon's point of view, the atmosphere is shortened by a factor of $10$, which is why it covers the distance in its short proper time. Both descriptions are equivalent.
+
+### Relativistic momentum and energy
+
+No body with mass can reach the speed of light, because its momentum $p = \gamma m v$ and its energy grow without limit. Velocities add relativistically in such a way that the result never exceeds $c$.
+
+The most famous consequence is the **equivalence of mass and energy**: every mass $m$ corresponds to a rest energy
+
+$$
+E_0 = m c^2, \qquad E = \gamma m c^2, \qquad E_\mathrm{kin} = (\gamma - 1) m c^2
+$$
+
+:::tip[Example: energy in one gram of mass]
+$E = 0.001\,\mathrm{kg} \cdot (2.998 \times 10^8\,\mathrm{m/s})^2 = 8.99 \times 10^{13}\,\mathrm{J} = 25\,\mathrm{GWh}$
+
+That is roughly the annual electricity consumption of about 7000 Austrian households. The Sun radiates $3.83 \times 10^{26}\,\mathrm{W}$ and thereby loses $L/c^2 = 4.3 \times 10^9\,\mathrm{kg}$ of mass every second. The rest energy of an electron is $511\,\mathrm{keV}$.
+:::
+
+In chemical reactions, the mass difference is immeasurably small; in nuclear reactions, it is significant: it is the source of the energy of [nuclear fission and fusion](/en/natural-sciences/nuclear-physics/#mass-defect-and-binding-energy).
+
+## Further reading
+
+- Paul A. Tipler, Ralph A. Llewellyn: _Modern Physics_, W. H. Freeman
+- Albert Einstein: _Zur Elektrodynamik bewegter Körper_ (On the Electrodynamics of Moving Bodies), Annalen der Physik 17, 1905
+- OpenStax: _University Physics Volume 3_, chapters 5 to 9, openstax.org

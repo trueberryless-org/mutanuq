@@ -1,0 +1,403 @@
+---
+title: Files and Serialization
+description: Reading and writing files and directories, streams, and storing objects as JSON, CSV and XML in C# and Rust.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Data in main memory is lost as soon as a program ends. To store it permanently, you write it to **files** or to a [database](/en/databases/). For objects to fit into a file, they have to be converted into a sequence of characters or bytes. This process is called **serialization**, the reverse is called **deserialization**.
+
+## Paths
+
+A **path** describes the location of a file in the file system.
+
+- An **absolute path** starts at the root directory: `C:\Users\lena\notes.txt` on Windows, `/home/lena/notes.txt` on Linux.
+- A **relative path** applies from the current working directory of the program: `data/notes.txt`.
+
+Windows separates directories with `\`, Linux and macOS with `/`. You therefore do not assemble paths by hand but with `Path.Combine` in C# or `Path::join` in Rust. These functions automatically use the correct separator.
+
+## Reading and writing text files
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string path = Path.Combine("data", "notes.txt");
+Directory.CreateDirectory("data");          // creates the directory if it is missing
+
+// write the whole file (overwrites existing content)
+File.WriteAllText(path, "First line\n");
+// append text
+File.AppendAllText(path, "Second line\n");
+
+// read the whole file
+string content = File.ReadAllText(path);
+Console.Write(content);
+
+// read line by line without loading the whole file into memory
+foreach (string line in File.ReadLines(path))
+{
+    Console.WriteLine($"> {line}");
+}
+
+// check whether a file exists and delete it
+if (File.Exists(path))
+{
+    File.Delete(path);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fs::{self, OpenOptions};
+use std::io::{self, BufRead, BufReader, Write};
+use std::path::Path;
+
+fn main() -> io::Result<()> {
+    let path = Path::new("data").join("notes.txt");
+    fs::create_dir_all("data")?;            // creates the directory if it is missing
+
+    // write the whole file (overwrites existing content)
+    fs::write(&path, "First line\n")?;
+    // append text
+    let mut file = OpenOptions::new().append(true).open(&path)?;
+    writeln!(file, "Second line")?;
+
+    // read the whole file
+    let content = fs::read_to_string(&path)?;
+    print!("{content}");
+
+    // read line by line without loading the whole file into memory
+    let reader = BufReader::new(fs::File::open(&path)?);
+    for line in reader.lines() {
+        println!("> {}", line?);
+    }
+
+    // check whether a file exists and delete it
+    if path.exists() {
+        fs::remove_file(&path)?;
+    }
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+File access can fail at any time: the file is missing, the permissions are insufficient, the disk is full. In C#, such errors throw an `IOException` (or derived types such as `FileNotFoundException`, `UnauthorizedAccessException`); in Rust, every function returns an `io::Result` (see [Error Handling](/en/software-development/error-handling/)).
+
+## Directories
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Directory.CreateDirectory("reports/2026");
+File.WriteAllText("reports/2026/jan.csv", "");
+File.WriteAllText("reports/2026/feb.csv", "");
+
+// all CSV files, including those in subdirectories
+foreach (string file in Directory.EnumerateFiles("reports", "*.csv", SearchOption.AllDirectories).Order())
+{
+    var info = new FileInfo(file);
+    Console.WriteLine($"{info.Name} ({info.Length} bytes)");
+}
+
+Directory.Delete("reports", recursive: true);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fs;
+use std::io;
+use std::path::Path;
+
+// search directories recursively
+fn csv_files(dir: &Path, result: &mut Vec<std::path::PathBuf>) -> io::Result<()> {
+    for entry in fs::read_dir(dir)? {
+        let path = entry?.path();
+        if path.is_dir() {
+            csv_files(&path, result)?;
+        } else if path.extension().is_some_and(|e| e == "csv") {
+            result.push(path);
+        }
+    }
+    Ok(())
+}
+
+fn main() -> io::Result<()> {
+    fs::create_dir_all("reports/2026")?;
+    fs::write("reports/2026/jan.csv", "")?;
+    fs::write("reports/2026/feb.csv", "")?;
+
+    let mut files = Vec::new();
+    csv_files(Path::new("reports"), &mut files)?;
+    files.sort();
+    for file in &files {
+        let size = fs::metadata(file)?.len();
+        println!("{} ({size} bytes)", file.file_name().unwrap().to_string_lossy());
+    }
+
+    fs::remove_dir_all("reports")
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Streams
+
+A **stream** is a sequence of bytes that is read or written step by step. The same concept applies to files, network connections, memory areas and compressed data. Because programs should not make a system call for every byte, a **buffer** is placed in between (`BufferedStream`, `StreamReader` in C#; `BufReader`, `BufWriter` in Rust). The buffer collects data and passes it on in larger blocks.
+
+| Concept                   | C#                                        | Rust                                    |
+| ------------------------- | ----------------------------------------- | --------------------------------------- |
+| Reading / writing bytes   | `Stream` (`FileStream`, `MemoryStream`, `NetworkStream`) | traits `Read` and `Write`  |
+| Reading / writing text    | `StreamReader`, `StreamWriter`            | `BufReader::lines`, `write!`            |
+| Buffer                    | included in `StreamReader`/`StreamWriter` | `BufReader`, `BufWriter`                |
+| Binary data               | `BinaryReader`, `BinaryWriter`            | `read_exact`, `to_le_bytes`, `from_le_bytes` |
+| Closing                   | `using` or `Dispose()`                    | automatic through `Drop`                |
+
+## JSON
+
+**JSON** (_JavaScript Object Notation_) is the most common exchange format on the web: text-based, easy to read and supported by practically every language. The structure and data types of JSON are described on the page [Data Formats](/en/databases/data-formats/).
+
+In C#, `System.Text.Json` is part of the standard library. In Rust, **Serde** is the standard: `serde` provides the traits `Serialize` and `Deserialize`, `serde_json` the JSON format (`cargo add serde --features derive` and `cargo add serde_json`).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+var team = new Team("Robotics", [new Member("Lena", 17), new Member("Jonas", 18)]);
+
+var options = new JsonSerializerOptions
+{
+    WriteIndented = true,                               // readable formatting
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,  // name instead of Name
+};
+
+// serialize: object -> JSON text
+string json = JsonSerializer.Serialize(team, options);
+Console.WriteLine(json);
+
+// deserialize: JSON text -> object
+Team? loaded = JsonSerializer.Deserialize<Team>(json, options);
+Console.WriteLine(loaded!.Members[1].Name);             // Jonas
+
+public record Member(string Name, int Age);
+
+public record Team(
+    string Name,
+    List<Member> Members,
+    [property: JsonIgnore] string? Secret = null);      // is not stored
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Member {
+    name: String,
+    age: u8,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Team {
+    name: String,
+    members: Vec<Member>,
+    #[serde(skip)]          // is not stored
+    secret: Option<String>,
+}
+
+fn main() -> serde_json::Result<()> {
+    let team = Team {
+        name: "Robotics".into(),
+        members: vec![
+            Member { name: "Lena".into(), age: 17 },
+            Member { name: "Jonas".into(), age: 18 },
+        ],
+        secret: None,
+    };
+
+    // serialize: object -> JSON text
+    let json = serde_json::to_string_pretty(&team)?;
+    println!("{json}");
+
+    // deserialize: JSON text -> object
+    let loaded: Team = serde_json::from_str(&json)?;
+    println!("{}", loaded.members[1].name);  // Jonas
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+Both programs produce the same JSON:
+
+```json
+{
+  "name": "Robotics",
+  "members": [
+    {
+      "name": "Lena",
+      "age": 17
+    },
+    {
+      "name": "Jonas",
+      "age": 18
+    }
+  ]
+}
+```
+
+## CSV
+
+**CSV** (_comma-separated values_) stores tables as text: one line per record, with the fields separated by a delimiter. In German-speaking countries, Excel usually uses the semicolon because the comma is the decimal separator. If a field itself contains the delimiter, a line break or quotation marks, it must be enclosed in double quotes (`"Wien; Krems"`). A simple `Split(';')` is therefore only suitable for simple data. For real data, you use a library: in C#, for example, CsvHelper; in Rust, the crate `csv`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+string csv = """
+    Name;Class;Points
+    Anna;3AHIT;87
+    Ben;3BHIT;54
+    """;
+
+// simple variant without the quoting rules
+var rows = csv.Split('\n')
+    .Skip(1)                                          // skip the header line
+    .Select(line => line.Split(';'))
+    .Select(f => (Name: f[0], Class: f[1], Points: int.Parse(f[2], CultureInfo.InvariantCulture)));
+
+foreach (var row in rows)
+{
+    Console.WriteLine($"{row.Name} has {row.Points} points");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct Row {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Class")]
+    class: String,
+    #[serde(rename = "Points")]
+    points: u32,
+}
+
+fn main() -> Result<(), csv::Error> {
+    let data = "Name;Class;Points\nAnna;3AHIT;87\nBen;3BHIT;54\n";
+
+    // the csv crate also handles quotation marks and line breaks inside fields
+    let mut reader = csv::ReaderBuilder::new()
+        .delimiter(b';')
+        .from_reader(data.as_bytes());
+
+    for row in reader.deserialize() {
+        let row: Row = row?;
+        println!("{} has {} points", row.name, row.points);
+    }
+    Ok(())
+}
+```
+
+</TabItem>
+</Tabs>
+
+## XML
+
+**XML** (_Extensible Markup Language_) is older and more verbose than JSON, but it is still used for configuration files (for example `.csproj`), office documents, SOAP web services and data exchange between companies. In C#, there is `XmlSerializer` and the convenient LINQ to XML API (`XDocument`). In Rust, you use crates such as `quick-xml`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Xml.Linq;
+
+var doc = new XDocument(
+    new XElement("team",
+        new XAttribute("name", "Robotics"),
+        new XElement("member", new XAttribute("age", 17), "Lena"),
+        new XElement("member", new XAttribute("age", 18), "Jonas")));
+
+Console.WriteLine(doc);
+
+// query with LINQ
+var adults = doc.Descendants("member")
+    .Where(m => (int)m.Attribute("age")! >= 18)
+    .Select(m => m.Value);
+Console.WriteLine(string.Join(", ", adults)); // Jonas
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use quick_xml::events::Event;
+use quick_xml::Reader;
+
+fn main() {
+    let xml = r#"<team name="Robotics">
+        <member age="17">Lena</member>
+        <member age="18">Jonas</member>
+    </team>"#;
+
+    // event-based reading: start tag, text, end tag ...
+    let mut reader = Reader::from_str(xml);
+    let mut age = 0;
+    let mut adults = Vec::new();
+    loop {
+        match reader.read_event() {
+            Ok(Event::Start(e)) if e.name().as_ref() == b"member" => {
+                let attr = e.try_get_attribute("age").unwrap().unwrap();
+                age = String::from_utf8_lossy(&attr.value).parse().unwrap();
+            }
+            Ok(Event::Text(t)) if age >= 18 => {
+                adults.push(String::from_utf8_lossy(&t).trim().to_string());
+                age = 0;
+            }
+            Ok(Event::Eof) => break,
+            Err(e) => panic!("Error: {e}"),
+            _ => {}
+        }
+    }
+    println!("{}", adults.join(", ")); // Jonas
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Binary formats
+
+Text formats are readable but large and slow to process. **Binary formats** store numbers directly as bytes. Examples are Google's Protocol Buffers, MessagePack and bincode in Rust. You have to define the **byte order** (_endianness_): _little endian_ stores the least significant byte first (x86, ARM), _big endian_ the most significant one (network protocols).
+
+:::caution[Insecure deserialization]
+Data from external sources must never be converted into arbitrary object types without checks. The old class `BinaryFormatter` in .NET allowed attackers to execute code during deserialization and was therefore removed in .NET 9. Safe serializers such as `System.Text.Json` and Serde only create the types that the code explicitly specifies.
+:::
+
+## Further reading
+
+- [File and Stream I/O](https://learn.microsoft.com/en-us/dotnet/standard/io/) and [JSON serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/overview) (Microsoft Learn)
+- [serde.rs](https://serde.rs/), the documentation of Serde

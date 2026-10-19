@@ -1,0 +1,285 @@
+---
+title: PC Hardware
+description: Mainboard, chipset, processor, RAM, HDD, SSD and NVMe, interfaces from PCIe to USB and HDMI, power supply, BIOS and UEFI, peripherals, plus building and troubleshooting a PC.
+sidebar:
+  order: 4
+---
+
+[Computer architecture](/en/computer-science/computer-architecture/) describes the principles; this page covers the concrete components that make up a PC today. In class, the aim is to select components for a purpose, read data sheets, assemble a PC and narrow down faults systematically. Servers differ mainly in redundancy and remote management; more on that under [Server hardware](/en/deployment/operations/server_hardware/).
+
+## Mainboard
+
+The **mainboard** (_motherboard_) connects all components. It carries the processor socket, the slots for memory and expansion cards, the voltage regulators for the CPU, the chipset, the firmware and the connectors.
+
+| Form factor  | Size             | Typical use                                   |
+| ------------ | ---------------- | --------------------------------------------- |
+| **E-ATX**    | up to 305 × 330 mm | workstations, many slots                    |
+| **ATX**      | 305 × 244 mm     | standard desktop, up to 7 expansion slots     |
+| **microATX** | 244 × 244 mm     | office PCs, up to 4 slots                     |
+| **Mini-ITX** | 170 × 170 mm     | compact computers, 1 slot, usually 2 RAM slots |
+
+The form factor also defines the position of the mounting holes and the I/O shield, so the case has to match.
+
+### Chipset
+
+The **chipset** (at Intel the _Platform Controller Hub_, PCH) provides additional connections: further PCIe lanes, SATA ports, USB, network and audio. It used to consist of a northbridge (memory, graphics) and a southbridge (input/output). Today the memory controller, the fastest PCIe lanes for the graphics card and SSD and often a graphics unit sit directly in the processor. The chipset is attached via its own link (Intel DMI, PCIe at AMD), which all devices connected to it share.
+
+Chipsets come in classes. At Intel, Z models stand for overclocking and many lanes, B and H models for cheaper systems; at AMD there are X (high end), B (mid-range) and A models (entry level).
+
+### Processor socket
+
+Processor and mainboard must have the same **socket**, and the mainboard firmware must support the processor.
+
+| Type   | Contacts                                  | Example                                       |
+| ------ | ----------------------------------------- | --------------------------------------------- |
+| **LGA** (_land grid array_) | pins in the socket, contact pads on the CPU | Intel LGA 1700, LGA 1851, AMD AM5 (LGA 1718) |
+| **PGA** (_pin grid array_)  | pins on the CPU                   | AMD AM4                                       |
+| **BGA** (_ball grid array_) | soldered, not replaceable         | laptops, mini PCs                             |
+
+Important processor specifications are the number of cores and threads, base and boost clock, cache size, thermal design power (TDP; at Intel now _processor base power_ and _maximum turbo power_), supported memory, number of PCIe lanes and whether integrated graphics are present. The power dissipation determines the required **cooler**: an air cooler with heat sink and fan or a liquid cooler (AIO). **Thermal paste** goes between CPU and cooler to fill microscopic air gaps.
+
+## Main memory
+
+Main memory (RAM, _random access memory_) consists of **DRAM** (_dynamic RAM_): each bit is stored in a tiny capacitor that discharges and therefore has to be refreshed every few milliseconds (**refresh**). DRAM is dense and cheap. Caches, by contrast, use **SRAM** (_static RAM_) built from flip-flops with six transistors per bit: faster and without refresh, but much larger and more expensive.
+
+**DDR SDRAM** (_double data rate_) transfers data on both the rising and the falling clock edge. That is why speed is given in **MT/s** (megatransfers per second): DDR5-6000 runs with a 3000 MHz clock and 6000 MT/s.
+
+| Feature                  | DDR4                         | DDR5                                       |
+| ------------------------ | ---------------------------- | ------------------------------------------ |
+| Introduced               | 2014                         | 2021                                       |
+| Data rate (JEDEC)        | 1600 to 3200 MT/s            | 4800 to 8800 MT/s                          |
+| Voltage                  | 1.2 V                        | 1.1 V                                      |
+| Pins (DIMM)              | 288                          | 288 (different notch, not compatible)      |
+| Channels per module      | one 64-bit channel           | two independent 32-bit subchannels         |
+| Voltage regulation       | on the mainboard             | on the module (PMIC)                       |
+| Error correction         | only on ECC modules          | **on-die ECC** inside the chip always, end-to-end ECC only on ECC modules |
+| Max. capacity per module (desktop) | 32 GB              | 64 GB (128 GB announced)                   |
+
+For desktops the modules come as **DIMMs**, for laptops as shorter **SO-DIMMs**; in many laptops **LPDDR** is soldered on. The DDR generations are mechanically keyed by the position of the notch.
+
+- **Multi-channel operation**: mainboards usually have two memory channels. Bandwidth only doubles when both are populated (two identical modules in the slots given in the manual, often A2 and B2).
+- **Timings**: the **CAS latency** (CL) states how many cycles after a read command the data arrives. The actual latency in ns is $\text{CL} \cdot 2000 / \text{data rate in MT/s}$. DDR4-3200 CL16 and DDR5-6000 CL30 both have 10 ns: newer generations mainly bring more bandwidth, hardly lower latency.
+- **XMP** (Intel) and **EXPO** (AMD) are profiles stored on the module with higher clocks. Unless they are enabled in UEFI, memory only runs at JEDEC standard values.
+- **ECC memory** (_error correcting code_) stores 8 check bits per 64 data bits and corrects single-bit errors with a [Hamming code](/en/computer-science/codes-and-compression/#hamming-code). ECC is standard in servers, often also as **registered DIMMs** (RDIMMs) with a buffer for many modules per channel. Processor and mainboard must support ECC.
+
+## Mass storage
+
+### Hard disk drive (HDD)
+
+A **hard disk drive** stores data magnetically on rotating platters. A read/write head floats on an air cushion a few nanometres above the surface. For an access, the head has to move to the right track (**seek time**) and wait until the sector passes by (**rotational latency**, on average $\frac{1}{2} \cdot \frac{60\,\mathrm{s}}{7200} \approx 4.2\,\mathrm{ms}$ at 7200 rpm). That is why HDDs are very slow at random accesses (about 100 to 200 IOPS); sequentially they reach 150 to 280 MB/s. They offer the lowest price per terabyte and are used for archives, NAS and backups. Form factors are 3.5 inch (desktop, server) and 2.5 inch (laptop).
+
+### SSD
+
+An **SSD** (_solid state drive_) stores data in **NAND flash** cells without moving parts. It is shock-resistant, silent and has access times in the microsecond range (hundreds of thousands of IOPS).
+
+| Cell type | Bits per cell | Properties                                       |
+| --------- | ------------- | ------------------------------------------------ |
+| SLC       | 1             | fastest and most durable, expensive, today mainly used as cache |
+| MLC       | 2             | now rare                                         |
+| TLC       | 3             | standard in today's SSDs                         |
+| QLC       | 4             | cheap and dense, but slower at writing and fewer write cycles |
+
+Flash cells only tolerate a limited number of write cycles, and data can only be erased in whole blocks. The SSD's **controller** therefore spreads writes evenly (**wear levelling**), keeps spare cells in reserve and tidies up in the background (**garbage collection**). The **TRIM** command tells the SSD which blocks the file system no longer needs. Endurance is stated in **TBW** (_terabytes written_).
+
+### SATA, M.2 and NVMe
+
+Three different things are often confused here: interface, protocol and form factor.
+
+| Term           | Kind               | Meaning                                                       |
+| -------------- | ------------------ | ------------------------------------------------------------- |
+| **SATA**       | interface and protocol (AHCI) | developed for HDDs, max. 6 Gbit/s, about 550 MB/s for SSDs |
+| **NVMe**       | protocol           | developed for flash, runs over **PCIe**, many parallel queues, low latency |
+| **M.2**        | form factor (plug-in card) | small board, e.g. **2280** = 22 mm wide, 80 mm long. Can be **either SATA or NVMe** |
+| **U.2/U.3, E1.S** | form factors    | NVMe SSDs for servers, hot-swappable                          |
+
+An M.2 SSD is therefore not automatically fast: an M.2 SATA SSD is no faster than a 2.5-inch SATA SSD. An M.2 slot with an **M key** usually supports PCIe x4 (NVMe); **B key** modules (or B+M) are usually SATA. The mainboard manual says which slot supports what and whether SATA ports are disabled when it is used.
+
+| Drive                     | Sequential read (typical)   |
+| ------------------------- | --------------------------- |
+| HDD 7200 rpm              | 150 to 280 MB/s             |
+| SATA SSD                  | approx. 550 MB/s            |
+| NVMe SSD, PCIe 3.0 x4     | approx. 3.5 GB/s            |
+| NVMe SSD, PCIe 4.0 x4     | approx. 7 GB/s              |
+| NVMe SSD, PCIe 5.0 x4     | approx. 14 GB/s             |
+
+Several drives can be combined into a [RAID](/en/deployment/storage-systems/#raid).
+
+## Interfaces
+
+### PCI Express
+
+**PCI Express** (PCIe) is the internal link for graphics cards, NVMe SSDs and expansion cards. It is a serial point-to-point connection made up of **lanes** (one wire pair per direction each, full duplex). Slots and devices come with x1, x4, x8 and x16 lanes. A card fits into any slot of the same size or larger and negotiates the highest common generation and lane count; the versions are backward compatible.
+
+| Version | Year | Transfer rate per lane | Encoding  | Data rate per lane and direction | x16 per direction |
+| ------- | ---- | ---------------------- | --------- | -------------------------------- | ----------------- |
+| 1.0     | 2003 | 2.5 GT/s               | 8b/10b    | 250 MB/s                         | 4 GB/s            |
+| 2.0     | 2007 | 5 GT/s                 | 8b/10b    | 500 MB/s                         | 8 GB/s            |
+| 3.0     | 2010 | 8 GT/s                 | 128b/130b | approx. 0.985 GB/s               | approx. 15.8 GB/s |
+| 4.0     | 2017 | 16 GT/s                | 128b/130b | approx. 1.97 GB/s                | approx. 31.5 GB/s |
+| 5.0     | 2019 | 32 GT/s                | 128b/130b | approx. 3.94 GB/s                | approx. 63 GB/s   |
+| 6.0     | 2022 | 64 GT/s (PAM4)         | FLIT      | approx. 8 GB/s                   | approx. 128 GB/s  |
+| 7.0     | 2025 | 128 GT/s (PAM4)        | FLIT      | approx. 16 GB/s                  | approx. 256 GB/s  |
+
+The data rate doubles with each generation. The **encoding** explains the odd values: with 8b/10b, 8 payload bits are packed into 10 transmitted bits (20 % overhead), with 128b/130b only 1.5 %. The values for PCIe 6.0 and 7.0 are the raw figures given by PCI-SIG; after the overhead of the FLIT packets, slightly less remains in practice.
+
+### SATA
+
+**SATA** (_Serial ATA_) connects HDDs, 2.5-inch SSDs and optical drives with separate data and power cables. SATA I manages 1.5 Gbit/s, SATA II 3 Gbit/s and SATA III **6 Gbit/s**, which is 600 MB/s net because of 8b/10b encoding.
+
+### USB
+
+**USB** (_Universal Serial Bus_) is the standard interface for peripherals. The version names have been changed several times, so the speed designations are more meaningful.
+
+| Specification              | Name (marketing)                 | Data rate         |
+| -------------------------- | -------------------------------- | ----------------- |
+| USB 1.0/1.1 (1996/1998)    | Low Speed / Full Speed           | 1.5 / 12 Mbit/s   |
+| USB 2.0 (2000)             | Hi-Speed                         | 480 Mbit/s        |
+| USB 3.2 Gen 1 (formerly USB 3.0) | USB 5Gbps (SuperSpeed)     | 5 Gbit/s          |
+| USB 3.2 Gen 2 (formerly USB 3.1) | USB 10Gbps (SuperSpeed+)   | 10 Gbit/s         |
+| USB 3.2 Gen 2x2            | USB 20Gbps                       | 20 Gbit/s (USB-C only, two lanes) |
+| USB4 (2019)                | USB 20Gbps / USB 40Gbps          | 20 or 40 Gbit/s (USB-C only) |
+| USB4 Version 2.0 (2022)    | USB 80Gbps                       | 80 Gbit/s symmetric, asymmetric up to 120 Gbit/s in one direction |
+
+Connector types are **USB-A** (the classic plug on the host), **USB-B** and Micro-USB on the device side, and **USB-C**: reversible, 24 contacts, for all speeds and power delivery. A USB-C connector says nothing about speed, though; a port may only support USB 2.0. With **USB Power Delivery** (USB PD 3.1), USB-C transfers up to 240 W (48 V at 5 A), enough for laptops. USB4 can also tunnel DisplayPort and PCIe connections through the same cable.
+
+### Thunderbolt
+
+**Thunderbolt** (Intel, developed together with Apple) has used the USB-C connector since version 3 and bundles PCIe, DisplayPort and USB in one cable, for example for docking stations and external graphics cards.
+
+| Version         | Data rate                         | Remark                                         |
+| --------------- | --------------------------------- | ---------------------------------------------- |
+| Thunderbolt 3   | 40 Gbit/s                         | first version with USB-C, basis of USB4        |
+| Thunderbolt 4   | 40 Gbit/s                         | stricter minimum requirements (two 4K monitors, PCIe 32 Gbit/s) |
+| Thunderbolt 5   | 80 Gbit/s, up to 120 Gbit/s asymmetric | based on USB4 Version 2.0                 |
+
+### Display connectors
+
+| Connector              | Maximum data rate  | Remark                                               |
+| ---------------------- | ------------------ | ---------------------------------------------------- |
+| VGA                    | analogue           | obsolete, image quality suffers at high resolutions  |
+| DVI                    | 3.96 or 7.92 Gbit/s (single/dual link) | digital, obsolete                |
+| HDMI 1.4               | 10.2 Gbit/s        | 4K at 30 Hz                                          |
+| HDMI 2.0               | 18 Gbit/s          | 4K at 60 Hz                                          |
+| HDMI 2.1               | 48 Gbit/s          | 4K at 120 Hz, 8K, variable refresh rate              |
+| HDMI 2.2 (2025)        | 96 Gbit/s          | requires "Ultra96" cables                            |
+| DisplayPort 1.4        | 32.4 Gbit/s        | daisy-chaining several monitors (MST)                |
+| DisplayPort 2.0/2.1    | up to 80 Gbit/s (UHBR20) | also via USB-C (_DisplayPort Alt Mode_)        |
+
+HDMI is widespread for televisions and home cinema and also carries audio; DisplayPort is common on PC monitors.
+
+You can estimate whether a connection is sufficient: a 4K image (3840 × 2160 pixels) at 60 Hz and 24-bit colour depth needs
+
+$$
+3840 \cdot 2160 \cdot 60\,\mathrm{s^{-1}} \cdot 24\,\mathrm{bit} \approx 11.9\,\mathrm{Gbit/s}
+$$
+
+plus a few per cent for blanking intervals. HDMI 2.0 with 18 Gbit/s (14.4 Gbit/s of payload after 8b/10b encoding) is sufficient; HDMI 1.4 is not.
+
+### Other connectors
+
+- **Ethernet** (RJ45): 1 Gbit/s as standard, increasingly 2.5 Gbit/s and 10 Gbit/s.
+- **Wi-Fi**: Wi-Fi 6 (802.11ax), Wi-Fi 6E (additionally 6 GHz), Wi-Fi 7 (802.11be).
+- **Audio**: 3.5 mm jack, digital via S/PDIF, HDMI or USB.
+- Internal: fan headers (4-pin PWM), front panel header (power button, reset, LEDs), internal USB headers.
+
+## Power supply
+
+The **power supply unit** (PSU) converts mains voltage (230 V AC, 50 Hz) into the DC voltages for the PC: **+12 V** for CPU, graphics card and drive motors (today almost the entire load), **+5 V** and **+3.3 V** for logic and drives, and **+5 V standby** (5VSB) so that the PC can be switched on by a button or via the network.
+
+| Connector                    | Supplies                                   |
+| ---------------------------- | ------------------------------------------ |
+| 24-pin ATX                   | mainboard                                  |
+| 4+4-pin EPS (12 V)           | processor (voltage regulators on the mainboard) |
+| 6+2-pin PCIe                 | graphics card, up to 150 W per connector   |
+| 12VHPWR or 12V-2x6 (ATX 3.x) | graphics card, up to 600 W via one connector |
+| SATA power                   | drives                                     |
+
+**Efficiency** states which fraction of the input power reaches the PC. The rest turns into heat:
+
+$$
+\eta = \frac{P_{\text{out}}}{P_{\text{in}}}
+$$
+
+Example: if a PSU with $\eta = 0.90$ delivers $450\,\mathrm{W}$ to the PC, it draws $450\,\mathrm{W} / 0.90 = 500\,\mathrm{W}$ from the mains, and $50\,\mathrm{W}$ is given off as heat.
+
+The **80 PLUS** certification guarantees minimum efficiencies at 20 %, 50 % and 100 % load. The values for 115 V grids:
+
+| Level       | 10 % load | 20 % load | 50 % load | 100 % load |
+| ----------- | --------- | --------- | --------- | ---------- |
+| 80 PLUS     |           | 80 %      | 80 %      | 80 %       |
+| Bronze      |           | 82 %      | 85 %      | 82 %       |
+| Silver      |           | 85 %      | 88 %      | 85 %       |
+| Gold        |           | 87 %      | 90 %      | 87 %       |
+| Platinum    |           | 90 %      | 92 %      | 89 %       |
+| Titanium    | 90 %      | 92 %      | 94 %      | 90 %       |
+
+For 230 V grids, as in Austria, there is a separate variant with requirements about two to three percentage points higher, because power supplies work more efficiently at higher input voltage. Efficiency is highest at around half load, so you choose a PSU whose typical load lies in the middle range. To size it, add up the maximum power of CPU, graphics card and the remaining components and add a reserve of 20 to 30 %. An unnecessarily large PSU works inefficiently at idle.
+
+## Firmware: BIOS and UEFI
+
+**Firmware** is software stored permanently on a flash chip on the mainboard that runs first when the computer is switched on. It initialises the hardware and starts the operating system's boot loader.
+
+| Feature              | BIOS (_Basic Input/Output System_, since 1981) | UEFI (_Unified Extensible Firmware Interface_) |
+| -------------------- | ---------------------------------------- | ------------------------------------------------ |
+| Processor mode       | 16-bit real mode                         | 32 or 64 bits                                    |
+| Partition table      | MBR, boot disks up to 2 TiB              | GPT, practically unlimited                       |
+| Boot process         | loads the first sector (512 bytes) of the disk | loads an `.efi` file from the EFI system partition |
+| User interface       | text, keyboard                           | graphical, mouse                                 |
+| Security             | none                                     | **Secure Boot**: only signed boot loaders are started |
+| Extensibility        | limited                                  | own drivers, network, shell                      |
+
+All PCs use UEFI today. A **CSM** (_compatibility support module_) can emulate the old BIOS but has been removed from most new mainboards. Colloquially the UEFI setup is still called the "BIOS". Windows 11 requires UEFI, Secure Boot and a **TPM 2.0** (_Trusted Platform Module_, often as a firmware TPM in the processor).
+
+Settings such as boot order, memory profiles and fan curves are stored in **NVRAM**. A coin cell (CR2032) powers the real-time clock (RTC) when the PC is disconnected from the mains. The **Clear CMOS** jumper or button resets the settings, for example after a failed overclock. Firmware updates close security holes and add support for new processors. Many mainboards can also update their firmware from a USB stick without a CPU installed (_BIOS Flashback_).
+
+Firmware is not only found on the mainboard: SSDs, graphics cards, network cards, printers and routers have their own firmware, which can also be updated.
+
+### POST
+
+After power-on, the firmware runs the **POST** (_power-on self-test_): it checks the processor, memory and graphics, detects connected devices and initialises them. If a test fails before an image can be displayed, the mainboard reports the error with **beep codes** (different for each manufacturer), **debug LEDs** (CPU, DRAM, VGA, BOOT) or a two-digit **POST code display**. The firmware then looks for a boot device and hands over to the boot loader. What happens next is described under [Boot process](/en/computer-science/operating-systems/#boot-process).
+
+## Peripherals
+
+**Peripheral devices** are all devices outside the central unit:
+
+- **Input**: keyboard, mouse, touchpad, scanner, microphone, webcam. Keyboards and mice identify themselves over USB as **HID** (_human interface device_) and need no driver of their own.
+- **Output**: monitor, printer, speakers. For monitors, resolution, refresh rate (60 to over 240 Hz), response time and panel type matter: **IPS** (good colours and viewing angles), **VA** (high contrast), **TN** (fast, poor viewing angles), **OLED** (self-emitting pixels, perfect black). Printers work as **laser printers** (toner, fast, cheap per page) or **inkjet printers** (good for photos).
+- **Input and output**: external drives, network adapters, touchscreens.
+
+The operating system addresses peripherals through **drivers** (see [Operating systems](/en/computer-science/operating-systems/#drivers)).
+
+## Building a PC
+
+Before assembly, check **compatibility**: socket and chipset match the CPU, the firmware version supports the CPU, the RAM generation matches the mainboard, the graphics card fits into the case in length and width, the cooler height fits, and the PSU has enough power and the necessary connectors.
+
+1. **ESD protection**: electrostatic discharge can destroy components. Touch an earthed metal part first or wear a wrist strap, do not work on carpet, hold components only by their edges.
+2. Place the **CPU** in the socket (note the marking, do not use force) and close the lever.
+3. Insert the **memory** into the slots specified in the manual for dual channel until both clips click into place.
+4. Install the **M.2 SSD**, with a heat sink if provided.
+5. Mount the **cooler** with thermal paste and connect the fan to the CPU fan header.
+6. Check the standoffs in the case, fit the I/O shield and screw in the **mainboard**.
+7. Install the **power supply**, connect the 24-pin ATX and EPS connectors.
+8. Insert the **graphics card** into the top x16 slot and plug its power connectors in fully.
+9. Connect the **front panel cables** (power, reset, LEDs), USB and audio headers and fans.
+10. First start: enter the UEFI setup, check that CPU, RAM and drives are detected, enable XMP/EXPO, set the boot order, install the operating system, then drivers and firmware updates.
+
+## Troubleshooting
+
+Troubleshooting should be **systematic**: describe the symptom precisely, check recent changes first, reduce the system to the minimum (CPU, one RAM module, graphics, no drives) and swap components one by one for known-good ones.
+
+| Symptom                                         | Possible causes and actions                                             |
+| ----------------------------------------------- | ----------------------------------------------------------------------- |
+| no reaction, no fans                            | switch on the PSU, mains cable, 24-pin connector, front panel cable on the wrong pins, PSU faulty |
+| fans spin, no image                             | check debug LEDs or beep codes. Reseat RAM or test modules individually, connect the monitor cable to the graphics card instead of the mainboard, EPS connector missing, firmware does not support the CPU |
+| very long first start                           | normal with DDR5 (memory training), wait a few minutes                  |
+| boot device not found                           | boot order, SATA/NVMe enabled in UEFI, Secure Boot/CSM setting matching the installation medium |
+| random crashes, blue screens                    | test RAM with MemTest86, disable XMP/EXPO as a test, check temperatures, update drivers, PSU too weak |
+| PC switches off under load                      | overheating (cooler, thermal paste, dust) or overloaded PSU             |
+| slow, frequent hangs                            | check drive health via **S.M.A.R.T.**, load in Task Manager or with `top`, too little RAM (constant swapping) |
+| time and settings are lost                      | CMOS battery flat                                                       |
+
+## Further reading
+
+- [PCI-SIG Specifications](https://pcisig.com/specifications) and [USB-IF Document Library](https://www.usb.org/documents)
+- [UEFI Specifications](https://uefi.org/specifications) (UEFI Forum)
+- [JEDEC DDR5 SDRAM Standard JESD79-5](https://www.jedec.org/standards-documents/docs/jesd79-5c)

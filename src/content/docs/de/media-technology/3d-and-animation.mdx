@@ -1,0 +1,308 @@
+---
+title: 3D und Animation
+description: Koordinatensysteme, Meshes, Modellierung, PBR-Materialien, Rasterisierung und Raytracing, Animationsprinzipien, Rigging, Blender und Game-Engines.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+3D-Grafik beschreibt Objekte nicht als Bild, sondern als räumliches Modell, das ein Programm aus jeder beliebigen Blickrichtung in ein Bild umrechnen kann. Sie wird für Filme und Werbung, Spiele, Produktvisualisierung, Architektur, Virtual und Augmented Reality und den 3D-Druck eingesetzt. Der Weg zum fertigen Bild führt über die Modellierung, Materialien, Licht und Kamera bis zum Rendern, bei Animationen kommen Bewegung und Rigging dazu.
+
+## Koordinatensysteme
+
+Jeder Punkt einer 3D-Szene hat drei Koordinaten $(x, y, z)$ in einem kartesischen Koordinatensystem. Programme unterscheiden sich darin, welche Achse nach oben zeigt und ob das System **rechtshändig** oder **linkshändig** ist. Bei einem rechtshändigen System zeigen Daumen (x), Zeigefinger (y) und Mittelfinger (z) der rechten Hand in die positiven Achsrichtungen.
+
+| Programm, Format | Händigkeit | Oben |
+| --- | --- | --- |
+| Blender | rechtshändig | Z |
+| Unity | linkshändig | Y |
+| Unreal Engine | linkshändig | Z |
+| Godot, OpenGL, glTF | rechtshändig | Y |
+
+Beim Austausch von Modellen zwischen Programmen müssen Achsen deshalb oft umgerechnet werden, sonst liegt ein Modell plötzlich auf dem Rücken.
+
+- **Lokale Koordinaten** (Objektkoordinaten) beziehen sich auf den **Ursprung** (_Origin_, _Pivot_) eines Objekts, um den es sich auch dreht.
+- **Globale Koordinaten** (Weltkoordinaten) beziehen sich auf den Ursprung der ganzen Szene.
+
+Objekte werden durch drei **Transformationen** platziert: **Verschiebung** (_Translation_), **Drehung** (_Rotation_) und **Skalierung**. Intern werden sie als $4 \times 4$-Matrizen in homogenen Koordinaten gespeichert und multipliziert. Die Reihenfolge ist wichtig, üblich ist erst skalieren, dann drehen, dann verschieben. Drehungen mit drei Winkeln (**Eulerwinkel**) können in eine Stellung geraten, in der zwei Achsen zusammenfallen und ein Freiheitsgrad verloren geht (**Gimbal Lock**). Engines rechnen deshalb intern mit **Quaternionen**.
+
+Um ein Bild zu erzeugen, werden alle Punkte von Objekt- in Weltkoordinaten, dann in Kamerakoordinaten umgerechnet und schließlich auf die Bildebene **projiziert**: perspektivisch (entfernte Objekte kleiner, wie das Auge) oder orthografisch (ohne Verkürzung, für technische Ansichten). Die virtuelle Kamera hat einen **Bildwinkel** (_Field of View_) sowie eine nahe und ferne **Clipping-Ebene**, außerhalb derer nichts gezeichnet wird.
+
+## Meshes
+
+Die meisten 3D-Modelle sind **Polygonnetze** (_Meshes_):
+
+- **Vertex** (Mehrzahl _Vertices_, Eckpunkt): ein Punkt im Raum
+- **Edge** (Kante): Verbindung zweier Vertices
+- **Face** (Fläche): von Kanten umschlossene Fläche. Ein Face mit drei Ecken heißt **Dreieck** (_Tri_), mit vier **Viereck** (_Quad_), mit mehr **N-Gon**.
+
+Grafikkarten zeichnen nur Dreiecke, jedes Viereck wird beim Rendern in zwei Dreiecke zerlegt. Beim Modellieren arbeitet man trotzdem bevorzugt mit **Quads**, weil sie saubere **Edge Loops** (umlaufende Kantenringe) bilden, sich gut unterteilen lassen und bei Animation sauber verformen. Die Anordnung der Polygone heißt **Topologie**.
+
+Für jeden geschlossenen Körper ohne Löcher gilt der **eulersche Polyedersatz**:
+
+$$
+V - E + F = 2
+$$
+
+Ein Würfel hat $V = 8$ Ecken, $E = 12$ Kanten und $F = 6$ Flächen: $8 - 12 + 6 = 2$.
+
+Weitere Begriffe:
+
+- **Normale**: Vektor, der senkrecht auf einer Fläche steht und angibt, wo „außen“ ist. Sie bestimmt, wie Licht reflektiert wird. Werden Vertex-Normalen benachbarter Flächen gemittelt, wirkt eine Oberfläche glatt (_Smooth Shading_), sonst facettiert (_Flat Shading_).
+- **Polycount**: Zahl der Polygone. Spielfiguren haben je nach Plattform einige Tausend bis über hunderttausend Dreiecke, Filmmodelle Millionen.
+- **Level of Detail** (LOD): mehrere Versionen eines Modells mit abnehmendem Polycount, die je nach Entfernung zur Kamera getauscht werden.
+- **Manifold** (wasserdicht): Jede Kante gehört zu genau zwei Flächen. Das ist Voraussetzung für 3D-Druck und boolesche Operationen.
+
+## Modellierungstechniken
+
+| Technik | Vorgehen | Einsatz |
+| --- | --- | --- |
+| **Polygonmodellierung** (Box Modeling) | aus einem Grundkörper (Würfel, Zylinder) mit Werkzeugen wie Extrudieren, Einfügen (_Inset_), Abschrägen (_Bevel_) und Kantenschnitten (_Loop Cut_) formen | Spielobjekte, Architektur, Hard-Surface-Modelle |
+| **Subdivision Surface** | ein grobes Netz wird automatisch geglättet und verfeinert (Catmull-Clark-Verfahren) | organische, glatte Formen mit wenig Kontrollpunkten |
+| **Sculpting** | mit Pinseln wie in digitalem Ton modellieren, Millionen Polygone | Figuren, Kreaturen, feine Details |
+| **Retopologie** | über ein hochaufgelöstes Sculpt wird ein sauberes Netz mit wenig Polygonen gelegt | Vorbereitung für Animation und Spiele |
+| **NURBS** und CAD | mathematisch exakte Kurven und Flächen statt Polygonen | Produktdesign, Maschinenbau |
+| **Prozedurale Modellierung** | Regeln und Knoten erzeugen Geometrie (Blender Geometry Nodes, Houdini) | Städte, Vegetation, Variationen |
+| **Boolesche Operationen** | Vereinigung, Differenz und Schnitt zweier Körper | Löcher, Ausschnitte |
+| **Photogrammetrie**, 3D-Scan | aus vielen Fotos oder Laserscans wird ein Modell berechnet | reale Objekte, Kulturerbe |
+
+**Modifikatoren** wenden Operationen nicht destruktiv an, etwa _Mirror_ für symmetrische Modelle, bei denen man nur eine Hälfte modelliert, oder _Array_ für Wiederholungen.
+
+## Materialien und Texturen
+
+### UV-Mapping
+
+Um ein 2D-Bild (**Textur**) auf ein 3D-Modell zu legen, muss jeder Vertex wissen, welche Stelle im Bild zu ihm gehört. Dafür wird die Oberfläche wie ein Bastelbogen aufgeschnitten und flach ausgebreitet (**UV-Unwrapping**). Die Achsen der Bildebene heißen **U** und **V** (weil x, y und z schon vergeben sind) und laufen von 0 bis 1. Die Schnittkanten heißen **Seams** (Nähte). Man legt sie an wenig sichtbare Stellen und achtet auf möglichst wenig Verzerrung und gleichmäßige **Texeldichte** (Texturpixel pro Fläche).
+
+Texturen haben meist Seitenlängen in Zweierpotenzen (1024, 2048, 4096 px), weil Grafikkarten davon verkleinerte Versionen (**Mipmaps**) für entfernte Objekte effizient berechnen.
+
+### Physically Based Rendering
+
+**PBR** (_Physically Based Rendering_) beschreibt Materialien mit physikalisch begründeten Parametern, sodass sie unter jedem Licht glaubwürdig aussehen. Ein Material reflektiert dabei nie mehr Licht, als einfällt (**Energieerhaltung**). Im verbreiteten **Metallic-Roughness-Workflow** gibt es diese Texturen (_Maps_):
+
+| Map | Bedeutung |
+| --- | --- |
+| **Base Color** (Albedo) | Grundfarbe ohne Licht und Schatten |
+| **Metallic** | 0 Nichtmetall (Holz, Kunststoff, Haut), 1 Metall |
+| **Roughness** | 0 spiegelglatt, 1 völlig matt |
+| **Normal Map** | täuscht feine Oberflächendetails (Kratzer, Poren) vor, indem sie die Normalen pro Pixel verändert, ohne zusätzliche Polygone |
+| **Ambient Occlusion** | Verschattung in Ritzen und Ecken |
+| **Height** bzw. **Displacement** | verschiebt die Geometrie tatsächlich |
+| **Emission** | selbstleuchtende Bereiche |
+
+Das Programm, das aus Material, Licht und Blickrichtung die Farbe eines Pixels berechnet, heißt **Shader**. In Blender ist der Standard-Shader der _Principled BSDF_. Texturen malt man in Programmen wie Adobe Substance 3D Painter direkt auf das Modell.
+
+## Licht
+
+| Lichtquelle | Eigenschaften | Beispiel |
+| --- | --- | --- |
+| **Punktlicht** | strahlt von einem Punkt in alle Richtungen | Glühbirne |
+| **Spotlicht** | Lichtkegel in eine Richtung | Taschenlampe, Bühnenscheinwerfer |
+| **Richtungslicht** (Sonne) | parallele Strahlen aus unendlicher Entfernung, Position egal | Sonnenlicht |
+| **Flächenlicht** | leuchtende Fläche, weiche Schatten | Fenster, Softbox |
+| **Umgebungslicht** (HDRI) | ein 360°-Foto mit hohem Dynamikumfang beleuchtet die Szene von allen Seiten | realistische Außenszenen, Produktbilder |
+
+Wie beim Film ist das **Dreipunktlicht** aus Führungs-, Aufhell- und Spitzlicht ein guter Ausgangspunkt. Realistisch wird ein Bild erst durch **globale Beleuchtung** (_Global Illumination_): Licht wird von Flächen weitergeworfen, eine rote Wand färbt den Boden daneben rötlich. In Spielen wird indirektes Licht für statische Objekte oft vorab berechnet und in Texturen gespeichert (**Light Baking**, _Lightmaps_).
+
+## Rendern
+
+**Rendern** ist die Berechnung des Bildes aus der Szene. Es gibt zwei grundlegende Verfahren:
+
+| | Rasterisierung | Raytracing |
+| --- | --- | --- |
+| Prinzip | jedes Dreieck wird auf den Bildschirm projiziert und in Pixel zerlegt; ein **Tiefenpuffer** (Z-Buffer) merkt sich pro Pixel das nächstgelegene Objekt | von der Kamera wird für jedes Pixel ein Strahl in die Szene geschickt und verfolgt, wo er auftrifft, reflektiert, gebrochen oder abgeschattet wird |
+| Geschwindigkeit | sehr schnell, Echtzeit mit 60 fps und mehr | langsam, Sekunden bis Stunden pro Bild |
+| Schatten, Spiegelungen | nur über Tricks (Shadow Maps, Screen-Space-Reflexionen) | ergeben sich physikalisch korrekt |
+| Einsatz | Spiele, interaktive Anwendungen, Vorschau | Film, Werbung, Architekturvisualisierung |
+
+Die Rasterisierung läuft auf der Grafikkarte in einer **Grafikpipeline**: Ein **Vertex-Shader** transformiert die Eckpunkte, der Rasterisierer bestimmt die bedeckten Pixel, ein **Fragment-Shader** (Pixel-Shader) berechnet ihre Farbe.
+
+**Path Tracing** ist ein Raytracing-Verfahren, das pro Pixel viele zufällige Lichtwege verfolgt und so auch globale Beleuchtung berechnet. Mit wenigen Strahlen (_Samples_) rauscht das Bild, deshalb verwendet man **Denoiser**. Seit 2018 haben Grafikkarten Hardware für Raytracing, Spiele kombinieren nun beide Verfahren. Blender enthält beide Ansätze: **EEVEE** (Echtzeit, Rasterisierung) und **Cycles** (Path Tracing).
+
+## Animation
+
+### Die zwölf Prinzipien der Animation
+
+Die Disney-Animatoren Frank Thomas und Ollie Johnston beschrieben in _The Illusion of Life_ (1981) zwölf Prinzipien, die Bewegungen glaubwürdig und lebendig machen. Sie gelten genauso für 3D-Animation und Bewegungen in Benutzeroberflächen:
+
+| Prinzip | Bedeutung |
+| --- | --- |
+| **Squash and Stretch** (Stauchen und Strecken) | Objekte verformen sich bei Bewegung und Aufprall, das Volumen bleibt gleich; ein Ball wird beim Aufprall flach |
+| **Anticipation** (Vorbereitung) | eine Gegenbewegung kündigt die Hauptbewegung an: vor dem Sprung in die Knie gehen |
+| **Staging** (Inszenierung) | die Handlung klar und eindeutig zeigen, durch Pose, Kamera und Licht |
+| **Straight Ahead and Pose to Pose** | Bild für Bild durchanimieren (spontan, flüssig) oder erst Schlüsselposen, dann Zwischenbilder (planbar) |
+| **Follow Through and Overlapping Action** | Teile wie Haare, Kleidung oder ein Schwanz bewegen sich nach dem Stopp noch weiter und zeitversetzt |
+| **Slow In and Slow Out** | Bewegungen beschleunigen am Anfang und bremsen am Ende (_Easing_) |
+| **Arcs** (Bögen) | natürliche Bewegungen folgen Bögen, nicht geraden Linien |
+| **Secondary Action** (sekundäre Bewegung) | Nebenbewegungen unterstützen die Hauptbewegung: Pfeifen beim Gehen |
+| **Timing** | die Zahl der Bilder für eine Bewegung bestimmt Gewicht und Charakter |
+| **Exaggeration** (Übertreibung) | Bewegungen und Ausdruck übertreiben, damit sie wirken |
+| **Solid Drawing** | Formen räumlich, mit Gewicht und Volumen gestalten |
+| **Appeal** (Ausstrahlung) | Figuren sollen interessant und ansprechend wirken, auch Bösewichte |
+
+### Keyframes und Interpolation
+
+Bei der **Keyframe-Animation** legt der Animator nur an wichtigen Zeitpunkten Werte fest: Position, Rotation, Skalierung oder jeden anderen Parameter. Die Bilder dazwischen (**In-Betweens**) berechnet das Programm durch **Interpolation**:
+
+| Interpolation | Verlauf | Wirkung |
+| --- | --- | --- |
+| **konstant** (Step) | Wert springt beim nächsten Keyframe | Blocking, Stop-Motion-Look |
+| **linear** | gleichmäßige Änderung | mechanisch, abrupter Start und Stopp |
+| **Bézier** (Ease In/Out) | sanftes Beschleunigen und Abbremsen | natürlich (Slow In and Slow Out) |
+
+Linear zwischen den Keyframes $(t_0, v_0)$ und $(t_1, v_1)$ gilt mit dem normierten Zeitanteil $u = \frac{t - t_0}{t_1 - t_0}$:
+
+$$
+v(t) = v_0 + (v_1 - v_0) \cdot u
+$$
+
+Für einen weichen Verlauf ersetzt man $u$ durch eine **Easing-Funktion**, etwa $s(u) = 3u^2 - 2u^3$ (_Smoothstep_), deren Steigung am Anfang und Ende null ist. Im **Graph Editor** sieht man diese Verläufe als **Kurven** (_F-Curves_) und kann sie über Bézier-Anfasser formen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // Dezimalpunkt
+
+// Wert zwischen zwei Keyframes, easing bildet u (0 bis 1) auf den Fortschritt ab
+static double Interpolate(double t0, double v0, double t1, double v1, double t, Func<double, double> easing)
+{
+    double u = Math.Clamp((t - t0) / (t1 - t0), 0, 1);
+    return v0 + (v1 - v0) * easing(u);
+}
+
+Func<double, double> linear = u => u;
+Func<double, double> smoothstep = u => 3 * u * u - 2 * u * u * u;
+
+// Keyframes: x = 0 bei Frame 0, x = 10 bei Frame 24 (1 Sekunde bei 24 fps)
+Console.WriteLine("Frame  linear  smooth");
+for (int frame = 0; frame <= 24; frame += 6)
+{
+    double lin = Interpolate(0, 0, 24, 10, frame, linear);
+    double smooth = Interpolate(0, 0, 24, 10, frame, smoothstep);
+    Console.WriteLine($"{frame,5}  {lin,6:F2}  {smooth,6:F2}");
+}
+// Frame  linear  smooth
+//     0    0.00    0.00
+//     6    2.50    1.56
+//    12    5.00    5.00
+//    18    7.50    8.44
+//    24   10.00   10.00
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// Wert zwischen zwei Keyframes, easing bildet u (0 bis 1) auf den Fortschritt ab
+fn interpolate(t0: f64, v0: f64, t1: f64, v1: f64, t: f64, easing: impl Fn(f64) -> f64) -> f64 {
+    let u = ((t - t0) / (t1 - t0)).clamp(0.0, 1.0);
+    v0 + (v1 - v0) * easing(u)
+}
+
+fn linear(u: f64) -> f64 {
+    u
+}
+
+fn smoothstep(u: f64) -> f64 {
+    3.0 * u * u - 2.0 * u * u * u
+}
+
+fn main() {
+    // Keyframes: x = 0 bei Frame 0, x = 10 bei Frame 24 (1 Sekunde bei 24 fps)
+    println!("Frame  linear  smooth");
+    for frame in (0..=24).step_by(6) {
+        let t = frame as f64;
+        let lin = interpolate(0.0, 0.0, 24.0, 10.0, t, linear);
+        let smooth = interpolate(0.0, 0.0, 24.0, 10.0, t, smoothstep);
+        println!("{frame:5}  {lin:6.2}  {smooth:6.2}");
+    }
+    // Frame  linear  smooth
+    //     0    0.00    0.00
+    //     6    2.50    1.56
+    //    12    5.00    5.00
+    //    18    7.50    8.44
+    //    24   10.00   10.00
+}
+```
+
+</TabItem>
+</Tabs>
+
+Die geglättete Bewegung legt im ersten Viertel nur 1,56 statt 2,5 Einheiten zurück, ist in der Mitte schneller und bremst am Ende wieder ab.
+
+### Rigging
+
+Um eine Figur zu animieren, bewegt man nicht einzelne Vertices, sondern ein **Skelett** (_Rig_, in Blender _Armature_) aus **Knochen** (_Bones_):
+
+- Die Knochen bilden eine **Hierarchie**: Dreht sich der Oberarm, folgen Unterarm und Hand (Eltern-Kind-Beziehung).
+- Beim **Skinning** wird das Mesh an die Knochen gebunden. Durch **Weight Painting** legt man fest, wie stark jeder Vertex von welchem Knochen beeinflusst wird, etwa im Ellbogen anteilig von Ober- und Unterarm.
+- **Vorwärtskinematik** (FK): Man dreht Knochen für Knochen von der Wurzel aus (Schulter, Ellbogen, Hand). Gut für Schwungbewegungen.
+- **Inverse Kinematik** (IK): Man bewegt das Ende der Kette (Hand oder Fuß) an ein Ziel, das Programm berechnet die Winkel der übrigen Gelenke. Gut, wenn ein Fuß fest auf dem Boden stehen soll.
+- **Controller** sind einfach greifbare Formen, über die Animatoren das Rig bedienen. **Constraints** schränken Bewegungen ein (ein Knie knickt nur in eine Richtung).
+- **Shape Keys** (_Blend Shapes_, Morph Targets) speichern verformte Varianten des Meshes, etwa für Gesichtsausdrücke, und blenden zwischen ihnen über.
+
+Statt von Hand können Bewegungen auch per **Motion Capture** von Schauspielern aufgezeichnet werden. Für Haare, Stoff, Flüssigkeiten, Rauch und Starrkörper gibt es **physikalische Simulationen**.
+
+## Werkzeuge
+
+**Blender** ist eine freie, quelloffene 3D-Software (GPL) der Blender Foundation und an Schulen das Standardwerkzeug. Sie deckt die ganze Produktion ab: Modellieren, Sculpting, UV-Mapping, Texturieren, Rigging, Animation, Simulation, Rendern mit EEVEE und Cycles, Compositing und sogar Videoschnitt. Mit Python lässt sie sich automatisieren und erweitern.
+
+| Programm | Schwerpunkt |
+| --- | --- |
+| Autodesk Maya | Charakteranimation in Film und Spielen |
+| Autodesk 3ds Max | Architekturvisualisierung, Spiele |
+| Maxon Cinema 4D | Motion Graphics, Werbung |
+| Maxon ZBrush | Sculpting |
+| Adobe Substance 3D Painter | Texturieren mit PBR |
+| SideFX Houdini | prozedurale Modelle, Effekte, Simulation |
+
+## Game-Engines
+
+Eine **Game-Engine** stellt alles bereit, was interaktive 3D-Anwendungen brauchen: Echtzeit-Rendering, Physik, Audio, Eingabe, Animation, Benutzeroberfläche, Netzwerk und den Export auf viele Plattformen. Kern jedes Spiels ist die **Spielschleife** (_Game Loop_): Eingaben lesen, Spielzustand aktualisieren, Bild zeichnen, und das 30- bis 144-mal pro Sekunde. Bewegungen werden mit der seit dem letzten Bild vergangenen Zeit (**Delta Time**) multipliziert, damit sie auf schnellen und langsamen Rechnern gleich schnell ablaufen.
+
+| Engine | Sprachen | Eigenschaften |
+| --- | --- | --- |
+| **Unity** | C# | sehr verbreitet bei Indie- und Mobile-Spielen, AR/VR; große Community und Asset Store |
+| **Unreal Engine** | C++, visuelles Scripting mit **Blueprints** | Epic Games; sehr hochwertige Grafik (Nanite, Lumen), auch für Film und Architektur |
+| **Godot** | GDScript, C# | frei und quelloffen (MIT-Lizenz), leichtgewichtig, beliebt für 2D und kleinere 3D-Projekte |
+
+In Unity besteht eine Szene aus **GameObjects**, deren Verhalten über **Komponenten** festgelegt wird. Eigene Komponenten sind C#-Klassen, die von `MonoBehaviour` erben. Die Engine ruft `Start()` einmal zu Beginn und `Update()` in jedem Bild auf:
+
+{/* check: skip */}
+```csharp
+using UnityEngine;
+
+// dreht das GameObject, an dem das Skript hängt, gleichmäßig um die y-Achse
+public class Rotator : MonoBehaviour
+{
+    [SerializeField] private float degreesPerSecond = 90f; // im Inspector einstellbar
+
+    void Update()
+    {
+        // mit Time.deltaTime unabhängig von der Bildrate
+        transform.Rotate(0f, degreesPerSecond * Time.deltaTime, 0f);
+    }
+}
+```
+
+## Dateiformate
+
+| Format | Inhalt | Einsatz |
+| --- | --- | --- |
+| **OBJ** (Wavefront) | Geometrie, UV-Koordinaten, Normalen; Materialien in separater `.mtl`-Datei; Textformat, keine Animation | einfacher, universeller Austausch statischer Modelle |
+| **FBX** (Autodesk) | Geometrie, Materialien, Skelett, Animation, Kameras; proprietär | Austausch zwischen DCC-Programmen und Game-Engines |
+| **glTF 2.0** (Khronos Group) | Geometrie, PBR-Materialien, Skelett, Animation; JSON mit Binärdaten oder als eine Datei `.glb`; offen, ISO/IEC 12113 | Web (three.js, Babylon.js), AR, Auslieferung an Endgeräte; das „JPEG für 3D“ |
+| **USD** (Pixar, OpenUSD) | ganze Szenen mit Ebenen und Varianten | Film-Pipelines, Apple AR (USDZ) |
+| **STL** | nur Dreiecke, keine Farben oder Einheiten | 3D-Druck |
+| **3MF** | Geometrie mit Farben, Materialien, Einheiten | moderner 3D-Druck |
+| **.blend** | komplette Blender-Datei | Arbeitsdatei |
+
+## Weiterführende Quellen
+
+- [Blender-Handbuch](https://docs.blender.org/manual/de/latest/)
+- [Khronos Group: glTF 2.0 Specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)
+- Frank Thomas, Ollie Johnston: _The Illusion of Life: Disney Animation_. New York: Abbeville Press, 1981

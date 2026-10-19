@@ -1,0 +1,110 @@
+---
+title: Network Design
+description: Hierarchical network design with core, distribution and access, redundancy, network documentation with network diagrams and IP address plans, and basic layer 2 protection.
+sidebar:
+  order: 15
+---
+
+A network for ten computers works without planning. From a few hundred devices, several buildings or high availability requirements onwards, it needs a well-thought-out structure. Good planning makes a network **scalable** (grows without rebuilding), **available** (survives the failure of individual components), **secure**, **manageable** (faults can be found quickly) and economical. In the diploma thesis and in projects at the HTL, a complete network diagram with an address plan is often part of the task.
+
+## Hierarchical design
+
+For campus networks, Cisco recommends a **hierarchical model** with three layers. Each layer has a clearly defined task, so networks can be extended modularly and faults can be confined to one area.
+
+| Layer | Task | Devices and functions |
+| --- | --- | --- |
+| **Core** | backbone: transport traffic between the distribution blocks as fast and reliably as possible | high-performance layer 3 switches, redundant, no filters and no complex processing that slows things down |
+| **Distribution** | connects access and core, enforces policies | layer 3 switches: inter-VLAN routing, ACLs, route summarisation, FHRP (default gateways of the VLANs), QoS, boundary of the broadcast domains |
+| **Access** | connecting the end devices | layer 2 switches with many ports, PoE for phones and APs, port security, VLAN assignment, DHCP snooping |
+
+In smaller networks, core and distribution are combined into a **collapsed core** (two-tier design), for example in a single building with a redundant pair of layer 3 switches. In data centres, the **spine-leaf** architecture has replaced the three-tier model: every leaf switch (to which the servers are connected) is connected to every spine switch, so there are always exactly two hops between any two servers.
+
+A typical layout in a school: each floor has access switches in the floor distributor, connected by two uplinks to the distribution switches in the building distributor. The buildings are connected by fibre to the core in the server room (see [structured cabling](/en/networking/physical-layer/#structured-cabling)).
+
+### Oversubscription
+
+Uplinks do not have to be able to carry the sum of all access ports, because never all devices transmit at full rate at the same time. The ratio is called **oversubscription**. An access switch with 48 ports at 1 Gbit/s and two uplinks at 10 Gbit/s has an oversubscription of $48 : 20 = 2.4 : 1$. Up to about 20 : 1 at the access layer and up to about 4 : 1 at the distribution layer are common, depending on the application.
+
+## Redundancy
+
+A **single point of failure** is a component whose failure takes down the whole network or an important part of it. Redundancy eliminates it at several levels:
+
+| Level | Measure |
+| --- | --- |
+| Devices | two core and two distribution switches, stacking or virtual switch pairs |
+| Links | each access switch with two uplinks to different distribution switches, [Spanning Tree](/en/networking/ethernet-and-switching/#spanning-tree-protocol) against loops, [EtherChannel](/en/networking/ethernet-and-switching/#etherchannel) for bandwidth |
+| Default gateway | [HSRP or VRRP](/en/networking/routing/#first-hop-redundancy) on the distribution switches |
+| Routing | dynamic routing protocols such as [OSPF](/en/networking/routing/#ospf) find alternative paths automatically |
+| Internet | two providers or a backup line via LTE/5G with a floating static route |
+| Power supply | redundant power supplies, UPS, separate circuits |
+
+Redundancy has limits: every additional path increases cost and complexity. Too many links in the layer 2 domain make STP hard to follow. Modern designs therefore route as early as possible (layer 3 down to the access switch) and keep layer 2 domains small. How availability is calculated is described under [High Availability](/en/deployment/operations/high_availability/).
+
+## Documentation
+
+A network without documentation becomes a problem at the next fault or the next change of staff. Network documentation includes:
+
+- **Logical network diagram**: networks, VLANs, IP ranges, routers and their connections, routing protocols. Shows how data flows.
+- **Physical network diagram**: locations of devices, rooms, cabinets, cable routes, port assignments. Shows where things are.
+- **IP address plan**: all subnets with purpose, VLAN, gateway, DHCP range and fixed addresses.
+- **VLAN plan**: number, name, purpose, subnet.
+- **Patch plan** and **rack layout**: which outlet is on which patch panel port and which switch port, occupancy of the rack units.
+- **Device documentation**: model, serial number, firmware version, location, maintenance contract, credentials (in the password manager).
+- **Configuration backups** and a change log.
+- **Baseline**: measured normal values (utilisation, latency), so that deviations can be detected.
+
+The diagrams use consistent symbols (for example the Cisco icons) in tools such as draw.io or Visio; the address plan uses a table or an IPAM tool (_IP Address Management_) such as NetBox.
+
+### Example: address plan of a school
+
+A site is given the private network `10.10.0.0/16`. The second octet identifies the site, the third the VLAN. This scheme makes addresses readable: anyone who sees `10.10.20.57` knows immediately that the device is in VLAN 20.
+
+| VLAN | Name | Subnet | Gateway (HSRP) | DHCP range | Note |
+| --- | --- | --- | --- | --- | --- |
+| 10 | Administration | 10.10.10.0/24 | 10.10.10.1 | .50 to .250 | |
+| 20 | Teachers | 10.10.20.0/24 | 10.10.20.1 | .50 to .250 | |
+| 30 | Student PCs | 10.10.30.0/23 | 10.10.30.1 | 10.10.30.50 to 10.10.31.250 | computer labs |
+| 40 | Student WLAN | 10.10.40.0/22 | 10.10.40.1 | 10.10.40.50 to 10.10.43.250 | short lease time |
+| 50 | Guests | 10.10.50.0/24 | 10.10.50.1 | .50 to .250 | internet only |
+| 60 | Printers | 10.10.60.0/24 | 10.10.60.1 | none | fixed addresses |
+| 70 | VoIP | 10.10.70.0/24 | 10.10.70.1 | .50 to .250 | QoS |
+| 99 | Management | 10.10.99.0/24 | 10.10.99.1 | none | reachable only by administrators |
+| 100 | Servers | 10.10.100.0/24 | 10.10.100.1 | none | fixed addresses |
+| | Transfer networks | 10.10.255.0/24 in /30 or /31 | | | router links |
+
+Addresses .1 to .49 are reserved in every network for gateways (.1 virtual, .2 and .3 the two switches) and fixed devices. For IPv6 the same logic is used in the subnet ID, for example `2001:db8:10:20::/64` for VLAN 20.
+
+## Basic layer 2 protection
+
+The access layer is where foreign devices get into the network. Some protection features therefore belong in every design:
+
+| Measure | Protects against |
+| --- | --- |
+| **Port security** | MAC flooding (an attacker fills the MAC table and the switch then floods everything like a hub) and unauthorised devices |
+| **DHCP snooping** | rogue DHCP servers distributing a false gateway. Only ports to genuine DHCP servers and uplinks are marked as **trusted**; DHCP replies on other ports are dropped. As a side effect, a table is built showing which IP belongs to which MAC and port |
+| **Dynamic ARP Inspection** (DAI) | ARP spoofing: ARP packets are compared with the DHCP snooping table |
+| **IP Source Guard** | spoofed source IP addresses |
+| **BPDU guard**, **root guard** | foreign switches taking over the spanning tree topology |
+| **Storm control** | broadcast storms, limits the rate of broadcasts per port |
+| shut down unused ports, put them in an unused VLAN | connecting foreign devices to free outlets |
+| disable DTP, change the native VLAN | VLAN hopping |
+| **802.1X** on the switch port | only authenticated devices get access (_network access control_) |
+| management via SSH, separate management VLAN, ACL on VTY | takeover of the network devices |
+
+```text
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30
+interface GigabitEthernet0/1
+ ip dhcp snooping trust
+interface range FastEthernet0/1 - 24
+ ip dhcp snooping limit rate 15
+ip arp inspection vlan 10,20,30
+```
+
+In addition, the general principles apply: separate networks into zones according to their protection needs (servers, administration, students, guests, a DMZ for publicly reachable services), control the transitions with [firewalls](/en/deployment/operations/firewalls/) and ACLs, keep firmware up to date and collect logs centrally.
+
+## Further reading
+
+- Cisco: _Campus LAN and Wireless LAN Solution Design Guide_, Cisco Validated Design
+- Priscilla Oppenheimer: _Top-Down Network Design_, 3rd edition, Cisco Press 2010
+- [NetBox documentation](https://netboxlabs.com/docs/netbox/)

@@ -1,0 +1,147 @@
+---
+title: Gravitation
+description: Newtonsches Gravitationsgesetz, Gravitationsfeld und Feldstärke, potentielle Energie, Keplersche Gesetze, Satellitenbahnen, geostationäre Bahn und Fluchtgeschwindigkeit.
+sidebar:
+  order: 7
+---
+
+Die **Gravitation** ist die Anziehung zwischen Massen. Sie lässt Äpfel fallen, hält den Mond auf seiner Bahn und formt Galaxien. Newton erkannte, dass die Kraft, die auf der Erde die Gewichtskraft verursacht, dieselbe ist, die die Planeten um die Sonne lenkt.
+
+## Newtonsches Gravitationsgesetz
+
+Zwei Massen $m_1$ und $m_2$ im Abstand $r$ (zwischen den Mittelpunkten) ziehen einander an mit
+
+$$
+F = G \cdot \frac{m_1 \cdot m_2}{r^2}
+$$
+
+Die **Gravitationskonstante** ist $G = 6{,}674\,30 \cdot 10^{-11}\,\mathrm{m^3\,kg^{-1}\,s^{-2}}$ (CODATA). Sie wurde erstmals 1798 von Henry Cavendish mit einer Drehwaage gemessen und ist bis heute die am ungenauesten bekannte Naturkonstante.
+
+Eigenschaften:
+
+- Die Kraft wirkt immer anziehend, entlang der Verbindungslinie, und folgt dem dritten newtonschen Axiom (gleich groß auf beide Körper).
+- Sie nimmt mit dem **Quadrat** des Abstands ab: doppelter Abstand, ein Viertel der Kraft.
+- Für kugelsymmetrische Körper gilt das Gesetz so, als wäre die ganze Masse im Mittelpunkt vereinigt.
+- Gravitation ist die schwächste der vier Grundkräfte, aber sie hat unbegrenzte Reichweite und lässt sich nicht abschirmen. Deshalb dominiert sie im Großen.
+
+:::tip[Beispiel: Erde und Mond]
+$m_\mathrm{E} = 5{,}972 \cdot 10^{24}\,\mathrm{kg}$, $m_\mathrm{M} = 7{,}342 \cdot 10^{22}\,\mathrm{kg}$, mittlerer Abstand $r = 3{,}844 \cdot 10^8\,\mathrm{m}$:
+
+$$
+F = 6{,}674 \cdot 10^{-11} \cdot \frac{5{,}972 \cdot 10^{24} \cdot 7{,}342 \cdot 10^{22}}{(3{,}844 \cdot 10^8)^2} = 1{,}98 \cdot 10^{20}\,\mathrm{N}
+$$
+
+Zwei Personen mit je $70\,\mathrm{kg}$ im Abstand von $1\,\mathrm{m}$ ziehen sich dagegen nur mit $3{,}3 \cdot 10^{-7}\,\mathrm{N}$ an.
+:::
+
+## Gravitationsfeld
+
+Eine Masse verändert den Raum um sich: Sie erzeugt ein **Gravitationsfeld**. Die **Gravitationsfeldstärke** ist die Kraft pro Probemasse:
+
+$$
+\vec g = \frac{\vec F}{m}, \qquad g(r) = G \cdot \frac{M}{r^2}, \qquad [g] = \mathrm{N/kg} = \mathrm{m/s^2}
+$$
+
+Die Feldstärke ist also identisch mit der Fallbeschleunigung. An der Erdoberfläche ($R_\mathrm{E} = 6371\,\mathrm{km}$):
+
+$$
+g = \frac{6{,}674 \cdot 10^{-11} \cdot 5{,}972 \cdot 10^{24}}{(6{,}371 \cdot 10^6)^2} = 9{,}82\,\mathrm{m/s^2}
+$$
+
+Der tatsächliche Wert schwankt zwischen etwa $9{,}78\,\mathrm{m/s^2}$ am Äquator und $9{,}83\,\mathrm{m/s^2}$ an den Polen, weil die Erde abgeplattet ist und sich dreht (die Zentrifugalwirkung verringert das Gewicht am Äquator). In $420\,\mathrm{km}$ Höhe, wo die Raumstation ISS fliegt, beträgt $g$ noch $8{,}64\,\mathrm{m/s^2}$, also rund $88\,\%$ des Bodenwerts.
+
+:::note[Schwerelosigkeit]
+Astronauten in der ISS sind nicht schwerelos, weil dort keine Gravitation wirkt, sondern weil sie gemeinsam mit der Station frei fallen. Die Station „fällt“ ständig um die Erde herum. Dasselbe Gefühl entsteht kurz im Aufzug mit gerissenem Seil oder beim Parabelflug.
+:::
+
+Gravitationsfelder stellt man mit **Feldlinien** dar: Sie zeigen in Richtung der Kraft auf eine Probemasse, also radial zum Zentralkörper. In kleinen Bereichen nahe der Erdoberfläche ist das Feld näherungsweise **homogen** (parallele Feldlinien, $g$ konstant).
+
+## Potentielle Energie im Gravitationsfeld
+
+Die Formel $E_\mathrm{pot} = m g h$ gilt nur, solange $g$ konstant ist. Allgemein wählt man das Nullniveau im Unendlichen und erhält
+
+$$
+E_\mathrm{pot}(r) = -G \cdot \frac{M m}{r}
+$$
+
+Die Energie ist negativ, weil man Arbeit verrichten muss, um den Körper ins Unendliche zu bringen. Um $1\,\mathrm{kg}$ von der Erdoberfläche ganz aus dem Schwerefeld der Erde zu bringen, braucht man $G M_\mathrm{E}/R_\mathrm{E} = 62{,}6\,\mathrm{MJ}$. Die Arbeit zwischen zwei Abständen ist
+
+$$
+W = G M m \left(\frac{1}{r_1} - \frac{1}{r_2}\right)
+$$
+
+Für $r_2 = r_1 + h$ mit $h \ll r_1$ ergibt sich daraus wieder $W \approx m g h$.
+
+## Keplersche Gesetze
+
+Johannes Kepler leitete Anfang des 17. Jahrhunderts (in Graz und Prag tätig) aus den Beobachtungsdaten von Tycho Brahe drei Gesetze der Planetenbewegung ab. Newton konnte sie später aus dem Gravitationsgesetz herleiten.
+
+1. **Erstes Gesetz (Ellipsensatz)**: Die Planeten bewegen sich auf Ellipsen, in deren einem Brennpunkt die Sonne steht.
+2. **Zweites Gesetz (Flächensatz)**: Der Fahrstrahl von der Sonne zum Planeten überstreicht in gleichen Zeiten gleiche Flächen. Ein Planet ist deshalb in Sonnennähe (Perihel) schneller als in Sonnenferne (Aphel). Physikalisch ist das die Drehimpulserhaltung.
+3. **Drittes Gesetz**: Die Quadrate der Umlaufzeiten verhalten sich wie die dritten Potenzen der großen Halbachsen:
+
+$$
+\frac{T_1^2}{T_2^2} = \frac{a_1^3}{a_2^3}, \qquad \text{genauer: } \frac{T^2}{a^3} = \frac{4\pi^2}{G M}
+$$
+
+:::tip[Beispiel: Umlaufzeit des Mars]
+Mars hat eine große Halbachse von $1{,}524\,\mathrm{AE}$ (Astronomische Einheit, mittlerer Abstand Erde-Sonne, $1\,\mathrm{AE} = 1{,}496 \cdot 10^{11}\,\mathrm{m}$). Mit der Erde als Vergleich: $T_\mathrm{Mars} = 1\,\mathrm{a} \cdot 1{,}524^{3/2} = 1{,}88$ Jahre.
+:::
+
+Aus dem dritten Gesetz lassen sich Massen von Himmelskörpern bestimmen. Mit der Erdbahn ($a = 1{,}496 \cdot 10^{11}\,\mathrm{m}$, $T = 1$ Jahr $= 3{,}156 \cdot 10^7\,\mathrm{s}$) folgt die Sonnenmasse $M = \frac{4\pi^2 a^3}{G T^2} = 1{,}99 \cdot 10^{30}\,\mathrm{kg}$.
+
+## Satellitenbahnen
+
+Für eine **Kreisbahn** liefert die Gravitation die Zentripetalkraft:
+
+$$
+G \frac{M m}{r^2} = m \frac{v^2}{r} \quad\Rightarrow\quad v = \sqrt{\frac{G M}{r}}, \qquad T = 2\pi \sqrt{\frac{r^3}{G M}}
+$$
+
+Die Masse des Satelliten kürzt sich: Ein Werkzeug, das einem Astronauten entgleitet, fliegt auf derselben Bahn weiter. Je höher die Bahn, desto langsamer der Satellit.
+
+:::tip[Beispiel: ISS]
+Die ISS kreist in etwa $420\,\mathrm{km}$ Höhe, also $r = 6371 + 420 = 6791\,\mathrm{km}$:
+
+$$
+v = \sqrt{\frac{6{,}674 \cdot 10^{-11} \cdot 5{,}972 \cdot 10^{24}}{6{,}791 \cdot 10^6}} = 7{,}66\,\mathrm{km/s}, \qquad T = \frac{2\pi r}{v} = 92{,}8\,\mathrm{min}
+$$
+
+Sie umrundet die Erde also rund 15,5-mal pro Tag. Die Geschwindigkeit für eine Kreisbahn knapp über der Erdoberfläche ($7{,}9\,\mathrm{km/s}$) heißt **erste kosmische Geschwindigkeit**.
+:::
+
+### Geostationäre Bahn
+
+Ein **geostationärer Satellit** steht von der Erde aus gesehen immer am selben Punkt des Himmels. Dazu muss er über dem Äquator in Drehrichtung der Erde kreisen und genau eine Umdrehung pro **siderischem Tag** ($T = 23\,\mathrm{h}\,56\,\mathrm{min}\,4\,\mathrm{s} = 86\,164\,\mathrm{s}$) machen. Der siderische Tag ist die Drehung gegenüber den Fixsternen; der Sonnentag mit 24 Stunden ist etwas länger, weil die Erde inzwischen auf ihrer Bahn weitergewandert ist.
+
+Aus $T = 2\pi\sqrt{r^3/(GM)}$ folgt
+
+$$
+r = \sqrt[3]{\frac{G M T^2}{4\pi^2}} = \sqrt[3]{\frac{6{,}674 \cdot 10^{-11} \cdot 5{,}972 \cdot 10^{24} \cdot 86\,164^2}{4\pi^2}} = 42\,164\,\mathrm{km}
+$$
+
+Die Höhe über dem Äquator (Äquatorradius $6378\,\mathrm{km}$) ist $35\,786\,\mathrm{km}$, die Bahngeschwindigkeit $v = 2\pi r/T = 3{,}07\,\mathrm{km/s}$. Fernseh- und Wettersatelliten nutzen diese Bahn, weil Satellitenschüsseln fest ausgerichtet bleiben können. Ein Signal braucht hin und zurück mindestens $2 \cdot 35\,786\,\mathrm{km}/c \approx 0{,}24\,\mathrm{s}$, was bei Satelliteninternet die Latenz erhöht. Darum setzen neuere Systeme auf viele Satelliten in niedrigen Bahnen (LEO, etwa $500\,\mathrm{km}$).
+
+## Fluchtgeschwindigkeit
+
+Die **Fluchtgeschwindigkeit** (zweite kosmische Geschwindigkeit) ist die Mindestgeschwindigkeit, mit der ein Körper von der Oberfläche starten muss, um das Gravitationsfeld ohne weiteren Antrieb zu verlassen. Seine kinetische Energie muss die (negative) potentielle Energie ausgleichen:
+
+$$
+\frac{1}{2} m v^2 = G \frac{M m}{R} \quad\Rightarrow\quad v_\mathrm{F} = \sqrt{\frac{2 G M}{R}} = \sqrt{2}\, v_\mathrm{Kreis}
+$$
+
+Für die Erde: $v_\mathrm{F} = \sqrt{2 \cdot 6{,}674 \cdot 10^{-11} \cdot 5{,}972 \cdot 10^{24}/6{,}371 \cdot 10^6} = 11{,}2\,\mathrm{km/s}$ (ohne Luftwiderstand). Für den Mond sind es $2{,}4\,\mathrm{km/s}$, für die Sonne $618\,\mathrm{km/s}$.
+
+| Bahnenergie $E = E_\mathrm{kin} + E_\mathrm{pot}$ | Bahnform |
+| --- | --- |
+| $E < 0$ | gebunden: Ellipse (Sonderfall Kreis) |
+| $E = 0$ | Parabel, genau Fluchtgeschwindigkeit |
+| $E > 0$ | Hyperbel, der Körper entkommt |
+
+Ist ein Körper so kompakt, dass selbst Licht die Fluchtgeschwindigkeit nicht erreicht, entsteht ein **Schwarzes Loch**. Der zugehörige Radius $r = 2GM/c^2$ (Schwarzschild-Radius) betrüge für die Erde nur etwa $9\,\mathrm{mm}$; die korrekte Beschreibung liefert erst die allgemeine Relativitätstheorie.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- NIST: _CODATA Recommended Values of the Fundamental Physical Constants_, physics.nist.gov/constants
+- ESA: Umlaufbahnen von Satelliten, esa.int

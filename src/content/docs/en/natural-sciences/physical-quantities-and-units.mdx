@@ -1,0 +1,181 @@
+---
+title: Physical Quantities and Units
+description: SI base units as defined in 2019, derived units, prefixes, scalars and vectors, measurement uncertainty, significant figures and dimensional analysis.
+sidebar:
+  order: 1
+---
+
+Physics describes nature with measurable quantities. For measurements to be comparable, you need a common system of units and an honest statement of how precisely you measured. Both are the basis of every calculation in mechanics, electrical engineering or chemistry.
+
+## Quantity, numerical value and unit
+
+A **physical quantity** is a measurable property of a body or a process. Its value is the product of a **numerical value** and a **unit**:
+
+$$
+G = \{G\} \cdot [G], \qquad \text{e.g. } s = 3.5\,\mathrm{m}
+$$
+
+Here $\{G\}$ denotes the numerical value and $[G]$ the unit. Quantity symbols are written in italics ($s$, $t$, $m$), units upright ($\mathrm{m}$, $\mathrm{s}$, $\mathrm{kg}$). A space separates number and unit, including per cent and degrees Celsius ($20\,^\circ\mathrm{C}$), but not angular degrees ($30^\circ$).
+
+:::tip[Remember]
+Always carry the units through the calculation. If the expected unit does not come out at the end, the formula or the substitution is wrong.
+:::
+
+## The International System of Units (SI)
+
+The **SI** (_Système international d'unités_) is legally binding in Austria through the Weights and Measures Act (MEG). Since the revision of 20 May 2019, all seven base units are defined via **fixed constants of nature**. These constants have exact numerical values; uncertainty only arises when the units are realised in the laboratory.
+
+| Quantity | Symbol | Unit | Unit symbol | Defined via |
+| --- | --- | --- | --- | --- |
+| time | $t$ | second | $\mathrm{s}$ | caesium hyperfine transition $\Delta\nu_\mathrm{Cs} = 9\,192\,631\,770\,\mathrm{Hz}$ |
+| length | $l$, $s$ | metre | $\mathrm{m}$ | speed of light $c = 299\,792\,458\,\mathrm{m/s}$ |
+| mass | $m$ | kilogram | $\mathrm{kg}$ | Planck constant $h = 6.626\,070\,15 \times 10^{-34}\,\mathrm{J\,s}$ |
+| electric current | $I$ | ampere | $\mathrm{A}$ | elementary charge $e = 1.602\,176\,634 \times 10^{-19}\,\mathrm{C}$ |
+| thermodynamic temperature | $T$ | kelvin | $\mathrm{K}$ | Boltzmann constant $k_\mathrm{B} = 1.380\,649 \times 10^{-23}\,\mathrm{J/K}$ |
+| amount of substance | $n$ | mole | $\mathrm{mol}$ | Avogadro constant $N_\mathrm{A} = 6.022\,140\,76 \times 10^{23}\,\mathrm{mol^{-1}}$ |
+| luminous intensity | $I_\mathrm{v}$ | candela | $\mathrm{cd}$ | luminous efficacy $K_\mathrm{cd} = 683\,\mathrm{lm/W}$ |
+
+The definitions build on each other: the second follows from the caesium frequency, the metre is the distance light travels in $1/299\,792\,458$ of a second, and the kilogram follows from $h$ together with the metre and the second (realised with the Kibble balance). Before 2019, the kilogram was the mass of a metal cylinder in Sèvres near Paris, whose mass had drifted by several micrograms relative to its copies over the decades. One mole contains exactly $N_\mathrm{A}$ particles.
+
+### Derived units
+
+All other units are products and quotients of the base units. Many have their own names:
+
+| Quantity | Unit | Symbol | In base units |
+| --- | --- | --- | --- |
+| force | newton | $\mathrm{N}$ | $\mathrm{kg\,m\,s^{-2}}$ |
+| energy, work, heat | joule | $\mathrm{J} = \mathrm{N\,m}$ | $\mathrm{kg\,m^2\,s^{-2}}$ |
+| power | watt | $\mathrm{W} = \mathrm{J/s}$ | $\mathrm{kg\,m^2\,s^{-3}}$ |
+| pressure | pascal | $\mathrm{Pa} = \mathrm{N/m^2}$ | $\mathrm{kg\,m^{-1}\,s^{-2}}$ |
+| frequency | hertz | $\mathrm{Hz}$ | $\mathrm{s^{-1}}$ |
+| electric charge | coulomb | $\mathrm{C}$ | $\mathrm{A\,s}$ |
+| voltage | volt | $\mathrm{V} = \mathrm{W/A}$ | $\mathrm{kg\,m^2\,s^{-3}\,A^{-1}}$ |
+| electrical resistance | ohm | $\Omega = \mathrm{V/A}$ | $\mathrm{kg\,m^2\,s^{-3}\,A^{-2}}$ |
+| capacitance | farad | $\mathrm{F} = \mathrm{C/V}$ | $\mathrm{kg^{-1}\,m^{-2}\,s^4\,A^2}$ |
+| magnetic flux density | tesla | $\mathrm{T} = \mathrm{V\,s/m^2}$ | $\mathrm{kg\,s^{-2}\,A^{-1}}$ |
+| activity | becquerel | $\mathrm{Bq}$ | $\mathrm{s^{-1}}$ |
+| absorbed dose | gray | $\mathrm{Gy} = \mathrm{J/kg}$ | $\mathrm{m^2\,s^{-2}}$ |
+
+In addition, some non-SI units are accepted for use with the SI, for example minute, hour, litre ($1\,\mathrm{L} = 1\,\mathrm{dm^3}$), tonne ($1\,\mathrm{t} = 1000\,\mathrm{kg}$), bar ($1\,\mathrm{bar} = 10^5\,\mathrm{Pa}$), electronvolt and the atomic mass unit $\mathrm{u}$.
+
+### Prefixes
+
+| Prefix | Symbol | Factor | Prefix | Symbol | Factor |
+| --- | --- | --- | --- | --- | --- |
+| quetta | Q | $10^{30}$ | deci | d | $10^{-1}$ |
+| ronna | R | $10^{27}$ | centi | c | $10^{-2}$ |
+| yotta | Y | $10^{24}$ | milli | m | $10^{-3}$ |
+| zetta | Z | $10^{21}$ | micro | µ | $10^{-6}$ |
+| exa | E | $10^{18}$ | nano | n | $10^{-9}$ |
+| peta | P | $10^{15}$ | pico | p | $10^{-12}$ |
+| tera | T | $10^{12}$ | femto | f | $10^{-15}$ |
+| giga | G | $10^{9}$ | atto | a | $10^{-18}$ |
+| mega | M | $10^{6}$ | zepto | z | $10^{-21}$ |
+| kilo | k | $10^{3}$ | yocto | y | $10^{-24}$ |
+| hecto | h | $10^{2}$ | ronto | r | $10^{-27}$ |
+| deca | da | $10^{1}$ | quecto | q | $10^{-30}$ |
+
+With powers, the exponent applies to the unit including its prefix: $1\,\mathrm{cm^2} = (10^{-2}\,\mathrm{m})^2 = 10^{-4}\,\mathrm{m^2}$, $1\,\mathrm{mm^3} = 10^{-9}\,\mathrm{m^3}$.
+
+:::caution
+In computing, "kilo" sometimes means $1024$ for memory sizes. The binary prefixes of IEC 80000-13 exist for this: $1\,\mathrm{KiB} = 1024\,\mathrm{B}$, $1\,\mathrm{MiB} = 1024^2\,\mathrm{B}$. An SI kilo is always exactly $1000$.
+:::
+
+### Converting
+
+Converting means multiplying by $1$, for example by $\frac{1000\,\mathrm{m}}{1\,\mathrm{km}}$:
+
+$$
+72\,\frac{\mathrm{km}}{\mathrm{h}} = 72 \cdot \frac{1000\,\mathrm{m}}{3600\,\mathrm{s}} = 20\,\frac{\mathrm{m}}{\mathrm{s}}
+$$
+
+Rule of thumb: km/h divided by $3.6$ gives m/s.
+
+## Scalars and vectors
+
+- A **scalar** is fully determined by a numerical value and a unit: mass, time, temperature, energy, work, power.
+- A **vector** additionally has a direction: position, displacement, velocity, acceleration, force, momentum, electric field strength.
+
+Vectors are written with an arrow ($\vec F$) and calculated component by component (see [Vectors](/en/mathematics/geometry/vectors/)). The magnitude of a vector $\vec F = (F_x, F_y)$ is $|\vec F| = \sqrt{F_x^2 + F_y^2}$. Two forces of $3\,\mathrm{N}$ and $4\,\mathrm{N}$ give anything between $1\,\mathrm{N}$ (opposite) and $7\,\mathrm{N}$ (same direction) depending on their directions, and exactly $5\,\mathrm{N}$ at a right angle. This shows why you must not simply add magnitudes of vector quantities.
+
+## Measurement uncertainty
+
+Every measurement is uncertain. That is why a result is always stated with its uncertainty:
+
+$$
+x = \bar x \pm \Delta x
+$$
+
+| Type | Cause | Remedy |
+| --- | --- | --- |
+| **random error** | reading, reaction time, noise; scatters around the true value | many measurements, take the mean |
+| **systematic error** | badly calibrated instrument, zero error, method; shifts all values in one direction | calibrate, improve the method; averaging does not help |
+| gross error (blunder) | writing down the wrong value, wrong range | discard the value, repeat |
+
+You distinguish the **absolute uncertainty** $\Delta x$ (same unit as $x$) and the **relative uncertainty** $\Delta x / \bar x$ (usually in per cent).
+
+### Mean and standard deviation
+
+For $n$ measured values $x_1, \dots, x_n$:
+
+$$
+\bar x = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar x)^2}, \qquad
+\Delta \bar x = \frac{s}{\sqrt n}
+$$
+
+The standard deviation $s$ describes the scatter of individual values; the uncertainty of the mean $s/\sqrt n$ decreases with the number of measurements (see [Descriptive Statistics](/en/mathematics/descriptive-statistics/)).
+
+:::tip[Example: pendulum period]
+Five measurements of the period give $2.31$, $2.35$, $2.28$, $2.33$ and $2.30\,\mathrm{s}$. The mean is $\bar T = 2.314\,\mathrm{s}$, the standard deviation $s = 0.027\,\mathrm{s}$, the uncertainty of the mean $0.027/\sqrt 5 = 0.012\,\mathrm{s}$. Result: $T = (2.31 \pm 0.01)\,\mathrm{s}$.
+:::
+
+### Propagation of uncertainty
+
+When a result is calculated from measured values, the uncertainty propagates. For an upper estimate (maximum error) there are two rules of thumb:
+
+- For **sums and differences**, the **absolute** uncertainties add: $\Delta(a \pm b) = \Delta a + \Delta b$.
+- For **products and quotients**, the **relative** uncertainties add: $\frac{\Delta(a \cdot b)}{a \cdot b} = \frac{\Delta a}{a} + \frac{\Delta b}{b}$. For a power $a^n$, the relative uncertainty is multiplied by $|n|$.
+
+If the deviations are independent and random, **Gaussian error propagation** gives a more realistic estimate: the contributions are added in quadrature, e.g. $\frac{\Delta A}{A} = \sqrt{\left(\frac{\Delta a}{a}\right)^2 + \left(\frac{\Delta b}{b}\right)^2}$.
+
+:::tip[Example: area of a rectangle]
+$a = (12.3 \pm 0.1)\,\mathrm{cm}$, $b = (4.5 \pm 0.1)\,\mathrm{cm}$. The area is $A = 55.35\,\mathrm{cm^2}$. Relative uncertainties: $0.1/12.3 = 0.81\,\%$ and $0.1/4.5 = 2.22\,\%$, together $3.03\,\%$. So $\Delta A = 1.7\,\mathrm{cm^2}$ and $A = (55 \pm 2)\,\mathrm{cm^2}$.
+:::
+
+## Significant figures
+
+The **significant figures** of a number are all digits from the first non-zero digit onwards. $0.004\,50$ has three significant figures, and so does $4.50$. Trailing zeros after the decimal point are significant: $4.50\,\mathrm{m}$ means "to the nearest centimetre", $4.5\,\mathrm{m}$ only "to the nearest decimetre". For large numbers, scientific notation makes this clear: $1.20 \times 10^3\,\mathrm{m}$ has three significant figures.
+
+Rules for results:
+
+1. For **multiplication and division**, the result has as many significant figures as the least precise input.
+2. For **addition and subtraction**, the smallest number of decimal places determines the result: $12.3\,\mathrm{m} + 0.456\,\mathrm{m} = 12.8\,\mathrm{m}$.
+3. Round only at the end; carry intermediate results with at least one extra digit.
+4. Round the uncertainty to one or two significant figures, and let the measured value end at the same decimal place as the uncertainty.
+
+## Dimensional analysis
+
+The **dimension** of a quantity states which base quantities it is made of, independent of the chosen unit. You write $\dim v = \mathsf{L}\,\mathsf{T}^{-1}$ with $\mathsf{L}$ for length, $\mathsf{M}$ for mass, $\mathsf{T}$ for time.
+
+Two rules make dimensional analysis a powerful tool:
+
+1. Only quantities of the same dimension may be added, subtracted or equated.
+2. Arguments of $\sin$, $\exp$, $\ln$ must be dimensionless.
+
+**Check:** is $s = \frac{1}{2} a t^2$ dimensionally correct? $\mathsf{L}\,\mathsf{T}^{-2} \cdot \mathsf{T}^2 = \mathsf{L}$, yes.
+
+**Derivation:** the period $T$ of a simple pendulum could depend on length $l$, mass $m$ and gravitational acceleration $g$. Ansatz $T = C \cdot l^\alpha m^\beta g^\gamma$:
+
+$$
+\mathsf{T} = \mathsf{L}^\alpha \, \mathsf{M}^\beta \, (\mathsf{L}\,\mathsf{T}^{-2})^\gamma
+\;\Rightarrow\; \beta = 0,\; \alpha + \gamma = 0,\; -2\gamma = 1
+$$
+
+So $\gamma = -\frac{1}{2}$, $\alpha = \frac{1}{2}$ and $T = C\sqrt{l/g}$. The mass drops out. The dimensionless factor $C = 2\pi$ only follows from the full calculation in the chapter [Oscillations](/en/natural-sciences/oscillations/).
+
+## Further reading
+
+- BIPM: _The International System of Units (SI Brochure)_, 9th edition, 2019, bipm.org
+- BEV (Austrian Federal Office of Metrology and Surveying): information on the SI and the Weights and Measures Act, bev.gv.at
+- JCGM 100:2008: _Guide to the Expression of Uncertainty in Measurement_ (GUM)

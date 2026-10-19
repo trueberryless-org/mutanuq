@@ -1,0 +1,287 @@
+---
+title: Video
+description: Bildrate, Auflösung, Farbunterabtastung, Codecs und Container, Dateigröße, GOP, adaptives Streaming, Kameraarbeit, Schnitt und Color Grading.
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein Video ist eine Folge von Einzelbildern, die schnell genug hintereinander gezeigt werden, dass das Gehirn eine flüssige Bewegung wahrnimmt. Unkomprimiert wären Videodaten so groß, dass weder Festplatten noch Netzwerke sie bewältigen könnten. Videotechnik dreht sich deshalb zu einem großen Teil um Kompression. Die andere Hälfte ist Gestaltung: Bildausschnitt, Kameraführung und Schnitt bestimmen, ob ein Video eine Geschichte verständlich erzählt.
+
+## Bildrate
+
+Die **Bildrate** (_Frame Rate_) gibt an, wie viele Einzelbilder (_Frames_) pro Sekunde gezeigt werden (fps, _frames per second_).
+
+| Bildrate | Einsatz |
+| --- | --- |
+| 24 fps | Kino; erzeugt den typischen „Filmlook“ mit leichter Bewegungsunschärfe |
+| 25 fps | Fernsehen in Europa (PAL-Tradition, abgeleitet von der Netzfrequenz 50 Hz) |
+| 29,97 bzw. 30 fps | Fernsehen in Nordamerika und Japan (NTSC-Tradition, 60 Hz) |
+| 50 bzw. 60 fps | Sport, Spiele, flüssige Bewegungen |
+| 120 fps und mehr | Zeitlupe: mit 120 fps aufgenommen und mit 24 fps abgespielt ergibt fünffache Verlangsamung |
+
+Für natürliche Bewegungsunschärfe gilt die **180-Grad-Regel** (_180° Shutter Rule_): Die Belichtungszeit ist etwa der Kehrwert der doppelten Bildrate, bei 25 fps also 1/50 s. Kürzere Zeiten lassen Bewegungen abgehackt wirken, längere verwischen sie.
+
+## Auflösung und Seitenverhältnis
+
+| Bezeichnung | Auflösung in Pixeln | Bemerkung |
+| --- | --- | --- |
+| SD (PAL) | 720 × 576 | DVD, altes Fernsehen |
+| HD (720p) | 1280 × 720 | |
+| Full HD (1080p) | 1920 × 1080 | Standard für Web und Fernsehen |
+| UHD, „4K“ | 3840 × 2160 | viermal so viele Pixel wie Full HD |
+| DCI 4K | 4096 × 2160 | Kinoprojektion |
+| 8K UHD | 7680 × 4320 | 16-mal Full HD |
+
+Das **Seitenverhältnis** (_Aspect Ratio_) ist das Verhältnis von Breite zu Höhe:
+
+| Verhältnis | Einsatz |
+| --- | --- |
+| 4:3 | altes Fernsehen, ältere Monitore |
+| **16:9** | HD- und UHD-Fernsehen, YouTube, Präsentationen |
+| 1,85:1 und 2,39:1 | Kinofilm (Breitbild, Cinemascope) |
+| **9:16** | Hochformat für Smartphones: Reels, TikTok, Shorts, Stories |
+| 1:1 | quadratische Beiträge in sozialen Medien |
+
+Passt ein Video nicht zum Bildschirm, entstehen schwarze Balken: oben und unten beim **Letterbox**, links und rechts beim **Pillarbox**. Alternativ wird beschnitten, was Bildinhalt kostet.
+
+## Zeilensprung und Vollbild
+
+Beim **Zeilensprungverfahren** (_Interlaced_, Kennzeichen „i“) wird ein Bild in zwei **Halbbilder** zerlegt: erst alle ungeraden Zeilen, dann alle geraden. Das stammt aus der Röhrenfernseher-Zeit und halbierte die nötige Bandbreite bei flüssiger Bewegung. 1080i50 bedeutet 50 Halbbilder, also 25 Vollbilder pro Sekunde. Auf modernen Bildschirmen zeigen sich bei Bewegung **Kammartefakte**, wenn das Material nicht vorher umgerechnet wird (**Deinterlacing**).
+
+Beim **Vollbildverfahren** (_Progressive_, Kennzeichen „p“) wird jedes Bild vollständig übertragen. Alle digitalen Plattformen und Computerbildschirme arbeiten progressiv. Für eigene Produktionen nimmt man daher immer progressiv auf.
+
+## Farbunterabtastung
+
+Wie bei JPEG speichern Videoformate Bilder im Farbmodell **YCbCr**: Helligkeit (Y, _Luma_) und zwei Farbdifferenzkanäle (Cb, Cr, _Chroma_). Weil das Auge Farbe weniger fein auflöst als Helligkeit, speichert man die Farbkanäle mit geringerer Auflösung (**Chroma Subsampling**). Die Schreibweise J:a:b beschreibt einen Block von 4 × 2 Pixeln: J ist die Breite (4), a die Zahl der Farbproben in der ersten Zeile, b die zusätzlichen Farbproben in der zweiten Zeile.
+
+| Schema | Farbauflösung | Bit pro Pixel bei 8 Bit | Einsatz |
+| --- | --- | --- | --- |
+| **4:4:4** | voll | 24 | Grafik, Bildschirmaufnahmen, Compositing, Green Screen |
+| **4:2:2** | halbe horizontale Auflösung | 16 | professionelle Kameras, Fernsehproduktion |
+| **4:2:0** | halbe horizontale und halbe vertikale Auflösung | 12 | Streaming, Blu-ray, Smartphones, fast alle Endkundenformate |
+
+Bei 4:2:0 teilen sich also vier Pixel eine Farbinformation. Bei natürlichen Bildern sieht man das kaum, bei feiner farbiger Schrift oder beim **Keying** (Freistellen vor Green Screen) dagegen schon.
+
+## Datenrate und Dateigröße
+
+Die Datenrate eines **unkomprimierten** Videos ist
+
+$$
+\text{Datenrate} = \text{Breite} \cdot \text{Höhe} \cdot \text{Bit pro Pixel} \cdot \text{Bildrate}
+$$
+
+Full HD mit 25 fps in 4:2:0 und 8 Bit: $1920 \cdot 1080 \cdot 12 \cdot 25 = 622\,080\,000\ \mathrm{bit/s} \approx 622\ \mathrm{Mbit/s}$. Eine Stunde wären rund 280 GB. Ein typisches H.264-Video in dieser Qualität hat nur 5 bis 8 Mbit/s, das ist eine Kompression um rund das Hundertfache.
+
+Die Größe eines **komprimierten** Videos hängt nur von Bitrate und Dauer ab:
+
+$$
+\text{Dateigröße} = (\text{Videobitrate} + \text{Audiobitrate}) \cdot \text{Dauer}
+$$
+
+:::tip[Beispiel]
+Ein Video von 10 Minuten mit 8 Mbit/s Video und 192 kbit/s Audio: $(8000 + 192)\ \mathrm{kbit/s} \cdot 600\ \mathrm{s} = 4\,915\,200\ \mathrm{kbit}$. Geteilt durch 8 ergibt das $614\,400\ \mathrm{kB} \approx 614{,}4\ \mathrm{MB}$.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture; // Dezimalpunkt
+
+// unkomprimierte Datenrate in bit/s
+static long RawBitrate(int width, int height, int bitsPerPixel, double fps) =>
+    (long)(width * height * (long)bitsPerPixel * fps);
+
+// Dateigröße in Byte aus Bitraten in bit/s und Dauer in Sekunden
+static double FileSize(double videoBitrate, double audioBitrate, double seconds) =>
+    (videoBitrate + audioBitrate) * seconds / 8;
+
+long raw = RawBitrate(1920, 1080, 12, 25);   // 4:2:0 mit 8 Bit = 12 Bit pro Pixel
+Console.WriteLine($"unkomprimiert: {raw / 1e6:F0} Mbit/s");              // unkomprimiert: 622 Mbit/s
+Console.WriteLine($"1 Stunde: {raw * 3600 / 8 / 1e9:F0} GB");            // 1 Stunde: 280 GB
+Console.WriteLine($"Faktor bei 6 Mbit/s: {raw / 6e6:F0}");               // Faktor bei 6 Mbit/s: 104
+
+double size = FileSize(8_000_000, 192_000, 10 * 60);
+Console.WriteLine($"10 min: {size / 1e6:F1} MB");                        // 10 min: 614.4 MB
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// unkomprimierte Datenrate in bit/s
+fn raw_bitrate(width: u64, height: u64, bits_per_pixel: u64, fps: f64) -> f64 {
+    (width * height * bits_per_pixel) as f64 * fps
+}
+
+/// Dateigröße in Byte aus Bitraten in bit/s und Dauer in Sekunden
+fn file_size(video_bitrate: f64, audio_bitrate: f64, seconds: f64) -> f64 {
+    (video_bitrate + audio_bitrate) * seconds / 8.0
+}
+
+fn main() {
+    let raw = raw_bitrate(1920, 1080, 12, 25.0); // 4:2:0 mit 8 Bit = 12 Bit pro Pixel
+    println!("unkomprimiert: {:.0} Mbit/s", raw / 1e6); // unkomprimiert: 622 Mbit/s
+    println!("1 Stunde: {:.0} GB", raw * 3600.0 / 8.0 / 1e9); // 1 Stunde: 280 GB
+    println!("Faktor bei 6 Mbit/s: {:.0}", raw / 6e6); // Faktor bei 6 Mbit/s: 104
+
+    let size = file_size(8_000_000.0, 192_000.0, 10.0 * 60.0);
+    println!("10 min: {:.1} MB", size / 1e6); // 10 min: 614.4 MB
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Videokompression
+
+Videocodecs nutzen zwei Arten von Redundanz:
+
+- **Räumliche Redundanz** innerhalb eines Bildes (**Intra-Frame-Kompression**): Wie bei JPEG wird das Bild in Blöcke zerlegt, transformiert und quantisiert. H.264 verwendet Makroblöcke von 16 × 16 Pixeln, H.265 flexible Blöcke bis 64 × 64.
+- **Zeitliche Redundanz** zwischen aufeinanderfolgenden Bildern (**Inter-Frame-Kompression**): Meist ändert sich von Bild zu Bild wenig. Der Encoder sucht für jeden Block, wohin er sich bewegt hat (**Bewegungsschätzung**), und speichert nur den **Bewegungsvektor** und den kleinen Rest (_Residual_), der sich damit nicht erklären lässt.
+
+### Group of Pictures
+
+Die Bilder eines Videos werden in drei Typen codiert und zu einer **Group of Pictures** (GOP) zusammengefasst:
+
+![Folge von I-, P- und B-Frames einer Group of Pictures mit ihren Referenzen](/images/media-technology/gop_de.svg)
+
+| Frame | Inhalt | Größe |
+| --- | --- | --- |
+| **I-Frame** (_Intra_, Keyframe) | vollständiges Bild, nur intra-codiert, ohne Bezug auf andere Bilder | groß |
+| **P-Frame** (_Predicted_) | nur Unterschiede zu einem vorherigen I- oder P-Frame | mittel |
+| **B-Frame** (_Bidirectional_) | Unterschiede zu einem vorherigen und einem folgenden Bild | klein |
+
+Eine GOP beginnt mit einem I-Frame. Ein Player kann nur an I-Frames einsteigen, deshalb bestimmt die **GOP-Länge**, wie genau man spulen kann und wie schnell sich ein Fehler im Datenstrom „ausheilt“. Für Streaming ist ein I-Frame alle **2 Sekunden** üblich. Wegen der B-Frames weicht die Reihenfolge beim Decodieren von der Anzeigereihenfolge ab: Der P-Frame 4 muss vor den B-Frames 2 und 3 decodiert werden.
+
+Schnittprogramme arbeiten flüssiger mit **All-Intra-Codecs** wie **Apple ProRes** oder **Avid DNxHR**, bei denen jedes Bild ein I-Frame ist. Sie sind größer, aber jedes Bild lässt sich ohne Nachbarbilder decodieren. Für Kameramaterial mit langer GOP erstellt man oft **Proxys** in solchen Codecs.
+
+### Codecs
+
+Ein **Codec** (_Coder/Decoder_) ist das Verfahren, mit dem Video komprimiert wird.
+
+| Codec | Jahr | Herkunft | Eigenschaften |
+| --- | --- | --- | --- |
+| **MPEG-2** | 1995 | MPEG | DVD, älteres Digitalfernsehen |
+| **H.264 / AVC** | 2003 | ITU-T und ISO/IEC MPEG | von praktisch jedem Gerät unterstützt; Standard im Web |
+| **H.265 / HEVC** | 2013 | ITU-T und ISO/IEC MPEG | rund 50 % weniger Bitrate als H.264 bei gleicher Qualität; UHD-Blu-ray, Smartphones; komplizierte Lizenzlage |
+| **VP9** | 2013 | Google | lizenzkostenfrei, YouTube |
+| **AV1** | 2018 | Alliance for Open Media (Google, Netflix, Amazon, Microsoft u. a.) | lizenzkostenfrei, effizienter als HEVC; Streaming |
+| **H.266 / VVC** | 2020 | ITU-T und ISO/IEC MPEG | Nachfolger von HEVC, noch wenig verbreitet |
+
+Neuere Codecs erreichen dieselbe Qualität mit weniger Bitrate, brauchen aber mehr Rechenleistung, die man am besten über Hardwarebeschleunigung in Grafikkarte oder Chip abdeckt.
+
+Bei der **Bitratensteuerung** unterscheidet man konstante (CBR) und variable Bitrate (VBR). Ein **2-Pass-Encoding** analysiert das Video im ersten Durchlauf und verteilt die Bits im zweiten dorthin, wo sie gebraucht werden. Encoder wie x264 bieten außerdem einen **Qualitätsmodus** (CRF), bei dem man eine Zielqualität statt einer Bitrate vorgibt.
+
+### Container
+
+Ein **Container** ist das Dateiformat, das Videospur, Tonspuren, Untertitel, Kapitel und Metadaten zusammenfasst und synchron hält. Codec und Container sind unabhängig: Eine MP4-Datei kann H.264, HEVC oder AV1 enthalten.
+
+| Container | Typische Inhalte | Einsatz |
+| --- | --- | --- |
+| **MP4** (MPEG-4 Part 14) | H.264, HEVC, AV1; AAC | Standard für Web, Smartphones, Upload |
+| **MOV** (QuickTime) | H.264, HEVC, ProRes | Apple, Videoschnitt |
+| **MKV** (Matroska) | praktisch beliebige Codecs, mehrere Ton- und Untertitelspuren | offen, Archiv, Filme |
+| **WebM** | VP8, VP9, AV1; Vorbis, Opus | offen, Browser |
+| **MXF** | professionelle Codecs | Fernsehsender, Profikameras |
+| **MPEG-TS** | H.264, HEVC; AAC | Fernsehübertragung, HLS-Segmente |
+
+## Streaming
+
+Beim **progressiven Download** lädt der Player eine einzige Datei von Anfang an herunter und beginnt abzuspielen, sobald genug gepuffert ist. Ändert sich die Bandbreite, stockt die Wiedergabe.
+
+**Adaptives Streaming** (_Adaptive Bitrate Streaming_, ABR) löst das Problem:
+
+1. Das Video wird in mehreren **Qualitätsstufen** codiert, etwa 360p mit 0,8 Mbit/s bis 2160p mit 16 Mbit/s (die **Bitratenleiter**).
+2. Jede Stufe wird in **Segmente** von meist 2 bis 6 Sekunden zerlegt. Jedes Segment beginnt mit einem I-Frame.
+3. Eine **Manifestdatei** listet alle Stufen und Segmente auf.
+4. Der Player misst laufend Bandbreite und Pufferfüllstand und lädt jedes Segment in der gerade passenden Qualität. So wird bei schlechter Verbindung das Bild unschärfer, aber es stockt nicht.
+
+| Verfahren | Herkunft | Manifest | Segmente |
+| --- | --- | --- | --- |
+| **HLS** (_HTTP Live Streaming_) | Apple, 2009; RFC 8216 | Playlist `.m3u8` | MPEG-TS oder fragmentiertes MP4 |
+| **MPEG-DASH** | ISO/IEC 23009-1, 2012 | XML-Datei `.mpd` | codecunabhängig, meist fragmentiertes MP4 |
+
+Beide laufen über normales [HTTP](/de/web-technologies/http/), sodass Segmente von **Content Delivery Networks** (CDN) zwischengespeichert und nahe beim Zuschauer ausgeliefert werden können. Das gemeinsame Segmentformat **CMAF** erlaubt, dieselben Dateien für HLS und DASH zu verwenden.
+
+Bei **Livestreams** schickt die Software (etwa OBS Studio) das Signal meist per **RTMP** oder **SRT** an einen Server, der es in die Qualitätsstufen umrechnet. Für sehr geringe Verzögerung, etwa bei Videokonferenzen, verwendet man **WebRTC**.
+
+## Kameraarbeit
+
+### Einstellungsgrößen
+
+Die **Einstellungsgröße** beschreibt, wie viel von einer Person oder Szene im Bild zu sehen ist:
+
+| Einstellung | Bildausschnitt | Wirkung, Einsatz |
+| --- | --- | --- |
+| **Weit** (Panorama) | weite Landschaft, Menschen winzig | Ort etablieren, Stimmung |
+| **Totale** | ganzer Schauplatz mit Personen | Überblick, Orientierung |
+| **Halbtotale** | Personen von Kopf bis Fuß mit etwas Umgebung | Gruppen, Körpersprache |
+| **Amerikanische** | Kopf bis Mitte der Oberschenkel | aus dem Western (Revolver im Bild); Dialoge |
+| **Halbnah** | Kopf bis Hüfte | Gespräche, Interaktion |
+| **Nah** | Kopf bis Mitte des Oberkörpers | Interviews, Nachrichtensprecher |
+| **Groß** | Gesicht, Kopf | Emotionen, Mimik |
+| **Detail** | Ausschnitt: Augen, Hand, Gegenstand | Spannung, wichtige Details |
+
+### Kameraperspektiven
+
+| Perspektive | Kamerastandpunkt | Wirkung |
+| --- | --- | --- |
+| **Vogelperspektive** | steil von oben | Übersicht, Person wirkt klein und verloren |
+| **Aufsicht** | leicht von oben | Person wirkt unterlegen, schwach |
+| **Normalsicht** | Augenhöhe | neutral, Begegnung auf Augenhöhe |
+| **Untersicht** | leicht von unten | Person wirkt mächtig, bedrohlich |
+| **Froschperspektive** | steil von unten | stark übersteigert, monumental |
+
+Eine schräg gekippte Kamera (_Dutch Angle_) wirkt verstörend und wird für Spannung oder Verwirrung eingesetzt.
+
+### Kamerabewegungen
+
+- **Schwenk** (_Pan_): Die Kamera dreht sich waagrecht auf dem Stativ. **Neigen** (_Tilt_): senkrecht.
+- **Fahrt** (_Dolly_, _Tracking Shot_): Die Kamera bewegt sich als Ganzes, etwa auf Schienen, mit einem **Gimbal** oder einer Drohne.
+- **Zoom**: Die Brennweite ändert sich, die Perspektive bleibt gleich. Eine Fahrt wirkt räumlicher als ein Zoom.
+- **Handkamera**: unruhig, dokumentarisch, nah am Geschehen.
+
+### Regeln der Bildführung
+
+- **180-Grad-Regel**: Zwischen zwei Personen in einem Dialog verläuft eine gedachte **Handlungsachse**. Alle Einstellungen werden von derselben Seite dieser Achse gefilmt. Springt die Kamera über die Achse (**Achsensprung**), tauschen die Personen scheinbar die Seiten, und der Zuschauer verliert die Orientierung.
+- **Schuss-Gegenschuss**: Im Dialog wird abwechselnd über die Schulter der einen auf die andere Person gefilmt. Die Blickrichtungen müssen zueinanderpassen (**Anschluss der Blickachsen**).
+- **30-Grad-Regel**: Zwischen zwei aufeinanderfolgenden Einstellungen desselben Motivs ändert sich der Kamerawinkel um mindestens 30 Grad oder die Einstellungsgröße deutlich, sonst wirkt der Schnitt wie ein Ruckler (**Jump Cut**).
+- **Kopfraum** und **Blickraum**: über dem Kopf wenig, in Blickrichtung mehr Platz lassen; Augen etwa auf der oberen [Drittellinie](/de/media-technology/digital-images/#bildgestaltung).
+- **Dreipunktlicht**: **Führungslicht** (_Key Light_) als Hauptlicht seitlich vorne, **Aufhelllicht** (_Fill Light_) auf der anderen Seite gegen harte Schatten, **Spitzlicht** (_Back Light_) von hinten, um die Person vom Hintergrund zu lösen.
+
+## Schnitt
+
+Geschnitten wird in einem **nichtlinearen Schnittprogramm** (NLE) wie DaVinci Resolve, Adobe Premiere Pro oder Final Cut Pro. Das Material liegt auf einer **Timeline** mit mehreren Video- und Tonspuren. Der Ablauf geht vom **Rohschnitt** (grobe Reihenfolge) über den **Feinschnitt** bis zum **Picture Lock** (Bild steht fest), danach folgen Ton, Farbe und Export.
+
+| Übergang | Beschreibung |
+| --- | --- |
+| **harter Schnitt** | direkter Wechsel; der häufigste Übergang, fällt bei gutem Schnitt nicht auf |
+| **J-Cut** | der Ton der nächsten Szene beginnt vor dem Bild |
+| **L-Cut** | der Ton der vorigen Szene läuft unter dem neuen Bild weiter |
+| **Match Cut** | Schnitt zwischen zwei Bildern mit ähnlicher Form oder Bewegung |
+| **Zwischenschnitt** (_Cutaway_, Insert) | kurzer Schnitt auf ein Detail oder **B-Roll** (Zusatzmaterial), etwa um Schnitte in einem Interview zu verdecken |
+| **Jump Cut** | Sprung innerhalb einer Einstellung, bewusst eingesetzt in Vlogs |
+| **Überblendung** | ein Bild geht langsam in das nächste über; zeigt Zeitsprünge |
+| **Abblende** | Blende auf Schwarz; Ende eines Abschnitts |
+
+Beim **unsichtbaren Schnitt** (_Continuity Editing_) achtet man auf **Anschlüsse**: Bewegungen, Requisiten, Licht und Blickrichtung müssen über den Schnitt hinweg zusammenpassen. Geschnitten wird oft in der Bewegung, weil der Zuschauer dann den Schnitt nicht bemerkt. Der **Kuleschow-Effekt** zeigt, wie stark der Schnitt die Bedeutung bestimmt: Dasselbe neutrale Gesicht wirkt hungrig, traurig oder verliebt, je nachdem, welches Bild davor gezeigt wird.
+
+## Farbkorrektur und Color Grading
+
+- Die **Farbkorrektur** (_Color Correction_) ist technisch: Weißabgleich und Belichtung korrigieren und alle Einstellungen einer Szene aneinander angleichen, damit sie wie zur selben Zeit am selben Ort gedreht wirken.
+- Das **Color Grading** ist gestalterisch: Ein bewusster **Look** erzeugt Stimmung, etwa kühles Blau für Distanz, warmes Gelb für Nostalgie oder der verbreitete Kontrast „Teal and Orange“ (blaugrüne Schatten, orange Hauttöne).
+
+Zur objektiven Beurteilung verwendet man **Scopes** statt des Monitors allein: das **Waveform** (Helligkeitsverteilung über die Bildbreite), das **Vektorskop** (Farbton und Sättigung, mit einer Linie für Hauttöne) und das [Histogramm](/de/media-technology/digital-images/#histogramm).
+
+Professionelle Kameras nehmen in einem **Log-Profil** auf (etwa S-Log, V-Log, C-Log). Das Bild sieht flau und grau aus, speichert aber einen größeren Dynamikumfang, der beim Grading genutzt wird. Eine **LUT** (_Lookup Table_) rechnet Farbwerte nach einer Tabelle um, etwa vom Log-Profil in den Standardfarbraum **Rec. 709** (HD) oder als fertiger Look. Für **HDR** (_High Dynamic Range_) gibt es Rec. 2100 mit den Übertragungsfunktionen PQ und HLG sowie die Formate HDR10 und Dolby Vision. Das verbreitetste Programm für Grading ist **DaVinci Resolve**.
+
+## Weiterführende Quellen
+
+- [ITU-T H.264: Advanced video coding for generic audiovisual services](https://www.itu.int/rec/T-REC-H.264)
+- [IETF RFC 8216: HTTP Live Streaming](https://www.rfc-editor.org/rfc/rfc8216)
+- Steven D. Katz: _Shot by Shot: Visualizing from Concept to Screen_. 2. Auflage, Studio City: Michael Wiese Productions, 2019

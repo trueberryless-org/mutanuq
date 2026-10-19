@@ -1,0 +1,202 @@
+---
+title: Wechselstromtechnik
+description: Sinusgrößen, Effektivwert, Zeigerdiagramm und komplexe Rechnung, Impedanz von R, L und C, RLC-Schaltungen, Resonanz, Leistungen, Leistungsfaktor und Dreiphasensystem.
+sidebar:
+  order: 5
+---
+
+Das Stromnetz liefert keine Gleichspannung, sondern eine sinusförmige Wechselspannung. Sie lässt sich mit Transformatoren einfach auf andere Spannungen umsetzen, und Generatoren erzeugen sie direkt. Auch Signale in der Nachrichtentechnik bestehen aus Sinusschwingungen. Bei Wechselstrom verhalten sich Spulen und Kondensatoren wie frequenzabhängige Widerstände, und Strom und Spannung sind gegeneinander verschoben. Die komplexe Rechnung macht daraus wieder einfache Rechnungen wie im Gleichstromkreis.
+
+## Sinusförmige Größen
+
+Eine sinusförmige Spannung wird durch drei Größen vollständig beschrieben:
+
+$$
+u(t) = \hat{u} \cdot \sin(\omega t + \varphi_u)
+$$
+
+| Größe                | Zeichen      | Bedeutung                                                      |
+| -------------------- | ------------ | -------------------------------------------------------------- |
+| Amplitude, Scheitelwert | $\hat{u}$ | größter Augenblickswert                                       |
+| Spitze-Spitze-Wert   | $u_\mathrm{ss}$ | Abstand vom positiven zum negativen Scheitel, $2\hat{u}$    |
+| Periodendauer        | $T$          | Dauer einer Schwingung in s                                    |
+| Frequenz             | $f$          | Schwingungen pro Sekunde, $f = 1/T$ in Hz                     |
+| Kreisfrequenz        | $\omega$     | $\omega = 2\pi f$ in $1/\mathrm{s}$                            |
+| Nullphasenwinkel     | $\varphi_u$  | Verschiebung gegenüber dem Zeitnullpunkt                       |
+
+Kleinbuchstaben ($u$, $i$) bezeichnen Augenblickswerte, Großbuchstaben ($U$, $I$) Effektivwerte. Das europäische Netz hat $f = 50\,\mathrm{Hz}$, also $T = 20\,\mathrm{ms}$ und $\omega = 314{,}16\,\mathrm{s^{-1}}$.
+
+Die **Phasenverschiebung** zwischen Spannung und Strom ist $\varphi = \varphi_u - \varphi_i$. Ist $\varphi > 0$, eilt die Spannung dem Strom voraus.
+
+### Effektivwert
+
+Der **Effektivwert** einer Wechselspannung ist der Wert einer Gleichspannung, die in einem ohmschen Widerstand dieselbe Wärmeleistung erzeugt. Er ist der quadratische Mittelwert (RMS, _root mean square_):
+
+$$
+U = \sqrt{\frac{1}{T} \int_0^T u^2(t)\,\mathrm{d}t} \qquad \text{für Sinus:} \quad U = \frac{\hat{u}}{\sqrt{2}} \approx 0{,}707 \cdot \hat{u}
+$$
+
+Die Netzspannung von $230\,\mathrm{V}$ ist ein Effektivwert. Der Scheitelwert beträgt $230\,\mathrm{V} \cdot \sqrt{2} \approx 325\,\mathrm{V}$, der Spitze-Spitze-Wert rund $650\,\mathrm{V}$. Isolierungen und Kondensatoren müssen für den Scheitelwert ausgelegt sein.
+
+Der **Gleichrichtwert** (Mittelwert des Betrags) ist beim Sinus $\overline{\lvert u \rvert} = \frac{2}{\pi}\hat{u} \approx 0{,}637\,\hat{u}$. Daraus ergeben sich der **Formfaktor** $U/\overline{\lvert u \rvert} \approx 1{,}11$ und der **Scheitelfaktor** (Crestfaktor) $\hat{u}/U = \sqrt{2}$. Diese Werte gelten nur für Sinus, was bei Messgeräten wichtig ist (siehe [Messtechnik](/de/electrical-engineering/measurement/#effektivwertmessung)).
+
+## Zeiger und komplexe Rechnung
+
+Eine Sinusgröße kann man als **Zeiger** darstellen, der mit $\omega$ gegen den Uhrzeigersinn rotiert. Seine Länge ist die Amplitude (oder meist der Effektivwert), sein Winkel der Nullphasenwinkel. Die Projektion auf die senkrechte Achse ergibt den Augenblickswert. Weil in einer Schaltung alle Größen dieselbe Frequenz haben, rotieren alle Zeiger gemeinsam, und man zeichnet sie als ruhendes **Zeigerdiagramm**. Addieren von Sinusgrößen gleicher Frequenz wird so zur Vektoraddition.
+
+Rechnerisch sind Zeiger [komplexe Zahlen](/de/mathematics/algebra/complex-numbers/). In der Elektrotechnik schreibt man die imaginäre Einheit $j$ (weil $i$ für den Strom vergeben ist) und unterstreicht komplexe Größen:
+
+$$
+\underline{U} = U \cdot e^{j\varphi_u} = U \angle \varphi_u = U\cos\varphi_u + jU\sin\varphi_u
+$$
+
+Multiplikation und Division rechnet man in der Polarform (Beträge multiplizieren, Winkel addieren), Addition und Subtraktion in der Komponentenform. Mit komplexen Größen gilt das ohmsche Gesetz wie im Gleichstromkreis, und alle Verfahren aus den [Gleichstromkreisen](/de/electrical-engineering/dc-circuits/) (Kirchhoff, Spannungsteiler, Ersatzquellen) bleiben gültig.
+
+## Impedanz von R, L und C
+
+Der komplexe Widerstand heißt **Impedanz** $\underline{Z} = \underline{U}/\underline{I}$. Ihr Realteil ist der **Wirkwiderstand** $R$, ihr Imaginärteil der **Blindwiderstand** (Reaktanz) $X$:
+
+$$
+\underline{Z} = R + jX = Z \angle \varphi \qquad Z = \sqrt{R^2 + X^2} \qquad \varphi = \arctan\frac{X}{R}
+$$
+
+| Bauteil     | Impedanz                                     | Blindwiderstand                 | Phase      | Merkhilfe                            |
+| ----------- | -------------------------------------------- | ------------------------------- | ---------- | ------------------------------------ |
+| Widerstand  | $\underline{Z}_R = R$                        | $0$                             | $0°$       | $u$ und $i$ in Phase                 |
+| Spule       | $\underline{Z}_L = j\omega L$                | $X_L = \omega L$                | $+90°$     | Spannung eilt dem Strom $90°$ voraus |
+| Kondensator | $\underline{Z}_C = \dfrac{1}{j\omega C} = -\dfrac{j}{\omega C}$ | $X_C = \dfrac{1}{\omega C}$ | $-90°$ | Strom eilt der Spannung $90°$ voraus |
+
+:::tip[Merke]
+„Beim Kondensator eilt der Strom vor, bei der Induktivität wird er sich verspäten.“ Die Spule sperrt hohe Frequenzen ($X_L$ steigt mit $f$), der Kondensator sperrt tiefe Frequenzen und Gleichspannung ($X_C$ sinkt mit $f$).
+:::
+
+Bei $50\,\mathrm{Hz}$ hat eine Spule mit $0{,}5\,\mathrm{H}$ den Blindwiderstand $X_L = 314{,}16 \cdot 0{,}5\,\Omega \approx 157{,}1\,\Omega$, ein Kondensator mit $10\,\mathrm{\mu F}$ den Blindwiderstand $X_C = 1/(314{,}16 \cdot 10^{-5})\,\Omega \approx 318{,}3\,\Omega$.
+
+Der Kehrwert der Impedanz ist die **Admittanz** $\underline{Y} = 1/\underline{Z} = G + jB$ mit dem Wirkleitwert $G$ und dem Blindleitwert $B$. Bei Parallelschaltungen addiert man Admittanzen.
+
+## RLC-Schaltungen
+
+### Reihenschaltung
+
+In der Reihenschaltung fließt durch alle Bauteile derselbe Strom. Die Impedanzen addieren sich:
+
+$$
+\underline{Z} = R + j\left(\omega L - \frac{1}{\omega C}\right) \qquad Z = \sqrt{R^2 + (X_L - X_C)^2}
+$$
+
+Überwiegt $X_L$, verhält sich die Schaltung **induktiv** ($\varphi > 0$), überwiegt $X_C$, **kapazitiv** ($\varphi < 0$).
+
+:::tip[Beispiel: RLC-Reihenschaltung am Netz]
+$R = 100\,\Omega$, $L = 0{,}5\,\mathrm{H}$, $C = 10\,\mathrm{\mu F}$ an $230\,\mathrm{V}$, $50\,\mathrm{Hz}$.
+
+$$
+X = X_L - X_C = 157{,}1\,\Omega - 318{,}3\,\Omega = -161{,}2\,\Omega
+$$
+
+$$
+Z = \sqrt{100^2 + 161{,}2^2}\,\Omega \approx 189{,}7\,\Omega \qquad \varphi = \arctan\frac{-161{,}2}{100} \approx -58{,}2°
+$$
+
+Der Strom ist $I = 230\,\mathrm{V}/189{,}7\,\Omega \approx 1{,}21\,\mathrm{A}$ und eilt der Spannung um $58{,}2°$ voraus (kapazitiv). Die Teilspannungen sind $U_R \approx 121\,\mathrm{V}$, $U_L \approx 190\,\mathrm{V}$, $U_C \approx 386\,\mathrm{V}$.
+
+$U_C$ ist größer als die Netzspannung. Das ist kein Fehler: Teilspannungen addieren sich als Zeiger, nicht als Beträge. $U_L$ und $U_C$ sind um $180°$ gegeneinander verschoben und heben sich teilweise auf: $\sqrt{121^2 + (190 - 386)^2} \approx 230\,\mathrm{V}$.
+:::
+
+### Parallelschaltung
+
+In der Parallelschaltung liegt an allen Bauteilen dieselbe Spannung. Man addiert die Leitwerte:
+
+$$
+\underline{Y} = \frac{1}{R} + j\left(\omega C - \frac{1}{\omega L}\right) \qquad I = U \cdot Y
+$$
+
+Die Teilströme $I_R = U/R$, $I_L = U/X_L$ und $I_C = U/X_C$ addieren sich als Zeiger: $I = \sqrt{I_R^2 + (I_C - I_L)^2}$.
+
+## Resonanz
+
+Bei einer bestimmten Frequenz sind induktiver und kapazitiver Blindwiderstand gleich groß und heben einander auf. Das ist die **Resonanzfrequenz** (thomsonsche Schwingungsgleichung):
+
+$$
+X_L = X_C \quad \Rightarrow \quad \omega_0 = \frac{1}{\sqrt{LC}} \qquad f_0 = \frac{1}{2\pi\sqrt{LC}}
+$$
+
+| Eigenschaft bei $f_0$ | Reihenschwingkreis                              | Parallelschwingkreis                           |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Impedanz              | **minimal**, $Z = R$                            | **maximal** (ideal unendlich)                  |
+| Strom aus der Quelle  | maximal                                         | minimal                                        |
+| Besonderheit          | Spannungen an L und C sind $Q$-mal so groß wie $U$ (Spannungsüberhöhung) | Ströme in L und C sind $Q$-mal so groß wie $I$ (Stromüberhöhung) |
+| Phase                 | $\varphi = 0°$                                  | $\varphi = 0°$                                 |
+
+Die **Güte** $Q$ gibt an, wie scharf die Resonanz ist. Für den Reihenschwingkreis gilt:
+
+$$
+Q = \frac{X_{L}}{R} = \frac{1}{R}\sqrt{\frac{L}{C}} \qquad B = \frac{f_0}{Q}
+$$
+
+$B$ ist die **Bandbreite** zwischen den beiden Frequenzen, bei denen der Strom auf $1/\sqrt{2}$ des Maximums gesunken ist.
+
+:::tip[Beispiel]
+Für die Reihenschaltung oben ist $f_0 = 1/(2\pi\sqrt{0{,}5 \cdot 10^{-5}})\,\mathrm{Hz} \approx 71{,}2\,\mathrm{Hz}$. Die Güte ist $Q = \frac{1}{100}\sqrt{0{,}5/10^{-5}} \approx 2{,}24$, die Bandbreite $B \approx 31{,}8\,\mathrm{Hz}$. Bei $71{,}2\,\mathrm{Hz}$ und $230\,\mathrm{V}$ flössen $2{,}3\,\mathrm{A}$, und an L und C lägen je rund $514\,\mathrm{V}$.
+:::
+
+Schwingkreise wählen in Radios einen Sender aus, erzeugen in Oszillatoren Frequenzen und werden in Filtern verwendet (siehe [Filter](/de/electrical-engineering/filters/#bandpass-und-bandsperre)). Unerwünschte Resonanzen können Bauteile durch Überspannung zerstören.
+
+## Leistung im Wechselstromkreis
+
+Sind Strom und Spannung phasenverschoben, pendelt ein Teil der Energie zwischen Quelle und Spulen oder Kondensatoren hin und her, ohne genutzt zu werden. Man unterscheidet drei Leistungen:
+
+| Leistung      | Formel                       | Einheit                    | Bedeutung                                       |
+| ------------- | ---------------------------- | -------------------------- | ----------------------------------------------- |
+| Wirkleistung  | $P = U I \cos\varphi$        | Watt (W)                   | wird in Wärme, Licht oder Arbeit umgesetzt      |
+| Blindleistung | $Q = U I \sin\varphi$        | Voltampere reaktiv (var)   | pendelt zwischen Quelle und Feldern             |
+| Scheinleistung | $S = U I$                   | Voltampere (VA)            | belastet Leitungen, Transformatoren, Generatoren |
+
+Die drei Leistungen bilden das **Leistungsdreieck**:
+
+$$
+S = \sqrt{P^2 + Q^2} \qquad \underline{S} = \underline{U} \cdot \underline{I}^* = P + jQ
+$$
+
+Der **Leistungsfaktor** $\cos\varphi = P/S$ gibt an, welcher Anteil der Scheinleistung Wirkleistung ist. Für die RLC-Reihenschaltung oben gilt $S = 230\,\mathrm{V} \cdot 1{,}21\,\mathrm{A} \approx 279\,\mathrm{VA}$, $P = I^2 R \approx 147\,\mathrm{W}$, $Q \approx -237\,\mathrm{var}$ (kapazitiv) und $\cos\varphi \approx 0{,}53$.
+
+**Blindleistungskompensation**: Motoren und Vorschaltgeräte sind induktiv. Die Blindleistung belastet die Leitungen, ohne Nutzen zu bringen. Ein parallel geschalteter Kondensator liefert die Blindleistung lokal, sodass das Netz nur noch Wirkleistung transportieren muss. Großabnehmer zahlen Blindarbeit gesondert, wenn ihr $\cos\varphi$ zu niedrig ist.
+
+:::note
+Netzteile von Computern nehmen ohne Gegenmaßnahmen nicht sinusförmige Ströme auf. Auch dabei ist $S > P$. Deshalb haben Netzteile ab $75\,\mathrm{W}$ eine Leistungsfaktorkorrektur (PFC), und USV-Anlagen werden in VA und W angegeben (siehe [Stromversorgung](/de/electrical-engineering/power-supplies/#unterbrechungsfreie-stromversorgung)).
+:::
+
+## Dreiphasenwechselstrom
+
+Das öffentliche Netz ist ein **Dreiphasensystem** (Drehstrom). Drei Außenleiter L1, L2, L3 führen Spannungen gleicher Amplitude und Frequenz, die jeweils um $120°$ gegeneinander verschoben sind. Dazu kommen der Neutralleiter N und der Schutzleiter PE.
+
+- Die **Strangspannung** (Außenleiter gegen N) beträgt $230\,\mathrm{V}$.
+- Die **Außenleiterspannung** (zwischen zwei Außenleitern) beträgt $\sqrt{3} \cdot 230\,\mathrm{V} \approx 400\,\mathrm{V}$.
+
+Man spricht deshalb vom $230/400$-V-Netz. Der Faktor $\sqrt{3}$ kommt aus der Zeigerdifferenz zweier um $120°$ verschobener Zeiger. Bei gleichmäßiger Belastung ist die Summe der drei Ströme null, und der Neutralleiter bleibt stromlos.
+
+### Stern- und Dreieckschaltung
+
+| Schaltung       | Spannung am Verbraucher       | Strom                         |
+| --------------- | ----------------------------- | ----------------------------- |
+| Stern (Y)       | $U_\mathrm{Str} = U/\sqrt{3} = 230\,\mathrm{V}$ | $I_\mathrm{L} = I_\mathrm{Str}$ |
+| Dreieck (Δ)     | $U_\mathrm{Str} = U = 400\,\mathrm{V}$ | $I_\mathrm{L} = \sqrt{3} \cdot I_\mathrm{Str}$ |
+
+Die Leistung eines symmetrisch belasteten Drehstromverbrauchers ist in beiden Fällen, mit der Außenleiterspannung $U$ und dem Außenleiterstrom $I$:
+
+$$
+P = \sqrt{3} \cdot U \cdot I \cdot \cos\varphi
+$$
+
+:::tip[Beispiel]
+Ein Motor an $400\,\mathrm{V}$ nimmt $10\,\mathrm{A}$ pro Außenleiter bei $\cos\varphi = 0{,}85$ auf: $P = \sqrt{3} \cdot 400\,\mathrm{V} \cdot 10\,\mathrm{A} \cdot 0{,}85 \approx 5{,}89\,\mathrm{kW}$.
+:::
+
+Dieselben drei Widerstände nehmen im Dreieck die **dreifache** Leistung auf wie im Stern, weil an jedem $\sqrt{3}$-mal so viel Spannung liegt. Diesen Effekt nutzt der **Stern-Dreieck-Anlauf** großer Motoren: Sie starten in Stern mit verringertem Anlaufstrom und werden dann auf Dreieck umgeschaltet.
+
+Vorteile des Drehstroms: Mit drei oder vier Leitern überträgt man die dreifache Leistung eines Einphasenkreises, die Summenleistung ist zeitlich konstant (kein Pulsieren), und Motoren laufen mit dem Drehfeld ohne Hilfsmittel an. Haushalte erhalten meist alle drei Phasen, die Steckdosenkreise werden auf die Phasen verteilt, und große Verbraucher wie Herd oder Wallbox nutzen Drehstrom.
+
+## Weiterführende Quellen
+
+- Hagmann, G.: _Grundlagen der Elektrotechnik_. AULA-Verlag.
+- Weißgerber, W.: _Elektrotechnik für Ingenieure 2: Wechselstromtechnik, Ortskurven, Transformator, Mehrphasensysteme_. Springer Vieweg.
+- [Wikipedia: Komplexe Wechselstromrechnung](https://de.wikipedia.org/wiki/Komplexe_Wechselstromrechnung)

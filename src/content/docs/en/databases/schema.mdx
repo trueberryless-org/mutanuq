@@ -3,7 +3,7 @@ title: Schema
 description: How a database schema defines the structure, data types and integrity constraints of a database.
 sidebar:
   label: Database Schema
-  order: 3
+  order: 5
 ---
 
 A **database schema** describes the structure of a database: which tables (entities) exist, which columns and data types they have, how the tables are connected via keys and which rules apply to the stored data. The schema is the blueprint, so to speak; the actual data is the content.
@@ -12,8 +12,8 @@ A **database schema** describes the structure of a database: which tables (entit
 
 - Working with the data must not lead to data inconsistencies.
 - Where a value is mandatory, no `NULL` values may be entered.
-- Data redundancy should be avoided through [normalisation](/en/databases/relational-databases/#normalisation).
-- Column values must be atomic (see [first normal form](/en/databases/relational-databases/#first-normal-form-1nf)).
+- Data redundancy should be avoided through [normalisation](/en/databases/normalisation/).
+- Column values must be atomic (see [first normal form](/en/databases/normalisation/#first-normal-form-1nf)).
 - Every entity is represented in its own table.
 
 ## Schema levels
@@ -53,6 +53,8 @@ Relational constraints (key constraints) secure the relationships between tables
 `CHECK` is used to formulate arbitrary conditions that every record must fulfil.
 
 ```sql
+CREATE TABLE Student (Id INT PRIMARY KEY);
+
 CREATE TABLE Grade (
     StudentId INT NOT NULL REFERENCES Student(Id) ON DELETE CASCADE,
     Subject   VARCHAR(20) NOT NULL,

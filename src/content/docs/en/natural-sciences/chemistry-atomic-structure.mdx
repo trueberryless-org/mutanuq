@@ -1,0 +1,145 @@
+---
+title: Atomic Structure
+description: Atomic models from Dalton to the orbital model, elementary particles, isotopes, electron configuration with the Aufbau principle, Hund's rule and the Pauli principle, and valence electrons.
+sidebar:
+  order: 31
+---
+
+All substances consist of **atoms**. An atom has a diameter of about $10^{-10}\,\mathrm{m}$ ($0.1\,\mathrm{nm}$); its nucleus, at about $10^{-15}\,\mathrm{m}$, is roughly a hundred thousand times smaller. How atoms are built explains why elements form particular bonds and why the periodic table looks the way it does.
+
+## Atomic models
+
+A **model** is a simplified picture that explains certain observations. Each new model became necessary because an experiment could no longer be explained with the old one.
+
+| Year      | Model                           | Key statement                                                               | Limitation                                |
+| --------- | ------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------- |
+| 1808      | **Dalton**                      | atoms are indivisible solid spheres; atoms of one element are identical, compounds form in whole-number ratios | does not explain electrical phenomena |
+| 1904      | **Thomson** ("plum pudding")    | positively charged sphere with embedded electrons (electron discovered 1897) | contradicts the scattering experiment    |
+| 1911      | **Rutherford** (nuclear model)  | almost all the mass and the positive charge in a tiny nucleus, electrons in a large, almost empty shell | orbiting electrons would radiate energy and fall into the nucleus |
+| 1913      | **Bohr** (shell model)          | electrons move only on certain orbits (shells) with fixed energies; light of a particular energy is absorbed or emitted when they change shell | only exact for hydrogen |
+| from 1926 | **Orbital model** (Schrödinger, Heisenberg) | electrons have no orbit, only a probability of being found somewhere; an **orbital** is the region in which an electron is found with high probability | the quantum-mechanical model valid today |
+
+In the **scattering experiment** Rutherford's team (Geiger, Marsden) fired alpha particles at a very thin gold foil. Almost all passed straight through; a very few were strongly deflected or even bounced back. Conclusion: the atom is mostly empty, and its mass sits in a tiny positive nucleus.
+
+## Elementary particles
+
+| Particle      | Symbol         | Location | Charge                   | Mass                              |
+| ------------- | -------------- | -------- | ------------------------ | --------------------------------- |
+| **Proton**    | $\mathrm{p^+}$ | nucleus  | $+e$                     | $1.6726 \cdot 10^{-27}\,\mathrm{kg} \approx 1\,\mathrm{u}$ |
+| **Neutron**   | $\mathrm{n}$   | nucleus  | $0$                      | $1.6749 \cdot 10^{-27}\,\mathrm{kg} \approx 1\,\mathrm{u}$ |
+| **Electron**  | $\mathrm{e^-}$ | shell    | $-e$                     | $9.109 \cdot 10^{-31}\,\mathrm{kg} \approx \frac{1}{1836}\,\mathrm{u}$ |
+
+The **elementary charge** is $e = 1.602176634 \cdot 10^{-19}\,\mathrm{C}$, the **atomic mass unit** $1\,\mathrm{u} = 1.66054 \cdot 10^{-27}\,\mathrm{kg}$ (one twelfth of the mass of a $\mathrm{^{12}C}$ atom). Protons and neutrons together are called **nucleons**. The neutron was discovered by James Chadwick in 1932.
+
+- The **atomic number** (proton number) $Z$ determines the element. Every atom with 6 protons is carbon.
+- The **mass number** (nucleon number) $A = Z + N$ is the sum of protons and neutrons.
+- A neutral atom has as many electrons as protons. If it gives up or gains electrons, it becomes an **ion**: a cation (positive) or an anion (negative).
+
+The notation for a **nuclide** is
+
+$$
+{}^{A}_{Z}\mathrm{X}, \quad \text{e.g. } {}^{23}_{11}\mathrm{Na}: 11 \text{ protons}, 11 \text{ electrons}, 23 - 11 = 12 \text{ neutrons}
+$$
+
+## Isotopes
+
+**Isotopes** are atoms of the same element (same number of protons) with different numbers of neutrons. Chemically they behave almost identically, because chemistry is determined by the electron shell; they differ in mass and often in nuclear stability.
+
+| Element      | Isotopes                                                                       |
+| ------------ | ------------------------------------------------------------------------------ |
+| Hydrogen     | $\mathrm{^1H}$ (protium, 99.98 %), $\mathrm{^2H}$ (deuterium), $\mathrm{^3H}$ (tritium, radioactive) |
+| Carbon       | $\mathrm{^{12}C}$ (98.9 %), $\mathrm{^{13}C}$ (1.1 %), $\mathrm{^{14}C}$ (radioactive, half-life 5730 years, radiocarbon dating) |
+| Chlorine     | $\mathrm{^{35}Cl}$ (75.8 %), $\mathrm{^{37}Cl}$ (24.2 %)                       |
+| Uranium      | $\mathrm{^{238}U}$ (99.3 %), $\mathrm{^{235}U}$ (0.7 %, fissile)               |
+
+The **relative atomic mass** in the periodic table is the abundance-weighted mean of the isotope masses. That is why it is usually not a whole number.
+
+:::tip[Example: mean atomic mass of chlorine]
+$$
+A_r(\mathrm{Cl}) = 0.7576 \cdot 34.969 + 0.2424 \cdot 36.966 \approx 26.49 + 8.96 = 35.45
+$$
+:::
+
+## Electron shell
+
+### Shell model
+
+In the **shell model** the electrons occupy shells $n = 1, 2, 3, \dots$ (K, L, M, N, …). Shell $n$ holds at most $2n^2$ electrons: K 2, L 8, M 18, N 32. Electrons in outer shells have more energy and are bound less strongly to the nucleus.
+
+If an electron is raised to a higher shell by supplying energy (heat, light, electric current), it soon falls back and releases the energy difference as light:
+
+$$
+\Delta E = h \cdot f = \frac{h \cdot c}{\lambda}
+$$
+
+Because the energy levels are fixed, only certain wavelengths are produced, giving a **line spectrum**. This is the basis of **flame tests** (sodium yellow, lithium crimson, potassium violet, copper blue-green, strontium red, barium green), fireworks, sodium vapour lamps and spectral analysis.
+
+### Orbitals and quantum numbers
+
+In the orbital model, four **quantum numbers** describe the state of an electron:
+
+| Quantum number                   | Values                         | Meaning                                     |
+| -------------------------------- | ------------------------------ | ------------------------------------------- |
+| principal quantum number $n$     | $1, 2, 3, \dots$               | shell, energy and size                      |
+| azimuthal quantum number $l$     | $0$ to $n-1$ (s, p, d, f)      | shape of the orbital (subshell)             |
+| magnetic quantum number $m_l$    | $-l$ to $+l$                   | orientation in space                        |
+| spin quantum number $m_s$        | $+\frac{1}{2}$ or $-\frac{1}{2}$ | intrinsic angular momentum ("spin up/down") |
+
+| Subshell    | Number of orbitals | Max. electrons | Shape                      |
+| ----------- | ------------------ | -------------- | -------------------------- |
+| **s**       | 1                  | 2              | spherical                  |
+| **p**       | 3                  | 6              | dumbbell (x, y, z)         |
+| **d**       | 5                  | 10             | cloverleaf                 |
+| **f**       | 7                  | 14             | complex                    |
+
+### Rules for filling orbitals
+
+1. **Aufbau principle** (energy principle): orbitals are filled in order of increasing energy. The order is
+   1s, 2s, 2p, 3s, 3p, **4s, 3d**, 4p, 5s, 4d, 5p, 6s, 4f, 5d, 6p, 7s, 5f, 6d, 7p.
+   The 4s orbital is therefore filled before the 3d orbital (memory aid: diagonal rule).
+2. **Pauli principle**: no two electrons in an atom have all four quantum numbers the same. An orbital therefore holds at most two electrons with opposite spins.
+3. **Hund's rule**: orbitals of equal energy (such as the three 2p orbitals) are first occupied singly by electrons with parallel spins, and only then doubly.
+
+In **box notation** each orbital is a box and each electron an arrow:
+
+```text
+         1s     2s     2p
+N (7):  [↑↓]   [↑↓]   [↑ ][↑ ][↑ ]     1s² 2s² 2p³
+O (8):  [↑↓]   [↑↓]   [↑↓][↑ ][↑ ]     1s² 2s² 2p⁴
+```
+
+| Element         | $Z$ | Electron configuration            | Short notation           |
+| --------------- | --- | --------------------------------- | ------------------------ |
+| Hydrogen        | 1   | $1s^1$                            | $1s^1$                   |
+| Carbon          | 6   | $1s^2\,2s^2\,2p^2$                | $[\mathrm{He}]\,2s^2\,2p^2$ |
+| Sodium          | 11  | $1s^2\,2s^2\,2p^6\,3s^1$          | $[\mathrm{Ne}]\,3s^1$    |
+| Silicon         | 14  | $1s^2\,2s^2\,2p^6\,3s^2\,3p^2$    | $[\mathrm{Ne}]\,3s^2\,3p^2$ |
+| Chlorine        | 17  | $1s^2\,2s^2\,2p^6\,3s^2\,3p^5$    | $[\mathrm{Ne}]\,3s^2\,3p^5$ |
+| Iron            | 26  | $\dots 3p^6\,3d^6\,4s^2$          | $[\mathrm{Ar}]\,3d^6\,4s^2$ |
+| Copper          | 29  | $\dots 3p^6\,3d^{10}\,4s^1$       | $[\mathrm{Ar}]\,3d^{10}\,4s^1$ (exception) |
+
+:::note[Exceptions]
+Half-filled and completely filled d subshells are particularly stable. Chromium therefore has $[\mathrm{Ar}]\,3d^5\,4s^1$ instead of $3d^4\,4s^2$, and copper $[\mathrm{Ar}]\,3d^{10}\,4s^1$ instead of $3d^9\,4s^2$.
+:::
+
+## Valence electrons
+
+The electrons in the outermost shell are called **valence electrons** (outer electrons). They determine chemical behaviour. For main-group elements their number equals the main group number: sodium (group I) has 1, carbon (group IV) 4, chlorine (group VII) 7 valence electrons.
+
+The **noble gas configuration** with eight outer electrons (**octet**, two for helium) is particularly low in energy. Many atoms reach it by giving up, gaining or sharing electrons:
+
+$$
+\mathrm{Na \rightarrow Na^+ + e^-} \qquad \mathrm{Cl + e^- \rightarrow Cl^-}
+$$
+
+$\mathrm{Na^+}$ then has the configuration of neon, $\mathrm{Cl^-}$ that of argon. In **Lewis notation** (electron dot formula) only the valence electrons are drawn as dots (electron pairs as lines) around the element symbol, so carbon gets four dots and chlorine three lines and one dot. How bonds form from this is shown on the page [Chemical Bonding](/en/natural-sciences/chemistry-chemical-bonding/).
+
+:::tip[Remember]
+Number of protons → element. Number of neutrons → isotope. Number of electrons → charge (ion). Valence electrons → chemical behaviour.
+:::
+
+## Further reading
+
+- [Periodic Table of Elements](https://iupac.org/what-we-do/periodic-table-of-elements/) (IUPAC, atomic weights and isotopes)
+- [CODATA values of the fundamental constants](https://physics.nist.gov/cuu/Constants/) (NIST)
+- [OpenStax Chemistry 2e](https://openstax.org/details/books/chemistry-2e) (free textbook)

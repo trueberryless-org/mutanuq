@@ -1,0 +1,390 @@
+---
+title: Funktionale Programmierung
+description: Reine Funktionen, Unveränderlichkeit, Delegates, Lambdas und Closures sowie LINQ in C# und Iteratoren in Rust.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **funktionale Programmierung** ist ein Programmierparadigma, bei dem Programme aus Funktionen zusammengesetzt werden, die Eingaben in Ausgaben umwandeln, ohne dabei Zustand zu verändern. Rein funktionale Sprachen sind etwa Haskell oder F#. C# und Rust sind keine rein funktionalen Sprachen, haben aber viele funktionale Konzepte übernommen, weil diese Code kürzer, verständlicher und leichter testbar machen.
+
+## Imperativ und deklarativ
+
+- **Imperativ** beschreibt man, **wie** ein Ergebnis berechnet wird: Schritt für Schritt mit Schleifen, Variablen und Zuweisungen.
+- **Deklarativ** beschreibt man, **was** man als Ergebnis haben will. Wie es berechnet wird, entscheidet die Bibliothek oder das System. SQL ist ein bekanntes Beispiel für eine deklarative Sprache.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int[] numbers = [5, 12, 8, 21, 3, 16];
+
+// imperativ: Summe der Quadrate aller geraden Zahlen
+int sum = 0;
+foreach (int n in numbers)
+{
+    if (n % 2 == 0)
+    {
+        sum += n * n;
+    }
+}
+Console.WriteLine(sum); // 464
+
+// deklarativ mit LINQ
+int sum2 = numbers.Where(n => n % 2 == 0).Select(n => n * n).Sum();
+Console.WriteLine(sum2); // 464
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let numbers = [5, 12, 8, 21, 3, 16];
+
+    // imperativ
+    let mut sum = 0;
+    for n in numbers {
+        if n % 2 == 0 {
+            sum += n * n;
+        }
+    }
+    println!("{sum}"); // 464
+
+    // deklarativ mit Iterator-Adaptern
+    let sum2: i32 = numbers.iter().filter(|&&n| n % 2 == 0).map(|n| n * n).sum();
+    println!("{sum2}"); // 464
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Grundprinzipien
+
+| Prinzip                         | Bedeutung                                                                                                 |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Reine Funktion**              | Das Ergebnis hängt nur von den Parametern ab, und die Funktion hat keine **Seiteneffekte** (keine Ausgaben, keine Änderung globaler Variablen, keine Dateizugriffe). Bei gleichen Eingaben liefert sie immer dasselbe Ergebnis. |
+| **Unveränderlichkeit**          | Daten werden nicht verändert. Stattdessen erzeugt man neue Werte. Das verhindert Fehler durch unerwartete Änderungen und macht Nebenläufigkeit sicherer. |
+| **Funktionen als Werte**        | Funktionen können wie Daten in Variablen gespeichert, als Parameter übergeben und zurückgegeben werden (_first-class functions_). |
+| **Funktionen höherer Ordnung**  | Funktionen, die andere Funktionen als Parameter erhalten oder zurückgeben, zum Beispiel `Where` oder `map`. |
+| **Referenzielle Transparenz**   | Ein Funktionsaufruf kann durch sein Ergebnis ersetzt werden, ohne dass sich das Programm ändert.          |
+
+Reine Funktionen lassen sich besonders leicht [testen](/de/software-development/testing/), weil man nur Eingaben und Ausgaben vergleichen muss. Ein Programm ganz ohne Seiteneffekte wäre aber nutzlos: Irgendwann muss es etwas ausgeben oder speichern. Ziel ist daher, Seiteneffekte an wenigen, klar erkennbaren Stellen zu bündeln.
+
+## Delegates, Lambdas und Closures
+
+Ein **Delegate** ist in C# ein Typ für Verweise auf Methoden mit einer bestimmten Signatur. Statt eigene Delegate-Typen zu deklarieren, verwendet man meist die vordefinierten generischen Typen:
+
+| Typ in C#                 | Signatur                              | Entsprechung in Rust             |
+| ------------------------- | ------------------------------------- | -------------------------------- |
+| `Action`                  | keine Parameter, kein Rückgabewert    | `Fn()`                           |
+| `Action<T>`               | ein Parameter, kein Rückgabewert      | `Fn(T)`                          |
+| `Func<T, TResult>`        | ein Parameter, ein Rückgabewert       | `Fn(T) -> R`                     |
+| `Func<T1, T2, TResult>`   | zwei Parameter, ein Rückgabewert      | `Fn(T1, T2) -> R`                |
+| `Predicate<T>`            | ein Parameter, Rückgabe `bool`        | `Fn(&T) -> bool`                 |
+
+Ein **Lambda-Ausdruck** ist eine anonyme Funktion, die direkt an der Stelle geschrieben wird, an der sie gebraucht wird: `x => x * 2` in C#, `|x| x * 2` in Rust. Greift ein Lambda auf Variablen aus der Umgebung zu, nennt man es **Closure**: Es „schließt“ diese Variablen ein und kann sie auch später noch verwenden.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Func<int, int> square = x => x * x;
+Func<int, int, int> add = (a, b) => a + b;
+Action<string> greet = name => Console.WriteLine($"Hallo {name}!");
+
+Console.WriteLine(square(5));   // 25
+Console.WriteLine(add(2, 3));   // 5
+greet("Ada");                   // Hallo Ada!
+
+// Funktion höherer Ordnung: erhält eine Funktion als Parameter
+static int ApplyTwice(Func<int, int> f, int x) => f(f(x));
+Console.WriteLine(ApplyTwice(square, 3)); // 81
+
+// Closure: merkt sich die Variable factor
+static Func<int, int> MakeMultiplier(int factor) => x => x * factor;
+var triple = MakeMultiplier(3);
+Console.WriteLine(triple(7));   // 21
+
+// Closure mit veränderbarem Zustand
+int counter = 0;
+Action increment = () => counter++;
+increment();
+increment();
+Console.WriteLine(counter);     // 2
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Funktion höherer Ordnung: F ist ein beliebiger Funktionstyp
+fn apply_twice<F: Fn(i32) -> i32>(f: F, x: i32) -> i32 {
+    f(f(x))
+}
+
+// gibt eine Closure zurück; move übernimmt factor in die Closure
+fn make_multiplier(factor: i32) -> impl Fn(i32) -> i32 {
+    move |x| x * factor
+}
+
+fn main() {
+    let square = |x: i32| x * x;
+    let add = |a: i32, b: i32| a + b;
+    let greet = |name: &str| println!("Hallo {name}!");
+
+    println!("{}", square(5));  // 25
+    println!("{}", add(2, 3));  // 5
+    greet("Ada");               // Hallo Ada!
+
+    println!("{}", apply_twice(square, 3)); // 81
+
+    let triple = make_multiplier(3);
+    println!("{}", triple(7));  // 21
+
+    // Closure mit veränderbarem Zustand (FnMut)
+    let mut counter = 0;
+    let mut increment = || counter += 1;
+    increment();
+    increment();
+    println!("{counter}");      // 2
+}
+```
+
+</TabItem>
+</Tabs>
+
+Rust unterscheidet drei Arten von Closures, je nachdem, wie sie auf ihre Umgebung zugreifen:
+
+- **`Fn`**: liest die eingeschlossenen Variablen nur (gemeinsame Referenz). Kann beliebig oft aufgerufen werden.
+- **`FnMut`**: verändert eingeschlossene Variablen (veränderbare Referenz).
+- **`FnOnce`**: übernimmt den Besitz eingeschlossener Werte und kann daher nur einmal aufgerufen werden.
+
+## Datenabfragen mit LINQ und Iteratoren
+
+**LINQ** (_Language Integrated Query_) ist eine Sammlung von Erweiterungsmethoden für alle `IEnumerable<T>`, mit denen man Daten filtern, umwandeln, sortieren, gruppieren und zusammenfassen kann. In Rust bietet das Trait `Iterator` dieselben Möglichkeiten als **Iterator-Adapter**.
+
+Die folgenden Beispiele verwenden diese Daten:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+public record Student(string Name, string SchoolClass, int Points);
+
+public static class Data
+{
+    public static readonly List<Student> Students =
+    [
+        new("Anna", "3AHIT", 87),
+        new("Ben", "3BHIT", 54),
+        new("Clara", "3AHIT", 92),
+        new("David", "3BHIT", 71),
+        new("Emil", "3AHIT", 45),
+    ];
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Debug, Clone)]
+struct Student {
+    name: &'static str,
+    school_class: &'static str,
+    points: u32,
+}
+
+fn students() -> Vec<Student> {
+    vec![
+        Student { name: "Anna", school_class: "3AHIT", points: 87 },
+        Student { name: "Ben", school_class: "3BHIT", points: 54 },
+        Student { name: "Clara", school_class: "3AHIT", points: 92 },
+        Student { name: "David", school_class: "3BHIT", points: 71 },
+        Student { name: "Emil", school_class: "3AHIT", points: 45 },
+    ]
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Filtern, umwandeln, sortieren
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var students = Data.Students;
+
+// Namen aller Schüler mit mindestens 60 Punkten, absteigend nach Punkten
+var passed = students
+    .Where(s => s.Points >= 60)
+    .OrderByDescending(s => s.Points)
+    .Select(s => s.Name)
+    .ToList();
+Console.WriteLine(string.Join(", ", passed)); // Clara, Anna, David
+
+// dasselbe in Abfragesyntax
+var passed2 = from s in students
+              where s.Points >= 60
+              orderby s.Points descending
+              select s.Name;
+
+// Sortieren nach mehreren Kriterien
+var sorted = students.OrderBy(s => s.SchoolClass).ThenBy(s => s.Name);
+Console.WriteLine(string.Join(", ", sorted.Select(s => s.Name))); // Anna, Clara, Emil, Ben, David
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let students = students();
+
+    // Namen aller Schüler mit mindestens 60 Punkten, absteigend nach Punkten
+    let mut passed: Vec<&Student> = students.iter().filter(|s| s.points >= 60).collect();
+    passed.sort_by(|a, b| b.points.cmp(&a.points));
+    let names: Vec<&str> = passed.iter().map(|s| s.name).collect();
+    println!("{}", names.join(", ")); // Clara, Anna, David
+
+    // Sortieren nach mehreren Kriterien
+    let mut sorted = students.clone();
+    sorted.sort_by(|a, b| a.school_class.cmp(b.school_class).then(a.name.cmp(b.name)));
+    let names: Vec<&str> = sorted.iter().map(|s| s.name).collect();
+    println!("{}", names.join(", ")); // Anna, Clara, Emil, Ben, David
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Zusammenfassen und gruppieren
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var students = Data.Students;
+
+Console.WriteLine(students.Count(s => s.Points < 50));     // 1
+Console.WriteLine(students.Average(s => s.Points));        // 69.8
+Console.WriteLine(students.Max(s => s.Points));            // 92
+Console.WriteLine(students.MaxBy(s => s.Points)!.Name);    // Clara
+Console.WriteLine(students.Any(s => s.Points == 100));     // False
+Console.WriteLine(students.All(s => s.Points > 40));       // True
+Console.WriteLine(students.First(s => s.SchoolClass == "3BHIT").Name); // Ben
+
+// Gruppieren: Durchschnitt pro Klasse
+foreach (var group in students.GroupBy(s => s.SchoolClass))
+{
+    Console.WriteLine($"{group.Key}: {group.Average(s => s.Points):F1}");
+}
+// 3AHIT: 74.7
+// 3BHIT: 62.5
+
+// Aggregate entspricht reduce/fold
+int total = students.Aggregate(0, (sum, s) => sum + s.Points);
+Console.WriteLine(total); // 349
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::BTreeMap;
+
+fn main() {
+    let students = students();
+
+    println!("{}", students.iter().filter(|s| s.points < 50).count()); // 1
+    let total: u32 = students.iter().map(|s| s.points).sum();
+    println!("{}", total as f64 / students.len() as f64);              // 69.8
+    println!("{:?}", students.iter().map(|s| s.points).max());         // Some(92)
+    println!("{}", students.iter().max_by_key(|s| s.points).unwrap().name); // Clara
+    println!("{}", students.iter().any(|s| s.points == 100));          // false
+    println!("{}", students.iter().all(|s| s.points > 40));            // true
+    println!("{}", students.iter().find(|s| s.school_class == "3BHIT").unwrap().name); // Ben
+
+    // Gruppieren: Durchschnitt pro Klasse
+    let mut groups: BTreeMap<&str, Vec<u32>> = BTreeMap::new();
+    for s in &students {
+        groups.entry(s.school_class).or_default().push(s.points);
+    }
+    for (class, points) in &groups {
+        let avg = points.iter().sum::<u32>() as f64 / points.len() as f64;
+        println!("{class}: {avg:.1}");
+    }
+
+    // fold entspricht Aggregate
+    let total = students.iter().fold(0, |sum, s| sum + s.points);
+    println!("{total}"); // 349
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Wichtige Operationen
+
+| Zweck                        | LINQ (C#)                         | Iterator (Rust)                       |
+| ---------------------------- | --------------------------------- | ------------------------------------- |
+| Filtern                      | `Where`                           | `filter`                              |
+| Umwandeln (Projektion)       | `Select`                          | `map`                                 |
+| Verflachen                   | `SelectMany`                      | `flat_map`, `flatten`                 |
+| Sortieren                    | `OrderBy`, `ThenBy`               | `sort_by`, `sort_by_key` auf `Vec`    |
+| Gruppieren                   | `GroupBy`                         | `fold` oder Schleife in eine `HashMap` |
+| Verknüpfen zweier Folgen     | `Join`, `Zip`                     | `zip`                                 |
+| Erstes passendes Element     | `First`, `FirstOrDefault`         | `find`, `next`                        |
+| Bedingung prüfen             | `Any`, `All`                      | `any`, `all`                          |
+| Anzahl, Summe, Minimum, Maximum | `Count`, `Sum`, `Min`, `Max`   | `count`, `sum`, `min`, `max`          |
+| Zusammenfassen               | `Aggregate`                       | `fold`, `reduce`                      |
+| Duplikate entfernen          | `Distinct`                        | Umweg über `HashSet` oder `dedup`     |
+| Teilfolgen                   | `Take`, `Skip`, `TakeWhile`       | `take`, `skip`, `take_while`          |
+| Mit Index                    | `Select((x, i) => ...)`           | `enumerate`                           |
+| In eine Collection umwandeln | `ToList`, `ToArray`, `ToDictionary` | `collect`                           |
+
+### Verzögerte Ausführung
+
+LINQ-Abfragen und Rust-Iteratoren sind **lazy**: Eine Abfrage wie `students.Where(...)` berechnet noch nichts, sondern beschreibt nur die Berechnung. Ausgeführt wird sie erst, wenn man die Ergebnisse durchläuft oder mit `ToList()`, `Count()` oder `collect()` abruft. Das spart Arbeit, weil zum Beispiel `First` nach dem ersten Treffer aufhört. Es bedeutet aber auch, dass eine LINQ-Abfrage bei jedem Durchlaufen erneut ausgeführt wird. Braucht man das Ergebnis mehrfach, speichert man es mit `ToList()`. In Rust muss ein Iterator immer verbraucht werden, sonst warnt der Compiler, dass er nichts tut.
+
+## Unveränderliche Daten
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var original = new Student("Anna", "3AHIT", 87);
+// with erzeugt eine geänderte Kopie, das Original bleibt gleich
+var corrected = original with { Points = 90 };
+Console.WriteLine(original.Points);   // 87
+Console.WriteLine(corrected.Points);  // 90
+
+// readonly-Felder können nur im Konstruktor gesetzt werden,
+// System.Collections.Immutable bietet unveränderliche Collections.
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let original = Student { name: "Anna", school_class: "3AHIT", points: 87 };
+    // Variablen sind standardmäßig unveränderlich; neue Werte statt Änderungen
+    let corrected = Student { points: 90, ..original.clone() };
+    println!("{}", original.points);  // 87
+    println!("{}", corrected.points); // 90
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Weiterführende Quellen
+
+- [Language Integrated Query (LINQ)](https://learn.microsoft.com/de-de/dotnet/csharp/linq/) (Microsoft Learn)
+- [Functional Language Features: Iterators and Closures](https://doc.rust-lang.org/book/ch13-00-functional-features.html) (The Rust Programming Language)

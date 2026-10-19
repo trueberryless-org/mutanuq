@@ -1,0 +1,186 @@
+---
+title: Rotation und Statik
+description: Drehmoment, Hebelgesetz, Trägheitsmoment und Satz von Steiner, Drehimpuls und seine Erhaltung, Rotationsenergie, Gleichgewicht starrer Körper und Schwerpunkt.
+sidebar:
+  order: 6
+---
+
+Bisher wurden Körper als Massenpunkte behandelt. Ein **starrer Körper** hat dagegen eine Ausdehnung und kann sich drehen. Für Drehbewegungen gibt es zu jeder Größe der geradlinigen Bewegung ein Gegenstück: Aus der Kraft wird das Drehmoment, aus der Masse das Trägheitsmoment, aus dem Impuls der Drehimpuls.
+
+## Drehgrößen
+
+| Translation | Rotation | Zusammenhang |
+| --- | --- | --- |
+| Weg $s$ | Drehwinkel $\varphi$ in $\mathrm{rad}$ | $s = \varphi r$ |
+| Geschwindigkeit $v$ | Winkelgeschwindigkeit $\omega$ in $\mathrm{rad/s}$ | $v = \omega r$ |
+| Beschleunigung $a$ | Winkelbeschleunigung $\alpha$ in $\mathrm{rad/s^2}$ | $a_\mathrm{T} = \alpha r$ |
+| Masse $m$ | Trägheitsmoment $J$ in $\mathrm{kg\,m^2}$ | $J = \sum m_i r_i^2$ |
+| Kraft $F$ | Drehmoment $M$ in $\mathrm{N\,m}$ | $M = r F \sin\varphi$ |
+| Impuls $p = m v$ | Drehimpuls $L = J \omega$ in $\mathrm{kg\,m^2/s}$ | |
+| $F = m a$ | $M = J \alpha$ | Grundgleichung |
+| $E_\mathrm{kin} = \frac{1}{2} m v^2$ | $E_\mathrm{rot} = \frac{1}{2} J \omega^2$ | |
+| $P = F v$ | $P = M \omega$ | |
+
+Die Formeln der gleichmäßig beschleunigten Bewegung gelten sinngemäß: $\omega = \omega_0 + \alpha t$, $\varphi = \omega_0 t + \frac{1}{2} \alpha t^2$.
+
+## Drehmoment
+
+Wie stark eine Kraft einen Körper um eine Achse dreht, hängt nicht nur vom Betrag der Kraft ab, sondern auch davon, wo und in welche Richtung sie angreift. Das **Drehmoment** ist
+
+$$
+\vec M = \vec r \times \vec F, \qquad M = r \cdot F \cdot \sin\varphi = F \cdot l, \qquad [M] = \mathrm{N\,m}
+$$
+
+$\vec r$ zeigt von der Drehachse zum Angriffspunkt, $\varphi$ ist der Winkel zwischen $\vec r$ und $\vec F$. Der **Hebelarm** $l = r\sin\varphi$ ist der senkrechte Abstand der Wirkungslinie der Kraft von der Drehachse. Eine Kraft, deren Wirkungslinie durch die Achse geht, erzeugt kein Drehmoment. Drehmomente gegen den Uhrzeigersinn zählt man meist positiv.
+
+:::note
+Drehmoment und Arbeit haben beide die Einheit $\mathrm{N\,m}$, sind aber verschiedene Größen. Beim Drehmoment schreibt man deshalb nie Joule.
+:::
+
+:::tip[Beispiel: Drehmomentschlüssel]
+Radschrauben eines Autos werden typischerweise mit $110$ bis $120\,\mathrm{N\,m}$ angezogen. Mit einem $0{,}3\,\mathrm{m}$ langen Schlüssel braucht man senkrecht zum Griff $F = M/l = 120/0{,}3 = 400\,\mathrm{N}$. Ein doppelt so langer Hebel halbiert die nötige Kraft.
+:::
+
+## Hebelgesetz
+
+Ein **Hebel** ist ein drehbar gelagerter starrer Körper. Er ist im Gleichgewicht, wenn die Summe der linksdrehenden gleich der Summe der rechtsdrehenden Momente ist:
+
+$$
+F_1 \cdot l_1 = F_2 \cdot l_2
+$$
+
+- **Zweiseitiger Hebel**: Die Kräfte greifen auf beiden Seiten der Achse an (Wippe, Schere, Zange, Balkenwaage).
+- **Einseitiger Hebel**: Beide Kräfte greifen auf derselben Seite an (Schubkarre, Nussknacker, Unterarm).
+
+:::tip[Beispiel: Schubkarre]
+Die Last ($600\,\mathrm{N}$) liegt $0{,}4\,\mathrm{m}$ hinter der Radachse, die Griffe sind $1{,}4\,\mathrm{m}$ von der Achse entfernt. Nötige Hubkraft: $F = 600 \cdot 0{,}4/1{,}4 = 171\,\mathrm{N}$. Auch hier gilt die goldene Regel: Die Hände bewegen sich $3{,}5$-mal so weit wie die Last.
+:::
+
+## Trägheitsmoment
+
+Das **Trägheitsmoment** $J$ (auch $I$) ist das Maß für die Trägheit eines Körpers gegen Drehbewegungen. Es hängt nicht nur von der Masse ab, sondern davon, wie weit die Masse von der Achse entfernt ist:
+
+$$
+J = \sum_i m_i r_i^2 = \int r^2\,\mathrm{d}m
+$$
+
+| Körper (Achse durch den Schwerpunkt) | Trägheitsmoment |
+| --- | --- |
+| Massenpunkt im Abstand $r$ | $m r^2$ |
+| dünner Ring, dünnwandiger Hohlzylinder (Längsachse) | $m r^2$ |
+| Vollzylinder, Scheibe (Längsachse) | $\frac{1}{2} m r^2$ |
+| Vollkugel | $\frac{2}{5} m r^2$ |
+| dünnwandige Hohlkugel | $\frac{2}{3} m r^2$ |
+| dünner Stab der Länge $l$ (Achse quer durch die Mitte) | $\frac{1}{12} m l^2$ |
+
+Liegt die Drehachse nicht im Schwerpunkt, sondern parallel dazu im Abstand $d$, gilt der **Satz von Steiner**:
+
+$$
+J = J_\mathrm{S} + m d^2
+$$
+
+Ein Stab, der um ein Ende rotiert, hat also $J = \frac{1}{12} m l^2 + m \left(\frac{l}{2}\right)^2 = \frac{1}{3} m l^2$.
+
+## Grundgleichung der Drehbewegung
+
+$$
+M = J \cdot \alpha
+$$
+
+:::tip[Beispiel: Schwungrad]
+Ein Schwungrad (Vollscheibe, $m = 50\,\mathrm{kg}$, $r = 0{,}4\,\mathrm{m}$) hat $J = \frac{1}{2} \cdot 50 \cdot 0{,}4^2 = 4\,\mathrm{kg\,m^2}$. Ein Motor mit $M = 20\,\mathrm{N\,m}$ beschleunigt es mit $\alpha = 20/4 = 5\,\mathrm{rad/s^2}$. Bis zur Drehzahl $3000\,\mathrm{min^{-1}}$ ($\omega = 2\pi \cdot 50\,\mathrm{s^{-1}} = 314\,\mathrm{rad/s}$) dauert es $314/5 = 62{,}8\,\mathrm{s}$.
+:::
+
+Für die Leistung einer Welle gilt $P = M \omega$. Ein Elektromotor mit $15\,\mathrm{kW}$ bei $1450\,\mathrm{min^{-1}}$ ($\omega = 151{,}8\,\mathrm{rad/s}$) liefert das Drehmoment $M = 15\,000/151{,}8 = 98{,}8\,\mathrm{N\,m}$. Ein Getriebe tauscht Drehzahl gegen Drehmoment, die Leistung bleibt (bis auf Verluste) gleich.
+
+## Rotationsenergie
+
+Ein rotierender Körper speichert **Rotationsenergie**:
+
+$$
+E_\mathrm{rot} = \frac{1}{2} J \omega^2
+$$
+
+Das Schwungrad aus dem Beispiel speichert bei $314\,\mathrm{rad/s}$ die Energie $\frac{1}{2} \cdot 4 \cdot 314^2 = 197\,\mathrm{kJ}$. Schwungradspeicher nutzen das, um kurzzeitig Leistung zu puffern.
+
+### Rollende Körper
+
+Ein rollender Körper hat Translations- und Rotationsenergie. Rollt er ohne zu rutschen ($v = \omega r$) eine Höhe $h$ hinab, gilt
+
+$$
+m g h = \frac{1}{2} m v^2 + \frac{1}{2} J \omega^2 \quad\Rightarrow\quad v = \sqrt{\frac{2 g h}{1 + \frac{J}{m r^2}}}
+$$
+
+| Körper | $\frac{J}{m r^2}$ | $v$ nach $h = 1\,\mathrm{m}$ |
+| --- | --- | --- |
+| reibungsfrei gleitender Körper | $0$ | $4{,}43\,\mathrm{m/s}$ |
+| Vollkugel | $\frac{2}{5}$ | $3{,}74\,\mathrm{m/s}$ |
+| Vollzylinder | $\frac{1}{2}$ | $3{,}62\,\mathrm{m/s}$ |
+| Hohlzylinder (Ring) | $1$ | $3{,}13\,\mathrm{m/s}$ |
+
+Masse und Radius kürzen sich heraus: Jede Vollkugel gewinnt das Wettrennen gegen jeden Hohlzylinder, weil bei ihr ein kleinerer Anteil der Energie in die Drehung geht.
+
+## Drehimpuls
+
+Der **Drehimpuls** eines Körpers, der um eine feste Achse rotiert, ist
+
+$$
+L = J \cdot \omega, \qquad \text{allgemein } \vec L = \vec r \times \vec p
+$$
+
+Analog zu $F = \mathrm{d}p/\mathrm{d}t$ gilt $M = \mathrm{d}L/\mathrm{d}t$.
+
+### Drehimpulserhaltung
+
+> Wirkt kein äußeres Drehmoment, bleibt der Drehimpuls eines Systems nach Betrag und Richtung erhalten: $J_1 \omega_1 = J_2 \omega_2$.
+
+:::tip[Beispiel: Pirouette]
+Eine Eiskunstläuferin dreht sich mit ausgestreckten Armen ($J_1 = 3{,}0\,\mathrm{kg\,m^2}$) einmal pro Sekunde. Zieht sie die Arme an ($J_2 = 1{,}0\,\mathrm{kg\,m^2}$), dreht sie sich dreimal pro Sekunde. Die Rotationsenergie steigt dabei von $\frac{1}{2} \cdot 3 \cdot (2\pi)^2 = 59\,\mathrm{J}$ auf $\frac{1}{2} \cdot 1 \cdot (6\pi)^2 = 178\,\mathrm{J}$; die Differenz ist die Arbeit ihrer Armmuskeln.
+:::
+
+Weitere Beispiele: Ein Kreisel oder ein rollendes Fahrrad behält seine Achsrichtung bei (Stabilität). Ein Hubschrauber braucht einen Heckrotor, sonst würde sich der Rumpf entgegen dem Hauptrotor drehen. Planeten bewegen sich in Sonnennähe schneller (zweites Keplersches Gesetz, siehe [Gravitation](/de/natural-sciences/gravitation/)).
+
+## Schwerpunkt
+
+Der **Schwerpunkt** (Massenmittelpunkt) ist der Punkt, in dem man sich die gesamte Masse vereinigt denken kann. Die Gewichtskraft greift dort an:
+
+$$
+x_\mathrm{S} = \frac{\sum m_i x_i}{\sum m_i}, \qquad y_\mathrm{S} = \frac{\sum m_i y_i}{\sum m_i}
+$$
+
+Bei symmetrischen homogenen Körpern liegt er im Symmetriezentrum, er kann aber auch außerhalb des Körpers liegen (Ring, Bumerang). Unterstützt man einen Körper genau unter dem Schwerpunkt, ist er im Gleichgewicht. Beispiel: Der gemeinsame Schwerpunkt von Erde und Mond liegt rund $4670\,\mathrm{km}$ vom Erdmittelpunkt entfernt, also noch innerhalb der Erde.
+
+## Gleichgewicht und Statik
+
+Ein starrer Körper ist im **Gleichgewicht**, wenn er weder verschoben noch gedreht wird. Dazu müssen zwei Bedingungen erfüllt sein:
+
+$$
+\sum \vec F_i = \vec 0 \qquad \text{und} \qquad \sum M_i = 0 \;(\text{um jeden beliebigen Punkt})
+$$
+
+Den Bezugspunkt für die Momente wählt man geschickt dort, wo unbekannte Kräfte angreifen, weil diese dann kein Moment liefern.
+
+:::tip[Beispiel: Träger auf zwei Auflagern]
+Ein Träger der Länge $4\,\mathrm{m}$ liegt an den Enden A und B auf. Er wiegt $200\,\mathrm{N}$ (Angriff in der Mitte), eine Last von $600\,\mathrm{N}$ hängt $1\,\mathrm{m}$ von A entfernt.
+
+- Momente um A: $F_\mathrm{B} \cdot 4 = 200 \cdot 2 + 600 \cdot 1 = 1000\,\mathrm{N\,m}$, also $F_\mathrm{B} = 250\,\mathrm{N}$
+- Kräftegleichgewicht: $F_\mathrm{A} = 800 - 250 = 550\,\mathrm{N}$
+
+Kontrolle mit Momenten um B: $F_\mathrm{A} \cdot 4 = 200 \cdot 2 + 600 \cdot 3 = 2200$, also $F_\mathrm{A} = 550\,\mathrm{N}$.
+:::
+
+### Gleichgewichtsarten und Standfestigkeit
+
+| Gleichgewicht | Verhalten nach kleiner Auslenkung | Schwerpunkt bei Auslenkung | Beispiel |
+| --- | --- | --- | --- |
+| **stabil** | kehrt zurück | wird angehoben | hängendes Pendel |
+| **labil** | entfernt sich weiter | wird abgesenkt | auf der Spitze stehender Stift |
+| **indifferent** | bleibt in neuer Lage | bleibt auf gleicher Höhe | Kugel auf ebenem Tisch |
+
+Ein stehender Körper kippt, sobald das Lot durch den Schwerpunkt die **Standfläche** verlässt. Je tiefer der Schwerpunkt und je größer die Standfläche, desto standfester ist der Körper. Darum haben Kräne Gegengewichte und Rennautos einen niedrigen Schwerpunkt.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- Russell C. Hibbeler: _Technische Mechanik 1: Statik_, Pearson
+- LEIFIphysik: Drehbewegungen, leifiphysik.de

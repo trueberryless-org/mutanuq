@@ -1,0 +1,163 @@
+---
+title: Bussysteme und industrielle Kommunikation
+description: "Feldbusse und Industrieprotokolle im Vergleich: CAN, RS-485 mit Modbus RTU, Modbus TCP, PROFIBUS, PROFINET, EtherCAT, OPC UA, MQTT, 1-Wire und USB."
+sidebar:
+  order: 15
+---
+
+Auf einer Platine verbinden [UART](/de/embedded-programming/usart/), [SPI](/de/embedded-programming/spi/) und [I²C](/de/embedded-programming/i2c/) einzelne Chips über wenige Zentimeter. In einem Auto, einer Maschine oder einer Fabrikhalle müssen dagegen Dutzende bis Tausende Geräte über viele Meter zuverlässig Daten austauschen, oft unter starken elektromagnetischen Störungen und mit festen Zeitgrenzen. Dafür gibt es **Bussysteme**: Alle Teilnehmer teilen sich ein gemeinsames Übertragungsmedium, statt jedes Gerät einzeln zu verdrahten.
+
+Ein **Feldbus** verbindet Sensoren und Aktoren im Feld mit der Steuerung (SPS) und ersetzt die frühere Parallelverdrahtung, bei der jeder Sensor ein eigenes Kabel bis zum Schaltschrank brauchte.
+
+## Grundbegriffe
+
+| Begriff | Bedeutung |
+| ------- | --------- |
+| **Topologie** | Linie/Bus, Stern, Ring, Baum. Feldbusse sind meist Linien mit Abschlusswiderständen an beiden Enden. |
+| **Buszugriff** | Wer darf wann senden? **Master-Slave** bzw. Controller-Peripheral (Abfrage durch den Master), **Token Passing** (Senderecht wird weitergereicht), **CSMA** (jeder sendet, wenn der Bus frei ist, Kollisionen werden erkannt oder aufgelöst), **Zeitschlitze** (TDMA) |
+| **Determinismus** | Die maximale Übertragungszeit ist garantiert. Wichtig für [Echtzeitsysteme](/de/embedded-programming/real-time-systems/). |
+| **Zykluszeit** | Zeit, in der alle Teilnehmer einmal ihre Daten ausgetauscht haben |
+| **Differentielle Übertragung** | Das Signal wird als Spannungsdifferenz zwischen zwei verdrillten Leitungen übertragen. Störungen wirken auf beide Leitungen gleich und heben sich in der Differenz auf (**Gleichtaktunterdrückung**). |
+| **Abschlusswiderstand** | Verhindert Reflexionen am Leitungsende, bei CAN und RS-485 typischerweise $120\,\mathrm{\Omega}$ |
+
+## Serielle Feldbusse
+
+### CAN
+
+Der **Controller Area Network**-Bus (CAN) wurde ab 1983 von Bosch für Fahrzeuge entwickelt und ist in ISO 11898 genormt. Heute findet man ihn in jedem Auto, in Nutzfahrzeugen, in der Medizintechnik und (als **CANopen**) in der Automatisierung.
+
+- Zwei Leitungen **CAN_H** und **CAN_L**, differentiell, Linientopologie mit $120\,\mathrm{\Omega}$ an beiden Enden.
+- Es gibt keine Geräteadressen. Jede Nachricht hat einen **Identifier** (11 Bit bei CAN 2.0A, 29 Bit bei CAN 2.0B), der den Inhalt beschreibt (etwa „Motordrehzahl“). Jeder Knoten entscheidet selbst, welche Nachrichten ihn interessieren (**Multi-Master**, Broadcast).
+- **Bitweise Arbitrierung** (CSMA/CR, _Collision Resolution_): Eine 0 ist **dominant** und überschreibt eine rezessive 1. Senden mehrere Knoten gleichzeitig, lesen alle beim Senden mit. Wer eine 1 sendet und eine 0 liest, hört auf. Der Identifier mit dem kleinsten Wert gewinnt, ohne dass Daten zerstört werden. Damit ist der Identifier gleichzeitig die **Priorität**.
+- Bis zu 8 Datenbytes pro Nachricht (Classical CAN), CRC-Prüfsumme, Bestätigung durch alle Empfänger und automatische Wiederholung bei Fehlern.
+- Bitrate bis $1\,\mathrm{Mbit/s}$ bei ca. 40 m Leitungslänge; bei $125\,\mathrm{kbit/s}$ sind etwa 500 m möglich.
+- **CAN FD** (_Flexible Data Rate_) erlaubt bis zu 64 Datenbytes und eine höhere Bitrate in der Datenphase (typisch 2 bis 5 Mbit/s), **CAN XL** bis zu 2048 Byte.
+
+### RS-485 und Modbus RTU
+
+**RS-485** (TIA/EIA-485) ist nur eine elektrische Schnittstelle: differentielle Übertragung über ein verdrilltes Adernpaar, bis zu 32 Standardlasten am Bus und bis zu ca. 1200 m Leitungslänge (bei niedriger Bitrate). In der Zweidrahtvariante ist die Übertragung halbduplex. RS-485 legt kein Protokoll fest, darauf setzen zum Beispiel Modbus RTU und PROFIBUS DP auf.
+
+**Modbus** wurde 1979 von Modicon entwickelt und ist wegen seiner Einfachheit und offenen Spezifikation bis heute weit verbreitet (Energiezähler, Wechselrichter, Frequenzumrichter, Heizungen). Es arbeitet nach dem **Client-Server-Prinzip** (früher Master-Slave): Nur der Client stellt Anfragen, die Server (Adresse 1 bis 247) antworten.
+
+Die Daten liegen in vier Bereichen:
+
+| Bereich              | Typ           | Zugriff        |
+| -------------------- | ------------- | -------------- |
+| Coils                | 1 Bit         | lesen/schreiben |
+| Discrete Inputs      | 1 Bit         | nur lesen      |
+| Input Registers      | 16 Bit        | nur lesen      |
+| Holding Registers    | 16 Bit        | lesen/schreiben |
+
+Wichtige **Funktionscodes**: `01` Read Coils, `02` Read Discrete Inputs, `03` Read Holding Registers, `04` Read Input Registers, `05` Write Single Coil, `06` Write Single Register, `15` Write Multiple Coils, `16` Write Multiple Registers.
+
+Ein **Modbus-RTU**-Frame besteht aus Serveradresse, Funktionscode, Daten und einer **CRC-16**-Prüfsumme. Frames werden durch eine Sendepause von mindestens 3,5 Zeichenzeiten voneinander getrennt. Beispiel: Der Client liest von Server 1 zwei Holding Register ab Adresse 0:
+
+```text
+01 03 00 00 00 02 C4 0B
+│  │  └─┬─┘ └─┬─┘ └─┬─┘
+│  │    │     │     CRC-16 (Low-Byte zuerst)
+│  │    │     Anzahl Register: 2
+│  │    Startadresse: 0
+│  Funktionscode 03: Read Holding Registers
+Serveradresse 1
+```
+
+### PROFIBUS
+
+**PROFIBUS** (_Process Field Bus_, IEC 61158/61784) wurde ab 1989 in Deutschland entwickelt, vor allem von Siemens. **PROFIBUS DP** (_Decentralized Peripherals_) nutzt RS-485 mit bis zu 12 Mbit/s und verbindet SPS mit dezentralen Ein-/Ausgängen und Antrieben. **PROFIBUS PA** (_Process Automation_) ist für die Prozessindustrie gedacht und kann Geräte über die Busleitung versorgen, auch in explosionsgefährdeten Bereichen. Neue Anlagen setzen heute meist auf PROFINET.
+
+### 1-Wire
+
+**1-Wire** von Dallas Semiconductor (heute Analog Devices) kommt mit **einer Datenleitung** und Masse aus. Jeder Baustein hat eine weltweit eindeutige, ab Werk eingebrannte **64-Bit-ROM-ID**, über die er angesprochen wird. Im **parasitären Betrieb** versorgt sich der Baustein sogar über die Datenleitung. Bekanntestes Beispiel ist der Temperatursensor **DS18B20**. 1-Wire ist langsam (ca. 16 kbit/s im Standardmodus), aber sehr einfach zu verdrahten.
+
+### Weitere Feldbusse
+
+- **LIN** (_Local Interconnect Network_): günstiger Eintrahtbus im Auto für langsame Komfortfunktionen (Fensterheber, Spiegel), ergänzt CAN.
+- **AS-Interface** (AS-i): einfacher Bus für binäre Sensoren und Aktoren in der untersten Feldebene, Daten und Energie über ein gelbes Flachkabel.
+- **IO-Link** (IEC 61131-9): Punkt-zu-Punkt-Verbindung zu intelligenten Sensoren, über die neben dem Messwert auch Parameter und Diagnosedaten übertragen werden.
+- **KNX**: Bus für Gebäudeautomation (Licht, Jalousien, Heizung).
+
+## Industrial Ethernet
+
+Ethernet ist günstig, schnell und überall verfügbar, aber in seiner Standardform nicht deterministisch: Wann ein Paket ankommt, hängt von der Netzlast ab. **Industrial-Ethernet**-Protokolle lösen das auf unterschiedliche Weise.
+
+### Modbus TCP
+
+**Modbus TCP** verpackt das Modbus-Protokoll in TCP/IP-Pakete und verwendet **Port 502**. Die CRC entfällt (TCP sichert die Übertragung), dafür wird ein 7 Byte langer **MBAP-Header** (_Modbus Application Protocol_) mit Transaktionsnummer, Protokollkennung, Länge und Unit Identifier vorangestellt. Modbus TCP ist einfach zu implementieren, aber nicht echtzeitfähig.
+
+### PROFINET
+
+**PROFINET** ist der Ethernet-Nachfolger von PROFIBUS und in Europa sehr verbreitet. Es kennt drei Leistungsstufen:
+
+- **TCP/IP** für Parametrierung und Diagnose (keine Echtzeit),
+- **RT** (_Real Time_): zyklische Prozessdaten direkt auf Ethernet-Ebene ohne IP-Stack, Zykluszeiten im Bereich von Millisekunden,
+- **IRT** (_Isochronous Real Time_): reservierte Zeitschlitze in speziellen Switches, Zykluszeiten unter $1\,\mathrm{ms}$ mit Jitter unter $1\,\mathrm{\mu s}$, etwa für synchronisierte Achsen.
+
+### EtherCAT
+
+**EtherCAT** (_Ethernet for Control Automation Technology_, Beckhoff, IEC 61158) verwendet ein besonderes Prinzip: Ein einziges Ethernet-Telegramm durchläuft alle Teilnehmer nacheinander. Jeder Teilnehmer liest die für ihn bestimmten Daten und fügt seine eigenen ein, während das Telegramm durchläuft (**Processing on the Fly**). Das letzte Gerät schickt das Telegramm zurück zum Master. Dadurch sind Zykluszeiten unter $100\,\mathrm{\mu s}$ möglich, ideal für Motion Control und Robotik.
+
+### Time-Sensitive Networking
+
+**TSN** (IEEE 802.1) erweitert Standard-Ethernet um Zeitsynchronisation, reservierte Bandbreite und Zeitschlitze. Damit sollen Echtzeit- und normaler IT-Datenverkehr künftig über dasselbe Netz laufen.
+
+## OPC UA
+
+**OPC UA** (_Open Platform Communications Unified Architecture_, IEC 62541) ist kein Feldbus, sondern ein herstellerunabhängiger Standard für den Datenaustausch zwischen Maschinen, Steuerungen und IT-Systemen (MES, ERP, Cloud). Er gilt als zentraler Kommunikationsstandard für **Industrie 4.0**.
+
+- **Informationsmodell:** Ein OPC-UA-Server stellt seine Daten nicht nur als Werte, sondern als strukturierte, selbstbeschreibende Objekte bereit (Knoten mit Typ, Einheit, Beziehungen). Ein Client kann den **Adressraum** durchsuchen und versteht, was die Daten bedeuten.
+- **Kommunikation:** Client-Server (lesen, schreiben, Methoden aufrufen, Werte abonnieren) und zusätzlich **Publish-Subscribe** (z. B. über UDP oder MQTT).
+- **Sicherheit** ist eingebaut: Authentifizierung mit Zertifikaten, Signierung und Verschlüsselung.
+- **Companion Specifications** legen Informationsmodelle für ganze Branchen fest (etwa für Spritzgießmaschinen oder Robotik), sodass Maschinen verschiedener Hersteller gleich beschrieben werden.
+- Plattformunabhängig, der Standardport für die binäre TCP-Übertragung ist **4840**.
+
+## MQTT
+
+**MQTT** (OASIS-Standard, Versionen 3.1.1 und 5.0) ist ein schlankes **Publish-Subscribe**-Protokoll über TCP, das besonders im **Internet der Dinge** (IoT) verwendet wird. Es eignet sich für Geräte mit wenig Rechenleistung und für instabile Netzwerke.
+
+- Clients senden und empfangen Nachrichten nie direkt untereinander, sondern über einen zentralen **Broker** (z. B. Mosquitto, HiveMQ, EMQX).
+- Nachrichten werden an **Topics** veröffentlicht, die hierarchisch aufgebaut sind, etwa `halle1/linie2/temperatur`. Ein Abonnent kann Platzhalter verwenden: `+` für genau eine Ebene (`halle1/+/temperatur`), `#` für alle folgenden Ebenen (`halle1/#`).
+- **Quality of Service**: QoS 0 (_at most once_, keine Bestätigung), QoS 1 (_at least once_, Bestätigung, Duplikate möglich), QoS 2 (_exactly once_, vierstufiger Handshake).
+- **Retained Messages**: Der Broker speichert die letzte Nachricht eines Topics und schickt sie neuen Abonnenten sofort.
+- **Last Will**: Eine Nachricht, die der Broker veröffentlicht, wenn ein Client die Verbindung unerwartet verliert.
+- Ports: **1883** (unverschlüsselt) und **8883** (TLS).
+
+Ein ESP32 mit Temperatursensor kann zum Beispiel jede Minute an `haus/wohnzimmer/temperatur` veröffentlichen, eine Visualisierung und eine Datenbank abonnieren dieses Topic. Mehr zu Nachrichtensystemen findest du unter [Kommunikation und Messaging](/de/decentralised-systems/communication-and-messaging/).
+
+## USB
+
+**USB** (_Universal Serial Bus_) ist kein Feldbus, aber die wichtigste Schnittstelle zwischen PC und Peripherie, auch für Mikrocontroller (Programmierung, virtuelle serielle Schnittstelle). USB ist **hostzentriert**: Nur der Host (PC) startet Übertragungen, Geräte antworten. Über Hubs entsteht eine **Baumtopologie** mit bis zu 127 Geräten pro Host-Controller. Geräte melden beim Anstecken über die **Enumeration** ihre Geräteklasse (z. B. HID für Tastaturen, Mass Storage, CDC für virtuelle COM-Ports), sodass das Betriebssystem den passenden Treiber laden kann.
+
+| Version                     | Bezeichnung        | Maximale Bitrate |
+| --------------------------- | ------------------ | ---------------- |
+| USB 1.1                     | Full Speed         | 12 Mbit/s        |
+| USB 2.0                     | High Speed         | 480 Mbit/s       |
+| USB 3.2 Gen 1               | SuperSpeed         | 5 Gbit/s         |
+| USB 3.2 Gen 2               | SuperSpeed+        | 10 Gbit/s        |
+| USB 3.2 Gen 2x2             |                    | 20 Gbit/s        |
+| USB4 (Version 1 / 2)        |                    | 40 / 80 Gbit/s   |
+
+Der ATmega328P hat kein eigenes USB. Auf dem Arduino Uno übernimmt ein zweiter Chip (ATmega16U2) die Umsetzung von USB auf UART.
+
+## Vergleich
+
+| System          | Medium / Schicht          | Topologie         | Zugriff                | Bitrate (typ. max.)   | Echtzeit        | Einsatz |
+| --------------- | ------------------------- | ----------------- | ---------------------- | --------------------- | --------------- | ------- |
+| I²C             | 2 Leitungen, Open Drain   | Bus               | Controller-Target, Adressen | 0,1 bis 1 Mbit/s | nein            | Chips auf einer Platine |
+| SPI             | 4 Leitungen               | Bus mit Chip Select | Controller-Peripheral | über 10 Mbit/s      | nein            | Chips auf einer Platine |
+| 1-Wire          | 1 Leitung + GND           | Bus               | Master, 64-Bit-ID      | 16 kbit/s             | nein            | Temperatursensoren |
+| CAN / CAN FD    | 2 Leitungen, differentiell | Linie            | Multi-Master, bitweise Arbitrierung | 1 Mbit/s / bis 8 Mbit/s | ja (Priorität) | Fahrzeuge, CANopen |
+| RS-485 + Modbus RTU | 2 Leitungen, differentiell | Linie        | Client-Server (Polling) | bis 115,2 kbit/s üblich | bedingt     | Zähler, Umrichter, Gebäude |
+| PROFIBUS DP     | RS-485                    | Linie             | Token + Master-Slave   | 12 Mbit/s             | ja              | Fabrikautomation (älter) |
+| Modbus TCP      | Ethernet, TCP/IP          | Stern             | Client-Server          | 100 Mbit/s            | nein            | einfache Anbindung von Geräten |
+| PROFINET RT/IRT | Ethernet                  | Stern, Linie, Ring | Provider-Consumer     | 100 Mbit/s            | ja (IRT unter 1 ms) | Fabrikautomation |
+| EtherCAT        | Ethernet                  | Linie, Ring       | Master, Processing on the Fly | 100 Mbit/s     | ja (unter 100 µs)   | Motion Control |
+| OPC UA          | TCP/IP, optional UDP/MQTT | beliebig          | Client-Server, Pub-Sub | netzabhängig          | mit TSN         | Maschine zu IT, Industrie 4.0 |
+| MQTT            | TCP/IP                    | Stern (Broker)    | Publish-Subscribe      | netzabhängig          | nein            | IoT, Telemetrie |
+| USB             | 2 Datenleitungen (+ SuperSpeed-Paare) | Baum | Host-zentriert        | 12 Mbit/s bis 80 Gbit/s | nein          | PC-Peripherie |
+
+## Weiterführende Quellen
+
+- [Modbus Organization: Modbus Application Protocol Specification](https://www.modbus.org/specs.php)
+- [OPC Foundation: OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) und [MQTT-Spezifikation (OASIS)](https://mqtt.org/mqtt-specification/)
+- Schnell, Wiedemann: _Bussysteme in der Automatisierungs- und Prozesstechnik_, Springer Vieweg

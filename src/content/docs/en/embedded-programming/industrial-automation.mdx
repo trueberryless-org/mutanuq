@@ -1,0 +1,239 @@
+---
+title: Industrial Automation
+description: "Automation pyramid, PLCs and IEC 61131-3 with Structured Text, open and closed-loop control with P, I, D and PID controllers, Industry 4.0, edge computing and functional safety."
+sidebar:
+  order: 17
+---
+
+**Automation** means that machines and plants carry out processes by themselves without a person having to trigger each step. The controller captures the state of the process via [sensors](/en/embedded-programming/sensors-and-actuators/), processes the information according to a program and acts on the process via actuators. The basics are the same as with a microcontroller, but industry adds special requirements: robustness (temperature, vibration, electromagnetic interference), availability over decades, [real-time capability](/en/embedded-programming/real-time-systems/) and safety for people.
+
+## Automation pyramid
+
+The classic **automation pyramid** divides a company's systems into levels. Towards the top, the amount of data per message increases and the timing requirements become looser; towards the bottom, response times become shorter and the number of devices larger.
+
+| Level | Name | Task | Systems | Time horizon |
+| ----- | ---- | ---- | ------- | ------------ |
+| 4 | **Enterprise level** | planning, orders, staff, accounting | ERP (e.g. SAP) | days to months |
+| 3 | **Plant management level** | production planning and control, order management, quality | MES (_manufacturing execution system_) | hours to minutes |
+| 2 | **Supervisory level** | operating and monitoring, visualisation, alarms, data logging | SCADA, control system, HMI | seconds |
+| 1 | **Control level** | sequence control and closed-loop control of the machines | PLC, industrial PC, controllers | milliseconds |
+| 0 | **Field level** | measuring and actuating | sensors, actuators, drives | micro- to milliseconds |
+
+Between the levels, [bus systems](/en/embedded-programming/bus-systems/) connect the devices: field buses and Industrial Ethernet at the bottom, Ethernet/IP and OPC UA further up. With Industry 4.0, the strict hierarchy is increasingly dissolving: sensors and machines send their data directly to MES or cloud systems, and people speak of **networked automation** rather than a pyramid.
+
+## Programmable logic controller (PLC)
+
+A **PLC** (_programmable logic controller_) is a computer built for industrial use that controls machines and plants. It replaced the formerly common **hard-wired control** (relays and contactors whose logic lies in the wiring): changes only require a new program instead of new wiring.
+
+A PLC consists of a power supply (usually 24 V DC), a CPU, digital and analogue **input and output modules** and communication modules. Well-known manufacturers and systems are Siemens (SIMATIC S7-1200/1500, programmed with TIA Portal), Beckhoff (TwinCAT), Rockwell/Allen-Bradley and the Austrian company B&R (now part of ABB). Many manufacturers use the **CODESYS** development environment. A **soft PLC** runs as real-time software on an industrial PC.
+
+### Cyclic program execution
+
+Unlike an event-driven PC program, a PLC executes its program **cyclically**:
+
+1. **Read inputs:** All inputs are copied at the same time into the **process image of the inputs** (PII).
+2. **Execute the program:** The user program is processed from top to bottom. It only works with the process image, not directly with the terminals.
+3. **Write outputs:** The **process image of the outputs** (PIQ) is transferred to the output terminals.
+4. Internal tasks (communication, diagnostics), then the next cycle begins.
+
+The process image ensures that an input does not change during a cycle and the program sees a consistent state. The **cycle time** is typically 1 to 100 ms. The **response time** to a change of input can be up to **two cycle times**: if an input changes shortly after being read, it is only captured in the next cycle and output at the end of that cycle. Cycle time monitoring (watchdog) stops the PLC if a cycle takes too long.
+
+### PLC and microcontroller
+
+| Aspect | PLC | Microcontroller |
+| ------ | --- | --------------- |
+| Hardware | robust, modular, certified, 24 V levels | circuit board, usually 3.3 V or 5 V, must be developed yourself |
+| Programming | IEC 61131-3, intended for technicians without a computer science degree | C, C++, assembler |
+| Lifetime, spare parts | 10 to 20 years and more | depends on the product |
+| Cost per unit | high | very low |
+| Use | individual machines and plants | series products (household appliances, sensors, vehicles) |
+
+## IEC 61131-3
+
+The standard **IEC 61131-3** defines the programming languages for PLCs across manufacturers. The current fourth edition was published in 2025.
+
+| Language | Type | Description |
+| -------- | ---- | ----------- |
+| **Ladder Diagram** (LD) | graphical | logic as a circuit diagram with contacts and coils, based on relay circuits, especially common in the USA |
+| **Function Block Diagram** (FBD) | graphical | logic with blocks (AND, OR, timer, counter) that are connected, similar to logic gates |
+| **Structured Text** (ST) | textual | high-level language similar to Pascal with `IF`, `CASE`, `FOR`, `WHILE`; good for calculations and complex logic |
+| **Instruction List** (IL) | textual | assembler-like; marked as deprecated since 2013 and removed in the 2025 edition |
+| **Sequential Function Chart** (SFC) | graphical | divides sequences into **steps** and **transitions** (conditions for moving on), similar to a state machine |
+
+Programs consist of **program organisation units** (POUs):
+
+- **Function** (`FUNCTION`): without memory; the same inputs always give the same result (e.g. `ADD`, `SQRT`).
+- **Function block** (`FUNCTION_BLOCK`): with memory (internal variables), used as an instance, for example timers and counters.
+- **Program** (`PROGRAM`): top level, called by a cyclic task.
+
+Important standard function blocks are `TON` (on-delay), `TOF` (off-delay), `TP` (pulse), `CTU`/`CTD` (up/down counters), `R_TRIG`/`F_TRIG` (rising/falling edge) and `SR` and `RS` (flip-flops with dominant set or reset).
+
+### Example: conveyor belt with start-up warning
+
+A conveyor belt is switched on with a start button and off with a stop button. Before the motor starts, a horn sounds for three seconds. An emergency stop circuit switches everything off.
+
+The stop button is a **normally closed** contact (closed at rest, input `TRUE`). If its cable breaks, the input becomes `FALSE` and the plant stops. This principle is called **wire-break safety**: switch-off signals are always implemented with normally closed contacts.
+
+The **latching circuit** (self-holding) in ladder diagram form:
+
+```text
+   StartButton    StopButton   EmergencyOk      Request
+ |----| |-----+-----| |-----------| |--------------( )----|
+ |            |
+ |  Request   |
+ |----| |-----+
+```
+
+The same program in Structured Text:
+
+```text
+PROGRAM Conveyor
+VAR
+    StartButton  AT %IX0.0 : BOOL;   (* normally open *)
+    StopButton   AT %IX0.1 : BOOL;   (* normally closed: TRUE = not pressed *)
+    EmergencyOk  AT %IX0.2 : BOOL;   (* emergency stop circuit closed *)
+    Motor        AT %QX0.0 : BOOL;
+    Horn         AT %QX0.1 : BOOL;
+    Request      : BOOL;
+    StartDelay   : TON;              (* instance of the timer block *)
+END_VAR
+
+(* latching with dominant off *)
+Request := (StartButton OR Request) AND StopButton AND EmergencyOk;
+
+(* on-delay of 3 seconds *)
+StartDelay(IN := Request, PT := T#3S);
+
+Horn  := Request AND NOT StartDelay.Q;   (* sound the horn while the timer runs *)
+Motor := StartDelay.Q;                   (* then the motor runs *)
+END_PROGRAM
+```
+
+`%IX0.0` is the address of the first digital input, `%QX0.0` that of the first output. Because the PLC executes the program cyclically, the line with `Request` is re-evaluated in every cycle: once set, `Request` holds itself via its own contact until stop or emergency stop breaks the condition.
+
+## Open-loop and closed-loop control
+
+The terms are defined in IEC 60050-351:
+
+- **Open-loop control:** An input variable influences an output variable in an **open chain of action**. Whether the goal has been reached is not measured. Example: a heating system runs at a fixed output depending on the outside temperature. If someone opens the window, the controller does not notice.
+- **Closed-loop control:** The variable to be influenced is continuously **measured**, compared with the setpoint and adjusted if there is a deviation. This creates a **closed control loop**. Example: a thermostat measures the room temperature and heats when it drops below the setpoint.
+
+Variables in the control loop:
+
+| Variable | Symbol | Example room heating |
+| -------- | ------ | -------------------- |
+| **Reference variable** (setpoint) | $w$ | desired temperature $21\,\mathrm{°C}$ |
+| **Controlled variable** (actual value) | $x$ | measured room temperature |
+| **Control error** | $e = w - x$ | $21\,\mathrm{°C} - 19.5\,\mathrm{°C} = 1.5\,\mathrm{K}$ |
+| **Manipulated variable** | $y$ | valve opening in % |
+| **Disturbance** | $z$ | open window, sunlight |
+| **Controlled system** (plant) | | room with radiator |
+| **Controller** | | calculates $y$ from $e$ |
+
+### On-off controller
+
+The simplest controller only knows **on** and **off**: below a lower threshold it switches on, above an upper one it switches off. The **hysteresis** between the thresholds prevents constant switching back and forth. The actual value always oscillates somewhat around the setpoint. Irons, fridges and simple thermostats work like this.
+
+### P, I and D components
+
+Continuous controllers calculate a manipulated variable that can take any value. They are composed of three components:
+
+| Component | Equation | Effect |
+| --------- | -------- | ------ |
+| **P** (proportional) | $y = K_P \cdot e$ | reacts immediately and proportionally to the error. On its own it usually leaves a **steady-state error**, because without an error no manipulated variable is produced. A large $K_P$ makes it faster but more prone to oscillation. |
+| **I** (integral) | $y = K_I \int e \, \mathrm{d}t$ | sums up the error over time and keeps growing as long as an error exists. It **eliminates the steady-state error**, but makes the control loop slower and tends to overshoot. |
+| **D** (derivative) | $y = K_D \cdot \frac{\mathrm{d}e}{\mathrm{d}t}$ | reacts to the **rate of change** of the error and therefore acts anticipatively and with damping. Not usable on its own (it is zero for a constant error), sensitive to measurement noise. |
+
+Combined, they give the **PID controller**:
+
+$$
+y(t) = K_P \cdot e(t) + K_I \int_0^t e(\tau) \, \mathrm{d}\tau + K_D \cdot \frac{\mathrm{d}e(t)}{\mathrm{d}t}
+$$
+
+It is often written with the **integral time** $T_N$ and the **derivative time** $T_V$ as $y = K_P \left(e + \frac{1}{T_N} \int e \, \mathrm{d}t + T_V \frac{\mathrm{d}e}{\mathrm{d}t}\right)$, i.e. $K_I = K_P / T_N$ and $K_D = K_P \cdot T_V$.
+
+In practice, the **PI controller** is the most common (e.g. temperature, speed, flow). The D component is added for sluggish systems that need to be corrected quickly. The parameters are determined by experiment or with tuning rules such as the **Ziegler-Nichols** method.
+
+### Digital PID controller
+
+A PLC or microcontroller calculates the controller at fixed intervals, the **sampling time** $T_s$. The integral becomes a sum and the derivative a difference of two values:
+
+$$
+y_k = K_P \cdot e_k + K_I \cdot T_s \sum_{i=0}^{k} e_i + K_D \cdot \frac{e_k - e_{k-1}}{T_s}
+$$
+
+```c
+typedef struct {
+    float kp, ki, kd;     // controller parameters
+    float ts;             // sampling time in s
+    float integral;
+    float last_error;
+    float out_min, out_max;
+} Pid;
+
+float pid_update(Pid *pid, float setpoint, float actual) {
+    float error = setpoint - actual;
+    float derivative = (error - pid->last_error) / pid->ts;
+    pid->last_error = error;
+
+    float new_integral = pid->integral + error * pid->ts;
+    float output = pid->kp * error + pid->ki * new_integral + pid->kd * derivative;
+
+    // limit the output; only keep integrating if not limited (anti-windup)
+    if (output > pid->out_max) {
+        output = pid->out_max;
+    } else if (output < pid->out_min) {
+        output = pid->out_min;
+    } else {
+        pid->integral = new_integral;
+    }
+    return output;
+}
+```
+
+The function must be called at exactly equal intervals, for example from a timer interrupt or a periodic RTOS task. The limiting with **anti-windup** prevents the I component from growing further when the actuator is already at its limit (valve 100 % open). Otherwise the controller would overshoot for a long time after reaching the setpoint.
+
+## Industry 4.0
+
+The term **Industry 4.0** was coined at the Hannover Messe in 2011 and refers to the fourth industrial revolution:
+
+| Revolution | Time | Characteristics |
+| ---------- | ---- | --------------- |
+| 1st | from the end of the 18th century | mechanisation with water and steam power |
+| 2nd | from the end of the 19th century | mass production with electrical energy and the assembly line |
+| 3rd | from the 1970s | automation with electronics, IT and PLCs |
+| 4th | from the 2010s | networking of machines, products and people, **cyber-physical systems** |
+
+A **cyber-physical system** (CPS) combines physical components (machine, sensors, actuators) with software and network communication. The goals are flexible manufacturing down to **batch size 1** (individual products at mass production costs), higher efficiency and new business models.
+
+Important concepts:
+
+- **IIoT** (_Industrial Internet of Things_): machines, sensors and workpieces are networked and continuously deliver data, for example via [OPC UA or MQTT](/en/embedded-programming/bus-systems/#opc-ua).
+- **Edge computing:** Data is pre-processed close to the machine, for example on an industrial PC or gateway. This reduces latency and data volume, works without an internet connection and keeps sensitive data in the plant. Only condensed results go to the [cloud](/en/decentralised-systems/cloud-computing/), where large computing and storage capacity is available for long-term analyses and AI models.
+- **Digital twin:** a virtual representation of a real machine or plant that is continuously updated with real data. It allows changes to be simulated before they are implemented (**virtual commissioning**) or the condition of the machine to be monitored.
+- **Predictive maintenance:** From measurements such as vibration, temperature or current consumption, a model recognises when a component is likely to fail. Maintenance is then carried out before it fails, but not unnecessarily early.
+- **RAMI 4.0** (Reference Architecture Model Industry 4.0) and the **Asset Administration Shell** describe uniformly how components provide their data and functions digitally.
+
+Networking brings new risks: plants that used to be isolated can now be reached over the network. The **IEC 62443** series of standards describes IT security for industrial automation systems (OT security), for example by dividing the network into zones.
+
+## Functional safety
+
+**Functional safety** means that a plant enters a safe state even when faults occur (component failure, software error, operating error), for example by switching off a motor when a protective door is opened. The basic standard is **IEC 61508** (in Europe EN 61508). It describes a safety life cycle from hazard analysis through design and testing to decommissioning.
+
+How reliable a safety function must be results from a **risk assessment** (severity of injury, frequency of exposure, possibility of avoidance). The result is a **safety integrity level** from **SIL 1** (lowest) to **SIL 4** (highest requirement). Maximum permissible failure probabilities are defined for each SIL.
+
+For machines, derived standards are used: **IEC 62061** (with SIL) and **EN ISO 13849** (with **performance level** PL a to PL e). In Europe, machines must comply with the Machinery Directive 2006/42/EC, which will be replaced by the **Machinery Regulation (EU) 2023/1230** from **20 January 2027**.
+
+Typical measures:
+
+- **Emergency stop** (EN ISO 13850): a red mushroom button on a yellow background with positively opening contacts that latches.
+- **Safety PLC** and safety relays: redundant channels that monitor each other; safety functions are executed separately from the normal program.
+- **Redundancy** and **diversity**: implement functions twice and with different technology so that a single fault does not lead to failure.
+- **Closed-circuit principle** and wire-break safety, as in the conveyor example above.
+- Protective doors with safety switches, light curtains, two-hand controls.
+
+## Further reading
+
+- Frank D. Petruzella: _Programmable Logic Controllers_, McGraw-Hill
+- [PLCopen: IEC 61131-3](https://plcopen.org/iec-61131-3) and [Plattform Industrie 4.0](https://www.plattform-i40.de/)
+- Karl J. Åström, Richard M. Murray: [_Feedback Systems_](https://fbswiki.org/), Princeton University Press

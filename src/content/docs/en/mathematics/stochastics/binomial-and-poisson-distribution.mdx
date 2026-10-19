@@ -1,0 +1,231 @@
+---
+title: Binomial and Poisson Distribution
+description: "Bernoulli trials, binomial distribution with expected value and variance, Poisson distribution for rare events and approximation of the binomial distribution."
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+The binomial distribution and the Poisson distribution are the most important **discrete** distributions. The binomial distribution counts successes in a fixed number of independent trials; the Poisson distribution counts rare events in a period or region, such as calls per hour or bit errors per data block.
+
+## Bernoulli trial
+
+A **Bernoulli trial** has exactly two outcomes: **success** with probability $p$ and failure with probability $q = 1 - p$. Examples: component defective or not, packet delivered or lost, coin toss.
+
+A **Bernoulli process** of length $n$ consists of $n$ repetitions where
+
+- the trials are **independent** of each other and
+- the probability of success $p$ stays **the same** in every trial.
+
+Drawing *with* replacement satisfies these conditions. Drawing without replacement does not; however, if the sample is small compared with the population (rule of thumb: less than 5 %), the binomial distribution is still used as an approximation.
+
+## Binomial distribution
+
+The random variable $X$ = "number of successes in a Bernoulli process of length $n$" is **binomially distributed** with parameters $n$ and $p$, written $X \sim B(n; p)$:
+
+$$
+P(X = k) = \binom{n}{k} \cdot p^k \cdot (1 - p)^{n - k} \qquad k = 0, 1, \ldots, n
+$$
+
+The formula has two parts: $p^k (1 - p)^{n-k}$ is the probability of a single path with $k$ successes and $n - k$ failures, and the [binomial coefficient](/en/mathematics/stochastics/probability/#combinatorics) $\binom{n}{k}$ counts how many such paths there are.
+
+### Expected value and variance
+
+$$
+E(X) = \mu = n \cdot p \qquad V(X) = \sigma^2 = n \cdot p \cdot (1 - p) \qquad \sigma = \sqrt{n p (1 - p)}
+$$
+
+:::tip[Example: Quality control]
+A machine produces 10 % rejects. 10 parts are taken at random, $X \sim B(10; 0.1)$.
+
+Exactly two defective parts:
+
+$$
+P(X = 2) = \binom{10}{2} \cdot 0.1^2 \cdot 0.9^8 = 45 \cdot 0.01 \cdot 0.4305 \approx 0.1937
+$$
+
+At most two defective parts:
+
+$$
+P(X \leq 2) = P(X = 0) + P(X = 1) + P(X = 2) \approx 0.3487 + 0.3874 + 0.1937 = 0.9298
+$$
+
+At least one defective part (via the complementary event):
+
+$$
+P(X \geq 1) = 1 - P(X = 0) = 1 - 0.9^{10} \approx 0.6513
+$$
+
+Expected value and standard deviation: $\mu = 10 \cdot 0.1 = 1$, $\;\sigma = \sqrt{10 \cdot 0.1 \cdot 0.9} \approx 0.949$.
+:::
+
+:::tip[Typical wordings]
+| Wording | Calculation |
+| ------- | ----------- |
+| exactly $k$ | $P(X = k)$ |
+| at most $k$ | $P(X \leq k)$ |
+| fewer than $k$ | $P(X \leq k - 1)$ |
+| at least $k$ | $P(X \geq k) = 1 - P(X \leq k - 1)$ |
+| more than $k$ | $P(X > k) = 1 - P(X \leq k)$ |
+| between $a$ and $b$ (inclusive) | $P(a \leq X \leq b) = P(X \leq b) - P(X \leq a - 1)$ |
+:::
+
+### Minimum number of trials
+
+A common task: how many times must an experiment be carried out so that, with a probability of at least $\alpha$, there is at least one success?
+
+$$
+1 - (1 - p)^n \geq \alpha \quad\Rightarrow\quad n \geq \frac{\ln(1 - \alpha)}{\ln(1 - p)}
+$$
+
+:::tip[Example]
+A packet is lost with probability $0.2$. How many independent copies must be sent so that at least one arrives with a probability of at least 99 %? Here "success" means arriving, $p = 0.8$:
+
+$$
+n \geq \frac{\ln 0.01}{\ln 0.2} \approx 2.86 \quad\Rightarrow\quad n = 3
+$$
+
+Dividing by the negative logarithm $\ln(1 - p)$ reverses the inequality sign.
+:::
+
+### Shape of the distribution
+
+For $p = 0.5$ the binomial distribution is symmetric, for $p < 0.5$ right-skewed, for $p > 0.5$ left-skewed. The larger $n$, the more the bar chart resembles a bell curve; this is why the binomial distribution can be [approximated by the normal distribution](/en/mathematics/stochastics/normal-distribution/#approximating-the-binomial-distribution) for large $n$.
+
+## Poisson distribution
+
+The **Poisson distribution** describes the number of events that occur independently of each other at a constant mean rate in a fixed interval (time, length, area), for example calls to a hotline per hour, requests to a server per second, typos per page or radioactive decays per second. With the mean number $\lambda$ per interval, written $X \sim P(\lambda)$:
+
+$$
+P(X = k) = \frac{\lambda^k}{k!} \cdot e^{-\lambda} \qquad k = 0, 1, 2, \ldots
+$$
+
+$$
+E(X) = \lambda \qquad V(X) = \lambda \qquad \sigma = \sqrt{\lambda}
+$$
+
+Expected value and variance are equal. The number $k$ has no upper limit.
+
+:::tip[Example: Help desk]
+A help desk receives on average 2 calls per hour ($\lambda = 2$).
+
+$$
+P(X = 0) = e^{-2} \approx 0.1353 \qquad P(X = 3) = \frac{2^3}{3!} \cdot e^{-2} \approx 0.1804
+$$
+
+More than 4 calls in one hour:
+
+$$
+P(X > 4) = 1 - P(X \leq 4) \approx 1 - (0.1353 + 0.2707 + 0.2707 + 0.1804 + 0.0902) = 1 - 0.9473 = 0.0527
+$$
+
+For half an hour, $\lambda = 1$: the rate is scaled in proportion to the length of the interval.
+:::
+
+### Poisson as an approximation of the binomial distribution
+
+If $n$ is large and $p$ is small, the binomial distribution $B(n; p)$ is almost equal to the Poisson distribution with $\lambda = n \cdot p$. Usual rule of thumb: $n \geq 50$ and $p \leq 0.1$ (some books: $n p \leq 10$). This is why the Poisson distribution is also called the **distribution of rare events**.
+
+:::tip[Example]
+A component is faulty with probability $1\,\%$. Exactly one faulty component among 200:
+
+$$
+\text{binomial: } \binom{200}{1} \cdot 0.01 \cdot 0.99^{199} \approx 0.27067 \qquad \text{Poisson with } \lambda = 2\text{: } 2 \cdot e^{-2} \approx 0.27067
+$$
+:::
+
+## Calculation in code
+
+Calculators and GeoGebra have built-in functions (`BinomialDist`, `Poisson`). In code you calculate the binomial coefficient step by step so that no huge factorials arise:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Globalization;
+
+// binomial coefficient step by step, without large factorials
+static double Choose(int n, int k)
+{
+    double result = 1;
+    for (int i = 1; i <= k; i++) result = result * (n - k + i) / i;
+    return result;
+}
+
+static double BinomialPmf(int n, double p, int k) =>
+    Choose(n, k) * Math.Pow(p, k) * Math.Pow(1 - p, n - k);
+
+static double PoissonPmf(double lambda, int k)
+{
+    double result = Math.Exp(-lambda);
+    for (int i = 1; i <= k; i++) result *= lambda / i;
+    return result;
+}
+
+var inv = CultureInfo.InvariantCulture;
+double cumulative = 0;
+for (int k = 0; k <= 3; k++)
+{
+    double pk = BinomialPmf(10, 0.1, k);
+    cumulative += pk;
+    Console.WriteLine(string.Create(inv, $"k = {k}: P(X = k) = {pk:F4}, P(X <= k) = {cumulative:F4}"));
+}
+Console.WriteLine(string.Create(inv, $"Poisson: P(X = 3) = {PoissonPmf(2, 3):F4}"));
+// k = 0: P(X = k) = 0.3487, P(X <= k) = 0.3487
+// k = 1: P(X = k) = 0.3874, P(X <= k) = 0.7361
+// k = 2: P(X = k) = 0.1937, P(X <= k) = 0.9298
+// k = 3: P(X = k) = 0.0574, P(X <= k) = 0.9872
+// Poisson: P(X = 3) = 0.1804
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+/// binomial coefficient step by step, without large factorials
+fn choose(n: u32, k: u32) -> f64 {
+    (1..=k).fold(1.0, |acc, i| acc * f64::from(n - k + i) / f64::from(i))
+}
+
+fn binomial_pmf(n: u32, p: f64, k: u32) -> f64 {
+    choose(n, k) * p.powi(k as i32) * (1.0 - p).powi((n - k) as i32)
+}
+
+fn poisson_pmf(lambda: f64, k: u32) -> f64 {
+    (1..=k).fold((-lambda).exp(), |acc, i| acc * lambda / f64::from(i))
+}
+
+fn main() {
+    let mut cumulative = 0.0;
+    for k in 0..=3 {
+        let pk = binomial_pmf(10, 0.1, k);
+        cumulative += pk;
+        println!("k = {k}: P(X = k) = {pk:.4}, P(X <= k) = {cumulative:.4}");
+    }
+    println!("Poisson: P(X = 3) = {:.4}", poisson_pmf(2.0, 3));
+    // k = 0: P(X = k) = 0.3487, P(X <= k) = 0.3487
+    // k = 1: P(X = k) = 0.3874, P(X <= k) = 0.7361
+    // k = 2: P(X = k) = 0.1937, P(X <= k) = 0.9298
+    // k = 3: P(X = k) = 0.0574, P(X <= k) = 0.9872
+    // Poisson: P(X = 3) = 0.1804
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Overview
+
+| | Binomial distribution $B(n; p)$ | Poisson distribution $P(\lambda)$ |
+| --- | --- | --- |
+| situation | $n$ independent trials, probability of success $p$ | rare events in an interval with mean number $\lambda$ |
+| values | $0, 1, \ldots, n$ | $0, 1, 2, \ldots$ (unbounded) |
+| $P(X = k)$ | $\binom{n}{k} p^k (1 - p)^{n-k}$ | $\frac{\lambda^k}{k!} e^{-\lambda}$ |
+| $E(X)$ | $n p$ | $\lambda$ |
+| $V(X)$ | $n p (1 - p)$ | $\lambda$ |
+
+## Further reading
+
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Binomial Distribution](https://www.itl.nist.gov/div898/handbook/eda/section3/eda366i.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods: Poisson Distribution](https://www.itl.nist.gov/div898/handbook/eda/section3/eda366j.htm)

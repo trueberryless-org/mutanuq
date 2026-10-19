@@ -1,0 +1,108 @@
+---
+title: Referenzmodelle
+description: Die sieben Schichten des OSI-Modells und das TCP/IP-Modell mit PDUs, Geräten und Protokollen je Schicht, Kapselung und Entkapselung sowie ein Vergleich beider Modelle.
+sidebar:
+  order: 2
+---
+
+Netzwerkkommunikation ist zu komplex, um sie als ein einziges Problem zu lösen. **Schichtenmodelle** zerlegen sie in Teilaufgaben, die aufeinander aufbauen. Jede Schicht bietet der darüberliegenden einen Dienst an und nutzt dafür den Dienst der darunterliegenden. Das hat drei Vorteile: Protokolle einer Schicht lassen sich austauschen, ohne die anderen zu ändern (WLAN statt Kabel, IPv6 statt IPv4), Hersteller können unabhängig voneinander Produkte für einzelne Schichten bauen, und bei der Fehlersuche kann man Schicht für Schicht vorgehen.
+
+## Das OSI-Modell
+
+Das **OSI-Referenzmodell** (_Open Systems Interconnection_) wurde 1984 von der ISO als ISO 7498 veröffentlicht (heute ISO/IEC 7498-1). Die OSI-Protokolle selbst haben sich nicht durchgesetzt, das Modell ist aber das Standardvokabular, um über Netzwerke zu sprechen: „ein Layer-2-Problem“, „ein Layer-3-Switch“.
+
+| Nr. | Schicht | Aufgabe | PDU | Geräte | Beispiele |
+| --- | --- | --- | --- | --- | --- |
+| 7 | **Anwendungsschicht** (_Application_) | Schnittstelle zu Netzwerkanwendungen | Daten | Proxy, Next-Generation-Firewall | HTTP, DNS, SMTP, FTP, SSH, DHCP |
+| 6 | **Darstellungsschicht** (_Presentation_) | Datenformat, Zeichenkodierung, Kompression, Verschlüsselung | Daten | | TLS (teilweise), JPEG, UTF-8, ASN.1 |
+| 5 | **Sitzungsschicht** (_Session_, Kommunikationssteuerung) | Auf- und Abbau von Sitzungen, Synchronisation | Daten | | RPC, NetBIOS, SMB-Sitzungen |
+| 4 | **Transportschicht** (_Transport_) | Ende-zu-Ende-Verbindung zwischen Prozessen, Ports, Zuverlässigkeit, Flusskontrolle | Segment (TCP), Datagramm (UDP) | Firewall (Portfilter) | TCP, UDP |
+| 3 | **Vermittlungsschicht** (_Network_) | logische Adressierung, Wegwahl zwischen Netzen | Paket | Router, Layer-3-Switch | IPv4, IPv6, ICMP, OSPF |
+| 2 | **Sicherungsschicht** (_Data Link_) | Zugriff auf das Medium, physische Adressierung, Fehlererkennung im lokalen Netz | Frame (Rahmen) | Switch, Bridge, NIC, AP | Ethernet (802.3), WLAN (802.11), PPP, ARP |
+| 1 | **Bitübertragungsschicht** (_Physical_) | Übertragung von Bits als elektrische, optische oder Funksignale | Bit | Hub, Repeater, Kabel, Stecker, Modem | 1000BASE-T, Leitungscodes, Pinbelegung |
+
+Die Schichten 5 bis 7 werden oft als **anwendungsorientierte**, die Schichten 1 bis 4 als **transportorientierte** Schichten zusammengefasst.
+
+:::tip[Merksatz]
+Von oben nach unten: „**A**lle **d**eutschen **S**tudenten **t**rinken **v**erschiedene **S**orten **B**ier“ (Anwendung, Darstellung, Sitzung, Transport, Vermittlung, Sicherung, Bitübertragung). Englisch von unten nach oben: „**P**lease **D**o **N**ot **T**hrow **S**ausage **P**izza **A**way“.
+:::
+
+### Teilschichten der Sicherungsschicht
+
+IEEE teilt Schicht 2 in zwei Teilschichten:
+
+- **LLC** (_Logical Link Control_, IEEE 802.2): Schnittstelle zur Vermittlungsschicht, kennzeichnet, welches Schicht-3-Protokoll transportiert wird.
+- **MAC** (_Media Access Control_): Zugriff auf das Medium (CSMA/CD bei Ethernet, CSMA/CA bei WLAN), Adressierung mit MAC-Adressen, Rahmenbildung und Prüfsumme. Dieser Teil ist für jede Medienart verschieden.
+
+### Wichtige Grundbegriffe
+
+- Eine **PDU** (_Protocol Data Unit_) ist die Dateneinheit einer Schicht: Header (Steuerinformation) plus Nutzdaten (_Payload_, **SDU**, _Service Data Unit_).
+- **Horizontale Kommunikation**: Jede Schicht kommuniziert logisch mit der gleichen Schicht beim Partner, über ein gemeinsames Protokoll. Der TCP-Teil des Senders spricht mit dem TCP-Teil des Empfängers.
+- **Vertikale Kommunikation**: Physisch werden Daten nur innerhalb eines Geräts zwischen benachbarten Schichten übergeben und erst auf Schicht 1 wirklich übertragen.
+
+## Das TCP/IP-Modell
+
+Das **TCP/IP-Modell** (auch DoD-Modell oder Internetmodell) entstand aus der Entwicklung des ARPANET und beschreibt die Protokolle, die im Internet tatsächlich verwendet werden. RFC 1122 definiert vier Schichten:
+
+| TCP/IP-Schicht | entspricht OSI | Protokolle |
+| --- | --- | --- |
+| **Anwendung** (_Application_) | 5, 6, 7 | HTTP, DNS, DHCP, SMTP, IMAP, SSH, FTP, SNMP, NTP |
+| **Transport** (_Transport_) | 4 | TCP, UDP, (QUIC über UDP) |
+| **Internet** (_Internet_) | 3 | IPv4, IPv6, ICMP, ICMPv6, IPsec |
+| **Netzzugang** (_Link_, _Network Access_) | 1, 2 | Ethernet, WLAN, PPP, ARP |
+
+Viele Lehrbücher (Tanenbaum, Kurose/Ross) verwenden ein **hybrides Fünf-Schichten-Modell**, in dem die Netzzugangsschicht in Bitübertragung und Sicherung aufgeteilt ist. In der Praxis ist dieses Modell das nützlichste: Die Begriffe der Schichten 1 bis 4 stammen aus OSI, die Protokolle aus TCP/IP.
+
+:::note[Grenzfälle]
+Nicht jedes Protokoll lässt sich eindeutig einer Schicht zuordnen. **ARP** verbindet Schicht 2 und 3, **OSPF** ist ein Routingprotokoll, das direkt in IP transportiert wird, aber Schicht-3-Informationen austauscht, und **TLS** sitzt zwischen Transport und Anwendung. Modelle sind Denkwerkzeuge, keine Naturgesetze.
+:::
+
+## Kapselung und Entkapselung
+
+Beim Senden gibt jede Schicht ihre Daten nach unten weiter, und die darunterliegende Schicht fügt ihren eigenen Header hinzu. Diesen Vorgang nennt man **Kapselung** (_Encapsulation_). Schicht 2 hängt zusätzlich einen **Trailer** mit der Prüfsumme (FCS) an.
+
+```text
+Anwendung     [                 HTTP-Daten                 ]
+Transport     [TCP-Header][          HTTP-Daten            ]   Segment
+Internet      [IP-Header][TCP-Header][     HTTP-Daten      ]   Paket
+Netzzugang    [Eth-Header][IP-Header][TCP-Header][Daten][FCS]  Frame
+Physisch      0110100101010001110101...                         Bits
+```
+
+Beim Empfänger läuft der Vorgang umgekehrt: Jede Schicht wertet ihren Header aus, entfernt ihn und gibt den Inhalt an die richtige darüberliegende Schicht weiter (**Entkapselung**). Woher die Schicht weiß, wohin die Daten gehören, steht im Header: Das Feld **EtherType** im Ethernet-Header sagt, ob IPv4 (0x0800) oder IPv6 (0x86DD) folgt, das Feld **Protocol** im IPv4-Header, ob TCP (6) oder UDP (17) folgt, und die **Zielportnummer** im TCP-Header, welche Anwendung die Daten bekommt.
+
+Unterwegs entkapselt ein **Switch** nur bis Schicht 2 und schaut auf die Ziel-MAC-Adresse. Ein **Router** entkapselt bis Schicht 3, sucht die Route, baut einen neuen Schicht-2-Header für das nächste Teilstück und kapselt wieder ein. Deshalb ändern sich die MAC-Adressen bei jedem Router, die IP-Adressen bleiben von Quelle bis Ziel gleich (außer bei [NAT](/de/networking/nat-and-acl/)).
+
+### Overhead berechnen
+
+Jeder Header kostet Bandbreite. Bei einem vollen Ethernet-Frame mit TCP/IPv4 (ohne Optionen):
+
+| Bestandteil | Bytes |
+| --- | --- |
+| Nutzdaten (TCP-Payload, **MSS**) | 1460 |
+| TCP-Header | 20 |
+| IPv4-Header | 20 |
+| = IP-Paket (**MTU**) | 1500 |
+| Ethernet-Header (Ziel-MAC, Quell-MAC, EtherType) und FCS | 14 + 4 |
+| Präambel und SFD | 8 |
+| Interframe Gap | 12 |
+| = belegte Zeit auf der Leitung | 1538 |
+
+Die Effizienz ist damit $1460 / 1538 \approx 94{,}9\,\%$. Über eine Gigabit-Leitung lassen sich also höchstens etwa 949 Mbit/s Nutzdaten übertragen. Bei kleinen Paketen, etwa bei VoIP mit 20 bis 160 Byte Nutzdaten, ist der Overhead-Anteil viel größer.
+
+## Vergleich der Modelle
+
+| Merkmal | OSI | TCP/IP |
+| --- | --- | --- |
+| Schichten | 7 | 4 (oder hybrid 5) |
+| Entstehung | zuerst das Modell, dann die Protokolle (ISO, 1984) | zuerst die Protokolle, dann das Modell (ARPANET, 1970er) |
+| Verwendung | Vokabular, Lehre, Fehlersuche | Grundlage des Internets |
+| Schichten 5 bis 7 | getrennt | zu einer Anwendungsschicht zusammengefasst |
+| Schichten 1 und 2 | getrennt und genau beschrieben | nur „Netzzugang“, Details überlässt TCP/IP IEEE und anderen |
+| Transport | verbindungsorientiert und verbindungslos | TCP (verbindungsorientiert) und UDP (verbindungslos) |
+
+## Weiterführende Quellen
+
+- [RFC 1122: Requirements for Internet Hosts, Communication Layers](https://www.rfc-editor.org/rfc/rfc1122)
+- ISO/IEC 7498-1:1994, _Information technology: Open Systems Interconnection, Basic Reference Model_
+- Andrew S. Tanenbaum, Nick Feamster, David J. Wetherall: _Computer Networks_, 6. Auflage, Pearson 2021, Kapitel 1

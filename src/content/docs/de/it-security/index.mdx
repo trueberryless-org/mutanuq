@@ -1,0 +1,42 @@
+---
+title: IT-Sicherheit
+description: Schutzziele, Bedrohungen, Kryptografie, PKI, Authentifizierung, Web- und Netzwerksicherheit, Härtung, Incident Response, ISMS und rechtliche Grundlagen.
+sidebar:
+  label: Überblick
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+IT-Sicherheit schützt Informationen und IT-Systeme vor Angriffen, Fehlern und Ausfällen. An der HTL für Informationstechnologie ist sie in vielen Stundentafeln ein eigener Pflichtgegenstand, der vom ersten bis zum fünften Jahrgang läuft, und zieht sich zugleich durch Netzwerktechnik, Systemtechnik, Softwareentwicklung und die Diplomarbeit. Die Themen reichen von der Mathematik hinter der Verschlüsselung über sichere Programmierung und gehärtete Server bis zu Managementsystemen und Strafrecht.
+
+Die Seiten bauen aufeinander auf: Die Grundlagen klären Begriffe und Bedrohungen, die Kryptografie liefert die Werkzeuge, auf denen Zertifikate, TLS und moderne Anmeldeverfahren beruhen. Darauf folgen die technischen Schutzmaßnahmen für Webanwendungen, Netze und Systeme und schließlich der organisatorische und rechtliche Rahmen. Codebeispiele gibt es in **C#** und **Rust**.
+
+## Grundlagen
+
+<CardGrid>
+  <LinkCard title="Grundlagen der IT-Sicherheit" href="/de/it-security/security-basics/" description="Schutzziele, Bedrohung, Schwachstelle und Risiko, Sicherheitsprinzipien, Zero Trust, Risikobewertung." />
+  <LinkCard title="Bedrohungen und Schadsoftware" href="/de/it-security/threats-and-malware/" description="Malware, Social Engineering, DoS, Man in the Middle, Passwortangriffe, CVE und CVSS." />
+</CardGrid>
+
+## Kryptografie und Identität
+
+<CardGrid>
+  <LinkCard title="Kryptografie" href="/de/it-security/cryptography/" description="Klassische Chiffren, AES, RSA, Diffie-Hellman, Hashfunktionen, HMAC und Signaturen." />
+  <LinkCard title="PKI und TLS" href="/de/it-security/pki-and-tls/" description="X.509-Zertifikate, Vertrauenskette, Let's Encrypt, TLS 1.2 und 1.3, HSTS, S/MIME und PGP." />
+  <LinkCard title="Authentifizierung und Zugriffskontrolle" href="/de/it-security/authentication-and-access-control/" description="Passwortrichtlinien, MFA und TOTP, Passkeys, Kerberos, OAuth 2.0, OpenID Connect, RBAC." />
+</CardGrid>
+
+## Technische Schutzmaßnahmen
+
+<CardGrid>
+  <LinkCard title="Websicherheit" href="/de/it-security/web-security/" description="OWASP Top 10, SQL-Injection, XSS, CSRF, CORS, Security-Header und Session-Management." />
+  <LinkCard title="Netzwerksicherheit" href="/de/it-security/network-security/" description="Firewalls, DMZ, IDS und IPS, VPN, Segmentierung, 802.1X, E-Mail-Sicherheit und SIEM." />
+  <LinkCard title="Systemhärtung" href="/de/it-security/system-hardening/" description="Patchmanagement, Härtung von Windows und Linux, Backups, EDR und sichere Softwareentwicklung." />
+</CardGrid>
+
+## Organisation und Recht
+
+<CardGrid>
+  <LinkCard title="Incident Response und Forensik" href="/de/it-security/incident-response-and-forensics/" description="Vorfallsbehandlung, Meldepflichten, CERTs, Beweissicherung, RTO und RPO." />
+  <LinkCard title="Informationssicherheitsmanagement" href="/de/it-security/information-security-management/" description="ISMS, ISO 27001, IT-Grundschutz, NIS2 und NISG 2026, DSGVO, Pentests und Strafrecht." />
+</CardGrid>

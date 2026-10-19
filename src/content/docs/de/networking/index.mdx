@@ -1,0 +1,52 @@
+---
+title: Netzwerktechnik
+description: Rechnernetze von der Verkabelung über Ethernet, IPv4, IPv6 und Routing bis zu WLAN, WAN, Cisco IOS, Fehlersuche und Netzwerkplanung auf CCNA-Niveau.
+sidebar:
+  label: Überblick
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+Netzwerktechnik (NWT) behandelt, wie Rechner Daten austauschen: von Kabeln und Funk über Switches und Router bis zu den Protokollen, auf denen das Internet läuft. Im HTL-Zweig Informationstechnologie ist Netzwerktechnik in den ersten Jahrgängen ein eigener Pflichtgegenstand und wird in Systemtechnik bzw. Systemintegration und Infrastruktur weitergeführt, wo Netze zusammen mit Servern, Sicherheit und Cloud geplant und betrieben werden. Viele Schulen sind Cisco Networking Academies und unterrichten nach den drei CCNA-Kursen _Introduction to Networks_ (ITN), _Switching, Routing and Wireless Essentials_ (SRWE) und _Enterprise Networking, Security, and Automation_ (ENSA).
+
+Die Seiten folgen dem Weg eines Datenpakets durch die Schichten: zuerst Grundbegriffe und Modelle, dann von der Bitübertragung bis zur Anwendung, danach Netzwerkdienste, Konfiguration und Betrieb. Die Konfigurationsbeispiele verwenden Cisco IOS, wie im Unterricht mit Packet Tracer.
+
+## Grundlagen
+
+<CardGrid>
+  <LinkCard title="Netzwerkgrundlagen" href="/de/networking/network-basics/" description="Netzwerkarten, Topologien, Komponenten, Bandbreite und Latenz, Normungsorganisationen." />
+  <LinkCard title="Referenzmodelle" href="/de/networking/reference-models/" description="OSI- und TCP/IP-Modell, PDUs, Kapselung und Overhead." />
+</CardGrid>
+
+## Schicht 1 und 2
+
+<CardGrid>
+  <LinkCard title="Bitübertragungsschicht" href="/de/networking/physical-layer/" description="Twisted Pair, Glasfaser, Funk, Leitungscodes, strukturierte Verkabelung, PoE." />
+  <LinkCard title="Ethernet und Switching" href="/de/networking/ethernet-and-switching/" description="Frames, MAC-Adressen, ARP, VLANs, Spanning Tree und EtherChannel." />
+  <LinkCard title="WLAN" href="/de/networking/wlan/" description="IEEE 802.11 bis Wi-Fi 7, Kanäle, CSMA/CA, Roaming und WPA3." />
+</CardGrid>
+
+## Schicht 3 und 4
+
+<CardGrid>
+  <LinkCard title="IPv4" href="/de/networking/ipv4/" description="Adressen, Subnetting mit Rechenbeispielen, VLSM, Routenzusammenfassung und ICMP." />
+  <LinkCard title="IPv6" href="/de/networking/ipv6/" description="Adressformat, Adresstypen, SLAAC, DHCPv6, NDP und Übergangsverfahren." />
+  <LinkCard title="Routing" href="/de/networking/routing/" description="Routingtabelle, statische Routen, OSPF, EIGRP, BGP und First-Hop-Redundanz." />
+  <LinkCard title="Transportschicht" href="/de/networking/transport-layer/" description="Ports, TCP mit Handshake, Fluss- und Staukontrolle, UDP." />
+</CardGrid>
+
+## Dienste und Anbindung
+
+<CardGrid>
+  <LinkCard title="Anwendungsprotokolle" href="/de/networking/application-protocols/" description="DNS, DHCP, HTTP, FTP, E-Mail, SSH, SNMP, NTP und Syslog." />
+  <LinkCard title="NAT und ACLs" href="/de/networking/nat-and-acl/" description="Adressübersetzung, PAT, Wildcard-Masken und Access Control Lists." />
+  <LinkCard title="WAN und Internetzugang" href="/de/networking/wan-and-internet-access/" description="DSL, Kabel, Glasfaser, Mobilfunk, MPLS, VPN, QoS und SDN." />
+</CardGrid>
+
+## Konfiguration und Betrieb
+
+<CardGrid>
+  <LinkCard title="Cisco IOS" href="/de/networking/cisco-ios/" description="CLI, Grundkonfiguration, VLANs, Routing, DHCP, NAT und show-Befehle." />
+  <LinkCard title="Fehlersuche im Netzwerk" href="/de/networking/network-troubleshooting/" description="Vorgehen nach Schichten, ping, traceroute, Wireshark und typische Fehler." />
+  <LinkCard title="Netzwerkplanung" href="/de/networking/network-design/" description="Hierarchisches Design, Redundanz, Dokumentation und Layer-2-Schutz." />
+</CardGrid>

@@ -1,0 +1,351 @@
+---
+title: Cisco IOS
+description: CLI modes, basic configuration with passwords, SSH and interfaces, show commands, VLANs and trunks, inter-VLAN routing, static routes, OSPF, DHCP, NAT, ACLs and troubleshooting.
+sidebar:
+  order: 13
+---
+
+**Cisco IOS** (_Internetwork Operating System_) is the operating system of most Cisco routers and switches. In class and in CCNA training it is practised on real devices or in the **Cisco Packet Tracer** simulator. The commands in this chapter apply to IOS and IOS XE; other vendors use similar concepts with a different syntax. The fundamentals of the individual functions are covered in the respective chapters; this page is about configuration.
+
+## Access and CLI modes
+
+A new device is configured via the **console port** (rollover or USB cable, terminal program with 9600 baud, 8 data bits, no parity, 1 stop bit). Later, access is via **SSH** over the network.
+
+| Mode | Prompt | Entered with | Purpose |
+| --- | --- | --- | --- |
+| **User EXEC** | `Router>` | logging in | limited show commands |
+| **Privileged EXEC** | `Router#` | `enable` | all show commands, saving, reloading, debug |
+| **Global configuration** | `Router(config)#` | `configure terminal` | settings for the whole device |
+| **Interface configuration** | `Router(config-if)#` | `interface g0/0/0` | settings of one interface |
+| **Line configuration** | `Router(config-line)#` | `line console 0`, `line vty 0 15` | console and remote access |
+| **Router configuration** | `Router(config-router)#` | `router ospf 10` | routing protocol |
+
+`exit` goes back one level, `end` or Ctrl+Z goes straight to privileged EXEC mode. Commands may be abbreviated as long as they are unambiguous (`conf t`, `sh ip int br`). `?` shows possible commands and parameters, the Tab key completes them. `no` in front of a command undoes it. A show command in a configuration mode needs a preceding `do` (`do show ip interface brief`).
+
+## Basic configuration
+
+```text
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+enable secret Kl@ss3nPa55
+service password-encryption
+banner motd # Authorised access only #
+line console 0
+ password C0ns0le!
+ login
+ logging synchronous
+ exec-timeout 5 0
+ exit
+```
+
+- `hostname` sets the device name, a prerequisite for SSH keys.
+- `no ip domain-lookup` prevents a typo from being interpreted as a host name and looked up via DNS (which blocks the console for seconds).
+- `enable secret` protects privileged EXEC mode with a hashed password. The older `enable password` stores it in plain text and should not be used.
+- `service password-encryption` obscures plain-text passwords in the configuration (type 7). This only protects against someone reading over your shoulder; the algorithm is trivially reversible.
+- `banner motd` displays a notice at login, legally important so that nobody can claim not to have been warned.
+- `logging synchronous` prevents status messages from breaking up your input, `exec-timeout 5 0` logs out after 5 minutes of inactivity.
+
+### Setting up SSH
+
+```text
+ip domain-name htl.example.at
+username admin privilege 15 secret Adm1nPa55!
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+line vty 0 15
+ login local
+ transport input ssh
+ exit
+```
+
+1. For the RSA key, host name and domain name need values; the key is then called `R1.htl.example.at`.
+2. `username ... secret` creates a local user, `login local` uses the local user database.
+3. `transport input ssh` allows only SSH on the virtual terminals (VTY), no Telnet.
+
+For remote access, a switch needs an IP address on an **SVI** and a default gateway, because it does not route itself:
+
+```text
+interface vlan 99
+ ip address 192.168.99.11 255.255.255.0
+ no shutdown
+ exit
+ip default-gateway 192.168.99.1
+```
+
+### Configuring interfaces
+
+```text
+interface GigabitEthernet0/0/0
+ description Link to admin LAN
+ ip address 192.168.10.1 255.255.255.0
+ ipv6 address 2001:db8:acad:10::1/64
+ ipv6 address fe80::1 link-local
+ no shutdown
+ exit
+ipv6 unicast-routing
+```
+
+Router interfaces are **administratively down** by default and must be enabled with `no shutdown`; switch ports are active by default. `ipv6 unicast-routing` enables IPv6 routing and the sending of Router Advertisements.
+
+### Saving the configuration
+
+The running configuration (**running-config**) is held in RAM and is lost on a reload. The startup configuration (**startup-config**) is stored in NVRAM.
+
+```text
+copy running-config startup-config
+```
+
+The short form is `copy run start`, or the older `write memory`. `reload` restarts the device; `erase startup-config` followed by `reload` resets it to factory settings (on switches additionally `delete vlan.dat` so that the VLANs are deleted too). Configurations are backed up to a server with `copy running-config tftp:`.
+
+## show commands
+
+| Command | Shows |
+| --- | --- |
+| `show running-config` | current configuration |
+| `show startup-config` | saved configuration |
+| `show version` | IOS version, uptime, hardware, memory, configuration register |
+| `show ip interface brief` | all interfaces with IP address and status (status/protocol) |
+| `show ipv6 interface brief` | the same for IPv6 |
+| `show interfaces g0/0/0` | details: speed, duplex, error counters (CRC, collisions) |
+| `show ip route` | routing table |
+| `show arp` | the router's ARP cache |
+| `show mac address-table` | MAC table of a switch |
+| `show vlan brief` | VLANs and assigned access ports |
+| `show interfaces trunk` | trunks, allowed VLANs, native VLAN |
+| `show spanning-tree` | root bridge, port roles and states |
+| `show etherchannel summary` | EtherChannel bundles and members |
+| `show ip ospf neighbor` | OSPF neighbours and state |
+| `show ip protocols` | active routing protocols, router ID, networks |
+| `show ip dhcp binding` | assigned DHCP addresses |
+| `show ip nat translations` | NAT table |
+| `show access-lists` | ACLs with hit counters |
+| `show cdp neighbors detail` | directly connected Cisco devices with IP and model |
+| `show lldp neighbors` | directly connected devices from all vendors |
+| `show logging` | log messages |
+| `show clock` | time (important for logs) |
+
+In `show ip interface brief`, **up/up** means that layers 1 and 2 are working. **administratively down/down** means the interface has been disabled with `shutdown`. **down/down** points to a layer 1 problem (no cable, far end switched off), **up/down** to layer 2 (for example wrong encapsulation).
+
+Long output can be filtered: `show running-config | include ip address`, `show running-config | section ospf`, `show ip route | begin Gateway`.
+
+**CDP** (_Cisco Discovery Protocol_) and **LLDP** (_Link Layer Discovery Protocol_, IEEE 802.1AB) report name, model, port and address to neighbouring devices. This is handy for documentation but also reveals details to attackers. It is therefore switched off on ports facing end devices or the internet (`no cdp enable` on the interface, `no cdp run` globally).
+
+## VLANs and trunks
+
+```text
+vlan 10
+ name Admin
+vlan 20
+ name Students
+vlan 99
+ name Management
+vlan 999
+ name Unused
+ exit
+
+interface range FastEthernet0/1 - 12
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ exit
+
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,99
+ switchport nonegotiate
+ exit
+```
+
+- `switchport mode access` statically configures the port as an access port, `switchport access vlan` assigns it to a VLAN. If the VLAN does not yet exist, it is created automatically.
+- A voice VLAN for IP phones is added with `switchport voice vlan 150`.
+- On older switches with ISL support, a trunk first needs `switchport trunk encapsulation dot1q`.
+- Unused ports are shut down and placed in an unused VLAN (`switchport access vlan 999`, `shutdown`).
+
+### Inter-VLAN routing
+
+Router-on-a-stick with subinterfaces:
+
+```text
+interface GigabitEthernet0/0/1
+ no shutdown
+interface GigabitEthernet0/0/1.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+interface GigabitEthernet0/0/1.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+interface GigabitEthernet0/0/1.99
+ encapsulation dot1Q 99 native
+ ip address 192.168.99.1 255.255.255.0
+```
+
+Layer 3 switch with SVIs and a routed port towards the router:
+
+```text
+ip routing
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+interface GigabitEthernet1/0/24
+ no switchport
+ ip address 10.0.0.2 255.255.255.252
+```
+
+An SVI is only **up** if the VLAN exists and at least one port in that VLAN is active (or a trunk carries it).
+
+### Spanning Tree and EtherChannel
+
+```text
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10,20 root primary
+spanning-tree vlan 99 priority 4096
+
+interface range GigabitEthernet0/1 - 2
+ channel-group 1 mode active
+ exit
+interface port-channel 1
+ switchport mode trunk
+```
+
+`root primary` sets the priority so that the switch becomes root bridge (24576, or lower than the current root). `channel-group ... mode active` bundles the ports with LACP. The trunk settings are then made on the logical `port-channel` interface.
+
+### Port security
+
+```text
+interface FastEthernet0/5
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+```
+
+Port security limits how many MAC addresses a port may learn. `sticky` writes the learnt addresses into the configuration. There are three reactions to violations: **shutdown** (default, port goes into the err-disabled state), **restrict** (drop unknown frames and log them) and **protect** (just drop). An err-disabled port is re-enabled with `shutdown` followed by `no shutdown`.
+
+## Static routes
+
+```text
+ip route 192.168.30.0 255.255.255.0 10.0.0.2
+ip route 192.168.40.0 255.255.255.0 Serial0/1/0
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+ip route 0.0.0.0 0.0.0.0 198.51.100.1 5
+ipv6 route 2001:db8:acad:30::/64 2001:db8:acad:ff::2
+ipv6 route ::/0 GigabitEthernet0/0/0 fe80::2
+```
+
+The second-to-last line is an IPv6 route via a next hop, the last one a fully specified IPv6 default route with a link-local next hop, for which the interface must be specified.
+
+## OSPF
+
+```text
+interface loopback 0
+ ip address 1.1.1.1 255.255.255.255
+router ospf 10
+ router-id 1.1.1.1
+ network 192.168.10.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.3 area 0
+ passive-interface GigabitEthernet0/0/1
+ auto-cost reference-bandwidth 10000
+ default-information originate
+```
+
+- The **process ID** (here 10) is only locally significant and does not have to match between neighbours.
+- `network` with a **wildcard mask** enables OSPF on all interfaces whose address lies in this range. Alternatively, OSPF is enabled directly on the interface with `ip ospf 10 area 0`.
+- `passive-interface` prevents hellos on interfaces facing end devices: the network is still advertised, but nobody can form an adjacency there.
+- `default-information originate` distributes the router's own default route to all OSPF routers.
+
+On the interface:
+
+```text
+interface GigabitEthernet0/0/0
+ ip ospf priority 255
+ ip ospf cost 50
+ ip ospf hello-interval 5
+ ip ospf dead-interval 20
+ ip ospf network point-to-point
+```
+
+Verify with `show ip ospf neighbor`, `show ip ospf interface brief`, `show ip route ospf` and `show ip protocols`.
+
+## DHCP server on the router
+
+```text
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp pool ADMIN
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.99.10
+ domain-name htl.example.at
+ lease 7
+```
+
+The excluded addresses are reserved for the gateway, servers and printers. If the DHCP server is in a different network, a relay is configured on the router interface facing the clients:
+
+```text
+interface GigabitEthernet0/0/1
+ ip helper-address 192.168.99.10
+```
+
+A router can also obtain an address via DHCP itself, for example from the provider: `ip address dhcp` on the interface.
+
+## NAT
+
+```text
+interface GigabitEthernet0/0/1
+ ip nat inside
+interface GigabitEthernet0/0/0
+ ip nat outside
+ exit
+
+access-list 1 permit 192.168.0.0 0.0.255.255
+ip nat inside source list 1 interface GigabitEthernet0/0/0 overload
+
+ip nat inside source static tcp 192.168.10.20 443 203.0.113.5 443
+```
+
+The ACL selects which inside addresses are translated, `overload` enables PAT to the address of the outside interface. The last line is a port forwarding. Static NAT without ports is `ip nat inside source static 192.168.10.20 203.0.113.5`; dynamic NAT uses a pool: `ip nat pool POOL 203.0.113.10 203.0.113.20 netmask 255.255.255.0` and `ip nat inside source list 1 pool POOL`. Verify with `show ip nat translations` and `show ip nat statistics`; clear the table with `clear ip nat translation *`.
+
+ACLs are configured as shown in the chapter [NAT and ACLs](/en/networking/nat-and-acl/#examples) and applied with `ip access-group`.
+
+## Network services
+
+```text
+ntp server 192.168.99.10
+clock timezone CET 1
+clock summer-time CEST recurring last Sun Mar 2:00 last Sun Oct 3:00
+logging host 192.168.99.20
+logging trap warnings
+service timestamps log datetime msec
+snmp-server community N0tPubl1c RO 5
+```
+
+With this, the device gets its time via NTP, logs messages up to level 4 (warnings) to a syslog server and allows SNMPv2c read access only from addresses permitted by ACL 5. In production networks SNMPv3 is used.
+
+## Troubleshooting
+
+| Command | Purpose |
+| --- | --- |
+| `ping 192.168.20.10` | check reachability. `!` = reply, `.` = timeout, `U` = destination unreachable. The first ping often fails because ARP has to be resolved first |
+| `ping 192.168.20.10 source loopback 0` | extended ping with a different source address, tests the return path |
+| `traceroute 192.168.20.10` | trace the path router by router |
+| `show interfaces` | error counters: rising **CRC** errors indicate cabling problems or interference, **late collisions** a duplex mismatch |
+| `show ip interface brief` | is the interface up/up and does it have the right address? |
+| `show ip route` | is there a route to the destination and back? |
+| `show cdp neighbors` | is the right device connected to the right port? |
+| `debug ip ospf adj` | show events live, stop with `undebug all`. Careful in production: debug can max out the CPU |
+| `terminal monitor` | show log and debug messages in an SSH session too |
+
+The general approach is described in [Network Troubleshooting](/en/networking/network-troubleshooting/).
+
+## Further reading
+
+- [Cisco Packet Tracer](https://www.netacad.com/cisco-packet-tracer)
+- [Cisco IOS XE Configuration Guides](https://www.cisco.com/c/en/us/support/ios-nx-os-software/ios-xe-17/products-installation-and-configuration-guides-list.html)
+- Wendell Odom: _CCNA 200-301 Official Cert Guide Library_, Cisco Press

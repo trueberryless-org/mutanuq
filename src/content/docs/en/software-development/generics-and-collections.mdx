@@ -1,0 +1,493 @@
+---
+title: Generics and Collections
+description: Generic classes and methods, constraints and trait bounds as well as lists, dictionaries, sets, queues and stacks in C# and Rust.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Generics** let you write classes and methods that work with any data type without giving up type safety. Their most important use is **collections**: data structures such as lists or dictionaries that manage many elements of one type.
+
+## Why generics?
+
+Without generics, you would either have to write a separate class for every data type (`IntList`, `StringList`, ...) or store all elements as `object`. The second option has three drawbacks: the compiler cannot check that only suitable elements are added, you have to convert (_cast_) when taking elements out, and value types have to be wrapped in objects (_boxing_).
+
+With a **type parameter** such as `T`, you write the code only once. Only when you use it do you decide which type is plugged in: `List<int>`, `List<string>`, `Vec<f64>`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var ints = new Box<int>(42);
+var text = new Box<string>("Hello");
+Console.WriteLine(ints.Value + 1);       // 43, no cast needed
+Console.WriteLine(text.Value.Length);    // 5
+
+var (a, b) = Swap(1, 2);                 // the type is inferred
+Console.WriteLine($"{a} {b}");           // 2 1
+
+// generic method
+static (T, T) Swap<T>(T first, T second) => (second, first);
+
+// generic class
+public class Box<T>(T value)
+{
+    public T Value { get; } = value;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// generic struct
+struct Wrapper<T> {
+    value: T,
+}
+
+// generic function
+fn swap<T>(first: T, second: T) -> (T, T) {
+    (second, first)
+}
+
+fn main() {
+    let ints = Wrapper { value: 42 };
+    let text = Wrapper { value: "Hello" };
+    println!("{}", ints.value + 1);     // 43
+    println!("{}", text.value.len());   // 5
+
+    let (a, b) = swap(1, 2);
+    println!("{a} {b}");                // 2 1
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Constraints and trait bounds
+
+Inside a generic method, the compiler initially knows nothing about `T`. If you want to compare two values, for example, you have to specify that `T` is comparable. In C#, this is called a **constraint** (`where`), in Rust a **trait bound**.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Largest([3, 9, 4]));            // 9
+Console.WriteLine(Largest(["pear", "apple"]));    // pear
+
+static T Largest<T>(IEnumerable<T> items) where T : IComparable<T>
+{
+    using var e = items.GetEnumerator();
+    if (!e.MoveNext()) throw new ArgumentException("Empty collection");
+    T max = e.Current;
+    while (e.MoveNext())
+    {
+        if (e.Current.CompareTo(max) > 0) max = e.Current;
+    }
+    return max;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// T must be comparable (PartialOrd) and copyable (Copy)
+fn largest<T: PartialOrd + Copy>(items: &[T]) -> Option<T> {
+    let mut iter = items.iter();
+    let mut max = *iter.next()?;
+    for &item in iter {
+        if item > max {
+            max = item;
+        }
+    }
+    Some(max)
+}
+
+fn main() {
+    println!("{:?}", largest(&[3, 9, 4]));          // Some(9)
+    println!("{:?}", largest(&["pear", "apple"]));  // Some("pear")
+}
+```
+
+</TabItem>
+</Tabs>
+
+| Constraint in C#               | Meaning                                          | Equivalent in Rust                       |
+| ------------------------------ | ------------------------------------------------ | ---------------------------------------- |
+| `where T : IComparable<T>`     | `T` implements an interface                      | `T: Ord` or `T: PartialOrd`              |
+| `where T : class` / `struct`   | `T` is a reference or value type                 | (no equivalent needed)                   |
+| `where T : new()`              | `T` has a parameterless constructor              | `T: Default`                             |
+| `where T : Animal`             | `T` is `Animal` or derived from it               | `T: Animal` (trait)                      |
+| `where T : notnull`            | `T` must not be nullable                         | (there is no null)                       |
+
+In Rust, several bounds are combined with `+`. With many bounds, you write them more clearly in a `where` clause after the signature.
+
+### How the compiler implements generics
+
+- **Rust** generates a separate copy of the function for every type it is used with (**monomorphisation**). Generic code is therefore just as fast as hand-written code.
+- **C#** stores generics as real types in the assembly. At runtime, the JIT compiler creates a separate version for every value type and shares one common version for all reference types. You can query the type parameter at runtime (`typeof(T)`).
+- **Java**, by contrast, uses _type erasure_: generics only exist at compile time, and at runtime a `List<String>` has become a `List`.
+
+### Variance
+
+May you use an `IEnumerable<string>` where an `IEnumerable<object>` is expected? In C#, this is defined for interfaces and delegates through **variance**:
+
+- **Covariance** (`out T`): a type that only returns `T` may be replaced by a more specific type. Example: `IEnumerable<out T>`, which is why an `IEnumerable<string>` is an `IEnumerable<object>`.
+- **Contravariance** (`in T`): a type that only accepts `T` may be replaced by a more general type. Example: `Action<in T>`, which is why an `Action<object>` is an `Action<string>`.
+- `List<T>` is **invariant** because it both reads and writes `T`.
+
+## Collections at a glance
+
+| Purpose                              | C#                              | Rust                          | Access          | Insert           | Search        |
+| ------------------------------------ | ------------------------------- | ----------------------------- | --------------- | ---------------- | ------------- |
+| Dynamic array                        | `List<T>`                       | `Vec<T>`                      | $O(1)$ by index | $O(1)$ at the end* | $O(n)$      |
+| Doubly linked list                   | `LinkedList<T>`                 | `LinkedList<T>`               | $O(n)$          | $O(1)$ at a known position | $O(n)$ |
+| Key-value pairs (hash)               | `Dictionary<K, V>`              | `HashMap<K, V>`               | $O(1)$ by key** | $O(1)$**         | $O(1)$**      |
+| Key-value pairs (sorted)             | `SortedDictionary<K, V>`        | `BTreeMap<K, V>`              | $O(\log n)$     | $O(\log n)$      | $O(\log n)$   |
+| Set without duplicates (hash)        | `HashSet<T>`                    | `HashSet<T>`                  | -               | $O(1)$**         | $O(1)$**      |
+| Set without duplicates (sorted)      | `SortedSet<T>`                  | `BTreeSet<T>`                 | -               | $O(\log n)$      | $O(\log n)$   |
+| Queue (FIFO)                         | `Queue<T>`                      | `VecDeque<T>`                 | front/back $O(1)$ | $O(1)$*        | $O(n)$        |
+| Stack (LIFO)                         | `Stack<T>`                      | `Vec<T>` (`push`, `pop`)      | top $O(1)$      | $O(1)$*          | $O(n)$        |
+| Priority queue                       | `PriorityQueue<T, P>` (lowest priority first) | `BinaryHeap<T>` (largest element first) | top $O(1)$ | $O(\log n)$ | - |
+
+\* amortised: when the reserved memory is full, an area twice as large is allocated and everything is copied over. This happens rarely enough that inserting costs $O(1)$ on average.
+\*\* on average; in the worst case (many hash collisions) $O(n)$.
+
+What the $O$ notation means and how these data structures are built internally is explained on the pages [Algorithms](/en/software-development/algorithms/#time-complexity) and [Data Structures](/en/software-development/data-structures/).
+
+## Lists
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var names = new List<string> { "Mia", "Ben" };
+names.Add("Lea");                   // append at the end
+names.Insert(0, "Tim");             // insert at position 0
+names.Remove("Ben");                // remove the first occurrence
+names.RemoveAt(names.Count - 1);    // remove the last element
+
+Console.WriteLine(names.Count);             // 2
+Console.WriteLine(names.Contains("Mia"));   // True
+Console.WriteLine(names.IndexOf("Mia"));    // 1
+
+names.AddRange(["Zoe", "Ali"]);
+names.Sort();                                // alphabetically
+Console.WriteLine(string.Join(", ", names)); // Ali, Mia, Tim, Zoe
+
+// custom order: by length, then alphabetically
+names.Sort((x, y) => x.Length != y.Length ? x.Length.CompareTo(y.Length) : x.CompareTo(y));
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    let mut names = vec![String::from("Mia"), String::from("Ben")];
+    names.push("Lea".to_string());       // append at the end
+    names.insert(0, "Tim".to_string());  // insert at position 0
+    if let Some(pos) = names.iter().position(|n| n == "Ben") {
+        names.remove(pos);               // remove the element at a position
+    }
+    names.pop();                         // remove the last element
+
+    println!("{}", names.len());                       // 2
+    println!("{}", names.contains(&"Mia".to_string())); // true
+    println!("{:?}", names.iter().position(|n| n == "Mia")); // Some(1)
+
+    names.extend(["Zoe".to_string(), "Ali".to_string()]);
+    names.sort();                                       // alphabetically
+    println!("{}", names.join(", "));                   // Ali, Mia, Tim, Zoe
+
+    // custom order: by length, then alphabetically
+    names.sort_by(|x, y| x.len().cmp(&y.len()).then(x.cmp(y)));
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Dictionaries
+
+A **dictionary** (a **map** in Rust) stores pairs of a unique **key** and a **value**. With hash-based variants, access by key takes constant time on average, no matter how many entries there are. The order of the entries is **not** defined for `Dictionary` and `HashMap`. If you need a sorted order, use `SortedDictionary` or `BTreeMap`.
+
+The classic example is counting words:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string text = "the dog and the ball and the garden";
+var counts = new SortedDictionary<string, int>();
+
+foreach (var word in text.Split(' '))
+{
+    // TryGetValue avoids a KeyNotFoundException
+    counts[word] = counts.TryGetValue(word, out int n) ? n + 1 : 1;
+}
+
+foreach (var (word, count) in counts)
+{
+    Console.WriteLine($"{word}: {count}");
+}
+// and: 2, ball: 1, dog: 1, garden: 1, the: 3
+
+Console.WriteLine(counts.ContainsKey("cat")); // False
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::BTreeMap;
+
+fn main() {
+    let text = "the dog and the ball and the garden";
+    let mut counts: BTreeMap<&str, i32> = BTreeMap::new();
+
+    for word in text.split(' ') {
+        // entry creates the entry if it is still missing
+        *counts.entry(word).or_insert(0) += 1;
+    }
+
+    for (word, count) in &counts {
+        println!("{word}: {count}");
+    }
+    // and: 2, ball: 1, dog: 1, garden: 1, the: 3
+
+    println!("{}", counts.contains_key("cat")); // false
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::caution[Keys must compare correctly]
+A hash-based dictionary finds a key through its **hash value** and then compares with `Equals`. If you use your own classes as keys, `Equals` and `GetHashCode` must be overridden consistently in C# (records do this automatically). Equal objects must return the same hash value. In Rust, you derive `PartialEq`, `Eq` and `Hash` for this. In addition, a key must not be changed while it is stored in the dictionary.
+:::
+
+## Sets
+
+A **set** contains each element at most once. It is suitable for removing duplicates and for fast `Contains` queries. It also offers the set operations from mathematics.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var python = new HashSet<string> { "Ana", "Ben", "Cem" };
+var rust = new HashSet<string> { "Ben", "Dora" };
+
+Console.WriteLine(python.Add("Ana"));        // False, already present
+
+var both = new HashSet<string>(python);
+both.IntersectWith(rust);                    // intersection
+Console.WriteLine(string.Join(", ", both));  // Ben
+
+var all = new SortedSet<string>(python);
+all.UnionWith(rust);                          // union
+Console.WriteLine(string.Join(", ", all));    // Ana, Ben, Cem, Dora
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{BTreeSet, HashSet};
+
+fn main() {
+    let mut python: HashSet<&str> = ["Ana", "Ben", "Cem"].into_iter().collect();
+    let rust: HashSet<&str> = ["Ben", "Dora"].into_iter().collect();
+
+    println!("{}", python.insert("Ana"));       // false, already present
+
+    let both: Vec<_> = python.intersection(&rust).collect(); // intersection
+    println!("{both:?}");                       // ["Ben"]
+
+    let all: BTreeSet<_> = python.union(&rust).collect();    // union
+    println!("{all:?}");                        // {"Ana", "Ben", "Cem", "Dora"}
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Queue and stack
+
+- A **queue** works according to the **FIFO** principle (_first in, first out_): whoever comes first is served first. Examples: print jobs, messages between parts of a program, breadth-first search.
+- A **stack** works according to the **LIFO** principle (_last in, first out_): the element placed last is taken out first. Examples: undo function, call stack, checking bracket expressions, depth-first search.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var queue = new Queue<string>();
+queue.Enqueue("Job 1");
+queue.Enqueue("Job 2");
+Console.WriteLine(queue.Dequeue()); // Job 1
+Console.WriteLine(queue.Peek());    // Job 2 (without removing it)
+
+Console.WriteLine(IsBalanced("(a[b]{c})")); // True
+Console.WriteLine(IsBalanced("(]"));         // False
+
+// checking brackets with a stack
+static bool IsBalanced(string s)
+{
+    var stack = new Stack<char>();
+    var pairs = new Dictionary<char, char> { [')'] = '(', [']'] = '[', ['}'] = '{' };
+    foreach (char c in s)
+    {
+        if (c is '(' or '[' or '{') stack.Push(c);
+        else if (pairs.TryGetValue(c, out char open))
+        {
+            if (stack.Count == 0 || stack.Pop() != open) return false;
+        }
+    }
+    return stack.Count == 0;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::VecDeque;
+
+// checking brackets with a Vec as a stack
+fn is_balanced(s: &str) -> bool {
+    let mut stack = Vec::new();
+    for c in s.chars() {
+        match c {
+            '(' | '[' | '{' => stack.push(c),
+            ')' | ']' | '}' => {
+                let open = match c { ')' => '(', ']' => '[', _ => '{' };
+                if stack.pop() != Some(open) {
+                    return false;
+                }
+            }
+            _ => {}
+        }
+    }
+    stack.is_empty()
+}
+
+fn main() {
+    let mut queue = VecDeque::new();
+    queue.push_back("Job 1");
+    queue.push_back("Job 2");
+    println!("{:?}", queue.pop_front()); // Some("Job 1")
+    println!("{:?}", queue.front());     // Some("Job 2")
+
+    println!("{}", is_balanced("(a[b]{c})")); // true
+    println!("{}", is_balanced("(]"));         // false
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Priority queue
+
+A **priority queue** always returns the element with the highest priority first, regardless of the order in which elements were inserted. Internally, it is implemented as a [heap](/en/software-development/data-structures/#heap). It is used, for example, in [Dijkstra's algorithm](/en/software-development/graphs/#dijkstras-algorithm) and for task scheduling.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// the lowest priority comes first
+var tasks = new PriorityQueue<string, int>();
+tasks.Enqueue("Read emails", 3);
+tasks.Enqueue("Restart server", 1);
+tasks.Enqueue("Write report", 2);
+
+while (tasks.TryDequeue(out string? task, out int priority))
+{
+    Console.WriteLine($"{priority}: {task}");
+}
+// 1: Restart server, 2: Write report, 3: Read emails
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
+
+fn main() {
+    // BinaryHeap returns the largest element first;
+    // Reverse inverts the order so that the lowest priority comes first.
+    let mut tasks = BinaryHeap::new();
+    tasks.push(Reverse((3, "Read emails")));
+    tasks.push(Reverse((1, "Restart server")));
+    tasks.push(Reverse((2, "Write report")));
+
+    while let Some(Reverse((priority, task))) = tasks.pop() {
+        println!("{priority}: {task}");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Iterators
+
+All collections can be traversed with `foreach` or `for`. In C#, this is made possible by the interface `IEnumerable<T>`, in Rust by the trait `Iterator`. Your own classes become iterable by implementing this interface. In C#, this is particularly easy with `yield return`: the compiler turns it into a state machine that only computes the values when they are needed (**lazy evaluation**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+foreach (long n in Fibonacci().Take(10))
+{
+    Console.Write($"{n} ");
+}
+// 0 1 1 2 3 5 8 13 21 34
+
+// infinite sequence; the values are only produced when requested
+static IEnumerable<long> Fibonacci()
+{
+    long a = 0, b = 1;
+    while (true)
+    {
+        yield return a;
+        (a, b) = (b, a + b);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Fibonacci {
+    a: u64,
+    b: u64,
+}
+
+impl Iterator for Fibonacci {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<u64> {
+        let current = self.a;
+        (self.a, self.b) = (self.b, self.a + self.b);
+        Some(current) // never None: infinite sequence
+    }
+}
+
+fn main() {
+    for n in (Fibonacci { a: 0, b: 1 }).take(10) {
+        print!("{n} ");
+    }
+    println!();
+    // 0 1 1 2 3 5 8 13 21 34
+}
+```
+
+</TabItem>
+</Tabs>
+
+Iterators make it possible to filter, transform and aggregate data very expressively. This is shown on the page [Functional Programming](/en/software-development/functional-programming/) with LINQ and Rust's iterator adapters.

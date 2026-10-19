@@ -1,0 +1,444 @@
+---
+title: IPv4
+description: Structure of IPv4 addresses and the header, address classes, private and special addresses, subnet mask and CIDR, subnetting with worked examples, VLSM, route summarisation and ICMP.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+The **Internet Protocol version 4** (IPv4, RFC 791 from 1981) is the network layer protocol on which most of the internet still runs. It addresses devices logically across network boundaries and carries packets from source to destination via any number of routers. IP is **connectionless** and works on a **best-effort** basis: there is no acknowledgement, no guarantee of order and no retransmission of lost packets. Where needed, [TCP](/en/networking/transport-layer/) takes care of that.
+
+## Number systems
+
+For subnetting you need to convert confidently between decimal and binary. An octet has 8 bits with the place values:
+
+| Bit | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+
+Example: $192 = 128 + 64$, so `11000000`. Conversely, `10101000` $= 128 + 32 + 8 = 168$. The values that appear in subnet masks are worth memorising: they are the sums of the leftmost bits.
+
+| Bits set | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Octet value | 128 | 192 | 224 | 240 | 248 | 252 | 254 | 255 |
+
+Hexadecimal combines 4 bits into one digit 0 to F and is used for MAC and IPv6 addresses: `1010 1000` = `A8` = 168.
+
+## Address structure
+
+An IPv4 address is **32 bits** long and is written in **dotted decimal notation** as four octets, for example `192.168.10.77`. This gives $2^{32} \approx 4.3$ billion addresses. Every address consists of a **network part**, which is the same for all devices in the same network, and a **host part**, which identifies the device within the network. Where the boundary lies is defined by the **subnet mask**.
+
+Routers are only interested in the network part. This is what makes the internet scalable in the first place: a router does not need an entry for every device, only for every network.
+
+## The IPv4 header
+
+| Field | Bits | Meaning |
+| --- | --- | --- |
+| Version | 4 | 4 |
+| IHL (_Internet Header Length_) | 4 | header length in 32-bit words, at least 5 (= 20 bytes) |
+| DSCP / ECN | 6 / 2 | priority for [QoS](/en/networking/wan-and-internet-access/#quality-of-service) and congestion notification |
+| Total Length | 16 | length of the whole packet in bytes, at most 65,535 |
+| Identification, Flags, Fragment Offset | 16, 3, 13 | fragmentation: packets larger than the MTU of the next link are split. The **DF** flag (_Don't Fragment_) forbids this |
+| **TTL** (_Time to Live_) | 8 | every router decrements the value by 1. At 0 the packet is discarded and an ICMP message is sent back. Prevents packets from circulating endlessly |
+| **Protocol** | 8 | protocol of the payload: 1 ICMP, 6 TCP, 17 UDP, 89 OSPF |
+| Header Checksum | 16 | checksum over the header only, recalculated at every router (because of the TTL) |
+| **Source address** | 32 | sender |
+| **Destination address** | 32 | receiver |
+| Options | variable | rarely used |
+
+## Address classes
+
+Originally, addresses were divided into fixed **classes**, recognisable by their first bits. This **classful** scheme has been replaced by CIDR since 1993, but the terms still appear in exams, older routing protocols and Cisco output.
+
+| Class | First bits | First octet | Default mask | Networks | Hosts per network |
+| --- | --- | --- | --- | --- | --- |
+| **A** | `0` | 0 to 127 | /8 (255.0.0.0) | 128 (126 of them usable) | 16,777,214 |
+| **B** | `10` | 128 to 191 | /16 (255.255.0.0) | 16,384 | 65,534 |
+| **C** | `110` | 192 to 223 | /24 (255.255.255.0) | 2,097,152 | 254 |
+| **D** | `1110` | 224 to 239 | | multicast | |
+| **E** | `1111` | 240 to 255 | | reserved (experimental) | |
+
+The problem with classes was waste: a company with 2000 devices was too large for class C and was given a class B network with over 65,000 addresses. This accelerated the exhaustion of the address space. IANA handed out the last free blocks to the regional registries in 2011, and RIPE NCC allocated its last /22 block in 2019.
+
+## Private and special addresses
+
+**Private addresses** according to **RFC 1918** are not routed on the internet and may be used freely in any internal network. For internet access they are translated into public addresses by [NAT](/en/networking/nat-and-acl/).
+
+| Range | CIDR | formerly |
+| --- | --- | --- |
+| 10.0.0.0 to 10.255.255.255 | 10.0.0.0/8 | one class A network |
+| 172.16.0.0 to 172.31.255.255 | 172.16.0.0/12 | 16 class B networks |
+| 192.168.0.0 to 192.168.255.255 | 192.168.0.0/16 | 256 class C networks |
+
+Further reserved ranges:
+
+| Range | Purpose |
+| --- | --- |
+| 0.0.0.0/8 | "this network"; 0.0.0.0 as the source address before DHCP assignment, as route `0.0.0.0/0` the default route |
+| **127.0.0.0/8** | **loopback**: 127.0.0.1 (`localhost`) addresses the local computer; packets never leave it |
+| **169.254.0.0/16** | **link-local** (APIPA, RFC 3927): Windows assigns itself such an address when no DHCP server answers. A clear sign of a DHCP problem |
+| 100.64.0.0/10 | **shared address space** (RFC 6598) for carrier-grade NAT at providers |
+| 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 | documentation and examples (RFC 5737) |
+| 224.0.0.0/4 | multicast (formerly class D) |
+| 240.0.0.0/4 | reserved |
+| 255.255.255.255 | **limited broadcast** to everyone in the local network, never routed |
+
+## Unicast, broadcast and multicast
+
+- **Unicast**: from one sender to exactly one receiver, the normal case.
+- **Broadcast**: to all devices in a network. The **limited broadcast** 255.255.255.255 stays in the local network. The **directed broadcast** is the broadcast address of a specific network, for example 192.168.10.255 for 192.168.10.0/24. Routers do not forward directed broadcasts by default, because they used to be abused for attacks (smurf attack).
+- **Multicast**: to a group of receivers that have joined it (via IGMP). Examples: 224.0.0.5 all OSPF routers, 224.0.0.9 RIPv2 routers, 224.0.0.1 all hosts on the segment. The range 224.0.0.0/24 is reserved for local control protocols and is not routed.
+
+## Subnet mask and CIDR
+
+The **subnet mask** is also 32 bits long. All bits belonging to the network part are 1, all bits of the host part 0. The ones are always contiguous on the left. Instead of the mask, the number of ones is written more briefly as the **prefix length** after a slash: `192.168.10.77/26` means mask `255.255.255.192`. This notation comes from **CIDR** (_Classless Inter-Domain Routing_, RFC 4632), which replaced the classes: the boundary between network and host can be at any bit.
+
+The **network address** is obtained by a bitwise AND of address and mask. A computer uses this for every packet to check whether the destination is in its own network (then deliver directly via ARP) or not (then send to the default gateway): if the network addresses of its own address and the destination address are equal, the destination is local.
+
+Two addresses are reserved in every subnet:
+
+- the **network address**: all host bits 0, identifies the network itself,
+- the **broadcast address**: all host bits 1.
+
+With $h$ host bits, therefore:
+
+$$
+\text{usable hosts} = 2^h - 2
+$$
+
+One exception is **/31** (RFC 3021): on point-to-point links between two routers, neither a network nor a broadcast address is needed, so both addresses are usable. **/32** denotes a single host, for example a router's loopback address.
+
+| Prefix | Mask | Host bits | Usable hosts | Block size in the last octet |
+| --- | --- | --- | --- | --- |
+| /24 | 255.255.255.0 | 8 | 254 | 256 |
+| /25 | 255.255.255.128 | 7 | 126 | 128 |
+| /26 | 255.255.255.192 | 6 | 62 | 64 |
+| /27 | 255.255.255.224 | 5 | 30 | 32 |
+| /28 | 255.255.255.240 | 4 | 14 | 16 |
+| /29 | 255.255.255.248 | 3 | 6 | 8 |
+| /30 | 255.255.255.252 | 2 | 2 | 4 |
+| /31 | 255.255.255.254 | 1 | 2 (RFC 3021) | 2 |
+| /32 | 255.255.255.255 | 0 | 1 (host route) | 1 |
+
+For prefixes shorter than /24 the same applies in the third (or second) octet: /20 is 255.255.240.0 with 12 host bits and $2^{12} - 2 = 4094$ hosts.
+
+## Subnetting
+
+**Subnetting** divides a network into smaller subnets by "borrowing" bits from the host part for the network part. With $n$ borrowed bits, $2^n$ subnets are created. Smaller networks mean smaller broadcast domains, separation by department or site and targeted security rules between the networks.
+
+### The block size method
+
+For calculations without binary conversion, the **block size** (also the _magic number_) is enough: $256 - \text{mask value}$ in the **interesting octet**, the octet in which the mask is neither 255 nor 0. Subnets start at every multiple of the block size.
+
+1. Determine the interesting octet and the block size.
+2. Find the largest multiple of the block size that is less than or equal to the address value in this octet: that is the **network address**.
+3. The next multiple minus 1 is the **broadcast address**.
+4. Host range: network address + 1 to broadcast - 1. Octets to the right of the interesting octet are 0 in the network address and 255 in the broadcast.
+
+### Example 1: host in a /26 network
+
+Given `192.168.10.77/26`. Find the network address, broadcast address, host range and number of hosts.
+
+- Mask /26 = 255.255.255.192, the interesting octet is the fourth.
+- Block size $256 - 192 = 64$. Subnets start at 0, 64, 128, 192.
+- 77 lies between 64 and 127.
+
+| Result | Value |
+| --- | --- |
+| Network address | 192.168.10.64 |
+| Broadcast address | 192.168.10.127 |
+| Host range | 192.168.10.65 to 192.168.10.126 |
+| Hosts | $2^6 - 2 = 62$ |
+
+To check, in binary in the fourth octet:
+
+```text
+Address   77 = 01001101
+Mask     192 = 11000000
+AND          = 01000000 = 64   network address
+host bits set to 1 = 01111111 = 127 broadcast
+```
+
+### Example 2: boundary in the third octet
+
+Given `172.16.45.200/20`.
+
+- Mask /20 = 255.255.240.0, the interesting octet is the third.
+- Block size $256 - 240 = 16$. Subnets in the third octet: 0, 16, 32, 48, …
+- 45 lies between 32 and 47.
+
+| Result | Value |
+| --- | --- |
+| Network address | 172.16.32.0 |
+| Broadcast address | 172.16.47.255 |
+| Host range | 172.16.32.1 to 172.16.47.254 |
+| Hosts | $2^{12} - 2 = 4094$ |
+
+The fourth octet is 0 in the network address and 255 in the broadcast, because it belongs entirely to the host part.
+
+### Example 3: are two hosts in the same network?
+
+PC A has `192.168.1.130/27`, PC B has `192.168.1.160/27`. Block size $256 - 224 = 32$; the subnets start at 128 and 160. PC A is in network 192.168.1.128 (to .159), PC B in network 192.168.1.160. The two **cannot** communicate **directly**, even though the addresses look similar. They need a router. This mistake (hosts in the "wrong" subnet because of a wrong mask) is common in practice.
+
+### Example 4: dividing a network into equal subnets
+
+The network `192.168.1.0/24` is to be divided into at least 6 equally sized subnets.
+
+- $2^n \geq 6$ gives $n = 3$ borrowed bits, i.e. $2^3 = 8$ subnets.
+- New prefix /27 (255.255.255.224), $32 - 27 = 5$ host bits, $2^5 - 2 = 30$ hosts per subnet, block size 32.
+
+| Subnet | Network address | Host range | Broadcast |
+| --- | --- | --- | --- |
+| 0 | 192.168.1.0 | .1 to .30 | 192.168.1.31 |
+| 1 | 192.168.1.32 | .33 to .62 | 192.168.1.63 |
+| 2 | 192.168.1.64 | .65 to .94 | 192.168.1.95 |
+| 3 | 192.168.1.96 | .97 to .126 | 192.168.1.127 |
+| 4 | 192.168.1.128 | .129 to .158 | 192.168.1.159 |
+| 5 | 192.168.1.160 | .161 to .190 | 192.168.1.191 |
+| 6 | 192.168.1.192 | .193 to .222 | 192.168.1.223 |
+| 7 | 192.168.1.224 | .225 to .254 | 192.168.1.255 |
+
+The first and last subnets (_subnet zero_ and _all-ones subnet_) used to be considered unusable. Today they are allowed (RFC 1878) and usable by default on Cisco since IOS 12.0.
+
+### Example 5: subnets by number of hosts
+
+From `172.20.0.0/16`, subnets with at least 500 hosts each are to be created. Find the prefix, the number of subnets and the third subnet.
+
+- $2^h - 2 \geq 500$ gives $h = 9$ ($2^9 - 2 = 510$).
+- Prefix $32 - 9 = 23$, mask 255.255.254.0, block size 2 in the third octet.
+- Borrowed bits $23 - 16 = 7$, so $2^7 = 128$ subnets.
+- Subnets: 172.20.0.0/23, 172.20.2.0/23, **172.20.4.0/23**, …
+
+The third subnet has the host range 172.20.4.1 to 172.20.5.254 and the broadcast address 172.20.5.255. Addresses such as 172.20.5.0 are perfectly normal host addresses here, because the fourth octet is not the network boundary.
+
+## VLSM
+
+With fixed-mask subnetting, every subnet gets the same number of addresses, even a point-to-point link that needs only two. **VLSM** (_Variable Length Subnet Masking_) allows subnets of different sizes within the same address range. You always allocate **the largest network first**, so that the blocks start at the right boundaries and no gaps arise.
+
+:::tip[Example: VLSM address plan]
+`192.168.50.0/24` is available for a site. Required are LAN A with 100 hosts, LAN B with 50, LAN C with 20, LAN D with 10 and three router-to-router links with 2 addresses each.
+
+| Network | Need | Prefix | Network address | Host range | Broadcast |
+| --- | --- | --- | --- | --- | --- |
+| LAN A | 100 | /25 (126) | 192.168.50.0 | .1 to .126 | .127 |
+| LAN B | 50 | /26 (62) | 192.168.50.128 | .129 to .190 | .191 |
+| LAN C | 20 | /27 (30) | 192.168.50.192 | .193 to .222 | .223 |
+| LAN D | 10 | /28 (14) | 192.168.50.224 | .225 to .238 | .239 |
+| WAN 1 | 2 | /30 (2) | 192.168.50.240 | .241 to .242 | .243 |
+| WAN 2 | 2 | /30 (2) | 192.168.50.244 | .245 to .246 | .247 |
+| WAN 3 | 2 | /30 (2) | 192.168.50.248 | .249 to .250 | .251 |
+| free | | /30 | 192.168.50.252 | | |
+
+With a fixed mask, LAN A would have forced a /25. Then only two subnets would have been possible and the requirement could not have been met.
+:::
+
+Plan the number of hosts with a margin: the default gateway needs an address, plus printers, access points, switches with management addresses and future growth.
+
+## Route summarisation
+
+**Route summarisation** (also **supernetting** or aggregation) is the reverse of subnetting: several contiguous networks are described by a single route with a shorter prefix. This makes routing tables smaller and limits the effects of changes, because a router does not learn when a single subnet fails.
+
+Method: write the network addresses in binary one below the other and count the common bits from the left; that gives the prefix.
+
+```text
+172.16.0.0  = 10101100.00010000.000000|00.00000000
+172.16.1.0  = 10101100.00010000.000000|01.00000000
+172.16.2.0  = 10101100.00010000.000000|10.00000000
+172.16.3.0  = 10101100.00010000.000000|11.00000000
+common:       8 + 8 + 6 = 22 bits  ->  172.16.0.0/22
+```
+
+Likewise, 192.168.8.0/24 to 192.168.15.0/24 summarise to **192.168.8.0/21** (8 = `00001000`, 15 = `00001111`, the first 5 bits of the third octet are equal).
+
+:::caution
+A summary may only include networks that actually lie behind this router. If you summarise 192.168.1.0/24 and 192.168.2.0/24 as 192.168.0.0/22, then 192.168.0.0/24 and 192.168.3.0/24 are included as well. If these are located elsewhere, traffic is misrouted. Networks can only be summarised well if the address plan allocates them in contiguous blocks on power-of-two boundaries.
+:::
+
+## Subnet calculator in code
+
+The following program calculates the mask, network address, broadcast, host range and number of hosts from CIDR notation. It converts the address into a 32-bit integer, after which all calculations are simple bit operations: the mask is created by shifting a row of ones to the left, the network address by AND, the broadcast by OR with the inverted mask.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Net;
+using System.Net.Sockets;
+
+string[] examples = ["192.168.10.77/26", "172.16.45.200/20", "10.0.0.1/31"];
+foreach (string cidr in examples)
+{
+    Console.WriteLine(Subnet.Parse(cidr));
+}
+
+public readonly record struct Subnet(uint Address, int Prefix)
+{
+    // prefix 0 handled separately because a shift by 32 bits has no effect in C#
+    public uint Mask => Prefix == 0 ? 0u : uint.MaxValue << (32 - Prefix);
+    public uint Network => Address & Mask;
+    public uint Broadcast => Network | ~Mask;
+
+    // /31 (RFC 3021) and /32 have no separate network and broadcast address
+    public ulong HostCount => Prefix switch
+    {
+        32 => 1,
+        31 => 2,
+        _ => (1UL << (32 - Prefix)) - 2,
+    };
+    public uint FirstHost => Prefix >= 31 ? Network : Network + 1;
+    public uint LastHost => Prefix >= 31 ? Broadcast : Broadcast - 1;
+
+    public static Subnet Parse(string cidr)
+    {
+        string[] parts = cidr.Split('/');
+        if (parts.Length != 2
+            || !IPAddress.TryParse(parts[0], out IPAddress? ip)
+            || ip.AddressFamily != AddressFamily.InterNetwork
+            || !int.TryParse(parts[1], out int prefix)
+            || prefix is < 0 or > 32)
+        {
+            throw new FormatException($"Invalid CIDR notation: {cidr}");
+        }
+        byte[] b = ip.GetAddressBytes();
+        uint address = (uint)b[0] << 24 | (uint)b[1] << 16 | (uint)b[2] << 8 | b[3];
+        return new Subnet(address, prefix);
+    }
+
+    private static string Dotted(uint v) =>
+        $"{v >> 24}.{(v >> 16) & 0xFF}.{(v >> 8) & 0xFF}.{v & 0xFF}";
+
+    public override string ToString() =>
+        $"""
+        {Dotted(Address)}/{Prefix}
+          Subnet mask:  {Dotted(Mask)}
+          Network:      {Dotted(Network)}
+          Broadcast:    {Dotted(Broadcast)}
+          Host range:   {Dotted(FirstHost)} to {Dotted(LastHost)}
+          Hosts:        {HostCount}
+        """;
+}
+```
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fmt;
+use std::net::Ipv4Addr;
+
+#[derive(Debug, Clone, Copy)]
+struct Subnet {
+    address: u32,
+    prefix: u32,
+}
+
+impl Subnet {
+    fn parse(cidr: &str) -> Result<Self, String> {
+        let err = || format!("Invalid CIDR notation: {cidr}");
+        let (ip, prefix) = cidr.split_once('/').ok_or_else(err)?;
+        let ip: Ipv4Addr = ip.parse().map_err(|_| err())?;
+        let prefix: u32 = prefix.parse().map_err(|_| err())?;
+        if prefix > 32 {
+            return Err(err());
+        }
+        Ok(Self { address: u32::from(ip), prefix })
+    }
+
+    fn mask(&self) -> u32 {
+        // checked_shl returns None for a shift by 32 bits (prefix 0)
+        u32::MAX.checked_shl(32 - self.prefix).unwrap_or(0)
+    }
+
+    fn network(&self) -> u32 {
+        self.address & self.mask()
+    }
+
+    fn broadcast(&self) -> u32 {
+        self.network() | !self.mask()
+    }
+
+    // /31 (RFC 3021) and /32 have no separate network and broadcast address
+    fn host_count(&self) -> u64 {
+        match self.prefix {
+            32 => 1,
+            31 => 2,
+            p => (1u64 << (32 - p)) - 2,
+        }
+    }
+
+    fn host_range(&self) -> (Ipv4Addr, Ipv4Addr) {
+        if self.prefix >= 31 {
+            (self.network().into(), self.broadcast().into())
+        } else {
+            ((self.network() + 1).into(), (self.broadcast() - 1).into())
+        }
+    }
+}
+
+impl fmt::Display for Subnet {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let (first, last) = self.host_range();
+        writeln!(f, "{}/{}", Ipv4Addr::from(self.address), self.prefix)?;
+        writeln!(f, "  Subnet mask:  {}", Ipv4Addr::from(self.mask()))?;
+        writeln!(f, "  Network:      {}", Ipv4Addr::from(self.network()))?;
+        writeln!(f, "  Broadcast:    {}", Ipv4Addr::from(self.broadcast()))?;
+        writeln!(f, "  Host range:   {first} to {last}")?;
+        write!(f, "  Hosts:        {}", self.host_count())
+    }
+}
+
+fn main() {
+    for cidr in ["192.168.10.77/26", "172.16.45.200/20", "10.0.0.1/31"] {
+        match Subnet::parse(cidr) {
+            Ok(subnet) => println!("{subnet}"),
+            Err(e) => eprintln!("{e}"),
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Output:
+
+```text
+192.168.10.77/26
+  Subnet mask:  255.255.255.192
+  Network:      192.168.10.64
+  Broadcast:    192.168.10.127
+  Host range:   192.168.10.65 to 192.168.10.126
+  Hosts:        62
+172.16.45.200/20
+  Subnet mask:  255.255.240.0
+  Network:      172.16.32.0
+  Broadcast:    172.16.47.255
+  Host range:   172.16.32.1 to 172.16.47.254
+  Hosts:        4094
+10.0.0.1/31
+  Subnet mask:  255.255.255.254
+  Network:      10.0.0.0
+  Broadcast:    10.0.0.1
+  Host range:   10.0.0.0 to 10.0.0.1
+  Hosts:        2
+```
+
+## ICMP
+
+The **Internet Control Message Protocol** (ICMP, RFC 792) reports errors and diagnostic information. It is carried directly in IP (protocol number 1) and belongs to the network layer. ICMP does not make IP reliable, but it informs the sender when something goes wrong.
+
+| Type | Name | Use |
+| --- | --- | --- |
+| 0 | Echo Reply | reply to `ping` |
+| 3 | Destination Unreachable | destination not reachable, with codes such as 0 (network), 1 (host), 3 (port), 4 (fragmentation needed but DF set) |
+| 5 | Redirect | router tells the host that there is a better gateway |
+| 8 | Echo Request | `ping` |
+| 11 | Time Exceeded | TTL has dropped to 0, the basis of `traceroute` |
+
+How `ping` and `traceroute` use these messages is described under [Network Troubleshooting](/en/networking/network-troubleshooting/#ping). Firewalls should not block ICMP across the board: without "fragmentation needed" messages, **Path MTU Discovery** stops working, and connections hang on large packets.
+
+## Further reading
+
+- [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791) and [RFC 1918: Address Allocation for Private Internets](https://www.rfc-editor.org/rfc/rfc1918)
+- [RFC 4632: Classless Inter-domain Routing (CIDR)](https://www.rfc-editor.org/rfc/rfc4632)
+- [IANA IPv4 Special-Purpose Address Registry](https://www.iana.org/assignments/iana-ipv4-special-registry/)

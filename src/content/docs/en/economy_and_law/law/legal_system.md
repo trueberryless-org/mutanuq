@@ -46,7 +46,7 @@ The **Constitutional Court** checks whether laws comply with the constitution an
 | superiority and subordination                      | equality of the parties                           |
 | constitutional law, administrative law, criminal law, tax law, procedural law | civil law (ABGB), business law (UGB), labour law (partly) |
 
-The most important law in private law is the **Allgemeines bürgerliches Gesetzbuch (ABGB, General Civil Code)** of 1811, one of the oldest civil codes still in force in Europe. For entrepreneurs, the Unternehmensgesetzbuch (UGB, Business Code) also applies.
+The most important law in private law is the **General Civil Code (ABGB)** of 1811, one of the oldest civil codes still in force in Europe. For entrepreneurs, the Business Code (UGB) also applies.
 
 ## Structure of the state and separation of powers
 

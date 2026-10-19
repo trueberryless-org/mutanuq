@@ -1,0 +1,579 @@
+---
+title: Object-Oriented Programming
+description: Classes, objects, encapsulation, abstraction, inheritance, polymorphism, interfaces and traits in C# and Rust.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Object-oriented programming (OOP) is a programming paradigm in which data and the behaviour that operates on this data are combined into **objects**. Instead of viewing a program as a long sequence of instructions, you model it as an interplay of objects that communicate with each other, similar to things in the real world.
+
+C# is a classic object-oriented language with classes and inheritance. Rust has neither classes nor inheritance of implementations, but it implements the core ideas of OOP with **structs**, **methods** and **traits**.
+
+## Classes and objects
+
+A **class** is the blueprint for objects. It defines which data (fields and properties) and which behaviour (methods) an object has. An **object** is a concrete instance of a class that is created at runtime using `new`. The **constructor** is called when an object is created and ensures that the object is in a valid state from the very beginning.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var car = new Car("Škoda"); // object (instance) of the Car class
+car.Accelerate(50);
+Console.WriteLine($"{car.Brand}: {car.Speed} km/h"); // Škoda: 50 km/h
+
+public class Car
+{
+    // properties with public read access
+    public string Brand { get; }
+    public int Speed { get; private set; }
+
+    // constructor
+    public Car(string brand)
+    {
+        Brand = brand;
+    }
+
+    // method
+    public void Accelerate(int delta) => Speed += delta;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// the data lives in the struct ...
+pub struct Car {
+    brand: String,
+    speed: u32,
+}
+
+// ... the behaviour in the impl block
+impl Car {
+    // associated function as constructor (convention: new)
+    pub fn new(brand: &str) -> Self {
+        Car { brand: brand.to_string(), speed: 0 }
+    }
+
+    // methods receive self as their first parameter
+    pub fn accelerate(&mut self, delta: u32) {
+        self.speed += delta;
+    }
+
+    pub fn brand(&self) -> &str {
+        &self.brand
+    }
+
+    pub fn speed(&self) -> u32 {
+        self.speed
+    }
+}
+
+fn main() {
+    let mut car = Car::new("Škoda");
+    car.accelerate(50);
+    println!("{}: {} km/h", car.brand(), car.speed()); // Škoda: 50 km/h
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Fields, properties and static members
+
+- A **field** is a variable that belongs to an object. Fields are usually `private`.
+- A **property** (C# only) looks like a field from the outside but internally consists of a `get` and a `set` method. This allows you to validate values or to allow read-only access. The short form `{ get; set; }` is called an **auto-property**. With `init`, a property may only be set when the object is created.
+- **Static** members (`static`) do not belong to an object but to the class itself, for example a counter of all created objects or `Math.Sqrt`. In Rust, they correspond to **associated functions** without `self`, such as `Car::new`.
+- `this` (C#) or `self` (Rust) refers to the current object.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var account = new BankAccount("AT61 1904 3002 3457 3201");
+account.Deposit(100);
+Console.WriteLine(account.Balance);          // 100
+Console.WriteLine(BankAccount.Count);        // 1
+
+public class BankAccount
+{
+    private decimal _balance;                 // private field
+
+    public static int Count { get; private set; }  // static: belongs to the class
+
+    public string Iban { get; init; }         // can only be set during creation
+
+    public decimal Balance => _balance;       // read-only
+
+    public BankAccount(string iban)
+    {
+        Iban = iban;
+        Count++;
+    }
+
+    public void Deposit(decimal amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be positive");
+        _balance += amount;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::sync::atomic::{AtomicUsize, Ordering};
+
+// static counter; atomic, so that it is also safe with threads
+static COUNT: AtomicUsize = AtomicUsize::new(0);
+
+pub struct BankAccount {
+    iban: String,   // fields are private by default (module-wide)
+    balance: u64,   // in cents
+}
+
+impl BankAccount {
+    pub fn new(iban: &str) -> Self {
+        COUNT.fetch_add(1, Ordering::SeqCst);
+        BankAccount { iban: iban.to_string(), balance: 0 }
+    }
+
+    pub fn deposit(&mut self, amount: u64) -> Result<(), String> {
+        if amount == 0 {
+            return Err("Amount must be positive".to_string());
+        }
+        self.balance += amount;
+        Ok(())
+    }
+
+    pub fn balance(&self) -> u64 {
+        self.balance
+    }
+
+    pub fn count() -> usize {
+        COUNT.load(Ordering::SeqCst)
+    }
+}
+
+fn main() {
+    let mut account = BankAccount::new("AT61 1904 3002 3457 3201");
+    account.deposit(100).unwrap();
+    println!("{}", account.balance());   // 100
+    println!("{}", BankAccount::count()); // 1
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Records
+
+For classes that only carry data, C# offers **records** (`record` or `record struct`). The compiler automatically generates a constructor, properties, a value-based comparison with `==`, `ToString()` and, with `with`, a copy with changed values. In Rust, you achieve the same by letting the compiler implement traits such as `Debug`, `Clone` and `PartialEq` with `#[derive(...)]`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var a = new Point(1, 2);
+var b = a with { Y = 5 };   // copy with a changed Y
+Console.WriteLine(a);       // Point { X = 1, Y = 2 }
+Console.WriteLine(a == new Point(1, 2)); // True, compares the values
+
+public record Point(int X, int Y);
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let a = Point { x: 1, y: 2 };
+    let b = Point { y: 5, ..a };   // copy with a changed y
+    println!("{a:?}");             // Point { x: 1, y: 2 }
+    println!("{}", a == Point { x: 1, y: 2 }); // true
+    let _ = b;
+}
+```
+
+</TabItem>
+</Tabs>
+
+## The four pillars of OOP
+
+### Encapsulation
+
+Encapsulation means that the internal state of an object is protected from direct access from outside. Access happens exclusively through defined methods or properties. This way, the class itself can make sure that its state stays valid: in the example above, the balance can only be increased through `Deposit`, and negative amounts are rejected. In C#, visibility is controlled with **access modifiers**:
+
+| Modifier             | Visibility                                                      |
+| -------------------- | --------------------------------------------------------------- |
+| `public`             | Visible everywhere                                              |
+| `private`            | Only within the class itself (default for class members)        |
+| `protected`          | Within the class itself and in derived classes                  |
+| `internal`           | Within the same assembly (default for classes)                  |
+| `protected internal` | Within the same assembly or in derived classes                  |
+| `private protected`  | In derived classes, but only within the same assembly           |
+
+In Rust, everything is **private to its own module** by default. With `pub`, an item becomes public; with `pub(crate)`, it is only visible within the own package (_crate_).
+
+### Abstraction
+
+Abstraction means exposing only the properties that are essential for using an object and hiding implementation details. Whoever calls the `Accelerate` method does not need to know how the speed is calculated internally. Abstract classes, interfaces and traits are the most important tools for this.
+
+### Inheritance
+
+With inheritance, a derived class (subclass) takes over the fields and methods of a base class (superclass) and can extend or override them. Inheritance describes an **"is a" relationship**: a `Dog` _is an_ `Animal`. Base classes are data types that combine **similar** behaviour.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+public abstract class Animal
+{
+    public string Name { get; }
+
+    protected Animal(string name) => Name = name;
+
+    // abstract: every subclass must implement it
+    public abstract string MakeSound();
+
+    // virtual: may be overridden
+    public virtual string Describe() => $"{Name} says {MakeSound()}";
+}
+
+public class Dog : Animal
+{
+    public Dog(string name) : base(name) { }
+
+    public override string MakeSound() => "Woof";
+}
+
+public class Cat : Animal
+{
+    public Cat(string name) : base(name) { }
+
+    public override string MakeSound() => "Meow";
+
+    public override string Describe() => base.Describe() + " and purrs";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Rust has no inheritance. Shared behaviour is described by a trait,
+// which can also contain default implementations.
+pub trait Animal {
+    fn name(&self) -> &str;
+
+    // every type has to implement this itself
+    fn make_sound(&self) -> String;
+
+    // default implementation, may be overridden
+    fn describe(&self) -> String {
+        format!("{} says {}", self.name(), self.make_sound())
+    }
+}
+
+pub struct Dog {
+    pub name: String,
+}
+
+impl Animal for Dog {
+    fn name(&self) -> &str { &self.name }
+    fn make_sound(&self) -> String { "Woof".to_string() }
+}
+
+pub struct Cat {
+    pub name: String,
+}
+
+impl Animal for Cat {
+    fn name(&self) -> &str { &self.name }
+    fn make_sound(&self) -> String { "Meow".to_string() }
+    fn describe(&self) -> String {
+        format!("{} says {} and purrs", self.name, self.make_sound())
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+- An **abstract class** (`abstract`) cannot be instantiated and may contain abstract methods without an implementation.
+- With `virtual`, the base class allows a method to be overridden; with `override`, it is overridden in the subclass. With `sealed`, further derivation or overriding is forbidden.
+- With `base`, you access the constructor or methods of the base class.
+- C# and Java only support **single inheritance** of classes: a class can inherit from exactly one base class. All classes inherit directly or indirectly from `object`, which provides `ToString()`, `Equals()` and `GetHashCode()`, among others.
+
+### Polymorphism
+
+Polymorphism ("many forms") means that an object can be addressed through the type of its base class or an interface, but shows the behaviour of its actual type at runtime. This is called **dynamic binding** (_dynamic dispatch_). Internally, the runtime uses a table of pointers to the correct methods (_vtable_).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+List<Animal> animals = [new Dog("Buddy"), new Cat("Kitty")];
+
+foreach (var animal in animals)
+{
+    // calls the matching implementation in each case
+    Console.WriteLine(animal.Describe());
+}
+// Buddy says Woof
+// Kitty says Meow and purrs
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // Box<dyn Animal> is a trait object with dynamic dispatch
+    let animals: Vec<Box<dyn Animal>> = vec![
+        Box::new(Dog { name: "Buddy".into() }),
+        Box::new(Cat { name: "Kitty".into() }),
+    ];
+
+    for animal in &animals {
+        println!("{}", animal.describe());
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Besides this runtime polymorphism, there is **static polymorphism**, where it is already decided at compile time which method is called:
+
+- **Overloading**: several methods share the same name but differ in their parameters (C# only).
+- **Generics**: a generic function such as `fn loudest<T: Animal>(a: &T)` is compiled separately by the Rust compiler for each type it is used with (_monomorphisation_). This is faster than dynamic dispatch but produces more machine code. More on this in [Generics and Collections](/en/software-development/generics-and-collections/).
+
+## Interfaces and traits
+
+Interfaces are data types that combine **different** behaviour. An interface defines a contract, that is, which methods and properties a class must provide, without (usually) prescribing an implementation. Interfaces describe a **"can do" relationship**: a `Dog` _can_ be fed, but so can a `Plant`, even though both have nothing else in common. In Rust, **traits** take on this role.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+IFeedable[] hungry = [new Hamster(), new Plant()];
+foreach (var thing in hungry)
+{
+    thing.Feed("food");
+}
+
+public interface IFeedable
+{
+    void Feed(string food);
+}
+
+public class Hamster : IFeedable
+{
+    public void Feed(string food) => Console.WriteLine($"The hamster eats {food}.");
+}
+
+public class Plant : IFeedable
+{
+    public void Feed(string food) => Console.WriteLine("The plant gets fertiliser.");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait Feedable {
+    fn feed(&self, food: &str);
+}
+
+struct Hamster;
+struct Plant;
+
+impl Feedable for Hamster {
+    fn feed(&self, food: &str) {
+        println!("The hamster eats {food}.");
+    }
+}
+
+impl Feedable for Plant {
+    fn feed(&self, _food: &str) {
+        println!("The plant gets fertiliser.");
+    }
+}
+
+fn main() {
+    let hungry: Vec<Box<dyn Feedable>> = vec![Box::new(Hamster), Box::new(Plant)];
+    for thing in &hungry {
+        thing.feed("food");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Unlike base classes, a class can implement **any number of interfaces**. By convention, interface names in C# start with an `I`. Since C# 8, interfaces may also contain default implementations. In addition, Rust traits can be implemented for foreign types, for example a custom trait for `i32`, as long as either the trait or the type comes from your own crate (_orphan rule_).
+
+Important traits and interfaces of the standard libraries:
+
+| Purpose                       | C#                                      | Rust                                   |
+| ----------------------------- | --------------------------------------- | -------------------------------------- |
+| Text representation           | override `ToString()`                   | `Display` (for `{}`), `Debug` (for `{:?}`) |
+| Equality                      | `Equals`, `GetHashCode`, `IEquatable<T>` | `PartialEq`, `Eq`, `Hash`             |
+| Ordering, sorting             | `IComparable<T>`                        | `PartialOrd`, `Ord`                    |
+| Copying                       | `ICloneable` (rarely used)              | `Clone`, `Copy`                        |
+| Iteration                     | `IEnumerable<T>`                        | `Iterator`, `IntoIterator`             |
+| Releasing resources           | `IDisposable`                           | `Drop`                                 |
+| Default value                 | `default(T)`                            | `Default`                              |
+| Conversion                    | `implicit`/`explicit operator`          | `From`, `Into`, `TryFrom`              |
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var temp = new Temperature(21.5);
+Console.WriteLine(temp);             // 21.5 °C
+
+public class Temperature(double celsius) // primary constructor (C# 12)
+{
+    public double Celsius { get; } = celsius;
+
+    public override string ToString() => $"{Celsius} °C";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fmt;
+
+struct Temperature {
+    celsius: f64,
+}
+
+impl fmt::Display for Temperature {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} °C", self.celsius)
+    }
+}
+
+fn main() {
+    let temp = Temperature { celsius: 21.5 };
+    println!("{temp}"); // 21.5 °C
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Abstract class or interface?
+
+| Abstract class                                       | Interface                                                 |
+| ---------------------------------------------------- | --------------------------------------------------------- |
+| "is a" relationship                                  | "can do" relationship                                     |
+| Can contain fields, constructors and implementation  | Contains no state (no instance fields)                    |
+| Only one base class per class                        | Any number of interfaces per class                        |
+| Well suited for shared code of related classes       | Well suited for shared capabilities of unrelated classes  |
+
+## Relationships between classes
+
+| Relationship     | Meaning                                                                                        | Example                                     |
+| ---------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Inheritance**  | "is a"                                                                                         | `Dog` is an `Animal`                        |
+| **Realisation**  | A class implements an interface.                                                               | `Dog` implements `IFeedable`                |
+| **Association**  | A class knows another one and uses it.                                                         | A `Teacher` teaches `Student`s              |
+| **Aggregation**  | "has a"; the parts can exist without the whole.                                                | A `SchoolClass` has `Student`s              |
+| **Composition**  | "consists of"; the parts only exist together with the whole.                                   | A `House` consists of `Room`s               |
+| **Dependency**   | A class uses another one only briefly, for example as a parameter.                             | `Printer.Print(Document d)`                 |
+
+How these relationships are drawn is shown in the [class diagram](/en/software-development/uml/#class-diagram).
+
+## Composition over inheritance
+
+Inheritance couples a subclass very tightly to its base class: every change to the base class can affect all subclasses, and deep inheritance hierarchies are hard to understand. It is often more flexible to **compose** an object from other objects ("has a" relationship). This principle is called _composition over inheritance_ and forms the basis of many [design patterns](/en/software-development/design-patterns/), for example the [Strategy](/en/software-development/design-patterns/#strategy) or the [Decorator](/en/software-development/design-patterns/#decorator) pattern. Rust enforces this style because it has no inheritance of implementations at all.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Instead of ElectricCar : Car and PetrolCar : Car,
+// the vehicle receives its engine as a component.
+var tesla = new Vehicle(new ElectricEngine());
+var golf = new Vehicle(new PetrolEngine());
+tesla.Drive(); // Hums quietly.
+golf.Drive();  // Roars loudly.
+
+public interface IEngine
+{
+    string Start();
+}
+
+public class ElectricEngine : IEngine
+{
+    public string Start() => "Hums quietly.";
+}
+
+public class PetrolEngine : IEngine
+{
+    public string Start() => "Roars loudly.";
+}
+
+public class Vehicle(IEngine engine)
+{
+    public void Drive() => Console.WriteLine(engine.Start());
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait Engine {
+    fn start(&self) -> String;
+}
+
+struct ElectricEngine;
+struct PetrolEngine;
+
+impl Engine for ElectricEngine {
+    fn start(&self) -> String { "Hums quietly.".into() }
+}
+
+impl Engine for PetrolEngine {
+    fn start(&self) -> String { "Roars loudly.".into() }
+}
+
+struct Vehicle {
+    engine: Box<dyn Engine>, // composition: the vehicle has an engine
+}
+
+impl Vehicle {
+    fn drive(&self) {
+        println!("{}", self.engine.start());
+    }
+}
+
+fn main() {
+    let tesla = Vehicle { engine: Box::new(ElectricEngine) };
+    let golf = Vehicle { engine: Box::new(PetrolEngine) };
+    tesla.drive(); // Hums quietly.
+    golf.drive();  // Roars loudly.
+}
+```
+
+</TabItem>
+</Tabs>
+
+This way, the engine can be swapped at runtime, and new kinds of engines require no changes to `Vehicle`.

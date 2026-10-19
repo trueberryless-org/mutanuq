@@ -1,0 +1,141 @@
+---
+title: Software Engineering
+description: The software life cycle, requirements analysis with user stories and use cases, prioritisation, effort estimation, maintenance, documentation, DevOps and software licences.
+sidebar:
+  order: 23
+---
+
+**Software engineering** is the engineering-style development of software: planned, with proven methods, measurable and in teams. The term became well known at a NATO conference in Garmisch-Partenkirchen in 1968, which discussed the **software crisis**: projects kept getting bigger, exceeded time and budget and delivered faulty results. To this day, many IT projects fail not because of technology but because of unclear requirements, poor communication and a lack of planning.
+
+## Software life cycle
+
+Regardless of the [process model](/en/project_management/basics/process_models/), all software goes through the same activities (_software development life cycle_, SDLC):
+
+| Phase                    | Questions and results                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| **Requirements analysis** | What should the system do? Requirements specification, functional specification, user stories, use cases |
+| **Design**               | How is it structured? [Architecture](/en/software-development/software-architecture/), [UML diagrams](/en/software-development/uml/), database model |
+| **Implementation**       | Programming according to [clean code](/en/software-development/clean-code/) principles, code reviews |
+| **Testing**              | Does it meet the requirements? [Unit, integration, system and acceptance tests](/en/software-development/testing/) |
+| **Delivery**             | Installation, data migration, user training                                                |
+| **Operation and maintenance** | Fixing, adapting, extending; often the largest part of the total costs               |
+
+In the waterfall model, these phases run once one after another; in agile methods such as Scrum, they run on a small scale in every sprint.
+
+### Maintenance
+
+Most of the costs of software do not arise during development but during the years of operation afterwards. There are four types of maintenance (according to ISO/IEC 14764):
+
+- **Corrective**: fixing reported errors.
+- **Adaptive**: adapting to a changed environment, such as a new operating system, a new legal situation or a new version of a library.
+- **Perfective**: improving and extending, such as new features or better performance.
+- **Preventive**: preventing future problems, for example through [refactoring](/en/software-development/clean-code/#refactoring) or updating dependencies.
+
+**Technical debt** arises when quick, unclean solutions are chosen deliberately or unknowingly. As with a loan, you have to pay "interest" later: every further change becomes more costly until you pay off the debt by cleaning up.
+
+## Requirements analysis
+
+Errors in the requirements are the most expensive because they are noticed late and then affect much that has already been built. **Requirements engineering** covers eliciting, documenting, validating and managing requirements.
+
+### Kinds of requirements
+
+- **Functional requirements** describe **what** the system should do: "Teachers can enter grades."
+- **Non-functional requirements** (quality requirements) describe **how well** it should do it: response time under one second, 500 simultaneous users, usable on a smartphone, encryption of all connections. They are based on the quality characteristics of ISO/IEC 25010 (see [Software Quality](/en/project_management/quality_management/software_quality/)).
+- **Constraints** restrict the solution: a prescribed programming language, budget, deadlines, legal requirements such as the [GDPR](/en/economy_and_law/law/internet_law/#data-protection).
+
+### Requirements specification and functional specification
+
+- The **requirements specification** describes from the **customer's** point of view **what** is needed and **what for**.
+- The **functional specification** describes from the **contractor's** point of view **how** and **with what** the requirements will be implemented.
+
+Both documents are explained in more detail on the page [Project Start](/en/project_management/basics/project_start/). In agile projects, a continuously maintained product backlog of user stories replaces the large documents.
+
+### Elicitation techniques
+
+| Technique              | Description                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| **Interview**          | conversation with customers and future users, prepared with open questions                     |
+| **Workshop**           | several stakeholders work out requirements together, for example with [creativity techniques](/en/project_management/basics/creativity_techniques/) |
+| **Observation**        | watching users do their real work to discover unspoken knowledge                               |
+| **Questionnaire**      | surveying many people in a structured way                                                      |
+| **Document analysis**  | evaluating existing forms, legacy systems and regulations                                      |
+| **Prototyping**        | showing sketches, mock-ups or clickable prototypes and collecting feedback                     |
+
+The **Kano model** classifies requirements by their effect on satisfaction: **basic requirements** are taken for granted and only noticed when they are missing. **Performance requirements** increase satisfaction in proportion to how well they are met. **Excitement requirements** are expected by nobody and surprise positively.
+
+### User stories
+
+In agile projects, requirements are formulated as **user stories** from the point of view of a user:
+
+> **As a** form teacher, **I want** to export the absences of my class as a list **so that** I can discuss them at the class conference.
+
+Every story comes with **acceptance criteria** that define when it is fulfilled. They are often written in the _Given, When, Then_ format:
+
+> **Given** class 3AHIT has 40 absences in the semester, **when** the form teacher clicks "Export", **then** a CSV file with all absences of the class is downloaded.
+
+Good user stories meet the **INVEST** criteria: _independent_, _negotiable_, _valuable_ to the user, _estimable_, _small_ enough for one sprint and _testable_. Large stories that still have to be broken down are called **epics**.
+
+More detailed processes are described as **use cases** with actor, precondition, main flow, alternative flows and postcondition, summarised graphically in the [use case diagram](/en/software-development/uml/#use-case-diagram).
+
+### Quality of requirements
+
+A good requirement is **unambiguous**, **complete**, **consistent** (contradicts no other), **verifiable**, **feasible** and **traceable** (you know where it comes from and which code and tests implement it). "The system should be fast" is not verifiable; "95 % of search queries are answered in under 500 ms" is.
+
+### Prioritisation
+
+Not all requirements are equally important. With the **MoSCoW** method, every requirement is assigned to a category:
+
+- **Must have**: indispensable; without it, the product is worthless.
+- **Should have**: important, but can be delivered later if necessary.
+- **Could have**: desirable if there is time.
+- **Won't have (this time)**: deliberately excluded, perhaps in a later version.
+
+## Effort estimation
+
+How long the implementation takes is hard to predict. Besides the general methods on the page [Effort Estimation and Cost Planning](/en/project_management/planning/cost_planning_and_estimation/), there are methods specifically for software:
+
+- **Story points** and **planning poker**: the team estimates the relative size of user stories (often in Fibonacci numbers 1, 2, 3, 5, 8, 13). Everyone lays down a card at the same time, and large differences are discussed. From the points completed in past sprints (**velocity**), you can estimate how much fits into future sprints.
+- **Function point analysis**: counts the inputs, outputs, queries, internal data stores and interfaces of a system and weights them by complexity. The result is independent of the programming language.
+- **COCOMO** (_Constructive Cost Model_, Barry Boehm): estimates the effort in person-months from the expected program size and influencing factors.
+
+## Documentation
+
+| Kind                         | Target group        | Content                                                                             |
+| ---------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
+| **User documentation**       | users               | user manual, help, tutorials, frequently asked questions                            |
+| **Installation and operations manual** | administrators | system requirements, installation, configuration, backup                       |
+| **Developer documentation**  | developers          | architecture ([arc42](/en/software-development/software-architecture/#documenting-architecture)), data model, build instructions, conventions |
+| **API documentation**        | users of an interface | endpoints, parameters, examples; often generated automatically (OpenAPI, `cargo doc`) |
+| **README**                   | everyone            | purpose, installation, first steps, licence; the first file you read in a repository |
+| **Changelog**                | everyone            | changes in every version                                                            |
+
+Documentation that lives next to the code in [version control](/en/software-development/version-control/) and is changed together with it (_docs as code_) is the most likely to stay up to date.
+
+## DevOps
+
+**DevOps** combines development and operations. Instead of "throwing software over the wall" to another department, teams are responsible for their application from development to operation. Important practices are:
+
+- **Continuous integration and continuous delivery** (CI/CD): build, test and deliver every change automatically (see [Version Control](/en/software-development/version-control/#continuous-integration)).
+- **Infrastructure as code**: servers and networks are described in files (for example with Terraform, Ansible or Dockerfiles) and set up automatically.
+- **Monitoring** and logging during operation (see [Monitoring](/en/deployment/operations/monitoring/)).
+- **Containers** for identical environments in development, testing and production (see [Virtualisation](/en/deployment/virtualisation/)).
+
+## Software licences
+
+Anyone who publishes software or uses third-party libraries has to observe licences. Without a licence, nobody may use the code, because the **copyright** belongs to the author automatically (see [Internet Law](/en/economy_and_law/law/internet_law/#copyright)).
+
+| Kind of licence               | Examples                   | Conditions                                                                     |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------ |
+| **Proprietary**               | Windows, Microsoft Office  | use only under the manufacturer's conditions, source code usually not available |
+| **Permissive open-source licences** | MIT, Apache 2.0, BSD | use, modification and distribution allowed, even in closed software; the licence text and copyright notice must be retained. Apache 2.0 also includes a patent licence. |
+| **Copyleft licences**         | GPL, AGPL                  | derived works must be distributed under the same licence and with source code. The AGPL also applies when software is only offered over a network. |
+| **Weak copyleft**             | LGPL, MPL                  | changes to the library itself must be disclosed, programs that only use it need not be |
+| **Public domain**             | Unlicense, CC0             | no conditions                                                                  |
+
+Free software as defined by the Free Software Foundation guarantees four freedoms: to run the program for any purpose, to study and adapt it, to redistribute it and to publish improved versions. Mutanuq itself is licensed under the MIT licence.
+
+## Further reading
+
+- [IREB](https://www.ireb.org/en) (International Requirements Engineering Board) and its syllabus for the Certified Professional for Requirements Engineering
+- [Choose a License](https://choosealicense.com/) for selecting an open-source licence
+- Ian Sommerville: _Software Engineering_, Pearson (standard textbook)

@@ -70,7 +70,7 @@ E. T. A. Hoffmann was a lawyer, composer, illustrator and writer. He is the mast
 
 ### Brothers Grimm
 
-**Jacob** (1785 – 1863) and Wilhelm Grimm (1786 – 1859) collected fairy tales and published them as "Kinder- und Hausmärchen" (Children's and Household Tales, from 1812), including "Hansel and Gretel", "Little Red Riding Hood" and "Snow White". However, the tales did not come directly "from the people": they were mostly told to the brothers by educated middle-class women and heavily edited by Wilhelm Grimm. The brothers also founded German studies (Germanistik) and started the "Deutsches Wörterbuch" (German Dictionary).
+**Jacob** (1785 – 1863) and Wilhelm Grimm (1786 – 1859) collected fairy tales and published them as "Kinder- und Hausmärchen" (Children's and Household Tales, from 1812), including "Hansel and Gretel", "Little Red Riding Hood" and "Snow White". However, the tales did not come directly "from the people": they were mostly told to the brothers by educated middle-class women and heavily edited by Wilhelm Grimm. The brothers also founded German studies and started the "Deutsches Wörterbuch" (German Dictionary).
 
 ### Other representatives
 

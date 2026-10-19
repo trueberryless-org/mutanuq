@@ -1,0 +1,158 @@
+---
+title: Momentum and Collisions
+description: Momentum, impulse, conservation of momentum, elastic and inelastic collisions with worked examples, the ballistic pendulum, recoil and the rocket principle.
+sidebar:
+  order: 5
+---
+
+Alongside energy, momentum is the second great conserved quantity in mechanics. It is used to calculate collisions, explosions and recoil, that is processes in which very large forces act for a very short time and the force itself is not known in detail.
+
+## Momentum
+
+The **momentum** (linear momentum) of a body is the product of mass and velocity:
+
+$$
+\vec p = m \cdot \vec v, \qquad [p] = \mathrm{kg\,m/s} = \mathrm{N\,s}
+$$
+
+Momentum is a vector and points in the direction of motion. A $10\,\mathrm{t}$ lorry at $36\,\mathrm{km/h}$ has a momentum of $10\,000 \cdot 10 = 10^5\,\mathrm{kg\,m/s}$, as much as a $1\,\mathrm{t}$ car at $360\,\mathrm{km/h}$.
+
+Newton originally formulated his second law in terms of momentum:
+
+$$
+\vec F = \frac{\mathrm{d}\vec p}{\mathrm{d}t}
+$$
+
+For constant mass, this gives $\vec F = m \vec a$. The momentum form, however, also holds when the mass changes, as in a rocket.
+
+## Impulse
+
+If a force acts during the time $\Delta t$, the momentum changes by the **impulse** $\vec I$:
+
+$$
+\vec I = \int_{t_1}^{t_2} \vec F\,\mathrm{d}t = \Delta \vec p, \qquad \text{for a constant force: } I = F \cdot \Delta t
+$$
+
+In the $F$-$t$ graph, the impulse is the area under the curve. For a given change in momentum, the force is smaller the longer the collision lasts. Crumple zones, airbags, cycle helmets and bending your knees when landing after a jump are all based on this.
+
+:::tip[Example: football]
+A $0.45\,\mathrm{kg}$ ball is kicked from rest to $25\,\mathrm{m/s}$. The foot is in contact for $10\,\mathrm{ms}$. Impulse $I = 0.45 \cdot 25 = 11.25\,\mathrm{N\,s}$, average force $F = 11.25/0.01 = 1125\,\mathrm{N}$, which equals the weight of about $115\,\mathrm{kg}$.
+:::
+
+## Conservation of momentum
+
+> In a closed system (no external forces), the total momentum is conserved in magnitude and direction.
+
+$$
+\sum \vec p_\mathrm{before} = \sum \vec p_\mathrm{after}
+$$
+
+The law follows directly from Newton's third law: the internal forces between the bodies are equal and opposite, so their impulses cancel. It holds for **every** collision, even when mechanical energy is lost. The centre of mass of a closed system therefore moves uniformly in a straight line, whatever happens inside.
+
+:::tip[Example: recoil of a rifle]
+A rifle ($4\,\mathrm{kg}$) fires a bullet ($10\,\mathrm{g}$) at $400\,\mathrm{m/s}$. Before, everything is at rest and the total momentum is zero. Afterwards: $0.01 \cdot 400 + 4 \cdot v = 0$, so $v = -1\,\mathrm{m/s}$. The rifle moves backwards at $1\,\mathrm{m/s}$.
+:::
+
+## Collisions
+
+In a collision, two bodies act on each other for a short time. Momentum is always conserved; kinetic energy only in an elastic collision.
+
+| Type of collision | Momentum | Kinetic energy | Example |
+| --- | --- | --- | --- |
+| **perfectly elastic** | conserved | conserved | billiard balls, gas molecules |
+| **partially elastic** (real collision) | conserved | partly converted into heat and deformation | tennis ball on the ground |
+| **perfectly inelastic** (plastic) | conserved | maximum loss, bodies move on together | rear-end collision with cars locked together, balls of modelling clay |
+
+### Perfectly elastic collision
+
+For a **head-on central collision** (motion along one line) with masses $m_1$, $m_2$ and velocities $v_1$, $v_2$ before the collision, conservation of momentum and energy give:
+
+$$
+v_1' = \frac{(m_1 - m_2)\,v_1 + 2 m_2 v_2}{m_1 + m_2}, \qquad
+v_2' = \frac{(m_2 - m_1)\,v_2 + 2 m_1 v_1}{m_1 + m_2}
+$$
+
+Special cases with the second body at rest ($v_2 = 0$):
+
+- **equal masses**: $v_1' = 0$, $v_2' = v_1$. The balls exchange their velocities (Newton's cradle).
+- **very large mass** $m_2$ (wall): $v_1' = -v_1$, the body bounces back with the same speed.
+- **very small mass** $m_2$: $v_2' \approx 2 v_1$.
+
+:::tip[Example: elastic collision]
+A ball with $m_1 = 2\,\mathrm{kg}$ and $v_1 = 3\,\mathrm{m/s}$ hits a stationary ball with $m_2 = 1\,\mathrm{kg}$.
+
+$$
+v_1' = \frac{(2 - 1) \cdot 3}{3} = 1\,\mathrm{m/s}, \qquad v_2' = \frac{2 \cdot 2 \cdot 3}{3} = 4\,\mathrm{m/s}
+$$
+
+Momentum check: before $2 \cdot 3 = 6$, after $2 \cdot 1 + 1 \cdot 4 = 6\,\mathrm{kg\,m/s}$. Energy check: before $\frac{1}{2} \cdot 2 \cdot 9 = 9\,\mathrm{J}$, after $1 + 8 = 9\,\mathrm{J}$.
+:::
+
+### Perfectly inelastic collision
+
+The bodies stick together after the collision and share a common velocity:
+
+$$
+v' = \frac{m_1 v_1 + m_2 v_2}{m_1 + m_2}
+$$
+
+The lost kinetic energy goes into deformation and heat.
+
+:::tip[Example: rear-end collision]
+A car ($1500\,\mathrm{kg}$, $20\,\mathrm{m/s}$) runs into a stationary car ($1000\,\mathrm{kg}$), and the two lock together.
+
+$$
+v' = \frac{1500 \cdot 20}{2500} = 12\,\mathrm{m/s}
+$$
+
+Kinetic energy before $\frac{1}{2} \cdot 1500 \cdot 20^2 = 300\,\mathrm{kJ}$, after $\frac{1}{2} \cdot 2500 \cdot 12^2 = 180\,\mathrm{kJ}$. $120\,\mathrm{kJ}$ (40 %) are converted into deformation and heat.
+:::
+
+:::tip[Example: ballistic pendulum]
+A bullet ($10\,\mathrm{g}$) lodges in a hanging wooden block ($2\,\mathrm{kg}$), which then swings up by $5\,\mathrm{cm}$. Two steps are needed, because energy is lost in the collision:
+
+1. Swing (conservation of energy): $v' = \sqrt{2 g h} = \sqrt{2 \cdot 9.81 \cdot 0.05} = 0.990\,\mathrm{m/s}$
+2. Collision (conservation of momentum): $v_1 = \frac{(m_1 + m_2)\,v'}{m_1} = \frac{2.01 \cdot 0.990}{0.01} = 199\,\mathrm{m/s}$
+
+Only about $0.5\,\%$ of the bullet's kinetic energy remains as kinetic energy of the pendulum.
+:::
+
+### Partially elastic collision and coefficient of restitution
+
+Real collisions lie in between. The **coefficient of restitution** $k$ compares the relative velocities after and before the collision:
+
+$$
+k = \frac{v_2' - v_1'}{v_1 - v_2}, \qquad 0 \le k \le 1
+$$
+
+$k = 1$ is elastic, $k = 0$ perfectly inelastic. If a ball falls from height $h$ onto the ground and bounces back to $h'$, then $k = \sqrt{h'/h}$.
+
+### Oblique collision
+
+If the bodies do not meet centrally, conservation of momentum applies to each component separately ($x$ and $y$). In an elastic collision of two equal masses, one of them at rest, the balls fly apart at a right angle afterwards, which is used in billiards.
+
+## Recoil and the rocket principle
+
+A rocket ejects gas backwards at the exhaust velocity $u$ (relative to the rocket). By conservation of momentum, it gains momentum forwards. It needs no air to "push against" and therefore also works in space.
+
+The **thrust** is the product of exhaust velocity and mass flow rate:
+
+$$
+F_\mathrm{thrust} = u \cdot \frac{\mathrm{d}m}{\mathrm{d}t}
+$$
+
+An engine with $u = 3000\,\mathrm{m/s}$ that ejects $250\,\mathrm{kg}$ of propellant per second delivers $750\,\mathrm{kN}$ of thrust.
+
+Integrating the momentum balance over the burn time (without gravity and air resistance) gives Tsiolkovsky's **rocket equation**:
+
+$$
+\Delta v = u \cdot \ln\frac{m_0}{m_\mathrm{e}}
+$$
+
+with initial mass $m_0$ and final (burnout) mass $m_\mathrm{e}$. With $u = 3000\,\mathrm{m/s}$ and a mass ratio of $10$, $\Delta v = 3000 \cdot \ln 10 = 6.91\,\mathrm{km/s}$. Reaching Earth orbit needs about $7.8\,\mathrm{km/s}$, plus losses due to gravity and air resistance. Because of the logarithm, more propellant alone cannot achieve this, which is why **multistage rockets** are built that drop their empty tanks.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 1_, chapter 9, openstax.org
+- NASA Glenn Research Center: _Ideal Rocket Equation_, grc.nasa.gov

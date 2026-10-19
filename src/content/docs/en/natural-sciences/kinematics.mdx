@@ -1,0 +1,264 @@
+---
+title: Kinematics
+description: Position, velocity and acceleration, uniform and uniformly accelerated motion, free fall, projectile motion, circular motion and relative motion.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Kinematics** describes how bodies move without asking about the cause. The causes, that is forces, are the subject of [dynamics](/en/natural-sciences/dynamics/). As long as size and rotation do not matter, the body is treated as a **point mass**.
+
+## Position, distance and frame of reference
+
+Motion is always relative to a **frame of reference**: a passenger sits still in the train, but for someone on the platform they move at $100\,\mathrm{km/h}$. You choose an origin and coordinate axes and describe the location of the body by its **position vector** $\vec r(t)$, or for straight-line motion by the coordinate $x(t)$.
+
+- The **displacement** $\Delta x = x_2 - x_1$ is a vector (it can be negative).
+- The **distance travelled** $s$ is the length of the actual path (always positive). If you walk 5 m forwards and 5 m back, the distance is 10 m but the displacement is 0 m.
+
+## Velocity
+
+The **average velocity** is displacement per time; the **instantaneous velocity** is its limit for $\Delta t \to 0$, that is the [derivative](/en/mathematics/analysis/differential-calculus/) of position with respect to time:
+
+$$
+\bar v = \frac{\Delta x}{\Delta t}, \qquad v(t) = \frac{\mathrm{d}x}{\mathrm{d}t} = \dot x, \qquad [v] = \mathrm{m/s}
+$$
+
+In the $s$-$t$ graph, the velocity is the **slope** of the curve. The magnitude of the velocity is called speed.
+
+## Acceleration
+
+**Acceleration** is the change of velocity per time:
+
+$$
+a = \frac{\mathrm{d}v}{\mathrm{d}t} = \ddot x, \qquad [a] = \mathrm{m/s^2}
+$$
+
+Braking is an acceleration with a negative sign (opposite to the direction of motion). Conversely, [integrating](/en/mathematics/analysis/integral-calculus/) $a(t)$ gives the velocity, and integrating $v(t)$ gives the position: the **area under the $v$-$t$ curve** is the displacement.
+
+## Uniform motion
+
+In **uniform straight-line motion**, $v$ is constant and $a = 0$:
+
+$$
+x(t) = x_0 + v \cdot t
+$$
+
+| Graph | Shape |
+| --- | --- |
+| $x$-$t$ | straight line with slope $v$ |
+| $v$-$t$ | horizontal line at height $v$ |
+| $a$-$t$ | on the time axis ($a = 0$) |
+
+## Uniformly accelerated motion
+
+For constant acceleration $a$, the **equations of motion** are:
+
+$$
+v(t) = v_0 + a t, \qquad x(t) = x_0 + v_0 t + \frac{1}{2} a t^2
+$$
+
+Eliminating time gives the **time-independent equation**:
+
+$$
+v^2 = v_0^2 + 2 a (x - x_0)
+$$
+
+| Graph | Shape |
+| --- | --- |
+| $x$-$t$ | parabola (opening upwards for $a > 0$) |
+| $v$-$t$ | straight line with slope $a$ |
+| $a$-$t$ | horizontal line at height $a$ |
+
+:::tip[Example: accelerating from 0 to 100 km/h]
+A car accelerates uniformly from $0$ to $100\,\mathrm{km/h} = 27.8\,\mathrm{m/s}$ in $8\,\mathrm{s}$. The acceleration is $a = 27.8/8 = 3.47\,\mathrm{m/s^2}$, the distance covered $s = \frac{1}{2} \cdot 3.47 \cdot 8^2 = 111\,\mathrm{m}$. More simply via the area in the $v$-$t$ graph: triangle $\frac{1}{2} \cdot 8\,\mathrm{s} \cdot 27.8\,\mathrm{m/s} = 111\,\mathrm{m}$.
+:::
+
+:::tip[Example: stopping distance]
+A car travels at $50\,\mathrm{km/h} = 13.9\,\mathrm{m/s}$. The reaction time is $1\,\mathrm{s}$, the braking deceleration $7\,\mathrm{m/s^2}$.
+
+- Reaction distance (uniform): $s_\mathrm{R} = 13.9 \cdot 1 = 13.9\,\mathrm{m}$
+- Braking distance from $0 = v_0^2 - 2 a s$: $s_\mathrm{B} = \frac{v_0^2}{2a} = \frac{13.9^2}{14} = 13.8\,\mathrm{m}$
+- Stopping distance: $27.7\,\mathrm{m}$
+
+At $100\,\mathrm{km/h}$ the reaction distance doubles and the braking distance quadruples, because it depends on $v_0$ squared.
+:::
+
+## Free fall
+
+Without air resistance, all bodies fall equally fast with the **gravitational acceleration** $g$. Its standard value is $g_\mathrm{n} = 9.806\,65\,\mathrm{m/s^2}$; in Austria the local value is about $9.81\,\mathrm{m/s^2}$. With the axis pointing down and starting from rest:
+
+$$
+v = g t, \qquad h = \frac{1}{2} g t^2, \qquad v = \sqrt{2 g h}, \qquad t = \sqrt{\frac{2h}{g}}
+$$
+
+:::tip[Example]
+A stone falls from a height of $20\,\mathrm{m}$. Fall time $t = \sqrt{2 \cdot 20/9.81} = 2.02\,\mathrm{s}$, impact speed $v = 9.81 \cdot 2.02 = 19.8\,\mathrm{m/s} \approx 71\,\mathrm{km/h}$.
+:::
+
+## Projectile motion
+
+Projectile motion is a **superposition** of two independent motions (principle of superposition): uniform horizontally, uniformly accelerated vertically with $-g$ (axis pointing up).
+
+### Vertical throw upwards
+
+$$
+v(t) = v_0 - g t, \qquad h(t) = v_0 t - \frac{1}{2} g t^2
+$$
+
+Rise time $t_\mathrm{S} = v_0/g$, maximum height $h_\mathrm{max} = \frac{v_0^2}{2g}$. The body returns with the same speed $v_0$ (downwards).
+
+### Horizontal throw
+
+Launched horizontally with $v_0$ from height $h$:
+
+$$
+x(t) = v_0 t, \qquad y(t) = h - \frac{1}{2} g t^2
+$$
+
+The path is a parabola. The flight time depends only on the height, not on $v_0$: a ball fired horizontally and one dropped at the same moment hit the ground at the same time.
+
+:::tip[Example]
+A ball rolls over the edge of a $1.25\,\mathrm{m}$ high table at $3\,\mathrm{m/s}$. Flight time $t = \sqrt{2 \cdot 1.25/9.81} = 0.505\,\mathrm{s}$, horizontal range $x = 3 \cdot 0.505 = 1.51\,\mathrm{m}$. At impact $v_y = 4.95\,\mathrm{m/s}$ and $v = \sqrt{3^2 + 4.95^2} = 5.79\,\mathrm{m/s}$.
+:::
+
+### Oblique throw
+
+Launched from the ground with $v_0$ at angle $\alpha$ to the horizontal:
+
+$$
+v_x = v_0 \cos\alpha, \qquad v_y(t) = v_0 \sin\alpha - g t
+$$
+
+$$
+x(t) = v_0 \cos\alpha \cdot t, \qquad y(t) = v_0 \sin\alpha \cdot t - \frac{1}{2} g t^2
+$$
+
+| Quantity | Formula |
+| --- | --- |
+| time of flight | $t_\mathrm{F} = \dfrac{2 v_0 \sin\alpha}{g}$ |
+| range | $w = \dfrac{v_0^2 \sin(2\alpha)}{g}$ |
+| maximum height | $h_\mathrm{max} = \dfrac{v_0^2 \sin^2\alpha}{2g}$ |
+| trajectory | $y = x \tan\alpha - \dfrac{g}{2 v_0^2 \cos^2\alpha} x^2$ |
+
+The range is greatest at $\alpha = 45^\circ$, and complementary angles (such as $30^\circ$ and $60^\circ$) give the same range. With air resistance, the path is no longer a parabola and the optimum angle is smaller.
+
+:::tip[Example]
+$v_0 = 20\,\mathrm{m/s}$, $\alpha = 45^\circ$: time of flight $2.88\,\mathrm{s}$, range $\frac{400 \cdot 1}{9.81} = 40.8\,\mathrm{m}$, maximum height $\frac{400 \cdot 0.5}{19.62} = 10.2\,\mathrm{m}$.
+:::
+
+The trajectory is easy to tabulate. The program calculates time of flight, range, height and the position every $0.5\,\mathrm{s}$:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double G = 9.81;
+
+double v0 = 20.0;
+double alpha = 45.0 * Math.PI / 180.0;
+double vx = v0 * Math.Cos(alpha);
+double vy = v0 * Math.Sin(alpha);
+
+double flightTime = 2 * vy / G;
+Console.WriteLine($"Time of flight: {flightTime:F2} s");
+Console.WriteLine($"Range: {vx * flightTime:F2} m");
+Console.WriteLine($"Maximum height: {vy * vy / (2 * G):F2} m");
+
+for (int i = 0; i * 0.5 <= flightTime; i++)
+{
+    double t = i * 0.5;
+    double x = vx * t;
+    double y = vy * t - 0.5 * G * t * t;
+    Console.WriteLine($"t = {t:F1} s: x = {x:F2} m, y = {y:F2} m");
+}
+// Time of flight: 2.88 s
+// Range: 40.77 m
+// Maximum height: 10.19 m
+// t = 0.0 s: x = 0.00 m, y = 0.00 m
+// t = 0.5 s: x = 7.07 m, y = 5.84 m
+// t = 1.0 s: x = 14.14 m, y = 9.24 m
+// t = 1.5 s: x = 21.21 m, y = 10.18 m
+// t = 2.0 s: x = 28.28 m, y = 8.66 m
+// t = 2.5 s: x = 35.36 m, y = 4.70 m
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const G: f64 = 9.81;
+
+fn main() {
+    let v0 = 20.0_f64;
+    let alpha = 45.0_f64.to_radians();
+    let vx = v0 * alpha.cos();
+    let vy = v0 * alpha.sin();
+
+    let flight_time = 2.0 * vy / G;
+    println!("Time of flight: {flight_time:.2} s");
+    println!("Range: {:.2} m", vx * flight_time);
+    println!("Maximum height: {:.2} m", vy * vy / (2.0 * G));
+
+    let mut i = 0;
+    while f64::from(i) * 0.5 <= flight_time {
+        let t = f64::from(i) * 0.5;
+        let x = vx * t;
+        let y = vy * t - 0.5 * G * t * t;
+        println!("t = {t:.1} s: x = {x:.2} m, y = {y:.2} m");
+        i += 1;
+    }
+}
+// Time of flight: 2.88 s
+// Range: 40.77 m
+// Maximum height: 10.19 m
+// t = 0.0 s: x = 0.00 m, y = 0.00 m
+// t = 0.5 s: x = 7.07 m, y = 5.84 m
+// t = 1.0 s: x = 14.14 m, y = 9.24 m
+// t = 1.5 s: x = 21.21 m, y = 10.18 m
+// t = 2.0 s: x = 28.28 m, y = 8.66 m
+// t = 2.5 s: x = 35.36 m, y = 4.70 m
+```
+
+</TabItem>
+</Tabs>
+
+## Circular motion
+
+If a body moves on a circular path of radius $r$, it is described by the angle of rotation $\varphi$ (in radians).
+
+| Quantity | Formula | Unit |
+| --- | --- | --- |
+| period | $T$ | $\mathrm{s}$ |
+| frequency, rotational speed | $f = \dfrac{1}{T}$ | $\mathrm{Hz} = \mathrm{s^{-1}}$ (rotational speed often in $\mathrm{min^{-1}}$, rpm) |
+| angular velocity | $\omega = \dfrac{\mathrm{d}\varphi}{\mathrm{d}t} = \dfrac{2\pi}{T} = 2\pi f$ | $\mathrm{rad/s} = \mathrm{s^{-1}}$ |
+| orbital (tangential) speed | $v = \omega r = \dfrac{2\pi r}{T}$ | $\mathrm{m/s}$ |
+| centripetal acceleration | $a_\mathrm{Z} = \dfrac{v^2}{r} = \omega^2 r$ | $\mathrm{m/s^2}$ |
+
+In **uniform circular motion** the magnitude of the velocity stays constant, but its direction changes continuously. That is why the body is accelerated, towards the centre of the circle (**centripetal acceleration**). The force this requires is covered in [dynamics](/en/natural-sciences/dynamics/#centripetal-force).
+
+:::tip[Example: driving round a bend]
+A car drives through a bend with $r = 50\,\mathrm{m}$ at $54\,\mathrm{km/h} = 15\,\mathrm{m/s}$. The centripetal acceleration is $a_\mathrm{Z} = 15^2/50 = 4.5\,\mathrm{m/s^2}$, almost half of $g$.
+:::
+
+If the magnitude of the speed changes as well, there is an additional **tangential acceleration** $a_\mathrm{T} = \alpha r$ with the angular acceleration $\alpha = \dot\omega$ in $\mathrm{rad/s^2}$ (see [Rotation](/en/natural-sciences/rotation/)).
+
+## Relative motion and vector addition
+
+Velocities add as vectors. If $\vec v_\mathrm{B}$ is the velocity of a boat relative to the water and $\vec v_\mathrm{W}$ the velocity of the water relative to the bank, then relative to the bank:
+
+$$
+\vec v = \vec v_\mathrm{B} + \vec v_\mathrm{W}
+$$
+
+:::tip[Example: boat on a river]
+A boat travels at $4\,\mathrm{m/s}$ across the current, and the river flows at $3\,\mathrm{m/s}$. Over ground the boat moves at $v = \sqrt{4^2 + 3^2} = 5\,\mathrm{m/s}$, deflected downstream by $\arctan(3/4) = 36.9^\circ$. The crossing time depends only on the perpendicular component: for a width of $80\,\mathrm{m}$ it is $20\,\mathrm{s}$, however strong the current is.
+:::
+
+The **relative velocity** of B with respect to A is $\vec v_\mathrm{BA} = \vec v_\mathrm{B} - \vec v_\mathrm{A}$. Two cars travelling in the same direction at $100$ and $80\,\mathrm{km/h}$ approach each other at $20\,\mathrm{km/h}$; in opposite directions at $180\,\mathrm{km/h}$. This simple addition (Galilean transformation) only holds for $v \ll c$; close to the speed of light you need [special relativity](/en/natural-sciences/modern-physics/#special-relativity).
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- David Halliday, Robert Resnick, Jearl Walker: _Fundamentals of Physics_, Wiley
+- OpenStax: _University Physics Volume 1_, openstax.org

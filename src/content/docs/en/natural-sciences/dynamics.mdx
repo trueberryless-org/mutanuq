@@ -1,0 +1,195 @@
+---
+title: Dynamics
+description: Newton's three laws, mass and weight, gravitational, normal, friction, spring and centripetal forces, free-body diagrams, the inclined plane and inertial frames.
+sidebar:
+  order: 3
+---
+
+**Dynamics** explains why bodies move the way [kinematics](/en/natural-sciences/kinematics/) describes. The cause of every change in the state of motion is a **force**. In 1687, Isaac Newton formulated three principles in the _Principia_ from which the whole of classical mechanics follows.
+
+## Force
+
+A **force** $\vec F$ is a vector quantity with magnitude, direction and point of application. It can accelerate or deform a body. Its unit is the **newton**:
+
+$$
+1\,\mathrm{N} = 1\,\mathrm{kg} \cdot \frac{\mathrm{m}}{\mathrm{s^2}}
+$$
+
+One newton accelerates $1\,\mathrm{kg}$ at $1\,\mathrm{m/s^2}$. On Earth, a bar of chocolate ($100\,\mathrm{g}$) weighs about $1\,\mathrm{N}$. If several forces act, you add them as vectors to obtain the **resultant force** $\vec F_\mathrm{res} = \sum \vec F_i$. Conversely, a force can be resolved into **components**, for example parallel and perpendicular to a surface.
+
+## Newton's laws
+
+### First law: law of inertia
+
+> A body remains at rest or in uniform straight-line motion as long as no resultant force acts on it.
+
+The property of keeping the state of motion is called **inertia**; its measure is mass. That is why luggage slides forwards when you brake, and why cars need seat belts.
+
+### Second law: law of acceleration
+
+> The resultant force on a body equals the product of mass and acceleration.
+
+$$
+\vec F_\mathrm{res} = m \cdot \vec a
+$$
+
+More generally, $\vec F = \frac{\mathrm{d}\vec p}{\mathrm{d}t}$ with momentum $\vec p = m \vec v$ (see [Momentum and Collisions](/en/natural-sciences/momentum-and-collisions/)). The fundamental equation explains why twice the mass is accelerated only half as much by the same force.
+
+### Third law: action and reaction
+
+> If body A exerts a force on body B (action), B exerts a force of equal magnitude in the opposite direction on A (reaction).
+
+$$
+\vec F_\mathrm{AB} = -\vec F_\mathrm{BA}
+$$
+
+Action and reaction act on **different** bodies and therefore do not cancel. The Earth pulls an apple with its weight, and the apple pulls the Earth with the same force; because of its huge mass, however, the Earth's acceleration is immeasurably small. Rockets, recoil and walking are based on this principle.
+
+:::caution
+A common mistake: the weight and the normal force of a book on a table are **not** an action-reaction pair. Both act on the book and are only equal in magnitude in equilibrium. The counterpart to the weight is the book's pull on the Earth.
+:::
+
+### Inertial frames
+
+Newton's laws hold in **inertial frames**, that is frames of reference that are not accelerated themselves (at rest or moving uniformly in a straight line). In a braking bus or on a merry-go-round, a body with no forces acting on it appears to accelerate. Anyone calculating in such an accelerated frame has to introduce **fictitious forces** (inertial forces), for example the outward centrifugal force $F = m\omega^2 r$ or the Coriolis force. For most engineering problems, the Earth's surface is a good approximation of an inertial frame.
+
+## Mass and weight
+
+| | Mass $m$ | Weight $F_\mathrm{G}$ |
+| --- | --- | --- |
+| Type | scalar, property of the body | vector, force towards the Earth's centre |
+| Unit | $\mathrm{kg}$ | $\mathrm{N}$ |
+| depends on location | no | yes ($g$ on the Moon is about $1.62\,\mathrm{m/s^2}$) |
+| Measurement | beam balance (comparison) | spring balance, force meter |
+
+$$
+F_\mathrm{G} = m \cdot g
+$$
+
+An astronaut with a mass of $80\,\mathrm{kg}$ has the same mass on the Moon but a weight of only $80 \cdot 1.62 = 130\,\mathrm{N}$ instead of $785\,\mathrm{N}$. In everyday language, "I weigh 80 kilos" refers to mass.
+
+## Overview of forces
+
+### Weight
+
+The weight $F_\mathrm{G} = mg$ acts vertically downwards (towards the Earth's centre). It is a special case of [gravitation](/en/natural-sciences/gravitation/).
+
+### Normal force
+
+The **normal force** $F_\mathrm{N}$ is the force with which a surface supports a body. It is perpendicular (normal) to the contact surface and exactly large enough that the body does not penetrate the surface. On level ground $F_\mathrm{N} = mg$; on an inclined plane only $mg\cos\alpha$.
+
+### Friction
+
+Friction arises at contact surfaces and opposes the (attempted) relative motion. Its magnitude depends on the normal force and the materials, but hardly on the size of the contact area.
+
+| Type | Formula | Meaning |
+| --- | --- | --- |
+| **static friction** | $F_\mathrm{H} \le \mu_\mathrm{H} F_\mathrm{N}$ | body at rest; static friction is as large as necessary, at most $\mu_\mathrm{H} F_\mathrm{N}$ |
+| **kinetic (sliding) friction** | $F_\mathrm{R} = \mu_\mathrm{G} F_\mathrm{N}$ | body slides |
+| **rolling resistance** | $F_\mathrm{R} = \mu_\mathrm{R} F_\mathrm{N}$ | body rolls, $\mu_\mathrm{R}$ very small |
+
+The indices H (static) and G (sliding) follow the notation used on this site; English books often write $\mu_\mathrm{s}$ and $\mu_\mathrm{k}$. Almost always $\mu_\mathrm{R} < \mu_\mathrm{G} < \mu_\mathrm{H}$. That is why it is easier to keep a crate moving than to get it started, and why a car with ABS (wheels gripping) stops in a shorter distance than with locked wheels (wheels sliding).
+
+| Material pair (typical values) | $\mu_\mathrm{H}$ | $\mu_\mathrm{G}$ |
+| --- | --- | --- |
+| rubber on dry asphalt | 0.8 to 1.0 | 0.6 to 0.8 |
+| rubber on wet asphalt | 0.5 to 0.7 | 0.4 to 0.6 |
+| steel on steel (dry) | 0.7 | 0.6 |
+| wood on wood | 0.5 | 0.3 |
+| steel on ice | 0.03 | 0.01 |
+
+### Spring force and Hooke's law
+
+A spring is stretched by the distance $s$ when the force $F$ acts. In the elastic range, **Hooke's law** applies:
+
+$$
+F = D \cdot s
+$$
+
+The **spring constant** (stiffness) $D$ in $\mathrm{N/m}$ states how stiff the spring is; English books usually call it $k$. The restoring force of the spring is $-D s$, opposite to the displacement. A spring with $D = 200\,\mathrm{N/m}$ stretches by $2.5\,\mathrm{cm}$ under $5\,\mathrm{N}$. Force meters (spring balances) are based on this.
+
+- In series: $\frac{1}{D} = \frac{1}{D_1} + \frac{1}{D_2}$ (softer)
+- In parallel: $D = D_1 + D_2$ (stiffer)
+
+### Centripetal force
+
+For a body to move on a circular path, a force directed towards the centre must act, the **centripetal force**:
+
+$$
+F_\mathrm{Z} = m \frac{v^2}{r} = m \omega^2 r
+$$
+
+It is not a separate kind of force but a role taken on by an existing force: the rope tension in a chair-swing ride, the static friction of the tyres in a bend, gravitation for a satellite. If it disappears, the body flies off tangentially in a straight line (inertia).
+
+:::tip[Example: driving round a bend]
+A car drives through a bend with $r = 50\,\mathrm{m}$ at $15\,\mathrm{m/s}$. Static friction has to provide the centripetal force: $\mu_\mathrm{H} m g \ge m \frac{v^2}{r}$, so $\mu_\mathrm{H} \ge \frac{v^2}{r g} = \frac{225}{50 \cdot 9.81} = 0.46$. On dry asphalt this is enough, on ice it is not. The mass cancels: a lorry gets round the bend just as fast with the same $\mu$, as long as it does not tip over.
+:::
+
+## Free-body diagram
+
+A **free-body diagram** is the most important tool for solving mechanics problems:
+
+1. Mentally isolate the body from its surroundings and draw it as a point or outline.
+2. Draw all forces acting **on** this body: weight, normal forces, friction, rope tensions, spring forces. No forces that the body exerts on others.
+3. Choose a convenient coordinate system (for the inclined plane, parallel and perpendicular to the plane).
+4. Resolve the forces into components and write $\sum F = m a$ for each axis.
+
+## Inclined plane
+
+A body lies on a plane with angle of inclination $\alpha$. The weight is resolved into:
+
+$$
+F_\parallel = m g \sin\alpha \quad \text{(downhill component)}, \qquad F_\perp = m g \cos\alpha \quad \text{(normal component)}
+$$
+
+![Free-body diagram on the inclined plane: weight resolved into the downhill component parallel to the plane and the normal component, plus the normal force of the plane and the friction force](/images/natural-sciences/inclined-plane_en.svg)
+
+The normal component presses the body against the plane, so the normal force of the plane is $F_\mathrm{N} = F_\perp$. The body stays at rest as long as static friction is sufficient: $m g \sin\alpha \le \mu_\mathrm{H} m g \cos\alpha$, so
+
+$$
+\tan\alpha \le \mu_\mathrm{H}
+$$
+
+The limiting angle does not depend on the mass. This relationship is used to measure coefficients of static friction: you tilt the plane until the body starts to slide.
+
+:::tip[Example: crate on a ramp]
+A crate with $m = 10\,\mathrm{kg}$ slides down a ramp with $\alpha = 30^\circ$, coefficient of kinetic friction $\mu_\mathrm{G} = 0.2$.
+
+- Weight: $F_\mathrm{G} = 10 \cdot 9.81 = 98.1\,\mathrm{N}$
+- Downhill component: $F_\parallel = 98.1 \cdot \sin 30^\circ = 49.1\,\mathrm{N}$
+- Normal force: $F_\mathrm{N} = 98.1 \cdot \cos 30^\circ = 85.0\,\mathrm{N}$
+- Friction force: $F_\mathrm{R} = 0.2 \cdot 85.0 = 17.0\,\mathrm{N}$
+- Resultant along the plane: $F_\mathrm{res} = 49.1 - 17.0 = 32.1\,\mathrm{N}$
+- Acceleration: $a = 32.1/10 = 3.21\,\mathrm{m/s^2}$
+
+In general: $a = g(\sin\alpha - \mu_\mathrm{G}\cos\alpha)$. Without friction it would be $g \sin 30^\circ = 4.91\,\mathrm{m/s^2}$.
+:::
+
+## Further typical problems
+
+:::tip[Example: lift]
+A person with a mass of $70\,\mathrm{kg}$ stands on bathroom scales in a lift. The scales display the normal force. From $F_\mathrm{N} - m g = m a$ it follows that $F_\mathrm{N} = m(g + a)$.
+
+| Motion | $a$ | $F_\mathrm{N}$ |
+| --- | --- | --- |
+| at rest or constant velocity | $0$ | $687\,\mathrm{N}$ |
+| starting upwards | $+2\,\mathrm{m/s^2}$ | $827\,\mathrm{N}$ |
+| starting downwards | $-2\,\mathrm{m/s^2}$ | $547\,\mathrm{N}$ |
+| free fall (cable breaks) | $-g$ | $0$ (weightlessness) |
+:::
+
+:::tip[Example: two bodies connected by a rope]
+A trolley ($m_1 = 3\,\mathrm{kg}$) on a frictionless table is connected over a pulley to a hanging weight ($m_2 = 1\,\mathrm{kg}$). Only the weight of $m_2$ drives the system, but both masses are accelerated:
+
+$$
+a = \frac{m_2 g}{m_1 + m_2} = \frac{1 \cdot 9.81}{4} = 2.45\,\mathrm{m/s^2}, \qquad F_\mathrm{rope} = m_1 a = 7.36\,\mathrm{N}
+$$
+
+The rope tension is smaller than the weight $9.81\,\mathrm{N}$ of the hanging body; otherwise it would not accelerate.
+:::
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- Isaac Newton: _Philosophiae Naturalis Principia Mathematica_, 1687 (statement of the three laws)
+- OpenStax: _University Physics Volume 1_, chapters 5 and 6, openstax.org

@@ -1,0 +1,352 @@
+---
+title: Verteilte Systeme
+description: "Definition, Ziele und Transparenz, Irrtümer verteilter Systeme, logische Uhren nach Lamport und Vektoruhren, Konsens mit Paxos und Raft, Replikation, Konsistenz und Two-Phase Commit."
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **verteiltes System** ist nach Andrew S. Tanenbaum eine Menge unabhängiger Computer, die den Benutzern als ein einziges, zusammenhängendes System erscheinen. Die Rechner (**Knoten**) haben keinen gemeinsamen Speicher und keine gemeinsame Uhr. Sie koordinieren sich ausschließlich durch **Nachrichten** über ein Netzwerk.
+
+Beispiele sind das World Wide Web, DNS, Onlinebanking, Suchmaschinen, verteilte Datenbanken, Streamingdienste, Cloud-Plattformen wie [Azure](/de/decentralised-systems/cloud-computing/), Peer-to-Peer-Netze und [Blockchains](/de/decentralised-systems/blockchain/). Leslie Lamport beschrieb das Wesen verteilter Systeme scherzhaft so: „Ein verteiltes System ist eines, in dem der Ausfall eines Computers, von dem du nicht einmal wusstest, dass es ihn gibt, deinen eigenen Computer unbenutzbar machen kann.“
+
+## Warum verteilen?
+
+- **Skalierbarkeit:** Ein einzelner Server stößt irgendwann an Grenzen bei CPU, Speicher und Netzwerk. Mehrere Rechner bewältigen mehr Last.
+- **Verfügbarkeit und Fehlertoleranz:** Fällt ein Knoten aus, übernehmen andere. Ein einzelner Server ist ein Single Point of Failure.
+- **Geografische Nähe:** Daten und Dienste liegen nahe bei den Benutzern und antworten dadurch schneller.
+- **Gemeinsame Nutzung von Ressourcen:** Drucker, Dateien, Rechenleistung und Daten werden von vielen genutzt.
+- **Organisatorische Gründe:** Unterschiedliche Teams oder Unternehmen betreiben ihre eigenen Dienste, die zusammenarbeiten.
+
+## Ziele
+
+### Transparenz
+
+**Verteilungstransparenz** bedeutet, dass die Verteilung vor dem Benutzer und dem Anwendungsprogrammierer verborgen wird:
+
+| Transparenz | Verborgen wird, ... |
+| ----------- | ------------------- |
+| **Zugriff** | wie auf eine Ressource zugegriffen wird und wie die Daten dargestellt sind |
+| **Ort** | wo sich eine Ressource befindet (eine URL nennt keinen konkreten Server) |
+| **Migration** | dass eine Ressource an einen anderen Ort verschoben werden kann |
+| **Relokation** | dass eine Ressource sogar während der Benutzung verschoben wird |
+| **Replikation** | dass es mehrere Kopien einer Ressource gibt |
+| **Nebenläufigkeit** | dass mehrere Benutzer gleichzeitig dieselbe Ressource verwenden |
+| **Fehler** | dass eine Komponente ausfällt und wiederhergestellt wird |
+
+Vollständige Transparenz ist weder möglich noch immer sinnvoll: Eine Anfrage an einen Server auf einem anderen Kontinent dauert wegen der Lichtgeschwindigkeit länger, und ob ein Server ausgefallen oder nur langsam ist, lässt sich nicht sicher unterscheiden.
+
+### Offenheit
+
+Ein **offenes** System bietet Dienste über standardisierte, dokumentierte Schnittstellen an (etwa HTTP, REST, gRPC). Dadurch können Komponenten verschiedener Hersteller zusammenarbeiten (**Interoperabilität**), auf andere Plattformen übertragen werden (**Portabilität**) und ausgetauscht oder ergänzt werden (**Erweiterbarkeit**).
+
+### Skalierbarkeit
+
+Man unterscheidet drei Dimensionen:
+
+- **Größe:** mehr Benutzer und Ressourcen, ohne dass die Leistung merklich sinkt,
+- **Geografie:** Benutzer und Ressourcen können weit voneinander entfernt sein,
+- **Administration:** das System kann über mehrere Organisationen hinweg verwaltet werden.
+
+Skaliert wird **vertikal** (_scale up_, stärkere Maschine) oder **horizontal** (_scale out_, mehr Maschinen), siehe [Software-Metriken](/de/software-development/software-metrics/#horizontale-skalierung). Horizontal skalierende Systeme vermeiden zentrale Engpässe, verteilen die Last (Load Balancing), teilen Daten auf (**Partitionierung**, _Sharding_), halten Kopien vor (**Replikation**, Caching) und kommunizieren möglichst **asynchron**.
+
+### Fehlertoleranz
+
+Ein fehlertolerantes System erbringt seinen Dienst auch dann, wenn einzelne Komponenten ausfallen. Das Grundprinzip ist **Redundanz**: Informationsredundanz (Prüfsummen, Fehlerkorrektur), Zeitredundanz (Wiederholen einer Anfrage) und physische Redundanz (mehrere Server, Rechenzentren und [Verfügbarkeitszonen](/de/decentralised-systems/cloud-computing/#zonenredundanter-speicher-zrs)). Kennzahlen wie Verfügbarkeit, RTO und RPO findest du unter [Hochverfügbarkeit](/de/deployment/operations/high_availability/).
+
+Typische **Fehlermodelle**:
+
+| Fehlerart | Beschreibung |
+| --------- | ------------ |
+| **Absturz** (_Crash_) | Der Knoten hält an und reagiert nicht mehr. |
+| **Auslassung** (_Omission_) | Nachrichten gehen verloren, werden nicht gesendet oder nicht empfangen. |
+| **Zeitfehler** (_Timing_) | Die Antwort kommt zu spät. |
+| **Antwortfehler** | Die Antwort ist falsch. |
+| **Byzantinischer Fehler** | Der Knoten verhält sich beliebig falsch, etwa durch einen Bug oder absichtlich bösartig, und sendet unterschiedlichen Knoten widersprüchliche Informationen. |
+
+Fehler werden meist mit **Heartbeats** und **Timeouts** erkannt: Meldet sich ein Knoten eine bestimmte Zeit lang nicht, gilt er als ausgefallen. Da ein langsamer Knoten genauso aussieht wie ein abgestürzter, kann diese Erkennung falsch sein.
+
+## Irrtümer verteilter Systeme
+
+Peter Deutsch und andere Ingenieure bei Sun Microsystems formulierten in den 1990er-Jahren acht falsche Annahmen, die Entwickler beim Bau verteilter Anwendungen häufig treffen (_Fallacies of Distributed Computing_):
+
+1. **Das Netzwerk ist zuverlässig.** Pakete gehen verloren, Verbindungen brechen ab. Man braucht Wiederholungen, Timeouts und idempotente Operationen.
+2. **Die Latenz ist null.** Jeder Netzwerkaufruf ist um Größenordnungen langsamer als ein Methodenaufruf. Viele kleine Aufrufe („chatty“) sind teuer.
+3. **Die Bandbreite ist unbegrenzt.** Große Datenmengen müssen komprimiert, gefiltert oder seitenweise übertragen werden.
+4. **Das Netzwerk ist sicher.** Daten müssen verschlüsselt und Kommunikationspartner authentifiziert werden.
+5. **Die Topologie ändert sich nicht.** Server kommen und gehen, IP-Adressen ändern sich. Deshalb verwendet man Namensdienste und Service Discovery.
+6. **Es gibt einen Administrator.** Verschiedene Teams und Firmen verwalten Teile des Systems mit eigenen Regeln.
+7. **Der Transport kostet nichts.** Serialisierung, Netzwerkhardware und Datenverkehr in der Cloud kosten Zeit und Geld.
+8. **Das Netzwerk ist homogen.** Unterschiedliche Hardware, Betriebssysteme und Protokolle müssen zusammenarbeiten.
+
+## Zeit und Uhren
+
+In einem einzelnen Computer gibt es eine Uhr, und die Reihenfolge von Ereignissen ist klar. In einem verteilten System hat jeder Knoten seine eigene Uhr. Quarzuhren laufen unterschiedlich schnell (**Drift**, typischerweise einige Millionstel, also einige Sekunden pro Woche), und der Unterschied zwischen zwei Uhren heißt **Skew**. Protokolle wie **NTP** (_Network Time Protocol_) gleichen die Uhren mit Zeitservern ab und erreichen im Internet eine Genauigkeit von einigen Millisekunden, aber nie eine perfekte Übereinstimmung.
+
+Für viele Aufgaben braucht man aber gar nicht die genaue Uhrzeit, sondern nur die richtige **Reihenfolge** von Ereignissen. Dafür gibt es **logische Uhren**.
+
+### Lamport-Uhren
+
+Leslie Lamport definierte 1978 die **Happened-before-Relation** $a \rightarrow b$ („$a$ geschah vor $b$“):
+
+- Sind $a$ und $b$ Ereignisse im selben Prozess und $a$ kommt vor $b$, dann gilt $a \rightarrow b$.
+- Ist $a$ das Senden und $b$ das Empfangen derselben Nachricht, dann gilt $a \rightarrow b$.
+- Die Relation ist transitiv: Aus $a \rightarrow b$ und $b \rightarrow c$ folgt $a \rightarrow c$.
+
+Gilt weder $a \rightarrow b$ noch $b \rightarrow a$, sind die Ereignisse **nebenläufig** ($a \parallel b$): Keines kann das andere beeinflusst haben.
+
+Eine **Lamport-Uhr** ist ein einfacher Zähler pro Prozess mit drei Regeln:
+
+1. Vor jedem lokalen Ereignis wird der Zähler um 1 erhöht.
+2. Beim Senden wird der Zähler erhöht und als Zeitstempel mitgeschickt.
+3. Beim Empfangen setzt der Empfänger seinen Zähler auf $\max(\text{eigener Zähler}, \text{Zeitstempel}) + 1$.
+
+Damit gilt: Wenn $a \rightarrow b$, dann ist $L(a) < L(b)$. Die Umkehrung gilt **nicht**: Aus $L(a) < L(b)$ folgt nicht, dass $a$ vor $b$ geschah. Um eine eindeutige **Totalordnung** zu erhalten, ordnet man Ereignisse mit gleichem Zeitstempel zusätzlich nach der Prozessnummer.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var a = new LamportClock();
+var b = new LamportClock();
+
+a.Tick();                 // A: lokales Ereignis -> 1
+long m1 = a.Send();       // A sendet m1 mit Zeitstempel 2
+b.Tick();                 // B: lokales Ereignis -> 1
+b.Receive(m1);            // B empfängt m1: max(1, 2) + 1 = 3
+long m2 = b.Send();       // B sendet m2 mit Zeitstempel 4
+a.Receive(m2);            // A empfängt m2: max(2, 4) + 1 = 5
+
+Console.WriteLine($"A = {a.Time}, B = {b.Time}"); // A = 5, B = 4
+
+public sealed class LamportClock
+{
+    public long Time { get; private set; }
+
+    public long Tick() => ++Time;
+
+    // Senden ist ein Ereignis, sein Zeitstempel reist mit der Nachricht
+    public long Send() => Tick();
+
+    public long Receive(long timestamp)
+    {
+        Time = Math.Max(Time, timestamp) + 1;
+        return Time;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Debug, Default)]
+struct LamportClock {
+    time: u64,
+}
+
+impl LamportClock {
+    fn tick(&mut self) -> u64 {
+        self.time += 1;
+        self.time
+    }
+
+    // Senden ist ein Ereignis, sein Zeitstempel reist mit der Nachricht
+    fn send(&mut self) -> u64 {
+        self.tick()
+    }
+
+    fn receive(&mut self, timestamp: u64) -> u64 {
+        self.time = self.time.max(timestamp) + 1;
+        self.time
+    }
+}
+
+fn main() {
+    let mut a = LamportClock::default();
+    let mut b = LamportClock::default();
+
+    a.tick(); // A: lokales Ereignis -> 1
+    let m1 = a.send(); // A sendet m1 mit Zeitstempel 2
+    b.tick(); // B: lokales Ereignis -> 1
+    b.receive(m1); // B empfängt m1: max(1, 2) + 1 = 3
+    let m2 = b.send(); // B sendet m2 mit Zeitstempel 4
+    a.receive(m2); // A empfängt m2: max(2, 4) + 1 = 5
+
+    println!("A = {}, B = {}", a.time, b.time); // A = 5, B = 4
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Vektoruhren
+
+Eine **Vektoruhr** behebt die Schwäche der Lamport-Uhr: Jeder der $n$ Prozesse führt einen Vektor mit $n$ Zählern, einen pro Prozess. Beim lokalen Ereignis erhöht Prozess $i$ nur seinen eigenen Eintrag $V[i]$. Beim Empfangen bildet er komponentenweise das Maximum aus seinem und dem empfangenen Vektor und erhöht dann seinen Eintrag.
+
+Für zwei Vektoren gilt $V(a) < V(b)$, wenn alle Komponenten von $V(a)$ kleiner oder gleich denen von $V(b)$ sind und mindestens eine echt kleiner ist. Jetzt gilt in **beide** Richtungen: $a \rightarrow b \Leftrightarrow V(a) < V(b)$. Sind die Vektoren nicht vergleichbar, waren die Ereignisse nebenläufig. Verteilte Datenbanken wie Amazon Dynamo nutzen das, um **Schreibkonflikte** zu erkennen: Zwei nebenläufige Änderungen am selben Datensatz müssen zusammengeführt werden.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var p0 = new VectorClock(0, 2);
+var p1 = new VectorClock(1, 2);
+
+long[] e1 = p0.Tick();         // P0: [1, 0]
+long[] e2 = p1.Tick();         // P1: [0, 1]
+long[] e3 = p1.Receive(e1);    // P1 empfängt e1: [1, 2]
+
+Console.WriteLine($"{Format(e1)} {Format(e2)} {Format(e3)}"); // [1, 0] [0, 1] [1, 2]
+Console.WriteLine(VectorClock.HappenedBefore(e1, e3));         // True
+bool concurrent = !VectorClock.HappenedBefore(e1, e2) && !VectorClock.HappenedBefore(e2, e1);
+Console.WriteLine(concurrent);                                 // True: e1 und e2 sind nebenläufig
+
+static string Format(long[] v) => $"[{string.Join(", ", v)}]";
+
+public sealed class VectorClock(int id, int processCount)
+{
+    private readonly long[] _time = new long[processCount];
+
+    public long[] Tick()
+    {
+        _time[id]++;
+        return (long[])_time.Clone();
+    }
+
+    public long[] Receive(long[] other)
+    {
+        for (int i = 0; i < _time.Length; i++)
+        {
+            _time[i] = Math.Max(_time[i], other[i]);
+        }
+        return Tick();
+    }
+
+    public static bool HappenedBefore(long[] x, long[] y) =>
+        x.Zip(y).All(p => p.First <= p.Second) && x.Zip(y).Any(p => p.First < p.Second);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct VectorClock {
+    id: usize,
+    time: Vec<u64>,
+}
+
+impl VectorClock {
+    fn new(id: usize, process_count: usize) -> Self {
+        Self { id, time: vec![0; process_count] }
+    }
+
+    fn tick(&mut self) -> Vec<u64> {
+        self.time[self.id] += 1;
+        self.time.clone()
+    }
+
+    fn receive(&mut self, other: &[u64]) -> Vec<u64> {
+        for (mine, theirs) in self.time.iter_mut().zip(other) {
+            *mine = (*mine).max(*theirs);
+        }
+        self.tick()
+    }
+}
+
+fn happened_before(x: &[u64], y: &[u64]) -> bool {
+    x.iter().zip(y).all(|(a, b)| a <= b) && x.iter().zip(y).any(|(a, b)| a < b)
+}
+
+fn main() {
+    let mut p0 = VectorClock::new(0, 2);
+    let mut p1 = VectorClock::new(1, 2);
+
+    let e1 = p0.tick(); // P0: [1, 0]
+    let e2 = p1.tick(); // P1: [0, 1]
+    let e3 = p1.receive(&e1); // P1 empfängt e1: [1, 2]
+
+    println!("{e1:?} {e2:?} {e3:?}"); // [1, 0] [0, 1] [1, 2]
+    println!("{}", happened_before(&e1, &e3)); // true
+    let concurrent = !happened_before(&e1, &e2) && !happened_before(&e2, &e1);
+    println!("{concurrent}"); // true: e1 und e2 sind nebenläufig
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Koordination und Konsens
+
+Viele Aufgaben erfordern, dass sich die Knoten auf etwas **einigen**: Wer ist der Anführer (_Leader_)? Wurde eine Transaktion bestätigt? In welcher Reihenfolge werden Befehle ausgeführt? Dieses **Konsensproblem** verlangt:
+
+- **Einigung:** Alle korrekten Knoten entscheiden sich für denselben Wert.
+- **Gültigkeit:** Der gewählte Wert wurde von einem Knoten vorgeschlagen.
+- **Terminierung:** Jeder korrekte Knoten entscheidet irgendwann.
+
+Das **FLP-Theorem** (Fischer, Lynch, Paterson, 1985) zeigt, dass es in einem vollständig asynchronen Netzwerk, in dem auch nur ein Knoten abstürzen kann, keinen Algorithmus gibt, der Konsens immer garantiert erreicht. Praktische Verfahren umgehen das mit Timeouts: Sie sind immer **sicher** (nie zwei verschiedene Entscheidungen), garantieren den Fortschritt aber nur, solange das Netzwerk sich halbwegs normal verhält.
+
+Konsensverfahren arbeiten mit einer **Mehrheit** (_Quorum_): Bei $n = 2f + 1$ Knoten können $f$ ausfallen. Mit 3 Knoten verträgt das System einen Ausfall, mit 5 Knoten zwei. Zwei Mehrheiten überschneiden sich immer in mindestens einem Knoten, deshalb kann es keine zwei widersprüchlichen Entscheidungen geben. Gegen byzantinische Fehler braucht man sogar $n = 3f + 1$ Knoten.
+
+### Paxos
+
+**Paxos** (Lamport, 1989 bzw. veröffentlicht 1998) war das erste praktikable Konsensverfahren. Die Idee in zwei Phasen:
+
+1. **Prepare/Promise:** Ein _Proposer_ wählt eine eindeutige, steigende Rundennummer und fragt eine Mehrheit der _Acceptors_, ob sie mitmachen. Diese versprechen, keine älteren Runden mehr anzunehmen, und melden einen eventuell bereits angenommenen Wert.
+2. **Accept/Accepted:** Der Proposer schlägt einen Wert vor (den bereits angenommenen mit der höchsten Rundennummer, sonst seinen eigenen). Nimmt eine Mehrheit ihn an, ist er entschieden.
+
+Paxos gilt als korrekt, aber schwer verständlich und schwer umzusetzen.
+
+### Raft
+
+**Raft** (Ongaro und Ousterhout, 2014) wurde ausdrücklich mit dem Ziel der Verständlichkeit entworfen und ist heute weit verbreitet, etwa in etcd (dem Datenspeicher von Kubernetes), Consul und Apache Kafka (KRaft).
+
+- Jeder Knoten ist **Follower**, **Candidate** oder **Leader**. Die Zeit ist in **Terms** (Amtszeiten) mit steigenden Nummern eingeteilt.
+- **Leader-Wahl:** Hört ein Follower innerhalb eines zufälligen Timeouts (z. B. 150 bis 300 ms) keinen Heartbeat des Leaders, wird er Candidate, erhöht den Term und bittet die anderen um ihre Stimme. Wer die Mehrheit erhält, wird Leader. Die zufälligen Timeouts verhindern, dass ständig mehrere Kandidaten gleichzeitig antreten.
+- **Log-Replikation:** Alle Schreibanfragen gehen an den Leader. Er hängt sie an sein Log an und repliziert sie an die Follower. Sobald eine Mehrheit den Eintrag gespeichert hat, gilt er als **committed** und wird angewendet.
+- Alle Knoten führen dieselben Befehle in derselben Reihenfolge aus und erreichen so denselben Zustand (**Replicated State Machine**).
+
+## Replikation
+
+**Replikation** bedeutet, Kopien derselben Daten auf mehreren Knoten zu halten, um Verfügbarkeit und Lesegeschwindigkeit zu erhöhen.
+
+| Verfahren | Funktionsweise | Eigenschaften |
+| --------- | -------------- | ------------- |
+| **Primary-Backup** (Leader-Follower) | Alle Schreibzugriffe gehen an einen Primärknoten, der sie an die Kopien weitergibt. Lesen ist auch von den Kopien möglich. | einfach, keine Schreibkonflikte; der Primärknoten ist ein Engpass, bei seinem Ausfall braucht es ein Failover |
+| **Multi-Leader** | Mehrere Knoten (z. B. einer pro Rechenzentrum) nehmen Schreibzugriffe an. | schnelles Schreiben an mehreren Orten, aber Konflikte müssen aufgelöst werden |
+| **Leaderless** (quorumbasiert) | Der Client schreibt an $W$ und liest von $R$ der $N$ Kopien. | Ist $W + R > N$, überschneiden sich Lese- und Schreibmenge, und man liest mindestens eine aktuelle Kopie. Beispiel: $N = 3$, $W = 2$, $R = 2$. |
+
+Außerdem unterscheidet man **synchrone Replikation** (der Schreibzugriff gilt erst als erfolgreich, wenn die Kopien bestätigt haben: sicher, aber langsamer) und **asynchrone Replikation** (sofortige Bestätigung, Kopien werden nachgezogen: schnell, aber bei einem Ausfall können die letzten Änderungen verloren gehen). Die [Redundanzstufen von Azure Storage](/de/decentralised-systems/cloud-computing/#redundanz) sind ein Beispiel: ZRS repliziert synchron, GRS asynchron in eine zweite Region.
+
+## Konsistenzmodelle
+
+Ein **Konsistenzmodell** legt fest, welche Werte ein Leser sehen darf, wenn Daten repliziert sind. Von stark nach schwach:
+
+| Modell | Garantie |
+| ------ | -------- |
+| **Linearisierbarkeit** (strikte Konsistenz) | Das System verhält sich, als gäbe es nur eine Kopie. Jeder Lesezugriff sieht den zuletzt abgeschlossenen Schreibzugriff. |
+| **Sequentielle Konsistenz** | Alle Knoten sehen alle Operationen in derselben Reihenfolge, die zur Programmreihenfolge jedes Prozesses passt, aber nicht unbedingt zur Echtzeit. |
+| **Kausale Konsistenz** | Ursächlich zusammenhängende Operationen ($a \rightarrow b$) sehen alle in derselben Reihenfolge, nebenläufige dürfen unterschiedlich geordnet sein. Eine Antwort erscheint nie vor der Frage. |
+| **Read-your-writes** | Ein Benutzer sieht immer zumindest seine eigenen Änderungen. |
+| **Eventual Consistency** | Kommen keine neuen Änderungen hinzu, werden irgendwann alle Kopien gleich. Zwischendurch kann man veraltete Daten lesen. |
+
+Stärkere Konsistenz erfordert mehr Koordination und damit mehr Latenz. Das [CAP-Theorem](/de/databases/cap-theorem/) zeigt, dass ein System bei einer Netzwerkpartition zwischen Konsistenz und Verfügbarkeit wählen muss.
+
+## Verteilte Transaktionen
+
+Muss eine Operation auf mehreren Knoten **ganz oder gar nicht** ausgeführt werden (etwa eine Überweisung zwischen zwei Banken), verwendet man ein **Commit-Protokoll**. Das bekannteste ist das **Two-Phase Commit** (2PC) mit einem **Koordinator** und mehreren **Teilnehmern**:
+
+1. **Vorbereitungsphase** (_Prepare_): Der Koordinator fragt alle Teilnehmer, ob sie die Transaktion durchführen können. Jeder Teilnehmer führt sie vorläufig aus, sichert alles im Log, sperrt die betroffenen Daten und antwortet mit **Ja** (_Vote Commit_) oder **Nein** (_Vote Abort_).
+2. **Entscheidungsphase** (_Commit_): Haben **alle** mit Ja geantwortet, sendet der Koordinator **Commit**, sonst **Abort**. Die Teilnehmer führen die Entscheidung aus, geben die Sperren frei und bestätigen.
+
+Der Nachteil: 2PC ist ein **blockierendes** Protokoll. Fällt der Koordinator nach der ersten Phase aus, wissen die Teilnehmer nicht, ob sie bestätigen oder abbrechen sollen, und müssen ihre Sperren halten, bis der Koordinator wieder da ist. Außerdem verlangsamen die vielen Nachrichtenrunden und Sperren das System.
+
+In Microservice-Architekturen verwendet man deshalb oft **Sagas**: Eine lange Transaktion wird in lokale Einzeltransaktionen zerlegt. Schlägt ein Schritt fehl, machen **Kompensationsaktionen** die vorherigen Schritte rückgängig (Stornieren der Hotelbuchung, wenn der Flug nicht gebucht werden konnte). Die Daten sind dabei nur letztendlich konsistent. Mit [Durable Functions](/de/decentralised-systems/durable-functions/) lassen sich solche Abläufe in Azure umsetzen.
+
+## Weiterführende Quellen
+
+- Maarten van Steen, Andrew S. Tanenbaum: [_Distributed Systems_](https://www.distributed-systems.net/), 4. Auflage, kostenlos als PDF
+- Martin Kleppmann: _Designing Data-Intensive Applications_, O'Reilly
+- [The Raft Consensus Algorithm](https://raft.github.io/) mit interaktiver Visualisierung

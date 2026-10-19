@@ -1,0 +1,110 @@
+---
+title: Netzwerkplanung
+description: Hierarchisches Netzwerkdesign mit Core, Distribution und Access, Redundanz, Netzwerkdokumentation mit Netzplan und IP-Adressplan sowie Grundschutz auf Layer 2.
+sidebar:
+  order: 15
+---
+
+Ein Netz für zehn Rechner funktioniert auch ungeplant. Ab einigen hundert Geräten, mehreren Gebäuden oder hohen Anforderungen an die Verfügbarkeit braucht es eine durchdachte Struktur. Gute Planung macht ein Netz **skalierbar** (wächst ohne Umbau), **verfügbar** (übersteht Ausfälle einzelner Komponenten), **sicher**, **verwaltbar** (Fehler lassen sich schnell finden) und wirtschaftlich. In der Diplomarbeit und in Projekten an der HTL ist ein vollständiger Netzplan mit Adressplan oft Teil der Aufgabe.
+
+## Hierarchisches Design
+
+Cisco empfiehlt für Campusnetze ein **hierarchisches Modell** mit drei Schichten. Jede Schicht hat eine klar abgegrenzte Aufgabe, dadurch lassen sich Netze modular erweitern und Fehler auf einen Bereich eingrenzen.
+
+| Schicht | Aufgabe | Geräte und Funktionen |
+| --- | --- | --- |
+| **Core** (Kernschicht) | Backbone: Verkehr zwischen den Distribution-Blöcken so schnell und zuverlässig wie möglich transportieren | Hochleistungs-Layer-3-Switches, redundant, keine Filter und keine aufwendige Verarbeitung, die bremst |
+| **Distribution** (Verteilerschicht) | verbindet Access und Core, setzt Richtlinien um | Layer-3-Switches: Inter-VLAN-Routing, ACLs, Routenzusammenfassung, FHRP (Default-Gateways der VLANs), QoS, Grenze der Broadcast-Domänen |
+| **Access** (Zugangsschicht) | Anschluss der Endgeräte | Layer-2-Switches mit vielen Ports, PoE für Telefone und APs, Port Security, VLAN-Zuordnung, DHCP Snooping |
+
+In kleineren Netzen werden Core und Distribution zu einem **Collapsed Core** (zweischichtiges Design) zusammengelegt, etwa in einem einzelnen Gebäude mit einem redundanten Paar von Layer-3-Switches. In Rechenzentren hat sich statt des Dreischichtenmodells die **Spine-Leaf**-Architektur durchgesetzt: Jeder Leaf-Switch (an dem die Server hängen) ist mit jedem Spine-Switch verbunden, sodass zwischen zwei beliebigen Servern immer genau zwei Hops liegen.
+
+Typische Zuordnung in einer Schule: Jedes Stockwerk hat im Etagenverteiler Access-Switches, die mit zwei Uplinks an die Distribution-Switches im Gebäudeverteiler angebunden sind. Die Gebäude sind über Glasfaser mit dem Core im Serverraum verbunden (vgl. [strukturierte Verkabelung](/de/networking/physical-layer/#strukturierte-verkabelung)).
+
+### Überbuchung
+
+Uplinks müssen nicht die Summe aller Access-Ports übertragen können, weil nie alle Geräte gleichzeitig mit voller Rate senden. Das Verhältnis heißt **Überbuchung** (_oversubscription_). Ein Access-Switch mit 48 Ports zu 1 Gbit/s und zwei Uplinks zu 10 Gbit/s hat eine Überbuchung von $48 : 20 = 2{,}4 : 1$. Üblich sind an der Access-Schicht bis etwa 20 : 1, an der Distribution bis etwa 4 : 1, je nach Anwendung.
+
+## Redundanz
+
+Ein **Single Point of Failure** ist eine Komponente, deren Ausfall das ganze Netz oder einen wichtigen Teil lahmlegt. Redundanz beseitigt ihn auf mehreren Ebenen:
+
+| Ebene | Maßnahme |
+| --- | --- |
+| Geräte | zwei Core- und zwei Distribution-Switches, Stacking oder virtuelle Switch-Paare |
+| Verbindungen | jeder Access-Switch mit zwei Uplinks zu verschiedenen Distribution-Switches, [Spanning Tree](/de/networking/ethernet-and-switching/#spanning-tree-protocol) gegen Schleifen, [EtherChannel](/de/networking/ethernet-and-switching/#etherchannel) für Bandbreite |
+| Default-Gateway | [HSRP oder VRRP](/de/networking/routing/#first-hop-redundanz) auf den Distribution-Switches |
+| Routing | dynamische Routingprotokolle wie [OSPF](/de/networking/routing/#ospf) finden Ersatzwege automatisch |
+| Internet | zwei Provider oder eine Backup-Leitung über LTE/5G mit Floating Static Route |
+| Stromversorgung | redundante Netzteile, USV, getrennte Stromkreise |
+
+Redundanz hat Grenzen: Jeder zusätzliche Weg erhöht Kosten und Komplexität. Zu viele Verbindungen im Layer-2-Bereich machen STP unübersichtlich. Moderne Designs routen deshalb möglichst früh (Layer 3 bis zum Access-Switch) und halten die Layer-2-Domänen klein. Wie man Verfügbarkeit berechnet, steht unter [Hochverfügbarkeit](/de/deployment/operations/high_availability/).
+
+## Dokumentation
+
+Ein Netz ohne Dokumentation ist bei der nächsten Störung oder beim nächsten Personalwechsel ein Problem. Zur Netzwerkdokumentation gehören:
+
+- **Logischer Netzplan**: Netze, VLANs, IP-Bereiche, Router und ihre Verbindungen, Routingprotokolle. Zeigt, wie Daten fließen.
+- **Physischer Netzplan**: Standorte der Geräte, Räume, Schränke, Kabelwege, Portbelegungen. Zeigt, wo etwas steht.
+- **IP-Adressplan**: alle Subnetze mit Zweck, VLAN, Gateway, DHCP-Bereich und festen Adressen.
+- **VLAN-Plan**: Nummer, Name, Zweck, Subnetz.
+- **Patchplan** und **Schrankbelegung**: welche Dose auf welchem Patchpanel-Port und welchem Switchport liegt, Belegung der Höheneinheiten.
+- **Gerätedokumentation**: Modell, Seriennummer, Firmwareversion, Standort, Wartungsvertrag, Zugangsdaten (im Passwortmanager).
+- **Konfigurationssicherungen** und ein Änderungsprotokoll.
+- **Baseline**: gemessene Normalwerte (Auslastung, Latenz), damit man Abweichungen erkennt.
+
+Für die Diagramme verwendet man einheitliche Symbole (etwa die Cisco-Icons) in Werkzeugen wie draw.io oder Visio, für den Adressplan eine Tabelle oder ein IPAM-Werkzeug (_IP Address Management_) wie NetBox.
+
+### Beispiel: Adressplan einer Schule
+
+Ein Standort erhält das private Netz `10.10.0.0/16`. Das zweite Oktett kennzeichnet den Standort, das dritte das VLAN. Diese Systematik macht Adressen lesbar: Wer `10.10.20.57` sieht, weiß sofort, dass das Gerät im VLAN 20 hängt.
+
+| VLAN | Name | Subnetz | Gateway (HSRP) | DHCP-Bereich | Hinweis |
+| --- | --- | --- | --- | --- | --- |
+| 10 | Verwaltung | 10.10.10.0/24 | 10.10.10.1 | .50 bis .250 | |
+| 20 | Lehrkräfte | 10.10.20.0/24 | 10.10.20.1 | .50 bis .250 | |
+| 30 | Schüler-PCs | 10.10.30.0/23 | 10.10.30.1 | 10.10.30.50 bis 10.10.31.250 | Computerräume |
+| 40 | WLAN Schüler | 10.10.40.0/22 | 10.10.40.1 | 10.10.40.50 bis 10.10.43.250 | kurze Lease-Dauer |
+| 50 | Gäste | 10.10.50.0/24 | 10.10.50.1 | .50 bis .250 | nur Internet |
+| 60 | Drucker | 10.10.60.0/24 | 10.10.60.1 | keiner | feste Adressen |
+| 70 | VoIP | 10.10.70.0/24 | 10.10.70.1 | .50 bis .250 | QoS |
+| 99 | Management | 10.10.99.0/24 | 10.10.99.1 | keiner | nur für Administratoren erreichbar |
+| 100 | Server | 10.10.100.0/24 | 10.10.100.1 | keiner | feste Adressen |
+| | Transfernetze | 10.10.255.0/24 in /30 bzw. /31 | | | Router-Verbindungen |
+
+Die Adressen .1 bis .49 sind in jedem Netz für Gateways (.1 virtuell, .2 und .3 die beiden Switches) und feste Geräte reserviert. Für IPv6 wählt man dieselbe Logik in der Subnet-ID, etwa `2001:db8:10:20::/64` für VLAN 20.
+
+## Grundschutz auf Layer 2
+
+Die Access-Schicht ist der Ort, an dem fremde Geräte ins Netz kommen. Einige Schutzfunktionen gehören deshalb in jedes Design:
+
+| Maßnahme | schützt gegen |
+| --- | --- |
+| **Port Security** | MAC-Flooding (Angreifer füllt die MAC-Tabelle, der Switch flutet dann alles wie ein Hub) und nicht erlaubte Geräte |
+| **DHCP Snooping** | falsche DHCP-Server (_Rogue DHCP_), die ein falsches Gateway verteilen. Nur Ports zu echten DHCP-Servern und Uplinks werden als **trusted** markiert, DHCP-Antworten auf anderen Ports verworfen. Nebenbei entsteht eine Tabelle, welche IP zu welcher MAC und welchem Port gehört |
+| **Dynamic ARP Inspection** (DAI) | ARP-Spoofing: ARP-Pakete werden mit der DHCP-Snooping-Tabelle verglichen |
+| **IP Source Guard** | gefälschte Quell-IP-Adressen |
+| **BPDU Guard**, **Root Guard** | fremde Switches, die die Spanning-Tree-Topologie übernehmen |
+| **Storm Control** | Broadcast-Stürme, begrenzt die Rate von Broadcasts pro Port |
+| ungenutzte Ports abschalten, in ein ungenutztes VLAN legen | Anschluss fremder Geräte an freie Dosen |
+| DTP abschalten, Native VLAN ändern | VLAN-Hopping |
+| **802.1X** am Switchport | nur authentifizierte Geräte bekommen Zugang (_Network Access Control_) |
+| Management über SSH, eigenes Management-VLAN, ACL auf VTY | Übernahme der Netzwerkgeräte |
+
+```text
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30
+interface GigabitEthernet0/1
+ ip dhcp snooping trust
+interface range FastEthernet0/1 - 24
+ ip dhcp snooping limit rate 15
+ip arp inspection vlan 10,20,30
+```
+
+Daneben gelten die allgemeinen Grundsätze: Netze nach Schutzbedarf in Zonen trennen (Server, Verwaltung, Schüler, Gäste, eine DMZ für öffentlich erreichbare Dienste), Übergänge mit [Firewalls](/de/deployment/operations/firewalls/) und ACLs kontrollieren, Firmware aktuell halten und Logs zentral sammeln.
+
+## Weiterführende Quellen
+
+- Cisco: _Campus LAN and Wireless LAN Solution Design Guide_, Cisco Validated Design
+- Priscilla Oppenheimer: _Top-Down Network Design_, 3. Auflage, Cisco Press 2010
+- [NetBox Dokumentation](https://netboxlabs.com/docs/netbox/)

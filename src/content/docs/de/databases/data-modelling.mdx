@@ -1,0 +1,153 @@
+---
+title: Datenmodellierung
+description: Vom Anforderungstext zum Datenbankschema mit dem Entity-Relationship-Modell, Kardinalitäten, Notationen, Generalisierung und den Regeln zur Überführung in Tabellen.
+sidebar:
+  order: 1
+---
+
+Bevor man eine Datenbank anlegt, muss man verstehen, welche Daten gespeichert werden sollen und wie sie zusammenhängen. Ein Fehler im Datenmodell lässt sich später nur mit großem Aufwand beheben, weil Programme, Abfragen und gespeicherte Daten darauf aufbauen. Der Datenbankentwurf läuft deshalb in mehreren Schritten ab.
+
+## Phasen des Datenbankentwurfs
+
+| Phase                     | Ergebnis                                                                         | unabhängig von             |
+| ------------------------- | -------------------------------------------------------------------------------- | -------------------------- |
+| **Anforderungsanalyse**   | Beschreibung, welche Daten gebraucht werden und welche Abfragen häufig sind      | allem Technischen          |
+| **Konzeptioneller Entwurf** | **Entity-Relationship-Modell** (ER-Modell): Entitäten, Attribute, Beziehungen  | Datenbankmodell und Produkt |
+| **Logischer Entwurf**     | **Relationenschema**: Tabellen, Spalten, Schlüssel, [normalisiert](/de/databases/normalisation/) | dem konkreten Produkt |
+| **Physischer Entwurf**    | `CREATE TABLE`-Anweisungen, Datentypen, [Indizes](/de/databases/sql-advanced/#indizes), Speicherorte | (produktspezifisch) |
+
+## Das Entity-Relationship-Modell
+
+Das **ER-Modell** wurde 1976 von Peter Chen veröffentlicht. Es beschreibt einen Ausschnitt der realen Welt mit drei Grundbausteinen:
+
+- Eine **Entität** ist ein eindeutig identifizierbares Objekt, über das Daten gespeichert werden: die Schülerin Anna Huber, die Klasse 3AHIT. Gleichartige Entitäten bilden einen **Entitätstyp** (Schüler, Klasse).
+- Ein **Attribut** beschreibt eine Eigenschaft eines Entitätstyps: Vorname, Geburtsdatum. Jedes Attribut hat einen **Wertebereich** (_Domäne_).
+- Eine **Beziehung** (_Relationship_) verbindet Entitäten: Ein Schüler _besucht_ eine Klasse. Auch Beziehungen können Attribute haben: Die Note gehört weder zum Schüler noch zum Fach allein, sondern zu ihrer Beziehung.
+
+![ER-Modell einer Schule in Chen-Notation mit den Entitätstypen Schüler, Klasse und Fach](/images/databases/er_chen_de.svg)
+
+### Chen-Notation
+
+| Symbol                         | Bedeutung                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------- |
+| Rechteck                       | Entitätstyp                                                                           |
+| doppeltes Rechteck             | **schwacher Entitätstyp**: kann nur zusammen mit einer anderen Entität identifiziert werden, etwa ein Raum in einem Gebäude (Raum 101 gibt es in vielen Gebäuden) |
+| Raute                          | Beziehungstyp                                                                         |
+| Ellipse                        | Attribut                                                                              |
+| unterstrichenes Attribut       | **Schlüsselattribut**, identifiziert eine Entität eindeutig                           |
+| doppelte Ellipse               | **mehrwertiges Attribut**, etwa mehrere Telefonnummern                                |
+| gestrichelte Ellipse           | **abgeleitetes Attribut**, das sich berechnen lässt, etwa das Alter aus dem Geburtsdatum |
+| Ellipse mit Unterellipsen      | **zusammengesetztes Attribut**, etwa eine Adresse aus Straße, PLZ und Ort            |
+
+### Kardinalitäten
+
+Die **Kardinalität** (auch _Funktionalität_) gibt an, mit wie vielen Entitäten des anderen Typs eine Entität in Beziehung stehen kann:
+
+| Kardinalität | Beispiel                                                                  |
+| ------------ | ------------------------------------------------------------------------- |
+| **1:1**      | Eine Person hat höchstens einen Reisepass, ein Reisepass gehört zu genau einer Person. |
+| **1:n**      | Eine Klasse hat viele Schüler, ein Schüler besucht genau eine Klasse.     |
+| **n:m**      | Ein Schüler erhält Noten in vielen Fächern, in einem Fach erhalten viele Schüler Noten. |
+
+Die Chen-Notation zeigt nur die **Obergrenze**. Die genauere **(min, max)-Notation** gibt für jede Seite an, wie oft eine Entität mindestens und höchstens an der Beziehung teilnimmt. Ein Schüler besucht (1, 1) Klassen, also genau eine; eine Klasse wird von (1, \*) Schülern besucht, also mindestens einem. Ist das Minimum 0, ist die Teilnahme **optional**, sonst **verpflichtend** (_total_).
+
+:::caution[Leserichtung]
+Bei der Chen-Notation steht die Zahl auf der **gegenüberliegenden** Seite: Das „n“ neben Schüler bedeutet, dass eine Klasse viele Schüler hat. Bei der (min, max)-Notation steht die Angabe dagegen auf der **eigenen** Seite: (1, 1) neben Schüler bedeutet, dass jeder Schüler an genau einer Beziehung teilnimmt. Bei Prüfungen deshalb immer angeben, welche Notation verwendet wird.
+:::
+
+### Krähenfuß-Notation
+
+In der Praxis, etwa in Werkzeugen wie MySQL Workbench, draw.io oder den Diagrammen von Entity Framework, wird meist die **Krähenfuß-Notation** (_Crow's Foot_, auch Information-Engineering-Notation) verwendet. Entitäten werden als Tabellen mit ihren Spalten gezeichnet, und die Enden der Beziehungslinie zeigen Minimum und Maximum:
+
+| Linienende | Bedeutung              |
+| ---------- | ---------------------- |
+| `‖`        | genau eins (1, 1)      |
+| `○‖`       | null oder eins (0, 1)  |
+| `\|<`      | eins bis viele (1, \*) |
+| `○<`       | null bis viele (0, \*) |
+
+![Datenbankschema derselben Schule in Krähenfuß-Notation mit der Zwischentabelle Note](/images/databases/er_crows_foot_de.svg)
+
+Auch das [UML-Klassendiagramm](/de/software-development/uml/#klassendiagramm) eignet sich zur Datenmodellierung. Die Multiplizitäten (`1`, `0..1`, `*`, `1..*`) entsprechen der (min, max)-Notation.
+
+### Generalisierung und Spezialisierung
+
+Haben mehrere Entitätstypen gemeinsame Attribute, kann man sie in einem allgemeineren Typ zusammenfassen (**Generalisierung**). Umgekehrt teilt man einen Typ in speziellere Untertypen auf (**Spezialisierung**). Lehrer und Schüler sind beide Personen mit Vorname, Nachname und Geburtsdatum. Die Beziehung heißt **„ist ein“** (_is-a_) und entspricht der Vererbung in der objektorientierten Programmierung. Man unterscheidet:
+
+- **disjunkt** (eine Person ist entweder Lehrer oder Schüler) oder **überlappend** (eine Person kann beides sein),
+- **total** (jede Person ist Lehrer oder Schüler) oder **partiell** (es gibt auch andere Personen).
+
+## Vom ER-Modell zu Tabellen
+
+Für die Überführung in ein relationales Schema gibt es feste Regeln:
+
+| Element im ER-Modell             | Umsetzung in Tabellen                                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Entitätstyp**                  | eigene Tabelle; das Schlüsselattribut wird Primärschlüssel                                                 |
+| **Einfaches Attribut**           | Spalte                                                                                                    |
+| **Zusammengesetztes Attribut**   | eine Spalte je Teil (`Strasse`, `Plz`, `Ort`)                                                             |
+| **Mehrwertiges Attribut**        | eigene Tabelle mit Fremdschlüssel auf die Entität (`Telefonnummer(PersonId, Nummer)`)                     |
+| **Abgeleitetes Attribut**        | meist nicht gespeichert, sondern bei Bedarf berechnet                                                      |
+| **1:n-Beziehung**                | Fremdschlüssel in der Tabelle auf der **n-Seite** (`Schueler.KlasseId`)                                   |
+| **1:1-Beziehung**                | Fremdschlüssel mit `UNIQUE` auf einer Seite, bevorzugt auf der optionalen; oder Zusammenlegen beider Tabellen |
+| **n:m-Beziehung**                | eigene **Zwischentabelle** (_Assoziationstabelle_) mit Fremdschlüsseln auf beide Seiten; diese bilden zusammen den Primärschlüssel |
+| **Attribute einer Beziehung**    | bei n:m in die Zwischentabelle, bei 1:n in die Tabelle auf der n-Seite                                    |
+| **Schwacher Entitätstyp**        | Primärschlüssel aus dem Fremdschlüssel des Eigentümers und dem eigenen Teilschlüssel (`Raum(GebaeudeId, Nummer)`) |
+| **Verpflichtende Teilnahme**     | Fremdschlüssel mit `NOT NULL`                                                                             |
+
+Für die **Generalisierung** gibt es drei Strategien, die auch objektrelationale Mapper wie Entity Framework anbieten:
+
+| Strategie                              | Umsetzung                                                                     | Vorteile und Nachteile                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Eine Tabelle für alle** (_Table per Hierarchy_) | eine Tabelle `Person` mit allen Spalten aller Untertypen und einer Typspalte | schnell, keine Joins; aber viele `NULL`-Werte, Pflichtfelder der Untertypen nicht erzwingbar |
+| **Tabelle pro Typ** (_Table per Type_) | Tabelle `Person` mit den gemeinsamen Spalten, `Lehrer` und `Schueler` mit den eigenen Spalten und dem Primärschlüssel von `Person` als Fremdschlüssel | sauber normalisiert; aber Joins für jede Abfrage nötig |
+| **Tabelle pro konkreter Klasse** (_Table per Concrete Type_) | nur `Lehrer` und `Schueler`, jeweils mit allen Spalten                | keine Joins; aber gemeinsame Abfragen über alle Personen brauchen `UNION`, gemeinsame Spalten sind doppelt definiert |
+
+### Beispiel
+
+Das ER-Modell oben ergibt dieses Schema. In der Tabelle `Klasse` wird statt der fachlichen Bezeichnung ein künstlicher Schlüssel `Id` verwendet (siehe [Schlüssel](/de/databases/relational-databases/#schlüssel)), die Bezeichnung bleibt durch `UNIQUE` trotzdem eindeutig.
+
+```sql
+CREATE TABLE Klasse (
+    Id          INT PRIMARY KEY,
+    Bezeichnung VARCHAR(10) NOT NULL UNIQUE,
+    Jahrgang    INT NOT NULL CHECK (Jahrgang BETWEEN 1 AND 5)
+);
+
+CREATE TABLE Schueler (
+    Id           INT PRIMARY KEY,
+    Vorname      VARCHAR(50) NOT NULL,
+    Nachname     VARCHAR(50) NOT NULL,
+    Geburtsdatum DATE NOT NULL,
+    KlasseId     INT NOT NULL REFERENCES Klasse(Id)  -- 1:n, verpflichtend
+);
+
+CREATE TABLE Fach (
+    Id          INT PRIMARY KEY,
+    Kuerzel     VARCHAR(10) NOT NULL UNIQUE,
+    Bezeichnung VARCHAR(100) NOT NULL
+);
+
+-- n:m-Beziehung mit dem Beziehungsattribut Wert
+CREATE TABLE Note (
+    SchuelerId INT  NOT NULL REFERENCES Schueler(Id),
+    FachId     INT  NOT NULL REFERENCES Fach(Id),
+    Datum      DATE NOT NULL,
+    Wert       INT  NOT NULL CHECK (Wert BETWEEN 1 AND 5),
+    PRIMARY KEY (SchuelerId, FachId, Datum)
+);
+```
+
+## Tipps für gute Modelle
+
+- **Substantive** im Anforderungstext sind Kandidaten für Entitätstypen oder Attribute, **Verben** für Beziehungen.
+- Ist etwas nur ein einfacher Wert, ist es ein Attribut; hat es selbst Eigenschaften oder Beziehungen, ist es ein Entitätstyp. Ein Ort ist in einer Adresse oft nur ein Attribut, in einer Logistikanwendung mit Entfernungen zwischen Orten aber ein Entitätstyp.
+- Für jede Beziehung beide Richtungen in Worten formulieren: „Ein Schüler besucht genau eine Klasse“ und „Eine Klasse wird von mindestens einem Schüler besucht“.
+- Einheitliche Namen verwenden: Tabellennamen im Singular, Spaltennamen ohne Abkürzungen, Fremdschlüssel nach dem Muster `TabelleId`.
+- **Künstliche Schlüssel** (fortlaufende Nummern, GUIDs) sind stabil. **Natürliche Schlüssel** wie die Sozialversicherungsnummer können sich ändern oder fehlen und eignen sich selten als Primärschlüssel.
+- Das Modell danach [normalisieren](/de/databases/normalisation/) und prüfen, ob die häufigsten Abfragen damit gut beantwortet werden können.
+
+## Weiterführende Quellen
+
+- Peter P. Chen: _The Entity-Relationship Model: Toward a Unified View of Data_, ACM Transactions on Database Systems, 1976
+- Alfons Kemper, André Eickler: _Datenbanksysteme. Eine Einführung_, De Gruyter (deutschsprachiges Standardlehrbuch)

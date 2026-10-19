@@ -1,0 +1,251 @@
+---
+title: Berechenbarkeit und Komplexität
+description: Church-Turing-These, Entscheidbarkeit, Halteproblem mit Beweisskizze, Satz von Rice, Komplexitätsklassen P, NP, NP-vollständig und NP-schwer, das P-NP-Problem und Beispiele wie SAT, TSP und Rucksack.
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die **Berechenbarkeitstheorie** fragt, welche Probleme ein Computer **überhaupt** lösen kann, unabhängig davon, wie schnell er ist und wie viel Speicher er hat. Die **Komplexitätstheorie** fragt, welche Probleme sich **effizient** lösen lassen. Beide Antworten haben praktische Folgen: Es gibt Programme, die man nicht schreiben kann (etwa einen perfekten Virenscanner), und Probleme, bei denen man nicht auf einen schnellen exakten Algorithmus hoffen sollte, sondern Näherungen braucht. Die Grundlagen der Laufzeitanalyse mit der O-Notation stehen unter [Algorithmen](/de/software-development/algorithms/#laufzeitkomplexität), die Automatenmodelle unter [Automaten und formale Sprachen](/de/computer-science/automata-and-formal-languages/).
+
+## Berechenbarkeit
+
+### Church-Turing-These
+
+Um zu beweisen, dass etwas nicht berechenbar ist, braucht man eine genaue Definition von „berechenbar“. In den 1930er-Jahren entstanden unabhängig voneinander mehrere Modelle: die **Turingmaschine** (Alan Turing), der **λ-Kalkül** (Alonzo Church) und die **μ-rekursiven Funktionen** (Kurt Gödel, Stephen Kleene). Alle stellten sich als **gleich mächtig** heraus, sie können genau dieselben Funktionen berechnen.
+
+Die **Church-Turing-These** besagt: Alles, was intuitiv (durch ein schrittweises, mechanisches Verfahren) berechenbar ist, kann eine Turingmaschine berechnen. Sie ist kein beweisbarer Satz, weil „intuitiv berechenbar“ nicht formal definiert ist, wird aber allgemein akzeptiert, weil nie ein Gegenbeispiel gefunden wurde.
+
+Eine Programmiersprache oder ein System heißt **Turing-vollständig**, wenn es jede Turingmaschine simulieren kann. Dafür genügen bedingte Verzweigung, Schleifen bzw. Rekursion und unbegrenzter Speicher. C#, Rust, Python, aber auch SQL mit rekursiven CTEs, Excel mit LAMBDA-Funktionen oder Minecraft-Redstone sind Turing-vollständig. Ein schnellerer Computer kann also mehr in kürzerer Zeit, aber grundsätzlich **nicht mehr** berechnen als eine Turingmaschine.
+
+### Entscheidbarkeit
+
+Ein **Entscheidungsproblem** hat als Antwort nur Ja oder Nein: „Ist $n$ eine Primzahl?“, „Ist dieses Wort Teil der Sprache?“.
+
+| Begriff                         | Definition                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| **entscheidbar**                | Es gibt einen Algorithmus, der für jede Eingabe nach endlich vielen Schritten **anhält** und korrekt Ja oder Nein antwortet. |
+| **semi-entscheidbar** (rekursiv aufzählbar) | Es gibt einen Algorithmus, der bei Ja-Instanzen anhält und Ja sagt. Bei Nein-Instanzen kann er aber endlos laufen. |
+| **unentscheidbar**              | Es gibt keinen Algorithmus, der das Problem für alle Eingaben korrekt entscheidet. |
+
+Entscheidbar sind zum Beispiel: ob eine Zahl prim ist, ob ein DEA ein Wort akzeptiert, ob ein Wort zu einer kontextfreien Sprache gehört, ob ein Graph einen Weg zwischen zwei Knoten hat.
+
+Dass es unentscheidbare Probleme geben **muss**, folgt schon aus einem Abzählargument: Jedes Programm ist ein endlicher Text, es gibt also nur **abzählbar** viele Programme. Es gibt aber **überabzählbar** viele Funktionen von den natürlichen Zahlen nach $\{0, 1\}$ (Cantors Diagonalargument). Die allermeisten Funktionen sind also nicht berechenbar.
+
+### Halteproblem
+
+Das berühmteste unentscheidbare Problem ist das **Halteproblem** (Turing, 1936): Gegeben ein Programm $P$ und eine Eingabe $x$. Hält $P$ bei Eingabe $x$ irgendwann an, oder läuft es endlos?
+
+**Satz**: Es gibt kein Programm, das diese Frage für alle Programme und Eingaben korrekt beantwortet.
+
+**Beweisskizze** (durch Widerspruch, mit Diagonalisierung):
+
+1. Angenommen, es gibt eine Funktion `Hält(programm, eingabe)`, die immer anhält und `true` liefert, wenn das Programm mit der Eingabe anhält, sonst `false`.
+2. Damit schreibt man ein neues Programm `Paradox`, das ein Programm als Eingabe erhält und es **mit sich selbst als Eingabe** untersucht:
+
+```text
+Paradox(p):
+    wenn Hält(p, p):
+        Endlosschleife
+    sonst:
+        anhalten
+```
+
+3. Nun ruft man `Paradox(Paradox)` auf:
+   - Hält `Paradox(Paradox)` an, dann liefert `Hält(Paradox, Paradox)` den Wert `true`, also läuft `Paradox` in die Endlosschleife und hält **nicht** an.
+   - Hält `Paradox(Paradox)` nicht an, dann liefert `Hält` den Wert `false`, also hält `Paradox` **an**.
+4. Beide Fälle sind ein Widerspruch. Also kann es die Funktion `Hält` nicht geben.
+
+Das Halteproblem ist aber **semi-entscheidbar**: Man kann das Programm einfach ausführen. Hält es an, weiß man die Antwort. Hält es nicht an, wartet man ewig, ohne je sicher zu sein, dass es nicht doch noch anhält.
+
+### Weitere unentscheidbare Probleme
+
+Der **Satz von Rice** (1953) verallgemeinert das Halteproblem: **Jede nicht triviale Eigenschaft des Verhaltens** eines Programms ist unentscheidbar. „Nicht trivial“ heißt, dass manche Programme sie haben und manche nicht. Unentscheidbar sind also zum Beispiel:
+
+- ob ein Programm für jede Eingabe die richtige Ausgabe liefert (vollständige Programmverifikation),
+- ob zwei Programme dasselbe berechnen,
+- ob ein Programm jemals eine bestimmte Codezeile erreicht oder Schadcode ausführt,
+- ob ein Programm ein Passwort an einen Server schickt.
+
+Weitere klassische Beispiele sind das **Postsche Korrespondenzproblem**, die Frage, ob zwei kontextfreie Grammatiken dieselbe Sprache erzeugen, und **Hilberts zehntes Problem** (hat eine ganzzahlige Polynomgleichung eine ganzzahlige Lösung?).
+
+Praktische Folgen: Virenscanner, Compiler-Warnungen und Werkzeuge zur statischen Codeanalyse können nie perfekt sein. Sie arbeiten mit **Näherungen**, die entweder manche Fehler übersehen oder manchmal falschen Alarm geben. Der Rust-Compiler lehnt deshalb auch manche korrekten Programme ab, weil er nicht beweisen kann, dass sie sicher sind. Für einzelne, konkrete Programme kann man Eigenschaften trotzdem beweisen, nur nicht automatisch für **alle** Programme.
+
+## Komplexität
+
+Ein Problem kann entscheidbar und trotzdem praktisch unlösbar sein, weil jeder bekannte Algorithmus zu lange braucht. Die **Zeitkomplexität** gibt an, wie die Anzahl der Rechenschritte mit der Eingabegröße $n$ wächst, die **Platzkomplexität** dasselbe für den Speicher.
+
+Der entscheidende Unterschied liegt zwischen **polynomiellem** Wachstum ($n^k$) und **exponentiellem** Wachstum ($2^n$, $n!$). Bei $10^9$ Operationen pro Sekunde:
+
+| $n$  | $n \log_2 n$ | $n^2$          | $n^3$         | $2^n$                       | $n!$                       |
+| ---- | ------------ | -------------- | ------------- | --------------------------- | -------------------------- |
+| 10   | 33 ns        | 100 ns         | 1 µs          | 1 µs                        | 3,6 ms                     |
+| 20   | 86 ns        | 400 ns         | 8 µs          | 1 ms                        | 77 Jahre                   |
+| 50   | 282 ns       | 2,5 µs         | 125 µs        | 13 Tage                     | $10^{48}$ Jahre            |
+| 100  | 664 ns       | 10 µs          | 1 ms          | $4 \cdot 10^{13}$ Jahre     | (unvorstellbar)            |
+
+Ein zehnmal schnellerer Rechner erlaubt bei $2^n$ nur rund 3 Elemente mehr ($2^{3{,}3} \approx 10$). Polynomielle Algorithmen gelten deshalb als **effizient** (praktisch lösbar, _tractable_), exponentielle als **ineffizient**.
+
+### Die Klasse P
+
+**P** ist die Klasse der Entscheidungsprobleme, die eine deterministische Turingmaschine (und damit jeder normale Computer) in **polynomieller Zeit** $O(n^k)$ lösen kann. Beispiele:
+
+- Sortieren und Suchen
+- kürzeste Wege in Graphen (Dijkstra), minimaler Spannbaum (siehe [Graphen](/de/software-development/graphs/))
+- Prüfen, ob eine Zahl prim ist (AKS-Test, 2002)
+- lineare Optimierung, Matching in bipartiten Graphen
+
+### Die Klasse NP
+
+**NP** (_nichtdeterministisch polynomiell_) ist die Klasse der Entscheidungsprobleme, bei denen sich eine **Lösung in polynomieller Zeit überprüfen** lässt. Man bekommt zu einer Ja-Instanz einen Lösungsvorschlag (ein **Zertifikat**) und kann schnell nachrechnen, ob er stimmt. Gleichwertig: Eine nichtdeterministische Turingmaschine, die die richtige Lösung „rät“, löst das Problem in polynomieller Zeit.
+
+Beispiel Sudoku: Ein ausgefülltes Sudoku zu prüfen geht schnell, eine Lösung zu finden ist (für verallgemeinerte $n^2 \times n^2$-Sudokus) schwer.
+
+Jedes Problem in P liegt auch in NP, denn was man schnell lösen kann, kann man auch schnell überprüfen: $\mathrm{P} \subseteq \mathrm{NP}$.
+
+**NP** heißt nicht „nicht polynomiell“. Es ist ein häufiger Prüfungsfehler, NP mit „exponentiell“ gleichzusetzen.
+
+### NP-vollständig und NP-schwer
+
+Ein Problem $A$ lässt sich auf ein Problem $B$ **reduzieren** ($A \leq_p B$), wenn man jede Instanz von $A$ in polynomieller Zeit in eine Instanz von $B$ mit derselben Antwort umwandeln kann. Dann ist $B$ mindestens so schwer wie $A$: Ein schneller Algorithmus für $B$ würde auch $A$ schnell lösen.
+
+- **NP-schwer** (_NP-hard_): Jedes Problem in NP lässt sich darauf reduzieren. Es ist mindestens so schwer wie jedes Problem in NP, muss selbst aber nicht in NP liegen (es muss nicht einmal ein Entscheidungsproblem oder entscheidbar sein, das Halteproblem ist NP-schwer).
+- **NP-vollständig** (_NP-complete_): NP-schwer **und** selbst in NP. Das sind die „schwersten“ Probleme in NP.
+
+Der **Satz von Cook und Levin** (1971) zeigte als Erstes, dass **SAT** NP-vollständig ist. Richard Karp wies 1972 die NP-Vollständigkeit von 21 weiteren Problemen nach, heute kennt man Tausende. Alle NP-vollständigen Probleme lassen sich aufeinander reduzieren: Findet man für ein einziges einen polynomiellen Algorithmus, sind alle in P.
+
+| Problem                             | Frage (Entscheidungsversion)                                                     | Klasse                         |
+| ----------------------------------- | -------------------------------------------------------------------------------- | ------------------------------ |
+| **SAT** (Erfüllbarkeit)             | Gibt es eine Belegung der Variablen, die eine aussagenlogische Formel wahr macht? Auch **3-SAT** mit Klauseln aus genau drei Literalen | NP-vollständig |
+| **Problem des Handlungsreisenden** (TSP) | Gibt es eine Rundreise durch alle Städte mit Gesamtlänge höchstens $k$?    | NP-vollständig; die Optimierungsversion (kürzeste Rundreise) ist NP-schwer |
+| **Rucksackproblem** (Knapsack)      | Kann man Gegenstände mit Gesamtgewicht höchstens $W$ und Gesamtwert mindestens $V$ auswählen? | NP-vollständig |
+| **Graphfärbung**                    | Lassen sich die Knoten mit $k \geq 3$ Farben färben, sodass benachbarte Knoten verschieden sind? (Stundenplan, Registerzuteilung im Compiler) | NP-vollständig |
+| **Hamiltonkreis**                   | Gibt es einen Kreis, der jeden Knoten genau einmal besucht?                       | NP-vollständig                 |
+| **Clique**, **Subset Sum**, **Bin Packing** |                                                                          | NP-vollständig                 |
+| **Faktorisierung**                  | Hat $n$ einen Teiler kleiner als $k$?                                             | in NP, aber vermutlich nicht NP-vollständig; nicht in P bekannt. Darauf beruht RSA |
+| **Eulerkreis**                      | Gibt es einen Kreis, der jede **Kante** genau einmal benutzt?                     | in P (alle Knotengrade gerade) |
+| **2-SAT**, **2-Färbung**            |                                                                                  | in P                           |
+
+Die letzten Zeilen zeigen, wie nah „leicht“ und „schwer“ beieinanderliegen: Jede Kante genau einmal (Euler) ist leicht, jeder Knoten genau einmal (Hamilton) ist schwer.
+
+### Das P-NP-Problem
+
+Ob $\mathrm{P} = \mathrm{NP}$ gilt, ist die wichtigste offene Frage der Informatik. Das Clay Mathematics Institute hat sie im Jahr 2000 als eines von sieben **Millennium-Problemen** mit einer Million US-Dollar Preisgeld ausgeschrieben. Fast alle Fachleute vermuten $\mathrm{P} \neq \mathrm{NP}$: Lösungen zu finden ist grundsätzlich schwerer, als sie zu überprüfen.
+
+Unter der Annahme $\mathrm{P} \neq \mathrm{NP}$ ergibt sich folgendes Bild:
+
+- P liegt vollständig in NP.
+- Die NP-vollständigen Probleme sind genau die Schnittmenge von NP und NP-schwer.
+- Kein NP-vollständiges Problem liegt in P. Es gibt dann sogar Probleme in NP, die weder in P noch NP-vollständig sind (Satz von Ladner), Kandidaten sind die Faktorisierung und das Graphisomorphieproblem.
+- NP-schwere Probleme können weit außerhalb von NP liegen, etwa das Halteproblem.
+
+Wäre $\mathrm{P} = \mathrm{NP}$, ließen sich viele Optimierungsprobleme effizient lösen, aber auch die heutige Public-Key-Kryptografie wäre gefährdet.
+
+Weitere Klassen sind **PSPACE** (polynomieller Speicher, umfasst NP; dazu gehört die Frage, ob bei verallgemeinertem Schach eine Gewinnstrategie existiert) und **EXPTIME** (exponentielle Zeit). Bekannt ist $\mathrm{P} \subseteq \mathrm{NP} \subseteq \mathrm{PSPACE} \subseteq \mathrm{EXPTIME}$ und $\mathrm{P} \neq \mathrm{EXPTIME}$.
+
+### Umgang mit NP-schweren Problemen
+
+NP-schwere Probleme treten in der Praxis ständig auf: Tourenplanung, Stundenpläne, Verschnittoptimierung, Chipdesign. Statt aufzugeben, verwendet man:
+
+- **Exakte Verfahren für kleine Eingaben**: Backtracking, Branch and Bound, dynamische Programmierung. Moderne **SAT-Solver** lösen industrielle Instanzen mit Millionen Variablen, obwohl der schlimmste Fall exponentiell ist.
+- **Sonderfälle**: Viele Instanzen haben eine Struktur, die sie leichter macht (z. B. Rucksack mit kleinen ganzzahligen Gewichten).
+- **Approximationsalgorithmen** mit garantierter Güte: Für das metrische TSP liefert der Algorithmus von Christofides eine Rundreise, die höchstens 1,5-mal so lang ist wie die optimale.
+- **Heuristiken** ohne Garantie: Greedy-Verfahren, lokale Suche, Simulated Annealing, genetische Algorithmen.
+
+### Beispiel: Rucksackproblem
+
+Gegeben sind Gegenstände mit Gewicht und Wert sowie ein Rucksack mit Kapazität $W$. Gesucht ist die wertvollste Auswahl, die in den Rucksack passt. Alle $2^n$ Teilmengen durchzuprobieren ist exponentiell. Die **dynamische Programmierung** berechnet für jede Kapazität $0 \ldots W$ den besten Wert und braucht $O(n \cdot W)$ Schritte. Das sieht polynomiell aus, ist es aber nicht in der Eingabelänge: $W$ wird mit nur $\log_2 W$ Bits gespeichert, jedes zusätzliche Bit verdoppelt den Aufwand (**pseudopolynomiell**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+(int Weight, int Value)[] items = [(12, 4), (2, 2), (1, 1), (1, 2), (4, 10)];
+const int Capacity = 15;
+
+Console.WriteLine($"Brute Force: {Knapsack.BruteForce(items, Capacity)}"); // Brute Force: 15
+Console.WriteLine($"Dynamisch:   {Knapsack.Dynamic(items, Capacity)}");    // Dynamisch:   15
+
+static class Knapsack
+{
+    // alle 2^n Teilmengen als Bitmuster durchprobieren: O(2^n * n)
+    public static int BruteForce((int Weight, int Value)[] items, int capacity)
+    {
+        int best = 0;
+        for (int mask = 0; mask < 1 << items.Length; mask++)
+        {
+            int weight = 0, value = 0;
+            for (int i = 0; i < items.Length; i++)
+            {
+                if ((mask & (1 << i)) == 0) continue;
+                weight += items[i].Weight;
+                value += items[i].Value;
+            }
+            if (weight <= capacity) best = Math.Max(best, value);
+        }
+        return best;
+    }
+
+    // best[c] = bester Wert mit Kapazität c: O(n * W)
+    public static int Dynamic((int Weight, int Value)[] items, int capacity)
+    {
+        var best = new int[capacity + 1];
+        foreach (var (weight, value) in items)
+        {
+            for (int c = capacity; c >= weight; c--)   // rückwärts: jeder Gegenstand nur einmal
+            {
+                best[c] = Math.Max(best[c], best[c - weight] + value);
+            }
+        }
+        return best[capacity];
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// alle 2^n Teilmengen als Bitmuster durchprobieren: O(2^n * n)
+fn knapsack_brute_force(items: &[(usize, u32)], capacity: usize) -> u32 {
+    (0..1u32 << items.len())
+        .filter_map(|mask| {
+            let chosen = items.iter().enumerate().filter(|(i, _)| mask & (1 << i) != 0);
+            let (weight, value) = chosen.fold((0, 0), |(w, v), (_, &(iw, iv))| (w + iw, v + iv));
+            (weight <= capacity).then_some(value)
+        })
+        .max()
+        .unwrap_or(0)
+}
+
+// best[c] = bester Wert mit Kapazität c: O(n * W)
+fn knapsack_dynamic(items: &[(usize, u32)], capacity: usize) -> u32 {
+    let mut best = vec![0; capacity + 1];
+    for &(weight, value) in items {
+        for c in (weight..=capacity).rev() {
+            // rückwärts: jeder Gegenstand nur einmal
+            best[c] = best[c].max(best[c - weight] + value);
+        }
+    }
+    best[capacity]
+}
+
+fn main() {
+    let items = [(12, 4), (2, 2), (1, 1), (1, 2), (4, 10)];
+    let capacity = 15;
+    println!("Brute Force: {}", knapsack_brute_force(&items, capacity)); // Brute Force: 15
+    println!("Dynamisch:   {}", knapsack_dynamic(&items, capacity));     // Dynamisch:   15
+}
+```
+
+</TabItem>
+</Tabs>
+
+Beim TSP mit $n$ Städten gibt es $\frac{(n-1)!}{2}$ verschiedene Rundreisen. Bei 10 Städten sind das 181 440, bei 20 Städten schon etwa $6 \cdot 10^{16}$. Die dynamische Programmierung (Held-Karp-Algorithmus) senkt den Aufwand auf $O(n^2 \cdot 2^n)$, bleibt aber exponentiell.
+
+## Weiterführende Quellen
+
+- Michael Sipser: _Introduction to the Theory of Computation_, Cengage
+- [P vs NP](https://www.claymath.org/millennium/p-vs-np/) (Clay Mathematics Institute)
+- Alan M. Turing: [On Computable Numbers, with an Application to the Entscheidungsproblem](https://www.cs.virginia.edu/~robins/Turing_Paper_1936.pdf) (1936)

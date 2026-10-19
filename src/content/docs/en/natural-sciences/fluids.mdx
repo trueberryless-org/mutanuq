@@ -1,0 +1,191 @@
+---
+title: Fluid Mechanics
+description: Pressure, hydrostatic and atmospheric pressure, Pascal's principle and hydraulics, Archimedes' principle of buoyancy, continuity equation, Bernoulli's equation, viscosity and drag.
+sidebar:
+  order: 8
+---
+
+Liquids and gases are together called **fluids**: they have no fixed shape and take the shape of their container. Liquids are almost incompressible; gases are easily compressed. **Hydrostatics** deals with fluids at rest, **hydrodynamics** (or aerodynamics) with flowing fluids.
+
+## Pressure
+
+**Pressure** is the force acting perpendicular to a surface, divided by the area:
+
+$$
+p = \frac{F}{A}, \qquad [p] = \mathrm{N/m^2} = \mathrm{Pa} \;(\text{pascal})
+$$
+
+| Unit | Conversion |
+| --- | --- |
+| bar | $1\,\mathrm{bar} = 10^5\,\mathrm{Pa} = 1000\,\mathrm{hPa}$ |
+| hectopascal (weather forecast) | $1\,\mathrm{hPa} = 100\,\mathrm{Pa} = 1\,\mathrm{mbar}$ |
+| standard atmosphere | $1\,\mathrm{atm} = 101\,325\,\mathrm{Pa}$ |
+| millimetre of mercury (blood pressure) | $1\,\mathrm{mmHg} = 133.3\,\mathrm{Pa}$ |
+
+In a fluid at rest, pressure acts equally in all directions and always perpendicular to boundary surfaces. You distinguish **absolute pressure** (relative to vacuum) and **gauge pressure** (relative to the surroundings). Tyre pressure gauges show gauge pressure.
+
+Why a knife cuts and a snowshoe supports you: for the same force, a small area produces a high pressure and a large area a low one.
+
+## Hydrostatic pressure
+
+The weight of the column of liquid above produces the **hydrostatic pressure** at depth $h$:
+
+$$
+p = \rho \cdot g \cdot h
+$$
+
+It depends only on density and depth, not on the shape or size of the container (**hydrostatic paradox**). That is why water stands at the same level everywhere in **communicating vessels**, which is used by water levels (hose levels), water towers and canal locks.
+
+:::tip[Example: diving]
+At a water depth of $10\,\mathrm{m}$: $p = 1000 \cdot 9.81 \cdot 10 = 98\,100\,\mathrm{Pa} \approx 1\,\mathrm{bar}$. Together with atmospheric pressure, the absolute pressure there is about $2\,\mathrm{bar}$. Every $10\,\mathrm{m}$ of depth adds roughly one bar. A dam therefore has to be much thicker at the bottom than at the top.
+:::
+
+### Atmospheric pressure
+
+Air has weight too. The mean atmospheric pressure at sea level is $1013.25\,\mathrm{hPa}$. Because air is compressible, its density decreases with altitude, and pressure does not fall linearly but approximately exponentially (**barometric formula** for constant temperature):
+
+$$
+p(h) = p_0 \cdot e^{-h/H}, \qquad H = \frac{R T}{M g} \approx 8.4\,\mathrm{km} \;(\text{at } 15\,^\circ\mathrm{C})
+$$
+
+On the summit of the Großglockner ($3798\,\mathrm{m}$), this gives about $650\,\mathrm{hPa}$. Near the ground, pressure drops by about $1\,\mathrm{hPa}$ per $8\,\mathrm{m}$ of altitude. In 1643, Torricelli showed that atmospheric pressure supports a mercury column of $760\,\mathrm{mm}$; a water column would be about $10\,\mathrm{m}$ high. That is why a suction pump can lift water by at most about $10\,\mathrm{m}$.
+
+## Pascal's principle and hydraulics
+
+> Pressure applied to an enclosed liquid is transmitted undiminished in all directions.
+
+In a **hydraulic press**, two pistons of different area are connected by oil. The pressure is the same everywhere, so
+
+$$
+\frac{F_1}{A_1} = \frac{F_2}{A_2} \quad\Rightarrow\quad F_2 = F_1 \cdot \frac{A_2}{A_1}
+$$
+
+:::tip[Example: car jack]
+Piston areas $A_1 = 2\,\mathrm{cm^2}$ and $A_2 = 200\,\mathrm{cm^2}$, hand force $F_1 = 100\,\mathrm{N}$. The pressure is $p = 100/(2 \times 10^{-4}) = 5 \times 10^5\,\mathrm{Pa} = 5\,\mathrm{bar}$, the force on the large piston $F_2 = 100 \cdot 100 = 10\,\mathrm{kN}$, enough for one tonne. In return, the small piston has to travel 100 times as far; the work $F_1 s_1 = F_2 s_2$ stays the same.
+:::
+
+Applications: brake systems, excavators, vehicle lifts, presses.
+
+## Buoyancy
+
+A body in a fluid experiences an upward **buoyant force**, because the pressure on its underside is greater than on its top. **Archimedes' principle** states:
+
+> The buoyant force equals the weight of the displaced fluid.
+
+$$
+F_\mathrm{A} = \rho_\mathrm{fl} \cdot g \cdot V_\mathrm{displaced}
+$$
+
+| Comparison | Behaviour |
+| --- | --- |
+| $\rho_\mathrm{body} > \rho_\mathrm{fl}$ | sinks |
+| $\rho_\mathrm{body} = \rho_\mathrm{fl}$ | hovers (submarine, fish with swim bladder) |
+| $\rho_\mathrm{body} < \rho_\mathrm{fl}$ | rises and floats until $F_\mathrm{A} = F_\mathrm{G}$ |
+
+A floating body sinks in until the submerged fraction of its volume equals $\rho_\mathrm{body}/\rho_\mathrm{fl}$.
+
+:::tip[Examples]
+- **Iceberg**: ice ($917\,\mathrm{kg/m^3}$) in seawater ($1025\,\mathrm{kg/m^3}$) is $917/1025 = 89.5\,\%$ submerged; only just over a tenth sticks out.
+- **Aluminium block** ($1\,\mathrm{dm^3}$, $\rho = 2700\,\mathrm{kg/m^3}$) in water: weight $26.5\,\mathrm{N}$, buoyancy $1000 \cdot 9.81 \cdot 0.001 = 9.81\,\mathrm{N}$, a force meter shows $16.7\,\mathrm{N}$.
+- A steel ship floats because its hull, filled with air, displaces a lot of water; its average density is lower than that of water.
+:::
+
+There is buoyancy in air too: hot-air balloons rise because warm air has a lower density than the surroundings.
+
+## Flow
+
+### Continuity equation
+
+In steady flow through a pipe, liquid cannot accumulate anywhere. The **volume flow rate** $Q = \dot V$ is the same everywhere:
+
+$$
+Q = A_1 v_1 = A_2 v_2, \qquad [Q] = \mathrm{m^3/s}
+$$
+
+Where the pipe is narrower, the fluid flows faster. You know this from a garden hose that you squeeze with your thumb.
+
+:::tip[Example]
+Water flows at $v_1 = 2\,\mathrm{m/s}$ through a pipe with $d_1 = 4\,\mathrm{cm}$ that narrows to $d_2 = 2\,\mathrm{cm}$. The area becomes a quarter, so $v_2 = 4 \cdot 2 = 8\,\mathrm{m/s}$. The flow rate is $Q = \pi \cdot 0.02^2 \cdot 2 = 2.51 \times 10^{-3}\,\mathrm{m^3/s} = 2.51\,\mathrm{L/s}$.
+:::
+
+### Bernoulli's equation
+
+For frictionless, incompressible, steady flow along a streamline, **Bernoulli's equation** holds. It is conservation of energy per unit volume:
+
+$$
+p + \frac{1}{2} \rho v^2 + \rho g h = \text{constant}
+$$
+
+$p$ is the static pressure, $\frac{1}{2}\rho v^2$ the **dynamic pressure**, $\rho g h$ the hydrostatic term. The most important consequence: **where the flow is faster, the static pressure is lower.**
+
+:::tip[Example: Venturi tube]
+In the (horizontal) pipe from above, the pressure in the narrow section drops by
+
+$$
+\Delta p = \frac{1}{2} \rho (v_2^2 - v_1^2) = \frac{1}{2} \cdot 1000 \cdot (64 - 4) = 30\,\mathrm{kPa}
+$$
+
+Conversely, the measured pressure difference can be used to determine the flow speed (Venturi flow meter). Atomisers, water-jet pumps and carburettors also use the low pressure in fast flow.
+:::
+
+**Torricelli's law**: water flows out of an opening at depth $h$ below the surface at $v = \sqrt{2 g h}$, as fast as a body falling freely from height $h$. For $h = 5\,\mathrm{m}$ that is $9.9\,\mathrm{m/s}$.
+
+**Lift on wings** arises because the aerofoil deflects air downwards (change of momentum, Newton's third law), creating faster flow with lower pressure above the wing. Both descriptions belong together. The popular explanation that the air on top must arrive at the trailing edge at the same time because of its longer path is wrong.
+
+## Viscosity and drag
+
+Real fluids have internal friction, called **viscosity**. The dynamic viscosity $\eta$ in $\mathrm{Pa\,s}$ is about $1.0 \times 10^{-3}\,\mathrm{Pa\,s}$ for water at $20\,^\circ\mathrm{C}$, $1.8 \times 10^{-5}\,\mathrm{Pa\,s}$ for air and around $10\,\mathrm{Pa\,s}$ for honey. Liquids become runnier when heated, whereas gases become more viscous.
+
+### Laminar and turbulent flow
+
+| | laminar | turbulent |
+| --- | --- | --- |
+| Picture | layers slide past each other in an orderly way | eddies, mixing |
+| occurs at | low speed, high viscosity | high speed, large pipe |
+| Resistance | proportional to $v$ | approximately proportional to $v^2$ |
+
+Which type of flow occurs is decided by the dimensionless **Reynolds number**:
+
+$$
+Re = \frac{\rho v d}{\eta}
+$$
+
+In pipes, flow is laminar below $Re \approx 2300$. Water at $1\,\mathrm{m/s}$ in a $2\,\mathrm{cm}$ pipe has $Re = \frac{1000 \cdot 1 \cdot 0.02}{0.001} = 20\,000$ and flows turbulently.
+
+For laminar pipe flow, the **Hagen-Poiseuille law** applies:
+
+$$
+Q = \frac{\pi r^4 \Delta p}{8 \eta l}
+$$
+
+Because of $r^4$, halving the radius does not halve the flow but reduces it to a sixteenth. This explains why even slight narrowing of blood vessels greatly reduces blood flow.
+
+A small sphere sinking slowly through a viscous fluid experiences **Stokes' drag** $F = 6\pi\eta r v$.
+
+### Air resistance
+
+For turbulent flow around a body (cars, cyclists, parachutes):
+
+$$
+F_\mathrm{W} = \frac{1}{2} c_\mathrm{w} \rho A v^2
+$$
+
+with the **drag coefficient** $c_\mathrm{w}$ (shape, in English often $c_\mathrm{d}$), the frontal area $A$ and the air density $\rho \approx 1.2\,\mathrm{kg/m^3}$.
+
+:::tip[Example: car on the motorway]
+$c_\mathrm{w} = 0.30$, $A = 2.2\,\mathrm{m^2}$, $v = 130\,\mathrm{km/h} = 36.1\,\mathrm{m/s}$, $\rho = 1.225\,\mathrm{kg/m^3}$:
+
+$$
+F_\mathrm{W} = \frac{1}{2} \cdot 0.30 \cdot 1.225 \cdot 2.2 \cdot 36.1^2 = 527\,\mathrm{N}, \qquad P = F_\mathrm{W} v = 19\,\mathrm{kW}
+$$
+
+At $160\,\mathrm{km/h}$ it would already be around $35\,\mathrm{kW}$, because $P \sim v^3$.
+:::
+
+In free fall with air resistance, a **terminal velocity** is reached when $F_\mathrm{W} = m g$; for a skydiver without an open parachute this is around $200\,\mathrm{km/h}$.
+
+## Further reading
+
+- Paul A. Tipler, Gene Mosca: _Physics for Scientists and Engineers_, W. H. Freeman
+- OpenStax: _University Physics Volume 1_, chapter 14, openstax.org
+- NASA Glenn Research Center: _Beginner's Guide to Aeronautics_ (lift and Bernoulli), grc.nasa.gov

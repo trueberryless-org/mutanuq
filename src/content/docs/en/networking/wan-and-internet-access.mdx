@@ -1,0 +1,137 @@
+---
+title: WAN and Internet Access
+description: WAN topologies and access technologies such as DSL, cable, fibre, mobile, leased lines and MPLS, VPNs with IPsec, QoS basics, SDN and network automation.
+sidebar:
+  order: 12
+---
+
+A **WAN** (_Wide Area Network_) connects sites over long distances. Unlike a LAN, an organisation almost never builds its WAN itself, but leases lines or services from a **provider** (telecommunications company, ISP). WAN technologies work at layers 1 and 2: they carry bits and frames to the next site or to the provider, and IP runs over them unchanged.
+
+## WAN basics
+
+| Term | Meaning |
+| --- | --- |
+| **CPE** (_Customer Premises Equipment_) | equipment at the customer's site, for example router and modem |
+| **Demarcation point** | handover point where the provider's responsibility ends |
+| **Local loop** (last mile) | line from the customer to the provider's nearest exchange |
+| **Downstream / upstream** | direction from the network to the customer and from the customer to the network |
+| **symmetric / asymmetric** | the same or different data rates in both directions |
+| **SLA** (_Service Level Agreement_) | contractually guaranteed availability, bandwidth and repair time |
+
+Typical **WAN topologies** are **point-to-point** (two sites), **hub-and-spoke** (all branches connected to headquarters; traffic between branches passes through headquarters), **full mesh** and **dual-homed** (one site connected to two providers or two lines, for resilience).
+
+## Access technologies
+
+### DSL
+
+**DSL** (_Digital Subscriber Line_) uses the existing copper telephone line. Frequencies above those used for voice carry data. At the provider, the line ends at a **DSLAM** (_DSL Access Multiplexer_), in the exchange or in a street cabinet. The achievable data rate falls sharply with line length, because the attenuation of high frequencies increases.
+
+| Technology | Standard | Max. downstream | Note |
+| --- | --- | --- | --- |
+| ADSL2+ | ITU-T G.992.5 | 24 Mbit/s | asymmetric, range of several kilometres |
+| VDSL2 (profile 17a) with vectoring | ITU-T G.993.2, G.993.5 | 100 Mbit/s | a few hundred metres; vectoring cancels crosstalk between lines |
+| VDSL2 (profile 35b, supervectoring) | ITU-T G.993.2 | 300 Mbit/s | short lines only |
+| G.fast | ITU-T G.9701 | up to about 1 Gbit/s (sum of both directions) | very short distances only, for example inside a building |
+
+To create short copper lines, providers bring fibre up to the street cabinet (FTTC). Authentication with the provider over DSL often uses **PPPoE** (_PPP over Ethernet_).
+
+### Cable
+
+Cable network operators use the coaxial network of cable television. The standard is **DOCSIS** (_Data Over Cable Service Interface Specification_): DOCSIS 3.0 bonds several channels, DOCSIS 3.1 theoretically reaches up to 10 Gbit/s downstream. The operator's counterpart is the **CMTS** (_Cable Modem Termination System_). All customers in a segment share the bandwidth, so it can get slower in the evening. The networks are usually **HFC** networks (_Hybrid Fibre Coax_): fibre up to the residential area, coaxial cable for the last few metres.
+
+### Fibre
+
+| Variant | Fibre reaches |
+| --- | --- |
+| **FTTC** (_Fibre to the Curb/Cabinet_) | the street cabinet, then copper (VDSL) |
+| **FTTB** (_Fibre to the Building_) | the basement of the building, then copper or Ethernet within the building |
+| **FTTH** (_Fibre to the Home_) | the flat |
+
+FTTH is usually built as a **PON** (_Passive Optical Network_): from the provider's **OLT** (_Optical Line Terminal_), one fibre leads to a **passive splitter**, which divides the light without power among up to 64 or 128 subscribers. At the customer's site there is an **ONT** (_Optical Network Terminal_). **GPON** (ITU-T G.984) offers 2.5 Gbit/s downstream and 1.25 Gbit/s upstream, shared among all subscribers on the splitter; **XGS-PON** (ITU-T G.9807.1) offers a symmetric 10 Gbit/s. Alternatively there is **point-to-point** fibre with a dedicated fibre per customer. Fibre is the future-proof technology: the fibre stays in place, and faster data rates are achieved by replacing the end equipment. In Austria the roll-out is supported by the federal broadband funding programme.
+
+### Mobile and satellite
+
+- **4G/LTE** and **5G** are increasingly used as a replacement for fixed lines (_fixed wireless access_, a 5G router at home). In Austria, 5G is operated among others in the 3.4 to 3.8 GHz band and achieves much lower latencies than LTE. All users in a radio cell share the bandwidth.
+- **Satellites** in geostationary orbit (about 36,000 km altitude) have an RTT of over 500 ms because of the signal travel time. Satellites in low Earth orbit (LEO, about 550 km, e.g. Starlink) achieve latencies in the range of 20 to 50 ms. Satellite access is mainly intended for remote locations.
+
+### Enterprise WAN
+
+| Technology | Description |
+| --- | --- |
+| **Leased line** | permanently reserved, symmetric point-to-point connection with guaranteed bandwidth. Expensive but predictable |
+| **Metro Ethernet** | the provider connects sites in a region via Ethernet; for the customer it looks like one large LAN |
+| **MPLS** (_Multiprotocol Label Switching_) | provider network in which packets are forwarded using short **labels** instead of the IP address. As an **MPLS VPN**, the provider separates the networks of different customers and can guarantee QoS |
+| **Internet VPN** | sites connect over low-cost internet connections with encrypted tunnels |
+| **SD-WAN** | a control layer automatically distributes traffic over several lines (MPLS, internet, LTE), depending on application and line quality |
+
+## VPN
+
+A **VPN** (_Virtual Private Network_) builds an **encrypted tunnel** across an untrusted network, usually the internet. The data is confidential (encryption), unaltered (integrity) and demonstrably comes from the partner (authentication). Compared with leased lines, a VPN is cheap and available everywhere.
+
+| Type | Description | Example |
+| --- | --- | --- |
+| **Site-to-site** | two gateways (routers, firewalls) connect whole networks. The end devices notice nothing of it | branch with headquarters |
+| **Remote access** | a single client connects to the company network, either with **VPN client software** or **clientless** via the browser (SSL/TLS VPN portal) | home office, field staff |
+
+### IPsec
+
+**IPsec** is a family of network layer protocols. It protects IP packets regardless of the application.
+
+| Component | Task |
+| --- | --- |
+| **IKE** (_Internet Key Exchange_, today IKEv2, UDP 500) | authenticate the peers (pre-shared key or certificates) and negotiate keys, usually with Diffie-Hellman |
+| **ESP** (_Encapsulating Security Payload_, IP protocol 50) | encryption, integrity and authentication; the protocol normally used |
+| **AH** (_Authentication Header_, IP protocol 51) | integrity and authentication only, no encryption. Does not work through NAT and is hardly used any more |
+| **NAT traversal** (UDP 4500) | encapsulates ESP in UDP so that it can pass NAT routers |
+
+In **tunnel mode** the whole original packet is encrypted and packed into a new IP packet with the addresses of the gateways; this is the standard for site-to-site VPNs. In **transport mode** only the content is protected and the original IP header is kept; this is used between two hosts.
+
+Other VPN technologies:
+
+- **GRE** (_Generic Routing Encapsulation_, IP protocol 47) encapsulates any protocol, including multicast for routing protocols, but does not encrypt. Combined as **GRE over IPsec**, OSPF or EIGRP can run over an encrypted tunnel.
+- **DMVPN** (Cisco) automatically builds direct tunnels between branches when needed.
+- **SSL/TLS VPNs** (e.g. OpenVPN, Cisco AnyConnect or Secure Client) run over TCP or UDP 443 and get through firewalls easily.
+- **WireGuard** is a lean, modern VPN protocol over UDP with a fixed set of algorithms.
+
+## Quality of Service
+
+When more data is to go over a line than it can carry, queues build up. **QoS** (_Quality of Service_) determines which traffic is preferred. It does not create additional bandwidth but distributes the available bandwidth according to importance, typically at WAN edges, where bandwidth is scarce.
+
+Different types of traffic have different requirements. For voice (VoIP), the guideline values are a one-way delay of at most **150 ms**, jitter of at most **30 ms** and at most **1 %** packet loss. File transfers tolerate delay but no loss (TCP retransmits). Video lies in between but needs a lot of bandwidth.
+
+### QoS models
+
+| Model | Principle |
+| --- | --- |
+| **Best effort** | no distinction, all packets equal (the default on the internet) |
+| **IntServ** (_Integrated Services_) | every application reserves resources along the whole path via **RSVP**. Guaranteed, but does not scale |
+| **DiffServ** (_Differentiated Services_) | packets are classified and marked; each router treats the classes according to its own rules (_per-hop behaviour_). Scales well, common in practice |
+
+### Tools
+
+- **Classification and marking**: traffic is identified (by ACL, port, application) and marked. At layer 3 in the **DSCP** field of the IP header (6 bits, 64 values), for example **EF** (_Expedited Forwarding_, DSCP 46) for voice, **AF** classes (_Assured Forwarding_, AF11 to AF43) for preferred data and **CS** classes. At layer 2 in the 3 PCP bits of the 802.1Q tag (**CoS**, values 0 to 7, voice usually 5). Marking is done as close to the source as possible, at the **trust boundary**: markings from untrusted end devices are overwritten.
+- **Queuing** (_congestion management_): **FIFO** (one queue), **WFQ** (fair distribution among flows), **CBWFQ** (guaranteed bandwidth per class) and **LLQ** (_Low Latency Queuing_, CBWFQ with a strict priority queue for voice).
+- **Congestion avoidance**: instead of dropping everything only when the buffer is full (**tail drop**), **WRED** drops individual packets of lower classes randomly beforehand, so that their TCP connections slow down.
+- **Policing and shaping**: both limit the data rate. **Policing** drops (or re-marks) packets above the limit immediately; **shaping** buffers them and sends them later, thus smoothing the traffic at the cost of delay. Providers use policing; customers shape their outgoing traffic to match.
+
+## SDN and automation
+
+Every network device has three logical planes:
+
+| Plane | Task | Example |
+| --- | --- | --- |
+| **Data plane** (forwarding plane) | forward packets and frames | MAC table, routing table in hardware (CEF), applying ACLs |
+| **Control plane** | decide how to forward | OSPF, STP, ARP |
+| **Management plane** | managing the device | SSH, SNMP, Syslog |
+
+In traditional networks every device has its own control plane and is configured individually via the command line. With **SDN** (_Software-Defined Networking_), the control plane is moved wholly or partly to a central **controller** that has an overall view of the network. Via the **southbound API** the controller controls the devices (OpenFlow, NETCONF, RESTCONF); via the **northbound API** (usually REST with JSON) applications and scripts access the controller. Examples are Cisco **Catalyst Center** (formerly DNA Center) for campus networks and Cisco **ACI** for data centres.
+
+**Network automation** replaces repetitive manual configuration with programs: configurations are described as data in **JSON**, **YAML** or **XML**, transferred via **REST APIs** and rolled out to many devices at once with tools such as **Ansible** (agentless, playbooks in YAML over SSH), Puppet or Chef. This saves time, avoids typing errors and makes configurations versionable (see [Version Control](/en/software-development/version-control/)).
+
+Related to this is the **virtualisation** of network functions: routers, firewalls and switches run as virtual machines (**NFV**, _Network Functions Virtualisation_), and in cloud data centres virtual networks are created using overlays such as **VXLAN**.
+
+## Further reading
+
+- [RTR: Broadband and telecommunications in Austria](https://www.rtr.at/TKP/)
+- [RFC 4301: Security Architecture for the Internet Protocol](https://www.rfc-editor.org/rfc/rfc4301)
+- [RFC 2474: Definition of the Differentiated Services Field (DS Field)](https://www.rfc-editor.org/rfc/rfc2474)

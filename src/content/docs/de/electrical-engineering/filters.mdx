@@ -1,0 +1,157 @@
+---
+title: Filter
+description: RC- und RL-Tiefpass und -Hochpass, Grenzfrequenz, Dezibel, Bode-Diagramm, Bandpass und Bandsperre, Filterordnung und aktive Filter.
+sidebar:
+  order: 6
+---
+
+Ein **Filter** lässt Signale bestimmter Frequenzen passieren und schwächt andere ab. Filter trennen Nutz- von Störsignalen, entfernen das Rauschen vor einem [AD-Wandler](/de/electrical-engineering/ad-da-conversion/), glätten PWM-Signale, verteilen Audiosignale auf Hoch- und Tieftöner und unterdrücken Störungen auf Versorgungsleitungen. Grundlage ist, dass die Blindwiderstände von Spule und Kondensator von der Frequenz abhängen (siehe [Wechselstromtechnik](/de/electrical-engineering/alternating-current/#impedanz-von-r-l-und-c)).
+
+## Übertragungsfunktion
+
+Ein Filter ist ein Vierpol mit Eingangsspannung $\underline{U}_1$ und Ausgangsspannung $\underline{U}_2$. Sein Verhalten beschreibt die komplexe **Übertragungsfunktion** (Frequenzgang):
+
+$$
+\underline{H}(j\omega) = \frac{\underline{U}_2}{\underline{U}_1} = \lvert \underline{H} \rvert \angle \varphi
+$$
+
+Der Betrag $\lvert \underline{H} \rvert$ heißt **Amplitudengang** und gibt die Verstärkung (bei passiven Filtern die Abschwächung) an, der Winkel $\varphi$ heißt **Phasengang**.
+
+| Filtertyp     | lässt passieren            | sperrt                     |
+| ------------- | -------------------------- | -------------------------- |
+| Tiefpass      | tiefe Frequenzen, Gleichspannung | hohe Frequenzen      |
+| Hochpass      | hohe Frequenzen            | tiefe Frequenzen, Gleichspannung |
+| Bandpass      | ein Frequenzband           | darunter und darüber       |
+| Bandsperre    | alles außer einem Band     | ein Frequenzband           |
+
+## Dezibel
+
+Weil sich Verstärkungen über viele Größenordnungen erstrecken, gibt man sie logarithmisch in **Dezibel** (dB) an. Bei Spannungen und Strömen gilt der Faktor 20, bei Leistungen der Faktor 10, weil die Leistung proportional zum Quadrat der Spannung ist:
+
+$$
+a = 20 \cdot \lg\frac{U_2}{U_1}\,\mathrm{dB} \qquad a = 10 \cdot \lg\frac{P_2}{P_1}\,\mathrm{dB}
+$$
+
+| Spannungsverhältnis | Leistungsverhältnis | Dezibel           |
+| ------------------- | ------------------- | ----------------- |
+| $100$               | $10\,000$           | $+40\,\mathrm{dB}$ |
+| $10$                | $100$               | $+20\,\mathrm{dB}$ |
+| $2$                 | $4$                 | $+6\,\mathrm{dB}$  |
+| $\sqrt{2} \approx 1{,}414$ | $2$          | $+3\,\mathrm{dB}$  |
+| $1$                 | $1$                 | $0\,\mathrm{dB}$   |
+| $1/\sqrt{2} \approx 0{,}707$ | $0{,}5$    | $-3\,\mathrm{dB}$  |
+| $0{,}5$             | $0{,}25$            | $-6\,\mathrm{dB}$  |
+| $0{,}1$             | $0{,}01$            | $-20\,\mathrm{dB}$ |
+
+Der Vorteil: Bei hintereinandergeschalteten Stufen werden dB-Werte einfach addiert statt Faktoren multipliziert. Absolute Pegel beziehen sich auf eine feste Größe, etwa **dBm** auf $1\,\mathrm{mW}$ (WLAN-Sendeleistung $20\,\mathrm{dBm} = 100\,\mathrm{mW}$) oder **dBV** auf $1\,\mathrm{V}$.
+
+## RC-Tiefpass
+
+Beim **RC-Tiefpass** liegt der Widerstand im Längszweig und der Kondensator parallel zum Ausgang. Bei tiefen Frequenzen ist $X_C$ groß, fast die ganze Spannung liegt am Kondensator. Bei hohen Frequenzen schließt der Kondensator den Ausgang zunehmend kurz. Als komplexer Spannungsteiler:
+
+$$
+\underline{H} = \frac{\dfrac{1}{j\omega C}}{R + \dfrac{1}{j\omega C}} = \frac{1}{1 + j\omega RC} \qquad \lvert \underline{H} \rvert = \frac{1}{\sqrt{1 + (\omega RC)^2}} \qquad \varphi = -\arctan(\omega RC)
+$$
+
+### Grenzfrequenz
+
+Die **Grenzfrequenz** $f_\mathrm{g}$ ist die Frequenz, bei der $X_C = R$ ist. Dort ist die Ausgangsspannung auf $1/\sqrt{2} \approx 70{,}7\,\%$ gesunken, das sind $-3\,\mathrm{dB}$, und die Ausgangsleistung hat sich halbiert:
+
+$$
+f_\mathrm{g} = \frac{1}{2\pi RC} = \frac{1}{2\pi\tau} \qquad \lvert \underline{H}(f_\mathrm{g}) \rvert = \frac{1}{\sqrt{2}} \qquad \varphi(f_\mathrm{g}) = -45°
+$$
+
+Oberhalb von $f_\mathrm{g}$ fällt der Amplitudengang mit **20 dB pro Dekade** (Verzehnfachung der Frequenz), das entspricht etwa 6 dB pro Oktave (Verdopplung). Die Phase geht von $0°$ bei tiefen bis $-90°$ bei hohen Frequenzen.
+
+:::tip[Beispiel]
+$R = 1{,}6\,\mathrm{k\Omega}$, $C = 100\,\mathrm{nF}$:
+
+$$
+f_\mathrm{g} = \frac{1}{2\pi \cdot 1600\,\Omega \cdot 10^{-7}\,\mathrm{F}} \approx 995\,\mathrm{Hz} \approx 1\,\mathrm{kHz}
+$$
+
+Bei $10\,\mathrm{kHz}$ ist $\lvert \underline{H} \rvert = 1/\sqrt{1 + (10/0{,}995)^2} \approx 0{,}099$, also etwa $-20\,\mathrm{dB}$. Ein Signal mit $1\,\mathrm{V}$ Amplitude erscheint am Ausgang nur noch mit rund $0{,}1\,\mathrm{V}$.
+:::
+
+## Bode-Diagramm
+
+Das **Bode-Diagramm** stellt Amplituden- und Phasengang über der Frequenz dar. Die Frequenzachse ist logarithmisch, der Amplitudengang in dB. Dadurch werden die Kurven in weiten Bereichen zu Geraden, und man kann sie mit **Asymptoten** schnell skizzieren: beim Tiefpass $0\,\mathrm{dB}$ bis $f_\mathrm{g}$, danach eine Gerade mit $-20\,\mathrm{dB/Dekade}$. Die größte Abweichung von der echten Kurve liegt genau bei $f_\mathrm{g}$ und beträgt $3\,\mathrm{dB}$.
+
+![Bode-Diagramm eines RC-Tiefpasses](/images/electrical-engineering/lowpass-bode_de.svg)
+
+## RC-Hochpass
+
+Vertauscht man Widerstand und Kondensator, entsteht ein **Hochpass**. Der Kondensator im Längszweig sperrt Gleichspannung und tiefe Frequenzen:
+
+$$
+\underline{H} = \frac{R}{R + \dfrac{1}{j\omega C}} = \frac{j\omega RC}{1 + j\omega RC} \qquad \lvert \underline{H} \rvert = \frac{\omega RC}{\sqrt{1 + (\omega RC)^2}} \qquad \varphi = 90° - \arctan(\omega RC)
+$$
+
+Die Grenzfrequenz ist dieselbe wie beim Tiefpass, $f_\mathrm{g} = 1/(2\pi RC)$, die Phase beträgt dort $+45°$. Unterhalb von $f_\mathrm{g}$ steigt der Amplitudengang mit $20\,\mathrm{dB/Dekade}$.
+
+Ein Hochpass dient als **Koppelkondensator**: Er trennt den Gleichspannungsanteil (etwa den Arbeitspunkt eines Verstärkers) ab und lässt das Wechselsignal durch. Die AC-Kopplung am Oszilloskop ist genau so ein Hochpass.
+
+## RL-Filter
+
+Mit einer Spule statt eines Kondensators funktionieren Filter umgekehrt, weil $X_L$ mit der Frequenz steigt:
+
+| Filter      | Längszweig | Querzweig (Ausgang) | Grenzfrequenz                    |
+| ----------- | ---------- | ------------------- | -------------------------------- |
+| RC-Tiefpass | R          | C                   | $f_\mathrm{g} = \dfrac{1}{2\pi RC}$ |
+| RC-Hochpass | C          | R                   | $f_\mathrm{g} = \dfrac{1}{2\pi RC}$ |
+| RL-Tiefpass | L          | R                   | $f_\mathrm{g} = \dfrac{R}{2\pi L}$  |
+| RL-Hochpass | R          | L                   | $f_\mathrm{g} = \dfrac{R}{2\pi L}$  |
+
+Die Zeitkonstante ist beim RL-Glied $\tau = L/R$. RC-Filter sind in der Signalverarbeitung üblich, weil Kondensatoren klein, billig und nahezu ideal sind. Spulen verwendet man bei großen Strömen, etwa in Netzfiltern und in LC-Filtern von Schaltreglern.
+
+## Verhalten im Zeitbereich
+
+Ein Tiefpass glättet: Ein Rechtecksignal wird zur Lade- und Entladekurve des Kondensators verschliffen. Bei Frequenzen weit über $f_\mathrm{g}$ bildet der Tiefpass näherungsweise den Mittelwert, so macht man aus einem PWM-Signal eine Gleichspannung. Der Hochpass lässt nur die Flanken durch und erzeugt Nadelimpulse.
+
+Zwischen der Anstiegszeit $t_\mathrm{r}$ (von $10\,\%$ auf $90\,\%$) und der Grenzfrequenz eines Tiefpasses erster Ordnung gilt:
+
+$$
+t_\mathrm{r} = \tau \cdot \ln 9 \approx 2{,}2\,\tau \qquad t_\mathrm{r} \approx \frac{0{,}35}{f_\mathrm{g}}
+$$
+
+Diese Beziehung bestimmt, welche Bandbreite ein [Oszilloskop](/de/electrical-engineering/measurement/#oszilloskop) für steile Flanken braucht.
+
+## Bandpass und Bandsperre
+
+Ein **Bandpass** lässt nur Frequenzen zwischen einer unteren Grenzfrequenz $f_\mathrm{u}$ und einer oberen Grenzfrequenz $f_\mathrm{o}$ durch. Er entsteht durch Hintereinanderschalten eines Hochpasses ($f_\mathrm{u}$) und eines Tiefpasses ($f_\mathrm{o}$), wobei $f_\mathrm{u} < f_\mathrm{o}$ sein muss, oder mit einem [Schwingkreis](/de/electrical-engineering/alternating-current/#resonanz).
+
+$$
+B = f_\mathrm{o} - f_\mathrm{u} \qquad f_\mathrm{m} = \sqrt{f_\mathrm{u} \cdot f_\mathrm{o}} \qquad Q = \frac{f_\mathrm{m}}{B}
+$$
+
+Die **Mittenfrequenz** $f_\mathrm{m}$ ist das geometrische Mittel, weil die Frequenzachse logarithmisch ist. Ein Sprachbandpass für das Telefon mit $f_\mathrm{u} = 300\,\mathrm{Hz}$ und $f_\mathrm{o} = 3400\,\mathrm{Hz}$ hat $B = 3100\,\mathrm{Hz}$ und $f_\mathrm{m} \approx 1010\,\mathrm{Hz}$.
+
+Eine **Bandsperre** unterdrückt ein schmales Band. Sehr schmale Bandsperren heißen **Notch-Filter** und entfernen etwa den $50$-Hz-Netzbrumm aus Messsignalen. Man baut sie mit einem Reihenschwingkreis im Querzweig (der bei Resonanz kurzschließt) oder als Doppel-T-Filter aus Widerständen und Kondensatoren.
+
+## Filterordnung
+
+Die **Ordnung** eines Filters ist die Anzahl der unabhängigen Energiespeicher (Kondensatoren, Spulen). Sie bestimmt die Steilheit außerhalb des Durchlassbereichs:
+
+$$
+\text{Flankensteilheit} = n \cdot 20\,\mathrm{dB/Dekade}
+$$
+
+Ein Filter 2. Ordnung fällt mit $40\,\mathrm{dB/Dekade}$, ein Filter 4. Ordnung mit $80\,\mathrm{dB/Dekade}$. Zwei passive RC-Tiefpässe einfach hintereinanderzuschalten ergibt zwar die 2. Ordnung, die zweite Stufe belastet aber die erste, sodass die Grenzfrequenz sich verschiebt und der Übergang weich wird. Ein Impedanzwandler (Spannungsfolger) zwischen den Stufen verhindert das.
+
+### Aktive Filter
+
+**Aktive Filter** verwenden [Operationsverstärker](/de/electrical-engineering/operational-amplifiers/). Sie kommen ohne Spulen aus, können verstärken, belasten die Quelle kaum und lassen sich gut kaskadieren. Eine verbreitete Schaltung für 2. Ordnung ist die **Sallen-Key-Struktur**. Je nach Bemessung erhält man unterschiedliche Charakteristiken:
+
+| Charakteristik | Eigenschaft                                                  |
+| -------------- | ------------------------------------------------------------ |
+| Butterworth    | maximal flacher Durchlassbereich, guter Kompromiss            |
+| Tschebyscheff  | steilerer Übergang, dafür Welligkeit im Durchlassbereich      |
+| Bessel         | gleichmäßige Laufzeit, Rechtecksignale bleiben formtreu, flacher Übergang |
+
+Digitale Filter (FIR, IIR) rechnen dasselbe in Software oder in einem DSP mit abgetasteten Werten nach.
+
+## Weiterführende Quellen
+
+- Tietze, U.; Schenk, Ch.; Gamm, E.: _Halbleiter-Schaltungstechnik_. Springer Vieweg (Kapitel Aktive Filter).
+- [Texas Instruments: Active Low-Pass Filter Design (Application Report SLOA049)](https://www.ti.com/lit/an/sloa049b/sloa049b.pdf)
+- [Wikipedia: Bode-Diagramm](https://de.wikipedia.org/wiki/Bode-Diagramm)

@@ -1,0 +1,177 @@
+---
+title: Transport Layer
+description: Port numbers, TCP header, three-way handshake, connection termination, sequence and acknowledgement numbers, sliding window, flow and congestion control, UDP and sockets.
+sidebar:
+  order: 8
+---
+
+IP carries packets from computer to computer. But many programs run on a computer at the same time: browser, mail client, update service. The **transport layer** connects **processes** (_end-to-end communication_) and distinguishes them by **port numbers**. Depending on the protocol, it also ensures that data arrives complete, error-free and in the right order. The two most important protocols are **TCP** and **UDP**.
+
+## Port numbers
+
+A port number is 16 bits long (0 to 65,535). The combination of IP address and port is called a **socket** (e.g. `192.168.1.10:51834`). A connection is uniquely identified by the **5-tuple**: protocol, source IP, source port, destination IP, destination port. This is how a web server on port 443 can serve thousands of connections at once: each differs in source IP or source port.
+
+| Range | Name | Use |
+| --- | --- | --- |
+| 0 to 1023 | **Well-known ports** (system ports) | standard services, assigned by IANA. On Linux a process needs root privileges to bind to them |
+| 1024 to 49,151 | **Registered ports** | applications registered with IANA, e.g. 3306 MySQL, 3389 RDP, 5432 PostgreSQL |
+| 49,152 to 65,535 | **Dynamic / private ports** (ephemeral) | assigned randomly by the operating system as the **source port** for client connections |
+
+By default Linux uses 32,768 to 60,999 as its ephemeral range; Windows follows the IANA range.
+
+### Important ports
+
+| Port | Protocol | Transport | Service |
+| --- | --- | --- | --- |
+| 20, 21 | FTP | TCP | data (active mode), control |
+| 22 | SSH, SFTP, SCP | TCP | encrypted remote access and file transfer |
+| 23 | Telnet | TCP | unencrypted remote access |
+| 25 | SMTP | TCP | mail transfer between servers |
+| 53 | DNS | UDP, TCP | name resolution (TCP for large responses and zone transfers) |
+| 67, 68 | DHCP | UDP | server, client |
+| 69 | TFTP | UDP | simple file transfer (e.g. IOS images) |
+| 80 | HTTP | TCP | web |
+| 110 | POP3 | TCP | retrieving mail |
+| 123 | NTP | UDP | time synchronisation |
+| 143 | IMAP | TCP | mail access |
+| 161, 162 | SNMP | UDP | queries, traps |
+| 389 | LDAP | TCP | directory service |
+| 443 | HTTPS | TCP (HTTP/3: UDP) | web over TLS |
+| 445 | SMB | TCP | Windows file shares |
+| 514 | Syslog | UDP | log messages |
+| 587 | SMTP submission | TCP | sending mail from the client |
+| 636 | LDAPS | TCP | LDAP over TLS |
+| 993, 995 | IMAPS, POP3S | TCP | IMAP and POP3 over TLS |
+| 3389 | RDP | TCP, UDP | Windows Remote Desktop |
+
+## TCP
+
+The **Transmission Control Protocol** (TCP, RFC 9293) is **connection-oriented** and **reliable**. It guarantees that a byte stream reaches the receiver complete, error-free, without duplicates and in the right order, even though the underlying IP gives none of these guarantees. This is achieved through connection set-up, sequence numbers, acknowledgements, retransmission, flow control and congestion control. TCP is used wherever every byte counts: web, mail, file transfer, SSH, databases.
+
+### The TCP header
+
+| Field | Bits | Meaning |
+| --- | --- | --- |
+| Source port | 16 | port of the sender |
+| Destination port | 16 | port of the receiver |
+| **Sequence number** | 32 | number of the first data byte in this segment |
+| **Acknowledgement number** | 32 | number of the next byte expected |
+| Data offset | 4 | header length in 32-bit words (at least 5 = 20 bytes) |
+| Reserved | 4 | |
+| **Flags** | 8 | CWR, ECE, URG, **ACK**, PSH, **RST**, **SYN**, **FIN** |
+| **Window** | 16 | how many bytes the sender of this segment can still receive (receive window) |
+| Checksum | 16 | over header, data and a pseudo-header with the IP addresses |
+| Urgent pointer | 16 | rarely used |
+| Options | variable | e.g. MSS, window scaling, SACK, timestamps |
+
+The TCP header is at least **20 bytes** long, with options up to 60 bytes.
+
+| Flag | Meaning |
+| --- | --- |
+| SYN | connection set-up, synchronise sequence numbers |
+| ACK | the acknowledgement number is valid (set in every segment after the first) |
+| FIN | sender has no more data, connection termination |
+| RST | abort the connection immediately, e.g. if no service is running on the destination port |
+| PSH | pass data to the application immediately |
+| URG | urgent pointer is valid |
+
+### Three-way handshake
+
+Before data flows, client and server set up a connection. Each side chooses a random **initial sequence number** (ISN) so that segments from old connections are not confused and attackers cannot guess sequence numbers.
+
+```text
+Client                                        Server (LISTEN)
+  |  SYN, Seq=1000                               |
+  |--------------------------------------------->|
+  |                    SYN, ACK, Seq=5000, Ack=1001
+  |<---------------------------------------------|
+  |  ACK, Seq=1001, Ack=5001                      |
+  |--------------------------------------------->|
+  |               connection established (ESTABLISHED)
+```
+
+1. The client sends **SYN** with its ISN (here 1000).
+2. The server replies with **SYN-ACK**: its own ISN (5000) and the acknowledgement 1001 (the SYN counts as one byte).
+3. The client acknowledges with **ACK** 5001.
+
+A **SYN flood** attack exploits the handshake: the attacker sends masses of SYNs with forged senders, the server reserves memory for each half-open connection and stops answering genuine requests. The countermeasure is **SYN cookies**.
+
+### Connection termination
+
+Since TCP connections are full duplex, each direction is closed separately, usually in four steps:
+
+1. A sends **FIN**: "I have nothing more to send."
+2. B acknowledges with **ACK**. B can still send data (_half-close_).
+3. B sends **FIN** when it has finished.
+4. A acknowledges with **ACK** and waits in the **TIME_WAIT** state for twice the maximum segment lifetime (2 MSL), so that delayed segments do not end up in a new connection with the same 5-tuple.
+
+Steps 2 and 3 are often combined into one FIN-ACK. An **RST** ends a connection immediately without an orderly shutdown.
+
+### Sequence and acknowledgement numbers
+
+TCP numbers **bytes**, not segments. The sequence number of a segment is the number of its first byte. The acknowledgement number states which byte the receiver expects next and thereby acknowledges all bytes before it (**cumulative acknowledgement**).
+
+:::tip[Example]
+After the handshake above, the client sends 3 segments of 500 bytes each: Seq 1001, Seq 1501, Seq 2001. If all arrive, the server replies with Ack 2501. If the second segment is lost, the server can only acknowledge up to 1500 and sends Ack 1501 again for every further segment that arrives. The receiver puts the data together in the right order using the sequence numbers, even if it arrives out of order.
+:::
+
+If an acknowledgement does not arrive, the sender retransmits after the **retransmission timeout** (RTO, calculated from the measured RTT) has expired. If it receives **three duplicate ACKs** for the same number, it resends the missing segment immediately without waiting for the timer (**fast retransmit**). With the **SACK** option (_Selective Acknowledgement_), the receiver can also acknowledge individual blocks after a gap, so that only what is missing is repeated.
+
+### Sliding window and flow control
+
+If the sender waited for the acknowledgement after every segment (_stop-and-wait_), the line would be idle most of the time. With the **sliding window** method, the sender may have as many unacknowledged bytes in flight as the **window** allows. Every acknowledgement moves the window forward.
+
+**Flow control** prevents a fast sender from overwhelming a slow receiver: in the **Window** field the receiver states how much space is free in its receive buffer (**receive window**, rwnd). At 0 the sender has to pause. Since 16 bits only allow 65,535 bytes, there is the **window scaling** option (RFC 7323), which multiplies the window by a factor of up to $2^{14}$.
+
+How large the window must be for a line to be fully used is given by the **bandwidth-delay product**:
+
+$$
+W = R \cdot \mathrm{RTT}
+$$
+
+At 100 Mbit/s and 40 ms RTT, this is $10^8\,\mathrm{bit/s} \cdot 0.04\,\mathrm{s} = 4 \cdot 10^6\,\mathrm{bit} = 500\,\mathrm{kB}$. With a window of only 64 KiB you reach at most $65{,}536 \cdot 8\,\mathrm{bit} / 0.04\,\mathrm{s} \approx 13\,\mathrm{Mbit/s}$, no matter how fast the line is.
+
+### Congestion control
+
+**Congestion control** (RFC 5681) does not protect the receiver but the **network**: if everyone sends as fast as they can, the routers' buffers overflow, packets are lost, retransmitted and clog the network further. The sender therefore keeps a second window, the **congestion window** (cwnd). It may send at most $\min(\mathrm{cwnd}, \mathrm{rwnd})$ unacknowledged bytes. Packet loss is taken as a sign of congestion.
+
+| Phase | Behaviour |
+| --- | --- |
+| **Slow start** | cwnd starts small (a few segments) and doubles every RTT (exponential growth) until the threshold **ssthresh** is reached |
+| **Congestion avoidance** | cwnd grows by only about one segment per RTT (linear growth) |
+| **Fast recovery** | on three duplicate ACKs: ssthresh and cwnd are halved, then continue with congestion avoidance |
+| **Timeout** | severe congestion: ssthresh is halved, cwnd set to one segment, slow start again |
+
+This pattern of linear increase and halving is called **AIMD** (_Additive Increase, Multiplicative Decrease_) and produces the typical sawtooth curve. Linux and Windows now use the **CUBIC** algorithm by default, which grows faster on high-bandwidth links. Google developed **BBR**, an algorithm that measures bandwidth and RTT instead of reacting to losses.
+
+## UDP
+
+The **User Datagram Protocol** (UDP, RFC 768) is **connectionless** and **unreliable**: no handshake, no acknowledgements, no ordering, no flow or congestion control. A datagram is simply sent off. The header is only **8 bytes**: source port, destination port, length and checksum (optional with IPv4, mandatory with IPv6).
+
+This is not a flaw but intentional: UDP is fast and has little overhead. It is suitable when
+
+- data has to arrive in real time and a late retransmission would be useless (VoIP, video conferencing, online games),
+- requests are small and can simply be repeated (DNS, DHCP, NTP, SNMP),
+- data goes to many receivers (multicast, broadcast, not possible with TCP),
+- the application handles reliability itself. **QUIC** (RFC 9000), the basis of HTTP/3, builds connections, encryption and retransmission on top of UDP in order to set up connections faster than TCP with TLS.
+
+| Feature | TCP | UDP |
+| --- | --- | --- |
+| Connection | connection-oriented (handshake) | connectionless |
+| Reliability | acknowledgement, retransmission | none |
+| Order | guaranteed | not guaranteed |
+| Flow and congestion control | yes | no |
+| Data model | byte stream without message boundaries | individual datagrams with boundaries |
+| Header | 20 to 60 bytes | 8 bytes |
+| Multicast/broadcast | no | yes |
+| Examples | HTTP/1.1 and HTTP/2, SMTP, SSH, FTP | DNS, DHCP, VoIP (RTP), NTP, TFTP, QUIC |
+
+## Sockets
+
+Programs access TCP and UDP through the **socket API**. A server binds a socket to a port and waits (`bind`, `listen`, `accept`); a client connects (`connect`). What this looks like in C# and Rust, with message framing over the TCP byte stream and multiple clients, is shown on the page [Network Programming](/en/software-development/network-programming/). Under [Troubleshooting](/en/networking/network-troubleshooting/#netstat-and-ss) you can see how to display open ports and connections with `netstat` and `ss`.
+
+## Further reading
+
+- [RFC 9293: Transmission Control Protocol (TCP)](https://www.rfc-editor.org/rfc/rfc9293)
+- [RFC 5681: TCP Congestion Control](https://www.rfc-editor.org/rfc/rfc5681)
+- [IANA Service Name and Transport Protocol Port Number Registry](https://www.iana.org/assignments/service-names-port-numbers/)

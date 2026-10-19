@@ -1,0 +1,427 @@
+---
+title: Automata and Formal Languages
+description: Alphabets, words and languages, deterministic and nondeterministic finite automata, subset construction, regular expressions, grammars, Chomsky hierarchy, pushdown automata, Turing machines and Mealy and Moore machines.
+sidebar:
+  order: 9
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Theoretical computer science** uses mathematical models to investigate what computers can compute in principle. **Automata** are abstract machines that read their input symbol by symbol and change their state as they go. **Formal languages** describe which strings belong to a language. Both have very practical applications: compilers split source code using finite automata and check the syntax with grammars, regular expressions search texts, and controllers and network protocols are designed as state machines. The basics of set theory are under [Sets and number ranges](/en/mathematics/algebra/sets-and-number-ranges/).
+
+## Alphabets, words and languages
+
+| Term                  | Definition                                                                | Example                                   |
+| --------------------- | ------------------------------------------------------------------------- | ----------------------------------------- |
+| **alphabet** $\Sigma$ | finite, non-empty set of symbols                                          | $\Sigma = \{0, 1\}$, $\Sigma = \{a, b, c\}$ |
+| **word**              | finite sequence of symbols from $\Sigma$                                  | $0110$, $abba$                            |
+| **length** $\lvert w \rvert$ | number of symbols                                                  | $\lvert abba \rvert = 4$                  |
+| **empty word** $\varepsilon$ | word of length 0                                                   | $\lvert \varepsilon \rvert = 0$           |
+| **concatenation** $uv$ | writing two words one after the other                                    | $u = ab$, $v = ba$: $uv = abba$           |
+| $\Sigma^*$            | set of **all** words over $\Sigma$, including $\varepsilon$ (Kleene star) | $\{0,1\}^* = \{\varepsilon, 0, 1, 00, 01, \ldots\}$ |
+| $\Sigma^+$            | all words except $\varepsilon$                                            |                                           |
+| **formal language** $L$ | any subset $L \subseteq \Sigma^*$                                       | all binary numbers divisible by 3         |
+
+A language can be finite or infinite. The central question is the **word problem**: does a given word $w$ belong to the language $L$? Languages are classified according to which kind of automaton can answer this question.
+
+## Finite automata
+
+### Deterministic finite automaton
+
+A **deterministic finite automaton** (DFA) is a 5-tuple $M = (Q, \Sigma, \delta, q_0, F)$:
+
+- $Q$: finite set of **states**
+- $\Sigma$: input alphabet
+- $\delta: Q \times \Sigma \to Q$: **transition function**, exactly one next state for every state and every symbol
+- $q_0 \in Q$: **start state**
+- $F \subseteq Q$: set of **final states** (accepting states)
+
+The automaton starts in $q_0$, reads the word symbol by symbol and moves according to $\delta$. If it ends in a final state, it **accepts** the word. The set of all accepted words is the **language** $L(M)$ of the automaton. A DFA has no memory apart from its current state, so it needs exactly $\lvert w \rvert$ steps and constant memory for any input.
+
+:::tip[Example: binary numbers divisible by 3]
+State $q_r$ stores the remainder $r$ of the number read so far when divided by 3. Appending a bit $b$ to a binary number with value $n$ gives $2n + b$. The new remainder is therefore $(2r + b) \bmod 3$.
+
+$Q = \{q_0, q_1, q_2\}$, $\Sigma = \{0, 1\}$, start state $q_0$, $F = \{q_0\}$.
+
+![State diagram of the DFA with the states q0, q1 and q2; q0 is both start and final state](/images/computer-science/dfa_mod3_en.svg)
+
+| $\delta$ | 0     | 1     |
+| -------- | ----- | ----- |
+| → \* $q_0$ | $q_0$ | $q_1$ |
+| $q_1$    | $q_2$ | $q_0$ |
+| $q_2$    | $q_1$ | $q_2$ |
+
+(→ marks the start state, \* a final state.)
+
+Input $1001_2 = 9$: $q_0 \xrightarrow{1} q_1 \xrightarrow{0} q_2 \xrightarrow{0} q_1 \xrightarrow{1} q_0$. Final state, so accepted.
+Input $111_2 = 7$: $q_0 \xrightarrow{1} q_1 \xrightarrow{1} q_0 \xrightarrow{1} q_1$. Not a final state, so rejected.
+:::
+
+In a **state diagram**, states are circles, final states double circles, the start state has an arrow without a source, and transitions are arrows labelled with the symbol read. If a transition is missing from a diagram, an undrawn **error state** (trap state) is assumed, which the automaton never leaves again.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var delta = new Dictionary<(int State, char Symbol), int>();
+for (int r = 0; r < 3; r++)
+{
+    delta[(r, '0')] = (2 * r) % 3;
+    delta[(r, '1')] = (2 * r + 1) % 3;
+}
+var divisibleBy3 = new Dfa(Start: 0, Accepting: [0], Delta: delta);
+
+foreach (string word in new[] { "0", "11", "110", "111", "1001", "1010" })
+{
+    string result = divisibleBy3.Accepts(word) ? "accepted" : "rejected";
+    Console.WriteLine($"{word,4} ({Convert.ToInt32(word, 2),2}): {result}");
+}
+// Output:
+//    0 ( 0): accepted
+//   11 ( 3): accepted
+//  110 ( 6): accepted
+//  111 ( 7): rejected
+// 1001 ( 9): accepted
+// 1010 (10): rejected
+
+record Dfa(int Start, HashSet<int> Accepting, Dictionary<(int State, char Symbol), int> Delta)
+{
+    public bool Accepts(string word)
+    {
+        int state = Start;
+        foreach (char symbol in word)
+        {
+            // missing transition = error state
+            if (!Delta.TryGetValue((state, symbol), out int next)) return false;
+            state = next;
+        }
+        return Accepting.Contains(state);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{HashMap, HashSet};
+
+struct Dfa {
+    start: u32,
+    accepting: HashSet<u32>,
+    delta: HashMap<(u32, char), u32>,
+}
+
+impl Dfa {
+    fn accepts(&self, word: &str) -> bool {
+        // missing transition = error state (None)
+        word.chars()
+            .try_fold(self.start, |state, symbol| self.delta.get(&(state, symbol)).copied())
+            .is_some_and(|state| self.accepting.contains(&state))
+    }
+}
+
+fn main() {
+    let mut delta = HashMap::new();
+    for r in 0..3 {
+        delta.insert((r, '0'), (2 * r) % 3);
+        delta.insert((r, '1'), (2 * r + 1) % 3);
+    }
+    let divisible_by_3 = Dfa { start: 0, accepting: HashSet::from([0]), delta };
+
+    for word in ["0", "11", "110", "111", "1001", "1010"] {
+        let value = u32::from_str_radix(word, 2).unwrap_or(0);
+        let result = if divisible_by_3.accepts(word) { "accepted" } else { "rejected" };
+        println!("{word:>4} ({value:>2}): {result}");
+    }
+}
+// Output:
+//    0 ( 0): accepted
+//   11 ( 3): accepted
+//  110 ( 6): accepted
+//  111 ( 7): rejected
+// 1001 ( 9): accepted
+// 1010 (10): rejected
+```
+
+</TabItem>
+</Tabs>
+
+### Nondeterministic finite automaton
+
+A **nondeterministic finite automaton** (NFA) may have **several** or **no** next states for a symbol in a given state, and may optionally change state without reading a symbol (**ε-transitions**). The transition function returns a set of states:
+
+$$
+\delta: Q \times (\Sigma \cup \{\varepsilon\}) \to \mathcal{P}(Q)
+$$
+
+An NFA accepts a word if **at least one** possible path ends in a final state. You can imagine that it always "guesses" correctly at every choice, or that it follows all possibilities in parallel. NFAs are often much smaller and easier to design than DFAs.
+
+Example: all words over $\{a, b\}$ that end in $ab$. The NFA stays in $p_0$ as long as it likes and at some point "guesses" that the final $ab$ begins:
+
+| $\delta$   | a              | b         |
+| ---------- | -------------- | --------- |
+| → $p_0$    | $\{p_0, p_1\}$ | $\{p_0\}$ |
+| $p_1$      | $\emptyset$    | $\{p_2\}$ |
+| \* $p_2$   | $\emptyset$    | $\emptyset$ |
+
+### Subset construction
+
+Every NFA can be converted into an equivalent DFA. NFAs can therefore do **no more** than DFAs; they are just more convenient. In the **subset construction** (powerset construction, Rabin and Scott 1959), every state of the DFA is a **set** of NFA states, namely all those the NFA could currently be in:
+
+1. The start state of the DFA is $\{p_0\}$ (with ε-transitions, plus all states reachable via ε, the **ε-closure**).
+2. For every new DFA state $S$ and every symbol $x$: the next state is the union of all $\delta(p, x)$ for $p \in S$.
+3. Repeat until no new sets appear.
+4. Final states are all sets that contain at least one NFA final state.
+
+:::tip[Example: NFA for "ends in ab"]
+| DFA state          | a              | b              |
+| ------------------ | -------------- | -------------- |
+| → $\{p_0\}$        | $\{p_0, p_1\}$ | $\{p_0\}$      |
+| $\{p_0, p_1\}$     | $\{p_0, p_1\}$ | $\{p_0, p_2\}$ |
+| \* $\{p_0, p_2\}$  | $\{p_0, p_1\}$ | $\{p_0\}$      |
+
+Of the $2^3 = 8$ possible subsets, only three are reachable. The DFA remembers: "nothing relevant read", "last read an $a$" and "last read $ab$".
+:::
+
+In the worst case, the DFA has $2^n$ states if the NFA has $n$ states. A DFA can also be **minimised** by merging states that do not behave differently for any input. Every regular language has a unique minimal DFA.
+
+## Regular expressions and regular languages
+
+**Regular expressions** describe languages with three operations. Formally, over an alphabet $\Sigma$:
+
+| Expression               | Language                                             |
+| ------------------------ | ---------------------------------------------------- |
+| $\emptyset$              | the empty language                                   |
+| $\varepsilon$            | only the empty word                                  |
+| $a$ for $a \in \Sigma$   | only the word $a$                                    |
+| $R \mid S$ (union)       | words from $R$ or from $S$                           |
+| $RS$ (concatenation)     | a word from $R$ followed by a word from $S$          |
+| $R^*$ (Kleene star)      | zero or more repetitions of words from $R$           |
+
+Examples over $\{a, b\}$: $(a \mid b)^*ab$ describes all words ending in $ab$. $a^*b^*$ describes any number of $a$ followed by any number of $b$. $(0 \mid 1(01^*0)^*1)^*$ describes the binary numbers divisible by 3 from the DFA example.
+
+**Kleene's theorem** states: a language can be described by a regular expression if and only if a finite automaton recognises it. These languages are called **regular**. The conversions are constructive:
+
+```text
+regular expression  ──(Thompson construction)──▶  NFA with ε-transitions
+NFA                 ──(subset construction)──▶  DFA
+DFA                 ──(state elimination)──▶  regular expression
+```
+
+This is exactly how regex libraries work, as does the **lexical analysis** of a compiler, which splits source code into tokens such as identifiers, numbers and keywords. Practical regex syntax as in C# and Rust (see [Regular expressions](/en/software-development/strings-and-regular-expressions/#regular-expressions)) offers shorthands such as `+`, `?`, `[0-9]` and `{2,4}`, all of which can be reduced to the three basic operations. **Backreferences** (`\1`), however, go beyond regular languages. That is why the Rust library `regex` does without them and in return guarantees linear running time.
+
+### Limits of finite automata
+
+The language $L = \{a^n b^n \mid n \geq 0\}$ (as many $a$ as $b$, all $a$ first) is **not regular**. Intuitively: to check whether as many $b$ as $a$ follow, the automaton would have to remember arbitrarily large numbers, but it only has finitely many states.
+
+The formal tool is the **pumping lemma**: for every regular language there is a number $p$ such that every word $w \in L$ with $\lvert w \rvert \geq p$ can be split into $w = xyz$ with $\lvert xy \rvert \leq p$, $\lvert y \rvert \geq 1$ and $xy^iz \in L$ for all $i \geq 0$. For $a^p b^p$, because $\lvert xy \rvert \leq p$, $y$ lies entirely within the $a$ part. "Pumping up" to $xy^2z$ gives more $a$ than $b$, so a word outside $L$. Contradiction, so $L$ is not regular. For the same reason, no regular expression can correctly check bracketed expressions of arbitrary depth.
+
+## Grammars
+
+A **formal grammar** generates the words of a language through replacement rules. It is a 4-tuple $G = (V, \Sigma, P, S)$:
+
+- $V$: **nonterminals** (variables, upper-case letters)
+- $\Sigma$: **terminals** (the symbols of the language)
+- $P$: **production rules** of the form $\alpha \to \beta$
+- $S \in V$: **start symbol**
+
+You start with the start symbol and keep replacing until only terminals are left (**derivation**). The grammar with the rules $S \to aSb \mid \varepsilon$ generates exactly $\{a^n b^n\}$:
+
+$$
+S \Rightarrow aSb \Rightarrow aaSbb \Rightarrow aaaSbbb \Rightarrow aaabbb
+$$
+
+Programming languages are described with grammars in **Backus-Naur form** (BNF) or the extended **EBNF**. A grammar for simple arithmetic expressions in which multiplication binds more tightly than addition because of its structure:
+
+```text
+Expression ::= Term { ("+" | "-") Term }
+Term       ::= Factor { ("*" | "/") Factor }
+Factor     ::= Number | "(" Expression ")"
+Number     ::= Digit { Digit }
+Digit      ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+```
+
+A derivation can be represented as a **syntax tree**. A compiler's **parser** builds this tree. A grammar is **ambiguous** if a word has two different syntax trees. This is undesirable for programming languages because the meaning then becomes unclear. The grammar above is unambiguous because it fixes precedence via the levels expression, term and factor.
+
+### Chomsky hierarchy
+
+In 1956 Noam Chomsky classified grammars into four types according to the rules they allow. Each level contains the ones below it:
+
+| Type | Name                         | Rule form                                                         | Automaton                             | Example language                      |
+| ---- | ---------------------------- | ----------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| 0    | **recursively enumerable** (unrestricted) | $\alpha \to \beta$ arbitrary                         | Turing machine                        | language of the halting problem       |
+| 1    | **context-sensitive**        | $\alpha A \beta \to \alpha \gamma \beta$, the right side is never shorter | linear bounded automaton      | $\{a^n b^n c^n \mid n \geq 1\}$       |
+| 2    | **context-free**             | $A \to \gamma$, exactly one nonterminal on the left               | pushdown automaton                    | $\{a^n b^n\}$, balanced brackets, syntax of programming languages |
+| 3    | **regular**                  | $A \to aB$ or $A \to a$ (or $A \to \varepsilon$)                  | finite automaton                      | identifiers, numbers, $(a \mid b)^*ab$ |
+
+What matters in practice: the **tokens** of a programming language (type 3) are recognised by the lexer using finite automata, and the **structure** (type 2) is checked by the parser using a pushdown automaton. Rules such as "a variable must be declared before it is used" are not context-free and are checked in a separate step (semantic analysis).
+
+## Pushdown automata
+
+A **pushdown automaton** (PDA) is a finite automaton with an additional, unbounded **stack**. A transition depends on the state, the symbol read and the top stack symbol, and can replace the top symbol with a sequence of symbols (push, pop).
+
+For $\{a^n b^n \mid n \geq 1\}$:
+
+1. Push an $A$ onto the stack for every $a$ read.
+2. On the first $b$, switch to a second state and from then on pop an $A$ for every $b$. An $a$ is no longer allowed in this state.
+3. Accept if the input has ended and the stack is empty.
+
+This is exactly how compilers check whether brackets, `{` and `}` or HTML tags are nested correctly. Unlike finite automata, **nondeterministic** pushdown automata are more powerful than deterministic ones: the language of even-length palindromes ($ww^R$, e.g. $abba$) is only recognised by a nondeterministic PDA, because it has to "guess" the middle of the word. Parsers therefore use grammars that can be processed deterministically (LL, LR).
+
+## Turing machines
+
+The **Turing machine** (Alan Turing, 1936) is the most general automaton model. It consists of:
+
+- a **tape** that is infinite in both directions, divided into cells containing one symbol each (initially the input, otherwise the blank symbol $\sqcup$),
+- a **read/write head** that reads a cell, overwrites it and moves one cell left or right,
+- a finite **control** with states and the transition function $\delta: Q \times \Gamma \to Q \times \Gamma \times \{L, R, N\}$ ($\Gamma$ is the tape alphabet, $N$ means stay put).
+
+Unlike a pushdown automaton, a Turing machine can move back and forth on its tape as it likes and write anywhere. It can therefore compute everything a modern computer can compute, only more slowly. A **universal Turing machine** receives the description of another Turing machine as input and simulates it; it is the theoretical model of the stored-program concept. What Turing machines cannot do is described in [Computability and complexity](/en/computer-science/computability-and-complexity/).
+
+:::tip[Example: incrementing a binary number by 1]
+The head starts on the first digit.
+
+| State     | reads      | writes     | moves  | new state     | Meaning                                |
+| --------- | ---------- | ---------- | ------ | ------------- | -------------------------------------- |
+| right     | 0          | 0          | R      | right         | run to the end of the number           |
+| right     | 1          | 1          | R      | right         |                                        |
+| right     | $\sqcup$   | $\sqcup$   | L      | carry         | end reached, back to the last digit    |
+| carry     | 1          | 0          | L      | carry         | 1 + 1 = 10, pass the carry on          |
+| carry     | 0          | 1          | N      | halt          | carry absorbed                         |
+| carry     | $\sqcup$   | 1          | N      | halt          | new leading digit                      |
+
+$1011 \to 1100$ and $111 \to 1000$.
+:::
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const char Blank = '_';
+var rules = new Dictionary<(string State, char Read), (string Next, char Write, int Move)>
+{
+    [("right", '0')] = ("right", '0', +1),
+    [("right", '1')] = ("right", '1', +1),
+    [("right", Blank)] = ("carry", Blank, -1),
+    [("carry", '1')] = ("carry", '0', -1),
+    [("carry", '0')] = ("halt", '1', 0),
+    [("carry", Blank)] = ("halt", '1', 0),
+};
+
+foreach (string input in new[] { "1011", "111" })
+{
+    Console.WriteLine($"{input} -> {Run(input)}");
+}
+// Output:
+// 1011 -> 1100
+// 111 -> 1000
+
+string Run(string input)
+{
+    // tape as a dictionary: position -> symbol, unwritten cells are blank
+    var tape = new Dictionary<int, char>();
+    for (int i = 0; i < input.Length; i++) tape[i] = input[i];
+
+    string state = "right";
+    int head = 0;
+    while (state != "halt")
+    {
+        char read = tape.GetValueOrDefault(head, Blank);
+        var (next, write, move) = rules[(state, read)];
+        tape[head] = write;
+        head += move;
+        state = next;
+    }
+    return string.Concat(tape.OrderBy(kv => kv.Key).Select(kv => kv.Value)).Trim(Blank);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{BTreeMap, HashMap};
+
+const BLANK: char = '_';
+
+fn run(rules: &HashMap<(&str, char), (&'static str, char, i64)>, input: &str) -> Option<String> {
+    // tape as a map: position -> symbol, unwritten cells are blank
+    let mut tape: BTreeMap<i64, char> = input.chars().enumerate().map(|(i, c)| (i as i64, c)).collect();
+    let mut state = "right";
+    let mut head = 0;
+    while state != "halt" {
+        let read = tape.get(&head).copied().unwrap_or(BLANK);
+        let &(next, write, movement) = rules.get(&(state, read))?; // no transition: stop
+        tape.insert(head, write);
+        head += movement;
+        state = next;
+    }
+    let text: String = tape.values().collect();
+    Some(text.trim_matches(BLANK).to_string())
+}
+
+fn main() {
+    let rules = HashMap::from([
+        (("right", '0'), ("right", '0', 1)),
+        (("right", '1'), ("right", '1', 1)),
+        (("right", BLANK), ("carry", BLANK, -1)),
+        (("carry", '1'), ("carry", '0', -1)),
+        (("carry", '0'), ("halt", '1', 0)),
+        (("carry", BLANK), ("halt", '1', 0)),
+    ]);
+    for input in ["1011", "111"] {
+        if let Some(result) = run(&rules, input) {
+            println!("{input} -> {result}");
+        }
+    }
+}
+// Output:
+// 1011 -> 1100
+// 111 -> 1000
+```
+
+</TabItem>
+</Tabs>
+
+## Mealy and Moore machines
+
+The automata so far **recognise** languages; they only answer yes or no. **Transducers** (automata with output) produce an output at every step. They are used in digital electronics (sequential circuits), controllers, protocols and games.
+
+| Feature          | Moore machine                                      | Mealy machine                                      |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------- |
+| Output depends on | the **state** only                                | the **state and the current input**                |
+| Notation         | output written in the state: $q_1 / 1$             | output written on the transition: $0 / 1$ (input / output) |
+| Reaction         | output only changes with the next state            | reacts to the input immediately                    |
+| States           | often more                                         | often fewer                                        |
+
+Both are equally powerful: every Mealy machine can be converted into a Moore machine and vice versa.
+
+:::tip[Example: detecting a rising edge]
+A signal is sampled in every clock cycle. The output should be 1 exactly when the signal changes from 0 to 1.
+
+**Mealy** (two states, remembers the last value):
+
+| State          | input 0        | input 1        |
+| -------------- | -------------- | -------------- |
+| → was 0        | was 0 / 0      | was 1 / **1**  |
+| was 1          | was 0 / 0      | was 1 / 0      |
+
+**Moore** (three states, the output belongs to the state):
+
+| State / output    | input 0   | input 1   |
+| ----------------- | --------- | --------- |
+| → low / 0         | low       | edge      |
+| edge / **1**      | low       | high      |
+| high / 0          | low       | high      |
+
+The input sequence 0 1 1 0 1 gives the output 0 1 0 0 1 for both. In the Moore machine it appears in the state after the transition, in the Mealy machine already during the transition.
+:::
+
+A traffic light controller, a vending machine or the TCP connection set-up can be described as state machines in the same way. In a program you implement them with an enumeration for the states and a `switch` or `match` over state and event. The state diagrams of [UML](/en/software-development/uml/) are also based on this model.
+
+## Further reading
+
+- John E. Hopcroft, Rajeev Motwani, Jeffrey D. Ullman: _Introduction to Automata Theory, Languages, and Computation_, Pearson
+- Uwe Schöning: _Theoretische Informatik kurzgefasst_, Spektrum Akademischer Verlag (German)
+- Michael Sipser: _Introduction to the Theory of Computation_, Cengage

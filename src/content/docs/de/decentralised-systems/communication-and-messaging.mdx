@@ -1,0 +1,372 @@
+---
+title: Kommunikation und Messaging
+description: "Synchrone und asynchrone Kommunikation verteilter Dienste: RPC, REST, gRPC, Message Queues, Publish-Subscribe, MQTT, AMQP, Kafka, Azure Service Bus und Zustellgarantien."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Die Knoten eines [verteilten Systems](/de/decentralised-systems/distributed-systems/) haben keinen gemeinsamen Speicher und arbeiten nur über Nachrichten zusammen. Wie diese Nachrichten ausgetauscht werden, bestimmt, wie eng die Dienste aneinander gebunden sind, wie sie auf Ausfälle reagieren und wie gut sie skalieren. Die Grundlagen von Sockets, TCP und UDP findest du unter [Netzwerkprogrammierung](/de/software-development/network-programming/).
+
+## Synchron und asynchron
+
+| | Synchrone Kommunikation | Asynchrone Kommunikation |
+| --- | --- | --- |
+| Ablauf | Der Aufrufer sendet eine Anfrage und wartet auf die Antwort (_Request-Response_). | Der Sender legt eine Nachricht ab und arbeitet sofort weiter. |
+| Beispiele | REST, gRPC, klassisches RPC | Message Queues, Publish-Subscribe, Event Streaming |
+| Zeitliche Kopplung | beide müssen gleichzeitig laufen | der Empfänger kann später verarbeiten |
+| Fehlerverhalten | Fällt der Empfänger aus, schlägt auch der Aufruf fehl, Ausfälle pflanzen sich fort. | Nachrichten bleiben im Broker liegen, bis der Empfänger wieder da ist. |
+| Antwort | sofort verfügbar | nur über eine eigene Rückantwort oder Statusabfrage |
+| Geeignet für | Abfragen, bei denen der Benutzer auf das Ergebnis wartet | Hintergrundverarbeitung, Lastspitzen, Benachrichtigung vieler Empfänger |
+
+Man unterscheidet außerdem **räumliche Kopplung** (der Sender muss die Adresse des Empfängers kennen) und **zeitliche Kopplung** (beide müssen gleichzeitig aktiv sein). Ein Message Broker hebt beide auf.
+
+## Remote Procedure Call
+
+Beim **Remote Procedure Call** (RPC) ruft ein Programm eine Funktion auf einem anderen Rechner so auf, als wäre sie lokal. Ein **Client-Stub** verpackt die Parameter in eine Nachricht (**Marshalling**, Serialisierung), schickt sie an den Server, dessen **Server-Stub** sie auspackt, die eigentliche Funktion aufruft und das Ergebnis zurückschickt. Die Stubs werden meist aus einer Schnittstellenbeschreibung (_Interface Definition Language_, IDL) generiert.
+
+Ein entfernter Aufruf ist aber kein lokaler: Er ist tausendfach langsamer, und er kann **teilweise** fehlschlagen. Kommt keine Antwort, weiß der Client nicht, ob die Anfrage verloren ging, der Server sie bearbeitet hat und abgestürzt ist oder nur die Antwort verloren ging. Daraus ergeben sich verschiedene **Aufrufsemantiken**:
+
+| Semantik | Verhalten | Folge |
+| -------- | --------- | ----- |
+| **Maybe** | einmal senden, nicht wiederholen | Aufruf kann verloren gehen |
+| **At-least-once** | bei Timeout wiederholen | wird mindestens einmal, eventuell mehrfach ausgeführt; nur für idempotente Operationen sicher |
+| **At-most-once** | wiederholen, aber der Server erkennt Duplikate an einer Anfrage-ID | höchstens einmal ausgeführt |
+| **Exactly-once** | genau einmal | bei Ausfällen ohne zusätzliche Maßnahmen nicht garantierbar |
+
+## REST
+
+**REST** (_Representational State Transfer_, Roy Fielding, 2000) ist ein Architekturstil für Webdienste über HTTP:
+
+- Alles ist eine **Ressource** mit eindeutiger URL, etwa `/api/orders/17`.
+- Die **HTTP-Methoden** beschreiben die Operation, die Antwort enthält eine **Repräsentation** der Ressource, meist JSON.
+- Die Kommunikation ist **zustandslos**: Jede Anfrage enthält alle nötigen Informationen (z. B. ein Token). Der Server merkt sich keine Sitzung, deshalb kann jede Anfrage von einer beliebigen Serverinstanz bearbeitet werden. Das erleichtert die horizontale Skalierung.
+- Antworten können gecacht werden, **Statuscodes** melden das Ergebnis (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`, `503 Service Unavailable`).
+
+| Methode  | Zweck | sicher | idempotent |
+| -------- | ----- | ------ | ---------- |
+| `GET`    | Ressource lesen | ja | ja |
+| `POST`   | neue Ressource anlegen, Aktion auslösen | nein | nein |
+| `PUT`    | Ressource vollständig ersetzen (oder anlegen) | nein | ja |
+| `PATCH`  | Ressource teilweise ändern | nein | nicht garantiert |
+| `DELETE` | Ressource löschen | nein | ja |
+
+**Sicher** heißt, dass die Methode nichts verändert. **Idempotent** heißt, dass mehrfaches Ausführen dasselbe Ergebnis hat wie einmaliges: Zweimal `DELETE /orders/17` hinterlässt denselben Zustand wie einmal. Ein doppeltes `POST /orders` legt dagegen zwei Bestellungen an. Viele APIs (etwa Zahlungsdienste) akzeptieren deshalb einen Header `Idempotency-Key`, mit dem der Server wiederholte Anfragen erkennt. Wie man HTTP-Anfragen in C# und Rust sendet, zeigt [Netzwerkprogrammierung](/de/software-development/network-programming/#http-anfragen).
+
+## gRPC
+
+**gRPC** ist ein von Google entwickeltes, quelloffenes RPC-Framework. Die Schnittstelle wird in einer `.proto`-Datei mit **Protocol Buffers** beschrieben, daraus erzeugt ein Generator Client- und Servercode für viele Sprachen (C#, Rust mit `tonic`, Java, Go, Python ...):
+
+```protobuf
+syntax = "proto3";
+
+service OrderService {
+  rpc GetOrder (OrderRequest) returns (OrderReply);
+  rpc WatchOrders (WatchRequest) returns (stream OrderReply); // Server-Streaming
+}
+
+message OrderRequest { int32 id = 1; }
+message WatchRequest { string customer = 1; }
+message OrderReply  { int32 id = 1; string status = 2; double total = 3; }
+```
+
+Die Nachrichten werden **binär** serialisiert und über **HTTP/2** übertragen. Das macht gRPC kompakter und schneller als JSON über HTTP/1.1. HTTP/2 erlaubt außerdem **Streaming** in vier Varianten: unär (eine Anfrage, eine Antwort), Server-Streaming, Client-Streaming und bidirektionales Streaming. Die Nummern in der `.proto`-Datei identifizieren die Felder im Binärformat, deshalb kann man neue Felder hinzufügen, ohne alte Clients zu brechen.
+
+| | REST | gRPC |
+| --- | --- | --- |
+| Format | meist JSON (Text) | Protocol Buffers (binär) |
+| Transport | HTTP/1.1 oder HTTP/2 | HTTP/2 |
+| Schnittstellenvertrag | optional (OpenAPI) | verpflichtend (`.proto`), Code wird generiert |
+| Streaming | eingeschränkt | eingebaut |
+| Browser | direkt nutzbar | nur über gRPC-Web bzw. Proxy |
+| Typischer Einsatz | öffentliche APIs, Web-Frontends | interne Kommunikation zwischen Microservices |
+
+## Messaging
+
+Beim **Messaging** schicken Dienste einander Nachrichten über einen **Message Broker**. Eine **Nachricht** besteht aus einem **Body** (den eigentlichen Daten, oft JSON) und **Metadaten** (ID, Zeitstempel, Typ, Korrelations-ID, Ablaufzeit).
+
+### Message Queue (Punkt-zu-Punkt)
+
+Eine **Queue** speichert Nachrichten in der Reihenfolge ihres Eintreffens. Jede Nachricht wird von **genau einem** Empfänger verarbeitet. Mehrere Empfänger an derselben Queue teilen sich die Arbeit (**Competing Consumers**), wodurch man einfach horizontal skalieren kann.
+
+Vorteile:
+
+- **Entkopplung:** Sender und Empfänger kennen sich nicht und müssen nicht gleichzeitig laufen.
+- **Lastausgleich** (_Load Leveling_): Kommen in einer Spitze mehr Aufträge herein, als verarbeitet werden können, puffert die Queue sie. Der Empfänger arbeitet in seinem Tempo weiter.
+- **Ausfallsicherheit:** Stürzt ein Empfänger während der Verarbeitung ab, wird die Nachricht nicht bestätigt und erneut zugestellt.
+
+Der Empfänger bestätigt eine Nachricht erst **nach** erfolgreicher Verarbeitung (_Acknowledge_, ACK). Bis dahin ist sie für andere Empfänger nur unsichtbar (_Peek-Lock_), aber nicht gelöscht. Nachrichten, die wiederholt fehlschlagen (_Poison Messages_), landen nach einer festgelegten Anzahl von Versuchen in einer **Dead-Letter-Queue**, wo man sie untersuchen kann.
+
+### Publish-Subscribe
+
+Beim **Publish-Subscribe** veröffentlicht ein **Publisher** eine Nachricht unter einem **Topic**. **Jeder** Abonnent (_Subscriber_) des Topics erhält eine eigene Kopie. Der Publisher weiß nicht, wer oder wie viele zuhören. Neue Empfänger können hinzukommen, ohne den Sender zu ändern. Das ist die Grundlage der [ereignisgesteuerten Architektur](/de/software-development/software-architecture/#ereignisgesteuerte-architektur): Der Bestellservice veröffentlicht „Bestellung aufgegeben“, Rechnung, Versand und Statistik reagieren darauf.
+
+### Beispiel: Broker im Prozess
+
+Das folgende Beispiel baut einen kleinen Publish-Subscribe-Broker mit Channels nach. Jeder Abonnent erhält einen eigenen Channel. Die Nachricht `m1` wird absichtlich zweimal zugestellt, wie es bei At-least-once-Zustellung vorkommt. Die Empfänger sind **idempotent**: Sie merken sich die IDs verarbeiteter Nachrichten und ignorieren Duplikate. Die einfache Variante mit einem einzigen Channel zwischen Producer und Consumer findest du unter [Nebenläufigkeit](/de/software-development/concurrency/#nachrichten-statt-gemeinsamer-daten).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+using System.Threading.Channels;
+
+var broker = new Broker();
+ChannelReader<Message> billing = broker.Subscribe("orders");
+ChannelReader<Message> shipping = broker.Subscribe("orders");
+ChannelReader<Message> audit = broker.Subscribe("payments");
+
+// Empfänger laufen nebenläufig zum Publisher
+Task<string[]>[] consumers =
+[
+    ConsumeAsync("Rechnung", billing),
+    ConsumeAsync("Versand", shipping),
+    ConsumeAsync("Audit", audit),
+];
+
+await broker.PublishAsync("orders", new Message("m1", "Bestellung 17"));
+await broker.PublishAsync("orders", new Message("m1", "Bestellung 17")); // erneute Zustellung
+await broker.PublishAsync("orders", new Message("m2", "Bestellung 18"));
+await broker.PublishAsync("payments", new Message("m3", "Zahlung 17"));
+broker.Complete(); // keine weiteren Nachrichten
+
+foreach (string[] log in await Task.WhenAll(consumers))
+{
+    foreach (string line in log)
+    {
+        Console.WriteLine(line);
+    }
+}
+// Rechnung: Bestellung 17
+// Rechnung: m1 ignoriert (Duplikat)
+// Rechnung: Bestellung 18
+// Versand: Bestellung 17
+// Versand: m1 ignoriert (Duplikat)
+// Versand: Bestellung 18
+// Audit: Zahlung 17
+
+static async Task<string[]> ConsumeAsync(string name, ChannelReader<Message> reader)
+{
+    var processed = new HashSet<string>(); // IDs bereits verarbeiteter Nachrichten
+    var log = new List<string>();
+    await foreach (Message message in reader.ReadAllAsync())
+    {
+        if (!processed.Add(message.Id))
+        {
+            log.Add($"{name}: {message.Id} ignoriert (Duplikat)");
+            continue;
+        }
+        log.Add($"{name}: {message.Body}");
+    }
+    return [.. log];
+}
+
+public record Message(string Id, string Body);
+
+public sealed class Broker
+{
+    private readonly Dictionary<string, List<Channel<Message>>> _topics = [];
+
+    public ChannelReader<Message> Subscribe(string topic)
+    {
+        var channel = Channel.CreateUnbounded<Message>();
+        if (!_topics.TryGetValue(topic, out var subscribers))
+        {
+            subscribers = [];
+            _topics[topic] = subscribers;
+        }
+        subscribers.Add(channel);
+        return channel.Reader;
+    }
+
+    public async Task PublishAsync(string topic, Message message)
+    {
+        if (!_topics.TryGetValue(topic, out var subscribers))
+        {
+            return; // niemand hat das Topic abonniert
+        }
+        foreach (var channel in subscribers)
+        {
+            await channel.Writer.WriteAsync(message); // jeder Abonnent erhält eine Kopie
+        }
+    }
+
+    public void Complete()
+    {
+        foreach (var channel in _topics.Values.SelectMany(list => list))
+        {
+            channel.Writer.Complete();
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::{HashMap, HashSet};
+use std::sync::mpsc::{self, Receiver, Sender};
+use std::thread;
+
+#[derive(Clone, Debug)]
+struct Message {
+    id: String,
+    body: String,
+}
+
+impl Message {
+    fn new(id: &str, body: &str) -> Self {
+        Self { id: id.to_string(), body: body.to_string() }
+    }
+}
+
+#[derive(Default)]
+struct Broker {
+    topics: HashMap<String, Vec<Sender<Message>>>,
+}
+
+impl Broker {
+    fn subscribe(&mut self, topic: &str) -> Receiver<Message> {
+        let (sender, receiver) = mpsc::channel();
+        self.topics.entry(topic.to_string()).or_default().push(sender);
+        receiver
+    }
+
+    fn publish(&self, topic: &str, message: Message) {
+        // niemand abonniert: die Nachricht wird verworfen
+        let Some(subscribers) = self.topics.get(topic) else { return };
+        for sender in subscribers {
+            // jeder Abonnent erhält eine Kopie; ein beendeter Empfänger wird ignoriert
+            let _ = sender.send(message.clone());
+        }
+    }
+}
+
+fn consume(name: &str, receiver: Receiver<Message>) -> Vec<String> {
+    let mut processed = HashSet::new(); // IDs bereits verarbeiteter Nachrichten
+    let mut log = Vec::new();
+    for message in receiver {
+        if !processed.insert(message.id.clone()) {
+            log.push(format!("{name}: {} ignoriert (Duplikat)", message.id));
+            continue;
+        }
+        log.push(format!("{name}: {}", message.body));
+    }
+    log
+}
+
+fn main() {
+    let mut broker = Broker::default();
+    let subscriptions = [
+        ("Rechnung", broker.subscribe("orders")),
+        ("Versand", broker.subscribe("orders")),
+        ("Audit", broker.subscribe("payments")),
+    ];
+
+    // Empfänger laufen nebenläufig zum Publisher
+    let consumers: Vec<_> = subscriptions
+        .into_iter()
+        .map(|(name, receiver)| thread::spawn(move || consume(name, receiver)))
+        .collect();
+
+    broker.publish("orders", Message::new("m1", "Bestellung 17"));
+    broker.publish("orders", Message::new("m1", "Bestellung 17")); // erneute Zustellung
+    broker.publish("orders", Message::new("m2", "Bestellung 18"));
+    broker.publish("payments", Message::new("m3", "Zahlung 17"));
+    drop(broker); // alle Sender freigeben: keine weiteren Nachrichten
+
+    for consumer in consumers {
+        for line in consumer.join().expect("Empfänger-Thread ist abgestürzt") {
+            println!("{line}");
+        }
+    }
+    // Rechnung: Bestellung 17
+    // Rechnung: m1 ignoriert (Duplikat)
+    // Rechnung: Bestellung 18
+    // Versand: Bestellung 17
+    // Versand: m1 ignoriert (Duplikat)
+    // Versand: Bestellung 18
+    // Audit: Zahlung 17
+}
+```
+
+</TabItem>
+</Tabs>
+
+In einem echten System liegt der Broker als eigener Dienst im Netzwerk, speichert die Nachrichten dauerhaft auf der Festplatte und repliziert sie auf mehrere Knoten. Die Liste der verarbeiteten IDs liegt in einer Datenbank, idealerweise in derselben Transaktion wie die eigentliche Änderung.
+
+## Zustellgarantien und Idempotenz
+
+| Garantie | Bedeutung | Umsetzung |
+| -------- | --------- | --------- |
+| **At-most-once** | Eine Nachricht wird höchstens einmal zugestellt, kann aber verloren gehen. | ohne Bestätigung senden („fire and forget“), z. B. MQTT QoS 0 |
+| **At-least-once** | Eine Nachricht geht nie verloren, kann aber mehrfach ankommen. | Bestätigung nach der Verarbeitung, sonst erneute Zustellung. Standard bei den meisten Brokern. |
+| **Exactly-once** | Eine Nachricht wird genau einmal verarbeitet. | über Systemgrenzen hinweg nur als „effectively once“: At-least-once-Zustellung plus idempotente Verarbeitung bzw. Duplikaterkennung |
+
+Weil At-least-once die Regel ist, müssen Empfänger **idempotent** sein. Möglichkeiten:
+
+- Operationen so formulieren, dass Wiederholungen nichts ändern: „Setze den Status auf bezahlt“ statt „erhöhe den Kontostand um 100 €“.
+- Jede Nachricht trägt eine eindeutige **Nachrichten-ID** (bzw. einen Idempotency Key). Der Empfänger speichert verarbeitete IDs und überspringt Duplikate, wie im Beispiel oben.
+- Versionsnummern oder Zeitstempel verwenden und veraltete Änderungen verwerfen.
+
+Ein verwandtes Problem tritt beim Sender auf: Er muss eine Datenbankänderung speichern **und** eine Nachricht senden. Stürzt er dazwischen ab, ist nur eines passiert. Das **Outbox-Pattern** löst das: Die Nachricht wird in derselben Datenbanktransaktion in eine Tabelle `outbox` geschrieben, ein eigener Prozess liest diese Tabelle und sendet die Nachrichten an den Broker (mit At-least-once).
+
+Weitere Fragen beim Messaging sind die **Reihenfolge** (die meisten Broker garantieren sie nur innerhalb einer Queue, einer Partition oder einer Session) und **Backpressure** (was passiert, wenn der Empfänger dauerhaft langsamer ist als der Sender: Queue wächst, Sender wird gebremst oder Nachrichten werden verworfen).
+
+## Protokolle und Produkte
+
+### MQTT
+
+**MQTT** ist ein schlankes Publish-Subscribe-Protokoll für das Internet der Dinge mit hierarchischen Topics, drei QoS-Stufen, Retained Messages und Last Will. Details findest du unter [Bussysteme](/de/embedded-programming/bus-systems/#mqtt).
+
+### AMQP und RabbitMQ
+
+**AMQP** (_Advanced Message Queuing Protocol_) ist ein offenes Protokoll für Message Broker. Die Version 0-9-1 wird vor allem von **RabbitMQ** verwendet, die davon stark abweichende Version 1.0 ist ein OASIS- und ISO-Standard (ISO/IEC 19464) und wird z. B. von Azure Service Bus gesprochen.
+
+RabbitMQ trennt das Senden vom Speichern: Producer senden an einen **Exchange**, der die Nachricht anhand von **Bindings** und eines **Routing Keys** an eine oder mehrere **Queues** verteilt. Consumer lesen aus den Queues.
+
+| Exchange-Typ | Verteilung |
+| ------------ | ---------- |
+| **Direct** | an Queues, deren Binding-Key genau dem Routing Key entspricht |
+| **Fanout** | an alle gebundenen Queues (Broadcast) |
+| **Topic** | nach Muster: `*` steht für genau ein Wort, `#` für beliebig viele, z. B. `order.*.created` |
+| **Headers** | nach Header-Attributen statt Routing Key |
+
+### Apache Kafka
+
+**Apache Kafka** (ursprünglich von LinkedIn) ist eine Plattform für **Event Streaming**. Anders als eine klassische Queue löscht Kafka Nachrichten nach dem Lesen nicht, sondern speichert sie als unveränderliches, nur anwachsendes **Log**:
+
+- Ein **Topic** ist in **Partitionen** aufgeteilt, die auf mehrere Broker verteilt und repliziert werden. Nachrichten mit gleichem Schlüssel (z. B. Kunden-ID) landen in derselben Partition. Nur innerhalb einer Partition ist die Reihenfolge garantiert.
+- Jede Nachricht hat in ihrer Partition eine fortlaufende Nummer, den **Offset**. Consumer merken sich, bis zu welchem Offset sie gelesen haben, und können auch zurückspulen und alte Ereignisse erneut verarbeiten.
+- Consumer bilden **Consumer Groups**: Innerhalb einer Gruppe liest jede Partition genau ein Consumer (Lastverteilung), verschiedene Gruppen lesen unabhängig voneinander alle Nachrichten (Publish-Subscribe).
+- Nachrichten bleiben für eine einstellbare **Aufbewahrungszeit** (_Retention_, etwa 7 Tage) oder unbegrenzt erhalten.
+
+Kafka verarbeitet Millionen Nachrichten pro Sekunde und wird für Logdaten, Klickstreams, Datenpipelines und **Event Sourcing** verwendet.
+
+### Azure-Dienste
+
+| Dienst | Modell | Typischer Einsatz |
+| ------ | ------ | ----------------- |
+| [Azure Queue Storage](/de/decentralised-systems/storage-account/#queue-storage) | einfache Queue im Storage Account | einfache, sehr günstige Hintergrundaufträge |
+| **Azure Service Bus** | Queues und **Topics mit Subscriptions** (Publish-Subscribe), AMQP 1.0 | Geschäftsnachrichten mit Transaktionen, Sessions (Reihenfolge), Duplikaterkennung, Dead-Letter-Queue, geplanter Zustellung |
+| **Azure Event Hubs** | Event Streaming mit Partitionen, Kafka-kompatible Schnittstelle | Telemetrie, Logdaten, große Datenströme |
+| **Azure Event Grid** | Ereignisverteilung (Push an Abonnenten), auch MQTT | Reaktion auf Ereignisse in Azure, z. B. neue Datei im Blob Storage |
+
+[Azure Functions](/de/decentralised-systems/azure-functions/) können mit Triggern direkt auf Nachrichten aus diesen Diensten reagieren.
+
+### Vergleich
+
+| | Queue (Service Bus, RabbitMQ) | Event Streaming (Kafka, Event Hubs) | MQTT |
+| --- | --- | --- | --- |
+| Hauptzweck | Aufträge zuverlässig an einen Verarbeiter übergeben | große Mengen von Ereignissen speichern und mehrfach lesen | Telemetrie von vielen kleinen Geräten |
+| Nach dem Lesen | Nachricht wird gelöscht | Nachricht bleibt bis zum Ablauf der Retention | wird zugestellt, nur Retained Message bleibt |
+| Reihenfolge | pro Queue bzw. Session | pro Partition | pro Topic und Verbindung |
+| Wiederholtes Lesen | nein | ja, über Offsets | nein |
+
+## Weiterführende Quellen
+
+- Gregor Hohpe, Bobby Woolf: _Enterprise Integration Patterns_, Addison-Wesley, und [enterpriseintegrationpatterns.com](https://www.enterpriseintegrationpatterns.com/)
+- [gRPC-Dokumentation](https://grpc.io/docs/) und [RabbitMQ Tutorials](https://www.rabbitmq.com/tutorials)
+- Microsoft Learn: [Asynchronous messaging options](https://learn.microsoft.com/de-de/azure/architecture/guide/technology-choices/messaging)

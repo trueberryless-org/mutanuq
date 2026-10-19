@@ -1,0 +1,233 @@
+---
+title: Maps and Geoinformation
+description: Map types, scale, map projections, geographic coordinates and UTM, GNSS, geographic information systems, remote sensing and OpenStreetMap.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Maps are the most important tool of geography: they show a section of the Earth's surface reduced, simplified and explained with symbols on a flat surface. Today maps are almost always produced digitally, from satellite data, surveying and databases. This is where geography overlaps strongly with computer science: navigation systems, delivery services, weather apps and emergency control centres all work with geodata.
+
+## Map types
+
+Every map is a **model**: it leaves out what is unimportant (generalisation) and shows what is important with symbols. The legend explains these symbols.
+
+| Map type | Content | Example |
+| --- | --- | --- |
+| **Topographic map** | terrain (contour lines), water bodies, settlements, transport routes, land cover | Austrian Map ÖK50 by the BEV (1:50,000) |
+| **Physical map** | relief shown with elevation tints (green for lowlands, brown for mountains) | atlas map "Austria, physical" |
+| **Political map** | states, federal provinces, capitals, borders | Europe with EU member states |
+| **Thematic map** | one particular topic on a base map | population density, climate zones, unemployment rate by district |
+
+Thematic maps use different methods of representation:
+
+- **Choropleth map**: areas are coloured according to a value, such as the unemployment rate per district. It is only suitable for **relative** values (percentages, densities), because otherwise large areas are visually overrated.
+- **Diagram map**: pie or bar charts within the areas show absolute values.
+- **Dot map**: each dot stands for a quantity, such as 1,000 inhabitants.
+- **Isoline map**: lines connect places with equal values: elevation (contour lines, isohypses), air pressure (isobars), temperature (isotherms).
+- **Cartogram** (anamorphosis): the size of each area is distorted according to a value, such as countries by population.
+
+The Austrian Map is published by the **Federal Office of Metrology and Surveying** (BEV). It also keeps the cadastre, the official register of all land parcels.
+
+## Scale
+
+The **scale** states how much reality has been reduced. 1:25,000 means: 1 cm on the map corresponds to 25,000 cm, that is 250 m in reality.
+
+$$
+\text{distance in reality} = \text{distance on the map} \cdot \text{scale denominator}
+$$
+
+Example: on a 1:50,000 map two places are 7.4 cm apart. In reality that is $7.4\,\mathrm{cm} \cdot 50\,000 = 370\,000\,\mathrm{cm} = 3.7\,\mathrm{km}$ as the crow flies.
+
+| Scale | Description | 1 cm corresponds to | Use |
+| --- | --- | --- | --- |
+| 1:1,000 to 1:10,000 | very large | 10 m to 100 m | cadastral maps, city maps |
+| 1:25,000 to 1:50,000 | large | 250 m to 500 m | hiking maps, topographic maps |
+| 1:200,000 to 1:1,000,000 | medium | 2 km to 10 km | road maps |
+| from 1:1,000,000 | small | from 10 km | atlas maps of continents, world maps |
+
+:::tip[Remember]
+A **large** scale has a **small** denominator and shows a small area with many details. A **small** scale (large denominator) shows a large area with few details.
+:::
+
+Instead of a fixed scale, digital maps show a **scale bar**, because the scale changes with zooming and with the screen.
+
+## Map projections
+
+The Earth is approximately a sphere (more precisely an ellipsoid of revolution flattened at the poles). A curved surface cannot be flattened into a plane without distortion. Every **map projection** therefore has to make compromises. A map can fulfil at most one of these properties:
+
+- **conformal**: angles and therefore the shape of small areas are preserved. Important for navigation.
+- **equal-area** (equivalent): area ratios are correct. Important for thematic maps that compare distributions.
+- **equidistant**: distances are correct, but only along certain lines or from one point.
+
+By the projection surface, cylindrical, conic and azimuthal projections (projection onto a plane) are distinguished.
+
+| Projection | Type | Property | Use |
+| --- | --- | --- | --- |
+| **Mercator** (1569) | cylindrical | conformal, areas greatly enlarged towards the poles | navigation at sea; as **Web Mercator** (EPSG:3857) the standard for Google Maps, OpenStreetMap |
+| **Gall-Peters** | cylindrical | equal-area, shapes distorted | showing the relative size of continents |
+| **Mollweide** | pseudocylindrical | equal-area | thematic world maps |
+| **Robinson**, **Winkel tripel** | compromise | neither conformal nor equal-area, low overall distortion | atlases, wall maps |
+| **Lambert conformal conic** | conic | conformal, good for middle latitudes | maps of Austria (Austria Lambert), aeronautical charts |
+| **Azimuthal** | plane | depending on the variant equidistant or equal-area from the centre | polar regions, radio ranges |
+
+The distortion of the Mercator projection is visible in Greenland: on the map it looks about as large as Africa, but in fact Africa, with around 30 million km², is about fourteen times the size of Greenland (around 2.2 million km²). Online maps still use Web Mercator because conformality matters when zooming in to street level (a junction should look right-angled) and because the map can easily be divided into square tiles.
+
+## Coordinates
+
+### Geographic coordinates
+
+The Earth's **graticule** consists of parallels of latitude and meridians of longitude.
+
+- **Latitude** (φ) is the angle north or south of the equator: 0° at the equator to 90° N or 90° S at the poles. Parallels run parallel to each other; one degree of latitude corresponds to about 111 km everywhere.
+- **Longitude** (λ) is the angle east or west of the **prime meridian** through Greenwich (London, agreed internationally in 1884): 0° to 180° E or 180° W. Meridians converge at the poles, so one degree of longitude becomes shorter towards the poles:
+
+$$
+\text{length of one degree of longitude} \approx 111.32\,\mathrm{km} \cdot \cos\varphi
+$$
+
+In Austria (φ ≈ 48°) one degree of longitude is only about 74.5 km long.
+
+Coordinates are given in **degrees, minutes, seconds** or in **decimal degrees**. 1° has 60 minutes of arc, 1′ has 60 seconds of arc:
+
+$$
+48^\circ\,12'\,30'' = 48 + \frac{12}{60} + \frac{30}{3600} = 48.2083^\circ
+$$
+
+Vienna lies at about 48.21° N, 16.37° E. Modern systems store coordinates in the **WGS 84** reference system (EPSG:4326), which GPS also uses. The Earth rotates 360° in 24 hours, which gives 15° of longitude per hour; **time zones** are based on this. Austria uses Central European Time (CET = UTC+1, summer time CEST = UTC+2).
+
+### UTM
+
+For surveying, the military and GIS, flat metric coordinates are more practical. The **UTM system** (_Universal Transverse Mercator_) divides the Earth between 80° S and 84° N into **60 zones** of 6° longitude each. Each zone is projected with its own transverse Mercator cylinder, so distortion within the zone stays small. A position is given as zone, **easting** (metres east, the central meridian has the value 500,000 m) and **northing** (metres from the equator). Austria lies in zones 32 (6° to 12° E, Vorarlberg and western Tyrol) and 33 (12° to 18° E).
+
+### Distance between two points
+
+The shortest connection between two points on a sphere is part of a **great circle** (orthodrome). It is calculated with the **haversine formula** (R ≈ 6371 km mean Earth radius, φ latitude, λ longitude in radians):
+
+$$
+d = 2R \arcsin\sqrt{\sin^2\frac{\Delta\varphi}{2} + \cos\varphi_1 \cos\varphi_2 \sin^2\frac{\Delta\lambda}{2}}
+$$
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+const double EarthRadiusKm = 6371.0;
+
+static double ToRad(double deg) => deg * Math.PI / 180.0;
+
+static double Haversine(double lat1, double lon1, double lat2, double lon2)
+{
+    double dLat = ToRad(lat2 - lat1);
+    double dLon = ToRad(lon2 - lon1);
+    double a = Math.Pow(Math.Sin(dLat / 2), 2)
+             + Math.Cos(ToRad(lat1)) * Math.Cos(ToRad(lat2)) * Math.Pow(Math.Sin(dLon / 2), 2);
+    return 2 * EarthRadiusKm * Math.Asin(Math.Sqrt(a));
+}
+
+// Vienna and Graz in decimal degrees (WGS 84)
+double d = Haversine(48.2082, 16.3738, 47.0707, 15.4395);
+Console.WriteLine(FormattableString.Invariant($"Distance Vienna-Graz: {d:F1} km"));
+// Distance Vienna-Graz: 144.6 km
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+const EARTH_RADIUS_KM: f64 = 6371.0;
+
+fn haversine(lat1: f64, lon1: f64, lat2: f64, lon2: f64) -> f64 {
+    let d_lat = (lat2 - lat1).to_radians();
+    let d_lon = (lon2 - lon1).to_radians();
+    let a = (d_lat / 2.0).sin().powi(2)
+        + lat1.to_radians().cos() * lat2.to_radians().cos() * (d_lon / 2.0).sin().powi(2);
+    2.0 * EARTH_RADIUS_KM * a.sqrt().asin()
+}
+
+fn main() {
+    // Vienna and Graz in decimal degrees (WGS 84)
+    let d = haversine(48.2082, 16.3738, 47.0707, 15.4395);
+    println!("Distance Vienna-Graz: {d:.1} km");
+    // Distance Vienna-Graz: 144.6 km
+}
+```
+
+</TabItem>
+</Tabs>
+
+The straight-line distance is considerably shorter than the road distance. Navigation services therefore also compute with the road graph (see network analysis below).
+
+## GNSS: satellite positioning
+
+**GNSS** (_Global Navigation Satellite System_) is the umbrella term for satellite navigation systems:
+
+| System | Operator | Note |
+| --- | --- | --- |
+| **GPS** | USA (military) | fully operational since 1995, satellites at about 20,200 km altitude |
+| **GLONASS** | Russia | |
+| **Galileo** | European Union | civilian system, initial services since 2016 |
+| **BeiDou** | China | global since 2020 |
+
+Each satellite continuously transmits its position and the exact time of its atomic clock. The receiver measures the **travel time** of the signals and calculates its distance to each satellite. From several distances, the position is determined by **trilateration**. Because the clock in the receiver is inaccurate, the time is a fourth unknown besides the three spatial coordinates. At least **four satellites** are therefore required. Since light travels about 300 m in one microsecond, the satellites carry atomic clocks, and even effects of relativity are corrected.
+
+A smartphone achieves an accuracy of a few metres under open sky. Obstructions (street canyons, forest) and reflections make it worse. **Differential GNSS** and **RTK** (_Real Time Kinematic_) use reference stations with known positions and reach centimetre accuracy; in Austria the BEV operates the APOS service for this. Applications include surveying, agriculture (automatic steering), fleet management, emergency call positioning (eCall) and time synchronisation of mobile and power networks.
+
+## Geographic information systems (GIS)
+
+A **geographic information system** captures, stores, analyses and displays spatial data. Every object has a **geometry** (where?) and **attribute data** (what?). The data are stacked in thematic **layers**: terrain, water, roads, buildings, land-use zoning.
+
+| | Vector data | Raster data |
+| --- | --- | --- |
+| Structure | points, lines, polygons made of coordinates, plus an attribute table | grid of equally sized cells (pixels), each cell has a value |
+| Examples | stops (points), roads (lines), land parcels (polygons) | satellite image, digital elevation model, temperature distribution |
+| Strengths | exact boundaries, little storage, topology (neighbourhood) | continuous phenomena, simple calculations per cell |
+| Formats | GeoPackage, GeoJSON, Shapefile | GeoTIFF |
+
+Typical **GIS analyses**:
+
+- **Buffer**: all residential buildings within 300 m of a stop
+- **Overlay**: overlaying flood hazard zones with building land shows endangered building plots
+- **Spatial query**: all schools within a district
+- **Network analysis**: shortest or fastest route, catchment areas of a fire station
+- **Terrain analysis**: slope, visibility, flow direction from the elevation model
+
+Widely used software includes the free **QGIS** and ArcGIS. Databases store geometries with extensions such as **PostGIS** for PostgreSQL. The EU **INSPIRE** directive (2007/2/EC) requires authorities to provide geodata in uniform formats. In Austria, basemap.at (the administrative base map) and the provincial GIS portals (such as TIRIS, DORIS, NÖ Atlas) offer freely usable maps.
+
+## Remote sensing
+
+**Remote sensing** obtains information about the Earth's surface without direct contact, from aircraft, drones or satellites.
+
+- **Passive systems** measure radiation reflected from the sun or emitted by the Earth. **Multispectral** sensors record infrared as well as visible light.
+- **Active systems** emit radiation themselves: **radar** (SAR) also works through clouds and at night, **LiDAR** (laser scanning) measures heights very precisely and produces digital terrain models, even beneath forest.
+
+The quality of remote sensing data is described by four **resolutions**: spatial (pixel size, down to 10 m for Sentinel-2), spectral (number of wavelength bands), temporal (how often the same area is recorded) and radiometric (number of brightness levels).
+
+Healthy vegetation strongly reflects near infrared (NIR) and absorbs red light. The vegetation index **NDVI** is based on this and yields values between −1 and +1; dense, vigorous vegetation has values close to 1:
+
+$$
+\mathrm{NDVI} = \frac{\mathrm{NIR} - \mathrm{Red}}{\mathrm{NIR} + \mathrm{Red}}
+$$
+
+The European Earth observation programme **Copernicus** makes the data of its Sentinel satellites freely available, and the US **Landsat** programme has supplied images since 1972. Applications include harvest forecasts, mapping forest damage, glacier monitoring, flood and disaster mapping and observing urban growth.
+
+## OpenStreetMap
+
+**OpenStreetMap** (OSM) is a free map of the world founded in 2004 by Steve Coast and edited by volunteers following the wiki principle. The data are licensed under the **Open Database License** (ODbL): anyone may use them, including commercially, as long as OSM is credited and modified databases are published under the same licence.
+
+The data model knows three element types:
+
+| Element | Meaning | Example |
+| --- | --- | --- |
+| **Node** | point with coordinates | cash machine, tree, stop |
+| **Way** | ordered list of nodes, open or closed | road, river, building outline |
+| **Relation** | group of elements with roles | bus route, municipal boundary, turn restriction |
+
+Properties are stored as **tags** in the format key=value, such as `highway=residential` or `amenity=school`. Data can be queried with the Overpass API and edited with tools such as the online editor iD or JOSM. Many apps and navigation systems use OSM data because they are free of charge and often more detailed than commercial maps, for example for hiking trails or cycle paths.
+
+## Further reading
+
+- [BEV: Austrian Map and geodata](https://www.bev.gv.at/)
+- [Copernicus: European Earth observation programme](https://www.copernicus.eu/en)
+- [OpenStreetMap Wiki](https://wiki.openstreetmap.org/)

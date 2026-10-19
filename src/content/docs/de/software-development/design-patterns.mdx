@@ -1,0 +1,2492 @@
+---
+title: Entwurfsmuster
+description: Alle 23 Entwurfsmuster der „Gang of Four“ mit Problem, Lösung, Vor- und Nachteilen sowie Beispielen in C# und Rust.
+sidebar:
+  order: 21
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+In der Softwareentwicklung tauchen ähnliche Probleme immer wieder auf: Wie erzeugt man Objekte, ohne sich an konkrete Klassen zu binden? Wie verbindet man zwei Klassen mit unpassenden Schnittstellen? Wie benachrichtigt man viele Objekte über eine Änderung? **Entwurfsmuster** (_Design Patterns_) sind bewährte Lösungsschablonen für solche wiederkehrenden Probleme.
+
+Ein Entwurfsmuster ist kein fertiger Code, den man kopiert, sondern eine Beschreibung von **Problem**, **Kontext** und **Kern einer Lösung**, die man an die eigene Situation anpasst. Außerdem geben Muster Entwicklerinnen und Entwicklern ein **gemeinsames Vokabular**: Sagt jemand „Das lösen wir mit einem Adapter“, wissen alle Beteiligten sofort, wie die Lösung ungefähr aussieht.
+
+## Die „Gang of Four“
+
+Bekannt wurden Entwurfsmuster durch das Buch _Design Patterns: Elements of Reusable Object-Oriented Software_ (1994) von Erich Gamma, Richard Helm, Ralph Johnson und John Vlissides, der sogenannten **„Gang of Four“** (GoF). Darin werden 23 Muster beschrieben und nach ihrem Zweck in drei Kategorien eingeteilt:
+
+| Kategorie            | Zweck                                                                          | Muster                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **Erzeugungsmuster** | regeln, wie Objekte erstellt werden, und entkoppeln den Code von konkreten Klassen | Singleton, Factory Method, Abstract Factory, Builder, Prototype                                      |
+| **Strukturmuster**   | setzen Klassen und Objekte zu größeren Strukturen zusammen                      | Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy                                          |
+| **Verhaltensmuster** | regeln die Zusammenarbeit und Aufgabenverteilung zwischen Objekten              | Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor |
+
+Die Muster werden im deutschen Sprachraum meist mit ihren englischen Namen bezeichnet. Die deutsche Übersetzung des Buches verwendet zum Teil eigene Namen wie „Fabrikmethode“, „Erbauer“, „Beobachter“ oder „Zustand“.
+
+### Wann sollte man Entwurfsmuster einsetzen?
+
+Entwurfsmuster sind Werkzeuge und kein Selbstzweck. Ein Muster lohnt sich, wenn das Problem, das es löst, tatsächlich auftritt, etwa wenn eine Klasse durch viele `if`-Abfragen unübersichtlich wird oder wenn inkompatible Schnittstellen verbunden werden müssen. Wer Muster „auf Vorrat“ einbaut, macht den Code unnötig komplex ([YAGNI](/de/software-development/clean-code/#grundprinzipien)).
+
+Fast alle Muster beruhen auf zwei Grundsätzen aus dem GoF-Buch:
+
+- **Gegen Schnittstellen programmieren, nicht gegen Implementierungen.**
+- **Komposition der Vererbung vorziehen** (siehe [Objektorientierte Programmierung](/de/software-development/object-oriented-programming/#komposition-statt-vererbung)).
+
+:::note[Muster und Sprachmerkmale]
+Viele Muster gleichen fehlende Sprachmerkmale der objektorientierten Sprachen der 1990er-Jahre aus. In modernen Sprachen sind einige davon direkt eingebaut: Ein **Iterator** ist in C# `IEnumerable` mit `yield`, in Rust das Trait `Iterator`. Eine **Strategy** ist oft einfach ein Lambda bzw. eine Closure. Den **Observer** bieten C#-Events. Und den **Visitor** ersetzt in Rust häufig ein Enum mit `match`. Die Beispiele zeigen jeweils die klassische Form und, wo es sich anbietet, die idiomatische Kurzform.
+:::
+
+## Erzeugungsmuster
+
+### Singleton
+
+**Zweck**: Stellt sicher, dass es von einer Klasse **genau eine Instanz** gibt, und bietet einen globalen Zugriffspunkt darauf.
+
+**Problem**: Manche Objekte darf es nur einmal geben, etwa die Konfiguration einer Anwendung, einen Verbindungspool oder einen Logger. Würden mehrere Instanzen erzeugt, könnten sie unterschiedliche Zustände haben.
+
+**Lösung**: Der Konstruktor wird **privat**, damit niemand von außen Instanzen erzeugen kann. Eine statische Eigenschaft oder Methode gibt immer dieselbe, intern gespeicherte Instanz zurück. In Mehr-Thread-Programmen muss die Erzeugung **threadsicher** sein. In C# erledigt das die Klasse `Lazy<T>`, in Rust `LazyLock` bzw. `OnceLock`, die die Instanz erst beim ersten Zugriff erzeugen (**Lazy Initialization**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+AppConfig.Instance.Set("theme", "dark");
+Console.WriteLine(AppConfig.Instance.Get("theme"));          // dark
+Console.WriteLine(ReferenceEquals(AppConfig.Instance, AppConfig.Instance)); // True
+
+public sealed class AppConfig
+{
+    // Lazy<T> ist standardmäßig threadsicher
+    private static readonly Lazy<AppConfig> LazyInstance = new(() => new AppConfig());
+
+    public static AppConfig Instance => LazyInstance.Value;
+
+    private readonly Dictionary<string, string> _values = [];
+
+    private AppConfig() { } // privater Konstruktor
+
+    public void Set(string key, string value) => _values[key] = value;
+    public string? Get(string key) => _values.GetValueOrDefault(key);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::HashMap;
+use std::sync::{LazyLock, Mutex};
+
+// globale Instanz, beim ersten Zugriff threadsicher erzeugt
+static CONFIG: LazyLock<Mutex<HashMap<String, String>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn main() {
+    CONFIG.lock().unwrap().insert("theme".into(), "dark".into());
+    println!("{:?}", CONFIG.lock().unwrap().get("theme")); // Some("dark")
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Es existiert garantiert nur eine Instanz, die erst bei Bedarf erzeugt wird.
+- ❌ Ein Singleton ist **globaler Zustand** und erhöht die [Kopplung](/de/software-development/software-metrics/#koppelung), weil viele Klassen direkt darauf zugreifen.
+- ❌ Singletons lassen sich in Unit-Tests schwer austauschen. In Anwendungen mit [Dependency Injection](/de/software-development/software-architecture/#dependency-injection) registriert man Klassen daher meist als Singleton-Service, statt das Muster selbst zu implementieren. Rust macht globale veränderbare Daten bewusst umständlich (`Mutex`, `LazyLock`), um Data Races auszuschließen.
+
+### Factory Method
+
+**Zweck**: Definiert eine Methode zum Erzeugen von Objekten, wobei **Unterklassen entscheiden**, welche konkrete Klasse erzeugt wird.
+
+**Problem**: Eine Logistik-Anwendung arbeitete anfangs nur mit Lastwagen. Nun sollen auch Schiffe dazukommen. Steht überall im Code `new Truck()`, muss jede dieser Stellen geändert werden.
+
+**Lösung**: Statt Objekte direkt mit `new` zu erzeugen, ruft der Code eine **Fabrikmethode** auf (`CreateTransport()`). Die Basisklasse (_Creator_) enthält die gemeinsame Logik, und jede Unterklasse überschreibt die Fabrikmethode und liefert ihr eigenes Produkt. Der restliche Code arbeitet nur mit der Schnittstelle des Produkts.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Logistics[] companies = [new RoadLogistics(), new SeaLogistics()];
+foreach (var company in companies)
+{
+    company.PlanDelivery("Krems");
+}
+// Lieferung nach Krems: Lastwagen fährt über die Straße
+// Lieferung nach Krems: Schiff fährt über die Donau
+
+public interface ITransport
+{
+    string Deliver();
+}
+
+public class Truck : ITransport
+{
+    public string Deliver() => "Lastwagen fährt über die Straße";
+}
+
+public class Ship : ITransport
+{
+    public string Deliver() => "Schiff fährt über die Donau";
+}
+
+// Creator mit gemeinsamer Logik
+public abstract class Logistics
+{
+    protected abstract ITransport CreateTransport(); // Fabrikmethode
+
+    public void PlanDelivery(string city)
+    {
+        ITransport transport = CreateTransport();
+        Console.WriteLine($"Lieferung nach {city}: {transport.Deliver()}");
+    }
+}
+
+public class RoadLogistics : Logistics
+{
+    protected override ITransport CreateTransport() => new Truck();
+}
+
+public class SeaLogistics : Logistics
+{
+    protected override ITransport CreateTransport() => new Ship();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait Transport {
+    fn deliver(&self) -> String;
+}
+
+struct Truck;
+struct Ship;
+
+impl Transport for Truck {
+    fn deliver(&self) -> String { "Lastwagen fährt über die Straße".into() }
+}
+
+impl Transport for Ship {
+    fn deliver(&self) -> String { "Schiff fährt über die Donau".into() }
+}
+
+// Creator: die Fabrikmethode ist erforderlich, plan_delivery eine Standardmethode
+trait Logistics {
+    fn create_transport(&self) -> Box<dyn Transport>;
+
+    fn plan_delivery(&self, city: &str) {
+        let transport = self.create_transport();
+        println!("Lieferung nach {city}: {}", transport.deliver());
+    }
+}
+
+struct RoadLogistics;
+struct SeaLogistics;
+
+impl Logistics for RoadLogistics {
+    fn create_transport(&self) -> Box<dyn Transport> { Box::new(Truck) }
+}
+
+impl Logistics for SeaLogistics {
+    fn create_transport(&self) -> Box<dyn Transport> { Box::new(Ship) }
+}
+
+fn main() {
+    let companies: Vec<Box<dyn Logistics>> = vec![Box::new(RoadLogistics), Box::new(SeaLogistics)];
+    for company in &companies {
+        company.plan_delivery("Krems");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Neue Produkte erfordern nur eine neue Unterklasse ([Open/Closed Principle](/de/software-development/clean-code/#openclosed-principle)).
+- ✅ Die Erzeugung ist an einer Stelle gebündelt.
+- ❌ Für jedes Produkt entsteht eine zusätzliche Creator-Klasse.
+
+Häufig verwendet man auch eine **einfache Fabrik** (_Simple Factory_): eine statische Methode wie `Transport.Create("ship")`, die je nach Parameter ein Objekt erzeugt. Sie ist kein GoF-Muster, aber in der Praxis sehr verbreitet. Statische Methoden wie `int.Parse` oder `TimeSpan.FromSeconds` heißen auch **Factory-Methoden** im weiteren Sinn.
+
+### Abstract Factory
+
+**Zweck**: Stellt eine Schnittstelle bereit, um **Familien zusammengehöriger Objekte** zu erzeugen, ohne ihre konkreten Klassen zu kennen.
+
+**Problem**: Eine Oberfläche soll ein helles und ein dunkles Design unterstützen. Schaltflächen, Textfelder und Menüs müssen jeweils zusammenpassen: Eine helle Schaltfläche neben einem dunklen Textfeld wäre ein Fehler.
+
+**Lösung**: Für jede Produktfamilie gibt es eine **konkrete Fabrik**, die alle Produkte dieser Familie erzeugt. Der Code verwendet nur die abstrakte Fabrik und die Produkt-Schnittstellen. Welche Familie verwendet wird, entscheidet man an einer einzigen Stelle, etwa beim Programmstart.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+bool darkMode = true; // zum Beispiel aus den Einstellungen gelesen
+IThemeFactory factory = darkMode ? new DarkThemeFactory() : new LightThemeFactory();
+RenderLoginForm(factory);
+
+static void RenderLoginForm(IThemeFactory factory)
+{
+    // der Code kennt nur die abstrakte Fabrik
+    Console.WriteLine(factory.CreateTextBox().Render());
+    Console.WriteLine(factory.CreateButton().Render());
+}
+
+public interface IButton { string Render(); }
+public interface ITextBox { string Render(); }
+
+public interface IThemeFactory
+{
+    IButton CreateButton();
+    ITextBox CreateTextBox();
+}
+
+public class LightButton : IButton { public string Render() => "[ OK ] weiß"; }
+public class LightTextBox : ITextBox { public string Render() => "[____] weiß"; }
+public class DarkButton : IButton { public string Render() => "[ OK ] schwarz"; }
+public class DarkTextBox : ITextBox { public string Render() => "[____] schwarz"; }
+
+public class LightThemeFactory : IThemeFactory
+{
+    public IButton CreateButton() => new LightButton();
+    public ITextBox CreateTextBox() => new LightTextBox();
+}
+
+public class DarkThemeFactory : IThemeFactory
+{
+    public IButton CreateButton() => new DarkButton();
+    public ITextBox CreateTextBox() => new DarkTextBox();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait Button { fn render(&self) -> String; }
+trait TextBox { fn render(&self) -> String; }
+
+trait ThemeFactory {
+    fn create_button(&self) -> Box<dyn Button>;
+    fn create_text_box(&self) -> Box<dyn TextBox>;
+}
+
+struct DarkButton;
+struct DarkTextBox;
+impl Button for DarkButton { fn render(&self) -> String { "[ OK ] schwarz".into() } }
+impl TextBox for DarkTextBox { fn render(&self) -> String { "[____] schwarz".into() } }
+
+struct LightButton;
+struct LightTextBox;
+impl Button for LightButton { fn render(&self) -> String { "[ OK ] weiß".into() } }
+impl TextBox for LightTextBox { fn render(&self) -> String { "[____] weiß".into() } }
+
+struct DarkThemeFactory;
+struct LightThemeFactory;
+
+impl ThemeFactory for DarkThemeFactory {
+    fn create_button(&self) -> Box<dyn Button> { Box::new(DarkButton) }
+    fn create_text_box(&self) -> Box<dyn TextBox> { Box::new(DarkTextBox) }
+}
+
+impl ThemeFactory for LightThemeFactory {
+    fn create_button(&self) -> Box<dyn Button> { Box::new(LightButton) }
+    fn create_text_box(&self) -> Box<dyn TextBox> { Box::new(LightTextBox) }
+}
+
+// der Code kennt nur die abstrakte Fabrik
+fn render_login_form(factory: &dyn ThemeFactory) {
+    println!("{}", factory.create_text_box().render());
+    println!("{}", factory.create_button().render());
+}
+
+fn main() {
+    render_login_form(&DarkThemeFactory);
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Produkte einer Familie passen garantiert zusammen.
+- ✅ Die Familie lässt sich an einer Stelle austauschen.
+- ❌ Ein neues Produkt (etwa eine Checkbox) erfordert Änderungen an der Schnittstelle und an allen Fabriken.
+
+### Builder
+
+**Zweck**: Trennt die **schrittweise Konstruktion** eines komplexen Objekts von seiner Darstellung.
+
+**Problem**: Ein Objekt hat viele optionale Bestandteile, etwa eine HTTP-Anfrage mit Methode, URL, Headern, Body und Timeout. Ein Konstruktor mit zehn Parametern, von denen die meisten `null` sind, ist unlesbar und fehleranfällig (_Telescoping Constructor_).
+
+**Lösung**: Ein **Builder** sammelt die Angaben über einzelne, gut benannte Methoden, die man verketten kann (**Fluent Interface**). Erst `Build()` erzeugt das fertige, meist unveränderliche Objekt und prüft dabei, ob alle Pflichtangaben vorhanden sind. In Rust ist das Builder-Muster sehr verbreitet, weil es keine optionalen Parameter gibt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+HttpRequestSpec request = new RequestBuilder("https://api.example.com/orders")
+    .Method("POST")
+    .Header("Content-Type", "application/json")
+    .Body("""{"item": "Tastatur"}""")
+    .Timeout(TimeSpan.FromSeconds(5))
+    .Build();
+
+Console.WriteLine(request);
+
+public record HttpRequestSpec(string Method, string Url, IReadOnlyDictionary<string, string> Headers,
+    string? Body, TimeSpan Timeout)
+{
+    public override string ToString() =>
+        $"{Method} {Url} ({Headers.Count} Header, Timeout {Timeout.TotalSeconds} s)";
+}
+
+public class RequestBuilder(string url)
+{
+    private string _method = "GET";
+    private readonly Dictionary<string, string> _headers = [];
+    private string? _body;
+    private TimeSpan _timeout = TimeSpan.FromSeconds(30);
+
+    public RequestBuilder Method(string method) { _method = method; return this; }
+    public RequestBuilder Header(string name, string value) { _headers[name] = value; return this; }
+    public RequestBuilder Body(string body) { _body = body; return this; }
+    public RequestBuilder Timeout(TimeSpan timeout) { _timeout = timeout; return this; }
+
+    public HttpRequestSpec Build()
+    {
+        if (_method == "GET" && _body is not null)
+            throw new InvalidOperationException("GET-Anfragen haben keinen Body");
+        return new HttpRequestSpec(_method, url, _headers, _body, _timeout);
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::HashMap;
+use std::time::Duration;
+
+#[derive(Debug)]
+struct HttpRequestSpec {
+    method: String,
+    url: String,
+    headers: HashMap<String, String>,
+    body: Option<String>,
+    timeout: Duration,
+}
+
+struct RequestBuilder {
+    method: String,
+    url: String,
+    headers: HashMap<String, String>,
+    body: Option<String>,
+    timeout: Duration,
+}
+
+impl RequestBuilder {
+    fn new(url: &str) -> Self {
+        RequestBuilder {
+            method: "GET".into(),
+            url: url.into(),
+            headers: HashMap::new(),
+            body: None,
+            timeout: Duration::from_secs(30),
+        }
+    }
+
+    // jede Methode übernimmt self und gibt es zurück: Verkettung ohne Kopien
+    fn method(mut self, method: &str) -> Self { self.method = method.into(); self }
+    fn header(mut self, name: &str, value: &str) -> Self { self.headers.insert(name.into(), value.into()); self }
+    fn body(mut self, body: &str) -> Self { self.body = Some(body.into()); self }
+    fn timeout(mut self, timeout: Duration) -> Self { self.timeout = timeout; self }
+
+    fn build(self) -> Result<HttpRequestSpec, String> {
+        if self.method == "GET" && self.body.is_some() {
+            return Err("GET-Anfragen haben keinen Body".into());
+        }
+        Ok(HttpRequestSpec {
+            method: self.method,
+            url: self.url,
+            headers: self.headers,
+            body: self.body,
+            timeout: self.timeout,
+        })
+    }
+}
+
+fn main() {
+    let request = RequestBuilder::new("https://api.example.com/orders")
+        .method("POST")
+        .header("Content-Type", "application/json")
+        .body(r#"{"item": "Tastatur"}"#)
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
+    println!("{} {} ({} Header, Timeout {:?})", request.method, request.url, request.headers.len(), request.timeout);
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Lesbare Erzeugung von Objekten mit vielen optionalen Teilen.
+- ✅ Das fertige Objekt kann unveränderlich sein, Prüfungen erfolgen an einer Stelle.
+- ❌ Zusätzliche Klasse mit fast denselben Feldern wie das Produkt.
+
+Beispiele aus den Standardbibliotheken: `StringBuilder`, `WebApplication.CreateBuilder()` in ASP.NET Core, `std::thread::Builder` und `std::process::Command` in Rust. Im GoF-Buch gibt es zusätzlich einen **Director**, der die Bauschritte in einer festen Reihenfolge aufruft, etwa um verschiedene Dokumentformate mit demselben Ablauf zu erzeugen.
+
+### Prototype
+
+**Zweck**: Erzeugt neue Objekte, indem ein bestehendes Objekt (der **Prototyp**) **kopiert** wird.
+
+**Problem**: Die Erzeugung eines Objekts ist aufwendig (etwa weil Daten geladen oder berechnet werden müssen), oder man kennt nur die Schnittstelle eines Objekts, nicht seine konkrete Klasse, und möchte trotzdem eine Kopie anlegen.
+
+**Lösung**: Das Objekt bietet selbst eine Methode zum Klonen an. Wichtig ist der Unterschied zwischen **flacher Kopie** (_shallow copy_: Referenzen werden kopiert, beide Objekte teilen sich die referenzierten Objekte) und **tiefer Kopie** (_deep copy_: auch alle referenzierten Objekte werden kopiert). In Rust ist das Muster als Trait `Clone` eingebaut, das immer eine vollständige, eigenständige Kopie erzeugt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var template = new Document("Vorlage Zeugnis", ["Kopfzeile", "Unterschrift"]);
+
+// with erzeugt bei Records nur eine flache Kopie: die Liste wird geteilt
+var shallow = template with { Title = "Flache Kopie" };
+shallow.Sections.Add("Neuer Abschnitt");
+Console.WriteLine(template.Sections.Count); // 3, die Vorlage wurde mitverändert!
+
+var original = new Document("Vorlage Zeugnis", ["Kopfzeile", "Unterschrift"]);
+var deep = original.DeepClone();
+deep.Sections.Add("Neuer Abschnitt");
+Console.WriteLine(original.Sections.Count); // 2, die Vorlage bleibt unverändert
+
+public record Document(string Title, List<string> Sections)
+{
+    public Document DeepClone() => this with { Sections = new List<string>(Sections) };
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+#[derive(Clone, Debug)]
+struct Document {
+    title: String,
+    sections: Vec<String>,
+}
+
+fn main() {
+    let template = Document {
+        title: "Vorlage Zeugnis".into(),
+        sections: vec!["Kopfzeile".into(), "Unterschrift".into()],
+    };
+
+    // clone kopiert auch den Vec: immer eine tiefe Kopie der eigenen Daten
+    let mut copy = template.clone();
+    copy.title = "Zeugnis 3AHIT".into();
+    copy.sections.push("Neuer Abschnitt".into());
+
+    println!("{}", template.sections.len()); // 2
+    println!("{}", copy.sections.len());     // 3
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Kopien ohne Kenntnis der konkreten Klasse und ohne aufwendige Neuerzeugung.
+- ❌ Tiefe Kopien sind bei verschachtelten Objekten und zyklischen Referenzen schwierig. Das Interface `ICloneable` in .NET legt nicht fest, ob flach oder tief kopiert wird, und gilt deshalb als ungünstig.
+
+## Strukturmuster
+
+### Adapter
+
+**Zweck**: Passt die **Schnittstelle einer Klasse** an eine andere Schnittstelle an, die der Client erwartet.
+
+**Problem**: Eine Wetterstation arbeitet mit dem Interface `ITemperatureSensor`, das Grad Celsius liefert. Ein vorhandener Sensor eines anderen Herstellers hat eine ganz andere Schnittstelle und liefert Grad Fahrenheit. Seinen Code kann man nicht ändern.
+
+**Lösung**: Ein **Adapter** implementiert die erwartete Schnittstelle und übersetzt jeden Aufruf in einen Aufruf des vorhandenen Objekts (des **Adaptees**). Er wirkt wie ein Reisestecker-Adapter. Die hier gezeigte Variante heißt **Objektadapter**, weil der Adapter das Objekt enthält. Beim **Klassenadapter** erbt der Adapter vom Adaptee, was Mehrfachvererbung voraussetzt und in C# daher kaum verwendet wird.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+ITemperatureSensor sensor = new FahrenheitSensorAdapter(new LegacyFahrenheitSensor());
+Console.WriteLine($"{sensor.ReadCelsius():F1} °C"); // 21.5 °C
+
+// erwartete Schnittstelle
+public interface ITemperatureSensor
+{
+    double ReadCelsius();
+}
+
+// vorhandene Klasse mit unpassender Schnittstelle (Adaptee)
+public class LegacyFahrenheitSensor
+{
+    public double GetTemperatureInFahrenheit() => 70.7;
+}
+
+// Adapter
+public class FahrenheitSensorAdapter(LegacyFahrenheitSensor legacy) : ITemperatureSensor
+{
+    public double ReadCelsius() => (legacy.GetTemperatureInFahrenheit() - 32) * 5 / 9;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// erwartete Schnittstelle
+trait TemperatureSensor {
+    fn read_celsius(&self) -> f64;
+}
+
+// vorhandener Typ mit unpassender Schnittstelle (Adaptee)
+struct LegacyFahrenheitSensor;
+
+impl LegacyFahrenheitSensor {
+    fn get_temperature_in_fahrenheit(&self) -> f64 { 70.7 }
+}
+
+// Adapter
+struct FahrenheitSensorAdapter {
+    legacy: LegacyFahrenheitSensor,
+}
+
+impl TemperatureSensor for FahrenheitSensorAdapter {
+    fn read_celsius(&self) -> f64 {
+        (self.legacy.get_temperature_in_fahrenheit() - 32.0) * 5.0 / 9.0
+    }
+}
+
+fn main() {
+    let sensor: Box<dyn TemperatureSensor> =
+        Box::new(FahrenheitSensorAdapter { legacy: LegacyFahrenheitSensor });
+    println!("{:.1} °C", sensor.read_celsius()); // 21.5 °C
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Bestehender Code (auch fremde Bibliotheken) lässt sich ohne Änderung weiterverwenden.
+- ✅ Die Umwandlungslogik ist an einer Stelle gekapselt.
+- ❌ Zusätzliche Klasse; bei sehr unterschiedlichen Schnittstellen wird der Adapter aufwendig.
+
+Typische Einsatzfälle sind die Einbindung alter Systeme (_Legacy-Code_), fremder APIs und Hardware-Treiber. In .NET ist `StreamReader` ein Adapter, der einen Bytestrom als Textquelle nutzbar macht.
+
+### Bridge
+
+**Zweck**: Trennt eine **Abstraktion von ihrer Implementierung**, sodass beide unabhängig voneinander erweitert werden können.
+
+**Problem**: Es gibt verschiedene Fernbedienungen (einfach, erweitert) und verschiedene Geräte (Fernseher, Radio). Mit Vererbung bräuchte man für jede Kombination eine eigene Klasse: `BasicTvRemote`, `BasicRadioRemote`, `AdvancedTvRemote` usw. Mit jeder neuen Fernbedienung oder jedem neuen Gerät wächst die Zahl der Klassen multiplikativ.
+
+**Lösung**: Man teilt die Hierarchie in zwei: Die **Abstraktion** (Fernbedienung) enthält eine Referenz auf die **Implementierung** (Gerät) und delegiert die eigentliche Arbeit an sie. Beide Seiten können unabhängig erweitert werden. Aus $m \cdot n$ Klassen werden $m + n$.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var remote = new AdvancedRemote(new Radio());
+remote.TogglePower();
+remote.VolumeUp();
+remote.Mute();
+// Radio eingeschaltet
+// Radio: Lautstärke 40
+// Radio: Lautstärke 0
+
+// Implementierungsseite
+public interface IDevice
+{
+    bool IsOn { get; }
+    int Volume { get; set; }
+    void SetPower(bool on);
+}
+
+public class Radio : IDevice
+{
+    private int _volume = 30;
+    public bool IsOn { get; private set; }
+    public int Volume
+    {
+        get => _volume;
+        set { _volume = Math.Clamp(value, 0, 100); Console.WriteLine($"Radio: Lautstärke {_volume}"); }
+    }
+    public void SetPower(bool on) { IsOn = on; Console.WriteLine($"Radio {(on ? "eingeschaltet" : "ausgeschaltet")}"); }
+}
+
+// Abstraktionsseite: enthält die Brücke zum Gerät
+public class Remote(IDevice device)
+{
+    protected IDevice Device { get; } = device;
+
+    public void TogglePower() => Device.SetPower(!Device.IsOn);
+    public void VolumeUp() => Device.Volume += 10;
+}
+
+public class AdvancedRemote(IDevice device) : Remote(device)
+{
+    public void Mute() => Device.Volume = 0;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Implementierungsseite
+trait Device {
+    fn is_on(&self) -> bool;
+    fn set_power(&mut self, on: bool);
+    fn volume(&self) -> u8;
+    fn set_volume(&mut self, volume: u8);
+}
+
+struct Radio {
+    on: bool,
+    volume: u8,
+}
+
+impl Device for Radio {
+    fn is_on(&self) -> bool { self.on }
+    fn set_power(&mut self, on: bool) {
+        self.on = on;
+        println!("Radio {}", if on { "eingeschaltet" } else { "ausgeschaltet" });
+    }
+    fn volume(&self) -> u8 { self.volume }
+    fn set_volume(&mut self, volume: u8) {
+        self.volume = volume.min(100);
+        println!("Radio: Lautstärke {}", self.volume);
+    }
+}
+
+// Abstraktionsseite: enthält die Brücke zum Gerät
+struct Remote<D: Device> {
+    device: D,
+}
+
+impl<D: Device> Remote<D> {
+    fn toggle_power(&mut self) {
+        let on = self.device.is_on();
+        self.device.set_power(!on);
+    }
+    fn volume_up(&mut self) {
+        let v = self.device.volume();
+        self.device.set_volume(v.saturating_add(10));
+    }
+    fn mute(&mut self) {
+        self.device.set_volume(0);
+    }
+}
+
+fn main() {
+    let mut remote = Remote { device: Radio { on: false, volume: 30 } };
+    remote.toggle_power();
+    remote.volume_up();
+    remote.mute();
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Abstraktion und Implementierung lassen sich unabhängig erweitern und zur Laufzeit kombinieren.
+- ✅ Plattformspezifischer Code (etwa für Windows und Linux) bleibt hinter der Implementierungsseite verborgen.
+- ❌ Der Entwurf wird abstrakter; bei nur einer Implementierung lohnt sich die Brücke nicht.
+
+Ein bekanntes Beispiel sind Datenbanktreiber: Die Abstraktion (`DbConnection` in ADO.NET) bleibt gleich, die Implementierung kommt vom jeweiligen Datenbanktreiber.
+
+### Composite
+
+**Zweck**: Setzt Objekte zu **Baumstrukturen** zusammen und erlaubt es, einzelne Objekte und Gruppen von Objekten **einheitlich** zu behandeln.
+
+**Problem**: Ein Dateisystem besteht aus Dateien und Ordnern, und Ordner können wieder Dateien und Ordner enthalten. Will man die Gesamtgröße berechnen, müsste man ohne gemeinsame Schnittstelle überall prüfen, ob gerade eine Datei oder ein Ordner vorliegt.
+
+**Lösung**: Blätter (**Leaf**, die Datei) und Container (**Composite**, der Ordner) implementieren dieselbe Schnittstelle (**Component**). Der Container leitet Aufrufe rekursiv an seine Kinder weiter und fasst die Ergebnisse zusammen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var root = new Folder("projekt",
+[
+    new FileItem("README.md", 2),
+    new Folder("src", [new FileItem("Program.cs", 12), new FileItem("Utils.cs", 6)]),
+]);
+Console.WriteLine(root.Size());  // 20
+root.Print("");
+
+public interface IFileSystemItem
+{
+    string Name { get; }
+    long Size();
+    void Print(string indent);
+}
+
+public class FileItem(string name, long size) : IFileSystemItem
+{
+    public string Name => name;
+    public long Size() => size;
+    public void Print(string indent) => Console.WriteLine($"{indent}{Name} ({size} KB)");
+}
+
+public class Folder(string name, List<IFileSystemItem> children) : IFileSystemItem
+{
+    public string Name => name;
+    public long Size() => children.Sum(c => c.Size()); // rekursiv
+    public void Print(string indent)
+    {
+        Console.WriteLine($"{indent}{Name}/");
+        foreach (var child in children) child.Print(indent + "  ");
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// In Rust ist ein Enum die natürliche Darstellung für Blatt und Container.
+enum Node {
+    File { name: String, size: u64 },
+    Folder { name: String, children: Vec<Node> },
+}
+
+impl Node {
+    fn size(&self) -> u64 {
+        match self {
+            Node::File { size, .. } => *size,
+            Node::Folder { children, .. } => children.iter().map(Node::size).sum(), // rekursiv
+        }
+    }
+
+    fn print(&self, indent: &str) {
+        match self {
+            Node::File { name, size } => println!("{indent}{name} ({size} KB)"),
+            Node::Folder { name, children } => {
+                println!("{indent}{name}/");
+                for child in children {
+                    child.print(&format!("{indent}  "));
+                }
+            }
+        }
+    }
+}
+
+fn file(name: &str, size: u64) -> Node {
+    Node::File { name: name.into(), size }
+}
+
+fn main() {
+    let root = Node::Folder {
+        name: "projekt".into(),
+        children: vec![
+            file("README.md", 2),
+            Node::Folder { name: "src".into(), children: vec![file("main.rs", 12), file("utils.rs", 6)] },
+        ],
+    };
+    println!("{}", root.size()); // 20
+    root.print("");
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Der Client behandelt einfache und zusammengesetzte Objekte gleich; Rekursion ergibt sich von selbst.
+- ✅ Neue Arten von Elementen lassen sich leicht ergänzen.
+- ❌ Die gemeinsame Schnittstelle kann zu allgemein werden, etwa wenn `Add()` auch für Blätter angeboten werden muss.
+
+Weitere Beispiele: Steuerelemente einer Oberfläche (ein Panel enthält Schaltflächen und weitere Panels), Menüs, Stücklisten und der Syntaxbaum eines Compilers.
+
+### Decorator
+
+**Zweck**: Erweitert ein Objekt **dynamisch um zusätzliche Funktionen**, ohne seine Klasse zu ändern oder Unterklassen zu bilden.
+
+**Problem**: Ein Kaffee kann mit Milch, Zucker, Sirup und Sahne bestellt werden, in beliebigen Kombinationen. Für jede Kombination eine Unterklasse (`KaffeeMitMilchUndZucker`) zu erstellen, führt zu einer Explosion an Klassen.
+
+**Lösung**: Ein **Decorator** implementiert dieselbe Schnittstelle wie das Objekt, das er „umhüllt“ (_Wrapper_), und leitet Aufrufe an dieses weiter. Vor oder nach der Weiterleitung fügt er sein eigenes Verhalten hinzu. Da der Decorator selbst wieder die Schnittstelle erfüllt, lassen sich Decorators beliebig ineinander verschachteln.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+IBeverage order = new Sugar(new Milk(new Milk(new Coffee())));
+Console.WriteLine($"{order.Description()}: {order.Cost():F2} €");
+// Kaffee, Milch, Milch, Zucker: 3.50 €
+
+public interface IBeverage
+{
+    string Description();
+    decimal Cost();
+}
+
+public class Coffee : IBeverage
+{
+    public string Description() => "Kaffee";
+    public decimal Cost() => 2.50m;
+}
+
+// abstrakter Decorator: hält das umhüllte Objekt
+public abstract class BeverageDecorator(IBeverage inner) : IBeverage
+{
+    protected IBeverage Inner { get; } = inner;
+    public abstract string Description();
+    public abstract decimal Cost();
+}
+
+public class Milk(IBeverage inner) : BeverageDecorator(inner)
+{
+    public override string Description() => Inner.Description() + ", Milch";
+    public override decimal Cost() => Inner.Cost() + 0.40m;
+}
+
+public class Sugar(IBeverage inner) : BeverageDecorator(inner)
+{
+    public override string Description() => Inner.Description() + ", Zucker";
+    public override decimal Cost() => Inner.Cost() + 0.20m;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait Beverage {
+    fn description(&self) -> String;
+    fn cost(&self) -> u32; // in Cent
+}
+
+struct Coffee;
+
+impl Beverage for Coffee {
+    fn description(&self) -> String { "Kaffee".into() }
+    fn cost(&self) -> u32 { 250 }
+}
+
+// Decorators umhüllen ein beliebiges Beverage
+struct Milk(Box<dyn Beverage>);
+struct Sugar(Box<dyn Beverage>);
+
+impl Beverage for Milk {
+    fn description(&self) -> String { format!("{}, Milch", self.0.description()) }
+    fn cost(&self) -> u32 { self.0.cost() + 40 }
+}
+
+impl Beverage for Sugar {
+    fn description(&self) -> String { format!("{}, Zucker", self.0.description()) }
+    fn cost(&self) -> u32 { self.0.cost() + 20 }
+}
+
+fn main() {
+    let order = Sugar(Box::new(Milk(Box::new(Milk(Box::new(Coffee))))));
+    let cost = order.cost();
+    println!("{}: {}.{:02} €", order.description(), cost / 100, cost % 100);
+    // Kaffee, Milch, Milch, Zucker: 3.50 €
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Funktionen lassen sich zur Laufzeit kombinieren, ohne Klassenexplosion.
+- ✅ Jeder Decorator hat genau eine Aufgabe ([Single Responsibility](/de/software-development/clean-code/#single-responsibility-principle)).
+- ❌ Viele kleine Objekte; die Reihenfolge der Decorators kann eine Rolle spielen und ist schwer zu überblicken.
+
+In .NET sind Streams nach diesem Muster aufgebaut: `new GZipStream(new BufferedStream(fileStream), ...)` komprimiert und puffert einen Dateistrom. In Rust umhüllt `BufReader` einen beliebigen `Read`-Typ. Auch Middleware in ASP.NET Core folgt der Idee.
+
+### Facade
+
+**Zweck**: Bietet eine **vereinfachte Schnittstelle** zu einem komplexen Subsystem.
+
+**Problem**: Um eine Bestellung abzuwickeln, muss der Code den Lagerbestand prüfen, die Zahlung durchführen, die Lieferung beauftragen und eine Bestätigung senden. Jede aufrufende Stelle müsste alle diese Klassen und die richtige Reihenfolge kennen.
+
+**Lösung**: Eine **Fassade** bündelt die Abläufe des Subsystems hinter wenigen, einfachen Methoden. Clients sprechen nur noch mit der Fassade. Das Subsystem selbst bleibt unverändert und kann bei Bedarf weiterhin direkt verwendet werden.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var shop = new OrderFacade(new Inventory(), new PaymentService(), new ShippingService());
+Console.WriteLine(shop.PlaceOrder("Tastatur", 49.90m, "Krems")); // True
+
+// Subsystem
+public class Inventory { public bool Reserve(string item) { Console.WriteLine($"{item} reserviert"); return true; } }
+public class PaymentService { public bool Charge(decimal amount) { Console.WriteLine($"{amount} € abgebucht"); return true; } }
+public class ShippingService { public void Ship(string item, string city) => Console.WriteLine($"{item} geht nach {city}"); }
+
+// Fassade
+public class OrderFacade(Inventory inventory, PaymentService payment, ShippingService shipping)
+{
+    public bool PlaceOrder(string item, decimal price, string city)
+    {
+        if (!inventory.Reserve(item)) return false;
+        if (!payment.Charge(price)) return false;
+        shipping.Ship(item, city);
+        return true;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Subsystem
+struct Inventory;
+struct PaymentService;
+struct ShippingService;
+
+impl Inventory {
+    fn reserve(&self, item: &str) -> bool { println!("{item} reserviert"); true }
+}
+impl PaymentService {
+    fn charge(&self, cents: u32) -> bool { println!("{} € abgebucht", cents as f64 / 100.0); true }
+}
+impl ShippingService {
+    fn ship(&self, item: &str, city: &str) { println!("{item} geht nach {city}"); }
+}
+
+// Fassade
+struct OrderFacade {
+    inventory: Inventory,
+    payment: PaymentService,
+    shipping: ShippingService,
+}
+
+impl OrderFacade {
+    fn place_order(&self, item: &str, cents: u32, city: &str) -> bool {
+        if !self.inventory.reserve(item) || !self.payment.charge(cents) {
+            return false;
+        }
+        self.shipping.ship(item, city);
+        true
+    }
+}
+
+fn main() {
+    let shop = OrderFacade { inventory: Inventory, payment: PaymentService, shipping: ShippingService };
+    println!("{}", shop.place_order("Tastatur", 4990, "Krems")); // true
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Einfache Verwendung und geringe [Kopplung](/de/software-development/software-metrics/#koppelung) zwischen Client und Subsystem.
+- ✅ Gut geeignet, um alte oder fremde Systeme hinter einer sauberen Schnittstelle zu verstecken.
+- ❌ Die Fassade kann zu einer „God Class“ anwachsen, die zu viele Aufgaben übernimmt.
+
+Im Unterschied zum **Adapter**, der eine vorhandene Schnittstelle an eine erwartete anpasst, schafft die **Fassade** eine neue, einfachere Schnittstelle für viele Klassen.
+
+### Flyweight
+
+**Zweck**: Spart Speicher, indem viele ähnliche Objekte die **gemeinsamen Daten teilen**, statt sie jeweils selbst zu speichern.
+
+**Problem**: Ein Spiel zeigt einen Wald mit einer Million Bäumen. Jeder Baum speichert seine Position, aber auch Name, Farbe und Textur seiner Baumart. Die Textur ist mehrere Kilobyte groß und für alle Bäume einer Art gleich. Der Speicher reicht nicht aus.
+
+**Lösung**: Man trennt den Zustand in zwei Teile:
+
+- **Intrinsischer Zustand**: unveränderlich und für viele Objekte gleich (Baumart mit Textur). Er wird im **Flyweight** gespeichert und geteilt.
+- **Extrinsischer Zustand**: für jedes Objekt verschieden (Position). Er bleibt im einzelnen Objekt oder wird von außen übergeben.
+
+Eine **Flyweight-Fabrik** liefert für gleiche Schlüssel immer dasselbe geteilte Objekt.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var factory = new TreeTypeFactory();
+var forest = new List<Tree>();
+var random = new Random(42);
+for (int i = 0; i < 100_000; i++)
+{
+    string kind = i % 2 == 0 ? "Eiche" : "Fichte";
+    forest.Add(new Tree(random.Next(1000), random.Next(1000), factory.Get(kind, kind == "Eiche" ? "grün" : "dunkelgrün")));
+}
+Console.WriteLine($"{forest.Count} Bäume, {factory.Count} Baumarten im Speicher"); // 100000 Bäume, 2 Baumarten im Speicher
+
+// Flyweight: intrinsischer, geteilter Zustand
+public record TreeType(string Name, string Color, byte[] Texture);
+
+// extrinsischer Zustand: Position, dazu die Referenz auf das Flyweight
+public record Tree(int X, int Y, TreeType Type);
+
+public class TreeTypeFactory
+{
+    private readonly Dictionary<string, TreeType> _cache = [];
+
+    public int Count => _cache.Count;
+
+    public TreeType Get(string name, string color)
+    {
+        if (!_cache.TryGetValue(name, out var type))
+        {
+            type = new TreeType(name, color, new byte[64 * 1024]); // große Textur nur einmal
+            _cache[name] = type;
+        }
+        return type;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::collections::HashMap;
+use std::rc::Rc;
+
+// Flyweight: intrinsischer, geteilter Zustand
+struct TreeType {
+    name: String,
+    color: String,
+    texture: Vec<u8>,
+}
+
+// extrinsischer Zustand: Position, dazu ein geteilter Zeiger auf das Flyweight
+struct Tree {
+    x: u32,
+    y: u32,
+    kind: Rc<TreeType>,
+}
+
+#[derive(Default)]
+struct TreeTypeFactory {
+    cache: HashMap<String, Rc<TreeType>>,
+}
+
+impl TreeTypeFactory {
+    fn get(&mut self, name: &str, color: &str) -> Rc<TreeType> {
+        self.cache
+            .entry(name.to_string())
+            .or_insert_with(|| {
+                Rc::new(TreeType { name: name.into(), color: color.into(), texture: vec![0; 64 * 1024] })
+            })
+            .clone() // klont nur den Zeiger, nicht die Textur
+    }
+}
+
+fn main() {
+    let mut factory = TreeTypeFactory::default();
+    let forest: Vec<Tree> = (0..100_000u32)
+        .map(|i| {
+            let (name, color) = if i % 2 == 0 { ("Eiche", "grün") } else { ("Fichte", "dunkelgrün") };
+            Tree { x: i % 1000, y: i / 1000, kind: factory.get(name, color) }
+        })
+        .collect();
+    println!("{} Bäume, {} Baumarten im Speicher", forest.len(), factory.cache.len());
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Enorme Speicherersparnis bei vielen gleichartigen Objekten (im Beispiel 2 statt 100 000 Texturen).
+- ❌ Komplexerer Code, weil der Zustand aufgeteilt werden muss; geteilte Objekte müssen unveränderlich sein.
+
+Beispiele: Zeichen in einem Texteditor teilen sich die Schriftart-Daten, .NET speichert gleiche String-Literale nur einmal (_String Interning_).
+
+### Proxy
+
+**Zweck**: Stellt einen **Stellvertreter** für ein anderes Objekt bereit, der den Zugriff darauf kontrolliert.
+
+**Problem**: Eine Wetter-API ist langsam und kostet pro Anfrage Geld. Viele Programmteile fragen dasselbe Wetter mehrmals pro Minute ab. Den Client-Code zu ändern, um überall ein Caching einzubauen, wäre aufwendig.
+
+**Lösung**: Ein **Proxy** implementiert dieselbe Schnittstelle wie das echte Objekt und wird an dessen Stelle verwendet. Er leitet Aufrufe weiter, kann aber vorher oder nachher eigene Arbeit erledigen. Je nach Zweck unterscheidet man:
+
+- **Virtueller Proxy**: erzeugt ein teures Objekt erst, wenn es wirklich gebraucht wird (_Lazy Loading_).
+- **Schutz-Proxy** (_Protection Proxy_): prüft Zugriffsrechte, bevor er weiterleitet.
+- **Remote-Proxy**: vertritt ein Objekt auf einem anderen Rechner und kümmert sich um die Netzwerkkommunikation.
+- **Caching-Proxy**: speichert Ergebnisse zwischen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+IWeatherService weather = new CachingWeatherProxy(new SlowWeatherService());
+Console.WriteLine(weather.GetForecast("Krems")); // fragt die API ab
+Console.WriteLine(weather.GetForecast("Krems")); // kommt aus dem Cache
+
+public interface IWeatherService
+{
+    string GetForecast(string city);
+}
+
+public class SlowWeatherService : IWeatherService
+{
+    public string GetForecast(string city)
+    {
+        Console.WriteLine($"(teure Anfrage an die Wetter-API für {city})");
+        return $"{city}: sonnig, 24 °C";
+    }
+}
+
+// Proxy mit derselben Schnittstelle
+public class CachingWeatherProxy(IWeatherService real) : IWeatherService
+{
+    private readonly Dictionary<string, (string Value, DateTime Time)> _cache = [];
+
+    public string GetForecast(string city)
+    {
+        if (_cache.TryGetValue(city, out var entry) && DateTime.UtcNow - entry.Time < TimeSpan.FromMinutes(10))
+            return entry.Value;
+        string value = real.GetForecast(city);
+        _cache[city] = (value, DateTime.UtcNow);
+        return value;
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::time::{Duration, Instant};
+
+trait WeatherService {
+    fn forecast(&self, city: &str) -> String;
+}
+
+struct SlowWeatherService;
+
+impl WeatherService for SlowWeatherService {
+    fn forecast(&self, city: &str) -> String {
+        println!("(teure Anfrage an die Wetter-API für {city})");
+        format!("{city}: sonnig, 24 °C")
+    }
+}
+
+// Proxy mit derselben Schnittstelle; RefCell erlaubt das Füllen des Caches über &self
+struct CachingWeatherProxy<S: WeatherService> {
+    real: S,
+    cache: RefCell<HashMap<String, (String, Instant)>>,
+}
+
+impl<S: WeatherService> WeatherService for CachingWeatherProxy<S> {
+    fn forecast(&self, city: &str) -> String {
+        if let Some((value, time)) = self.cache.borrow().get(city) {
+            if time.elapsed() < Duration::from_secs(600) {
+                return value.clone();
+            }
+        }
+        let value = self.real.forecast(city);
+        self.cache.borrow_mut().insert(city.to_string(), (value.clone(), Instant::now()));
+        value
+    }
+}
+
+fn main() {
+    let weather = CachingWeatherProxy { real: SlowWeatherService, cache: RefCell::new(HashMap::new()) };
+    println!("{}", weather.forecast("Krems")); // fragt die API ab
+    println!("{}", weather.forecast("Krems")); // kommt aus dem Cache
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Zusätzliche Logik (Caching, Rechte, Protokollierung, verzögertes Laden) ohne Änderung des echten Objekts oder der Clients.
+- ❌ Zusätzliche Indirektion; Antworten können veraltet sein (Caching).
+
+Proxy und Decorator sind im Aufbau gleich. Der Unterschied liegt in der Absicht: Ein **Decorator** fügt neue Funktionen hinzu und wird vom Client bewusst zusammengesetzt. Ein **Proxy** kontrolliert den Zugriff und verwaltet oft selbst den Lebenszyklus des echten Objekts. Entity Framework verwendet Proxys für das verzögerte Nachladen verknüpfter Daten (_Lazy Loading_).
+
+## Verhaltensmuster
+
+### Chain of Responsibility
+
+**Zweck**: Gibt eine Anfrage entlang einer **Kette von Empfängern** weiter, bis einer sie bearbeitet.
+
+**Problem**: Bestellungen müssen je nach Betrag von verschiedenen Personen freigegeben werden: bis 1 000 € von der Teamleitung, bis 10 000 € von der Abteilungsleitung, darüber von der Geschäftsführung. Eine lange `if`-Kette koppelt den Absender an alle Entscheidungsträger.
+
+**Lösung**: Jeder **Handler** kennt seinen Nachfolger. Er entscheidet, ob er die Anfrage selbst bearbeitet oder an den nächsten weitergibt. Der Absender kennt nur das erste Glied der Kette. Die Kette lässt sich zur Laufzeit zusammenstellen und umbauen.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Approver chain = new TeamLead();
+chain.SetNext(new DepartmentHead()).SetNext(new ManagingDirector());
+
+foreach (decimal amount in new[] { 450m, 7_200m, 50_000m })
+{
+    chain.Approve(amount);
+}
+// 450 €: freigegeben von der Teamleitung
+// 7200 €: freigegeben von der Abteilungsleitung
+// 50000 €: freigegeben von der Geschäftsführung
+
+public abstract class Approver
+{
+    private Approver? _next;
+
+    public Approver SetNext(Approver next) => _next = next; // gibt next zurück: Verkettung
+
+    public void Approve(decimal amount)
+    {
+        if (CanApprove(amount))
+            Console.WriteLine($"{amount} €: freigegeben von {Name}");
+        else if (_next is not null)
+            _next.Approve(amount);
+        else
+            Console.WriteLine($"{amount} €: niemand darf freigeben");
+    }
+
+    protected abstract string Name { get; }
+    protected abstract bool CanApprove(decimal amount);
+}
+
+public class TeamLead : Approver
+{
+    protected override string Name => "der Teamleitung";
+    protected override bool CanApprove(decimal amount) => amount <= 1_000;
+}
+
+public class DepartmentHead : Approver
+{
+    protected override string Name => "der Abteilungsleitung";
+    protected override bool CanApprove(decimal amount) => amount <= 10_000;
+}
+
+public class ManagingDirector : Approver
+{
+    protected override string Name => "der Geschäftsführung";
+    protected override bool CanApprove(decimal amount) => true;
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Approver {
+    name: &'static str,
+    limit: Option<u32>,          // None: unbegrenzt
+    next: Option<Box<Approver>>, // Nachfolger in der Kette
+}
+
+impl Approver {
+    fn approve(&self, amount: u32) {
+        if self.limit.is_none_or(|limit| amount <= limit) {
+            println!("{amount} €: freigegeben von {}", self.name);
+        } else if let Some(next) = &self.next {
+            next.approve(amount);
+        } else {
+            println!("{amount} €: niemand darf freigeben");
+        }
+    }
+}
+
+fn main() {
+    let chain = Approver {
+        name: "der Teamleitung",
+        limit: Some(1_000),
+        next: Some(Box::new(Approver {
+            name: "der Abteilungsleitung",
+            limit: Some(10_000),
+            next: Some(Box::new(Approver { name: "der Geschäftsführung", limit: None, next: None })),
+        })),
+    };
+    for amount in [450, 7_200, 50_000] {
+        chain.approve(amount);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Absender und Empfänger sind entkoppelt; Handler lassen sich hinzufügen, entfernen und umordnen.
+- ❌ Es ist nicht garantiert, dass überhaupt jemand die Anfrage bearbeitet; lange Ketten sind schwer zu debuggen.
+
+Die **Middleware-Pipeline** von ASP.NET Core ist eine Chain of Responsibility: Jede Middleware (Protokollierung, Authentifizierung, Routing) bearbeitet die HTTP-Anfrage oder gibt sie mit `await next()` weiter. Auch die Ereignisweiterleitung (_Event Bubbling_) in Oberflächen folgt diesem Muster.
+
+### Command
+
+**Zweck**: Kapselt eine **Anfrage als Objekt**. Dadurch lassen sich Anfragen als Parameter übergeben, in Warteschlangen stellen, protokollieren und **rückgängig machen**.
+
+**Problem**: Ein Programm soll Aktionen rückgängig machen können (Strg+Z). Ruft eine Schaltfläche einfach eine Methode auf, gibt es danach keine Information mehr darüber, was passiert ist und wie man es umkehrt.
+
+**Lösung**: Jede Aktion wird ein eigenes Objekt mit den Methoden `Execute()` und `Undo()`. Beteiligt sind:
+
+- **Command**: die gemeinsame Schnittstelle.
+- **Konkrete Commands**: führen eine bestimmte Aktion aus und wissen, wie man sie rückgängig macht.
+- **Receiver**: das Objekt, das die eigentliche Arbeit erledigt (im Beispiel der Roboter).
+- **Invoker**: führt Commands aus und merkt sich die ausgeführten Commands auf einem [Stack](/de/software-development/generics-and-collections/#queue-und-stack).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var robot = new Robot();
+var invoker = new CommandInvoker();
+invoker.Execute(new MoveCommand(robot, 1, 0));
+invoker.Execute(new MoveCommand(robot, 0, 2));
+Console.WriteLine(robot);  // Roboter bei (1, 2)
+invoker.Undo();
+Console.WriteLine(robot);  // Roboter bei (1, 0)
+
+// Receiver
+public class Robot
+{
+    public int X { get; private set; }
+    public int Y { get; private set; }
+    public void Move(int dx, int dy) { X += dx; Y += dy; }
+    public override string ToString() => $"Roboter bei ({X}, {Y})";
+}
+
+public interface ICommand
+{
+    void Execute();
+    void Undo();
+}
+
+public class MoveCommand(Robot robot, int dx, int dy) : ICommand
+{
+    public void Execute() => robot.Move(dx, dy);
+    public void Undo() => robot.Move(-dx, -dy);
+}
+
+// Invoker mit Verlauf
+public class CommandInvoker
+{
+    private readonly Stack<ICommand> _history = new();
+
+    public void Execute(ICommand command)
+    {
+        command.Execute();
+        _history.Push(command);
+    }
+
+    public void Undo()
+    {
+        if (_history.TryPop(out var command)) command.Undo();
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Receiver
+#[derive(Debug, Default)]
+struct Robot {
+    x: i32,
+    y: i32,
+}
+
+trait Command {
+    fn execute(&self, robot: &mut Robot);
+    fn undo(&self, robot: &mut Robot);
+}
+
+struct MoveCommand {
+    dx: i32,
+    dy: i32,
+}
+
+impl Command for MoveCommand {
+    fn execute(&self, robot: &mut Robot) { robot.x += self.dx; robot.y += self.dy; }
+    fn undo(&self, robot: &mut Robot) { robot.x -= self.dx; robot.y -= self.dy; }
+}
+
+// Invoker mit Verlauf; besitzt den Receiver, damit Rust die Zugriffe prüfen kann
+struct CommandInvoker {
+    robot: Robot,
+    history: Vec<Box<dyn Command>>,
+}
+
+impl CommandInvoker {
+    fn execute(&mut self, command: Box<dyn Command>) {
+        command.execute(&mut self.robot);
+        self.history.push(command);
+    }
+
+    fn undo(&mut self) {
+        if let Some(command) = self.history.pop() {
+            command.undo(&mut self.robot);
+        }
+    }
+}
+
+fn main() {
+    let mut invoker = CommandInvoker { robot: Robot::default(), history: Vec::new() };
+    invoker.execute(Box::new(MoveCommand { dx: 1, dy: 0 }));
+    invoker.execute(Box::new(MoveCommand { dx: 0, dy: 2 }));
+    println!("{:?}", invoker.robot); // Robot { x: 1, y: 2 }
+    invoker.undo();
+    println!("{:?}", invoker.robot); // Robot { x: 1, y: 0 }
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Rückgängig/Wiederholen, Makros (Liste von Commands), Warteschlangen und Protokolle werden einfach.
+- ✅ Der Auslöser (Schaltfläche, Tastenkürzel, Menü) ist vom Empfänger entkoppelt.
+- ❌ Für jede Aktion entsteht eine eigene Klasse.
+
+In WPF ist `ICommand` die Grundlage für das Binden von Schaltflächen an das ViewModel (siehe [GUI-Programmierung](/de/software-development/gui-programming/#datenbindung-und-mvvm)).
+
+### Interpreter
+
+**Zweck**: Definiert eine **Grammatik** für eine einfache Sprache und einen Interpreter, der Sätze dieser Sprache auswertet.
+
+**Problem**: Ein Taschenrechner soll Ausdrücke wie `2 * (3 + 4)` auswerten, oder Benutzer sollen in einer Anwendung einfache Regeln formulieren können.
+
+**Lösung**: Jede Regel der Grammatik wird eine eigene Klasse (bzw. Enum-Variante): Zahlen sind **Terminalausdrücke**, Addition und Multiplikation sind **Nichtterminalausdrücke**, die andere Ausdrücke enthalten. Ein Satz der Sprache wird als **Syntaxbaum** dargestellt, und jeder Knoten kann sich selbst auswerten. Der Baum ist ein [Composite](#composite).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Syntaxbaum für 2 * (3 + 4)
+IExpression expression = new Multiply(new Number(2), new Add(new Number(3), new Number(4)));
+Console.WriteLine($"{expression} = {expression.Evaluate()}"); // (2 * (3 + 4)) = 14
+
+public interface IExpression
+{
+    int Evaluate();
+}
+
+// Terminalausdruck
+public record Number(int Value) : IExpression
+{
+    public int Evaluate() => Value;
+    public override string ToString() => Value.ToString();
+}
+
+// Nichtterminalausdrücke
+public record Add(IExpression Left, IExpression Right) : IExpression
+{
+    public int Evaluate() => Left.Evaluate() + Right.Evaluate();
+    public override string ToString() => $"({Left} + {Right})";
+}
+
+public record Multiply(IExpression Left, IExpression Right) : IExpression
+{
+    public int Evaluate() => Left.Evaluate() * Right.Evaluate();
+    public override string ToString() => $"({Left} * {Right})";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::fmt;
+
+// jede Regel der Grammatik ist eine Variante
+enum Expr {
+    Number(i64),
+    Add(Box<Expr>, Box<Expr>),
+    Multiply(Box<Expr>, Box<Expr>),
+}
+
+impl Expr {
+    fn evaluate(&self) -> i64 {
+        match self {
+            Expr::Number(n) => *n,
+            Expr::Add(l, r) => l.evaluate() + r.evaluate(),
+            Expr::Multiply(l, r) => l.evaluate() * r.evaluate(),
+        }
+    }
+}
+
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Expr::Number(n) => write!(f, "{n}"),
+            Expr::Add(l, r) => write!(f, "({l} + {r})"),
+            Expr::Multiply(l, r) => write!(f, "({l} * {r})"),
+        }
+    }
+}
+
+fn main() {
+    use Expr::*;
+    // Syntaxbaum für 2 * (3 + 4)
+    let expression = Multiply(Box::new(Number(2)), Box::new(Add(Box::new(Number(3)), Box::new(Number(4)))));
+    println!("{expression} = {}", expression.evaluate()); // (2 * (3 + 4)) = 14
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Einfache Grammatiken lassen sich direkt und erweiterbar umsetzen.
+- ❌ Für komplexe Sprachen wird die Zahl der Klassen zu groß. Dann verwendet man Parser-Generatoren oder Parser-Bibliotheken.
+
+Den Text `2 * (3 + 4)` in den Baum zu verwandeln, ist Aufgabe eines **Parsers**, der nicht Teil des Musters ist. Grundlagen zu Grammatiken behandelt die Seite [Automaten und formale Sprachen](/de/computer-science/automata-and-formal-languages/). Ein bekanntes Beispiel sind die **Expression Trees** in C#, mit denen LINQ-Abfragen in SQL übersetzt werden.
+
+### Iterator
+
+**Zweck**: Ermöglicht den **sequenziellen Zugriff** auf die Elemente einer Sammlung, ohne ihre innere Struktur offenzulegen.
+
+**Problem**: Eine Sammlung kann ein Array, eine verkettete Liste, ein Baum oder ein Datenbankergebnis sein. Der Code, der die Elemente verarbeitet, soll nicht von dieser Struktur abhängen.
+
+**Lösung**: Ein **Iterator**-Objekt merkt sich die aktuelle Position und bietet eine Methode, um zum nächsten Element zu gehen. Jede Sammlung liefert ihren eigenen Iterator. In C# und Rust ist das Muster Teil der Sprache: `foreach` arbeitet mit `IEnumerable<T>` und `IEnumerator<T>`, `for` mit `IntoIterator` und `Iterator`. Ausführliche Beispiele mit `yield return` und einer eigenen `Iterator`-Implementierung zeigt die Seite [Generics und Collections](/de/software-development/generics-and-collections/#iteratoren).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var playlist = new Playlist(["Intro", "Lied A", "Lied B"]);
+foreach (string song in playlist)       // verwendet GetEnumerator
+{
+    Console.WriteLine(song);
+}
+
+// Die Sammlung legt ihre interne Struktur (hier ein Array) nicht offen.
+public class Playlist(string[] songs) : IEnumerable<string>
+{
+    public IEnumerator<string> GetEnumerator()
+    {
+        for (int i = 0; i < songs.Length; i++)
+        {
+            yield return songs[i]; // der Compiler erzeugt die Iterator-Klasse
+        }
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+struct Playlist {
+    songs: Vec<String>,
+}
+
+// Iterator mit eigener Position
+struct PlaylistIter<'a> {
+    playlist: &'a Playlist,
+    position: usize,
+}
+
+impl<'a> Iterator for PlaylistIter<'a> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<&'a str> {
+        let song = self.playlist.songs.get(self.position)?;
+        self.position += 1;
+        Some(song)
+    }
+}
+
+// ermöglicht `for song in &playlist`
+impl<'a> IntoIterator for &'a Playlist {
+    type Item = &'a str;
+    type IntoIter = PlaylistIter<'a>;
+
+    fn into_iter(self) -> PlaylistIter<'a> {
+        PlaylistIter { playlist: self, position: 0 }
+    }
+}
+
+fn main() {
+    let playlist = Playlist { songs: vec!["Intro".into(), "Lied A".into(), "Lied B".into()] };
+    for song in &playlist {
+        println!("{song}");
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Einheitlicher Zugriff auf beliebige Sammlungen; mehrere Durchläufe gleichzeitig möglich.
+- ✅ Iteratoren lassen sich mit LINQ bzw. Iterator-Adaptern verketten.
+- ❌ Für einfache Arrays ist ein Iterator langsamer als ein direkter Indexzugriff (moderne Compiler optimieren das aber meist weg).
+
+### Mediator
+
+**Zweck**: Definiert ein Objekt, das das **Zusammenspiel vieler Objekte kapselt**. Die Objekte kommunizieren nicht mehr direkt miteinander, sondern nur noch über den Vermittler.
+
+**Problem**: In einem Chat oder einem Formular, dessen Felder voneinander abhängen, kennt jedes Objekt alle anderen. Bei $n$ Objekten entstehen bis zu $n(n-1)$ direkte Verbindungen, und jede Änderung betrifft viele Klassen.
+
+**Lösung**: Alle Objekte kennen nur den **Mediator** und schicken ihm ihre Nachrichten. Der Mediator entscheidet, wer die Nachricht erhält. Das Kommunikationsgeflecht wird zu einem Stern. Ein Fluglotse ist ein anschauliches Beispiel: Flugzeuge sprechen nicht miteinander, sondern nur mit dem Tower.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var room = new ChatRoom();
+var anna = new Participant("Anna", room);
+var ben = new Participant("Ben", room);
+var cem = new Participant("Cem", room);
+
+anna.Send("Hallo zusammen!");
+// Ben empfängt von Anna: Hallo zusammen!
+// Cem empfängt von Anna: Hallo zusammen!
+
+// Mediator
+public class ChatRoom
+{
+    private readonly List<Participant> _participants = [];
+
+    public void Join(Participant p) => _participants.Add(p);
+
+    public void Broadcast(string from, string message)
+    {
+        foreach (var p in _participants.Where(p => p.Name != from))
+        {
+            p.Receive(from, message);
+        }
+    }
+}
+
+public class Participant
+{
+    private readonly ChatRoom _room;
+    public string Name { get; }
+
+    public Participant(string name, ChatRoom room)
+    {
+        Name = name;
+        _room = room;
+        room.Join(this);
+    }
+
+    public void Send(string message) => _room.Broadcast(Name, message); // nur über den Mediator
+    public void Receive(string from, string message) => Console.WriteLine($"{Name} empfängt von {from}: {message}");
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Teilnehmer werden im Mediator gespeichert und über ihre Nummer angesprochen.
+struct Participant {
+    name: String,
+    inbox: Vec<String>,
+}
+
+// Mediator
+#[derive(Default)]
+struct ChatRoom {
+    participants: Vec<Participant>,
+}
+
+impl ChatRoom {
+    fn join(&mut self, name: &str) -> usize {
+        self.participants.push(Participant { name: name.into(), inbox: Vec::new() });
+        self.participants.len() - 1
+    }
+
+    fn send(&mut self, from: usize, message: &str) {
+        let sender = self.participants[from].name.clone();
+        for (id, p) in self.participants.iter_mut().enumerate() {
+            if id != from {
+                p.inbox.push(format!("von {sender}: {message}"));
+            }
+        }
+    }
+}
+
+fn main() {
+    let mut room = ChatRoom::default();
+    let anna = room.join("Anna");
+    room.join("Ben");
+    room.join("Cem");
+
+    room.send(anna, "Hallo zusammen!");
+    for p in &room.participants {
+        println!("{}: {:?}", p.name, p.inbox);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Geringe Kopplung zwischen den Teilnehmern; neue Teilnehmer erfordern keine Änderung der anderen.
+- ❌ Der Mediator selbst kann sehr groß und komplex werden.
+
+Im Unterschied zum [Observer](#observer), bei dem Empfänger sich selbst anmelden und der Sender niemanden kennt, steuert beim Mediator eine zentrale Stelle die Kommunikation. In .NET ist die Bibliothek **MediatR** verbreitet, die Anfragen an passende Handler vermittelt.
+
+### Memento
+
+**Zweck**: Hält den **inneren Zustand eines Objekts** fest, ohne die Kapselung zu verletzen, sodass das Objekt später in diesen Zustand zurückversetzt werden kann.
+
+**Problem**: Ein Texteditor soll Zwischenstände speichern, zu denen man zurückkehren kann. Würde eine fremde Klasse alle privaten Felder des Editors auslesen, wäre die Kapselung gebrochen.
+
+**Lösung**: Das Objekt selbst (**Originator**) erzeugt einen Schnappschuss, das **Memento**, und kann aus einem Memento seinen Zustand wiederherstellen. Ein **Caretaker** (etwa ein Verlauf) bewahrt die Mementos auf, kann ihren Inhalt aber nicht verändern.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var editor = new Editor();
+var history = new Stack<EditorMemento>(); // Caretaker
+
+editor.Type("Hallo");
+history.Push(editor.Save());
+editor.Type(" Welt");
+history.Push(editor.Save());
+editor.Type("!!!");
+
+Console.WriteLine(editor.Text);           // Hallo Welt!!!
+editor.Restore(history.Pop());
+Console.WriteLine(editor.Text);           // Hallo Welt
+editor.Restore(history.Pop());
+Console.WriteLine(editor.Text);           // Hallo
+
+// Memento: unveränderlicher Schnappschuss
+public record EditorMemento(string Text, int Cursor);
+
+// Originator
+public class Editor
+{
+    public string Text { get; private set; } = "";
+    private int _cursor;
+
+    public void Type(string s) { Text = Text.Insert(_cursor, s); _cursor += s.Length; }
+
+    public EditorMemento Save() => new(Text, _cursor);
+
+    public void Restore(EditorMemento m) { Text = m.Text; _cursor = m.Cursor; }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Memento: Felder privat im Modul, nach außen undurchsichtig
+#[derive(Clone)]
+struct EditorMemento {
+    text: String,
+    cursor: usize,
+}
+
+// Originator
+#[derive(Default)]
+struct Editor {
+    text: String,
+    cursor: usize,
+}
+
+impl Editor {
+    fn type_text(&mut self, s: &str) {
+        self.text.insert_str(self.cursor, s);
+        self.cursor += s.len();
+    }
+    fn save(&self) -> EditorMemento {
+        EditorMemento { text: self.text.clone(), cursor: self.cursor }
+    }
+    fn restore(&mut self, m: EditorMemento) {
+        self.text = m.text;
+        self.cursor = m.cursor;
+    }
+}
+
+fn main() {
+    let mut editor = Editor::default();
+    let mut history = Vec::new(); // Caretaker
+
+    editor.type_text("Hallo");
+    history.push(editor.save());
+    editor.type_text(" Welt");
+    history.push(editor.save());
+    editor.type_text("!!!");
+
+    println!("{}", editor.text);              // Hallo Welt!!!
+    editor.restore(history.pop().unwrap());
+    println!("{}", editor.text);              // Hallo Welt
+    editor.restore(history.pop().unwrap());
+    println!("{}", editor.text);              // Hallo
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Zustände lassen sich speichern und wiederherstellen, ohne Interna offenzulegen.
+- ❌ Bei großen Objekten und häufigem Speichern wird viel Arbeitsspeicher benötigt. Abhilfe schafft das Speichern von Änderungen statt vollständiger Kopien, wie beim [Command](#command)-Muster.
+
+### Observer
+
+**Zweck**: Definiert eine **1:n-Abhängigkeit** zwischen Objekten, sodass bei einer Zustandsänderung eines Objekts alle abhängigen Objekte automatisch benachrichtigt werden.
+
+**Problem**: Ein Wetterdienst misst Temperaturen. Eine Anzeige, ein Diagramm und ein Warnsystem sollen bei jeder neuen Messung aktualisiert werden. Würde der Wetterdienst alle Empfänger direkt aufrufen, müsste man ihn bei jedem neuen Empfänger ändern.
+
+**Lösung**: Das beobachtete Objekt (**Subject**, Publisher) verwaltet eine Liste von **Observern** (Subscriber). Observer melden sich an und ab. Ändert sich der Zustand, ruft das Subject bei allen angemeldeten Observern eine Benachrichtigungsmethode auf. Das Subject kennt die Observer nur über ihre Schnittstelle.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var station = new WeatherStation();
+var display = new Display();
+station.Subscribe(display);
+station.Subscribe(new HeatWarning());
+
+station.SetTemperature(24);
+station.SetTemperature(33);
+station.Unsubscribe(display);
+station.SetTemperature(35);
+
+public interface ITemperatureObserver
+{
+    void Update(double celsius);
+}
+
+// Subject
+public class WeatherStation
+{
+    private readonly List<ITemperatureObserver> _observers = [];
+
+    public void Subscribe(ITemperatureObserver o) => _observers.Add(o);
+    public void Unsubscribe(ITemperatureObserver o) => _observers.Remove(o);
+
+    public void SetTemperature(double celsius)
+    {
+        foreach (var o in _observers.ToList()) o.Update(celsius); // Kopie: Abmelden während der Schleife ist erlaubt
+    }
+}
+
+public class Display : ITemperatureObserver
+{
+    public void Update(double celsius) => Console.WriteLine($"Anzeige: {celsius} °C");
+}
+
+public class HeatWarning : ITemperatureObserver
+{
+    public void Update(double celsius)
+    {
+        if (celsius >= 30) Console.WriteLine($"Hitzewarnung bei {celsius} °C!");
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+trait TemperatureObserver {
+    fn update(&self, celsius: f64);
+}
+
+// Subject: hält nur schwache Referenzen, damit Observer frei werden können
+#[derive(Default)]
+struct WeatherStation {
+    observers: Vec<Weak<dyn TemperatureObserver>>,
+}
+
+impl WeatherStation {
+    fn subscribe(&mut self, o: &Rc<dyn TemperatureObserver>) {
+        self.observers.push(Rc::downgrade(o));
+    }
+
+    fn set_temperature(&mut self, celsius: f64) {
+        // nicht mehr existierende Observer automatisch entfernen
+        self.observers.retain(|w| w.upgrade().is_some());
+        for o in self.observers.iter().filter_map(Weak::upgrade) {
+            o.update(celsius);
+        }
+    }
+}
+
+struct Display {
+    shown: RefCell<Vec<f64>>,
+}
+
+impl TemperatureObserver for Display {
+    fn update(&self, celsius: f64) {
+        self.shown.borrow_mut().push(celsius);
+        println!("Anzeige: {celsius} °C");
+    }
+}
+
+struct HeatWarning;
+
+impl TemperatureObserver for HeatWarning {
+    fn update(&self, celsius: f64) {
+        if celsius >= 30.0 {
+            println!("Hitzewarnung bei {celsius} °C!");
+        }
+    }
+}
+
+fn main() {
+    let mut station = WeatherStation::default();
+    let display: Rc<dyn TemperatureObserver> = Rc::new(Display { shown: RefCell::new(Vec::new()) });
+    let warning: Rc<dyn TemperatureObserver> = Rc::new(HeatWarning);
+    station.subscribe(&display);
+    station.subscribe(&warning);
+
+    station.set_temperature(24.0);
+    station.set_temperature(33.0);
+    drop(display); // Anzeige wird entfernt: automatisch abgemeldet
+    station.set_temperature(35.0);
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Lose Kopplung: Das Subject kennt keine konkreten Empfänger, neue Observer erfordern keine Änderung am Subject.
+- ❌ Die Reihenfolge der Benachrichtigung ist nicht festgelegt; vergessene Abmeldungen führen zu Speicherlecks (_Lapsed Listener Problem_).
+
+In C# sind **Events** die eingebaute Form des Observers (siehe [GUI-Programmierung](/de/software-development/gui-programming/#events-in-c)), außerdem gibt es die Interfaces `IObservable<T>` und `IObserver<T>`, auf denen die Bibliothek Reactive Extensions (Rx) aufbaut. Das Muster ist auch die Grundlage der Datenbindung in MVVM und von **Publish-Subscribe**-Systemen, bei denen ein Nachrichtenbroker zwischen Sendern und Empfängern vermittelt.
+
+### State
+
+**Zweck**: Ermöglicht einem Objekt, sein **Verhalten zu ändern, wenn sich sein innerer Zustand ändert**. Es sieht so aus, als hätte das Objekt seine Klasse gewechselt.
+
+**Problem**: Eine Bestellung kann neu, bezahlt, versandt oder storniert sein. Jede Methode (`Pay`, `Ship`, `Cancel`) enthält ein großes `switch` über den aktuellen Zustand. Mit jedem neuen Zustand müssen alle diese Verzweigungen erweitert werden.
+
+**Lösung**: Jeder Zustand wird eine eigene Klasse mit derselben Schnittstelle. Das Objekt (**Context**) hält eine Referenz auf das aktuelle Zustandsobjekt und delegiert alle zustandsabhängigen Aufrufe dorthin. Ein Zustand entscheidet selbst, in welchen Folgezustand gewechselt wird. Das Muster setzt ein [Zustandsdiagramm](/de/software-development/uml/#zustandsdiagramm) direkt in Code um.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var order = new Order();
+order.Ship();    // Neue Bestellungen müssen zuerst bezahlt werden.
+order.Pay();     // Bezahlt.
+order.Ship();    // Versandt.
+order.Cancel();  // Versandte Bestellungen können nicht storniert werden.
+Console.WriteLine(order.State.Name); // Versandt
+
+public interface IOrderState
+{
+    string Name { get; }
+    IOrderState Pay();
+    IOrderState Ship();
+    IOrderState Cancel();
+}
+
+public class NewState : IOrderState
+{
+    public string Name => "Neu";
+    public IOrderState Pay() { Console.WriteLine("Bezahlt."); return new PaidState(); }
+    public IOrderState Ship() { Console.WriteLine("Neue Bestellungen müssen zuerst bezahlt werden."); return this; }
+    public IOrderState Cancel() { Console.WriteLine("Storniert."); return new CancelledState(); }
+}
+
+public class PaidState : IOrderState
+{
+    public string Name => "Bezahlt";
+    public IOrderState Pay() { Console.WriteLine("Bereits bezahlt."); return this; }
+    public IOrderState Ship() { Console.WriteLine("Versandt."); return new ShippedState(); }
+    public IOrderState Cancel() { Console.WriteLine("Storniert, Betrag wird erstattet."); return new CancelledState(); }
+}
+
+public class ShippedState : IOrderState
+{
+    public string Name => "Versandt";
+    public IOrderState Pay() => this;
+    public IOrderState Ship() => this;
+    public IOrderState Cancel() { Console.WriteLine("Versandte Bestellungen können nicht storniert werden."); return this; }
+}
+
+public class CancelledState : IOrderState
+{
+    public string Name => "Storniert";
+    public IOrderState Pay() => this;
+    public IOrderState Ship() => this;
+    public IOrderState Cancel() => this;
+}
+
+// Context
+public class Order
+{
+    public IOrderState State { get; private set; } = new NewState();
+    public void Pay() => State = State.Pay();
+    public void Ship() => State = State.Ship();
+    public void Cancel() => State = State.Cancel();
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// In Rust bildet man Zustände idiomatisch als Enum ab;
+// match erzwingt, dass jede Kombination behandelt wird.
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum OrderState {
+    New,
+    Paid,
+    Shipped,
+    Cancelled,
+}
+
+#[derive(Debug, Clone, Copy)]
+enum Event {
+    Pay,
+    Ship,
+    Cancel,
+}
+
+impl OrderState {
+    fn handle(self, event: Event) -> Result<OrderState, &'static str> {
+        use Event::*;
+        use OrderState::*;
+        match (self, event) {
+            (New, Pay) => Ok(Paid),
+            (New, Cancel) => Ok(Cancelled),
+            (Paid, Ship) => Ok(Shipped),
+            (Paid, Cancel) => Ok(Cancelled), // mit Erstattung
+            (New, Ship) => Err("Neue Bestellungen müssen zuerst bezahlt werden."),
+            (Shipped, Cancel) => Err("Versandte Bestellungen können nicht storniert werden."),
+            _ => Err("In diesem Zustand nicht möglich."),
+        }
+    }
+}
+
+fn main() {
+    let mut state = OrderState::New;
+    for event in [Event::Ship, Event::Pay, Event::Ship, Event::Cancel] {
+        match state.handle(event) {
+            Ok(next) => {
+                println!("{event:?}: {state:?} -> {next:?}");
+                state = next;
+            }
+            Err(message) => println!("{event:?}: {message}"),
+        }
+    }
+    println!("{state:?}"); // Shipped
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Zustandsabhängiges Verhalten ist pro Zustand gebündelt, große `switch`-Blöcke entfallen.
+- ✅ Neue Zustände erfordern keine Änderung bestehender Zustandsklassen.
+- ❌ Bei wenigen Zuständen und Übergängen ist ein einfaches Enum übersichtlicher.
+
+Rust bietet zusätzlich das **Typestate-Muster**: Jeder Zustand ist ein eigener Typ (`Order<New>`, `Order<Paid>`), und Methoden wie `ship()` existieren nur für den passenden Typ. Ungültige Übergänge sind dann schon Compilerfehler.
+
+### Strategy
+
+**Zweck**: Definiert eine **Familie austauschbarer Algorithmen**, kapselt jeden einzelnen und macht sie zur Laufzeit austauschbar.
+
+**Problem**: Ein Webshop berechnet Versandkosten: pauschal, nach Gewicht oder ab einem Mindestbestellwert gratis. Stehen alle Varianten in einer Methode mit vielen `if`-Abfragen, muss diese bei jeder neuen Variante geändert werden.
+
+**Lösung**: Jeder Algorithmus kommt in eine eigene Klasse, die eine gemeinsame Schnittstelle (**Strategy**) implementiert. Das verwendende Objekt (**Context**) erhält eine Strategie und ruft sie auf, ohne die konkrete Klasse zu kennen. Die Strategie kann jederzeit ausgetauscht werden.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+var cart = new ShoppingCart(new WeightBasedShipping());
+cart.Add(30m, 2.5);
+Console.WriteLine(cart.Total());                  // 43.75
+
+cart.ShippingStrategy = new FreeAboveShipping(25m); // zur Laufzeit wechseln
+Console.WriteLine(cart.Total());                  // 30
+
+// als Lambda: eine Strategie mit nur einer Methode ist einfach eine Funktion
+Func<decimal, double, decimal> flat = (_, _) => 4.90m;
+Console.WriteLine(flat(30m, 2.5));                 // 4.90
+
+public interface IShippingStrategy
+{
+    decimal Cost(decimal orderValue, double weightKg);
+}
+
+public class WeightBasedShipping : IShippingStrategy
+{
+    public decimal Cost(decimal orderValue, double weightKg) => 3.75m + 4m * (decimal)weightKg;
+}
+
+public class FreeAboveShipping(decimal threshold) : IShippingStrategy
+{
+    public decimal Cost(decimal orderValue, double weightKg) => orderValue >= threshold ? 0 : 4.90m;
+}
+
+// Context
+public class ShoppingCart(IShippingStrategy strategy)
+{
+    private decimal _value;
+    private double _weight;
+
+    public IShippingStrategy ShippingStrategy { get; set; } = strategy;
+
+    public void Add(decimal price, double weightKg) { _value += price; _weight += weightKg; }
+
+    public decimal Total() => _value + ShippingStrategy.Cost(_value, _weight);
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait ShippingStrategy {
+    fn cost(&self, order_cents: u32, weight_kg: f64) -> u32;
+}
+
+struct WeightBased;
+struct FreeAbove(u32);
+
+impl ShippingStrategy for WeightBased {
+    fn cost(&self, _order: u32, weight_kg: f64) -> u32 {
+        375 + (400.0 * weight_kg).round() as u32
+    }
+}
+
+impl ShippingStrategy for FreeAbove {
+    fn cost(&self, order: u32, _weight: f64) -> u32 {
+        if order >= self.0 { 0 } else { 490 }
+    }
+}
+
+// Context
+struct ShoppingCart {
+    value: u32,
+    weight: f64,
+    strategy: Box<dyn ShippingStrategy>,
+}
+
+impl ShoppingCart {
+    fn total(&self) -> u32 {
+        self.value + self.strategy.cost(self.value, self.weight)
+    }
+}
+
+fn main() {
+    let mut cart = ShoppingCart { value: 3000, weight: 2.5, strategy: Box::new(WeightBased) };
+    println!("{}", cart.total());                  // 4375 (Cent)
+
+    cart.strategy = Box::new(FreeAbove(2500));     // zur Laufzeit wechseln
+    println!("{}", cart.total());                  // 3000
+
+    // als Closure: eine Strategie mit nur einer Methode ist einfach eine Funktion
+    let flat = |_order: u32, _weight: f64| 490;
+    println!("{}", flat(3000, 2.5));               // 490
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Algorithmen sind austauschbar und einzeln testbar; neue Strategien erfordern keine Änderung des Contexts.
+- ✅ Ersetzt Vererbung durch Komposition.
+- ❌ Der Client muss die Unterschiede der Strategien kennen, um die richtige zu wählen.
+
+Beispiele aus der Praxis sind die Vergleichsfunktion beim Sortieren (`IComparer<T>`, `sort_by`), Kompressionsverfahren, Routenberechnung (kürzeste oder schnellste Route) und Zahlungsarten.
+
+### Template Method
+
+**Zweck**: Definiert das **Gerüst eines Algorithmus** in einer Methode der Basisklasse und überlässt einzelne Schritte den Unterklassen.
+
+**Problem**: Ein Programm exportiert Berichte als CSV und als HTML. Der Ablauf ist immer gleich: Kopf schreiben, alle Zeilen schreiben, Fuß schreiben. Nur die einzelnen Schritte unterscheiden sich. Den gesamten Ablauf in jede Exportklasse zu kopieren, verletzt [DRY](/de/software-development/clean-code/#grundprinzipien).
+
+**Lösung**: Die Basisklasse enthält die **Schablonenmethode**, die den festen Ablauf vorgibt und dabei abstrakte oder überschreibbare Methoden aufruft. Unterklassen implementieren nur diese Schritte. Optionale Schritte mit leerer Standardimplementierung heißen **Hooks**.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+string[][] rows = [["Anna", "87"], ["Ben", "54"]];
+Console.WriteLine(new CsvExporter().Export(rows));
+Console.WriteLine(new HtmlExporter().Export(rows));
+
+public abstract class ReportExporter
+{
+    // Schablonenmethode: der Ablauf ist festgelegt
+    public string Export(string[][] rows)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.Append(Header());
+        foreach (var row in rows) sb.Append(Row(row));
+        sb.Append(Footer());
+        return sb.ToString();
+    }
+
+    protected abstract string Header();
+    protected abstract string Row(string[] cells);
+    protected virtual string Footer() => ""; // Hook: optional überschreibbar
+}
+
+public class CsvExporter : ReportExporter
+{
+    protected override string Header() => "Name;Punkte\n";
+    protected override string Row(string[] cells) => string.Join(";", cells) + "\n";
+}
+
+public class HtmlExporter : ReportExporter
+{
+    protected override string Header() => "<table>\n";
+    protected override string Row(string[] cells) => $"<tr><td>{string.Join("</td><td>", cells)}</td></tr>\n";
+    protected override string Footer() => "</table>";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+trait ReportExporter {
+    fn header(&self) -> String;
+    fn row(&self, cells: &[&str]) -> String;
+    fn footer(&self) -> String {
+        String::new() // Hook: optional überschreibbar
+    }
+
+    // Schablonenmethode als Standardmethode des Traits
+    fn export(&self, rows: &[Vec<&str>]) -> String {
+        let mut out = self.header();
+        for row in rows {
+            out += &self.row(row);
+        }
+        out + &self.footer()
+    }
+}
+
+struct CsvExporter;
+struct HtmlExporter;
+
+impl ReportExporter for CsvExporter {
+    fn header(&self) -> String { "Name;Punkte\n".into() }
+    fn row(&self, cells: &[&str]) -> String { cells.join(";") + "\n" }
+}
+
+impl ReportExporter for HtmlExporter {
+    fn header(&self) -> String { "<table>\n".into() }
+    fn row(&self, cells: &[&str]) -> String { format!("<tr><td>{}</td></tr>\n", cells.join("</td><td>")) }
+    fn footer(&self) -> String { "</table>".into() }
+}
+
+fn main() {
+    let rows = vec![vec!["Anna", "87"], vec!["Ben", "54"]];
+    println!("{}", CsvExporter.export(&rows));
+    println!("{}", HtmlExporter.export(&rows));
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Der gemeinsame Ablauf steht nur an einer Stelle; Unterklassen ändern nur, was sich unterscheidet.
+- ❌ Beruht auf Vererbung und koppelt Unterklassen eng an die Basisklasse. Oft ist eine [Strategy](#strategy) für die variablen Schritte die flexiblere Wahl.
+
+Das Prinzip „die Basisklasse ruft die Unterklasse auf“ heißt **Hollywood-Prinzip**: _„Don't call us, we'll call you.“_ Frameworks sind voll davon, etwa die Methoden `OnInitialized` in Blazor oder `Dispose(bool)` in .NET.
+
+### Visitor
+
+**Zweck**: Trennt einen **Algorithmus von der Objektstruktur**, auf der er arbeitet. Neue Operationen lassen sich hinzufügen, ohne die Klassen der Elemente zu ändern.
+
+**Problem**: Ein Grafikprogramm hat die Formen Kreis und Rechteck. Es sollen immer neue Operationen dazukommen: Fläche berechnen, als JSON exportieren, auf dem Bildschirm zeichnen. Jede neue Operation als Methode in alle Formklassen einzubauen, bläht sie auf und mischt unterschiedliche Aufgaben.
+
+**Lösung**: Jede Operation wird ein **Visitor** mit je einer Methode pro Elementtyp (`VisitCircle`, `VisitRectangle`). Jedes Element bietet eine Methode `Accept(visitor)`, die die passende Visit-Methode aufruft. Dieser zweistufige Aufruf heißt **Double Dispatch**: Welche Methode ausgeführt wird, hängt vom Typ des Elements und vom Typ des Visitors ab.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+IShapeElement[] shapes = [new CircleShape(1), new RectangleShape(2, 3)];
+var area = new AreaVisitor();
+var json = new JsonVisitor();
+foreach (var shape in shapes)
+{
+    shape.Accept(area);
+    Console.WriteLine(shape.Accept(json));
+}
+Console.WriteLine($"Gesamtfläche: {area.Total:F2}"); // Gesamtfläche: 9.14
+
+public interface IShapeVisitor<T>
+{
+    T VisitCircle(CircleShape c);
+    T VisitRectangle(RectangleShape r);
+}
+
+public interface IShapeElement
+{
+    T Accept<T>(IShapeVisitor<T> visitor);
+}
+
+public record CircleShape(double Radius) : IShapeElement
+{
+    public T Accept<T>(IShapeVisitor<T> visitor) => visitor.VisitCircle(this);
+}
+
+public record RectangleShape(double Width, double Height) : IShapeElement
+{
+    public T Accept<T>(IShapeVisitor<T> visitor) => visitor.VisitRectangle(this);
+}
+
+// neue Operationen, ohne die Formen zu ändern
+public class AreaVisitor : IShapeVisitor<double>
+{
+    public double Total { get; private set; }
+    public double VisitCircle(CircleShape c) => Total += Math.PI * c.Radius * c.Radius;
+    public double VisitRectangle(RectangleShape r) => Total += r.Width * r.Height;
+}
+
+public class JsonVisitor : IShapeVisitor<string>
+{
+    public string VisitCircle(CircleShape c) => $$"""{"type":"circle","r":{{c.Radius}}}""";
+    public string VisitRectangle(RectangleShape r) => $$"""{"type":"rect","w":{{r.Width}},"h":{{r.Height}}}""";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// klassischer Visitor mit Double Dispatch
+trait ShapeVisitor {
+    fn visit_circle(&mut self, c: &Circle);
+    fn visit_rectangle(&mut self, r: &Rectangle);
+}
+
+trait Element {
+    fn accept(&self, visitor: &mut dyn ShapeVisitor);
+}
+
+struct Circle { radius: f64 }
+struct Rectangle { width: f64, height: f64 }
+
+impl Element for Circle {
+    fn accept(&self, visitor: &mut dyn ShapeVisitor) { visitor.visit_circle(self); }
+}
+
+impl Element for Rectangle {
+    fn accept(&self, visitor: &mut dyn ShapeVisitor) { visitor.visit_rectangle(self); }
+}
+
+#[derive(Default)]
+struct AreaVisitor { total: f64 }
+
+impl ShapeVisitor for AreaVisitor {
+    fn visit_circle(&mut self, c: &Circle) { self.total += std::f64::consts::PI * c.radius * c.radius; }
+    fn visit_rectangle(&mut self, r: &Rectangle) { self.total += r.width * r.height; }
+}
+
+#[derive(Default)]
+struct JsonVisitor { out: Vec<String> }
+
+impl ShapeVisitor for JsonVisitor {
+    fn visit_circle(&mut self, c: &Circle) {
+        self.out.push(format!(r#"{{"type":"circle","r":{}}}"#, c.radius));
+    }
+    fn visit_rectangle(&mut self, r: &Rectangle) {
+        self.out.push(format!(r#"{{"type":"rect","w":{},"h":{}}}"#, r.width, r.height));
+    }
+}
+
+fn main() {
+    let shapes: Vec<Box<dyn Element>> = vec![
+        Box::new(Circle { radius: 1.0 }),
+        Box::new(Rectangle { width: 2.0, height: 3.0 }),
+    ];
+    let mut area = AreaVisitor::default();
+    let mut json = JsonVisitor::default();
+    for shape in &shapes {
+        shape.accept(&mut area);
+        shape.accept(&mut json);
+    }
+    println!("{}", json.out.join("\n"));
+    println!("Gesamtfläche: {:.2}", area.total); // Gesamtfläche: 9.14
+}
+```
+
+</TabItem>
+</Tabs>
+
+**Vorteile und Nachteile**:
+
+- ✅ Neue Operationen lassen sich leicht hinzufügen, zusammengehörige Logik steckt in einem Visitor.
+- ❌ Neue **Elementtypen** sind teuer: Jeder Visitor muss erweitert werden.
+- ❌ Visitors brauchen oft Zugriff auf Interna der Elemente.
+
+Ist die Menge der Elementtypen fest, löst man das Problem in Rust einfacher mit einem **Enum und `match`**, und auch C# kann mit Mustervergleich (`shape switch { CircleShape c => ..., ... }`) über Typen verzweigen. Visitors werden in Compilern häufig verwendet, um Syntaxbäume zu durchlaufen, etwa in Roslyn (`CSharpSyntaxWalker`).
+
+## Überblick zur Auswahl
+
+| Problem                                                        | Muster                        |
+| -------------------------------------------------------------- | ----------------------------- |
+| genau eine Instanz einer Klasse                                | Singleton                     |
+| Erzeugung an Unterklassen delegieren                           | Factory Method                |
+| ganze Familien zusammenpassender Objekte erzeugen              | Abstract Factory              |
+| komplexe Objekte schrittweise aufbauen                         | Builder                       |
+| Objekte durch Kopieren erzeugen                                | Prototype                     |
+| inkompatible Schnittstelle anpassen                            | Adapter                       |
+| zwei Hierarchien unabhängig erweitern                          | Bridge                        |
+| Baumstrukturen einheitlich behandeln                           | Composite                     |
+| Funktionen dynamisch hinzufügen                                | Decorator                     |
+| komplexes Subsystem vereinfachen                               | Facade                        |
+| Speicher sparen bei vielen gleichartigen Objekten              | Flyweight                     |
+| Zugriff kontrollieren, verzögern oder zwischenspeichern        | Proxy                         |
+| Anfrage an eine Kette von Bearbeitern geben                    | Chain of Responsibility       |
+| Aktionen speichern, rückgängig machen, in Warteschlangen stellen | Command                     |
+| einfache Sprache auswerten                                     | Interpreter                   |
+| Sammlungen einheitlich durchlaufen                             | Iterator                      |
+| viele Objekte über eine zentrale Stelle koordinieren           | Mediator                      |
+| Zustand speichern und wiederherstellen                         | Memento                       |
+| viele Objekte über Änderungen benachrichtigen                  | Observer                      |
+| Verhalten abhängig vom Zustand                                 | State                         |
+| austauschbare Algorithmen                                      | Strategy                      |
+| fester Ablauf mit variablen Schritten                          | Template Method               |
+| neue Operationen auf einer festen Objektstruktur               | Visitor                       |
+
+Neben den GoF-Mustern gibt es viele weitere Muster für größere Strukturen, etwa **MVC**, **MVVM**, **Repository**, **Dependency Injection** und **Schichtenarchitektur**. Sie werden auf der Seite [Softwarearchitektur](/de/software-development/software-architecture/) beschrieben.
+
+## Weiterführende Quellen
+
+- Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides: _Design Patterns: Elements of Reusable Object-Oriented Software_, Addison-Wesley 1994
+- Eric Freeman, Elisabeth Robson: _Head First Design Patterns_, 2. Auflage, O'Reilly 2020 (anschauliche Einführung)
+- [Refactoring.Guru: Design Patterns](https://refactoring.guru/de/design-patterns) mit Erklärungen und Beispielen in vielen Sprachen
+- [Rust Design Patterns](https://rust-unofficial.github.io/patterns/) zu idiomatischen Mustern in Rust

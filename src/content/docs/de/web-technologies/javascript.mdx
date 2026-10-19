@@ -1,0 +1,393 @@
+---
+title: JavaScript
+description: Sprachgrundlagen, Typen und Vergleichsfallen, Funktionen, Objekte, Arrays, Klassen und Module, DOM und Events, fetch mit Promises und async/await, Event Loop, JSON, Web Storage und TypeScript.
+sidebar:
+  order: 5
+---
+
+**JavaScript** (JS) ist die Programmiersprache des Browsers und die einzige, die alle Browser direkt ausführen (neben WebAssembly). Brendan Eich entwickelte sie 1995 bei Netscape. Der Name ist ein Marketingentscheid, mit Java hat die Sprache wenig zu tun. Standardisiert ist sie als **ECMAScript** (ECMA-262) durch das Komitee TC39. Die Ausgabe ES2015 (auch ES6) brachte die größten Änderungen: `let` und `const`, Pfeilfunktionen, Klassen, Module und Promises. Seitdem erscheint jährlich eine neue Ausgabe. Außerhalb des Browsers läuft JavaScript in **Node.js**, **Deno** und **Bun**, etwa für Webserver und Build-Werkzeuge.
+
+JavaScript ist **dynamisch typisiert** (Variablen haben keinen festen Typ), **interpretiert bzw. just-in-time-kompiliert**, unterstützt objektorientierte und funktionale Programmierung und ist **single-threaded** mit einer Event Loop.
+
+## Variablen und Typen
+
+```js
+const school = "HTL";  // nicht neu zuweisbar (Standardwahl)
+let count = 28;        // neu zuweisbar
+count += 1;
+// var: veraltet, funktionsweiter Gültigkeitsbereich, nicht mehr verwenden
+```
+
+`let` und `const` gelten im umgebenden **Block** `{ }`. `const` verhindert nur die Neuzuweisung der Variable, nicht die Änderung eines Objekts: `const list = []; list.push(1);` ist erlaubt.
+
+| Typ          | Beispiel                     | Bemerkung                                                         |
+| ------------ | ---------------------------- | ----------------------------------------------------------------- |
+| `number`     | `42`, `3.14`, `NaN`, `Infinity` | 64-Bit-Gleitkommazahl (IEEE 754), es gibt keinen eigenen Ganzzahltyp |
+| `bigint`     | `9007199254740993n`          | beliebig große Ganzzahlen                                          |
+| `string`     | `"Text"`, `'Text'`, `` `Hallo ${name}` `` | unveränderlich; Template-Literale mit Backticks erlauben Ausdrücke |
+| `boolean`    | `true`, `false`              |                                                                   |
+| `undefined`  | `undefined`                  | Variable ohne Wert, fehlende Eigenschaft                           |
+| `null`       | `null`                       | bewusst „kein Wert“                                                |
+| `symbol`     | `Symbol("id")`               | eindeutiger Schlüssel                                              |
+| `object`     | `{}`, `[]`, Funktionen, `Date` | alles, was kein primitiver Wert ist, wird als Referenz übergeben  |
+
+```js
+console.log(typeof 42);         // number
+console.log(typeof "a");        // string
+console.log(typeof undefined);  // undefined
+console.log(typeof null);       // object  (historischer Fehler der Sprache)
+console.log(typeof []);         // object  (Arrays prüft man mit Array.isArray)
+console.log(0.1 + 0.2);         // 0.30000000000000004 (Gleitkomma)
+console.log(Number("12"), Number("12a"), parseInt("12a")); // 12 NaN 12
+```
+
+### Vergleichsfallen
+
+`==` wandelt die Operanden vor dem Vergleich in einen gemeinsamen Typ um (**Typumwandlung**, _Type Coercion_), mit schwer merkbaren Regeln. `===` vergleicht ohne Umwandlung Typ und Wert. Verwende immer `===` und `!==`.
+
+```js
+console.log(0 == "");              // true
+console.log("0" == false);         // true
+console.log(null == undefined);    // true
+console.log(1 == "1", 1 === "1");  // true false
+console.log(NaN === NaN);          // false, NaN prüft man mit Number.isNaN
+console.log([1, 2] === [1, 2]);    // false, Objekte werden über die Referenz verglichen
+console.log("10" < "9");           // true, Strings werden zeichenweise verglichen
+```
+
+Bei Bedingungen werden Werte als **truthy** oder **falsy** gewertet. Falsy sind genau `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined` und `NaN`, alles andere ist truthy, auch `"0"`, `[]` und `{}`. Der Operator `??` (_Nullish Coalescing_) liefert den rechten Wert nur bei `null` oder `undefined`, `||` dagegen bei jedem falsy Wert: `0 || 10` ergibt 10, `0 ?? 10` ergibt 0. `?.` (_Optional Chaining_) bricht bei `null` oder `undefined` ab: `student?.address?.city`.
+
+## Funktionen
+
+```js
+// Funktionsdeklaration
+function gross(net, vat = 0.2) {  // Standardwert für Parameter
+  return net * (1 + vat);
+}
+
+// Funktionsausdruck und Pfeilfunktion
+const square = function (x) { return x * x; };
+const double = (x) => x * 2;                                     // ein Ausdruck: return entfällt
+const sum = (...numbers) => numbers.reduce((a, b) => a + b, 0);  // Restparameter
+
+console.log(gross(100));    // 120
+console.log(sum(1, 2, 3));  // 6
+```
+
+Funktionen sind **Werte**: Man kann sie in Variablen speichern, übergeben und zurückgeben (**Funktionen höherer Ordnung**). Eine Funktion merkt sich die Variablen ihrer Umgebung, auch wenn diese längst verlassen ist (**Closure**):
+
+```js
+function counter() {
+  let value = 0;
+  return () => ++value;
+}
+const next = counter();
+console.log(next(), next()); // 1 2
+```
+
+Pfeilfunktionen haben kein eigenes `this`, sondern übernehmen es aus der Umgebung. Deshalb eignen sie sich für Callbacks, aber nicht als Methoden von Objektliteralen.
+
+## Objekte
+
+```js
+const student = {
+  name: "Anna Huber",
+  schoolClass: "3AHIT",
+  grades: [1, 2, 1],
+  introduce() {
+    return `Ich bin ${this.name} aus der ${this.schoolClass}.`;
+  },
+};
+
+console.log(student.name, student["schoolClass"]);
+student.email = "anna@example.at";  // Eigenschaft hinzufügen
+delete student.email;
+
+const { name, schoolClass } = student;  // Destrukturierung
+const copy = { ...student, schoolClass: "4AHIT" }; // flache Kopie mit Änderung (Spread)
+console.log(Object.keys(student));  // [ 'name', 'schoolClass', 'grades', 'introduce' ]
+```
+
+## Arrays
+
+```js
+const numbers = [5, 3, 8, 1];
+numbers.push(4);              // hinten anfügen
+const last = numbers.pop();   // hinten entfernen: 4
+console.log(numbers.length);  // 4
+console.log(numbers.includes(8), numbers.indexOf(8)); // true 2
+
+for (const n of numbers) { /* über Werte */ }
+numbers.forEach((n, i) => console.log(i, n));
+```
+
+Die Methoden `map`, `filter` und `reduce` erzeugen neue Arrays bzw. Werte, ohne das Original zu verändern. Sie entsprechen `Select`, `Where` und `Aggregate` in LINQ (siehe [Funktionale Programmierung](/de/software-development/functional-programming/)).
+
+```js
+const students = [
+  { name: "Anna", points: 87 },
+  { name: "Ben", points: 42 },
+  { name: "Clara", points: 65 },
+];
+
+const passed = students.filter((s) => s.points >= 50);  // Anna, Clara
+const names = passed.map((s) => s.name);                // [ 'Anna', 'Clara' ]
+const average = students.reduce((sum, s) => sum + s.points, 0) / students.length;
+console.log(names, average);  // [ 'Anna', 'Clara' ] 64.66666666666667
+
+const best = students.find((s) => s.points > 80);         // { name: 'Anna', points: 87 }
+const allPositive = students.every((s) => s.points > 0);  // true
+const sorted = students.toSorted((a, b) => b.points - a.points); // absteigend, Original bleibt
+
+console.log([10, 9, 1].sort()); // [ 1, 10, 9 ]  sort ohne Vergleichsfunktion sortiert als Text!
+```
+
+## Klassen
+
+```js
+class Person {
+  #birthYear;  // privates Feld
+
+  constructor(name, birthYear) {
+    this.name = name;
+    this.#birthYear = birthYear;
+  }
+
+  get age() {
+    return new Date().getFullYear() - this.#birthYear;
+  }
+
+  toString() {
+    return this.name;
+  }
+}
+
+class Student extends Person {
+  constructor(name, birthYear, schoolClass) {
+    super(name, birthYear);
+    this.schoolClass = schoolClass;
+  }
+
+  toString() {
+    return `${super.toString()} (${this.schoolClass})`;
+  }
+}
+
+const anna = new Student("Anna", 2010, "3AHIT");
+console.log(`${anna}`);  // Anna (3AHIT)
+```
+
+Klassen sind in JavaScript eine bequemere Schreibweise für die **prototypbasierte** Vererbung: Jedes Objekt hat einen Prototyp, in dem fehlende Eigenschaften gesucht werden.
+
+## Module
+
+Jede Datei ist ein eigenes **ES-Modul** mit eigenem Gültigkeitsbereich. Was andere verwenden sollen, wird exportiert.
+
+```js
+// geometry.js
+export const PI = 3.14159;
+export function circleArea(r) { return PI * r * r; }
+export default class Calculator { /* ... */ }
+
+// main.js
+import Calculator, { circleArea } from "./geometry.js";
+console.log(circleArea(2));
+```
+
+Im Browser bindet man das Hauptmodul mit `<script type="module" src="main.js"></script>` ein. Node.js kennt außerdem das ältere System CommonJS mit `require` und `module.exports`.
+
+## DOM
+
+Das **DOM** ist die Baumdarstellung des HTML-Dokuments, die der Browser beim Parsen erzeugt (siehe [Darstellung im Browser](/de/web-technologies/how-the-web-works/#darstellung-im-browser)). JavaScript liest und verändert die Seite über das globale Objekt `document`.
+
+### Elemente auswählen
+
+```js
+const heading = document.querySelector("h1");      // erstes passendes Element oder null
+const links = document.querySelectorAll("nav a");  // alle passenden (NodeList)
+const form = document.getElementById("registration");
+for (const link of links) console.log(link.href);
+```
+
+`querySelector` versteht dieselben Selektoren wie [CSS](/de/web-technologies/css/#selektoren).
+
+### Inhalte verändern
+
+```js
+heading.textContent = "Neuer Titel";   // Text, sicher
+heading.classList.add("highlighted");  // Klassen: add, remove, toggle, contains
+heading.style.color = "#2563eb";       // Inline-Stil, besser Klassen verwenden
+heading.setAttribute("title", "Überschrift");
+heading.dataset.id = "17";  // entspricht data-id="17"
+
+const item = document.createElement("li");  // neues Element
+item.textContent = "Neuer Termin";
+document.querySelector("#events").append(item);
+item.remove();
+```
+
+:::danger[innerHTML und XSS]
+`element.innerHTML = userInput` interpretiert den Text als HTML. Stammt er von Benutzern, können sie `<img src=x onerror="...">` einschleusen und Code im Namen anderer Besucher ausführen (**Cross-Site Scripting**, XSS). Für Text verwendet man immer `textContent`.
+:::
+
+### Events
+
+```js
+const button = document.querySelector("#save");
+button.addEventListener("click", (event) => {
+  console.log("geklickt", event.target);
+});
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();  // Standardverhalten (Seite neu laden) verhindern
+  const data = new FormData(form);
+  console.log(data.get("name"));
+});
+
+// Event Delegation: ein Listener am Elternelement für alle (auch künftigen) Einträge
+document.querySelector("#todo-list").addEventListener("click", (event) => {
+  const item = event.target.closest("li");
+  if (item) item.classList.toggle("done");
+});
+```
+
+Häufige Events sind `click`, `input` und `change` (Formularfelder), `submit`, `keydown`, `focus` und `blur`, `load` und `DOMContentLoaded`. Ein Event wird zuerst am Zielelement ausgelöst und steigt dann durch alle Vorfahren auf (**Bubbling**). Darauf beruht die Event Delegation.
+
+## Asynchrone Programmierung
+
+Netzwerkanfragen dauern oft Hunderte Millisekunden. Würde JavaScript darauf warten, wäre die Seite so lange eingefroren. Deshalb laufen solche Operationen **asynchron**: Man startet sie und wird benachrichtigt, wenn das Ergebnis da ist.
+
+Ein **Promise** steht für einen Wert, der erst später verfügbar ist. Es ist entweder _pending_ (ausstehend), _fulfilled_ (erfüllt) oder _rejected_ (abgelehnt). Früher verkettete man Promises mit `then` und `catch`, heute schreibt man meist `async` und `await`, das wie synchroner Code aussieht:
+
+```js
+// mit then/catch
+fetch("/api/students")
+  .then((response) => response.json())
+  .then((students) => console.log(students))
+  .catch((error) => console.error(error));
+
+// mit async/await
+async function loadStudents() {
+  try {
+    const response = await fetch("/api/students");
+    if (!response.ok) {  // fetch wirft bei 404 oder 500 keinen Fehler!
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Laden fehlgeschlagen:", error);  // Netzwerkfehler oder unser throw
+    return [];
+  }
+}
+
+// POST mit JSON-Body
+async function createStudent(student) {
+  const response = await fetch("/api/students", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(student),
+  });
+  return response.status === 201 ? response.json() : null;
+}
+
+// mehrere Anfragen parallel
+const [classes, teachers] = await Promise.all([
+  fetch("/api/classes").then((r) => r.json()),
+  fetch("/api/teachers").then((r) => r.json()),
+]);
+```
+
+`await` ist nur in `async`-Funktionen und auf oberster Ebene von Modulen erlaubt. Eine `async`-Funktion gibt immer ein Promise zurück. Das entspricht `async`/`await` mit `Task` in C# und `Future` in Rust (siehe [Nebenläufigkeit](/de/software-development/concurrency/)).
+
+### Event Loop
+
+JavaScript führt Code in einem einzigen Thread aus. Die **Event Loop** koordiniert ihn:
+
+1. Synchroner Code läuft auf dem **Call Stack**, bis dieser leer ist.
+2. Dann werden alle **Microtasks** abgearbeitet: Fortsetzungen von Promises (`then`, Code nach `await`).
+3. Dann wird der nächste **Task** (Makrotask) genommen: Timer (`setTimeout`), Benutzerereignisse, Netzwerkereignisse. Danach wieder Schritt 2.
+4. Zwischen den Tasks kann der Browser die Seite neu zeichnen.
+
+```js
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+// Ausgabe: 1 4 3 2
+```
+
+Selbst `setTimeout(..., 0)` wartet also, bis der aktuelle Code und alle Microtasks fertig sind. Eine lange Berechnung blockiert die ganze Seite, kein Klick wird mehr verarbeitet. Rechenintensives verlagert man deshalb in einen **Web Worker**, der in einem eigenen Thread läuft.
+
+## JSON
+
+**JSON** (_JavaScript Object Notation_, RFC 8259) ist das übliche Datenformat für Web-APIs. Die Syntax lehnt sich an JavaScript-Literale an, ist aber strenger: Schlüssel und Strings stehen in doppelten Anführungszeichen, erlaubt sind nur Objekte, Arrays, Strings, Zahlen, `true`, `false` und `null`, keine Kommentare, kein Komma nach dem letzten Element, keine Funktionen und kein `undefined`.
+
+```js
+const text = JSON.stringify({ name: "Anna", grades: [1, 2], active: true });
+console.log(text);  // {"name":"Anna","grades":[1,2],"active":true}
+const obj = JSON.parse(text);
+console.log(obj.grades[1]);  // 2
+console.log(JSON.stringify({ a: 1 }, null, 2)); // eingerückt ausgeben
+```
+
+Ein `Date` wird zu einem ISO-8601-String und kommt bei `JSON.parse` als String zurück, nicht als `Date`. Wie man JSON in C# und Rust verarbeitet, zeigt [Dateien und Serialisierung](/de/software-development/files-and-serialization/#json).
+
+## Web Storage
+
+```js
+localStorage.setItem("theme", "dark");  // bleibt dauerhaft erhalten
+const theme = localStorage.getItem("theme") ?? "light";
+localStorage.setItem("cart", JSON.stringify([17, 23]));  // nur Strings, Objekte als JSON
+const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
+localStorage.removeItem("theme");
+sessionStorage.setItem("step", "2");  // nur bis zum Schließen des Tabs
+```
+
+`localStorage` speichert pro Origin einige Megabyte (üblich sind etwa 5 MiB) dauerhaft, `sessionStorage` nur für die Lebensdauer des Tabs. Die Daten bleiben im Browser und werden, anders als Cookies, nicht an den Server gesendet. Weil jedes Skript der Seite darauf zugreifen kann, gehören keine Passwörter oder Zugriffstoken hinein, die bei einer XSS-Lücke gestohlen würden. Für größere, strukturierte Datenmengen gibt es **IndexedDB**.
+
+## TypeScript
+
+**TypeScript** (Microsoft, 2012, Hauptentwickler Anders Hejlsberg, der auch C# entworfen hat) erweitert JavaScript um **statische Typen**. Der Compiler `tsc` prüft die Typen und entfernt sie beim Übersetzen in normales JavaScript. Zur Laufzeit existieren die Typen nicht mehr.
+
+```ts
+interface Student {
+  id: number;
+  name: string;
+  schoolClass: string;
+  email?: string;  // optional
+}
+
+type Status = "active" | "withdrawn";  // Union-Typ aus String-Literalen
+
+function average(grades: number[]): number {
+  return grades.reduce((a, b) => a + b, 0) / grades.length;
+}
+
+async function loadStudent(id: number): Promise<Student> {
+  const response = await fetch(`/api/students/${id}`);
+  return (await response.json()) as Student;  // Typbehauptung: wird nicht geprüft!
+}
+
+function describe(s: Student, status: Status): string {
+  return `${s.name}: ${status}`;
+}
+
+const anna: Student = { id: 1, name: "Anna", schoolClass: "3AHIT" };
+describe(anna, "active");
+// describe(anna, "sick");             // Fehler beim Übersetzen: kein gültiger Status
+// average("1, 2");                // Fehler: string ist nicht number[]
+```
+
+Warum TypeScript?
+
+- Viele Fehler (Tippfehler in Eigenschaftsnamen, falsche Argumente, vergessene `null`-Prüfungen mit `strict`) fallen schon beim Schreiben auf, nicht erst beim Benutzer.
+- Der Editor kann zuverlässig vervollständigen und umbenennen.
+- Typen dokumentieren, welche Daten eine Funktion erwartet. In größeren Projekten und Teams ist TypeScript deshalb heute Standard, Angular setzt es voraus.
+
+Weil Typen zur Laufzeit fehlen, muss man Daten von außen (API-Antworten, Formulareingaben) trotzdem prüfen, etwa mit einer Bibliothek wie **Zod**. Node.js kann seit Version 23.6 TypeScript-Dateien direkt ausführen, indem es die Typen einfach entfernt.
+
+## Weiterführende Quellen
+
+- [JavaScript](https://developer.mozilla.org/de/docs/Web/JavaScript) (MDN Web Docs)
+- [The Modern JavaScript Tutorial](https://javascript.info/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)

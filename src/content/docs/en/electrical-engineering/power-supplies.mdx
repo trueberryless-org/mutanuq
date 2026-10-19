@@ -1,0 +1,165 @@
+---
+title: Power Supplies
+description: Structure of power supplies, linear regulators such as 78xx and LM317, switching regulators (buck and boost), batteries with capacity and C-rate, Power over Ethernet and UPS.
+sidebar:
+  order: 10
+---
+
+Electronic circuits need a stable DC voltage, usually $3.3\,\mathrm{V}$, $5\,\mathrm{V}$ or $12\,\mathrm{V}$. What is available, however, is $230\,\mathrm{V}$ AC from the grid or a fluctuating voltage from a battery. The **power supply** converts the energy, regulates the voltage and protects the circuit. Its efficiency determines how much heat is produced and how long a battery lasts.
+
+## Structure of a classic power supply
+
+A **linear power supply** consists of four stages:
+
+1. **Transformer**: steps down the mains voltage and isolates galvanically from the mains (see [Transformer](/en/electrical-engineering/magnetism-and-inductors/#transformer)).
+2. **Rectifier**: turns the AC voltage into a pulsating DC voltage (bridge rectifier).
+3. **Smoothing**: a reservoir capacitor reduces the ripple (see [Rectifiers](/en/electrical-engineering/semiconductors-and-diodes/#rectifiers)).
+4. **Regulation**: a voltage regulator keeps the output voltage constant regardless of load and input voltage.
+
+Linear power supplies are simple and low-noise, but heavy (the $50\,\mathrm{Hz}$ transformer needs a lot of iron) and have poor efficiency. Today **switch-mode power supplies** are used almost everywhere.
+
+## Linear regulators
+
+A **linear regulator** works like an automatically adjusted series resistor: a pass transistor between input and output takes up exactly the excess voltage difference. An internal reference voltage and an error amplifier continuously compare the output voltage with the setpoint.
+
+The current flows from the input through the regulator to the output, so $I_\mathrm{in} \approx I_\mathrm{out}$, and the difference becomes heat:
+
+$$
+P_\mathrm{loss} = (U_\mathrm{in} - U_\mathrm{out}) \cdot I \qquad \eta \approx \frac{U_\mathrm{out}}{U_\mathrm{in}}
+$$
+
+### Fixed voltage regulators 78xx
+
+The **78xx** series supplies fixed positive voltages; the two digits give the voltage: 7805 for $5\,\mathrm{V}$, 7812 for $12\,\mathrm{V}$. The **79xx** series supplies negative voltages. The regulators have three terminals (input, ground, output), supply up to about $1.5\,\mathrm{A}$ in a TO-220 package and contain short-circuit and over-temperature protection.
+
+- The input voltage must be above the output voltage by the **dropout voltage** (about $2\,\mathrm{V}$ for the 7805), even in the trough of the ripple.
+- Capacitors close to the regulator (according to the datasheet typically $0.22$ to $0.33\,\mathrm{\mu F}$ at the input and $0.1\,\mathrm{\mu F}$ at the output) prevent oscillation.
+
+:::tip[Example]
+A 7805 supplies a circuit with $0.5\,\mathrm{A}$ from $12\,\mathrm{V}$. The power dissipation is $P_\mathrm{loss} = (12 - 5)\,\mathrm{V} \cdot 0.5\,\mathrm{A} = 3.5\,\mathrm{W}$, the efficiency only $5/12 \approx 42\,\%$. Without a heat sink a TO-220 package has a thermal resistance of about $50$ to $65\,\mathrm{K/W}$; the chip would heat up by more than $170\,\mathrm{K}$. A heat sink is therefore necessary, or better a switching regulator.
+:::
+
+### LDO and adjustable regulators
+
+**LDO regulators** (low dropout) manage with a voltage difference of a few hundred millivolts. They produce, for example, $3.3\,\mathrm{V}$ from a Li-ion battery or from $5\,\mathrm{V}$ USB.
+
+The adjustable regulator **LM317** keeps a constant $1.25\,\mathrm{V}$ between its output and the adjust terminal (ADJ). With a voltage divider of $R_1$ (between output and ADJ) and $R_2$ (between ADJ and ground), neglecting the small ADJ current:
+
+$$
+U_\mathrm{out} = 1.25\,\mathrm{V} \cdot \left(1 + \frac{R_2}{R_1}\right)
+$$
+
+With $R_1 = 240\,\Omega$ and $R_2 = 720\,\Omega$ this gives $1.25\,\mathrm{V} \cdot 4 = 5\,\mathrm{V}$.
+
+## Switching regulators
+
+A **switching regulator** (DC-DC converter) avoids the losses of a pass transistor. A transistor switches fully on or fully off at high frequency (tens of kHz to several MHz). An inductor stores the energy temporarily, a capacitor smooths the output. Because an ideal switch has no losses and the inductor and capacitor only store energy temporarily, switching regulators reach efficiencies of $85$ to over $95\,\%$.
+
+The output voltage is set via the **duty cycle** $D = t_\mathrm{on}/T$, the fraction of the period during which the switch is closed (pulse-width modulation).
+
+| Converter                 | Output voltage (ideal)                  | Function                                                       |
+| ------------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| Buck (step-down)          | $U_\mathrm{out} = D \cdot U_\mathrm{in}$ | lower than input                                              |
+| Boost (step-up)           | $U_\mathrm{out} = \dfrac{U_\mathrm{in}}{1 - D}$ | higher than input                                      |
+| Inverting buck-boost      | $U_\mathrm{out} = -\dfrac{D}{1 - D} \cdot U_\mathrm{in}$ | higher or lower, reversed polarity             |
+
+The formulas apply to continuous conduction mode, in which the inductor current never falls to zero.
+
+**Buck converter**: when the switch is closed, current flows from the input through the inductor to the output, and the inductor takes up energy. When it is open, the inductor drives the current on via a diode (or a second transistor, _synchronous converter_). The output sees the mean value of the switched voltage. For $12\,\mathrm{V} \to 5\,\mathrm{V}$, $D = 5/12 \approx 42\,\%$. Unlike with a linear regulator, the input current is smaller than the output current: at $5\,\mathrm{V}$, $2\,\mathrm{A}$ and $\eta = 90\,\%$ the converter only draws $10\,\mathrm{W}/0.9/12\,\mathrm{V} \approx 0.93\,\mathrm{A}$.
+
+**Boost converter**: when the switch is closed, the inductor is directly across the input voltage and stores magnetic energy. When it opens, the induced voltage of the inductor adds to the input voltage and charges the output capacitor via a diode. A power bank uses this to produce the $5\,\mathrm{V}$ for USB from a Li-ion cell ($3.7\,\mathrm{V}$), with $D = 1 - 3.7/5 = 0.26$.
+
+Disadvantages of switching regulators are the residual ripple at the switching frequency and electromagnetic interference. For sensitive analogue circuits a switching regulator is therefore often combined with a downstream LDO.
+
+### Switch-mode power supply
+
+A **primary-switched power supply** rectifies the mains voltage directly (about $325\,\mathrm{V}$ DC), chops it at high frequency and transfers it via a small high-frequency transformer. This still provides galvanic isolation but, because of the high frequency, is much smaller than a $50\,\mathrm{Hz}$ transformer. Phone chargers mostly use a **flyback converter**. Regulation is via the duty cycle; the output voltage is fed back via an **optocoupler** so that the isolation is maintained.
+
+## Batteries and accumulators
+
+**Primary cells** (batteries) are not rechargeable, **secondary cells** (accumulators, rechargeable batteries) are. Both convert chemical energy into electrical energy.
+
+| Cell type          | Nominal voltage    | Properties                                                    |
+| ------------------ | ------------------ | ------------------------------------------------------------- |
+| Alkaline manganese | $1.5\,\mathrm{V}$  | primary cell, standard AA/AAA battery                         |
+| Lithium (CR2032)   | $3\,\mathrm{V}$    | primary cell, coin cell for watches and BIOS                  |
+| Lead-acid          | $2.0\,\mathrm{V}$  | car battery (6 cells = $12\,\mathrm{V}$), UPS; heavy, cheap   |
+| NiMH               | $1.2\,\mathrm{V}$  | replacement for AA batteries, little memory effect, higher self-discharge (except LSD types) |
+| Li-ion (NMC)       | $3.6$ to $3.7\,\mathrm{V}$ | end-of-charge $4.2\,\mathrm{V}$, discharge cut-off about $2.5$ to $3.0\,\mathrm{V}$; high energy density |
+| LiFePO₄            | $3.2\,\mathrm{V}$  | safer, longer life, lower energy density                      |
+
+### Capacity and energy
+
+The **capacity** of a battery is the charge it can deliver, given in ampere-hours (Ah) or milliampere-hours (mAh). The energy content results from the nominal voltage:
+
+$$
+W = Q \cdot U_\mathrm{N} \qquad \text{e.g.} \quad 3\,\mathrm{Ah} \cdot 3.6\,\mathrm{V} = 10.8\,\mathrm{Wh}
+$$
+
+It therefore makes sense to compare capacities of different battery types in Wh, not in mAh. Power banks often state the mAh of the internal $3.7\,\mathrm{V}$ cells; at $5\,\mathrm{V}$ output and with converter losses, less is available.
+
+### C-rate
+
+The **C-rate** gives the charge or discharge current relative to the capacity. $1\,\mathrm{C}$ is the current that empties the battery in one hour:
+
+$$
+I = C\text{-rate} \cdot Q \qquad t \approx \frac{1}{C\text{-rate}}
+$$
+
+A $3000\,\mathrm{mAh}$ battery supplies $3\,\mathrm{A}$ at $1\,\mathrm{C}$, and at $0.5\,\mathrm{C}$ $1.5\,\mathrm{A}$ for about two hours. High currents reduce the usable capacity because the internal resistance drops more voltage and produces heat.
+
+### Charging Li-ion batteries
+
+Li-ion batteries are charged using the **CC/CV method**: first with constant current (usually $0.5$ to $1\,\mathrm{C}$) until $4.2\,\mathrm{V}$ is reached, then with constant voltage until the current has fallen to a small value. A **battery management system** (BMS) monitors voltage, current and temperature of each cell and balances cells connected in series.
+
+:::danger
+Overcharging, deep discharge, short circuit, mechanical damage or heat can trigger **thermal runaway** in Li-ion cells: the cell heats itself, vents gas and can catch fire. Such fires are hard to extinguish. Do not charge damaged or swollen batteries any more, and dispose of them properly.
+:::
+
+Cells are combined into packs. The designation $n$S$m$P means $n$ cells in series (voltage times $n$) and $m$ in parallel (capacity times $m$). A 3S2P laptop battery with $3.6\,\mathrm{V}$, $3\,\mathrm{Ah}$ cells has $10.8\,\mathrm{V}$, $6\,\mathrm{Ah}$ and $64.8\,\mathrm{Wh}$.
+
+## Power over data lines
+
+In IT, devices are often powered via the data line:
+
+| Standard                       | Power at the source    | Power at the device      |
+| ------------------------------ | ---------------------- | ------------------------ |
+| PoE, IEEE 802.3af (Type 1)     | $15.4\,\mathrm{W}$     | $12.95\,\mathrm{W}$      |
+| PoE+, IEEE 802.3at (Type 2)    | $30\,\mathrm{W}$       | $25.5\,\mathrm{W}$       |
+| PoE++, IEEE 802.3bt (Type 3)   | $60\,\mathrm{W}$       | $51\,\mathrm{W}$         |
+| PoE++, IEEE 802.3bt (Type 4)   | $90\,\mathrm{W}$       | $71.3\,\mathrm{W}$       |
+| USB Power Delivery             | up to $100\,\mathrm{W}$ ($20\,\mathrm{V}$, $5\,\mathrm{A}$), with EPR up to $240\,\mathrm{W}$ | |
+
+**Power over Ethernet** feeds about $48\,\mathrm{V}$ (nominal $44$ to $57\,\mathrm{V}$) over the network cable; the difference between source and device is lost in the cable. Access points, IP phones and cameras can thus be operated without their own socket. Before switching on, the switch checks via a signature whether a PoE-capable device is connected. When planning, the **PoE budget** of the switch, i.e. the sum of the power of all ports, must be sufficient.
+
+## Uninterruptible power supply
+
+A **UPS** (uninterruptible power supply) continues to supply servers and network devices from batteries during a power failure, usually until systems have shut down cleanly or a standby generator is running. The standard IEC 62040-3 distinguishes three classes:
+
+| Class | Design                          | Function                                                                 | Transfer time |
+| ----- | ------------------------------- | ------------------------------------------------------------------------ | ------------- |
+| VFD   | offline (standby)               | load is connected directly to the mains; on failure an inverter takes over | a few ms    |
+| VI    | line-interactive                | like VFD, additionally an autotransformer compensates under- and overvoltage | a few ms  |
+| VFI   | online (double conversion)      | mains → rectifier → battery/DC link → inverter → load, permanently        | none          |
+
+Only the **online UPS** completely isolates the loads from mains disturbances and is standard in data centres. In return it has permanent conversion losses.
+
+**Sizing**: UPS units are rated in apparent power (VA) and active power (W); both limits must be observed. The bridging time depends on the battery energy and the load.
+
+:::tip[Example]
+A UPS has two lead-acid batteries with $12\,\mathrm{V}$ and $9\,\mathrm{Ah}$, i.e. $216\,\mathrm{Wh}$. The inverter has $\eta = 90\,\%$, the load is $600\,\mathrm{W}$:
+
+$$
+t \approx \frac{216\,\mathrm{Wh} \cdot 0.9}{600\,\mathrm{W}} \approx 0.32\,\mathrm{h} \approx 19\,\mathrm{min}
+$$
+
+In practice the time is shorter because lead-acid batteries deliver less capacity at high current and are not fully discharged. Manufacturers therefore publish runtime tables.
+:::
+
+UPS units signal a power failure via USB or the network (SNMP) so that servers shut down automatically. The batteries age and must be tested regularly and replaced after a few years.
+
+## Further reading
+
+- [Texas Instruments: LM7800 Series datasheet](https://www.ti.com/lit/ds/symlink/lm7800.pdf)
+- Horowitz, P.; Hill, W.: _The Art of Electronics_. Cambridge University Press (chapter on power regulation).
+- [Battery University](https://batteryuniversity.com/)

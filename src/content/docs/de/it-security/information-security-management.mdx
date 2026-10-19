@@ -1,0 +1,168 @@
+---
+title: Informationssicherheitsmanagement
+description: ISMS und PDCA, ISO/IEC 27001 und 27002 mit Anhang A, BSI IT-Grundschutz, Risikomanagement, Richtlinien, Awareness, NIS2 und NISG 2026, DSGVO, Penetrationstests und Strafrecht.
+sidebar:
+  order: 10
+---
+
+Technische Maßnahmen allein machen eine Organisation nicht sicher. Es braucht Zuständigkeiten, Regeln, Budgets, Schulungen und die regelmäßige Überprüfung, ob all das wirkt. Diese organisatorische Seite der Sicherheit heißt **Informationssicherheitsmanagement**. Sie ist zunehmend gesetzlich vorgeschrieben, etwa durch NIS2 und die DSGVO.
+
+## ISMS
+
+Ein **Informationssicherheits-Managementsystem** (ISMS) ist die Gesamtheit der Richtlinien, Prozesse, Verantwortlichkeiten und Ressourcen, mit denen eine Organisation ihre Informationssicherheit systematisch plant, umsetzt, überwacht und verbessert. Ein ISMS ist keine Software, sondern ein dauerhafter Managementprozess.
+
+Die Gesamtverantwortung liegt bei der **Geschäftsführung**. Sie gibt die Ziele vor, stellt Ressourcen bereit und trägt das verbleibende Risiko. Die operative Steuerung übernimmt ein **Informationssicherheitsbeauftragter** (ISB, international _Chief Information Security Officer_, CISO), der direkt an die Geschäftsführung berichtet und nicht der IT-Leitung unterstellt sein sollte, um Interessenkonflikte zu vermeiden.
+
+Ein ISMS folgt dem **PDCA-Zyklus** (Deming-Kreis), der auch aus dem Qualitätsmanagement bekannt ist:
+
+| Phase     | Inhalt                                                                               |
+| --------- | ------------------------------------------------------------------------------------ |
+| **Plan**  | Geltungsbereich festlegen, Leitlinie erstellen, Risiken analysieren, Maßnahmen planen |
+| **Do**    | Maßnahmen umsetzen, Mitarbeitende schulen, Betrieb aufnehmen                         |
+| **Check** | Wirksamkeit messen: Kennzahlen, interne Audits, Managementbewertung                 |
+| **Act**   | Abweichungen korrigieren, das ISMS verbessern, neuer Durchlauf                      |
+
+## ISO/IEC 27001 und 27002
+
+Die Normenreihe **ISO/IEC 27000** ist der internationale Standard für Informationssicherheit. Die wichtigsten Teile:
+
+| Norm                 | Inhalt                                                                         |
+| -------------------- | ------------------------------------------------------------------------------ |
+| **ISO/IEC 27000**    | Überblick und Begriffe                                                         |
+| **ISO/IEC 27001**    | Anforderungen an ein ISMS, **zertifizierbar**                                  |
+| **ISO/IEC 27002**    | Leitfaden zur Umsetzung der Maßnahmen (_Controls_) aus Anhang A                |
+| **ISO/IEC 27005**    | Informationssicherheits-Risikomanagement                                       |
+| **ISO/IEC 27701**    | Erweiterung für das Datenschutzmanagement                                      |
+
+**ISO/IEC 27001** beschreibt in den Kapiteln 4 bis 10, was ein ISMS leisten muss: Kontext der Organisation (Geltungsbereich, interessierte Parteien), Führung, Planung (Risikobeurteilung und Risikobehandlung), Unterstützung (Ressourcen, Kompetenz, Bewusstsein, Dokumentation), Betrieb, Bewertung der Leistung (Überwachung, internes Audit, Managementbewertung) und Verbesserung.
+
+Der **Anhang A** listet Maßnahmen, die die Organisation auf Basis ihrer Risikobeurteilung auswählt. In der aktuellen Fassung **ISO/IEC 27001:2022** sind es **93 Maßnahmen** in vier Themen (vorher 114 Maßnahmen in 14 Kapiteln):
+
+| Thema                       | Anzahl | Beispiele                                                                      |
+| --------------------------- | ------ | ------------------------------------------------------------------------------ |
+| **5 Organisatorisch**       | 37     | Richtlinien, Rollen, Inventar der Werte, Zugriffssteuerung, Lieferantenbeziehungen, Vorfallsmanagement, Cloud-Dienste |
+| **6 Personenbezogen**       | 8      | Überprüfung vor der Einstellung, Schulung und Sensibilisierung, Vertraulichkeitsvereinbarungen, Telearbeit |
+| **7 Physisch**              | 14     | Sicherheitszonen, Zutrittskontrolle, Clean Desk, Schutz vor Umweltgefahren, Entsorgung von Datenträgern |
+| **8 Technologisch**         | 34     | Endgeräte, privilegierte Rechte, Schutz vor Schadsoftware, Backup, Protokollierung, Netzwerksicherheit, Kryptografie, sichere Entwicklung |
+
+Neu in der Fassung 2022 sind elf Maßnahmen, darunter Threat Intelligence, Informationssicherheit bei Cloud-Diensten, Konfigurationsmanagement, Löschen von Informationen, Datenmaskierung, Verhinderung von Datenabfluss (_Data Leakage Prevention_), Webfilterung und sichere Programmierung.
+
+In der **Erklärung zur Anwendbarkeit** (_Statement of Applicability_, SoA) begründet die Organisation für jede der 93 Maßnahmen, ob sie umgesetzt wird oder warum nicht. Die **Zertifizierung** erfolgt durch eine akkreditierte Zertifizierungsstelle in einem zweistufigen Audit (Dokumentenprüfung, dann Prüfung der Umsetzung vor Ort). Das Zertifikat gilt drei Jahre, dazwischen finden jährliche Überwachungsaudits statt. Zertifikate nach der alten Fassung von 2013 sind seit 31. Oktober 2025 ungültig.
+
+## BSI IT-Grundschutz
+
+Das deutsche **Bundesamt für Sicherheit in der Informationstechnik** (BSI) hat mit dem **IT-Grundschutz** eine sehr konkrete, frei verfügbare Methode entwickelt, die auch in Österreich verbreitet ist. Sie ist mit ISO 27001 kompatibel, eine Zertifizierung „ISO 27001 auf Basis von IT-Grundschutz“ ist möglich.
+
+| Dokument                | Inhalt                                                                            |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| **BSI-Standard 200-1**  | Anforderungen an ein ISMS                                                         |
+| **BSI-Standard 200-2**  | IT-Grundschutz-Methodik mit drei Vorgehensweisen: **Basis-Absicherung** (schneller Einstieg für alle Bereiche), **Standard-Absicherung** (vollständig, Regelfall) und **Kern-Absicherung** (zuerst die wichtigsten Werte, die „Kronjuwelen“) |
+| **BSI-Standard 200-3**  | Risikoanalyse für Objekte mit hohem oder sehr hohem Schutzbedarf                  |
+| **BSI-Standard 200-4**  | Business Continuity Management                                                    |
+| **IT-Grundschutz-Kompendium** | **Bausteine** mit konkreten Anforderungen, gegliedert in Prozess-Bausteine (etwa ISMS, ORP Organisation und Personal, CON Konzepte, OPS Betrieb, DER Detektion und Reaktion) und System-Bausteine (APP Anwendungen, SYS IT-Systeme, IND Industrielle IT, NET Netze, INF Infrastruktur) |
+
+Das Vorgehen nach Standard-Absicherung: Informationsverbund abgrenzen, Strukturanalyse (welche Geschäftsprozesse, Anwendungen, Systeme, Räume gibt es), **Schutzbedarfsfeststellung** (normal, hoch, sehr hoch), **Modellierung** (passende Bausteine zuordnen), IT-Grundschutz-Check (Soll-Ist-Vergleich), Risikoanalyse für Objekte mit erhöhtem Schutzbedarf, Umsetzung. Die Anforderungen jedes Bausteins sind in **Basis-**, **Standard-** und Anforderungen bei **erhöhtem Schutzbedarf** gestuft. Grundlage sind die **elementaren Gefährdungen**, ein Katalog typischer Bedrohungen von Feuer über Schadprogramme bis zum Fehlverhalten von Personen.
+
+Die letzte Ausgabe des Kompendiums ist die Edition 2023. Das BSI überarbeitet den IT-Grundschutz derzeit grundlegend zum Nachfolger **Grundschutz++**, der Anforderungen maschinenlesbar und stärker prozessorientiert bereitstellt. In Österreich gibt es ergänzend das **Österreichische Informationssicherheitshandbuch** des Bundeskanzleramts.
+
+## Risikomanagement
+
+Das Risikomanagement ist das Herz jedes ISMS. Nach ISO/IEC 27005 (aufbauend auf ISO 31000) läuft es als wiederkehrender Prozess ab:
+
+1. **Kontext festlegen**: Geltungsbereich, Kriterien für die Risikobewertung und für die Risikoakzeptanz.
+2. **Risiken identifizieren**: Werte, Bedrohungen, Schwachstellen, bestehende Maßnahmen.
+3. **Risiken analysieren**: Eintrittswahrscheinlichkeit und Auswirkungen abschätzen.
+4. **Risiken bewerten**: mit den Akzeptanzkriterien vergleichen und priorisieren.
+5. **Risiken behandeln**: vermeiden, vermindern, übertragen oder akzeptieren, in einem Risikobehandlungsplan festhalten.
+6. **Restrisiko akzeptieren** durch die Geschäftsführung.
+7. Begleitend: **kommunizieren** sowie **überwachen und überprüfen**, weil sich Bedrohungen und Systeme laufend ändern.
+
+Wie Risiken konkret bewertet werden (Risikomatrix, Schutzbedarf, Behandlungsstrategien), steht unter [Grundlagen der IT-Sicherheit](/de/it-security/security-basics/#risikobewertung).
+
+## Richtlinien und Awareness
+
+Die Regeln eines ISMS sind in Dokumenten mit unterschiedlicher Verbindlichkeit und Detailtiefe festgehalten:
+
+- Die **Informationssicherheitsleitlinie** (_Security Policy_) ist das Grundsatzdokument: Stellenwert der Sicherheit, Ziele, Geltungsbereich, Verantwortlichkeiten. Sie wird von der Geschäftsführung unterzeichnet und allen Mitarbeitenden bekannt gemacht.
+- **Richtlinien** regeln einzelne Themen, etwa Passwörter und Authentifizierung, Nutzung von IT und Internet (_Acceptable Use Policy_), private Geräte (_Bring Your Own Device_), Homeoffice, Klassifizierung von Informationen, Backup, Clean Desk.
+- **Verfahrens- und Arbeitsanweisungen** beschreiben konkrete Abläufe, etwa die Vergabe von Benutzerkonten.
+
+Eine **Informationsklassifizierung** teilt Informationen nach Schutzbedarf ein, typischerweise in „öffentlich“, „intern“, „vertraulich“ und „streng vertraulich“. Für jede Stufe ist festgelegt, wie sie gekennzeichnet, gespeichert, übertragen und vernichtet wird.
+
+Weil viele Angriffe beim Menschen ansetzen, ist **Sensibilisierung** (_Security Awareness_) eine Pflichtmaßnahme. Wirksam sind regelmäßige, kurze und praxisnahe Schulungen statt eines jährlichen Pflichtvortrags, simulierte Phishing-Mails mit unmittelbarer Rückmeldung, eine einfache Meldemöglichkeit für verdächtige Nachrichten und eine Fehlerkultur, in der jemand, der auf einen Link geklickt hat, das sofort meldet statt es aus Angst zu verschweigen.
+
+## NIS2 und NISG 2026
+
+Die EU-Richtlinie **NIS2** (Richtlinie (EU) 2022/2555) über Maßnahmen für ein hohes gemeinsames Cybersicherheitsniveau löste 2023 die erste NIS-Richtlinie ab. Sie erweitert den Kreis der verpflichteten Organisationen stark und hätte bis 17. Oktober 2024 in nationales Recht umgesetzt werden müssen. In Österreich scheiterte ein erster Entwurf (NISG 2024) im Juli 2024 im Nationalrat an der nötigen Zweidrittelmehrheit. Das **Netz- und Informationssystemsicherheitsgesetz 2026** (NISG 2026, BGBl. I Nr. 94/2025) wurde im Dezember 2025 beschlossen und ist am **1. Oktober 2026** in Kraft getreten. Es löst das NISG 2018 ab. Zuständige Behörde ist das neu geschaffene **Bundesamt für Cybersicherheit** im Bundesministerium für Inneres.
+
+**Wer ist betroffen?** Unternehmen und Einrichtungen in 18 Sektoren mit hoher Kritikalität (etwa Energie, Verkehr, Bankwesen, Gesundheit, Trinkwasser, digitale Infrastruktur, öffentliche Verwaltung) und sonstigen kritischen Sektoren (etwa Post, Abfallwirtschaft, Chemie, Lebensmittel, Industrie, digitale Dienste), grundsätzlich ab mittlerer Unternehmensgröße (mindestens 50 Beschäftigte oder mehr als 10 Millionen Euro Jahresumsatz und Bilanzsumme). Sie werden als **wesentliche** oder **wichtige Einrichtungen** eingestuft. Für wesentliche Einrichtungen gilt eine proaktive Aufsicht, für wichtige eine anlassbezogene. In Österreich sind nach Schätzungen rund 4000 Einrichtungen betroffen.
+
+**Pflichten:**
+
+- **Registrierung** bei der Behörde.
+- **Risikomanagementmaßnahmen** nach dem Stand der Technik, unter anderem Konzepte für Risikoanalyse und Sicherheit, Bewältigung von Vorfällen, Business Continuity und Backup, Sicherheit der Lieferkette, sichere Beschaffung und Entwicklung, Bewertung der Wirksamkeit, Cyberhygiene und Schulungen, Kryptografie, Personalsicherheit und Zugriffskontrolle sowie Multi-Faktor-Authentifizierung.
+- **Meldepflichten** bei erheblichen Vorfällen: Frühwarnung binnen 24 Stunden, Meldung binnen 72 Stunden, Abschlussbericht binnen eines Monats.
+- **Verantwortung der Leitungsorgane**: Die Geschäftsführung muss die Maßnahmen billigen, ihre Umsetzung überwachen und sich selbst schulen lassen. Sie kann bei Verstößen persönlich haften.
+
+Die Richtlinie sieht Geldbußen von bis zu 10 Millionen Euro oder 2 % des weltweiten Jahresumsatzes für wesentliche und bis zu 7 Millionen Euro oder 1,4 % für wichtige Einrichtungen vor, jeweils der höhere Betrag. Ergänzend gilt für kritische Einrichtungen die Richtlinie über die **Resilienz kritischer Einrichtungen** (RCE- bzw. CER-Richtlinie), die den physischen Schutz betrifft.
+
+## DSGVO
+
+Die **Datenschutz-Grundverordnung** (DSGVO), in Österreich ergänzt durch das Datenschutzgesetz (DSG), schützt personenbezogene Daten. Sie verlangt ausdrücklich Informationssicherheit. Die Grundsätze und Betroffenenrechte stehen unter [Internetrecht](/de/economy_and_law/law/internet_law/#datenschutz). Für die IT-Sicherheit sind besonders wichtig:
+
+| Artikel        | Inhalt                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| **Art. 5 Abs. 1 lit. f** | Grundsatz der **Integrität und Vertraulichkeit**: Schutz vor unbefugter Verarbeitung, Verlust und Zerstörung |
+| **Art. 25**    | **Datenschutz durch Technikgestaltung und datenschutzfreundliche Voreinstellungen** (_Privacy by Design and by Default_) |
+| **Art. 32**    | **Sicherheit der Verarbeitung**: geeignete **technische und organisatorische Maßnahmen** (TOM) nach dem Stand der Technik und dem Risiko, etwa Pseudonymisierung und Verschlüsselung, Sicherstellung von Vertraulichkeit, Integrität, Verfügbarkeit und Belastbarkeit, rasche Wiederherstellung nach einem Zwischenfall und regelmäßige Überprüfung der Wirksamkeit |
+| **Art. 33, 34** | Meldung von Datenschutzverletzungen an die Datenschutzbehörde binnen 72 Stunden, bei hohem Risiko Benachrichtigung der Betroffenen |
+| **Art. 35**    | **Datenschutz-Folgenabschätzung** bei Verarbeitungen mit voraussichtlich hohem Risiko             |
+
+Verstöße können mit Geldbußen von bis zu 20 Millionen Euro oder 4 % des weltweiten Jahresumsatzes geahndet werden. Zuständige Aufsichtsbehörde in Österreich ist die **Datenschutzbehörde**.
+
+## Penetrationstests und Recht
+
+### Penetrationstests
+
+Ein **Penetrationstest** (Pentest) ist ein autorisierter, simulierter Angriff, um Schwachstellen zu finden, bevor echte Angreifer sie ausnutzen. Er unterscheidet sich vom automatisierten **Schwachstellenscan**, der nur bekannte Lücken auflistet, dadurch, dass Fachleute Lücken manuell prüfen, ausnutzen und kombinieren. Ein **Red Teaming** geht noch weiter und testet über Wochen realistisch und möglichst unbemerkt, ob die Organisation einen Angriff erkennt und darauf reagiert.
+
+| Art            | Vorwissen der Tester                                               |
+| -------------- | ------------------------------------------------------------------ |
+| **Black Box**  | keines, wie ein externer Angreifer                                 |
+| **Grey Box**   | teilweise, etwa ein normales Benutzerkonto                         |
+| **White Box**  | vollständig, mit Quellcode, Dokumentation und Architektur          |
+
+Das BSI gliedert einen Pentest in fünf Phasen: **Vorbereitung** (Ziele, Umfang, rechtliche Absicherung), **Informationsbeschaffung**, **Bewertung** der Informationen und Risiken, **aktive Eindringversuche** und **Abschlussanalyse** mit Bericht. Weitere verbreitete Leitfäden sind der OWASP Web Security Testing Guide und der Penetration Testing Execution Standard (PTES). Typische Werkzeuge sind nmap, Burp Suite, Metasploit und die Linux-Distribution Kali Linux.
+
+Zwingende Voraussetzung ist eine **schriftliche Beauftragung** durch jemanden, der über die Systeme verfügen darf: mit genauem Umfang (welche Systeme, Adressbereiche, Anwendungen), Zeitraum, erlaubten Methoden (etwa ob Social Engineering oder DoS-Tests zulässig sind), Ansprechpartnern für Notfälle und Regeln zur Vertraulichkeit der Ergebnisse (_Rules of Engagement_). Bei Cloud- oder Hosting-Diensten müssen auch die Regeln des Anbieters beachtet werden. Ohne Erlaubnis ist derselbe Test eine Straftat.
+
+### Ethical Hacking und Bug Bounty
+
+**Ethical Hacking** bezeichnet Angriffe mit Erlaubnis und mit dem Ziel, Sicherheit zu verbessern. Findet jemand zufällig eine Lücke, gilt **Coordinated Vulnerability Disclosure**: Die Lücke wird vertraulich dem Hersteller oder Betreiber gemeldet (oft über eine Datei `security.txt` auf der Webseite oder über CERT.at als Vermittler), der Zeit für einen Patch erhält, bevor die Details veröffentlicht werden, üblicherweise etwa 90 Tage.
+
+In **Bug-Bounty-Programmen** laden Unternehmen Sicherheitsforscher ausdrücklich ein, ihre Systeme innerhalb festgelegter Regeln zu testen, und zahlen für gemeldete Lücken eine Prämie, abhängig vom Schweregrad. Plattformen wie HackerOne, Bugcrowd oder Intigriti vermitteln solche Programme. Die Programmregeln wirken als Erlaubnis, gelten aber nur für den beschriebenen Umfang.
+
+Zum Üben gibt es legale Umgebungen: absichtlich verwundbare Anwendungen wie OWASP Juice Shop und DVWA, Plattformen wie Hack The Box und TryHackMe sowie **Capture-the-Flag-Wettbewerbe** (CTF), in Österreich etwa die **Austria Cyber Security Challenge** für Schülerinnen, Schüler und Studierende.
+
+### Strafrecht in Österreich
+
+Das österreichische Strafgesetzbuch (StGB) enthält mehrere Tatbestände zu Computerkriminalität, die teilweise auf das Übereinkommen des Europarats über Computerkriminalität (Budapest-Konvention) zurückgehen:
+
+| Paragraph       | Tatbestand                                              | Inhalt                                                                         |
+| --------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **§ 118a**      | Widerrechtlicher Zugriff auf ein Computersystem         | sich durch **Überwindung einer spezifischen Sicherheitsvorkehrung** Zugang zu einem fremden Computersystem verschaffen, mit der Absicht, Kenntnis von geschützten personenbezogenen Daten zu erlangen oder jemandem einen Nachteil zuzufügen |
+| **§ 119**       | Verletzung des Telekommunikationsgeheimnisses           | Nachrichten mit Abhörvorrichtungen mitlesen                                    |
+| **§ 119a**      | Missbräuchliches Abfangen von Daten                     | Daten aus einer Übertragung abfangen, etwa mit einem Sniffer                    |
+| **§ 126a**      | Datenbeschädigung                                       | fremde Daten verändern, löschen oder unbrauchbar machen, etwa durch Ransomware  |
+| **§ 126b**      | Störung der Funktionsfähigkeit eines Computersystems    | ein Computersystem durch Eingabe oder Übermittlung von Daten schwer stören, etwa durch DoS |
+| **§ 126c**      | Missbrauch von Computerprogrammen oder Zugangsdaten     | Schadprogramme oder Zugangsdaten herstellen, verbreiten oder besitzen, mit dem Vorsatz, damit eine der genannten Taten zu begehen |
+| **§ 148a**      | Betrügerischer Datenverarbeitungsmissbrauch             | Vermögensschaden durch Manipulation einer Datenverarbeitung                    |
+| **§ 225a**      | Datenfälschung                                          | falsche Daten herstellen oder echte verfälschen, um sie im Rechtsverkehr zu verwenden |
+
+Der Grundtatbestand des § 118a ist seit der Novelle 2023 mit Freiheitsstrafe bis zu zwei Jahren bedroht, bei Systemen der **kritischen Infrastruktur** mit bis zu drei Jahren. Er ist ein **Ermächtigungsdelikt**: Der Täter wird nur verfolgt, wenn der Verletzte zustimmt. Zu beachten ist, dass schon das Eindringen strafbar sein kann, auch wenn nichts beschädigt wird. „Ich wollte nur zeigen, dass es unsicher ist“ schützt nicht. Bei § 126c ist der bloße Besitz von Werkzeugen wie nmap oder Metasploit nicht strafbar: Entscheidend ist der Vorsatz, damit eine Straftat zu begehen. Ein beauftragter Pentest erfüllt die Tatbestände nicht, weil die Erlaubnis des Berechtigten vorliegt. Daneben können zivilrechtliche Schadenersatzansprüche und Verstöße gegen die DSGVO entstehen.
+
+## Weiterführende Quellen
+
+- [BSI IT-Grundschutz](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/it-grundschutz_node.html) (BSI-Standards 200-1 bis 200-4 und Kompendium)
+- [Österreichisches Informationssicherheitshandbuch](https://www.sicherheitshandbuch.gv.at/) und [NISG 2026 im Rechtsinformationssystem des Bundes](https://www.ris.bka.gv.at/)
+- [ISO/IEC 27001:2022 Information security management systems](https://www.iso.org/standard/27001)

@@ -1,0 +1,412 @@
+---
+title: Computer Architecture
+description: Von Neumann and Harvard architecture, CPU structure, instruction cycle, instruction sets, addressing modes, pipelining, caches, memory hierarchy, buses, interrupts, DMA and performance.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Computer architecture** describes how a computer is built internally: which building blocks it has, how they work together and how a program is executed instruction by instruction. Once you understand this, you can explain why a program with well-ordered memory accesses runs many times faster than one with random accesses, why eight cores are not eight times as fast and what happens inside the processor when a key is pressed. The basics of digital circuits (gates, flip-flops, adders) are covered in electrical engineering, [Boolean algebra](/en/mathematics/algebra/logic-and-boolean-algebra/) in mathematics.
+
+## Von Neumann and Harvard architecture
+
+In 1945, John von Neumann described in the "First Draft of a Report on the EDVAC" a computer whose structure is still the basis of almost all computers today. The **von Neumann architecture** consists of five functional units:
+
+- **Arithmetic logic unit** (ALU): performs arithmetic and logical operations.
+- **Control unit**: fetches instructions from memory, decodes them and controls the other units.
+- **Memory**: holds **program and data together** in numbered cells (addresses).
+- **Input/output unit**: connection to the outside world.
+- **Bus system**: connects the units.
+
+The arithmetic unit and the control unit together form the **processor** (CPU, _central processing unit_). The revolutionary part was the **stored-program concept**: the program lies in memory as data and can be exchanged without rebuilding the hardware. By default, instructions are executed one after another; jump instructions change the order.
+
+![Von Neumann architecture with a shared bus for program and data, next to it the Harvard architecture with separate program and data memory](/images/computer-science/von_neumann_harvard_en.svg)
+
+The drawback: instructions and data have to travel over **the same bus**. Because the processor calculates much faster than memory can deliver, it often waits for data. This limitation is called the **von Neumann bottleneck**.
+
+The **Harvard architecture** (named after the Harvard Mark I, 1944) has separate memories and buses for instructions and data. The processor can load the next instruction and an operand at the same time, and a faulty program cannot overwrite its own code. It is typical of microcontrollers (AVR as in the Arduino, PIC) and digital signal processors.
+
+Modern PC processors use a **modified Harvard architecture**: main memory is shared (von Neumann), but the L1 cache is split into an instruction cache and a data cache (Harvard).
+
+| Feature                | von Neumann                         | Harvard                                  |
+| ---------------------- | ----------------------------------- | ---------------------------------------- |
+| Memory                 | shared for program and data         | separate                                 |
+| Buses                  | one                                 | two                                      |
+| Simultaneous access    | no                                  | instruction and data in parallel         |
+| Flexibility            | any split of memory                 | sizes fixed                              |
+| Use                    | PCs, servers (at main memory level) | microcontrollers, DSPs, L1 cache         |
+
+## Structure of the CPU
+
+### Arithmetic logic unit
+
+The **ALU** combines two operands: addition, subtraction, logical AND, OR, XOR, comparison and shift operations. Multiplication and division are handled by separate units. Floating-point numbers are calculated by the **FPU** (_floating-point unit_), vector operations (one operation on many values at once, **SIMD**) by extensions such as SSE and AVX on x86 or NEON on ARM.
+
+### Control unit
+
+The **control unit** decodes the current instruction and generates the control signals that determine which registers are read, what the ALU computes and where the result is written. With **hard-wired** control the logic is implemented directly as a circuit (fast, typical of RISC); with **microprogrammed** control every machine instruction runs a small internal program of micro-instructions (flexible, typical of complex CISC instructions).
+
+### Registers
+
+**Registers** are very fast storage cells directly inside the processor. There are only a few of them, and an access takes less than one clock cycle.
+
+| Register                   | Purpose                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| **Program counter** (PC, `RIP` on x86) | address of the next instruction                                             |
+| **Instruction register** (IR) | the instruction currently being executed                                             |
+| **General-purpose registers** | operands and intermediate results: x86-64 has 16 (`RAX` to `R15`), ARM64 31 (`X0` to `X30`), RISC-V 32 (`x0` to `x31`, `x0` is always 0) |
+| **Accumulator**            | in simple processors, the register in which the ALU stores its result                   |
+| **Stack pointer** (SP)     | address of the top of the stack (return addresses, local variables)                     |
+| **Status register** (flags, `RFLAGS` on x86) | properties of the last result                                         |
+| **Memory address register** (MAR) and **memory data register** (MDR) | interface to the memory bus      |
+
+The most important **flags** in the status register:
+
+| Flag           | set when                                                          |
+| -------------- | ----------------------------------------------------------------- |
+| **Z** (zero)   | the result is 0                                                   |
+| **C** (carry)  | a carry out of the most significant bit occurs (overflow for unsigned numbers) |
+| **N/S** (negative, sign) | the most significant bit of the result is 1             |
+| **V/O** (overflow) | an overflow occurs for signed numbers (see [two's complement](/en/computer-science/data-representation/#overflow)) |
+
+Conditional jumps evaluate these flags: a comparison `cmp a, b` internally calculates `a - b`, discards the result and only sets the flags. `je` (_jump if equal_) then jumps if the Z flag is set.
+
+## Instruction cycle
+
+Every instruction passes through the **instruction cycle** (_fetch-decode-execute cycle_), which repeats continuously as long as the computer is running:
+
+1. **Fetch**: the content of the program counter is placed on the address bus, and the instruction is loaded from memory into the instruction register. The program counter is increased by the instruction length.
+2. **Decode**: the control unit determines which operation is to be performed and which operands are needed.
+3. **Fetch operands**: read values from registers or memory.
+4. **Execute**: the ALU performs the operation, or for a jump the program counter is set to a new value.
+5. **Write back**: the result is written to a register or to memory.
+
+Afterwards the processor checks whether an **interrupt** is pending and otherwise starts the next instruction. The **clock** sets the rhythm. Depending on its complexity, an instruction takes one or more clock cycles.
+
+## Instruction sets
+
+The **instruction set architecture** (ISA) is the interface between hardware and software: it defines which instructions, registers, data types and addressing modes a processor supports. Programs compiled for an ISA run on every processor of that ISA, regardless of how it is built internally (the **microarchitecture**).
+
+| Feature                 | CISC (_complex instruction set computer_)     | RISC (_reduced instruction set computer_)            |
+| ----------------------- | --------------------------------------------- | ---------------------------------------------------- |
+| Instructions            | many powerful, sometimes very complex instructions | few, simple instructions                        |
+| Instruction length      | variable (x86: 1 to 15 bytes)                 | fixed (usually 4 bytes)                              |
+| Memory access           | many instructions can access memory directly  | only `load` and `store` (**load-store architecture**) |
+| Registers               | rather few                                    | many                                                 |
+| Cycles per instruction  | varies                                        | usually one (good for pipelining)                    |
+| Control unit            | often microprogrammed                         | hard-wired                                           |
+| Examples                | x86, x86-64                                   | ARM, RISC-V, MIPS, PowerPC                           |
+
+Today the boundary is blurred: modern x86 processors internally split their CISC instructions into RISC-like **micro-operations** (µops) and execute those.
+
+- **x86-64** (also AMD64, x64): Intel and AMD, dominant in PCs and servers, backward compatible with the 8086 from 1978.
+- **ARM** (AArch64): licensed by Arm Ltd. to manufacturers such as Apple, Qualcomm and Samsung. Very energy-efficient, found in almost all smartphones, in Apple silicon Macs and increasingly in servers.
+- **RISC-V**: an open, licence-free ISA created in 2010 at UC Berkeley. Modular (base instruction set plus extensions) and widespread mainly in microcontrollers, teaching and research.
+
+### Addressing modes
+
+The **addressing mode** determines where an instruction finds its operand. Examples in x86 syntax (Intel notation: destination first):
+
+| Addressing mode         | the operand is                                | Example                |
+| ----------------------- | --------------------------------------------- | ---------------------- |
+| **immediate**           | a constant in the instruction itself          | `mov eax, 5`           |
+| **register**            | the content of a register                     | `mov eax, ebx`         |
+| **direct** (absolute)   | the memory content at a fixed address         | `mov eax, [0x1000]`    |
+| **register indirect**   | the memory content at the address held in the register (like a pointer) | `mov eax, [ebx]` |
+| **indexed / base + displacement** | memory at register plus constant, e.g. an array element or struct field | `mov eax, [ebx + 8]`, `mov eax, [ebx + esi*4]` |
+| **relative** (PC-relative) | target relative to the program counter, for jumps and position-independent code | `jmp label` |
+
+### An assembly example
+
+**Assembly language** is the human-readable form of machine instructions: each line corresponds to exactly one instruction. The following program calculates the sum $1 + 2 + \ldots + 10$ in x86-64 (Intel syntax):
+
+```asm
+    mov  ecx, 10        ; counter = 10
+    xor  eax, eax       ; sum = 0 (XOR with itself gives 0)
+loop_start:
+    add  eax, ecx       ; sum += counter
+    dec  ecx            ; counter -= 1, sets the Z flag at 0
+    jnz  loop_start     ; jump as long as the Z flag is not set
+    ; eax now contains 55
+```
+
+The same in RISC-V. There are no flags here; the conditional branch compares a register directly:
+
+```asm
+    li   t0, 10         # counter = 10
+    li   a0, 0          # sum = 0
+loop_start:
+    add  a0, a0, t0     # sum = sum + counter (three operands)
+    addi t0, t0, -1     # counter = counter - 1
+    bnez t0, loop_start # branch if counter != 0
+```
+
+The **assembler** translates these mnemonics into machine code; for example, `xor eax, eax` becomes the bytes `31 C0`. A compiler for C#, Rust or C produces exactly such instructions (directly or via an intermediate language and a JIT).
+
+## Pipelining
+
+Without pipelining, an instruction passes through all phases before the next one starts. With **pipelining**, the phases work like an assembly line on different instructions at the same time. The classic RISC pipeline has five stages: **IF** (_instruction fetch_), **ID** (_instruction decode_, read registers), **EX** (_execute_), **MEM** (memory access), **WB** (_write back_).
+
+| Cycle         | 1  | 2  | 3  | 4   | 5   | 6   | 7   | 8   | 9  |
+| ------------- | -- | -- | -- | --- | --- | --- | --- | --- | -- |
+| Instruction 1 | IF | ID | EX | MEM | WB  |     |     |     |    |
+| Instruction 2 |    | IF | ID | EX  | MEM | WB  |     |     |    |
+| Instruction 3 |    |    | IF | ID  | EX  | MEM | WB  |     |    |
+| Instruction 4 |    |    |    | IF  | ID  | EX  | MEM | WB  |    |
+| Instruction 5 |    |    |    |     | IF  | ID  | EX  | MEM | WB |
+
+Without a pipeline, five instructions take $5 \cdot 5 = 25$ cycles; with a pipeline only $9$. In general, a pipeline with $k$ stages needs $k + n - 1$ cycles for $n$ instructions. For large $n$ one instruction completes per cycle, so **throughput** increases $k$-fold. The execution time of a single instruction (**latency**) does not get shorter.
+
+### Hazards
+
+A **hazard** prevents the next instruction from starting in the next cycle:
+
+| Hazard                | Cause                                                            | Solution                                                     |
+| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| **structural hazard** | two instructions need the same hardware at the same time, e.g. a shared memory port | duplicate hardware, e.g. separate instruction and data caches |
+| **data hazard**       | an instruction needs a result that the previous one has not yet written (_read after write_): `add r1, r2, r3` followed by `sub r4, r1, r5` | **forwarding** (pass the result directly from the ALU), waiting (**stall**, "pipeline bubble"), reordering instructions by the compiler or the hardware |
+| **control hazard**    | for a conditional branch, the next instruction is only known after EX | **branch prediction**, speculative execution; on a misprediction the pipeline is flushed |
+
+Modern processors go far beyond this: they have 14 to 20 pipeline stages, execute several instructions per cycle in parallel (**superscalar**) and change the order when an instruction has to wait for data (**out-of-order execution**). Branch prediction is correct in well over 90 % of cases in typical programs. The **Spectre** and **Meltdown** vulnerabilities (2018) exploited the fact that speculatively executed instructions leave traces in the cache.
+
+## Memory hierarchy
+
+Fast memory is expensive and small; large memory is slow. The **memory hierarchy** therefore combines several levels. Each level holds a subset of the level below.
+
+| Level            | Typical size          | Typical access time   | Technology          |
+| ---------------- | --------------------- | --------------------- | ------------------- |
+| registers        | a few hundred bytes   | under 0.3 ns (1 cycle) | flip-flops         |
+| L1 cache         | 32 to 64 KiB per core (each for instructions and data) | approx. 1 ns (4 to 5 cycles) | SRAM |
+| L2 cache         | 0.5 to 3 MiB per core | approx. 3 to 5 ns     | SRAM                |
+| L3 cache         | 8 to 128 MiB, shared by all cores | approx. 10 to 20 ns | SRAM          |
+| main memory      | 8 to 128 GiB (PC)     | approx. 60 to 100 ns  | DRAM                |
+| SSD (NVMe)       | 0.5 to 8 TB           | approx. 20 to 100 µs  | NAND flash          |
+| hard disk (HDD)  | 1 to 30 TB            | approx. 5 to 10 ms    | magnetic platters   |
+
+From top to bottom, size and access time increase while price per byte falls. Registers, caches and RAM are **volatile**: they lose their contents without power. There is a factor of about $10^7$ between an L1 hit and a hard disk access.
+
+### Locality
+
+Caches work because programs have predictable access patterns (**principle of locality**):
+
+- **Temporal locality**: data that has just been used will soon be accessed again (loop variables, loop code).
+- **Spatial locality**: an access to an address is soon followed by accesses to neighbouring addresses (arrays, sequential code).
+
+That is why the cache never loads individual bytes but whole **cache lines** of usually 64 bytes. A program that traverses a two-dimensional array row by row uses every loaded line completely. Column by column, it jumps to a different cache line with every access and can be many times slower.
+
+### Caches
+
+If the processor finds the requested data in the cache, this is a **hit**; otherwise it is a **miss**, and the line has to be loaded from the next level. The **average memory access time** (AMAT) is:
+
+$$
+t_{\text{avg}} = t_{\text{hit}} + \text{miss rate} \cdot t_{\text{miss}}
+$$
+
+Example: $1\,\mathrm{ns} + 0.05 \cdot 100\,\mathrm{ns} = 6\,\mathrm{ns}$. Just 5 % misses make the access time six times that of a pure hit.
+
+**Mapping**: where in the cache may a memory line be placed?
+
+| Organisation                 | the line may be placed …                   | Pros and cons                                              |
+| ---------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| **direct-mapped**            | in exactly one place (address modulo number of lines) | simple and fast, but conflicts when two frequently used addresses map to the same place |
+| **fully associative**        | in any place                               | no conflicts, but all places have to be compared in parallel, expensive |
+| **$n$-way set associative**  | in one of $n$ places of a set              | compromise, common in today's CPUs (8- to 16-way)         |
+
+For this, the memory address is split into three parts: **offset** (byte within the line), **index** (which set) and **tag** (the rest, compared with the stored tag to check whether the correct line really is in the cache).
+
+:::tip[Example: 32 KiB cache, 8-way set associative, 64-byte lines, 32-bit addresses]
+- Number of lines: $32\,768 / 64 = 512$, number of sets: $512 / 8 = 64$
+- Offset: $\log_2 64 = 6$ bits, index: $\log_2 64 = 6$ bits, tag: $32 - 6 - 6 = 20$ bits
+
+Address `0x12345678`: offset = lower 6 bits = 56, index = next 6 bits = 25, tag = upper 20 bits = `0x12345`.
+:::
+
+When a set is full, a **replacement policy** decides which line is evicted, usually an approximation of **LRU** (_least recently used_).
+
+**Write policies**:
+
+- **Write-through**: every write also goes to main memory immediately. Simple and consistent, but a lot of bus traffic.
+- **Write-back**: writes only go to the cache; the line is marked "dirty" and written back only when it is evicted. Less bus traffic, common today.
+
+In multicore processors each core has its own L1 and L2 caches. A **coherence protocol** (e.g. MESI) ensures that all cores see the same value for an address: when one core writes, the copies in the other caches are invalidated.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// split an address for a 32 KiB, 8-way cache with 64-byte lines
+const int LineSize = 64, Ways = 8, CacheSize = 32 * 1024;
+int sets = CacheSize / LineSize / Ways;            // 64
+int offsetBits = int.Log2(LineSize);               // 6
+int indexBits = int.Log2(sets);                    // 6
+
+uint address = 0x12345678;
+uint offset = address & (LineSize - 1);
+uint index = (address >> offsetBits) & (uint)(sets - 1);
+uint tag = address >> (offsetBits + indexBits);
+Console.WriteLine($"Offset={offset} Index={index} Tag=0x{tag:X}"); // Offset=56 Index=25 Tag=0x12345
+
+// average memory access time in ns
+double amat = 1.0 + 0.05 * 100.0;
+Console.WriteLine($"average access time: {amat} ns");             // average access time: 6 ns
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn main() {
+    // split an address for a 32 KiB, 8-way cache with 64-byte lines
+    const LINE_SIZE: u32 = 64;
+    const WAYS: u32 = 8;
+    const CACHE_SIZE: u32 = 32 * 1024;
+    let sets = CACHE_SIZE / LINE_SIZE / WAYS;          // 64
+    let offset_bits = LINE_SIZE.ilog2();               // 6
+    let index_bits = sets.ilog2();                     // 6
+
+    let address: u32 = 0x1234_5678;
+    let offset = address & (LINE_SIZE - 1);
+    let index = (address >> offset_bits) & (sets - 1);
+    let tag = address >> (offset_bits + index_bits);
+    println!("Offset={offset} Index={index} Tag=0x{tag:X}"); // Offset=56 Index=25 Tag=0x12345
+
+    // average memory access time in ns
+    let amat = 1.0 + 0.05 * 100.0;
+    println!("average access time: {amat} ns");              // average access time: 6 ns
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Buses
+
+A **bus** is a shared transmission path for several participants. The classic system bus consists of three parts:
+
+| Bus             | carries                                       | Direction                        | Its width determines …                        |
+| --------------- | --------------------------------------------- | -------------------------------- | --------------------------------------------- |
+| **data bus**    | the actual data and instructions              | bidirectional                    | how many bits are transferred per access      |
+| **address bus** | the memory or device address                  | away from the CPU                | the addressable memory: $2^n$ bytes with $n$ address lines |
+| **control bus** | read/write, clock, interrupt requests, bus requests | depends on the signal      |                                               |
+
+With 32 address lines, $2^{32}$ bytes = 4 GiB can be addressed. This is why 32-bit systems could not use more than 4 GiB of main memory. Today's x86-64 processors use 48 or 57 bits for virtual addresses.
+
+The **bus bandwidth** (data rate) is the product of bus width and transfers per second. A DDR5-4800 module with a 64-bit data width achieves $4800 \cdot 10^6\,\mathrm{s^{-1}} \cdot 8\,\mathrm{B} = 38.4\,\mathrm{GB/s}$.
+
+Shared parallel buses are hard to manage at high frequencies (timing skew, crosstalk). Modern systems therefore use **serial point-to-point links**: PCI Express to the graphics card and SSD, DMI (Intel) or Infinity Fabric (AMD) between processor and chipset (see [Hardware](/en/computer-science/hardware/)).
+
+## Interrupts and DMA
+
+### Polling and interrupts
+
+A device (keyboard, network card, timer) must be able to tell the processor that something has happened. There are two approaches:
+
+- **Polling**: the processor queries the device regularly. Simple, but it wastes time on queries, and events are only noticed at the next query.
+- **Interrupt**: the device signals via an interrupt line. The processor finishes the current instruction, saves the program counter and flags, jumps to the **interrupt service routine** (ISR) and afterwards resumes the interrupted program as if nothing had happened.
+
+The address of the appropriate ISR is held in the **interrupt vector table**, which has an entry for every interrupt number. A distinction is made between:
+
+| Type                        | Trigger                                                     | Examples                                      |
+| --------------------------- | ----------------------------------------------------------- | --------------------------------------------- |
+| **hardware interrupt**      | an external device, asynchronous to the program             | key press, packet arrived, timer expired      |
+| **exception**               | an error during instruction execution, synchronous          | division by zero, invalid instruction, page fault |
+| **software interrupt** (trap) | a dedicated instruction in the program                    | system call (`syscall` on x86-64, `ecall` on RISC-V) |
+
+Interrupts have **priorities**, and less important ones can be temporarily **masked** (disabled). An **NMI** (_non-maskable interrupt_) cannot be disabled and is used for serious hardware errors. A detailed example on a microcontroller is on the page [Interrupts](/en/embedded-programming/interrupts/).
+
+### DMA
+
+When copying large amounts of data, for example from the SSD into main memory, it would be wasteful for the processor to read and write every word itself. With **direct memory access** (DMA), the CPU gives a **DMA controller** the source, destination and length. The controller transfers the data over the bus on its own while the CPU continues working, and signals completion with an interrupt. Today devices such as NVMe SSDs, network and graphics cards have their own DMA engines (_bus mastering_).
+
+## Multicore processors
+
+From around 2005 onwards, the clock frequency could hardly be increased any further because power consumption and heat grew too much (dynamic power dissipation rises roughly linearly with frequency and quadratically with voltage). Since then, the additional transistors supplied by **Moore's law** (the number of transistors doubles about every two years) have been used for more **cores**.
+
+- **Multicore processor**: several complete processor cores on one chip, with their own L1/L2 caches and a shared L3 cache. All cores have equal access to main memory (**SMP**, symmetric multiprocessing).
+- **Simultaneous multithreading** (SMT, _Hyper-Threading_ at Intel): one core executes two threads at the same time by distributing their instructions across its execution units. The operating system sees twice as many **logical processors**, but the gain is usually only 10 to 30 %.
+- **Hybrid architectures**: performance cores and efficiency cores on one chip (ARM big.LITTLE, Intel P- and E-cores, Apple M series). The operating system's scheduler distributes the work.
+- **NUMA** (_non-uniform memory access_): in servers with several processor sockets, each processor has its own memory, which it accesses faster than the memory of the others.
+
+More cores only help if the software works in parallel. How programs use threads is described in [Processes and threads](/en/computer-science/processes-and-threads/) and [Concurrency](/en/software-development/concurrency/).
+
+## Performance
+
+### Clock rate, CPI and IPC
+
+The clock rate alone says little about performance because processors get different amounts of work done per cycle. The **CPU time** of a program is:
+
+$$
+t_{\text{CPU}} = \frac{\text{instruction count} \cdot \text{CPI}}{f}
+$$
+
+with **CPI** (_cycles per instruction_, average cycles per instruction) and the clock frequency $f$. The reciprocal of CPI is **IPC** (_instructions per cycle_), well above 1 for modern superscalar cores.
+
+Example: $10^9$ instructions with $\text{CPI} = 1.5$ at $f = 3\,\mathrm{GHz}$ take $\frac{10^9 \cdot 1.5}{3 \cdot 10^9\,\mathrm{s^{-1}}} = 0.5\,\mathrm{s}$.
+
+Other measures are **MIPS** (millions of instructions per second, only comparable for the same ISA) and **FLOPS** (floating-point operations per second, for supercomputers and GPUs). In practice, comparisons use **benchmarks** such as SPEC CPU, Geekbench or Cinebench, which run real programs.
+
+### Amdahl's law
+
+If a program is distributed across $n$ processors, only the parallelisable fraction $p$ can be sped up. The serial remainder $1 - p$ takes just as long as before. **Amdahl's law** (Gene Amdahl, 1967) gives the maximum **speedup**:
+
+$$
+S(n) = \frac{1}{(1 - p) + \dfrac{p}{n}} \qquad \lim_{n \to \infty} S(n) = \frac{1}{1 - p}
+$$
+
+Example: if 90 % of a program can be parallelised, 8 cores give only $S = \frac{1}{0.1 + 0.9/8} \approx 4.7$, and even infinitely many cores give at most a factor of 10. The serial fraction limits the speedup. **Gustafson's law**, by contrast, considers the case where the problem also grows with more processors and therefore arrives at more optimistic values.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+static double Amdahl(double parallelPart, int cores) =>
+    1.0 / ((1.0 - parallelPart) + parallelPart / cores);
+
+foreach (int n in new[] { 1, 2, 4, 8, 64, 1024 })
+{
+    Console.WriteLine($"{n,5} cores: speedup {Amdahl(0.9, n):F2}");
+}
+// Output:
+//     1 cores: speedup 1.00
+//     2 cores: speedup 1.82
+//     4 cores: speedup 3.08
+//     8 cores: speedup 4.71
+//    64 cores: speedup 8.77
+//  1024 cores: speedup 9.91
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+fn amdahl(parallel_part: f64, cores: u32) -> f64 {
+    1.0 / ((1.0 - parallel_part) + parallel_part / cores as f64)
+}
+
+fn main() {
+    for n in [1, 2, 4, 8, 64, 1024] {
+        println!("{n:>5} cores: speedup {:.2}", amdahl(0.9, n));
+    }
+}
+// Output:
+//     1 cores: speedup 1.00
+//     2 cores: speedup 1.82
+//     4 cores: speedup 3.08
+//     8 cores: speedup 4.71
+//    64 cores: speedup 8.77
+//  1024 cores: speedup 9.91
+```
+
+</TabItem>
+</Tabs>
+
+## GPU
+
+A **GPU** (_graphics processing unit_) is optimised for **data parallelism**: instead of a few complex cores with large caches and branch prediction, it has thousands of simple execution units that apply the same operation to many data items at once (**SIMT**, _single instruction, multiple threads_). Originally built to compute pixels, it is now used for general-purpose computation (**GPGPU**) through interfaces such as **CUDA** (NVIDIA), OpenCL or Vulkan Compute: training neural networks, simulations, video encoding. The CPU remains responsible for sequential, branch-heavy logic; the GPU takes over large, uniform computational tasks. Graphics cards have their own fast memory (GDDR or HBM) with bandwidths from several hundred GB/s to over 1 TB/s.
+
+## Further reading
+
+- David A. Patterson, John L. Hennessy: _Computer Organization and Design: The Hardware/Software Interface_ (RISC-V Edition), Morgan Kaufmann
+- Andrew S. Tanenbaum, Todd Austin: _Structured Computer Organization_, Pearson
+- [The RISC-V Instruction Set Manual](https://riscv.org/specifications/) (RISC-V International)

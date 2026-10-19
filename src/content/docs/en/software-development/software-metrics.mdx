@@ -1,0 +1,151 @@
+---
+title: Software Metrics
+description: Quality attributes of software systems such as scalability, openness, transparency, coupling and cohesion as well as measurable metrics such as cyclomatic complexity.
+sidebar:
+  order: 20
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Software should not only work but also be stable, extensible and maintainable, over many years and with changing teams. This page describes the most important quality attributes of software systems and the figures (**metrics**) with which they can be measured. The quality characteristics according to the standard ISO/IEC 25010 are covered on the page [Software Quality](/en/project_management/quality_management/software_quality/).
+
+## Scalability
+
+A system is **scalable** if it can grow with increasing load (more users, more data, more requests) through additional resources without having to be redesigned.
+
+### Horizontal scaling
+
+With **horizontal scaling** (_scale-out_), you add more machines or instances across which a [load balancer](/en/deployment/operations/high_availability/#load-balancing) distributes the load. It is theoretically almost unlimited and at the same time increases availability. The prerequisite is that the application is **stateless**: session data must not live in the memory of a single instance but, for example, in a database or a cache.
+
+### Vertical scaling
+
+With **vertical scaling** (_scale-up_), a single machine gets more resources: more memory, more or faster processor cores, faster storage. This requires no changes to the software, but it hits the limits of the available hardware, becomes disproportionately expensive and remains a single point of failure.
+
+## Openness
+
+An open system can be extended with new functions and connected to other systems. This requires clearly defined, documented interfaces.
+
+### Interoperability
+
+**Interoperability** is the ability to work together with other systems. It is based on standardised protocols and formats such as HTTP, [REST](/en/web-technologies/rest-apis/), JSON or XML. In practice, interfaces often change during a project, so they are given version numbers.
+
+### Portability
+
+**Portability** means that a system runs on different platforms, for example on Windows, Linux and macOS or on different devices. Cross-platform runtimes such as .NET, programming languages such as Rust with compilers for many target systems and [containers](/en/deployment/virtualisation/) make this easier. For end users, a web application or **progressive web app** (PWA) can be reachable on all devices.
+
+## Transparency
+
+In a distributed system, the user should not notice that it consists of many parts. It should feel like a single system.
+
+### Access transparency
+
+Local and remote resources are accessed in the same way. Differences in the access path (which machine, which network) and in the representation (such as date formats of different countries) are hidden.
+
+### Location transparency
+
+The user cannot tell where a resource is physically located. Resources are addressed through logical names such as a URL that contain no information about the location. This way, resources can come from a database, a file system or another microservice and be moved without anything changing for the user.
+
+### Replication transparency
+
+The user does not notice that there are several copies of a resource. Copies (**replicas**) increase availability and performance. Replication transparency requires location transparency.
+
+### Concurrency transparency
+
+Many users can access the same resources at the same time without disturbing each other. The challenges are synchronisation and data consistency (see [Transactions](/en/databases/transactions/)).
+
+### Failure transparency
+
+Failures of individual components are hidden from the user, for example by having another replica step in or by repeating a request automatically.
+
+## Coupling
+
+**Coupling** is the degree of dependency between software elements such as classes, modules or services. The more strongly two elements are coupled, the more likely a change to one forces a change to the other. A flexible, maintainable system has **low coupling**: elements communicate through few, narrow interfaces and do not access each other's implementation.
+
+Ordered from strong to weak, the kinds include:
+
+| Kind of coupling        | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **Content coupling**    | one module directly accesses the internal data of another                           |
+| **Common coupling**     | modules share global variables, for example through a [singleton](/en/software-development/design-patterns/#singleton) |
+| **Control coupling**    | one module controls the flow of another through flag parameters                     |
+| **Stamp coupling**      | modules exchange whole data structures of which only parts are needed               |
+| **Data coupling**       | modules exchange only the simple data they really need                              |
+| **Message coupling**    | modules only communicate through messages, for example through a [queue](/en/decentralised-systems/storage-account/#queue-storage) |
+
+## Cohesion
+
+**Cohesion** describes the internal unity of a software element: how closely do its parts belong together? With **high cohesion**, a class fulfils exactly one task, and all its methods and fields serve this task. The [single responsibility principle](/en/software-development/clean-code/#single-responsibility-principle) describes exactly this property.
+
+The goal of a good design is therefore always: **low coupling, high cohesion**.
+
+## Measurable metrics
+
+Some of the quality attributes described so far can be expressed in numbers. Tools such as Visual Studio ("Calculate Code Metrics"), JetBrains Rider, SonarQube or, for Rust, Clippy determine them automatically.
+
+| Metric                                          | Meaning                                                                                                     |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Lines of code (LOC)**                         | Number of lines of code. Easy to measure but says little about quality.                                     |
+| **Cyclomatic complexity** (McCabe)              | Number of linearly independent paths through a method. Values above 10 are considered hard to test.          |
+| **Class coupling**                              | Number of other classes on which a class depends.                                                           |
+| **Afferent and efferent coupling** ($C_a$, $C_e$) | how many modules depend on a module and on how many it depends itself. This gives the **instability** $I = \frac{C_e}{C_a + C_e}$. |
+| **Depth of inheritance**                        | Number of base classes up to the root of the inheritance hierarchy. Deep hierarchies are hard to understand. |
+| **LCOM** (_lack of cohesion of methods_)        | measures how little the methods of a class use common fields. High values indicate low cohesion.           |
+| **Halstead metrics**                            | compute the volume, difficulty and effort of a program from the number of operators and operands.          |
+| **Maintainability index**                       | value computed from LOC, cyclomatic complexity and Halstead volume. Visual Studio scales it to 0 to 100; higher is better. |
+| **Code coverage**                               | Share of the code that is executed by automated [tests](/en/software-development/testing/#white-box-techniques). |
+
+### Cyclomatic complexity
+
+In 1976, Thomas McCabe defined cyclomatic complexity using the **control flow graph** of a method: $M = E - N + 2P$ with $E$ edges, $N$ nodes and $P$ connected components (for one method, $P = 1$). In practice, it is easier to count: **number of decision points + 1**. Decision points are `if`, `else if`, every loop, every `case` branch, `catch` and the operators `&&`, `||` and `?:`.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Classify(-5));  // negative
+Console.WriteLine(Classify(42));  // large and even
+
+// decision points: if, else if, &&, else if  → 4 + 1 = 5
+static string Classify(int n)
+{
+    if (n < 0)
+        return "negative";
+    else if (n > 10 && n % 2 == 0)
+        return "large and even";
+    else if (n > 10)
+        return "large";
+    return "small";
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// decision points: if, else if, &&, else if  → 4 + 1 = 5
+fn classify(n: i32) -> &'static str {
+    if n < 0 {
+        "negative"
+    } else if n > 10 && n % 2 == 0 {
+        "large and even"
+    } else if n > 10 {
+        "large"
+    } else {
+        "small"
+    }
+}
+
+fn main() {
+    println!("{}", classify(-5)); // negative
+    println!("{}", classify(42)); // large and even
+}
+```
+
+</TabItem>
+</Tabs>
+
+The method has a complexity of 5. The number equals the number of linearly independent paths (basis paths) and is therefore an upper bound for the number of test cases needed for full branch coverage. The higher the complexity, the more tests a method needs and the harder it is to understand.
+
+:::caution[Using metrics correctly]
+A metric is a hint, not a verdict. If you rate developers by lines of code or test coverage, you get bloated code and meaningless tests (_Goodhart's law_: when a measure becomes a target, it ceases to be a good measure). Metrics are best suited for spotting anomalies and observing trends over time.
+:::

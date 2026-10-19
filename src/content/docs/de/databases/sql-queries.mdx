@@ -1,0 +1,552 @@
+---
+title: SQL-Abfragen
+description: "SELECT vollständig: Filtern, Sortieren, Funktionen, CASE, NULL, Aggregation mit GROUP BY und HAVING, alle Joins, Unterabfragen, Mengenoperationen, CTEs und Fensterfunktionen."
+sidebar:
+  order: 7
+---
+
+Mit `SELECT` liest du Daten aus der Datenbank. Eine Abfrage verändert nichts, sie liefert nur eine Ergebnistabelle. Die meiste Zeit beim Arbeiten mit Datenbanken verbringt man mit Abfragen, und die meisten Prüfungsaufgaben in INSY bestehen aus ihnen. Diese Seite behandelt alle Teile einer Abfrage. Die theoretische Grundlage ist die [relationale Algebra](/de/databases/relational-algebra/).
+
+## Beispieldatenbank
+
+Alle Beispiele verwenden diese Schuldatenbank. Du kannst das Skript in PostgreSQL ausführen und die Abfragen selbst ausprobieren.
+
+```sql
+CREATE TABLE Lehrer (
+    Id                 INT PRIMARY KEY,
+    Name               VARCHAR(50) NOT NULL,
+    AbteilungsleiterId INT REFERENCES Lehrer(Id)
+);
+
+CREATE TABLE Klasse (
+    Id                INT PRIMARY KEY,
+    Name              VARCHAR(10) NOT NULL UNIQUE,
+    Jahrgang          INT NOT NULL,
+    KlassenvorstandId INT REFERENCES Lehrer(Id)
+);
+
+CREATE TABLE Schueler (
+    Id           INT PRIMARY KEY,
+    Vorname      VARCHAR(50) NOT NULL,
+    Nachname     VARCHAR(50) NOT NULL,
+    Geburtsdatum DATE NOT NULL,
+    KlasseId     INT REFERENCES Klasse(Id)
+);
+
+CREATE TABLE Fach (
+    Id          INT PRIMARY KEY,
+    Kuerzel     VARCHAR(10) NOT NULL UNIQUE,
+    Bezeichnung VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Note (
+    Id         INT PRIMARY KEY,
+    SchuelerId INT NOT NULL REFERENCES Schueler(Id),
+    FachId     INT NOT NULL REFERENCES Fach(Id),
+    Datum      DATE NOT NULL,
+    Wert       INT NOT NULL CHECK (Wert BETWEEN 1 AND 5)
+);
+
+INSERT INTO Lehrer VALUES (1, 'Mayer', NULL), (2, 'Steiner', 1), (3, 'Pichler', 1), (4, 'Kern', 2);
+
+INSERT INTO Klasse VALUES (1, '3AHIT', 3, 2), (2, '4AHIT', 4, 3), (3, '5AHIT', 5, NULL);
+
+INSERT INTO Schueler VALUES
+    (1, 'Anna',  'Huber',  '2009-03-14', 1),
+    (2, 'Ben',   'Wolf',   '2008-11-02', 1),
+    (3, 'Clara', 'Berger', '2008-06-30', 2),
+    (4, 'David', 'Novak',  '2009-01-20', NULL),
+    (5, 'Emma',  'Gruber', '2007-09-05', 2);
+
+INSERT INTO Fach VALUES
+    (1, 'AM',   'Angewandte Mathematik'),
+    (2, 'SEW',  'Softwareentwicklung'),
+    (3, 'INSY', 'Informationssysteme'),
+    (4, 'NWT',  'Netzwerktechnik');
+
+INSERT INTO Note VALUES
+    (1, 1, 1, '2025-10-10', 2), (2, 1, 2, '2025-10-15', 1), (3, 1, 3, '2025-11-05', 1),
+    (4, 2, 1, '2025-10-10', 4), (5, 2, 2, '2025-10-15', 3), (6, 2, 2, '2025-12-01', 2),
+    (7, 3, 2, '2025-10-20', 2), (8, 3, 3, '2025-11-12', 3),
+    (9, 5, 1, '2025-10-22', 5), (10, 5, 3, '2025-11-12', 4);
+```
+
+David ist keiner Klasse zugeordnet, die 5AHIT hat keine Schüler und keinen Klassenvorstand, und in NWT gibt es noch keine Noten. Solche Sonderfälle zeigen, wie sich Joins und `NULL` verhalten.
+
+## Aufbau einer Abfrage
+
+{/* check: skip */}
+```sql
+SELECT   Spalten             -- 5. welche Spalten
+FROM     Tabellen            -- 1. woher
+WHERE    Zeilenbedingung     -- 2. welche Zeilen
+GROUP BY Gruppierung         -- 3. wie gruppieren
+HAVING   Gruppenbedingung    -- 4. welche Gruppen
+ORDER BY Sortierung          -- 6. in welcher Reihenfolge
+LIMIT    Anzahl;             -- 7. wie viele
+```
+
+Die Klauseln müssen in dieser Reihenfolge geschrieben werden. Das Datenbanksystem verarbeitet sie aber in der Reihenfolge der Nummern in den Kommentaren. Daraus folgen zwei Regeln, die oft zu Fehlern führen: In `WHERE` kannst du keinen Spaltenalias aus `SELECT` verwenden, weil `SELECT` erst später ausgewertet wird. In `ORDER BY` dagegen schon.
+
+## Spalten auswählen
+
+```sql
+SELECT Vorname, Nachname,
+       EXTRACT(YEAR FROM AGE(DATE '2026-01-01', Geburtsdatum)) AS Alter
+FROM Schueler
+WHERE KlasseId = 1;
+```
+
+| vorname | nachname | alter |
+| ------- | -------- | ----- |
+| Anna    | Huber    | 16    |
+| Ben     | Wolf     | 17    |
+
+- `SELECT *` liefert alle Spalten. In Programmen solltest du die Spalten trotzdem einzeln angeben, damit eine neue Spalte in der Tabelle das Programm nicht verändert.
+- Mit `AS` gibst du einer Spalte oder Tabelle einen **Alias**. Bei Tabellen ist `AS` optional: `FROM Schueler s`.
+- In `SELECT` sind Berechnungen und Funktionen erlaubt.
+- `SELECT DISTINCT` entfernt doppelte Zeilen aus dem Ergebnis.
+
+## Zeilen filtern
+
+| Operator                     | Bedeutung                                                    | Beispiel                              |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------- |
+| `=`, `<>` (oder `!=`), `<`, `<=`, `>`, `>=` | Vergleich                                     | `Wert <> 5`                           |
+| `AND`, `OR`, `NOT`           | Verknüpfung. `AND` bindet stärker als `OR`, setze im Zweifel Klammern. | `Wert < 3 AND (FachId = 1 OR FachId = 2)` |
+| `BETWEEN a AND b`            | im Bereich, **einschließlich** beider Grenzen                | `Wert BETWEEN 2 AND 3`                |
+| `IN (...)`                   | in einer Liste                                               | `FachId IN (1, 2)`                    |
+| `LIKE`                       | Textmuster: `%` beliebig viele Zeichen, `_` genau ein Zeichen | `Nachname LIKE '%er%'`               |
+| `IS NULL`, `IS NOT NULL`     | Prüfung auf `NULL`                                           | `KlasseId IS NULL`                    |
+
+```sql
+SELECT Id, Wert
+FROM Note
+WHERE Wert BETWEEN 2 AND 3
+  AND FachId IN (1, 2);
+```
+
+liefert die Noten 1, 5, 6 und 7. `LIKE` unterscheidet in PostgreSQL Groß- und Kleinschreibung, `ILIKE` nicht. In SQL Server und MySQL hängt das von der Sortierung (_Collation_) der Spalte ab.
+
+## NULL und dreiwertige Logik
+
+Ein Vergleich mit `NULL` liefert weder `TRUE` noch `FALSE`, sondern `UNKNOWN`. `WHERE` übernimmt nur Zeilen, deren Bedingung `TRUE` ist.
+
+| `a`       | `b`       | `a AND b` | `a OR b`  | `NOT a`   |
+| --------- | --------- | --------- | --------- | --------- |
+| TRUE      | UNKNOWN   | UNKNOWN   | TRUE      | FALSE     |
+| FALSE     | UNKNOWN   | FALSE     | UNKNOWN   | TRUE      |
+| UNKNOWN   | UNKNOWN   | UNKNOWN   | UNKNOWN   | UNKNOWN   |
+
+Folgen davon:
+
+- `WHERE KlasseId = NULL` liefert nie eine Zeile. Richtig ist `WHERE KlasseId IS NULL`.
+- `WHERE KlasseId <> 1` liefert David nicht, weil `NULL <> 1` unbekannt ist.
+- Arithmetik mit `NULL` ergibt `NULL`: `NULL + 1` ist `NULL`.
+- Aggregatfunktionen außer `COUNT(*)` ignorieren `NULL`-Werte.
+
+Besonders tückisch ist `NOT IN` mit einer Unterabfrage, die `NULL` enthält. Gesucht sind die Lehrkräfte, die keine Klasse führen:
+
+```sql
+-- falsch: liefert keine einzige Zeile
+SELECT Name FROM Lehrer
+WHERE Id NOT IN (SELECT KlassenvorstandId FROM Klasse);
+
+-- richtig: liefert Mayer und Kern
+SELECT Name FROM Lehrer l
+WHERE NOT EXISTS (SELECT 1 FROM Klasse k WHERE k.KlassenvorstandId = l.Id);
+```
+
+Die Unterabfrage liefert 2, 3 und `NULL`. Für Mayer lautet die Bedingung `1 <> 2 AND 1 <> 3 AND 1 <> NULL`, und der letzte Teil ist unbekannt. Verwende deshalb `NOT EXISTS` oder schließe `NULL` in der Unterabfrage aus.
+
+Zwei Funktionen helfen im Umgang mit `NULL`: `COALESCE(a, b, ...)` liefert den ersten Wert, der nicht `NULL` ist. `NULLIF(a, b)` liefert `NULL`, wenn `a = b`, sonst `a`. Damit vermeidet man etwa eine Division durch null: `Summe / NULLIF(Anzahl, 0)`.
+
+```sql
+SELECT Vorname, COALESCE(CAST(KlasseId AS VARCHAR), 'keine Klasse') AS Klasse
+FROM Schueler
+ORDER BY Id;
+```
+
+## Sortieren und begrenzen
+
+```sql
+SELECT Vorname, Geburtsdatum
+FROM Schueler
+ORDER BY Geburtsdatum DESC
+LIMIT 3;
+```
+
+| vorname | geburtsdatum |
+| ------- | ------------ |
+| Anna    | 2009-03-14   |
+| David   | 2009-01-20   |
+| Ben     | 2008-11-02   |
+
+- `ASC` (aufsteigend) ist der Standard, `DESC` sortiert absteigend. Mehrere Sortierschlüssel werden mit Komma getrennt: `ORDER BY Nachname, Vorname`.
+- Ohne `ORDER BY` ist die Reihenfolge **nicht festgelegt**, auch wenn sie bei Tests immer gleich aussieht.
+- Wo `NULL` landet, ist je nach System verschieden. Mit `NULLS FIRST` oder `NULLS LAST` legst du es fest.
+- Die Anzahl begrenzt du mit `LIMIT n OFFSET m` (PostgreSQL, MySQL, SQLite), standardkonform mit `OFFSET m ROWS FETCH FIRST n ROWS ONLY` und in SQL Server mit `SELECT TOP n`. So wird seitenweises Blättern (_Paging_) umgesetzt.
+
+## Funktionen
+
+| Bereich       | Funktionen (PostgreSQL)                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| **Text**      | `UPPER`, `LOWER`, `LENGTH`, `SUBSTRING(s FROM 1 FOR 2)`, `TRIM`, `REPLACE`, `POSITION`, `CONCAT`, `\|\|` |
+| **Zahlen**    | `ROUND(x, 2)`, `TRUNC`, `CEIL`, `FLOOR`, `ABS`, `MOD`, `POWER`, `SQRT`                    |
+| **Datum**     | `CURRENT_DATE`, `CURRENT_TIMESTAMP`, `EXTRACT(YEAR FROM d)`, `AGE(a, b)`, `d + INTERVAL '7 days'`, `DATE_TRUNC('month', d)` |
+| **Umwandlung** | `CAST(x AS typ)`, in PostgreSQL auch `x::typ`, `TO_CHAR(d, 'DD.MM.YYYY')`                 |
+
+Die Funktionsnamen unterscheiden sich zwischen den Systemen am stärksten. SQL Server verwendet zum Beispiel `LEN`, `GETDATE()` und `DATEDIFF`, MySQL `CHAR_LENGTH`, `NOW()` und `DATE_FORMAT`.
+
+### CASE
+
+`CASE` ist die Fallunterscheidung von SQL und kann überall stehen, wo ein Wert erwartet wird:
+
+```sql
+SELECT Id, Wert,
+       CASE Wert
+           WHEN 1 THEN 'Sehr gut'
+           WHEN 2 THEN 'Gut'
+           WHEN 3 THEN 'Befriedigend'
+           WHEN 4 THEN 'Genügend'
+           ELSE 'Nicht genügend'
+       END AS Beurteilung
+FROM Note
+WHERE SchuelerId = 2;
+```
+
+| id | wert | beurteilung  |
+| -- | ---- | ------------ |
+| 4  | 4    | Genügend     |
+| 5  | 3    | Befriedigend |
+| 6  | 2    | Gut          |
+
+Die zweite Form prüft beliebige Bedingungen: `CASE WHEN Wert <= 2 THEN 'gut' WHEN Wert <= 4 THEN 'positiv' ELSE 'negativ' END`. Fehlt `ELSE` und trifft keine Bedingung zu, ist das Ergebnis `NULL`.
+
+## Aggregation und Gruppierung
+
+**Aggregatfunktionen** fassen viele Zeilen zu einem Wert zusammen:
+
+| Funktion          | Ergebnis                                                         |
+| ----------------- | ---------------------------------------------------------------- |
+| `COUNT(*)`        | Anzahl der Zeilen                                                |
+| `COUNT(spalte)`   | Anzahl der Zeilen, in denen die Spalte nicht `NULL` ist          |
+| `COUNT(DISTINCT spalte)` | Anzahl verschiedener Werte                                |
+| `SUM`, `AVG`      | Summe, Durchschnitt                                              |
+| `MIN`, `MAX`      | kleinster und größter Wert, auch für Text und Datum              |
+
+```sql
+SELECT COUNT(*) AS Schueler, COUNT(KlasseId) AS MitKlasse, MIN(Geburtsdatum) AS Aeltester
+FROM Schueler;
+```
+
+liefert 5, 4 und `2007-09-05`. Mit `GROUP BY` wird pro Gruppe aggregiert, mit `HAVING` werden Gruppen gefiltert:
+
+```sql
+SELECT s.Vorname, ROUND(AVG(n.Wert), 2) AS Schnitt, COUNT(*) AS Noten
+FROM Schueler s
+JOIN Note n ON n.SchuelerId = s.Id
+GROUP BY s.Id, s.Vorname
+HAVING AVG(n.Wert) <= 3
+ORDER BY Schnitt;
+```
+
+| vorname | schnitt | noten |
+| ------- | ------- | ----- |
+| Anna    | 1.33    | 3     |
+| Clara   | 2.50    | 2     |
+| Ben     | 3.00    | 3     |
+
+Zwei Regeln gelten immer:
+
+- Jede Spalte in `SELECT`, die nicht in einer Aggregatfunktion steht, muss in `GROUP BY` vorkommen. Sonst wäre unklar, welcher Wert der Gruppe angezeigt werden soll. (PostgreSQL erlaubt eine Ausnahme: Ist der Primärschlüssel gruppiert, dürfen die übrigen Spalten derselben Tabelle fehlen.)
+- `WHERE` filtert **Zeilen vor** der Gruppierung und darf keine Aggregatfunktionen enthalten. `HAVING` filtert **Gruppen danach**.
+
+Mit `FILTER` (PostgreSQL, SQLite) oder einem `CASE` innerhalb der Aggregatfunktion zählst du mehrere Bedingungen in einer Abfrage:
+
+```sql
+SELECT COUNT(*) FILTER (WHERE Wert <= 2) AS GuteNoten,
+       SUM(CASE WHEN Wert = 5 THEN 1 ELSE 0 END) AS NichtGenuegend
+FROM Note;
+```
+
+## Joins
+
+Ein **Join** verbindet Zeilen mehrerer Tabellen über eine Bedingung, meist Fremdschlüssel gleich Primärschlüssel.
+
+| Join                 | Ergebnis                                                                                      |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `INNER JOIN` (`JOIN`) | nur Zeilen, die in beiden Tabellen einen Partner haben                                       |
+| `LEFT JOIN`          | alle Zeilen der linken Tabelle, fehlende Partner rechts werden mit `NULL` aufgefüllt          |
+| `RIGHT JOIN`         | alle Zeilen der rechten Tabelle                                                               |
+| `FULL JOIN`          | alle Zeilen beider Tabellen                                                                   |
+| `CROSS JOIN`         | jede Zeile mit jeder (kartesisches Produkt)                                                   |
+
+Der Unterschied zeigt sich an David und der 5AHIT:
+
+```sql
+SELECT s.Vorname, k.Name
+FROM Schueler s
+FULL JOIN Klasse k ON s.KlasseId = k.Id
+ORDER BY s.Id, k.Id;
+```
+
+| vorname | name  |
+| ------- | ----- |
+| Anna    | 3AHIT |
+| Ben     | 3AHIT |
+| Clara   | 4AHIT |
+| David   |       |
+| Emma    | 4AHIT |
+|         | 5AHIT |
+
+Ein `INNER JOIN` liefert nur die vier Zeilen mit beiden Werten, ein `LEFT JOIN` zusätzlich David, ein `RIGHT JOIN` zusätzlich die 5AHIT.
+
+### Mehrere Tabellen
+
+Joins werden aneinandergereiht. Gesucht sind alle Noten 4 und 5 mit Fach und Klassenvorstand:
+
+```sql
+SELECT s.Vorname, f.Kuerzel, n.Wert, l.Name AS Klassenvorstand
+FROM Note n
+JOIN Schueler s ON s.Id = n.SchuelerId
+JOIN Fach f     ON f.Id = n.FachId
+JOIN Klasse k   ON k.Id = s.KlasseId
+LEFT JOIN Lehrer l ON l.Id = k.KlassenvorstandId
+WHERE n.Wert >= 4;
+```
+
+| vorname | kuerzel | wert | klassenvorstand |
+| ------- | ------- | ---- | --------------- |
+| Ben     | AM      | 4    | Steiner         |
+| Emma    | AM      | 5    | Pichler         |
+| Emma    | INSY    | 4    | Pichler         |
+
+### Self Join
+
+Verweist eine Tabelle auf sich selbst, wird sie mit zwei verschiedenen Aliasen verbunden:
+
+```sql
+SELECT l.Name AS Lehrer, chef.Name AS Abteilungsleiter
+FROM Lehrer l
+LEFT JOIN Lehrer chef ON chef.Id = l.AbteilungsleiterId
+ORDER BY l.Id;
+```
+
+| lehrer  | abteilungsleiter |
+| ------- | ---------------- |
+| Mayer   |                  |
+| Steiner | Mayer            |
+| Pichler | Mayer            |
+| Kern    | Steiner          |
+
+### Häufige Fehler bei Joins
+
+- **Bedingung vergessen**: Ohne `ON` entsteht ein kartesisches Produkt. Bei 1 000 Schülern und 10 000 Noten wären das 10 Millionen Zeilen.
+- **Filter auf der rechten Seite eines LEFT JOIN in WHERE**: `LEFT JOIN Note n ON ... WHERE n.Wert = 1` entfernt alle Schüler ohne Note wieder, weil `NULL = 1` unbekannt ist. Gehört die Bedingung zum Join, schreibe sie in `ON`: `LEFT JOIN Note n ON n.SchuelerId = s.Id AND n.Wert = 1`.
+- **Zählen über einen LEFT JOIN**: `COUNT(*)` zählt auch die mit `NULL` aufgefüllte Zeile. Für „Anzahl Schüler pro Klasse inklusive leerer Klassen“ verwende `COUNT(s.Id)`.
+
+Die ältere Schreibweise `FROM Schueler s, Klasse k WHERE s.KlasseId = k.Id` ist ein impliziter Inner Join. Sie funktioniert, vermischt aber Join- und Filterbedingungen und macht vergessene Bedingungen schwer erkennbar.
+
+## Unterabfragen
+
+Eine **Unterabfrage** (_Subquery_) ist eine Abfrage in einer anderen Abfrage.
+
+| Art                   | Liefert                    | Verwendung                                       |
+| --------------------- | -------------------------- | ------------------------------------------------ |
+| **Skalar**            | genau einen Wert           | wie ein einzelner Wert, etwa in einem Vergleich  |
+| **Spalte**            | eine Liste von Werten      | mit `IN`, `ANY`, `ALL`                           |
+| **Tabelle**           | eine Tabelle               | in `FROM` als abgeleitete Tabelle, mit `EXISTS`  |
+
+```sql
+-- skalar: alle Noten, die besser als der Durchschnitt (2,7) sind
+SELECT Id, Wert FROM Note
+WHERE Wert < (SELECT AVG(Wert) FROM Note);
+
+-- ALL: Schüler, die älter als alle Schüler der Klasse 1 sind (Clara, Emma)
+SELECT Vorname FROM Schueler
+WHERE Geburtsdatum < ALL (SELECT Geburtsdatum FROM Schueler WHERE KlasseId = 1);
+```
+
+`= ANY (...)` entspricht `IN (...)`. `> ALL (...)` ist wahr, wenn der Wert größer als jeder Wert der Liste ist.
+
+### Korrelierte Unterabfragen
+
+Eine **korrelierte** Unterabfrage verweist auf die äußere Abfrage und wird gedanklich für jede äußere Zeile neu ausgeführt. Gesucht ist die jeweils jüngste Note jedes Schülers:
+
+```sql
+SELECT s.Vorname, n.Datum, n.Wert
+FROM Note n
+JOIN Schueler s ON s.Id = n.SchuelerId
+WHERE n.Datum = (SELECT MAX(n2.Datum)
+                 FROM Note n2
+                 WHERE n2.SchuelerId = n.SchuelerId)
+ORDER BY s.Vorname;
+```
+
+| vorname | datum      | wert |
+| ------- | ---------- | ---- |
+| Anna    | 2025-11-05 | 1    |
+| Ben     | 2025-12-01 | 2    |
+| Clara   | 2025-11-12 | 3    |
+| Emma    | 2025-11-12 | 4    |
+
+`EXISTS` prüft nur, ob die Unterabfrage mindestens eine Zeile liefert. Deshalb schreibt man darin oft `SELECT 1`.
+
+### Abgeleitete Tabellen
+
+Eine Unterabfrage in `FROM` braucht einen Alias. Gesucht ist der beste Notendurchschnitt pro Klasse:
+
+```sql
+SELECT k.Name, ROUND(MIN(x.Schnitt), 2) AS BesterSchnitt
+FROM (SELECT SchuelerId, AVG(Wert) AS Schnitt
+      FROM Note
+      GROUP BY SchuelerId) AS x
+JOIN Schueler s ON s.Id = x.SchuelerId
+JOIN Klasse k   ON k.Id = s.KlasseId
+GROUP BY k.Name
+ORDER BY k.Name;
+```
+
+liefert 3AHIT mit 1,33 und 4AHIT mit 2,50.
+
+## Mengenoperationen
+
+`UNION`, `INTERSECT` und `EXCEPT` verbinden die Ergebnisse zweier Abfragen mit gleich vielen, typgleichen Spalten (siehe [relationale Algebra](/de/databases/relational-algebra/#mengenoperationen)). `ORDER BY` darf nur am Ende der gesamten Abfrage stehen.
+
+```sql
+SELECT Vorname AS Name, 'Schüler' AS Rolle FROM Schueler
+UNION ALL
+SELECT Name, 'Lehrer' FROM Lehrer
+ORDER BY Name;
+```
+
+## Common Table Expressions
+
+Eine **Common Table Expression** (CTE) gibt einer Unterabfrage mit `WITH` einen Namen. Die Abfrage wird dadurch von oben nach unten lesbar, und die CTE kann mehrfach verwendet werden:
+
+```sql
+WITH Schnitte AS (
+    SELECT SchuelerId, AVG(Wert) AS Schnitt
+    FROM Note
+    GROUP BY SchuelerId
+)
+SELECT s.Vorname, ROUND(sc.Schnitt, 2) AS Schnitt
+FROM Schnitte sc
+JOIN Schueler s ON s.Id = sc.SchuelerId
+WHERE sc.Schnitt = (SELECT MIN(Schnitt) FROM Schnitte);
+```
+
+liefert Anna mit 1,33.
+
+### Rekursive CTEs
+
+Mit `WITH RECURSIVE` lassen sich Hierarchien und Bäume beliebiger Tiefe durchlaufen, etwa Organigramme, Kategorien oder Stücklisten. Eine rekursive CTE besteht aus einem **Startteil** und einem **rekursiven Teil**, verbunden mit `UNION ALL`. Der rekursive Teil wird so lange ausgeführt, bis er keine neuen Zeilen mehr liefert.
+
+```sql
+WITH RECURSIVE Hierarchie AS (
+    SELECT Id, Name, 0 AS Ebene
+    FROM Lehrer
+    WHERE AbteilungsleiterId IS NULL          -- Start: die Wurzel
+    UNION ALL
+    SELECT l.Id, l.Name, h.Ebene + 1
+    FROM Lehrer l
+    JOIN Hierarchie h ON l.AbteilungsleiterId = h.Id   -- Rekursion: die Untergebenen
+)
+SELECT REPEAT('  ', Ebene) || Name AS Organigramm
+FROM Hierarchie
+ORDER BY Ebene, Name;
+```
+
+| organigramm  |
+| ------------ |
+| Mayer        |
+| &nbsp;&nbsp;Pichler |
+| &nbsp;&nbsp;Steiner |
+| &nbsp;&nbsp;&nbsp;&nbsp;Kern |
+
+SQL Server schreibt nur `WITH`, ohne `RECURSIVE`.
+
+## Fensterfunktionen
+
+Eine **Fensterfunktion** berechnet für jede Zeile einen Wert über eine Gruppe verwandter Zeilen, das **Fenster**. Anders als bei `GROUP BY` bleiben dabei alle Zeilen erhalten. Das Fenster wird mit `OVER` beschrieben:
+
+- `PARTITION BY` teilt die Zeilen in Gruppen, ähnlich wie `GROUP BY`.
+- `ORDER BY` legt die Reihenfolge innerhalb des Fensters fest.
+
+```sql
+SELECT s.Vorname, f.Kuerzel, n.Wert,
+       ROUND(AVG(n.Wert) OVER (PARTITION BY n.FachId), 2) AS Fachschnitt,
+       RANK() OVER (PARTITION BY n.FachId ORDER BY n.Wert) AS Rang
+FROM Note n
+JOIN Schueler s ON s.Id = n.SchuelerId
+JOIN Fach f     ON f.Id = n.FachId
+ORDER BY f.Kuerzel, Rang, s.Vorname;
+```
+
+| vorname | kuerzel | wert | fachschnitt | rang |
+| ------- | ------- | ---- | ----------- | ---- |
+| Anna    | AM      | 2    | 3.67        | 1    |
+| Ben     | AM      | 4    | 3.67        | 2    |
+| Emma    | AM      | 5    | 3.67        | 3    |
+| Anna    | INSY    | 1    | 2.67        | 1    |
+| Clara   | INSY    | 3    | 2.67        | 2    |
+| Emma    | INSY    | 4    | 2.67        | 3    |
+| Anna    | SEW     | 1    | 2.00        | 1    |
+| Ben     | SEW     | 2    | 2.00        | 2    |
+| Clara   | SEW     | 2    | 2.00        | 2    |
+| Ben     | SEW     | 3    | 2.00        | 4    |
+
+| Funktion                       | Ergebnis                                                                   |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `ROW_NUMBER()`                 | fortlaufende Nummer 1, 2, 3, 4 ohne Rücksicht auf gleiche Werte            |
+| `RANK()`                       | gleiche Werte erhalten denselben Rang, danach entsteht eine Lücke: 1, 2, 2, 4 |
+| `DENSE_RANK()`                 | gleiche Werte erhalten denselben Rang, ohne Lücke: 1, 2, 2, 3              |
+| `NTILE(n)`                     | teilt die Zeilen in $n$ gleich große Gruppen                               |
+| `LAG(x)`, `LEAD(x)`            | Wert der vorherigen bzw. nächsten Zeile                                    |
+| `FIRST_VALUE(x)`, `LAST_VALUE(x)` | erster bzw. letzter Wert im Fenster                                     |
+| `SUM`, `AVG`, `COUNT`, ... mit `OVER` | Aggregat über das Fenster                                           |
+
+Steht in `OVER` ein `ORDER BY`, reicht das Fenster standardmäßig vom Anfang bis zur aktuellen Zeile. Damit entstehen **laufende Summen** und Durchschnitte:
+
+```sql
+SELECT Datum, Wert,
+       SUM(Wert) OVER (ORDER BY Datum, Id) AS Summe,
+       ROUND(AVG(Wert) OVER (ORDER BY Datum, Id), 2) AS LaufenderSchnitt,
+       LAG(Wert) OVER (ORDER BY Datum, Id) AS Vorher
+FROM Note
+WHERE SchuelerId = 2;
+```
+
+| datum      | wert | summe | laufenderschnitt | vorher |
+| ---------- | ---- | ----- | ---------------- | ------ |
+| 2025-10-10 | 4    | 4     | 4.00             |        |
+| 2025-10-15 | 3    | 7     | 3.50             | 4      |
+| 2025-12-01 | 2    | 9     | 3.00             | 3      |
+
+Ein typisches Muster ist „die besten $n$ pro Gruppe“: Fensterfunktionen dürfen nicht in `WHERE` stehen, deshalb wird zuerst nummeriert und dann außen gefiltert.
+
+```sql
+SELECT Kuerzel, Vorname, Wert
+FROM (SELECT f.Kuerzel, s.Vorname, n.Wert,
+             ROW_NUMBER() OVER (PARTITION BY f.Id ORDER BY n.Wert, n.Datum) AS Nr
+      FROM Note n
+      JOIN Fach f     ON f.Id = n.FachId
+      JOIN Schueler s ON s.Id = n.SchuelerId) AS x
+WHERE Nr = 1
+ORDER BY Kuerzel;
+```
+
+## Vorgehen bei Abfrageaufgaben
+
+1. Welche **Spalten** soll das Ergebnis haben? Daraus folgt `SELECT`.
+2. In welchen **Tabellen** stehen diese Spalten, und über welche Tabellen sind sie verbunden? Daraus folgen `FROM` und die Joins. Müssen Zeilen ohne Partner erhalten bleiben, verwende einen äußeren Join.
+3. Welche **Zeilen** werden gebraucht? `WHERE`.
+4. Ist von „pro“, „je“ oder „für jede“ die Rede, wird **gruppiert**. Bedingungen an Summen, Anzahlen oder Durchschnitte kommen in `HAVING`.
+5. Kommt „alle“ oder „keine“ vor, hilft oft `NOT EXISTS`.
+6. **Sortierung** nicht vergessen, wenn sie verlangt ist.
+7. Ergebnis an den Beispieldaten prüfen, besonders an Sonderfällen wie `NULL`, leeren Gruppen und Gleichständen.
+
+## Weiterführende Quellen
+
+- [PostgreSQL-Dokumentation: Queries](https://www.postgresql.org/docs/current/queries.html) und [Window Functions](https://www.postgresql.org/docs/current/tutorial-window.html)
+- [Use The Index, Luke](https://use-the-index-luke.com/de) von Markus Winand

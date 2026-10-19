@@ -1,0 +1,287 @@
+---
+title: Cloud Native
+description: "Cloud-native applications: VMs, containers and serverless compared, the Twelve-Factor App, resilience patterns, observability, service mesh and infrastructure as code with Bicep and Terraform."
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Cloud native** refers to applications that are designed from the start to run in the cloud, rather than just moving an existing application onto a rented virtual machine (_lift and shift_). The Cloud Native Computing Foundation (CNCF) names **containers**, **service meshes**, **microservices**, **immutable infrastructure** and **declarative APIs** as typical building blocks. The aim is loosely coupled systems that are resilient, observable and easy to manage, and that can be changed frequently and safely with automation.
+
+How to split an application into microservices is covered in [software architecture](/en/software-development/software-architecture/#monolith-and-microservices). This page describes what such services need in order to work well in the cloud.
+
+## VMs, containers and serverless
+
+| Criterion | Virtual machines (IaaS) | Containers (e.g. Kubernetes) | Serverless (FaaS, e.g. Azure Functions) |
+| --------- | ----------------------- | ---------------------------- | --------------------------------------- |
+| Unit | whole operating system | application with its dependencies | single function |
+| Managed by you | operating system, updates, runtime, application | images, orchestration (partly with managed Kubernetes) | only the code |
+| Start-up time | minutes | seconds | milliseconds to seconds (cold start) |
+| Scaling | slow, whole VMs | fast, per container | automatic, down to zero |
+| Billing | per VM running time | per running time of nodes or containers | per execution and execution time |
+| Run-time limits | none | none | limited (a few minutes on the consumption plan) |
+| Control | full | high | low, tied to the provider's model |
+| Suitable for | legacy applications, special operating system requirements | microservices, permanently running services | event-driven, irregular load, glue code between services |
+
+The boundaries are blurring: [Azure Functions](/en/decentralised-systems/azure-functions/) also run in containers, and Azure Container Apps offers containers with serverless billing. Basics of containers and Kubernetes can be found under [containers and orchestration](/en/decentralised-systems/containers-and-orchestration/).
+
+## Twelve-Factor App
+
+The **Twelve-Factor App** is a set of rules published in 2011 by developers of the Heroku platform. It describes how to build web applications that are easy to run, scale and deploy automatically in the cloud.
+
+| No. | Factor | Meaning |
+| --- | ------ | ------- |
+| 1 | **Codebase** | one codebase in [version control](/en/software-development/version-control/), many deploys (test, production) |
+| 2 | **Dependencies** | explicitly declare and isolate all dependencies (NuGet, `Cargo.toml`); assume nothing that happens to be installed on the server |
+| 3 | **Config** | store configuration that differs between environments in **environment variables**, not in the code |
+| 4 | **Backing services** | treat databases, queues and caches as attached resources that can be swapped via a URL |
+| 5 | **Build, release, run** | strictly separate building, combining with configuration and running; every release is immutable |
+| 6 | **Processes** | run the application as **stateless** processes; state lives in databases or caches, not in memory or on the local disk |
+| 7 | **Port binding** | the service brings its own web server and is offered via a port |
+| 8 | **Concurrency** | scale out horizontally by starting more processes |
+| 9 | **Disposability** | start quickly and shut down cleanly on `SIGTERM` (_graceful shutdown_), so instances can be replaced at any time |
+| 10 | **Dev/prod parity** | keep development, test and production as similar as possible (same database, same containers) |
+| 11 | **Logs** | write logs as an event stream to standard output; collecting and storing them is the environment's job |
+| 12 | **Admin processes** | run one-off administrative tasks (e.g. database migrations) as separate processes in the same environment |
+
+In .NET, factor 3 means, for example, that the environment variable `ConnectionStrings__Orders` overrides the entry `ConnectionStrings:Orders` from `appsettings.json`. In Rust you read it with `std::env::var("DATABASE_URL")`.
+
+## Resilience
+
+In a distributed system, parts are constantly failing somewhere. A cloud-native application must expect this (_design for failure_) and must not fail itself when one service fails.
+
+| Pattern | Idea |
+| ------- | ---- |
+| **Timeout** | Never wait indefinitely for a response. A hanging call otherwise blocks threads and connections. |
+| **Retry with exponential backoff** | Fix transient errors (network glitches, `503`) by retrying. The waiting time doubles with every attempt so that an overloaded service can recover. A random component (**jitter**) prevents all clients from retrying at the same moment. Only safe for [idempotent](/en/decentralised-systems/communication-and-messaging/#delivery-guarantees-and-idempotency) operations. |
+| **Circuit breaker** | If many calls to a service fail, the breaker "opens" and further calls fail immediately without loading the service. After a waiting time, individual test calls are allowed (half open); if they succeed, it closes again. |
+| **Bulkhead** | Limit resources (threads, connections) per dependency, like the bulkheads in a ship, so that one slow service cannot use up all resources |
+| **Fallback** | return a substitute response on error, for example data from a cache or a simplified view |
+| **Health checks** | endpoints such as `/health/live` and `/health/ready` that load balancers and Kubernetes use to check the state |
+
+In .NET, the library **Polly** or the package `Microsoft.Extensions.Http.Resilience` provides these patterns ready-made. The principle of a retry with exponential backoff and jitter is shown in the following example. The simulated operation fails twice and succeeds on the third attempt:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+int calls = 0;
+
+string result = await RetryAsync(async () =>
+{
+    calls++;
+    await Task.Delay(1);
+    if (calls < 3)
+    {
+        throw new HttpRequestException("service unavailable");
+    }
+    return "OK";
+}, maxAttempts: 5, baseDelay: TimeSpan.FromMilliseconds(100));
+
+Console.WriteLine($"{result} after {calls} attempts");
+// Attempt 1 failed: service unavailable
+// Attempt 2 failed: service unavailable
+// OK after 3 attempts
+
+static async Task<T> RetryAsync<T>(Func<Task<T>> operation, int maxAttempts, TimeSpan baseDelay)
+{
+    for (int attempt = 1; ; attempt++)
+    {
+        try
+        {
+            return await operation();
+        }
+        catch (HttpRequestException ex) when (attempt < maxAttempts)
+        {
+            // 100, 200, 400 ... ms, of which a random 50 to 100 % (jitter)
+            double backoff = baseDelay.TotalMilliseconds * Math.Pow(2, attempt - 1);
+            double delay = backoff * (0.5 + Random.Shared.NextDouble() / 2);
+            Console.WriteLine($"Attempt {attempt} failed: {ex.Message}");
+            await Task.Delay(TimeSpan.FromMilliseconds(delay));
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+use rand::Rng;
+use std::fmt::Display;
+use std::thread;
+use std::time::Duration;
+
+fn retry<T, E: Display>(
+    max_attempts: u32,
+    base_delay: Duration,
+    mut operation: impl FnMut() -> Result<T, E>,
+) -> Result<T, E> {
+    let mut attempt = 1;
+    loop {
+        match operation() {
+            Ok(value) => return Ok(value),
+            Err(error) if attempt < max_attempts => {
+                // 100, 200, 400 ... ms, of which a random 50 to 100 % (jitter)
+                let backoff = base_delay * 2u32.pow(attempt - 1);
+                let jitter = rand::rng().random_range(0.5..=1.0);
+                println!("Attempt {attempt} failed: {error}");
+                thread::sleep(backoff.mul_f64(jitter));
+                attempt += 1;
+            }
+            Err(error) => return Err(error),
+        }
+    }
+}
+
+fn main() {
+    let mut calls = 0;
+    let result = retry(5, Duration::from_millis(100), || {
+        calls += 1;
+        if calls < 3 { Err("service unavailable") } else { Ok("OK") }
+    });
+
+    match result {
+        Ok(value) => println!("{value} after {calls} attempts"),
+        Err(error) => println!("Failed for good: {error}"),
+    }
+    // Attempt 1 failed: service unavailable
+    // Attempt 2 failed: service unavailable
+    // OK after 3 attempts
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Observability
+
+**Observability** means that you can understand what is happening inside a system from its outputs, even for failures you did not anticipate. With a monolith, a look at a log file is often enough. But if a request passes through ten services on twenty servers, you need more. People speak of the **three pillars**:
+
+| Pillar | Content | Example |
+| ------ | ------- | ------- |
+| **Logs** | individual events with a timestamp, ideally **structured** (JSON with fields instead of free text) | `{"level":"Error","orderId":17,"msg":"payment declined"}` |
+| **Metrics** | numeric values over time, cheap to store and good for alerts | requests per second, error rate, response time (95th percentile), CPU, queue length |
+| **Traces** | the path of a single request through all services, broken down into **spans** with durations | API gateway 120 ms, of which order service 80 ms, of which database 65 ms |
+
+So that traces fit together across service boundaries, every service passes on a **trace ID** in the HTTP header (`traceparent` according to the W3C Trace Context standard) or in the message metadata. This **correlation ID** also lets you find all log lines belonging to a request.
+
+The vendor-neutral standard for capturing all three signals is **OpenTelemetry** (CNCF). The data is analysed, for example, with **Prometheus** and **Grafana**, with Jaeger for traces, or in Azure with **Azure Monitor** and **Application Insights**. Classic server monitoring with SNMP and syslog is described under [monitoring](/en/deployment/operations/monitoring/).
+
+For alerts, **service level objectives** (SLOs) are defined, for example "99.9 % of a month's requests succeed and are faster than 300 ms". The measured quantity is called the **service level indicator** (SLI), and the contractual commitment to customers the **service level agreement** (SLA).
+
+## Service mesh
+
+Every microservice needs the same cross-cutting functions: encryption, authentication between services, retries, timeouts, load balancing, metrics and traces. Instead of building them into every application, a **service mesh** takes them over:
+
+- A **proxy** is placed next to every service (classically as a **sidecar** container in the same pod, e.g. Envoy). All of the service's network traffic passes through this proxy (**data plane**).
+- A **control plane** configures all proxies centrally.
+
+Without changing any code, this gives you **mutual TLS** (mTLS) between all services, fine-grained access rules, uniform metrics and traces, retries and circuit breakers, as well as **traffic shifting** for **canary releases** (e.g. 5 % of requests to the new version). Well-known service meshes are **Istio** and **Linkerd**. The price is additional complexity, latency and resource consumption. Newer variants such as Istio's ambient mode therefore do without a sidecar per pod and use a shared proxy per node.
+
+## Infrastructure as code
+
+With **infrastructure as code** (IaC), infrastructure (networks, databases, storage accounts, Kubernetes clusters) is not clicked together in the portal but described in files kept in Git. Advantages:
+
+- **Repeatability:** test and production environments are created from the same code and are identical.
+- **Versioning and review:** changes are traceable and can be checked before they are applied (pull request).
+- **Automation:** a CI/CD pipeline applies changes, and even a lost environment can be recreated in minutes.
+- **Documentation:** the code describes what the infrastructure looks like.
+
+A distinction is made between **imperative** approaches (scripts with commands such as `az storage account create`) and **declarative** approaches (a description of the desired state from which the tool calculates the necessary changes). Declarative tools are **idempotent**: running them several times changes nothing if the infrastructure already matches the code. If the real infrastructure deviates from the code, for example because someone changed something in the portal, this is called **drift**.
+
+### Bicep
+
+**Bicep** is Microsoft's declarative language for Azure resources. It is compiled into ARM templates (JSON) and supports all Azure resources from the day they are released. Azure itself stores the state.
+
+```bicep
+@description('Name of the storage account: 3 to 24 lowercase letters and digits')
+param storageName string
+param location string = resourceGroup().location
+
+resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageName
+  location: location
+  sku: {
+    name: 'Standard_ZRS'          // zone-redundant
+  }
+  kind: 'StorageV2'
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+  }
+}
+
+output blobEndpoint string = storage.properties.primaryEndpoints.blob
+```
+
+```bash
+# Preview the changes, then deploy
+az deployment group what-if --resource-group rg-shop --template-file main.bicep --parameters storageName=stshop2026
+az deployment group create  --resource-group rg-shop --template-file main.bicep --parameters storageName=stshop2026
+```
+
+### Terraform
+
+**Terraform** by HashiCorp is provider-independent: via **providers** it manages Azure, AWS, Google Cloud, Kubernetes, DNS providers and much more with the same language (HCL). Since 2023, Terraform has been under the non-open-source Business Source License, which led to the open-source fork **OpenTofu** (Linux Foundation).
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.subscription_id
+}
+
+variable "subscription_id" {
+  type = string
+}
+
+resource "azurerm_resource_group" "shop" {
+  name     = "rg-shop"
+  location = "westeurope"
+}
+
+resource "azurerm_storage_account" "shop" {
+  name                     = "stshop2026"
+  resource_group_name      = azurerm_resource_group.shop.name   # dependency is detected
+  location                 = azurerm_resource_group.shop.location
+  account_tier             = "Standard"
+  account_replication_type = "ZRS"
+  min_tls_version          = "TLS1_2"
+}
+```
+
+```bash
+terraform init     # download providers
+terraform plan     # show planned changes
+terraform apply    # carry out the changes
+terraform destroy  # remove everything again
+```
+
+Terraform stores the state of the managed resources in a **state file**. In a team it is kept centrally (e.g. in an Azure storage account with locking), as otherwise copies drift apart. It can contain secrets and must be protected accordingly.
+
+| | Bicep | Terraform / OpenTofu |
+| --- | --- | --- |
+| Providers | Azure only | many clouds and services |
+| State | managed by Azure | own state file |
+| Preview | `what-if` | `plan` |
+| New Azure features | immediately | once the provider supports them |
+
+### GitOps
+
+With **GitOps**, a Git repository is the single source of truth for the desired state of a system. A tool in the cluster, such as **Argo CD** or **Flux**, continuously compares the Kubernetes YAML files in the repository with the cluster and automatically corrects differences. A deployment is then simply a merged pull request, and a rollback a `git revert`.
+
+## Further reading
+
+- [The Twelve-Factor App](https://12factor.net/)
+- [OpenTelemetry documentation](https://opentelemetry.io/docs/) and the [CNCF project overview](https://www.cncf.io/projects/)
+- Microsoft Learn: [Bicep documentation](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) and [Terraform documentation](https://developer.hashicorp.com/terraform/docs)

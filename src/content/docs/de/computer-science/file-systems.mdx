@@ -1,0 +1,250 @@
+---
+title: Dateisysteme
+description: Dateien und Verzeichnisse, Zuordnungsverfahren, FAT, Inodes, NTFS, ext4, APFS und exFAT im Vergleich, Journaling, Zugriffsrechte und ACLs, Links, Einhängen sowie Partitionierung mit MBR und GPT.
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein Datenträger ist für die Hardware nur eine lange Folge nummerierter **Blöcke** (Sektoren mit 512 Byte oder 4 KiB). Ein **Dateisystem** legt fest, wie darauf benannte Dateien in Verzeichnissen abgelegt, gefunden, geschützt und nach einem Absturz wiederhergestellt werden. Die Wahl des Dateisystems entscheidet, wie groß Dateien werden dürfen, welche Betriebssysteme den Datenträger lesen können und wie robust die Daten gegen Stromausfälle sind.
+
+## Dateien und Verzeichnisse
+
+Eine **Datei** ist eine benannte Folge von Bytes. Das Betriebssystem interpretiert den Inhalt nicht. Ob es ein Bild oder Text ist, erkennen Programme an der **Dateiendung** (Windows) oder an typischen Anfangsbytes, den **Magic Numbers** (`%PDF`, `PNG`, `MZ` für Windows-Programme, `7F 45 4C 46` für Linux-Programme im ELF-Format). Zu jeder Datei gehören **Metadaten**: Größe, Besitzer, Zugriffsrechte, Zeitstempel (Erstellung, letzte Änderung, letzter Zugriff) und die Lage der Daten auf dem Datenträger.
+
+Unter Unix gilt das Prinzip „alles ist eine Datei“: Neben **regulären Dateien** und **Verzeichnissen** gibt es **symbolische Links**, **Gerätedateien** (`/dev/sda`), **Named Pipes** und **Sockets**, die alle mit denselben Systemaufrufen (`open`, `read`, `write`) angesprochen werden.
+
+**Verzeichnisse** (Ordner) bilden einen **Baum**. Ein Verzeichnis ist intern eine spezielle Datei, die Namen auf Dateien abbildet. Jedes Verzeichnis enthält die Einträge `.` (es selbst) und `..` (das übergeordnete Verzeichnis).
+
+- Ein **absoluter Pfad** beginnt an der Wurzel: `/home/anna/notizen.txt` bzw. `C:\Users\anna\notizen.txt`.
+- Ein **relativer Pfad** geht vom aktuellen Arbeitsverzeichnis aus: `../bilder/foto.jpg`.
+
+Unix-Systeme haben einen **einzigen Verzeichnisbaum** ab `/`, in den alle Datenträger eingehängt werden. Windows verwendet einen Baum pro Laufwerksbuchstaben. Wie man mit Pfaden in C# und Rust arbeitet, zeigt [Dateien und Serialisierung](/de/software-development/files-and-serialization/#pfade).
+
+## Zuordnung von Blöcken
+
+Dateisysteme verwalten den Platz in **Blöcken** (unter Windows **Cluster** genannt) von meist 4 KiB. Auch eine Datei mit 1 Byte belegt einen ganzen Block. Wie die Blöcke einer Datei gefunden werden, unterscheidet die Verfahren:
+
+| Verfahren                 | Prinzip                                                           | Vorteile                              | Nachteile                                          |
+| ------------------------- | ----------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------- |
+| **zusammenhängend**       | Startblock und Länge, alle Blöcke direkt hintereinander           | sehr schnell beim Lesen               | externe Fragmentierung, Dateien können schlecht wachsen. Auf CDs und DVDs (ISO 9660) |
+| **verkettet**             | jeder Block verweist auf den nächsten. Bei **FAT** stehen die Verweise in einer zentralen Tabelle | kein Verschnitt, Dateien können wachsen | direkter Zugriff auf Block $n$ braucht $n$ Schritte |
+| **indiziert**             | ein Indexblock (Inode) enthält die Liste aller Blocknummern       | schneller direkter Zugriff            | Verwaltungsaufwand für den Index                    |
+| **Extents**               | Liste von Bereichen (Startblock, Länge)                           | kompakt für große, zusammenhängende Dateien | Verwaltung aufwendiger                         |
+
+Liegen die Blöcke einer Datei verstreut, ist die Datei **fragmentiert**. Bei Festplatten kostet das viele Kopfbewegungen, und **Defragmentieren** ordnet die Blöcke neu. Bei SSDs spielt die Lage der Blöcke kaum eine Rolle, dort schickt Windows statt einer Defragmentierung TRIM-Befehle.
+
+### FAT
+
+Das **File Allocation Table**-Dateisystem (Microsoft, ab 1977) speichert am Anfang des Datenträgers eine Tabelle mit einem Eintrag pro Cluster. Der Verzeichniseintrag einer Datei enthält ihren ersten Cluster, der Tabelleneintrag eines Clusters die Nummer des nächsten Clusters oder eine Endemarkierung.
+
+```text
+Verzeichniseintrag: BERICHT.TXT   Startcluster 4   Größe 9000 Byte
+
+FAT-Index:   2     3     4     5     6     7     8
+Eintrag:     3    EOF    7     0     0     8    EOF
+
+BERICHT.TXT: Cluster 4 → 7 → 8 → EOF   (Cluster 2 → 3 gehört zu einer anderen Datei, 0 = frei)
+```
+
+FAT ist einfach und wird von praktisch jedem Gerät verstanden (Kameras, Autoradios, Mikrocontroller, UEFI). Es hat aber keine Zugriffsrechte, kein Journaling, und **FAT32** erlaubt nur Dateien bis **4 GiB − 1 Byte**, weil die Dateigröße in einem 32-Bit-Feld gespeichert wird.
+
+### Inodes
+
+Unix-Dateisysteme (ext2/3/4, UFS) speichern die Metadaten einer Datei in einem **Inode** (_Index Node_). Jede Datei hat genau einen Inode mit einer eindeutigen Nummer. Er enthält:
+
+- Dateityp und Zugriffsrechte, Besitzer und Gruppe,
+- Größe und Zeitstempel,
+- den **Linkzähler** (wie viele Verzeichniseinträge auf ihn verweisen),
+- Verweise auf die Datenblöcke.
+
+Der **Dateiname steht nicht im Inode**, sondern nur im Verzeichnis, das Namen auf Inode-Nummern abbildet. Deshalb kann eine Datei mehrere Namen haben (Hardlinks), und Umbenennen innerhalb eines Dateisystems ist sehr schnell. `ls -i` zeigt die Inode-Nummern, `stat datei` den Inhalt eines Inodes.
+
+Bei ext2 und ext3 enthält ein Inode 12 **direkte** Blockverweise, einen **einfach indirekten** (ein Block voller Verweise), einen **zweifach indirekten** und einen **dreifach indirekten**. Mit 4-KiB-Blöcken und 4-Byte-Verweisen passen $4096 / 4 = 1024$ Verweise in einen Block:
+
+$$
+12 \cdot 4\,\mathrm{KiB} + 1024 \cdot 4\,\mathrm{KiB} + 1024^2 \cdot 4\,\mathrm{KiB} + 1024^3 \cdot 4\,\mathrm{KiB} = 48\,\mathrm{KiB} + 4\,\mathrm{MiB} + 4\,\mathrm{GiB} + 4\,\mathrm{TiB}
+$$
+
+Kleine Dateien kommen mit den direkten Verweisen aus und sind schnell zugreifbar, große Dateien brauchen zusätzliche Zugriffe auf Indirektionsblöcke. In der Praxis begrenzen weitere Felder die Größe bei ext3 auf 2 TiB. **ext4** verwendet statt Blocklisten **Extents** und erlaubt Dateien bis 16 TiB.
+
+Die Anzahl der Inodes wird beim Formatieren festgelegt. Viele winzige Dateien können die Inodes aufbrauchen, obwohl noch Speicherplatz frei ist (`df -i` zeigt das).
+
+## Dateisysteme im Vergleich
+
+| Merkmal                 | FAT32                  | exFAT                      | NTFS                          | ext4                         | APFS                         |
+| ----------------------- | ---------------------- | -------------------------- | ----------------------------- | ---------------------------- | ---------------------------- |
+| Herkunft                | Microsoft, 1996        | Microsoft, 2006            | Microsoft, 1993               | Linux, 2008                  | Apple, 2017                  |
+| maximale Dateigröße     | 4 GiB − 1 Byte         | praktisch unbegrenzt (16 EiB) | praktisch unbegrenzt       | 16 TiB (4-KiB-Blöcke)        | 8 EiB                        |
+| Zugriffsrechte          | nein                   | nein                       | ACLs                          | Unix-Rechte, POSIX-ACLs      | Unix-Rechte, ACLs            |
+| Journaling / Konsistenz | nein                   | nein                       | Metadaten-Journal             | Journal                      | Copy-on-Write                |
+| Besonderheiten          | maximal kompatibel     | für Flash-Speicher, SDXC-Standard | Kompression, Verschlüsselung (EFS), Kontingente, Schattenkopien | Extents, verzögerte Zuteilung | Snapshots, Klone, native Verschlüsselung, für SSDs optimiert |
+| lesen und schreiben unter | allen                | Windows, macOS, Linux      | Windows, Linux (Kernel-Treiber `ntfs3`), macOS nur lesen | Linux                    | macOS, iOS                   |
+| typischer Einsatz       | kleine USB-Sticks, EFI-Systempartition | USB-Sticks, SD-Karten, externe Laufwerke für mehrere Systeme | Windows-Systemlaufwerk | Linux-Systemlaufwerk         | Mac, iPhone                  |
+
+Weitere wichtige Dateisysteme:
+
+- **XFS**: für große Dateien und hohe Parallelität, Standard bei Red Hat Enterprise Linux.
+- **Btrfs** und **ZFS**: Copy-on-Write-Dateisysteme mit Prüfsummen für alle Daten (erkennen stille Datenfehler), Snapshots, Kompression und integriertem Volume-Management und RAID. ZFS ist auf Speicherservern (TrueNAS) verbreitet, Btrfs bei openSUSE und Fedora.
+- **ReFS**: Windows-Server-Dateisystem für große Speicherpools mit Prüfsummen.
+
+## Journaling
+
+Eine scheinbar einfache Operation wie das Anlegen einer Datei ändert mehrere Strukturen: Inode belegen, Verzeichniseintrag schreiben, Blöcke als belegt markieren. Fällt mitten darin der Strom aus, ist das Dateisystem **inkonsistent**: ein belegter Inode ohne Namen oder ein Block, der zwei Dateien gehört. Ohne Schutzmaßnahme muss dann ein Prüfprogramm (`fsck` unter Linux, `chkdsk` unter Windows) den ganzen Datenträger durchsuchen, was bei großen Platten Stunden dauert.
+
+Ein **Journaling-Dateisystem** schreibt geplante Änderungen zuerst in einen eigenen Bereich, das **Journal** (_Write-Ahead Logging_, wie bei einer [Datenbank-Transaktion](/de/databases/transactions/)):
+
+1. Änderungen als **Transaktion** ins Journal schreiben und mit einem Commit-Eintrag abschließen.
+2. Änderungen an ihre eigentliche Stelle im Dateisystem schreiben (_Checkpoint_).
+3. Transaktion im Journal als erledigt markieren.
+
+Nach einem Absturz liest das System nur das Journal: Vollständig eingetragene Transaktionen werden nachgeholt (_Replay_), unvollständige verworfen. Die Prüfung dauert Sekunden statt Stunden.
+
+| ext4-Modus      | was ins Journal kommt                                                | Sicherheit und Tempo                              |
+| --------------- | -------------------------------------------------------------------- | ------------------------------------------------- |
+| `journal`       | Metadaten und Dateiinhalte                                           | am sichersten, alle Daten werden zweimal geschrieben |
+| `ordered` (Standard) | nur Metadaten, aber Dateiinhalte werden vorher geschrieben      | guter Kompromiss                                  |
+| `writeback`     | nur Metadaten, keine Reihenfolge                                     | am schnellsten, nach Absturz können Dateien alten Datenmüll enthalten |
+
+**Copy-on-Write**-Dateisysteme (APFS, Btrfs, ZFS) überschreiben nie bestehende Blöcke, sondern schreiben Änderungen an eine freie Stelle und schalten danach mit einem einzigen atomaren Schreibvorgang auf die neue Version um. Damit ist das Dateisystem immer konsistent, und **Snapshots** (eingefrorene Stände) entstehen fast ohne Aufwand.
+
+Journaling schützt die **Struktur** des Dateisystems, nicht den Inhalt vor Fehlbedienung, defekter Hardware oder Ransomware. Dafür braucht man Backups.
+
+## Zugriffsrechte
+
+### Unix-Rechte
+
+Unter Unix hat jede Datei einen **Besitzer**, eine **Gruppe** und je drei Rechte (**r**ead, **w**rite, e**x**ecute) für Besitzer, Gruppe und alle anderen. Als **Oktalzahl** wird jedes Recht als Bit dargestellt (r = 4, w = 2, x = 1), jede der drei Klassen ergibt eine Ziffer: `rwxr-x---` = 750. Die Bedienung mit `chmod` und `chown` steht unter [Linux-Grundlagen](/de/deployment/linux_server/linux_basics/#dateirechte).
+
+Wichtig ist die Bedeutung bei **Verzeichnissen**: `r` erlaubt das Auflisten der Namen, `w` das Anlegen, Umbenennen und **Löschen** von Dateien darin (auch fremder Dateien!), `x` das Betreten und den Zugriff auf Dateien darin.
+
+Zusätzlich gibt es drei **Sonderbits**, die als vierte, vorangestellte Oktalziffer geschrieben werden:
+
+| Sonderbit       | Oktal | Wirkung                                                                 | Beispiel                       |
+| --------------- | ----- | ----------------------------------------------------------------------- | ------------------------------ |
+| **SetUID**      | 4000  | Programm läuft mit den Rechten des **Besitzers** statt des Aufrufers    | `/usr/bin/passwd` (`rwsr-xr-x`), darf als root `/etc/shadow` ändern |
+| **SetGID**      | 2000  | bei Verzeichnissen: neue Dateien erben die Gruppe des Verzeichnisses    | gemeinsame Projektordner       |
+| **Sticky Bit**  | 1000  | bei Verzeichnissen: nur der Besitzer darf seine Dateien löschen         | `/tmp` (`rwxrwxrwt`, 1777)     |
+
+Die **umask** legt fest, welche Rechte bei neu angelegten Dateien entfernt werden. Programme legen Dateien meist mit 666 und Verzeichnisse mit 777 an. Bei der üblichen umask 022 entstehen daraus 644 bzw. 755.
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+Console.WriteLine(Permissions.ToOctal("rwxr-x---"));     // 750
+Console.WriteLine(Permissions.ToSymbolic(0b110_100_100)); // rw-r--r--
+Console.WriteLine(Permissions.ToSymbolic(0b111_111_111 & ~0b000_010_010)); // rwxr-xr-x (777 mit umask 022)
+
+static class Permissions
+{
+    const string Letters = "rwx";
+
+    // "rwxr-x---" -> "750"
+    public static string ToOctal(string symbolic)
+    {
+        int mode = 0;
+        foreach (char c in symbolic) mode = (mode << 1) | (c == '-' ? 0 : 1);
+        return Convert.ToString(mode, 8);
+    }
+
+    // 0o644 -> "rw-r--r--"
+    public static string ToSymbolic(int mode) =>
+        string.Concat(Enumerable.Range(0, 9).Select(i =>
+            (mode & (1 << (8 - i))) != 0 ? Letters[i % 3] : '-'));
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// "rwxr-x---" -> 0o750
+fn to_octal(symbolic: &str) -> u32 {
+    symbolic.chars().fold(0, |mode, c| (mode << 1) | u32::from(c != '-'))
+}
+
+// 0o644 -> "rw-r--r--"
+fn to_symbolic(mode: u32) -> String {
+    (0..9)
+        .map(|i| if mode & (1 << (8 - i)) != 0 { ['r', 'w', 'x'][i % 3] } else { '-' })
+        .collect()
+}
+
+fn main() {
+    println!("{:o}", to_octal("rwxr-x---"));     // 750
+    println!("{}", to_symbolic(0o644));          // rw-r--r--
+    println!("{}", to_symbolic(0o777 & !0o022)); // rwxr-xr-x (777 mit umask 022)
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Access Control Lists
+
+Mit nur drei Klassen lässt sich vieles nicht ausdrücken, etwa „die Gruppe Technik darf schreiben, die Gruppe Verkauf nur lesen, Anna darf gar nichts“. **Zugriffssteuerungslisten** (_Access Control Lists_, ACLs) speichern für ein Objekt beliebig viele Einträge (_Access Control Entries_, ACEs), jeweils aus Benutzer oder Gruppe und Rechten.
+
+- **NTFS** verwendet ausschließlich ACLs mit feinen Rechten (Lesen, Schreiben, Ändern, Vollzugriff und Spezialberechtigungen), **Zulassen**- und **Verweigern**-Einträgen und **Vererbung** an Unterordner. Ein Verweigern-Eintrag hat Vorrang vor einem Zulassen-Eintrag. Die Verwaltung auf Dateiservern beschreibt [Dateidienste](/de/deployment/windows_server/file_services/#ntfs-berechtigungen).
+- Unter Linux ergänzen **POSIX-ACLs** die klassischen Rechte. `setfacl -m u:anna:rw bericht.txt` gibt Anna Lese- und Schreibrecht, `getfacl` zeigt die Liste. `ls -l` markiert Dateien mit ACL durch ein `+` nach den Rechten.
+
+## Links
+
+| Art                             | Prinzip                                                   | Eigenschaften                                                   |
+| ------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------- |
+| **Hardlink**                    | ein weiterer Verzeichniseintrag, der auf **denselben Inode** zeigt | alle Namen sind gleichwertig. Die Daten werden erst gelöscht, wenn der Linkzähler 0 ist. Nur innerhalb eines Dateisystems und nicht für Verzeichnisse |
+| **Symbolischer Link** (Symlink, Softlink) | eine kleine Datei, die einen **Pfad** enthält   | funktioniert über Dateisystemgrenzen und für Verzeichnisse. Wird das Ziel gelöscht, zeigt der Link ins Leere (_dangling link_) |
+
+```bash
+ln bericht.txt bericht-kopie.txt     # Hardlink: gleiche Inode-Nummer, Linkzähler 2
+ln -s /srv/daten/projekt projekt     # symbolischer Link auf ein Verzeichnis
+ls -li                               # zeigt Inode-Nummern und Linkziele
+```
+
+NTFS kennt ebenfalls Hardlinks und symbolische Links (`mklink`) sowie **Junctions** für Verzeichnisse. Eine **Verknüpfung** (`.lnk`) unter Windows ist dagegen eine normale Datei, die nur der Explorer auswertet.
+
+## Einhängen
+
+Damit ein Dateisystem benutzt werden kann, muss es **eingehängt** (_gemountet_) werden. Unter Linux wird es an einem leeren Verzeichnis, dem **Mountpoint**, in den Verzeichnisbaum eingefügt:
+
+```bash
+lsblk -f                                 # Datenträger, Partitionen und Dateisysteme anzeigen
+sudo mount /dev/sdb1 /mnt/usb            # Partition einhängen
+sudo umount /mnt/usb                     # aushängen, vorher werden Puffer geschrieben
+```
+
+Dauerhafte Einhängungen stehen in `/etc/fstab`. Dort verwendet man die **UUID** des Dateisystems statt Gerätenamen wie `/dev/sdb1`, weil sich diese je nach Erkennungsreihenfolge ändern können:
+
+```text
+UUID=3f1c2a7e-9b4d-4e2a-8c11-5d0e6f7a8b9c  /daten  ext4  defaults,noatime  0  2
+```
+
+Windows weist Dateisystemen **Laufwerksbuchstaben** zu, kann sie aber auch in einen leeren NTFS-Ordner einhängen. Wird ein Datenträger ohne Aushängen bzw. „sicheres Entfernen“ abgezogen, können noch nicht geschriebene Daten aus dem Schreibpuffer verloren gehen.
+
+Über eine gemeinsame Zwischenschicht, das **virtuelle Dateisystem** (VFS), bietet der Kernel allen Dateisystemen dieselbe Schnittstelle. So funktionieren auch Netzwerkdateisysteme (NFS, SMB) und Pseudodateisysteme wie `/proc` und `/sys`, in denen der Kernel Informationen über Prozesse und Hardware als Dateien bereitstellt (`cat /proc/cpuinfo`).
+
+## Partitionierung
+
+Ein Datenträger wird in **Partitionen** aufgeteilt, die jeweils ein eigenes Dateisystem tragen, zum Beispiel getrennte Partitionen für Betriebssystem und Daten oder für zwei Betriebssysteme. Die Aufteilung steht in einer **Partitionstabelle**.
+
+| Merkmal                | MBR (_Master Boot Record_, 1983)                   | GPT (_GUID Partition Table_, Teil der UEFI-Spezifikation) |
+| ---------------------- | -------------------------------------------------- | -------------------------------------------- |
+| Ort                    | Sektor 0: 446 Byte Bootcode, 4 Partitionseinträge zu 16 Byte, Signatur `55 AA` | Sektor 1 (Kopfbereich) und folgende, **Sicherungskopie am Ende** des Datenträgers |
+| Anzahl Partitionen     | 4 primäre, oder 3 primäre und eine **erweiterte** mit beliebig vielen **logischen** | standardmäßig 128               |
+| maximale Größe         | 2 TiB (32-Bit-Sektornummern bei 512-Byte-Sektoren: $2^{32} \cdot 512\,\mathrm{B}$) | 8 ZiB (64-Bit-Sektornummern) |
+| Kennzeichnung          | Typ als 1-Byte-Code (z. B. `07` NTFS, `83` Linux)   | Typ und Partition je mit einer weltweit eindeutigen **GUID** |
+| Fehlerschutz           | keiner                                             | CRC32-Prüfsummen, Kopie am Ende              |
+| Bootvorgang            | BIOS                                               | UEFI                                         |
+
+Ein GPT-Datenträger enthält in Sektor 0 ein **Schutz-MBR** (_Protective MBR_), das den ganzen Datenträger als eine Partition unbekannten Typs ausweist. So halten alte Programme ihn nicht für leer und überschreiben ihn nicht.
+
+Eine typische Windows-Installation auf GPT besteht aus der **EFI-Systempartition** (FAT32, etwa 100 bis 300 MiB), einer kleinen reservierten Partition (MSR), der Windows-Partition (NTFS) und einer Wiederherstellungspartition. Werkzeuge sind die **Datenträgerverwaltung** und `diskpart` unter Windows sowie `fdisk`, `gdisk` und `parted` unter Linux. **Formatieren** legt auf einer Partition ein leeres Dateisystem an (`mkfs.ext4`, `format`).
+
+Flexibler als feste Partitionen ist ein **Logical Volume Manager** (LVM unter Linux, Speicherplätze unter Windows): Mehrere Datenträger werden zu einem Pool zusammengefasst, aus dem logische Laufwerke angelegt und später vergrößert werden können. Mehrere Datenträger für Ausfallsicherheit kombiniert [RAID](/de/deployment/storage-systems/#raid).
+
+## Weiterführende Quellen
+
+- [ext4 Data Structures and Algorithms](https://docs.kernel.org/filesystems/ext4/index.html) (Linux-Kernel-Dokumentation)
+- [UEFI Specification](https://uefi.org/specifications), Kapitel „GUID Partition Table (GPT) Disk Layout“ (UEFI Forum)
+- Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/), Teil „Persistence“

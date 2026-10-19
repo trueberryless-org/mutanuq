@@ -1,0 +1,277 @@
+---
+title: Schaltwerke
+description: Latches und Flip-Flops (SR, D, JK, T), Zeitdiagramme, Register und Schieberegister, asynchrone und synchrone Zähler, Automaten nach Moore und Mealy, 555-Timer, Speicherarten und programmierbare Logik.
+sidebar:
+  order: 13
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Ein **Schaltwerk** (sequenzielle Schaltung) hat ein Gedächtnis: Seine Ausgänge hängen nicht nur von den aktuellen Eingängen ab, sondern auch vom bisherigen Verlauf, gespeichert als **Zustand**. Grundelement ist das Flip-Flop, das ein Bit speichert. Aus Flip-Flops und [Schaltnetzen](/de/electrical-engineering/combinational-circuits/) entstehen Register, Zähler, Steuerwerke und schließlich ganze Prozessoren.
+
+## Latches
+
+### SR-Latch
+
+Das einfachste Speicherelement ist das **SR-Latch** (Set-Reset) aus zwei rückgekoppelten NOR-Gattern. Der Ausgang jedes Gatters führt auf einen Eingang des anderen. Dadurch hält die Schaltung ihren Zustand, auch wenn die Eingänge wieder 0 sind.
+
+| $S$ | $R$ | $Q^{+}$          | Bedeutung                    |
+| --- | --- | ---------------- | ---------------------------- |
+| 0   | 0   | $Q$              | Speichern                    |
+| 1   | 0   | 1                | Setzen                       |
+| 0   | 1   | 0                | Rücksetzen                   |
+| 1   | 1   | (verboten)       | $Q = \overline{Q} = 0$, danach undefiniert |
+
+$Q^{+}$ ist der Folgezustand. Bei $S = R = 1$ sind beide Ausgänge 0, was dem Sinn von $Q$ und $\overline{Q}$ widerspricht. Gehen danach beide Eingänge gleichzeitig auf 0, hängt der Endzustand vom Zufall der Gatterlaufzeiten ab. Mit NAND-Gattern entsteht das $\overline{S}\,\overline{R}$-Latch mit aktiv-Low-Eingängen. Die **charakteristische Gleichung** lautet $Q^{+} = S + \overline{R}Q$ (mit der Bedingung $SR = 0$).
+
+### D-Latch
+
+Das **D-Latch** (Data) hat einen Dateneingang $D$ und einen Freigabeeingang $E$ (_enable_, auch $C$). Solange $E = 1$ ist, folgt $Q$ dem Eingang $D$, das Latch ist **transparent**. Bei $E = 0$ hält es den letzten Wert. Der verbotene Zustand kann nicht auftreten, weil intern $S = D$ und $R = \overline{D}$ gebildet werden.
+
+## Flip-Flops
+
+Bei einem Latch können sich Änderungen am Eingang während der ganzen Freigabephase zum Ausgang durchschlagen. In getakteten Schaltungen will man aber, dass alle Speicherelemente **gleichzeitig** zu einem definierten Zeitpunkt übernehmen. **Flankengesteuerte Flip-Flops** übernehmen den Eingang nur im Moment der **steigenden Taktflanke** (manche auch der fallenden). Im Schaltzeichen markiert ein kleines Dreieck am Takteingang $C$ die Flankensteuerung, ein zusätzlicher Kreis davor die fallende Flanke.
+
+Intern besteht ein flankengesteuertes Flip-Flop meist aus zwei Latches hintereinander (**Master-Slave-Prinzip**): Der Master ist bei Takt 0 transparent, der Slave bei Takt 1. Bei der steigenden Flanke schließt der Master, und der Slave gibt dessen gespeicherten Wert aus.
+
+| Flip-Flop | Eingänge | charakteristische Gleichung        | Verhalten                                                      |
+| --------- | -------- | ---------------------------------- | -------------------------------------------------------------- |
+| D         | $D$      | $Q^{+} = D$                        | übernimmt $D$ bei der Taktflanke                               |
+| JK        | $J$, $K$ | $Q^{+} = J\overline{Q} + \overline{K}Q$ | wie SR ($J$ setzt, $K$ setzt zurück), aber $J = K = 1$ **kippt** den Zustand |
+| T         | $T$      | $Q^{+} = T \oplus Q$               | $T = 1$: kippen (_toggle_), $T = 0$: speichern                 |
+| SR (getaktet) | $S$, $R$ | $Q^{+} = S + \overline{R}Q$     | $S = R = 1$ verboten                                           |
+
+Wahrheitstabelle des JK-Flip-Flops, gültig bei jeder aktiven Taktflanke:
+
+| $J$ | $K$ | $Q^{+}$         |
+| --- | --- | --------------- |
+| 0   | 0   | $Q$ (speichern) |
+| 0   | 1   | 0 (rücksetzen)  |
+| 1   | 0   | 1 (setzen)      |
+| 1   | 1   | $\overline{Q}$ (kippen) |
+
+Das D-Flip-Flop ist in der Praxis am wichtigsten, FPGAs und Prozessoren bestehen fast nur aus D-Flip-Flops. Ein T-Flip-Flop entsteht aus einem JK-Flip-Flop mit $J = K = T$ oder aus einem D-Flip-Flop mit $D = T \oplus Q$. Viele Flip-Flops haben zusätzlich **asynchrone** Eingänge (_preset_ und _clear_), die unabhängig vom Takt sofort setzen oder rücksetzen, etwa beim Einschalten.
+
+### Zeitbedingungen
+
+Damit ein Flip-Flop sicher übernimmt, muss $D$ eine **Setup-Zeit** $t_\mathrm{su}$ vor der Taktflanke stabil sein und eine **Hold-Zeit** $t_\mathrm{h}$ danach stabil bleiben. Der Ausgang ändert sich nach der Laufzeit $t_\mathrm{pd}$. Werden diese Zeiten verletzt, etwa weil ein asynchrones Signal (Tastendruck) genau zur Taktflanke wechselt, kann das Flip-Flop eine Zeit lang in einem undefinierten Zwischenzustand bleiben (**Metastabilität**). Deshalb führt man asynchrone Signale über zwei hintereinandergeschaltete Flip-Flops ein (**Synchronisierer**).
+
+Die höchste Taktfrequenz einer Schaltung ergibt sich aus dem längsten Weg zwischen zwei Flip-Flops: $f_\mathrm{max} = 1/(t_\mathrm{pd} + t_\mathrm{Logik} + t_\mathrm{su})$.
+
+### Zeitdiagramm
+
+Ein **Zeitdiagramm** (Impulsdiagramm) zeigt die Signale über der Zeit. Beim D-Flip-Flop sieht man, dass $Q$ nur bei steigenden Taktflanken den Wert von $D$ übernimmt. Kurze Änderungen von $D$ zwischen den Flanken haben keine Wirkung.
+
+![Zeitdiagramm eines D-Flip-Flops](/images/electrical-engineering/d-flipflop-timing_de.svg)
+
+## Register und Schieberegister
+
+Ein **Register** besteht aus $n$ D-Flip-Flops mit gemeinsamem Takt und speichert ein $n$-Bit-Wort. Prozessoren haben Register für Operanden, Adressen und den Status.
+
+Ein **Schieberegister** verbindet den Ausgang jedes Flip-Flops mit dem Eingang des nächsten. Bei jedem Takt wandert der Inhalt eine Stelle weiter.
+
+| Art                                      | Eingang  | Ausgang   | Anwendung                                    |
+| ---------------------------------------- | -------- | --------- | -------------------------------------------- |
+| SISO (_serial in, serial out_)           | seriell  | seriell   | Verzögerung um $n$ Takte                     |
+| SIPO (_serial in, parallel out_)         | seriell  | parallel  | Seriell-parallel-Wandlung, Ausgangserweiterung (74HC595) |
+| PISO (_parallel in, serial out_)         | parallel | seriell   | Parallel-seriell-Wandlung, Eingangserweiterung (74HC165) |
+| PIPO (_parallel in, parallel out_)       | parallel | parallel  | Zwischenspeicher                             |
+
+Serielle Schnittstellen wie [SPI](/de/embedded-programming/spi/) und UART bestehen im Kern aus Schieberegistern. Mit einem 74HC595 steuert ein Mikrocontroller über drei Leitungen beliebig viele Ausgänge an. Ein Schieben um eine Stelle nach links entspricht bei Dualzahlen einer Multiplikation mit 2, nach rechts einer Division durch 2.
+
+## Zähler
+
+Ein **Zähler** durchläuft bei jedem Takt den nächsten Zustand einer festen Folge. Ein $n$-Bit-Dualzähler zählt von $0$ bis $2^n - 1$ und beginnt dann von vorn. Die Anzahl der Zustände heißt **Modulo** des Zählers.
+
+### Asynchrone Zähler
+
+Beim **asynchronen Zähler** (Ripple-Counter) wird nur das erste Flip-Flop vom Takt angesteuert. Jedes weitere Flip-Flop ist als T-Flip-Flop ($T = 1$) geschaltet und wird vom Ausgang des vorherigen getaktet. Jede Stufe halbiert die Frequenz, deshalb dienen solche Zähler auch als **Frequenzteiler**: Nach drei Stufen hat ein $1$-MHz-Takt $125\,\mathrm{kHz}$.
+
+Der Aufbau ist einfach, aber die Laufzeiten addieren sich von Stufe zu Stufe. Während des Umschaltens treten kurzzeitig falsche Zwischenwerte auf (beim Wechsel von 0111 auf 1000 etwa 0110, 0100, 0000), was für nachfolgende Decoder Probleme macht.
+
+### Synchrone Zähler
+
+Beim **synchronen Zähler** hängen alle Flip-Flops am selben Takt. Ein Schaltnetz berechnet aus dem aktuellen Zustand für jedes Flip-Flop den nächsten Wert. Alle Bits wechseln gleichzeitig. Für einen 3-Bit-Dualzähler mit D-Flip-Flops gilt:
+
+$$
+D_0 = \overline{Q_0} \qquad D_1 = Q_1 \oplus Q_0 \qquad D_2 = Q_2 \oplus (Q_1 Q_0)
+$$
+
+Ein Bit kippt genau dann, wenn alle niedrigeren Bits 1 sind.
+
+### Modulo-n-Zähler
+
+Ein Zähler, der nicht bis $2^n - 1$ zählen soll, wird nach dem allgemeinen Entwurfsverfahren für Schaltwerke entworfen. Beispiel: ein synchroner **Modulo-6-Zähler** (0 bis 5) mit drei D-Flip-Flops.
+
+| Zustand | $Q_2 Q_1 Q_0$ | Folgezustand | $D_2 D_1 D_0$ |
+| ------- | ------------- | ------------ | ------------- |
+| 0       | 000           | 1            | 001           |
+| 1       | 001           | 2            | 010           |
+| 2       | 010           | 3            | 011           |
+| 3       | 011           | 4            | 100           |
+| 4       | 100           | 5            | 101           |
+| 5       | 101           | 0            | 000           |
+| 6       | 110           | X            | XXX           |
+| 7       | 111           | X            | XXX           |
+
+Die Zustände 6 und 7 kommen nicht vor und werden als Don't Cares verwendet. KV-Minimierung für jedes $D$ ergibt:
+
+$$
+D_0 = \overline{Q_0} \qquad D_1 = \overline{Q_2}\,\overline{Q_1} Q_0 + Q_1 \overline{Q_0} \qquad D_2 = Q_1 Q_0 + Q_2 \overline{Q_0}
+$$
+
+Wichtig ist noch die Prüfung, ob der Zähler aus einem unbenutzten Zustand (etwa nach einer Störung) wieder in die Zählfolge findet (**Selbststart**). Das folgende Programm setzt die Gleichungen ein und gibt für jeden Zustand den Folgezustand aus:
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+// Folgezustand des Modulo-6-Zählers aus den minimierten Gleichungen
+static int Next(int state)
+{
+    bool q2 = (state & 4) != 0, q1 = (state & 2) != 0, q0 = (state & 1) != 0;
+    bool d2 = (q1 && q0) || (q2 && !q0);
+    bool d1 = (!q2 && !q1 && q0) || (q1 && !q0);
+    bool d0 = !q0;
+    return (d2 ? 4 : 0) | (d1 ? 2 : 0) | (d0 ? 1 : 0);
+}
+
+for (int s = 0; s < 8; s++)
+{
+    string bits = Convert.ToString(s, 2).PadLeft(3, '0');
+    Console.WriteLine($"Zustand {s} ({bits}) -> {Next(s)}");
+}
+// Zustand 0 (000) -> 1
+// Zustand 1 (001) -> 2
+// Zustand 2 (010) -> 3
+// Zustand 3 (011) -> 4
+// Zustand 4 (100) -> 5
+// Zustand 5 (101) -> 0
+// Zustand 6 (110) -> 7
+// Zustand 7 (111) -> 4
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// Folgezustand des Modulo-6-Zählers aus den minimierten Gleichungen
+fn next(state: u8) -> u8 {
+    let (q2, q1, q0) = ((state & 4) != 0, (state & 2) != 0, (state & 1) != 0);
+    let d2 = (q1 && q0) || (q2 && !q0);
+    let d1 = (!q2 && !q1 && q0) || (q1 && !q0);
+    let d0 = !q0;
+    (u8::from(d2) << 2) | (u8::from(d1) << 1) | u8::from(d0)
+}
+
+fn main() {
+    for s in 0..8u8 {
+        println!("Zustand {s} ({s:03b}) -> {}", next(s));
+    }
+}
+// Zustand 0 (000) -> 1
+// Zustand 1 (001) -> 2
+// Zustand 2 (010) -> 3
+// Zustand 3 (011) -> 4
+// Zustand 4 (100) -> 5
+// Zustand 5 (101) -> 0
+// Zustand 6 (110) -> 7
+// Zustand 7 (111) -> 4
+```
+
+</TabItem>
+</Tabs>
+
+Die Zählfolge 0 bis 5 stimmt. Aus 6 kommt der Zähler über 7 nach 4 und damit zurück in die Folge, er ist also selbststartend.
+
+Die einfachere Alternative, einen 3-Bit-Zähler beim Erreichen von 6 über den asynchronen Reset-Eingang zurückzusetzen, funktioniert zwar, erzeugt aber kurz den Zustand 6 als Störimpuls am Ausgang. Fertige Zähler-ICs sind etwa der 74HC161 (synchroner 4-Bit-Zähler) und der 74HC4040 (12-stufiger asynchroner Teiler).
+
+## Endliche Automaten
+
+Jedes Schaltwerk ist ein **endlicher Automat** (_finite state machine_, FSM): Es hat endlich viele Zustände, wechselt bei jedem Takt abhängig von Zustand und Eingängen in einen Folgezustand und erzeugt Ausgänge. Man unterscheidet zwei Typen:
+
+| Typ             | Ausgänge hängen ab von        | Eigenschaften                                                          |
+| --------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| **Moore-Automat** | nur vom Zustand             | Ausgänge stabil und taktsynchron, oft mehr Zustände nötig              |
+| **Mealy-Automat** | vom Zustand und den Eingängen | weniger Zustände, reagiert sofort, Eingangsstörungen gelangen zum Ausgang |
+
+Im **Zustandsdiagramm** sind Zustände Kreise und Übergänge Pfeile, beschriftet mit der Eingangsbedingung. Beim Moore-Automaten steht der Ausgang im Kreis, beim Mealy-Automaten am Pfeil (Eingang/Ausgang). Dieselbe Darstellung kennst du aus dem [UML-Zustandsdiagramm](/de/software-development/uml/).
+
+### Entwurfsschritte
+
+1. **Aufgabe** beschreiben, Eingänge und Ausgänge festlegen.
+2. **Zustandsdiagramm** zeichnen.
+3. **Zustandstabelle** aufstellen: aktueller Zustand, Eingang, Folgezustand, Ausgang.
+4. **Zustände codieren**: Für $z$ Zustände braucht man $\lceil \log_2 z \rceil$ Flip-Flops (binäre Codierung) oder $z$ Flip-Flops (One-Hot, in FPGAs üblich).
+5. **Ansteuergleichungen** der Flip-Flops und **Ausgangsgleichungen** mit KV-Diagrammen minimieren.
+6. Schaltung zeichnen und auf Selbststart prüfen.
+
+### Beispiel: Folgeerkennung
+
+Ein Automat mit dem Eingang $x$ soll am Ausgang $Y = 1$ liefern, sobald $x$ bei mindestens zwei aufeinanderfolgenden Takten 1 war.
+
+Als **Moore-Automat** braucht er drei Zustände: $S_0$ (keine 1 gesehen), $S_1$ (eine 1 gesehen), $S_2$ (mindestens zwei Einsen, $Y = 1$). Bei $x = 0$ geht er immer nach $S_0$, bei $x = 1$ von $S_0$ nach $S_1$ und von $S_1$ oder $S_2$ nach $S_2$. Mit der Codierung $S_0 = 00$, $S_1 = 01$, $S_2 = 10$ und dem unbenutzten Code 11 als Don't Care ergeben sich:
+
+| $Q_1 Q_0$  | $x = 0$: Folgezustand | $x = 1$: Folgezustand | $Y$ |
+| ---------- | --------------------- | --------------------- | --- |
+| 00 ($S_0$) | 00                    | 01                    | 0   |
+| 01 ($S_1$) | 00                    | 10                    | 0   |
+| 10 ($S_2$) | 00                    | 10                    | 1   |
+
+$$
+D_1 = x \cdot (Q_1 + Q_0) \qquad D_0 = x \cdot \overline{Q_1}\,\overline{Q_0} \qquad Y = Q_1
+$$
+
+Als **Mealy-Automat** reichen zwei Zustände (letzter Eingang war 0 bzw. 1), gespeichert in einem D-Flip-Flop mit $D = x$. Der Ausgang ist $Y = x \cdot Q$. Er reagiert schon im selben Takt, in dem die zweite 1 anliegt, der Moore-Automat erst einen Takt später.
+
+## Timer und Oszillatoren
+
+Jedes Schaltwerk braucht einen **Takt**. In Computern und Mikrocontrollern liefert ihn ein **Quarzoszillator**: Ein Quarzkristall schwingt mechanisch auf einer sehr genauen Frequenz (Abweichung typisch $\pm 20$ bis $50\,\mathrm{ppm}$). PLL-Schaltungen vervielfachen diese Frequenz auf den Prozessortakt. Für einfache Aufgaben genügen RC-Oszillatoren.
+
+Der **Timerbaustein 555** erzeugt mit wenigen externen Bauteilen Rechtecksignale oder Einzelimpulse. Er enthält zwei Komparatoren mit den Schwellen $\tfrac{1}{3}U_\mathrm{B}$ und $\tfrac{2}{3}U_\mathrm{B}$, ein SR-Flip-Flop und einen Entladetransistor.
+
+- **Astabiler Betrieb** (Rechteckgenerator): Der Kondensator lädt über $R_1 + R_2$ bis $\tfrac{2}{3}U_\mathrm{B}$ und entlädt über $R_2$ bis $\tfrac{1}{3}U_\mathrm{B}$.
+
+$$
+t_\mathrm{H} = \ln 2 \cdot (R_1 + R_2) C \approx 0{,}693\,(R_1 + R_2) C \qquad t_\mathrm{L} \approx 0{,}693\,R_2 C \qquad f = \frac{1}{t_\mathrm{H} + t_\mathrm{L}} \approx \frac{1{,}44}{(R_1 + 2R_2) C}
+$$
+
+- **Monostabiler Betrieb** (Zeitgeber): Ein Triggerimpuls erzeugt einen Ausgangsimpuls der Dauer $t \approx 1{,}1\,RC$.
+
+:::tip[Beispiel]
+$R_1 = 1\,\mathrm{k\Omega}$, $R_2 = 10\,\mathrm{k\Omega}$, $C = 10\,\mathrm{\mu F}$: $t_\mathrm{H} \approx 0{,}693 \cdot 11\,\mathrm{k\Omega} \cdot 10\,\mathrm{\mu F} \approx 76\,\mathrm{ms}$, $t_\mathrm{L} \approx 69\,\mathrm{ms}$, $f \approx 6{,}9\,\mathrm{Hz}$. Eine LED am Ausgang blinkt also knapp siebenmal pro Sekunde.
+:::
+
+## Speicherarten
+
+Halbleiterspeicher sind in Matrizen aus Speicherzellen organisiert. Mit $n$ Adressleitungen lassen sich $2^n$ Speicherplätze ansprechen. Ein Speicher mit 16 Adressleitungen und 8 Datenleitungen fasst $2^{16} \cdot 8\,\mathrm{bit} = 64\,\mathrm{KiB}$.
+
+| Speicher   | flüchtig | Speicherzelle                                  | Eigenschaften und Einsatz                                     |
+| ---------- | -------- | ---------------------------------------------- | ------------------------------------------------------------- |
+| **SRAM**   | ja       | Flip-Flop aus 6 Transistoren                   | sehr schnell, teuer, wenig Dichte: Cache, Register, Mikrocontroller-RAM |
+| **DRAM**   | ja       | 1 Transistor und 1 Kondensator                 | hohe Dichte, billig; Kondensator entlädt sich und muss etwa alle $64\,\mathrm{ms}$ aufgefrischt werden (_refresh_): Arbeitsspeicher |
+| **ROM**    | nein     | bei der Herstellung festgelegt (Maske)         | unveränderlich, Großserien                                    |
+| **PROM**   | nein     | einmal programmierbar (Sicherungen)            | historisch                                                     |
+| **EPROM**  | nein     | Floating-Gate-Transistor                       | mit UV-Licht löschbar (Quarzfenster)                          |
+| **EEPROM** | nein     | Floating-Gate-Transistor                       | elektrisch byteweise löschbar, begrenzte Schreibzyklen (etwa $10^5$ bis $10^6$): Konfigurationsdaten ([EEPROM im Mikrocontroller](/de/embedded-programming/eeprom/)) |
+| **Flash**  | nein     | Floating-Gate- oder Charge-Trap-Transistor     | blockweise löschbar, sehr hohe Dichte: Programmspeicher (NOR), SSDs und USB-Sticks (NAND) |
+
+In einer Floating-Gate-Zelle sind Elektronen auf einem rundum isolierten Gate eingeschlossen. Sie verschieben die Schwellenspannung des Transistors und bleiben jahrelang erhalten. Beim Schreiben werden sie mit hoher Spannung durch die Isolierschicht getrieben, was sie mit der Zeit abnutzt. SSDs verteilen deshalb Schreibzugriffe gleichmäßig auf alle Blöcke (_wear leveling_). Moderne NAND-Flash-Zellen speichern mehrere Bits pro Zelle über verschiedene Ladungsmengen (MLC, TLC, QLC).
+
+## Programmierbare Logik
+
+Statt Schaltungen aus einzelnen Gatterbausteinen zu löten, beschreibt man sie heute in einer **Hardwarebeschreibungssprache** (VHDL, Verilog) und lädt sie in programmierbare Bausteine.
+
+| Baustein     | Aufbau                                                                    | Einsatz                                     |
+| ------------ | ------------------------------------------------------------------------- | ------------------------------------------- |
+| PAL, GAL     | programmierbare UND-Matrix mit festen ODER-Gattern, also direkt eine DNF  | kleine Verknüpfungslogik, historisch        |
+| CPLD         | mehrere PAL-ähnliche Blöcke mit Verbindungsnetz, nichtflüchtig             | Glue-Logik, sofort nach dem Einschalten aktiv |
+| FPGA         | tausende bis Millionen **Lookup-Tabellen** (LUT, kleine Speicher, die jede Funktion von 4 bis 6 Eingängen darstellen) mit D-Flip-Flops, frei konfigurierbarem Verbindungsnetz, Speicherblöcken und Rechenwerken | Signalverarbeitung, Prototypen von Chips, Netzwerktechnik |
+
+Die Konfiguration eines FPGAs (_bitstream_) liegt meist in SRAM-Zellen und wird beim Einschalten aus einem Flash-Speicher geladen. Anders als ein Prozessor arbeitet ein FPGA nicht Befehle nacheinander ab, sondern bildet die Schaltung echt parallel nach. Ein Synthesewerkzeug übersetzt die Beschreibung in Gatter, minimiert sie und platziert sie im Baustein.
+
+## Weiterführende Quellen
+
+- Harris, D. M.; Harris, S. L.: _Digital Design and Computer Architecture_. Morgan Kaufmann.
+- Beuth, K.: _Digitaltechnik_. Vogel Business Media (Elektronik 4).
+- [Texas Instruments: LM555 Timer Datenblatt](https://www.ti.com/lit/ds/symlink/lm555.pdf)

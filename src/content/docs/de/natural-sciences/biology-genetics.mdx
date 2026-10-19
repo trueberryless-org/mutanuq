@@ -1,0 +1,183 @@
+---
+title: Genetik
+description: Aufbau der DNA, Replikation, Proteinbiosynthese mit genetischem Code, Mutationen, Mendelsche Regeln mit Kreuzungsschemata, Erbgänge beim Menschen, Gentechnik, CRISPR und Ethik.
+sidebar:
+  order: 52
+---
+
+Die **Genetik** untersucht, wie Merkmale gespeichert, ausgeprägt und an Nachkommen weitergegeben werden. Die Erbinformation ist in der DNA als Folge von vier Basen gespeichert, ein Code, der sich mit Informatik-Begriffen gut beschreiben lässt: vier Zeichen, Wörter aus drei Zeichen (Codons), Start- und Stoppsignale. Das menschliche Erbgut (Genom) umfasst rund $3{,}1$ Milliarden Basenpaare pro Chromosomensatz, darin liegen etwa 20 000 proteincodierende Gene.
+
+## Aufbau der DNA
+
+James Watson und Francis Crick veröffentlichten 1953 das Modell der **Doppelhelix**, gestützt auf Röntgenbeugungsbilder von Rosalind Franklin und Maurice Wilkins.
+
+- Zwei Stränge aus **Nukleotiden** (Desoxyribose, Phosphat, Base) winden sich umeinander. Zucker und Phosphat bilden das Rückgrat, die Basen zeigen nach innen.
+- Die Basen paaren sich nach der **komplementären Basenpaarung**: **Adenin mit Thymin** (zwei Wasserstoffbrücken) und **Guanin mit Cytosin** (drei Wasserstoffbrücken). Kennt man einen Strang, ist der andere festgelegt.
+- Die Stränge laufen **antiparallel**: Einer verläuft vom 5'- zum 3'-Ende, der andere umgekehrt.
+
+```text
+5' - A T G C C G T A - 3'
+     | | | | | | | |
+3' - T A C G G C A T - 5'
+```
+
+In eukaryotischen Zellen ist die DNA um Proteine (Histone) gewickelt und bildet das **Chromatin**, das sich vor der Teilung zu **Chromosomen** verdichtet. Ein **Gen** ist ein DNA-Abschnitt, der die Information für ein Protein oder eine funktionelle RNA enthält. Verschiedene Varianten eines Gens heißen **Allele**.
+
+## Replikation
+
+Vor jeder Zellteilung wird die DNA verdoppelt. Die Replikation ist **semikonservativ** (Meselson und Stahl, 1958): Jeder neue Doppelstrang besteht aus einem alten und einem neuen Strang.
+
+1. Das Enzym **Helicase** trennt die beiden Stränge (Replikationsgabel).
+2. Die **Primase** setzt kurze RNA-Startstücke (Primer).
+3. Die **DNA-Polymerase** liest den Elternstrang und hängt komplementäre Nukleotide an, immer in 5'→3'-Richtung. Am **Leitstrang** geht das kontinuierlich, am **Folgestrang** in Stücken (Okazaki-Fragmente).
+4. Primer werden durch DNA ersetzt, die **Ligase** verbindet die Fragmente.
+
+Die Polymerase korrigiert ihre eigenen Fehler (Proofreading). Am Ende bleibt etwa ein Fehler pro Milliarde eingebauter Basen.
+
+## Proteinbiosynthese
+
+Der Weg vom Gen zum Merkmal führt über das Protein: **DNA → mRNA → Protein**.
+
+### Transkription
+
+Im Zellkern bindet die **RNA-Polymerase** an den **Promotor** eines Gens, öffnet die Doppelhelix und erstellt am **codogenen Strang** (Matrizenstrang) eine komplementäre RNA-Abschrift. Statt Thymin wird Uracil eingebaut. Bei Eukaryoten wird die Vorläufer-RNA noch bearbeitet: Nicht codierende Abschnitte (**Introns**) werden herausgeschnitten, die codierenden **Exons** zusammengefügt (**Spleißen**). Die fertige **mRNA** (_messenger RNA_) verlässt den Kern durch die Kernporen.
+
+### Genetischer Code
+
+Je drei aufeinanderfolgende Basen der mRNA, ein **Codon** (Triplett), codieren eine Aminosäure. Mit vier Basen gibt es $4^3 = 64$ Codons für 20 Aminosäuren.
+
+| Eigenschaft             | Bedeutung                                                              |
+| ----------------------- | ---------------------------------------------------------------------- |
+| **Triplett-Code**       | drei Basen pro Aminosäure                                              |
+| **degeneriert** (redundant) | die meisten Aminosäuren haben mehrere Codons (Leucin sechs, Tryptophan nur UGG) |
+| **eindeutig**           | jedes Codon steht für genau eine Aminosäure                            |
+| **kommafrei, nicht überlappend** | wird ohne Trennzeichen fortlaufend gelesen                    |
+| **Start und Stopp**     | AUG (Methionin) startet, UAA, UAG und UGA beenden die Translation      |
+| **nahezu universell**   | gilt mit wenigen Ausnahmen für alle Lebewesen; deshalb kann ein Bakterium menschliches Insulin herstellen |
+
+### Translation
+
+An den **Ribosomen** im Cytoplasma wird die mRNA in eine Aminosäurekette übersetzt. **tRNA**-Moleküle tragen jeweils eine bestimmte Aminosäure und besitzen ein **Anticodon**, das komplementär zu einem Codon der mRNA passt. Das Ribosom wandert Codon für Codon weiter und verknüpft die Aminosäuren über Peptidbindungen, bis ein Stoppcodon erreicht ist.
+
+:::tip[Beispiel]
+| Ebene                         | Sequenz              |
+| ----------------------------- | -------------------- |
+| DNA, codogener Strang (3'→5') | TAC CGA ACC ATT      |
+| DNA, codierender Strang (5'→3') | ATG GCT TGG TAA    |
+| mRNA (5'→3')                  | AUG GCU UGG UAA      |
+| tRNA-Anticodons               | UAC CGA ACC          |
+| Protein                       | Met – Ala – Trp – Stopp |
+
+Die mRNA entspricht dem codierenden Strang, nur mit U statt T.
+:::
+
+## Mutationen
+
+Eine **Mutation** ist eine dauerhafte Veränderung der Erbinformation. Ursachen sind Fehler bei Replikation und Zellteilung sowie **Mutagene**: UV-Strahlung, ionisierende Strahlung (Röntgen, radioaktive Stoffe) und bestimmte Chemikalien (etwa Benzol, Stoffe im Tabakrauch). Mutationen in Körperzellen betreffen nur das Individuum (etwa Hautkrebs), Mutationen in Keimzellen werden vererbt.
+
+| Art                         | Veränderung                                    | Folge, Beispiel                                     |
+| --------------------------- | ---------------------------------------------- | --------------------------------------------------- |
+| **Genmutation**: Punktmutation (Substitution) | eine Base wird ausgetauscht | **stumm** (gleiche Aminosäure), **Missense** (andere Aminosäure, z. B. **Sichelzellanämie**: GAG → GTG, Glutaminsäure → Valin im Hämoglobin), **Nonsense** (vorzeitiges Stoppcodon) |
+| **Genmutation**: Rasterschubmutation | Einfügen (Insertion) oder Verlust (Deletion) von Basen, die keine Vielfachen von drei sind | Leseraster verschoben, alle folgenden Codons ändern sich; meist funktionsloses Protein |
+| **Chromosomenmutation**     | Struktur eines Chromosoms verändert (Verlust, Verdopplung, Umkehr, Verlagerung eines Abschnitts) | z. B. Katzenschreisyndrom |
+| **Genommutation**           | Zahl der Chromosomen verändert                 | **Trisomie 21** (Down-Syndrom), Klinefelter-Syndrom (XXY); bei Pflanzen oft Vervielfachung ganzer Sätze (Weizen) |
+
+Die meisten Mutationen sind neutral oder schädlich, wenige vorteilhaft. Zusammen mit der Neukombination bei der Meiose liefern sie das Rohmaterial der [Evolution](/de/natural-sciences/biology-evolution/).
+
+## Mendelsche Regeln
+
+Gregor Mendel, Augustinermönch in Brünn, veröffentlichte 1866 seine Kreuzungsversuche mit Erbsen. Er wählte Merkmale mit klaren Alternativen und zählte die Nachkommen, ohne Gene oder Chromosomen zu kennen.
+
+**Begriffe**: Der **Genotyp** ist die Kombination der Allele (etwa $Aa$), der **Phänotyp** das sichtbare Merkmal. **Homozygot** (reinerbig) bedeutet zwei gleiche Allele ($AA$, $aa$), **heterozygot** (mischerbig) zwei verschiedene ($Aa$). Ein **dominantes** Allel (Großbuchstabe) setzt sich im Phänotyp durch, ein **rezessives** (Kleinbuchstabe) nur, wenn es homozygot vorliegt.
+
+### 1. Uniformitätsregel
+
+Kreuzt man zwei reinerbige Eltern (P-Generation), die sich in einem Merkmal unterscheiden, sind alle Nachkommen der ersten Tochtergeneration (F1) gleich.
+
+| P: $RR$ (rot) × $ww$ (weiß) | $R$      | $R$      |
+| --------------------------- | -------- | -------- |
+| $w$                         | $Rw$     | $Rw$     |
+| $w$                         | $Rw$     | $Rw$     |
+
+Bei **dominant-rezessivem** Erbgang blühen alle F1-Pflanzen rot. Bei **intermediärem** Erbgang (etwa bei der Wunderblume) sind alle rosa, weil beide Allele gleich stark wirken.
+
+### 2. Spaltungsregel
+
+Kreuzt man die F1-Mischlinge untereinander, spalten die Merkmale in der F2 in einem festen Zahlenverhältnis auf.
+
+| F1: $Rw$ × $Rw$ | $R$      | $w$      |
+| --------------- | -------- | -------- |
+| $R$             | $RR$     | $Rw$     |
+| $w$             | $Rw$     | $ww$     |
+
+- Genotypen: $RR : Rw : ww = 1 : 2 : 1$
+- Phänotypen bei dominant-rezessivem Erbgang: rot : weiß $= 3 : 1$
+- Phänotypen bei intermediärem Erbgang: rot : rosa : weiß $= 1 : 2 : 1$
+
+### 3. Unabhängigkeitsregel
+
+Werden zwei Merkmale betrachtet, deren Gene auf verschiedenen Chromosomen liegen, werden sie unabhängig voneinander vererbt und neu kombiniert. Bei einem **dihybriden** Erbgang mit zwei dominant-rezessiven Merkmalen (gelb $G$ dominant über grün $g$, rund $R$ dominant über runzelig $r$) ergibt die Kreuzung $GgRr \times GgRr$ in der F2 die Phänotypen im Verhältnis
+
+$$
+9 : 3 : 3 : 1 \quad (\text{gelb-rund} : \text{gelb-runzelig} : \text{grün-rund} : \text{grün-runzelig})
+$$
+
+Gene, die nahe beieinander auf demselben Chromosom liegen, werden meist gemeinsam vererbt (**Genkopplung**); dann gilt die dritte Regel nicht.
+
+:::tip[Rückkreuzung]
+Ob ein rot blühendes Tier oder eine Pflanze mit dominantem Merkmal $RR$ oder $Rw$ ist, prüft man durch Kreuzung mit einem rezessiv-homozygoten Partner $ww$ (**Testkreuzung**). Treten weiße Nachkommen auf (Verhältnis $1 : 1$), war der Elternteil heterozygot.
+:::
+
+## Erbgänge beim Menschen
+
+Beim Menschen sind Kreuzungsexperimente unmöglich. Man untersucht Erbgänge deshalb mit **Stammbäumen** (Kreis: Frau, Quadrat: Mann, ausgefüllt: Merkmalsträger).
+
+| Erbgang                        | Kennzeichen im Stammbaum                                    | Beispiele                                    |
+| ------------------------------ | ----------------------------------------------------------- | -------------------------------------------- |
+| **autosomal-dominant**         | tritt in jeder Generation auf, ein betroffener Elternteil genügt | Chorea Huntington, Achondroplasie       |
+| **autosomal-rezessiv**         | kann Generationen überspringen; gesunde Eltern (Überträger, $Aa$) können kranke Kinder haben (Wahrscheinlichkeit $\frac{1}{4}$) | Mukoviszidose (Cystische Fibrose), Sichelzellanämie, Phenylketonurie |
+| **X-chromosomal-rezessiv**     | betrifft vor allem Männer, weil sie nur ein X-Chromosom haben; Frauen sind meist Überträgerinnen | Rot-Grün-Sehschwäche (rund 8 % der Männer und 0,5 % der Frauen in Europa), Bluterkrankheit (Hämophilie A) |
+
+### Blutgruppen
+
+Das **AB0-System** wird durch ein Gen mit drei Allelen bestimmt: $A$ und $B$ sind untereinander **kodominant** (beide werden ausgeprägt), $0$ ist rezessiv.
+
+| Blutgruppe | mögliche Genotypen  |
+| ---------- | ------------------- |
+| A          | $AA$, $A0$          |
+| B          | $BB$, $B0$          |
+| AB         | $AB$                |
+| 0          | $00$                |
+
+Eltern mit Blutgruppe A ($A0$) und B ($B0$) können deshalb Kinder aller vier Blutgruppen haben, je mit Wahrscheinlichkeit $\frac{1}{4}$.
+
+## Gentechnik
+
+Die **Gentechnik** verändert das Erbgut von Lebewesen gezielt. Grundwerkzeuge sind:
+
+- **Restriktionsenzyme** schneiden DNA an bestimmten Basenfolgen, **Ligasen** fügen Stücke zusammen.
+- **Plasmide** dienen als Vektoren (Transportmittel), um ein fremdes Gen in Bakterien einzuschleusen. So produzieren Bakterien seit den 1980er-Jahren menschliches **Insulin**.
+- Die **Polymerase-Kettenreaktion** (PCR, Kary Mullis 1983) vervielfältigt DNA-Abschnitte milliardenfach. Sie ist Grundlage von Corona-Tests, Vaterschaftstests und forensischen DNA-Analysen (**genetischer Fingerabdruck**).
+- Die **Gelelektrophorese** trennt DNA-Stücke nach Länge.
+- Die **Sequenzierung** liest die Basenfolge aus. Das Humangenomprojekt veröffentlichte 2003 die nahezu vollständige Sequenz des menschlichen Genoms, 2022 folgte die lückenlose Sequenz. Die Auswertung der Daten ist Aufgabe der **Bioinformatik**.
+
+### CRISPR/Cas9
+
+**CRISPR/Cas9** („Genschere“) stammt aus dem Abwehrsystem von Bakterien gegen Viren. Eine kurze **Leit-RNA** (guide RNA) führt das Enzym **Cas9** an eine passende DNA-Stelle, wo es beide Stränge schneidet. Beim Reparieren des Schnitts kann die Zelle das Gen ausschalten oder eine mitgelieferte Vorlage einbauen. Die Methode ist viel einfacher, schneller und günstiger als frühere Verfahren. Emmanuelle Charpentier und Jennifer Doudna erhielten dafür 2020 den Nobelpreis für Chemie. Als erste CRISPR-basierte Therapie wurde 2023 ein Medikament gegen Sichelzellanämie und Beta-Thalassämie zugelassen.
+
+### Ethische Fragen
+
+| Bereich                       | Chancen                                         | Risiken und Einwände                                    |
+| ----------------------------- | ----------------------------------------------- | ------------------------------------------------------- |
+| Medizin (somatische Gentherapie) | Heilung von Erbkrankheiten, Krebstherapie, Medikamente | hohe Kosten, unbeabsichtigte Veränderungen (_off-target_) |
+| Keimbahneingriffe             | Erbkrankheiten dauerhaft verhindern             | Veränderungen an künftigen Generationen ohne deren Zustimmung, „Designerbabys“; 2018 löste die Geburt der ersten genveränderten Kinder in China weltweite Empörung aus |
+| Landwirtschaft (gentechnisch veränderte Organismen, GVO) | höhere Erträge, Resistenz gegen Schädlinge und Trockenheit | Auskreuzung, Abhängigkeit von Saatgutkonzernen, Verlust der Sortenvielfalt |
+| Gentests und Gendaten         | Früherkennung, personalisierte Medizin          | Diskriminierung durch Versicherungen oder Arbeitgeber, Datenschutz |
+
+In Österreich regelt das **Gentechnikgesetz** (GTG) Arbeiten mit GVO, genetische Analysen am Menschen und Gentherapie. Den Anbau gentechnisch veränderter Pflanzen haben Österreich und seine Bundesländer auf Grundlage einer EU-Ausnahmeregelung untersagt. Lebensmittel mit mehr als $0{,}9\,\%$ GVO-Anteil müssen in der EU gekennzeichnet werden. Genetische Daten sind nach der DSGVO besonders geschützte personenbezogene Daten.
+
+## Weiterführende Quellen
+
+- [Gentechnikgesetz](https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10010826) (RIS)
+- [National Human Genome Research Institute: Talking Glossary of Genomic Terms](https://www.genome.gov/genetics-glossary)
+- Neil A. Campbell, Jane B. Reece u. a.: _Biologie_, Pearson

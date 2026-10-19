@@ -1,0 +1,184 @@
+---
+title: Wellen und Akustik
+description: Transversal- und Longitudinalwellen, Wellenlänge, Frequenz und Ausbreitungsgeschwindigkeit, Superposition, Interferenz, stehende Wellen, Doppler-Effekt, Schall, Schallpegel in dB und Ultraschall.
+sidebar:
+  order: 11
+---
+
+Eine **Welle** ist eine sich räumlich ausbreitende Schwingung. Dabei wird **Energie transportiert, aber keine Materie**: Eine Boje auf dem Wasser hebt und senkt sich, während die Welle an ihr vorbeiläuft. Schall, Wasserwellen, Erdbebenwellen und Licht folgen denselben Grundgesetzen.
+
+## Entstehung und Arten
+
+Eine **mechanische Welle** entsteht, wenn gekoppelte Oszillatoren (Teilchen eines Mediums) ihre Schwingung zeitversetzt an ihre Nachbarn weitergeben. Sie braucht ein Medium; im Vakuum gibt es keinen Schall. **Elektromagnetische Wellen** (Licht, Funk) brauchen kein Medium.
+
+| Art | Schwingungsrichtung | Beispiele |
+| --- | --- | --- |
+| **Transversalwelle** (Querwelle) | senkrecht zur Ausbreitungsrichtung | Seilwelle, Saite, Licht, S-Wellen bei Erdbeben |
+| **Longitudinalwelle** (Längswelle) | parallel zur Ausbreitungsrichtung, Verdichtungen und Verdünnungen | Schall in Luft, P-Wellen bei Erdbeben |
+
+Gase und Flüssigkeiten übertragen nur Longitudinalwellen, weil sie keinen Scherwiderstand haben; Festkörper übertragen beide Arten. Wasserwellen an der Oberfläche sind eine Mischform: Die Teilchen bewegen sich auf Kreisbahnen. Nur Transversalwellen lassen sich **polarisieren** (Schwingungsrichtung festlegen).
+
+## Wellengrößen
+
+| Größe | Zeichen | Einheit | Bedeutung |
+| --- | --- | --- | --- |
+| Wellenlänge | $\lambda$ | $\mathrm{m}$ | Abstand zweier benachbarter Punkte gleicher Phase (zwei Wellenberge) |
+| Periodendauer | $T$ | $\mathrm{s}$ | Zeit, in der die Welle um $\lambda$ weiterläuft |
+| Frequenz | $f$ | $\mathrm{Hz}$ | Schwingungen pro Sekunde an einem Ort |
+| Ausbreitungsgeschwindigkeit | $c$ | $\mathrm{m/s}$ | Geschwindigkeit, mit der sich ein Wellenberg bewegt |
+| Wellenzahl | $k = \frac{2\pi}{\lambda}$ | $\mathrm{m^{-1}}$ | |
+
+Die **Grundgleichung der Wellenlehre**:
+
+$$
+c = \lambda \cdot f = \frac{\lambda}{T}
+$$
+
+Die Frequenz bestimmt die Quelle, die Geschwindigkeit das Medium. Läuft eine Welle in ein anderes Medium, bleibt $f$ gleich, und $\lambda$ ändert sich.
+
+Eine harmonische Welle, die in $x$-Richtung läuft, wird beschrieben durch
+
+$$
+y(x, t) = \hat y \sin(\omega t - k x)
+$$
+
+Die Intensität (Leistung pro Fläche) einer Welle ist proportional zum Quadrat der Amplitude.
+
+## Ausbreitungsgeschwindigkeit
+
+| Welle | Geschwindigkeit |
+| --- | --- |
+| Seilwelle, Saite (Spannkraft $F$, Masse pro Länge $\mu$) | $c = \sqrt{F/\mu}$ |
+| Schall in Gasen | $c = \sqrt{\kappa R T/M}$, in Luft $c \approx 331{,}3\,\mathrm{m/s} \cdot \sqrt{1 + \vartheta/273{,}15\,^\circ\mathrm{C}}$ |
+| Schall in Luft bei $20\,^\circ\mathrm{C}$ | $343\,\mathrm{m/s}$ |
+| Schall in Wasser | etwa $1480\,\mathrm{m/s}$ |
+| Schall in Stahl (longitudinal) | etwa $5900\,\mathrm{m/s}$ |
+| Licht im Vakuum | $c = 299\,792\,458\,\mathrm{m/s}$ |
+
+Die Schallgeschwindigkeit in Luft hängt von der Temperatur ab, nicht vom Luftdruck. Faustregel für Gewitter: Sekunden zwischen Blitz und Donner durch 3 ergibt die Entfernung in Kilometern.
+
+## Ausbreitungsphänomene
+
+Das **Huygenssche Prinzip** besagt: Jeder Punkt einer Wellenfront ist Ausgangspunkt einer kugelförmigen Elementarwelle; die Einhüllende aller Elementarwellen ergibt die neue Wellenfront. Damit lassen sich alle folgenden Phänomene erklären:
+
+- **Reflexion**: Einfallswinkel gleich Reflexionswinkel. Echo, Echolot, Radar.
+- **Brechung**: Beim Übergang in ein Medium mit anderer Ausbreitungsgeschwindigkeit ändert die Welle ihre Richtung: $\frac{\sin\alpha}{\sin\beta} = \frac{c_1}{c_2}$ (siehe [Optik](/de/natural-sciences/optics/#brechung)).
+- **Beugung**: Wellen laufen auch in den geometrischen Schattenraum hinter Hindernissen und Spalten. Merklich wird das, wenn das Hindernis etwa so groß wie die Wellenlänge ist. Deshalb hört man um Hausecken (Schallwellenlängen im Meterbereich), sieht aber nicht um sie herum (Licht unter einem Mikrometer).
+- **Interferenz**: Überlagerung mehrerer Wellen (siehe unten).
+
+## Superposition und Interferenz
+
+Treffen Wellen aufeinander, addieren sich ihre Auslenkungen (**Superpositionsprinzip**), danach laufen sie ungestört weiter. Haben zwei Wellen dieselbe Frequenz und eine feste Phasenbeziehung (**kohärente** Wellen), entsteht ein stabiles Interferenzmuster. Entscheidend ist der **Gangunterschied** $\Delta s$, also die Differenz der Wege von den beiden Quellen:
+
+| Interferenz | Bedingung | Ergebnis |
+| --- | --- | --- |
+| **konstruktiv** | $\Delta s = k \cdot \lambda$, $k = 0, 1, 2, \dots$ | Verstärkung (Wellenberg trifft Wellenberg) |
+| **destruktiv** | $\Delta s = (2k + 1) \cdot \frac{\lambda}{2}$ | Auslöschung (Wellenberg trifft Wellental) |
+
+Anwendungen: aktive Geräuschunterdrückung (ANC) in Kopfhörern erzeugt ein gegenphasiges Signal, Entspiegelung von Brillengläsern, Interferometer zur Längenmessung, Doppelspalt und Gitter (siehe [Wellenoptik](/de/natural-sciences/optics/#wellenoptik)).
+
+## Stehende Wellen
+
+Wird eine Welle an einem Ende reflektiert, überlagern sich hin- und rücklaufende Welle zu einer **stehenden Welle**. Sie hat ortsfeste **Knoten** (immer in Ruhe) und **Bäuche** (maximale Schwingung). Der Abstand zweier Knoten ist $\lambda/2$. Eine stehende Welle transportiert keine Energie.
+
+Stehende Wellen bilden sich nur bei bestimmten Frequenzen (Eigenfrequenzen), die zur Länge $L$ des Schwingers passen:
+
+| Schwinger | Ränder | Eigenfrequenzen |
+| --- | --- | --- |
+| Saite, beidseitig eingespannt | Knoten an beiden Enden | $f_n = n \cdot \frac{c}{2L}$, $n = 1, 2, 3, \dots$ |
+| Rohr, beidseitig offen (Flöte) | Bäuche an beiden Enden | $f_n = n \cdot \frac{c}{2L}$ |
+| Rohr, einseitig geschlossen (Klarinette, Panflöte) | Knoten am geschlossenen, Bauch am offenen Ende | $f_n = (2n - 1) \cdot \frac{c}{4L}$, nur ungerade Vielfache |
+
+Die tiefste Frequenz ($n = 1$) ist die **Grundfrequenz**, die höheren heißen **Obertöne** (Harmonische). Ihre Mischung bestimmt die Klangfarbe eines Instruments.
+
+:::tip[Beispiel: Gitarrensaite]
+Die A-Saite einer Gitarre hat die schwingende Länge $L = 0{,}65\,\mathrm{m}$ und die Grundfrequenz $110\,\mathrm{Hz}$. Die Wellengeschwindigkeit auf der Saite ist $c = 2 L f_1 = 2 \cdot 0{,}65 \cdot 110 = 143\,\mathrm{m/s}$. Drückt man die Saite am 12. Bund (halbe Länge), erklingt die Oktave mit $220\,\mathrm{Hz}$. Stärkeres Spannen erhöht $F$ und damit $c$ und die Tonhöhe.
+:::
+
+:::tip[Beispiel: Rohr]
+Ein $50\,\mathrm{cm}$ langes Rohr, an einem Ende geschlossen: Grundton $f_1 = \frac{343}{4 \cdot 0{,}5} = 171{,}5\,\mathrm{Hz}$, Obertöne $514{,}5\,\mathrm{Hz}$, $857{,}5\,\mathrm{Hz}$. Ist es beidseitig offen, liegt der Grundton bei $343\,\mathrm{Hz}$.
+:::
+
+## Doppler-Effekt
+
+Bewegen sich Quelle oder Beobachter relativ zum Medium, ändert sich die wahrgenommene Frequenz. Ein Krankenwagen klingt beim Herannahen höher und beim Wegfahren tiefer, obwohl die Sirene immer gleich klingt.
+
+$$
+f_\mathrm{B} = f_\mathrm{Q} \cdot \frac{c \pm v_\mathrm{B}}{c \mp v_\mathrm{Q}}
+$$
+
+Die oberen Vorzeichen gelten für **Annäherung**, die unteren für Entfernung. $v_\mathrm{B}$ ist die Geschwindigkeit des Beobachters, $v_\mathrm{Q}$ die der Quelle, jeweils relativ zur Luft.
+
+:::tip[Beispiel: Krankenwagen]
+Sirene $f_\mathrm{Q} = 700\,\mathrm{Hz}$, Geschwindigkeit $v_\mathrm{Q} = 25\,\mathrm{m/s}$ ($90\,\mathrm{km/h}$), ruhender Beobachter, $c = 343\,\mathrm{m/s}$:
+
+- Annäherung: $f = 700 \cdot \frac{343}{343 - 25} = 755\,\mathrm{Hz}$
+- Entfernung: $f = 700 \cdot \frac{343}{343 + 25} = 652\,\mathrm{Hz}$
+:::
+
+Anwendungen: Radarkontrollen, Doppler-Sonographie (Blutflussmessung), Wetterradar, Rotverschiebung des Lichts ferner Galaxien (Expansion des Universums). Für Licht gilt eine relativistische Formel, die nur von der Relativgeschwindigkeit abhängt.
+
+Fliegt eine Quelle schneller als der Schall ($v_\mathrm{Q} > c$), überlagern sich die Wellenfronten zu einem **Machschen Kegel** mit dem Öffnungswinkel $\sin\alpha = c/v_\mathrm{Q}$. Am Boden hört man einen Überschallknall. Die **Machzahl** ist $Ma = v/c$.
+
+## Schall
+
+**Schall** sind mechanische Longitudinalwellen in einem Medium. Der Mensch hört Frequenzen von etwa $16\,\mathrm{Hz}$ bis $20\,\mathrm{kHz}$; die obere Grenze sinkt mit dem Alter.
+
+| Bereich | Frequenz | Beispiele |
+| --- | --- | --- |
+| Infraschall | unter $16\,\mathrm{Hz}$ | Erdbeben, Windkraftanlagen, Elefanten |
+| Hörschall | $16\,\mathrm{Hz}$ bis $20\,\mathrm{kHz}$ | Sprache (etwa $100\,\mathrm{Hz}$ bis $8\,\mathrm{kHz}$), Musik |
+| Ultraschall | über $20\,\mathrm{kHz}$ | Fledermäuse, Sonographie, Reinigung |
+| Hyperschall | über $1\,\mathrm{GHz}$ | Gitterschwingungen in Festkörpern |
+
+Die **Tonhöhe** entspricht der Frequenz, die **Lautstärke** der Amplitude. Der Kammerton a′ hat $440\,\mathrm{Hz}$ und in Luft die Wellenlänge $343/440 = 0{,}78\,\mathrm{m}$. Eine Oktave ist eine Frequenzverdopplung.
+
+### Schallintensität und Schallpegel
+
+Die **Schallintensität** ist die Leistung pro Fläche, $I = P/A$ in $\mathrm{W/m^2}$. Eine punktförmige Quelle verteilt ihre Leistung auf eine Kugeloberfläche, deshalb gilt das **Abstandsgesetz** $I = \frac{P}{4\pi r^2}$: doppelter Abstand, ein Viertel der Intensität.
+
+Das Ohr empfindet Lautstärke etwa logarithmisch und überdeckt einen riesigen Bereich von $10^{-12}$ bis über $1\,\mathrm{W/m^2}$. Man verwendet deshalb den **Schallintensitätspegel** in Dezibel:
+
+$$
+L = 10 \cdot \lg\frac{I}{I_0}\,\mathrm{dB}, \qquad I_0 = 10^{-12}\,\mathrm{W/m^2} \;(\text{Hörschwelle bei } 1\,\mathrm{kHz})
+$$
+
+| Schallquelle | Pegel |
+| --- | --- |
+| Hörschwelle | $0\,\mathrm{dB}$ |
+| Blätterrauschen, Flüstern | $20$ bis $30\,\mathrm{dB}$ |
+| normales Gespräch | $60\,\mathrm{dB}$ |
+| starker Straßenverkehr | $80\,\mathrm{dB}$ |
+| Diskothek, Konzert | $100$ bis $110\,\mathrm{dB}$ |
+| Schmerzgrenze | etwa $130\,\mathrm{dB}$ |
+
+Rechenregeln:
+
+- Zehnfache Intensität: $+10\,\mathrm{dB}$. Eine Intensität von $10^{-5}\,\mathrm{W/m^2}$ entspricht $10 \cdot \lg 10^7 = 70\,\mathrm{dB}$.
+- Doppelte Intensität (zwei gleich laute Quellen): $+3\,\mathrm{dB}$, nicht das Doppelte des Pegels.
+- Doppelter Abstand von einer Punktquelle: $-6\,\mathrm{dB}$.
+- Als „doppelt so laut“ empfunden wird etwa $+10\,\mathrm{dB}$.
+
+:::tip[Beispiel]
+Ein Lautsprecher strahlt $1\,\mathrm{W}$ Schallleistung gleichmäßig in alle Richtungen ab. In $10\,\mathrm{m}$ Abstand: $I = \frac{1}{4\pi \cdot 10^2} = 7{,}96 \cdot 10^{-4}\,\mathrm{W/m^2}$, $L = 10 \cdot \lg(7{,}96 \cdot 10^8) = 89\,\mathrm{dB}$. In $20\,\mathrm{m}$ Abstand sind es $83\,\mathrm{dB}$.
+:::
+
+Weil das Ohr tiefe und sehr hohe Töne weniger empfindlich wahrnimmt, misst man im Lärmschutz den **A-bewerteten Pegel** in dB(A). Dauerhafte Belastung über etwa $85\,\mathrm{dB(A)}$ schädigt das Gehör. In Österreich regelt die Verordnung Lärm und Vibrationen (VOLV) den Arbeitsplatz: Ab $80\,\mathrm{dB(A)}$ (Tagesdurchschnitt) muss der Arbeitgeber Gehörschutz bereitstellen, ab $85\,\mathrm{dB(A)}$ muss er getragen werden.
+
+## Ultraschall
+
+Ultraschall hat wegen seiner hohen Frequenz eine kleine Wellenlänge und lässt sich deshalb gut bündeln und für feine Strukturen nutzen. Erzeugt wird er meist mit **Piezokristallen**, die sich bei angelegter Wechselspannung verformen und umgekehrt bei Druck eine Spannung erzeugen; derselbe Kristall dient als Sender und Empfänger.
+
+Das **Impuls-Echo-Verfahren** misst die Laufzeit $t$ eines reflektierten Pulses. Die Tiefe der reflektierenden Grenzfläche ist $d = \frac{c \cdot t}{2}$ (hin und zurück).
+
+:::tip[Beispiel: Sonographie]
+In Weichgewebe ist $c \approx 1540\,\mathrm{m/s}$. Bei $5\,\mathrm{MHz}$ ist $\lambda = 1540/(5 \cdot 10^6) = 0{,}31\,\mathrm{mm}$, so fein ist ungefähr die erreichbare Auflösung. Ein Echo nach $65\,\mathrm{\mu s}$ kommt aus $d = 1540 \cdot 65 \cdot 10^{-6}/2 = 5{,}0\,\mathrm{cm}$ Tiefe. Höhere Frequenzen lösen feiner auf, dringen aber weniger tief ein.
+:::
+
+Weitere Anwendungen: Echolot und Sonar, Werkstoffprüfung (Risse in Schweißnähten), Ultraschallreinigung, Einparkhilfe, Zertrümmerung von Nierensteinen.
+
+## Weiterführende Quellen
+
+- Paul A. Tipler, Gene Mosca: _Physik für Studierende der Naturwissenschaften und Technik_, Springer Spektrum
+- LEIFIphysik: Mechanische Wellen und Akustik, leifiphysik.de
+- AUVA: Merkblatt Lärm am Arbeitsplatz, auva.at

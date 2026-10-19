@@ -1,0 +1,178 @@
+---
+title: Reinforcement Learning
+description: "Learning from rewards: agent and environment, Markov decision process, return and discounting, the Bellman equation, exploration and Q-learning with a grid world in NumPy."
+sidebar:
+  order: 11
+---
+
+In **reinforcement learning** (RL), an **agent** learns by trial and error. It acts in an **environment**, observes the consequences and receives a **reward** for them, which can also be negative. Nobody tells it which action would have been correct. It has to find out for itself which behaviour yields the most reward in the long run. People and animals learn in the same way: a child who touches a hot hob does not need labels to avoid doing it again.
+
+Unlike [supervised learning](/en/artificial-intelligence/supervised-learning/), there are no correct answers, only an evaluation signal that often comes much later: whether a move in chess was good sometimes only becomes clear at the end of the game. Unlike [unsupervised learning](/en/artificial-intelligence/unsupervised-learning/), the agent has a clear goal and influences through its own actions which data it sees next.
+
+## Basic terms
+
+| Term | Meaning | Example robot vacuum |
+| ---- | ------- | -------------------- |
+| **Agent** | the one who learns and decides | the robot's controller |
+| **Environment** | everything outside the agent that it acts on | the flat |
+| **State** $s$ | description of the current situation | position, battery level, dirt map |
+| **Action** $a$ | what the agent can do | move forward, turn, return to the charging station |
+| **Reward** $r$ | immediate feedback as a number | +1 per cleaned area, -100 for an empty battery |
+| **Policy** $\pi$ | rule for which action to choose in which state | "return to the station when the battery is below 15 %" |
+| **Episode** | one run from the start to a terminal state | one cleaning run from start to return |
+
+The cycle repeats in every time step $t$: the agent observes the state $s_t$, chooses an action $a_t$, the environment moves to state $s_{t+1}$ and returns the reward $r_{t+1}$.
+
+## Markov decision process
+
+Formally, the problem is described as a **Markov decision process** (MDP) with
+
+- a set of states $S$ and actions $A$,
+- transition probabilities $P(s' \mid s, a)$: with what probability do you end up in state $s'$ after action $a$ in state $s$?
+- a reward function $R(s, a, s')$,
+- a **discount factor** $\gamma$ with $0 \le \gamma \le 1$.
+
+The **Markov property** states that the next state depends only on the current state and the action, not on the history. The state must therefore contain all relevant information.
+
+### Return and discounting
+
+The agent does not maximise the next reward but the **return**, the sum of all future rewards. Later rewards are discounted by $\gamma$:
+
+$$
+G_t = r_{t+1} + \gamma \cdot r_{t+2} + \gamma^2 \cdot r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k \cdot r_{t+k+1}
+$$
+
+A $\gamma$ close to 0 makes the agent short-sighted, a $\gamma$ close to 1 far-sighted. With $\gamma < 1$ the sum stays finite even for endless tasks, and safe, early rewards are preferred to uncertain, late ones.
+
+### Value functions
+
+- The **state-value function** $V^\pi(s)$ gives the expected return when starting in $s$ and following policy $\pi$: how good is it to be here?
+- The **action-value function** $Q^\pi(s, a)$ gives the expected return when choosing action $a$ in $s$ and following $\pi$ afterwards: how good is it to choose this action here?
+
+If you know the optimal action-value function $Q^*$, the best policy is simple: in every state, choose the action with the largest $Q$-value. It satisfies the **Bellman optimality equation**: the value of an action is the immediate reward plus the discounted value of the best action in the next state.
+
+$$
+Q^*(s, a) = \mathbb{E}\left[r + \gamma \cdot \max_{a'} Q^*(s', a')\right]
+$$
+
+## Exploration and exploitation
+
+The agent constantly faces a dilemma: should it choose the action that has been best so far (**exploitation**), or try something new that might be even better (**exploration**)? An agent that only exploits gets stuck with the first reasonably good solution. One that only explores never uses its knowledge.
+
+The simplest solution is the **ε-greedy policy**: with probability $\varepsilon$ (e.g. 10 %) a random action is chosen, otherwise the best known one. $\varepsilon$ is often reduced during training.
+
+## Q-learning
+
+**Q-learning** (Watkins, 1989) learns the $Q$-values directly from experience without knowing the transition probabilities of the environment (**model-free**). For small problems, the values are stored in a table, the **Q-table**, with one row per state and one column per action. After each step $(s, a, r, s')$ one entry is updated:
+
+$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \cdot \left[r + \gamma \cdot \max_{a'} Q(s', a') - Q(s, a)\right]
+$$
+
+The expression in square brackets is the **TD error** (_temporal difference_): the difference between the new estimate (reward plus the value of the best next step) and the old estimate. The **learning rate** $\alpha$ determines how strongly the old estimate is corrected.
+
+**Worked example:** $Q(s, a) = 0$, the agent receives $r = -1$, the best $Q$-value in the next state is $2$, with $\alpha = 0.1$ and $\gamma = 0.9$:
+
+$$
+Q(s, a) \leftarrow 0 + 0.1 \cdot (-1 + 0.9 \cdot 2 - 0) = 0.1 \cdot 0.8 = 0.08
+$$
+
+Q-learning is **off-policy**: it learns the values of the optimal policy (because of the $\max$), even if the agent explores randomly while collecting experience. The related method **SARSA** uses the value of the action actually chosen next instead of the maximum (**on-policy**) and therefore learns more cautious behaviour.
+
+## Example: grid world
+
+An agent starts in the top left corner of a $4 \times 4$ grid and has to reach the goal `G` at the bottom right. Every step costs $-1$, the goal gives $+10$, and the two traps `X` give $-10$ and end the episode. If the agent walks into the edge, it stays where it is.
+
+```python
+import numpy as np
+
+ROWS, COLS = 4, 4
+START, GOAL = (0, 0), (3, 3)
+TRAPS = {(1, 1), (2, 3)}
+ACTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # up, down, left, right
+SYMBOLS = ["↑", "↓", "←", "→"]
+
+
+def step(state, action):
+    """Executes an action and returns (new state, reward, episode finished)."""
+    dr, dc = ACTIONS[action]
+    row = min(max(state[0] + dr, 0), ROWS - 1)  # stay put at the edge
+    col = min(max(state[1] + dc, 0), COLS - 1)
+    new_state = (row, col)
+    if new_state == GOAL:
+        return new_state, 10.0, True
+    if new_state in TRAPS:
+        return new_state, -10.0, True
+    return new_state, -1.0, False  # every step costs something
+
+
+rng = np.random.default_rng(42)
+Q = np.zeros((ROWS, COLS, len(ACTIONS)))
+alpha, gamma, epsilon = 0.1, 0.9, 0.1  # learning rate, discount factor, exploration rate
+
+for episode in range(2000):
+    state, done = START, False
+    while not done:
+        # epsilon-greedy: mostly the best known action, sometimes explore at random
+        if rng.random() < epsilon:
+            action = int(rng.integers(len(ACTIONS)))
+        else:
+            action = int(np.argmax(Q[state]))
+        new_state, reward, done = step(state, action)
+        # Q-learning update
+        target = reward if done else reward + gamma * np.max(Q[new_state])
+        Q[state][action] += alpha * (target - Q[state][action])
+        state = new_state
+
+# print the learned policy
+for row in range(ROWS):
+    line = ""
+    for col in range(COLS):
+        if (row, col) == GOAL:
+            line += " G"
+        elif (row, col) in TRAPS:
+            line += " X"
+        else:
+            line += " " + SYMBOLS[int(np.argmax(Q[row, col]))]
+    print(line)
+
+print(f"Q-values at start: {Q[START].round(2)}")
+```
+
+Output:
+
+```text
+ → → ↓ ←
+ ↓ X ↓ ←
+ → → ↓ X
+ → → → G
+Q-values at start: [0.62 1.3  0.61 1.81]
+```
+
+The agent has learned a shortest path that avoids both traps: right twice, down three times, right once. The highest $Q$-value at the start ($1.81$ for "right") can be checked by hand: five steps of $-1$ each followed by $+10$ give, discounted, $-1 - 0.9 - 0.81 - 0.729 - 0.6561 + 0.9^5 \cdot 10 \approx 1.81$. In the top right cells, too, the arrows point away from the trap.
+
+## Deep reinforcement learning
+
+A Q-table only works with a few states. A chess board has an estimated $10^{43}$ possible positions, a camera image infinitely many. In **deep reinforcement learning**, a [neural network](/en/artificial-intelligence/deep-learning/) replaces the table and estimates the values or directly the policy.
+
+| Method | Idea | Well-known application |
+| ------ | ---- | ---------------------- |
+| **Deep Q-network** (DQN) | a neural network estimates $Q(s, a)$; experiences are stored and replayed at random (_experience replay_) | DeepMind 2015: 49 Atari games directly from the screen pixels |
+| **Policy gradient**, e.g. REINFORCE, **PPO** | the network directly outputs the probability of each action and is shifted towards higher returns | robot control, RLHF for language models |
+| **Actor-critic** | one network chooses actions (actor), a second one evaluates them (critic) | continuous control tasks |
+| **Combination with search** | a neural network evaluates positions, a tree search plans ahead | AlphaGo beat the Go professional Lee Sedol in 2016; AlphaZero learned chess and Go without human games |
+
+Large language models are also fine-tuned with RL, see [generative AI](/en/artificial-intelligence/generative-ai/#training-a-language-model). For practice, there is the Python library **Gymnasium** (successor to OpenAI Gym) with standardised environments such as `CartPole` or `FrozenLake`.
+
+## Challenges
+
+- **Reward design:** the agent optimises exactly what is rewarded, not what was meant (_reward hacking_). A well-known example is a boat in a racing game that drove in circles endlessly instead of finishing, because it could keep collecting bonus points there.
+- **Delayed reward:** which of a hundred actions was responsible for success (_credit assignment problem_)?
+- **Sample efficiency:** RL often needs millions of attempts. In simulations that is no problem, in the real world (robots, cars) it is.
+- **Safety:** exploring can be dangerous in reality. And what was learned in simulation does not always work in reality (_sim-to-real gap_).
+
+## Further reading
+
+- Richard S. Sutton, Andrew G. Barto: [_Reinforcement Learning: An Introduction_](http://incompleteideas.net/book/the-book-2nd.html), 2nd edition, free online
+- [Gymnasium documentation](https://gymnasium.farama.org/)
+- OpenAI: [Spinning Up in Deep RL](https://spinningup.openai.com/)

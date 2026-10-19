@@ -1,0 +1,251 @@
+---
+title: Computability and Complexity
+description: Church-Turing thesis, decidability, the halting problem with a proof sketch, Rice's theorem, complexity classes P, NP, NP-complete and NP-hard, the P versus NP problem and examples such as SAT, TSP and knapsack.
+sidebar:
+  order: 10
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Computability theory** asks which problems a computer can solve **at all**, regardless of how fast it is and how much memory it has. **Complexity theory** asks which problems can be solved **efficiently**. Both answers have practical consequences: there are programs that cannot be written (for example a perfect virus scanner), and problems for which you should not hope for a fast exact algorithm but need approximations instead. The basics of runtime analysis with O-notation are under [Algorithms](/en/software-development/algorithms/#time-complexity), the automaton models under [Automata and formal languages](/en/computer-science/automata-and-formal-languages/).
+
+## Computability
+
+### Church-Turing thesis
+
+To prove that something is not computable, you need a precise definition of "computable". In the 1930s several models were developed independently: the **Turing machine** (Alan Turing), the **λ-calculus** (Alonzo Church) and the **μ-recursive functions** (Kurt Gödel, Stephen Kleene). All of them turned out to be **equally powerful**: they can compute exactly the same functions.
+
+The **Church-Turing thesis** states: everything that is intuitively computable (by a step-by-step, mechanical procedure) can be computed by a Turing machine. It is not a provable theorem, because "intuitively computable" is not formally defined, but it is generally accepted because no counterexample has ever been found.
+
+A programming language or system is called **Turing-complete** if it can simulate any Turing machine. Conditional branching, loops or recursion, and unbounded memory are enough. C#, Rust and Python are Turing-complete, and so are SQL with recursive CTEs, Excel with LAMBDA functions and Minecraft redstone. A faster computer can therefore do more in less time, but in principle it **cannot compute more** than a Turing machine.
+
+### Decidability
+
+A **decision problem** has only yes or no as its answer: "Is $n$ a prime number?", "Is this word part of the language?".
+
+| Term                            | Definition                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| **decidable**                   | There is an algorithm that **halts** after finitely many steps for every input and answers yes or no correctly. |
+| **semi-decidable** (recursively enumerable) | There is an algorithm that halts and says yes for yes-instances. For no-instances, however, it may run forever. |
+| **undecidable**                 | There is no algorithm that decides the problem correctly for all inputs.      |
+
+Decidable problems include, for example: whether a number is prime, whether a DFA accepts a word, whether a word belongs to a context-free language, whether a graph has a path between two nodes.
+
+That undecidable problems **must** exist already follows from a counting argument: every program is a finite text, so there are only **countably** many programs. But there are **uncountably** many functions from the natural numbers to $\{0, 1\}$ (Cantor's diagonal argument). The vast majority of functions are therefore not computable.
+
+### Halting problem
+
+The most famous undecidable problem is the **halting problem** (Turing, 1936): given a program $P$ and an input $x$, does $P$ eventually halt on input $x$, or does it run forever?
+
+**Theorem**: there is no program that answers this question correctly for all programs and inputs.
+
+**Proof sketch** (by contradiction, using diagonalisation):
+
+1. Assume there is a function `Halts(program, input)` that always halts and returns `true` if the program halts on the input, and `false` otherwise.
+2. Using it, write a new program `Paradox` that receives a program as input and examines it **with itself as input**:
+
+```text
+Paradox(p):
+    if Halts(p, p):
+        loop forever
+    else:
+        halt
+```
+
+3. Now call `Paradox(Paradox)`:
+   - If `Paradox(Paradox)` halts, then `Halts(Paradox, Paradox)` returns `true`, so `Paradox` enters the infinite loop and does **not** halt.
+   - If `Paradox(Paradox)` does not halt, then `Halts` returns `false`, so `Paradox` **halts**.
+4. Both cases are a contradiction. Therefore the function `Halts` cannot exist.
+
+The halting problem is, however, **semi-decidable**: you can simply run the program. If it halts, you know the answer. If it does not halt, you wait forever without ever being sure that it will not halt after all.
+
+### Further undecidable problems
+
+**Rice's theorem** (1953) generalises the halting problem: **every non-trivial property of a program's behaviour** is undecidable. "Non-trivial" means that some programs have it and some do not. So, for example, the following are undecidable:
+
+- whether a program produces the correct output for every input (complete program verification),
+- whether two programs compute the same thing,
+- whether a program ever reaches a particular line of code or executes malicious code,
+- whether a program sends a password to a server.
+
+Further classic examples are the **Post correspondence problem**, the question of whether two context-free grammars generate the same language, and **Hilbert's tenth problem** (does a polynomial equation with integer coefficients have an integer solution?).
+
+Practical consequences: virus scanners, compiler warnings and static code analysis tools can never be perfect. They work with **approximations** that either miss some errors or sometimes raise false alarms. That is also why the Rust compiler rejects some correct programs: it cannot prove that they are safe. For individual, concrete programs you can still prove properties, just not automatically for **all** programs.
+
+## Complexity
+
+A problem can be decidable and still practically unsolvable because every known algorithm takes too long. **Time complexity** states how the number of computation steps grows with the input size $n$; **space complexity** does the same for memory.
+
+The decisive difference lies between **polynomial** growth ($n^k$) and **exponential** growth ($2^n$, $n!$). At $10^9$ operations per second:
+
+| $n$  | $n \log_2 n$ | $n^2$          | $n^3$         | $2^n$                       | $n!$                       |
+| ---- | ------------ | -------------- | ------------- | --------------------------- | -------------------------- |
+| 10   | 33 ns        | 100 ns         | 1 µs          | 1 µs                        | 3.6 ms                     |
+| 20   | 86 ns        | 400 ns         | 8 µs          | 1 ms                        | 77 years                   |
+| 50   | 282 ns       | 2.5 µs         | 125 µs        | 13 days                     | $10^{48}$ years            |
+| 100  | 664 ns       | 10 µs          | 1 ms          | $4 \cdot 10^{13}$ years     | (unimaginable)             |
+
+With $2^n$, a computer ten times faster only allows about 3 more elements ($2^{3.3} \approx 10$). Polynomial algorithms are therefore considered **efficient** (practically solvable, _tractable_), exponential ones **inefficient**.
+
+### The class P
+
+**P** is the class of decision problems that a deterministic Turing machine (and therefore any normal computer) can solve in **polynomial time** $O(n^k)$. Examples:
+
+- sorting and searching
+- shortest paths in graphs (Dijkstra), minimum spanning tree (see [Graphs](/en/software-development/graphs/))
+- testing whether a number is prime (AKS test, 2002)
+- linear programming, matching in bipartite graphs
+
+### The class NP
+
+**NP** (_nondeterministic polynomial_) is the class of decision problems for which a **solution can be verified in polynomial time**. For a yes-instance you are given a proposed solution (a **certificate**) and can quickly check whether it is correct. Equivalently, a nondeterministic Turing machine that "guesses" the right solution solves the problem in polynomial time.
+
+Example sudoku: checking a completed sudoku is quick, finding a solution is hard (for generalised $n^2 \times n^2$ sudokus).
+
+Every problem in P is also in NP, because anything you can solve quickly you can also check quickly: $\mathrm{P} \subseteq \mathrm{NP}$.
+
+**NP** does not mean "not polynomial". Equating NP with "exponential" is a common exam mistake.
+
+### NP-complete and NP-hard
+
+A problem $A$ can be **reduced** to a problem $B$ ($A \leq_p B$) if every instance of $A$ can be transformed in polynomial time into an instance of $B$ with the same answer. Then $B$ is at least as hard as $A$: a fast algorithm for $B$ would also solve $A$ quickly.
+
+- **NP-hard**: every problem in NP can be reduced to it. It is at least as hard as every problem in NP but does not itself have to be in NP (it does not even have to be a decision problem or decidable; the halting problem is NP-hard).
+- **NP-complete**: NP-hard **and** itself in NP. These are the "hardest" problems in NP.
+
+The **Cook-Levin theorem** (1971) was the first to show that **SAT** is NP-complete. In 1972 Richard Karp proved the NP-completeness of 21 further problems; today thousands are known. All NP-complete problems can be reduced to one another: if a polynomial algorithm were found for just one of them, all of them would be in P.
+
+| Problem                             | Question (decision version)                                                      | Class                          |
+| ----------------------------------- | -------------------------------------------------------------------------------- | ------------------------------ |
+| **SAT** (satisfiability)            | Is there an assignment of the variables that makes a propositional formula true? Also **3-SAT** with clauses of exactly three literals | NP-complete |
+| **Travelling salesman problem** (TSP) | Is there a round trip through all cities with a total length of at most $k$?   | NP-complete; the optimisation version (shortest round trip) is NP-hard |
+| **Knapsack problem**                | Can items with total weight at most $W$ and total value at least $V$ be chosen?  | NP-complete                    |
+| **Graph colouring**                 | Can the nodes be coloured with $k \geq 3$ colours so that neighbouring nodes differ? (timetables, register allocation in compilers) | NP-complete |
+| **Hamiltonian cycle**               | Is there a cycle that visits every node exactly once?                            | NP-complete                    |
+| **Clique**, **subset sum**, **bin packing** |                                                                          | NP-complete                    |
+| **Factorisation**                   | Does $n$ have a divisor smaller than $k$?                                        | in NP, but probably not NP-complete; not known to be in P. RSA relies on it |
+| **Eulerian circuit**                | Is there a circuit that uses every **edge** exactly once?                        | in P (all node degrees even)   |
+| **2-SAT**, **2-colouring**          |                                                                                  | in P                           |
+
+The last rows show how close "easy" and "hard" can be: every edge exactly once (Euler) is easy, every node exactly once (Hamilton) is hard.
+
+### The P versus NP problem
+
+Whether $\mathrm{P} = \mathrm{NP}$ holds is the most important open question in computer science. In 2000 the Clay Mathematics Institute listed it as one of seven **Millennium Prize Problems**, with a prize of one million US dollars. Almost all experts suspect $\mathrm{P} \neq \mathrm{NP}$: finding solutions is fundamentally harder than checking them.
+
+Assuming $\mathrm{P} \neq \mathrm{NP}$, the picture is as follows:
+
+- P lies entirely within NP.
+- The NP-complete problems are exactly the intersection of NP and NP-hard.
+- No NP-complete problem is in P. There are then even problems in NP that are neither in P nor NP-complete (Ladner's theorem); candidates are factorisation and the graph isomorphism problem.
+- NP-hard problems can lie far outside NP, for example the halting problem.
+
+If $\mathrm{P} = \mathrm{NP}$, many optimisation problems could be solved efficiently, but today's public-key cryptography would also be at risk.
+
+Further classes are **PSPACE** (polynomial space, contains NP; the question of whether a winning strategy exists in generalised chess belongs here) and **EXPTIME** (exponential time). It is known that $\mathrm{P} \subseteq \mathrm{NP} \subseteq \mathrm{PSPACE} \subseteq \mathrm{EXPTIME}$ and $\mathrm{P} \neq \mathrm{EXPTIME}$.
+
+### Dealing with NP-hard problems
+
+NP-hard problems come up in practice all the time: route planning, timetables, cutting stock optimisation, chip design. Instead of giving up, you use:
+
+- **Exact methods for small inputs**: backtracking, branch and bound, dynamic programming. Modern **SAT solvers** solve industrial instances with millions of variables, even though the worst case is exponential.
+- **Special cases**: many instances have a structure that makes them easier (e.g. knapsack with small integer weights).
+- **Approximation algorithms** with guaranteed quality: for the metric TSP, Christofides' algorithm finds a round trip that is at most 1.5 times as long as the optimal one.
+- **Heuristics** without guarantees: greedy methods, local search, simulated annealing, genetic algorithms.
+
+### Example: knapsack problem
+
+Given items with a weight and a value and a knapsack with capacity $W$, find the most valuable selection that fits into the knapsack. Trying all $2^n$ subsets is exponential. **Dynamic programming** calculates the best value for every capacity $0 \ldots W$ and needs $O(n \cdot W)$ steps. That looks polynomial but is not polynomial in the input length: $W$ is stored with only $\log_2 W$ bits, and every additional bit doubles the effort (**pseudo-polynomial**).
+
+<Tabs syncKey="code">
+<TabItem label="C#">
+
+```csharp
+(int Weight, int Value)[] items = [(12, 4), (2, 2), (1, 1), (1, 2), (4, 10)];
+const int Capacity = 15;
+
+Console.WriteLine($"Brute force: {Knapsack.BruteForce(items, Capacity)}"); // Brute force: 15
+Console.WriteLine($"Dynamic:     {Knapsack.Dynamic(items, Capacity)}");    // Dynamic:     15
+
+static class Knapsack
+{
+    // try all 2^n subsets as bit patterns: O(2^n * n)
+    public static int BruteForce((int Weight, int Value)[] items, int capacity)
+    {
+        int best = 0;
+        for (int mask = 0; mask < 1 << items.Length; mask++)
+        {
+            int weight = 0, value = 0;
+            for (int i = 0; i < items.Length; i++)
+            {
+                if ((mask & (1 << i)) == 0) continue;
+                weight += items[i].Weight;
+                value += items[i].Value;
+            }
+            if (weight <= capacity) best = Math.Max(best, value);
+        }
+        return best;
+    }
+
+    // best[c] = best value with capacity c: O(n * W)
+    public static int Dynamic((int Weight, int Value)[] items, int capacity)
+    {
+        var best = new int[capacity + 1];
+        foreach (var (weight, value) in items)
+        {
+            for (int c = capacity; c >= weight; c--)   // backwards: each item only once
+            {
+                best[c] = Math.Max(best[c], best[c - weight] + value);
+            }
+        }
+        return best[capacity];
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Rust">
+
+```rust
+// try all 2^n subsets as bit patterns: O(2^n * n)
+fn knapsack_brute_force(items: &[(usize, u32)], capacity: usize) -> u32 {
+    (0..1u32 << items.len())
+        .filter_map(|mask| {
+            let chosen = items.iter().enumerate().filter(|(i, _)| mask & (1 << i) != 0);
+            let (weight, value) = chosen.fold((0, 0), |(w, v), (_, &(iw, iv))| (w + iw, v + iv));
+            (weight <= capacity).then_some(value)
+        })
+        .max()
+        .unwrap_or(0)
+}
+
+// best[c] = best value with capacity c: O(n * W)
+fn knapsack_dynamic(items: &[(usize, u32)], capacity: usize) -> u32 {
+    let mut best = vec![0; capacity + 1];
+    for &(weight, value) in items {
+        for c in (weight..=capacity).rev() {
+            // backwards: each item only once
+            best[c] = best[c].max(best[c - weight] + value);
+        }
+    }
+    best[capacity]
+}
+
+fn main() {
+    let items = [(12, 4), (2, 2), (1, 1), (1, 2), (4, 10)];
+    let capacity = 15;
+    println!("Brute force: {}", knapsack_brute_force(&items, capacity)); // Brute force: 15
+    println!("Dynamic:     {}", knapsack_dynamic(&items, capacity));     // Dynamic:     15
+}
+```
+
+</TabItem>
+</Tabs>
+
+For the TSP with $n$ cities there are $\frac{(n-1)!}{2}$ different round trips. With 10 cities that is 181,440, with 20 cities already about $6 \cdot 10^{16}$. Dynamic programming (the Held-Karp algorithm) reduces the effort to $O(n^2 \cdot 2^n)$, which is still exponential.
+
+## Further reading
+
+- Michael Sipser: _Introduction to the Theory of Computation_, Cengage
+- [P vs NP](https://www.claymath.org/millennium/p-vs-np/) (Clay Mathematics Institute)
+- Alan M. Turing: [On Computable Numbers, with an Application to the Entscheidungsproblem](https://www.cs.virginia.edu/~robins/Turing_Paper_1936.pdf) (1936)

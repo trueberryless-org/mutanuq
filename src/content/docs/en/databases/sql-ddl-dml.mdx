@@ -1,0 +1,196 @@
+---
+title: "SQL: Defining and Changing Data"
+description: Data types, CREATE, ALTER and DROP, automatically generated keys, INSERT, UPDATE, DELETE, TRUNCATE and MERGE with the differences between the most important database systems.
+sidebar:
+  label: "SQL: DDL and DML"
+  order: 6
+---
+
+With the **Data Definition Language** (DDL), you create the structure of a database: tables, columns, constraints and indexes. With the **Data Manipulation Language** (DML), you insert, change and delete data. The examples use PostgreSQL. Where other systems have their own syntax, it is given as well.
+
+SQL does **not** distinguish between upper and lower case in keywords and in names that are not in double quotes. It is common to write keywords in upper case. Strings are written in single quotes (`'Anna'`), names with special characters or spaces in double quotes (`"Class Name"`, in SQL Server `[Class Name]`, in MySQL `` `Class Name` ``). Comments begin with `--` or are placed between `/*` and `*/`.
+
+## Data types
+
+| Category          | Standard SQL                          | Description                                                                                       |
+| ----------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Whole numbers** | `SMALLINT`, `INTEGER` (`INT`), `BIGINT` | 2, 4 and 8 bytes                                                                                |
+| **Fixed point**   | `DECIMAL(p, s)`, `NUMERIC(p, s)`      | exact, $p$ digits in total, of which $s$ after the decimal point. `DECIMAL(8, 2)` goes up to 999,999.99 |
+| **Floating point** | `REAL`, `DOUBLE PRECISION`, `FLOAT`  | inexact like `float` and `double` in programming languages                                        |
+| **Strings**       | `CHAR(n)`, `VARCHAR(n)`               | `CHAR` is padded with spaces to exactly $n$ characters, `VARCHAR` stores up to $n$ characters      |
+| **Long text**     | `CLOB`, in PostgreSQL `TEXT`          | text without a fixed upper limit                                                                  |
+| **Date and time** | `DATE`, `TIME`, `TIMESTAMP`, `TIMESTAMP WITH TIME ZONE`, `INTERVAL` | date, time of day, both, with time zone, time span                   |
+| **Boolean**       | `BOOLEAN`                             | `TRUE`, `FALSE` or `NULL`                                                                         |
+| **Binary data**   | `BLOB`, `BINARY`, `VARBINARY`         | images, files. In PostgreSQL `BYTEA`                                                              |
+| **Other**         | `JSON`, `XML`, `UUID`                 | structured data and globally unique identifiers                                                   |
+
+:::caution[Amounts of money]
+Never store amounts of money as `REAL` or `DOUBLE`, but as `DECIMAL`. Floating-point numbers cannot represent 0.1 exactly (see [Data Representation](/en/computer-science/data-representation/)), and rounding errors add up.
+:::
+
+The products differ in the names: SQL Server has `NVARCHAR` for Unicode text, `DATETIME2` and `BIT` instead of `BOOLEAN`. MySQL uses `TINYINT(1)` as a Boolean and `DATETIME`. Oracle stores numbers as `NUMBER` and text as `VARCHAR2`. SQLite has only five storage classes (`NULL`, `INTEGER`, `REAL`, `TEXT`, `BLOB`) and accepts any value in any column of an ordinary table.
+
+## Creating tables
+
+```sql
+CREATE TABLE Class (
+    Id    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Name  VARCHAR(10) NOT NULL UNIQUE,
+    Year  INT NOT NULL CHECK (Year BETWEEN 1 AND 5)
+);
+
+CREATE TABLE Student (
+    Id        INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    Email     VARCHAR(100),
+    BirthDate DATE NOT NULL,
+    ClassId   INT,
+    Created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_student_email UNIQUE (Email),
+    CONSTRAINT fk_student_class FOREIGN KEY (ClassId) REFERENCES Class(Id)
+);
+```
+
+Constraints can be placed directly at the column (**column constraint**) or at the end of the table (**table constraint**). Constraints across several columns, such as a composite primary key, must be written as a table constraint. With `CONSTRAINT name`, you give them a name that appears in error messages and with which you can change or drop them later.
+
+### Automatically generated keys
+
+Artificial keys are assigned sequentially by the database. The syntax differs:
+
+| System        | Syntax                                                    |
+| ------------- | --------------------------------------------------------- |
+| SQL standard, PostgreSQL, Oracle, Db2 | `INT GENERATED ALWAYS AS IDENTITY` |
+| PostgreSQL (older) | `SERIAL`                                             |
+| SQL Server    | `INT IDENTITY(1, 1)`                                      |
+| MySQL, MariaDB | `INT AUTO_INCREMENT`                                     |
+| SQLite        | `INTEGER PRIMARY KEY`                                     |
+
+Internally, many systems use a **sequence**, a database object that returns the next number on every call. Because the numbers are not given back after a `ROLLBACK`, gaps can appear in the keys. This is normal and not an error.
+
+## Changing and dropping tables
+
+`ALTER TABLE` changes the structure of an existing table:
+
+```sql
+ALTER TABLE Student ADD COLUMN Phone VARCHAR(30);
+ALTER TABLE Student ALTER COLUMN Phone TYPE VARCHAR(40);
+ALTER TABLE Student RENAME COLUMN Phone TO MobileNumber;
+ALTER TABLE Student ADD CONSTRAINT ck_student_birthdate CHECK (BirthDate > DATE '1900-01-01');
+ALTER TABLE Student DROP COLUMN MobileNumber;
+```
+
+In SQL Server, the type change is `ALTER COLUMN Phone VARCHAR(40)`, in MySQL `MODIFY COLUMN Phone VARCHAR(40)`. A new column with `NOT NULL` needs a `DEFAULT` if the table already contains rows, because the existing rows would otherwise violate the constraint.
+
+There are three commands for deleting that are often confused:
+
+| Command                | Effect                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `DELETE FROM Student`  | DML: deletes rows, optionally only certain ones (`WHERE`). Triggers fire, every row is logged.    |
+| `TRUNCATE TABLE Student` | DDL: empties the whole table very quickly without logging individual rows. The structure is kept. |
+| `DROP TABLE Student`   | DDL: deletes the table including structure, data, indexes and constraints.                        |
+
+`DROP TABLE` fails as long as a foreign key of another table refers to it. `DROP TABLE IF EXISTS` avoids an error if the table does not exist.
+
+## Inserting data
+
+```sql
+INSERT INTO Class (Name, Year) VALUES ('3AHIT', 3);
+
+INSERT INTO Class (Name, Year)
+VALUES ('4AHIT', 4),
+       ('5AHIT', 5);
+
+INSERT INTO Student (FirstName, LastName, Email, BirthDate, ClassId)
+VALUES ('Anna', 'Huber', 'anna.huber@example.at', DATE '2009-03-14', 1),
+       ('Ben',  'Wolf',  NULL,                    DATE '2008-11-02', 1),
+       ('Clara', 'Berger', 'clara.berger@example.at', DATE '2008-06-30', 2);
+```
+
+Always give the column list. Without it, the values must be in the order of the table definition, and the program breaks as soon as someone adds a column. Columns that are not listed receive their `DEFAULT` or `NULL`.
+
+PostgreSQL returns the automatically generated key with `RETURNING` (SQL Server: `OUTPUT INSERTED.Id`, MySQL: `LAST_INSERT_ID()`):
+
+```sql
+INSERT INTO Student (FirstName, LastName, BirthDate, ClassId)
+VALUES ('David', 'Novak', DATE '2009-01-20', 1)
+RETURNING Id;
+```
+
+With `INSERT INTO ... SELECT`, rows are taken over from a query, for example when archiving:
+
+```sql
+CREATE TABLE StudentArchive (Id INT PRIMARY KEY, Name VARCHAR(101), Archived DATE);
+
+INSERT INTO StudentArchive (Id, Name, Archived)
+SELECT Id, FirstName || ' ' || LastName, CURRENT_DATE
+FROM Student
+WHERE ClassId = 2;
+```
+
+`||` concatenates strings. SQL Server uses `+` for this, MySQL the function `CONCAT`.
+
+## Changing data
+
+```sql
+UPDATE Student
+SET Email = 'ben.wolf@example.at'
+WHERE Id = 2;
+
+-- all students of 3AHIT move up to 4AHIT
+UPDATE Student
+SET ClassId = (SELECT Id FROM Class WHERE Name = '4AHIT')
+WHERE ClassId = (SELECT Id FROM Class WHERE Name = '3AHIT');
+```
+
+:::danger[UPDATE and DELETE without WHERE]
+Without `WHERE`, `UPDATE` or `DELETE` affects **every row** of the table. Check the condition beforehand with a `SELECT` and run risky changes in a [transaction](/en/databases/transactions/) so that you can undo them with `ROLLBACK`.
+:::
+
+## Deleting data
+
+```sql
+DELETE FROM Student WHERE Id = 4;
+
+DELETE FROM Student
+WHERE ClassId IN (SELECT Id FROM Class WHERE Year = 5);
+```
+
+Whether dependent rows are deleted as well is determined by the [referential action](/en/databases/relational-databases/#integrity-constraints) of the foreign key.
+
+## Insert or update
+
+Often a row should be inserted if it does not exist yet and updated otherwise (**upsert**). The SQL standard provides `MERGE` for this, which PostgreSQL supports from version 15, as do SQL Server and Oracle:
+
+```sql
+CREATE TABLE Grade (
+    StudentId INT REFERENCES Student(Id),
+    Subject   VARCHAR(10),
+    Value     INT NOT NULL CHECK (Value BETWEEN 1 AND 5),
+    PRIMARY KEY (StudentId, Subject)
+);
+
+MERGE INTO Grade g
+USING (VALUES (1, 'SEW', 2)) AS new (StudentId, Subject, Value)
+ON g.StudentId = new.StudentId AND g.Subject = new.Subject
+WHEN MATCHED THEN
+    UPDATE SET Value = new.Value
+WHEN NOT MATCHED THEN
+    INSERT (StudentId, Subject, Value) VALUES (new.StudentId, new.Subject, new.Value);
+```
+
+The PostgreSQL and SQLite variant `ON CONFLICT` is shorter. MySQL uses `ON DUPLICATE KEY UPDATE`.
+
+```sql
+INSERT INTO Grade (StudentId, Subject, Value) VALUES (1, 'SEW', 1)
+ON CONFLICT (StudentId, Subject) DO UPDATE SET Value = EXCLUDED.Value;
+
+SELECT * FROM Grade;
+```
+
+`EXCLUDED` refers to the row whose insertion caused the conflict. The result is a single row with the value 1.
+
+## Further reading
+
+- [PostgreSQL documentation: Data Definition](https://www.postgresql.org/docs/current/ddl.html) and [Data Manipulation](https://www.postgresql.org/docs/current/dml.html)
+- [Modern SQL](https://modern-sql.com/) by Markus Winand, a comparison of SQL features across systems

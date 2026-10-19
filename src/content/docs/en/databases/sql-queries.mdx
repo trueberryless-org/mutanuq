@@ -1,0 +1,552 @@
+---
+title: SQL Queries
+description: "SELECT in full: filtering, sorting, functions, CASE, NULL, aggregation with GROUP BY and HAVING, all joins, subqueries, set operations, CTEs and window functions."
+sidebar:
+  order: 7
+---
+
+With `SELECT`, you read data from the database. A query changes nothing; it only returns a result table. Most of the time spent working with databases goes into queries, and most exam tasks in Information Systems consist of them. This page covers all parts of a query. The theoretical foundation is [relational algebra](/en/databases/relational-algebra/).
+
+## Sample database
+
+All examples use this school database. You can run the script in PostgreSQL and try the queries yourself.
+
+```sql
+CREATE TABLE Teacher (
+    Id             INT PRIMARY KEY,
+    Name           VARCHAR(50) NOT NULL,
+    HeadOfDeptId   INT REFERENCES Teacher(Id)
+);
+
+CREATE TABLE Class (
+    Id            INT PRIMARY KEY,
+    Name          VARCHAR(10) NOT NULL UNIQUE,
+    Year          INT NOT NULL,
+    FormTeacherId INT REFERENCES Teacher(Id)
+);
+
+CREATE TABLE Student (
+    Id        INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName  VARCHAR(50) NOT NULL,
+    BirthDate DATE NOT NULL,
+    ClassId   INT REFERENCES Class(Id)
+);
+
+CREATE TABLE Subject (
+    Id    INT PRIMARY KEY,
+    Code  VARCHAR(10) NOT NULL UNIQUE,
+    Title VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Grade (
+    Id        INT PRIMARY KEY,
+    StudentId INT NOT NULL REFERENCES Student(Id),
+    SubjectId INT NOT NULL REFERENCES Subject(Id),
+    Date      DATE NOT NULL,
+    Value     INT NOT NULL CHECK (Value BETWEEN 1 AND 5)
+);
+
+INSERT INTO Teacher VALUES (1, 'Mayer', NULL), (2, 'Steiner', 1), (3, 'Pichler', 1), (4, 'Kern', 2);
+
+INSERT INTO Class VALUES (1, '3AHIT', 3, 2), (2, '4AHIT', 4, 3), (3, '5AHIT', 5, NULL);
+
+INSERT INTO Student VALUES
+    (1, 'Anna',  'Huber',  '2009-03-14', 1),
+    (2, 'Ben',   'Wolf',   '2008-11-02', 1),
+    (3, 'Clara', 'Berger', '2008-06-30', 2),
+    (4, 'David', 'Novak',  '2009-01-20', NULL),
+    (5, 'Emma',  'Gruber', '2007-09-05', 2);
+
+INSERT INTO Subject VALUES
+    (1, 'AM',   'Applied Mathematics'),
+    (2, 'SEW',  'Software Development'),
+    (3, 'INSY', 'Information Systems'),
+    (4, 'NWT',  'Networking');
+
+INSERT INTO Grade VALUES
+    (1, 1, 1, '2025-10-10', 2), (2, 1, 2, '2025-10-15', 1), (3, 1, 3, '2025-11-05', 1),
+    (4, 2, 1, '2025-10-10', 4), (5, 2, 2, '2025-10-15', 3), (6, 2, 2, '2025-12-01', 2),
+    (7, 3, 2, '2025-10-20', 2), (8, 3, 3, '2025-11-12', 3),
+    (9, 5, 1, '2025-10-22', 5), (10, 5, 3, '2025-11-12', 4);
+```
+
+In the Austrian grading scale, 1 is the best grade and 5 is a fail. David is not assigned to a class, 5AHIT has no students and no form teacher, and there are no grades in NWT yet. Such special cases show how joins and `NULL` behave.
+
+## Structure of a query
+
+{/* check: skip */}
+```sql
+SELECT   columns             -- 5. which columns
+FROM     tables              -- 1. from where
+WHERE    row condition       -- 2. which rows
+GROUP BY grouping            -- 3. how to group
+HAVING   group condition     -- 4. which groups
+ORDER BY sort order          -- 6. in which order
+LIMIT    count;              -- 7. how many
+```
+
+The clauses must be written in this order. However, the database system processes them in the order of the numbers in the comments. Two rules that often lead to errors follow from this: in `WHERE`, you cannot use a column alias from `SELECT` because `SELECT` is evaluated later. In `ORDER BY`, however, you can.
+
+## Selecting columns
+
+```sql
+SELECT FirstName, LastName,
+       EXTRACT(YEAR FROM AGE(DATE '2026-01-01', BirthDate)) AS Age
+FROM Student
+WHERE ClassId = 1;
+```
+
+| firstname | lastname | age |
+| --------- | -------- | --- |
+| Anna      | Huber    | 16  |
+| Ben       | Wolf     | 17  |
+
+- `SELECT *` returns all columns. In programs, you should still list the columns individually so that a new column in the table does not change the program.
+- With `AS`, you give a column or table an **alias**. For tables, `AS` is optional: `FROM Student s`.
+- Calculations and functions are allowed in `SELECT`.
+- `SELECT DISTINCT` removes duplicate rows from the result.
+
+## Filtering rows
+
+| Operator                     | Meaning                                                      | Example                               |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------- |
+| `=`, `<>` (or `!=`), `<`, `<=`, `>`, `>=` | comparison                                      | `Value <> 5`                          |
+| `AND`, `OR`, `NOT`           | connectives. `AND` binds more strongly than `OR`; use parentheses when in doubt. | `Value < 3 AND (SubjectId = 1 OR SubjectId = 2)` |
+| `BETWEEN a AND b`            | in a range, **including** both limits                        | `Value BETWEEN 2 AND 3`               |
+| `IN (...)`                   | in a list                                                    | `SubjectId IN (1, 2)`                 |
+| `LIKE`                       | text pattern: `%` any number of characters, `_` exactly one character | `LastName LIKE '%er%'`       |
+| `IS NULL`, `IS NOT NULL`     | check for `NULL`                                             | `ClassId IS NULL`                     |
+
+```sql
+SELECT Id, Value
+FROM Grade
+WHERE Value BETWEEN 2 AND 3
+  AND SubjectId IN (1, 2);
+```
+
+returns grades 1, 5, 6 and 7. In PostgreSQL, `LIKE` is case-sensitive, `ILIKE` is not. In SQL Server and MySQL, this depends on the collation of the column.
+
+## NULL and three-valued logic
+
+A comparison with `NULL` returns neither `TRUE` nor `FALSE`, but `UNKNOWN`. `WHERE` only keeps rows whose condition is `TRUE`.
+
+| `a`       | `b`       | `a AND b` | `a OR b`  | `NOT a`   |
+| --------- | --------- | --------- | --------- | --------- |
+| TRUE      | UNKNOWN   | UNKNOWN   | TRUE      | FALSE     |
+| FALSE     | UNKNOWN   | FALSE     | UNKNOWN   | TRUE      |
+| UNKNOWN   | UNKNOWN   | UNKNOWN   | UNKNOWN   | UNKNOWN   |
+
+Consequences:
+
+- `WHERE ClassId = NULL` never returns a row. The correct form is `WHERE ClassId IS NULL`.
+- `WHERE ClassId <> 1` does not return David, because `NULL <> 1` is unknown.
+- Arithmetic with `NULL` results in `NULL`: `NULL + 1` is `NULL`.
+- Aggregate functions except `COUNT(*)` ignore `NULL` values.
+
+`NOT IN` with a subquery that contains `NULL` is particularly treacherous. We are looking for the teachers who are not a form teacher:
+
+```sql
+-- wrong: returns no rows at all
+SELECT Name FROM Teacher
+WHERE Id NOT IN (SELECT FormTeacherId FROM Class);
+
+-- correct: returns Mayer and Kern
+SELECT Name FROM Teacher t
+WHERE NOT EXISTS (SELECT 1 FROM Class c WHERE c.FormTeacherId = t.Id);
+```
+
+The subquery returns 2, 3 and `NULL`. For Mayer, the condition is `1 <> 2 AND 1 <> 3 AND 1 <> NULL`, and the last part is unknown. Use `NOT EXISTS` instead, or exclude `NULL` in the subquery.
+
+Two functions help when dealing with `NULL`: `COALESCE(a, b, ...)` returns the first value that is not `NULL`. `NULLIF(a, b)` returns `NULL` if `a = b`, otherwise `a`. This avoids a division by zero, for example: `Total / NULLIF(Count, 0)`.
+
+```sql
+SELECT FirstName, COALESCE(CAST(ClassId AS VARCHAR), 'no class') AS Class
+FROM Student
+ORDER BY Id;
+```
+
+## Sorting and limiting
+
+```sql
+SELECT FirstName, BirthDate
+FROM Student
+ORDER BY BirthDate DESC
+LIMIT 3;
+```
+
+| firstname | birthdate  |
+| --------- | ---------- |
+| Anna      | 2009-03-14 |
+| David     | 2009-01-20 |
+| Ben       | 2008-11-02 |
+
+- `ASC` (ascending) is the default, `DESC` sorts in descending order. Several sort keys are separated by commas: `ORDER BY LastName, FirstName`.
+- Without `ORDER BY`, the order is **not defined**, even if it always looks the same in tests.
+- Where `NULL` ends up differs between systems. You can determine it with `NULLS FIRST` or `NULLS LAST`.
+- You limit the number of rows with `LIMIT n OFFSET m` (PostgreSQL, MySQL, SQLite), in standard SQL with `OFFSET m ROWS FETCH FIRST n ROWS ONLY` and in SQL Server with `SELECT TOP n`. This is how paging is implemented.
+
+## Functions
+
+| Area          | Functions (PostgreSQL)                                                                    |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| **Text**      | `UPPER`, `LOWER`, `LENGTH`, `SUBSTRING(s FROM 1 FOR 2)`, `TRIM`, `REPLACE`, `POSITION`, `CONCAT`, `\|\|` |
+| **Numbers**   | `ROUND(x, 2)`, `TRUNC`, `CEIL`, `FLOOR`, `ABS`, `MOD`, `POWER`, `SQRT`                    |
+| **Date**      | `CURRENT_DATE`, `CURRENT_TIMESTAMP`, `EXTRACT(YEAR FROM d)`, `AGE(a, b)`, `d + INTERVAL '7 days'`, `DATE_TRUNC('month', d)` |
+| **Conversion** | `CAST(x AS type)`, in PostgreSQL also `x::type`, `TO_CHAR(d, 'DD.MM.YYYY')`              |
+
+Function names differ most between systems. SQL Server, for example, uses `LEN`, `GETDATE()` and `DATEDIFF`, MySQL uses `CHAR_LENGTH`, `NOW()` and `DATE_FORMAT`.
+
+### CASE
+
+`CASE` is SQL's conditional expression and can be used wherever a value is expected:
+
+```sql
+SELECT Id, Value,
+       CASE Value
+           WHEN 1 THEN 'Very good'
+           WHEN 2 THEN 'Good'
+           WHEN 3 THEN 'Satisfactory'
+           WHEN 4 THEN 'Sufficient'
+           ELSE 'Fail'
+       END AS Assessment
+FROM Grade
+WHERE StudentId = 2;
+```
+
+| id | value | assessment   |
+| -- | ----- | ------------ |
+| 4  | 4     | Sufficient   |
+| 5  | 3     | Satisfactory |
+| 6  | 2     | Good         |
+
+The second form checks any conditions: `CASE WHEN Value <= 2 THEN 'good' WHEN Value <= 4 THEN 'pass' ELSE 'fail' END`. If `ELSE` is missing and no condition applies, the result is `NULL`.
+
+## Aggregation and grouping
+
+**Aggregate functions** combine many rows into one value:
+
+| Function          | Result                                                           |
+| ----------------- | ---------------------------------------------------------------- |
+| `COUNT(*)`        | number of rows                                                   |
+| `COUNT(column)`   | number of rows in which the column is not `NULL`                 |
+| `COUNT(DISTINCT column)` | number of different values                                |
+| `SUM`, `AVG`      | sum, average                                                     |
+| `MIN`, `MAX`      | smallest and largest value, also for text and dates              |
+
+```sql
+SELECT COUNT(*) AS Students, COUNT(ClassId) AS WithClass, MIN(BirthDate) AS Oldest
+FROM Student;
+```
+
+returns 5, 4 and `2007-09-05`. With `GROUP BY`, aggregation is done per group, and with `HAVING`, groups are filtered:
+
+```sql
+SELECT s.FirstName, ROUND(AVG(g.Value), 2) AS Average, COUNT(*) AS Grades
+FROM Student s
+JOIN Grade g ON g.StudentId = s.Id
+GROUP BY s.Id, s.FirstName
+HAVING AVG(g.Value) <= 3
+ORDER BY Average;
+```
+
+| firstname | average | grades |
+| --------- | ------- | ------ |
+| Anna      | 1.33    | 3      |
+| Clara     | 2.50    | 2      |
+| Ben       | 3.00    | 3      |
+
+Two rules always apply:
+
+- Every column in `SELECT` that is not inside an aggregate function must appear in `GROUP BY`. Otherwise it would be unclear which value of the group should be shown. (PostgreSQL allows one exception: if the primary key is grouped, the other columns of the same table may be left out.)
+- `WHERE` filters **rows before** grouping and must not contain aggregate functions. `HAVING` filters **groups afterwards**.
+
+With `FILTER` (PostgreSQL, SQLite) or a `CASE` inside the aggregate function, you can count several conditions in one query:
+
+```sql
+SELECT COUNT(*) FILTER (WHERE Value <= 2) AS GoodGrades,
+       SUM(CASE WHEN Value = 5 THEN 1 ELSE 0 END) AS Fails
+FROM Grade;
+```
+
+## Joins
+
+A **join** combines rows of several tables using a condition, usually foreign key equals primary key.
+
+| Join                 | Result                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `INNER JOIN` (`JOIN`) | only rows that have a partner in both tables                                                 |
+| `LEFT JOIN`          | all rows of the left table; missing partners on the right are filled with `NULL`              |
+| `RIGHT JOIN`         | all rows of the right table                                                                   |
+| `FULL JOIN`          | all rows of both tables                                                                       |
+| `CROSS JOIN`         | every row with every row (Cartesian product)                                                  |
+
+The difference shows with David and 5AHIT:
+
+```sql
+SELECT s.FirstName, c.Name
+FROM Student s
+FULL JOIN Class c ON s.ClassId = c.Id
+ORDER BY s.Id, c.Id;
+```
+
+| firstname | name  |
+| --------- | ----- |
+| Anna      | 3AHIT |
+| Ben       | 3AHIT |
+| Clara     | 4AHIT |
+| David     |       |
+| Emma      | 4AHIT |
+|           | 5AHIT |
+
+An `INNER JOIN` returns only the four rows with both values, a `LEFT JOIN` additionally David, and a `RIGHT JOIN` additionally 5AHIT.
+
+### Several tables
+
+Joins are chained. We are looking for all grades 4 and 5 with subject and form teacher:
+
+```sql
+SELECT s.FirstName, sub.Code, g.Value, t.Name AS FormTeacher
+FROM Grade g
+JOIN Student s   ON s.Id = g.StudentId
+JOIN Subject sub ON sub.Id = g.SubjectId
+JOIN Class c     ON c.Id = s.ClassId
+LEFT JOIN Teacher t ON t.Id = c.FormTeacherId
+WHERE g.Value >= 4;
+```
+
+| firstname | code | value | formteacher |
+| --------- | ---- | ----- | ----------- |
+| Ben       | AM   | 4     | Steiner     |
+| Emma      | AM   | 5     | Pichler     |
+| Emma      | INSY | 4     | Pichler     |
+
+### Self join
+
+If a table refers to itself, it is joined using two different aliases:
+
+```sql
+SELECT t.Name AS Teacher, head.Name AS HeadOfDepartment
+FROM Teacher t
+LEFT JOIN Teacher head ON head.Id = t.HeadOfDeptId
+ORDER BY t.Id;
+```
+
+| teacher | headofdepartment |
+| ------- | ---------------- |
+| Mayer   |                  |
+| Steiner | Mayer            |
+| Pichler | Mayer            |
+| Kern    | Steiner          |
+
+### Common mistakes with joins
+
+- **Forgotten condition**: without `ON`, a Cartesian product is created. With 1,000 students and 10,000 grades, that would be 10 million rows.
+- **Filter on the right side of a LEFT JOIN in WHERE**: `LEFT JOIN Grade g ON ... WHERE g.Value = 1` removes all students without a grade again, because `NULL = 1` is unknown. If the condition belongs to the join, write it in `ON`: `LEFT JOIN Grade g ON g.StudentId = s.Id AND g.Value = 1`.
+- **Counting across a LEFT JOIN**: `COUNT(*)` also counts the row filled with `NULL`. For "number of students per class including empty classes", use `COUNT(s.Id)`.
+
+The older notation `FROM Student s, Class c WHERE s.ClassId = c.Id` is an implicit inner join. It works, but it mixes join and filter conditions and makes forgotten conditions hard to spot.
+
+## Subqueries
+
+A **subquery** is a query inside another query.
+
+| Kind                  | Returns                    | Use                                              |
+| --------------------- | -------------------------- | ------------------------------------------------ |
+| **Scalar**            | exactly one value          | like a single value, for example in a comparison |
+| **Column**            | a list of values           | with `IN`, `ANY`, `ALL`                          |
+| **Table**             | a table                    | in `FROM` as a derived table, with `EXISTS`      |
+
+```sql
+-- scalar: all grades better than the average (2.7)
+SELECT Id, Value FROM Grade
+WHERE Value < (SELECT AVG(Value) FROM Grade);
+
+-- ALL: students older than all students of class 1 (Clara, Emma)
+SELECT FirstName FROM Student
+WHERE BirthDate < ALL (SELECT BirthDate FROM Student WHERE ClassId = 1);
+```
+
+`= ANY (...)` corresponds to `IN (...)`. `> ALL (...)` is true if the value is greater than every value in the list.
+
+### Correlated subqueries
+
+A **correlated** subquery refers to the outer query and is conceptually executed again for every outer row. We are looking for the most recent grade of each student:
+
+```sql
+SELECT s.FirstName, g.Date, g.Value
+FROM Grade g
+JOIN Student s ON s.Id = g.StudentId
+WHERE g.Date = (SELECT MAX(g2.Date)
+                FROM Grade g2
+                WHERE g2.StudentId = g.StudentId)
+ORDER BY s.FirstName;
+```
+
+| firstname | date       | value |
+| --------- | ---------- | ----- |
+| Anna      | 2025-11-05 | 1     |
+| Ben       | 2025-12-01 | 2     |
+| Clara     | 2025-11-12 | 3     |
+| Emma      | 2025-11-12 | 4     |
+
+`EXISTS` only checks whether the subquery returns at least one row. That is why `SELECT 1` is often written inside it.
+
+### Derived tables
+
+A subquery in `FROM` needs an alias. We are looking for the best grade average per class:
+
+```sql
+SELECT c.Name, ROUND(MIN(x.Average), 2) AS BestAverage
+FROM (SELECT StudentId, AVG(Value) AS Average
+      FROM Grade
+      GROUP BY StudentId) AS x
+JOIN Student s ON s.Id = x.StudentId
+JOIN Class c   ON c.Id = s.ClassId
+GROUP BY c.Name
+ORDER BY c.Name;
+```
+
+returns 3AHIT with 1.33 and 4AHIT with 2.50.
+
+## Set operations
+
+`UNION`, `INTERSECT` and `EXCEPT` combine the results of two queries with the same number of columns of matching types (see [relational algebra](/en/databases/relational-algebra/#set-operations)). `ORDER BY` may only appear at the end of the whole query.
+
+```sql
+SELECT FirstName AS Name, 'Student' AS Role FROM Student
+UNION ALL
+SELECT Name, 'Teacher' FROM Teacher
+ORDER BY Name;
+```
+
+## Common table expressions
+
+A **common table expression** (CTE) gives a subquery a name with `WITH`. This makes the query readable from top to bottom, and the CTE can be used several times:
+
+```sql
+WITH Averages AS (
+    SELECT StudentId, AVG(Value) AS Average
+    FROM Grade
+    GROUP BY StudentId
+)
+SELECT s.FirstName, ROUND(a.Average, 2) AS Average
+FROM Averages a
+JOIN Student s ON s.Id = a.StudentId
+WHERE a.Average = (SELECT MIN(Average) FROM Averages);
+```
+
+returns Anna with 1.33.
+
+### Recursive CTEs
+
+With `WITH RECURSIVE`, hierarchies and trees of any depth can be traversed, such as organisation charts, categories or bills of materials. A recursive CTE consists of an **anchor part** and a **recursive part**, connected with `UNION ALL`. The recursive part is executed until it returns no new rows.
+
+```sql
+WITH RECURSIVE Hierarchy AS (
+    SELECT Id, Name, 0 AS Level
+    FROM Teacher
+    WHERE HeadOfDeptId IS NULL                 -- anchor: the root
+    UNION ALL
+    SELECT t.Id, t.Name, h.Level + 1
+    FROM Teacher t
+    JOIN Hierarchy h ON t.HeadOfDeptId = h.Id  -- recursion: the subordinates
+)
+SELECT REPEAT('  ', Level) || Name AS OrgChart
+FROM Hierarchy
+ORDER BY Level, Name;
+```
+
+| orgchart     |
+| ------------ |
+| Mayer        |
+| &nbsp;&nbsp;Pichler |
+| &nbsp;&nbsp;Steiner |
+| &nbsp;&nbsp;&nbsp;&nbsp;Kern |
+
+SQL Server writes only `WITH`, without `RECURSIVE`.
+
+## Window functions
+
+A **window function** calculates a value for every row over a group of related rows, the **window**. Unlike `GROUP BY`, all rows are kept. The window is described with `OVER`:
+
+- `PARTITION BY` divides the rows into groups, similar to `GROUP BY`.
+- `ORDER BY` determines the order within the window.
+
+```sql
+SELECT s.FirstName, sub.Code, g.Value,
+       ROUND(AVG(g.Value) OVER (PARTITION BY g.SubjectId), 2) AS SubjectAverage,
+       RANK() OVER (PARTITION BY g.SubjectId ORDER BY g.Value) AS Rank
+FROM Grade g
+JOIN Student s   ON s.Id = g.StudentId
+JOIN Subject sub ON sub.Id = g.SubjectId
+ORDER BY sub.Code, Rank, s.FirstName;
+```
+
+| firstname | code | value | subjectaverage | rank |
+| --------- | ---- | ----- | -------------- | ---- |
+| Anna      | AM   | 2     | 3.67           | 1    |
+| Ben       | AM   | 4     | 3.67           | 2    |
+| Emma      | AM   | 5     | 3.67           | 3    |
+| Anna      | INSY | 1     | 2.67           | 1    |
+| Clara     | INSY | 3     | 2.67           | 2    |
+| Emma      | INSY | 4     | 2.67           | 3    |
+| Anna      | SEW  | 1     | 2.00           | 1    |
+| Ben       | SEW  | 2     | 2.00           | 2    |
+| Clara     | SEW  | 2     | 2.00           | 2    |
+| Ben       | SEW  | 3     | 2.00           | 4    |
+
+| Function                       | Result                                                                     |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `ROW_NUMBER()`                 | sequential number 1, 2, 3, 4 regardless of equal values                    |
+| `RANK()`                       | equal values get the same rank, followed by a gap: 1, 2, 2, 4              |
+| `DENSE_RANK()`                 | equal values get the same rank, without a gap: 1, 2, 2, 3                  |
+| `NTILE(n)`                     | divides the rows into $n$ groups of equal size                             |
+| `LAG(x)`, `LEAD(x)`            | value of the previous or next row                                          |
+| `FIRST_VALUE(x)`, `LAST_VALUE(x)` | first or last value in the window                                       |
+| `SUM`, `AVG`, `COUNT`, ... with `OVER` | aggregate over the window                                          |
+
+If `OVER` contains an `ORDER BY`, the window extends by default from the start up to the current row. This creates **running totals** and averages:
+
+```sql
+SELECT Date, Value,
+       SUM(Value) OVER (ORDER BY Date, Id) AS Total,
+       ROUND(AVG(Value) OVER (ORDER BY Date, Id), 2) AS RunningAverage,
+       LAG(Value) OVER (ORDER BY Date, Id) AS Previous
+FROM Grade
+WHERE StudentId = 2;
+```
+
+| date       | value | total | runningaverage | previous |
+| ---------- | ----- | ----- | -------------- | -------- |
+| 2025-10-10 | 4     | 4     | 4.00           |          |
+| 2025-10-15 | 3     | 7     | 3.50           | 4        |
+| 2025-12-01 | 2     | 9     | 3.00           | 3        |
+
+A typical pattern is "the best $n$ per group": window functions must not appear in `WHERE`, so the rows are numbered first and then filtered outside.
+
+```sql
+SELECT Code, FirstName, Value
+FROM (SELECT sub.Code, s.FirstName, g.Value,
+             ROW_NUMBER() OVER (PARTITION BY sub.Id ORDER BY g.Value, g.Date) AS No
+      FROM Grade g
+      JOIN Subject sub ON sub.Id = g.SubjectId
+      JOIN Student s   ON s.Id = g.StudentId) AS x
+WHERE No = 1
+ORDER BY Code;
+```
+
+## Approach to query tasks
+
+1. Which **columns** should the result have? This gives `SELECT`.
+2. In which **tables** are these columns, and through which tables are they connected? This gives `FROM` and the joins. If rows without a partner must be kept, use an outer join.
+3. Which **rows** are needed? `WHERE`.
+4. If the task says "per", "for each" or "by", **group**. Conditions on totals, counts or averages go into `HAVING`.
+5. If "all" or "none" appears, `NOT EXISTS` often helps.
+6. Do not forget the **sort order** if it is required.
+7. Check the result against the sample data, especially special cases such as `NULL`, empty groups and ties.
+
+## Further reading
+
+- [PostgreSQL documentation: Queries](https://www.postgresql.org/docs/current/queries.html) and [Window Functions](https://www.postgresql.org/docs/current/tutorial-window.html)
+- [Use The Index, Luke](https://use-the-index-luke.com/) by Markus Winand
