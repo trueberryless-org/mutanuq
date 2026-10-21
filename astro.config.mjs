@@ -53,6 +53,39 @@ export default defineConfig({
       },
       head: [
         {
+          tag: "meta",
+          attrs: {
+            property: "og:image",
+            content: "https://mutanuq.felixs.dev/og-image.png",
+          },
+        },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:width", content: "1200" },
+        },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:height", content: "630" },
+        },
+        {
+          tag: "meta",
+          attrs: {
+            property: "og:image:alt",
+            content: "Mutanuq: Knowledge base of technical college.",
+          },
+        },
+        {
+          tag: "meta",
+          attrs: { name: "twitter:card", content: "summary_large_image" },
+        },
+        {
+          tag: "meta",
+          attrs: {
+            name: "twitter:image",
+            content: "https://mutanuq.felixs.dev/og-image.png",
+          },
+        },
+        {
           tag: "script",
           attrs: {
             src: "https://rybbit.lou.gg/api/script.js",
